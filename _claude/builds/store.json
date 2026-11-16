@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5479,
- "updatedAt": "2026-11-14T22:44:58.473Z",
+ "rev": 5537,
+ "updatedAt": "2026-11-14T23:03:48.005Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -101317,7 +101317,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101579,7 +101579,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -106256,7 +106256,7 @@
    },
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -113143,7 +113143,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -121345,7 +121345,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122164,7 +122164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128397,7 +128397,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130354,7 +130354,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130689,7 +130689,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134232,7 +134232,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134565,7 +134565,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134870,7 +134870,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135026,7 +135026,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135186,7 +135186,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135346,7 +135346,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135578,7 +135578,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135846,7 +135846,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136629,7 +136629,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137114,7 +137114,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137322,7 +137322,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137530,7 +137530,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137754,7 +137754,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138050,7 +138050,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138263,7 +138263,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138434,7 +138434,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138672,7 +138672,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138832,7 +138832,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138996,7 +138996,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139156,7 +139156,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139615,7 +139615,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139853,7 +139853,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140203,7 +140203,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140363,7 +140363,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140393,17 +140393,17 @@
    "title": "Orchestrator table columns (model, queue #, assigned employee) + auto-hire builders with approval + train employees on website data",
    "category": "",
    "detail": "Builds on the HR/employees build (assign-an-employee-to-every-role-action-type-and); upgrade that, don't duplicate. 1) Orchestrator and Build Manager tables get columns: model (Opus/Fable/etc.), queue position number, assigned employee (avatar + name, links to profile). Sortable and shown on the expandable root rows. 2) Every build must be assigned to an employee in the builder job category. 3) When there's no available builder, the orchestrator sends Brett an AmberX notification: 'Hire a new builder?' with Approve/Deny. On approve, HR hires one automatically: name, avatar, persona, voice, job category builder, tools and permissions from the builder role, added to the roster, and the waiting build is assigned. No hire without approval. 4) Training: any employee can be trained on website data. Add URLs or a site to crawl from their profile; the content is fetched, stored as that employee's knowledge, viewable and removable, and used in their sessions. Same controls via REST, MCP, CLI and voice. Verify on the live console, desktop and phone.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "alias": "orchestrator-table-columns-model-queue",
    "branch": "claude/orchestrator-table-columns-model-queue-assigned",
-   "pr": "",
+   "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-14T22:44:26.389Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T23:03:47.712Z",
+   "builtAt": "2026-11-14T23:03:47.712Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -140432,6 +140432,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T03:50:50.715Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-orchestrator-table-columns-model-queue-assigned--earl.",
+     "at": "2026-11-14T22:45:37.145Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-table-columns-model-queue-assigned--earl, shared account login)",
+     "at": "2026-11-14T22:45:39.029Z"
     }
    ],
    "approvals": [],
@@ -140443,7 +140451,7 @@
     "session": "",
     "link": "",
     "by": "orchestrator-table-columns-model-queue-assigned",
-    "brief": "# Build: orchestrator-table-columns-model-queue-assigned\n\n## Brett said (verbatim)\nAt: 2026-11-10T00:17:45.319Z\n> You need from the tables too. You need to see what model it's getting built on, show its number in the queue, show the agent it's assigned to. It has to be assigned to an employee. If we don't have any builder employees, you have to hire one. Notify me if I want to hire somebody; if I approve it, you hire somebody new. Give them a persona, give them the tools and all that. You need to be able to train the employees with website data.\n\n## What to build\nContinue build \"Orchestrator table columns (model, queue #, assigned employee) + auto-hire builders with approval + train employees on website data\" (orchestrator-table-columns-model-queue-assigned) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 00:17):\n\"You need from the tables too. You need to see what model it's getting built on, show its number in the queue, show the agent it's assigned to. It has to be assigned to an employee. If we don't have any builder employees, you have to hire one. Notify me if I want to hire somebody; if I approve it, you hire somebody new. Give them a persona, give them the tools and all that. You need to be able to train the employees with website data.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Builds on the HR/employees build (assign-an-employee-to-every-role-action-type-and); upgrade that, don't duplicate. 1) Orchestrator and Build Manager tables get columns: model (Opus/Fable/etc.), queue position number, assigned employee (avatar + name, links to profile). Sortable and shown on the expandable root rows. 2) Every build must be assigned to an employee in the builder job category. 3) When there's no available builder, the orchestrator sends Brett an AmberX notification: 'Hire a new builder?' with Approve/Deny. On approve, HR hires one automatically: name, avatar, persona, voice, job category builder, tools and permissions from the builder role, added to the roster, and the waiting build is assigned. No hire without approval. 4) Training: any employee can be trained on website data. Add URLs or a site to crawl from their profile; the content is fetched, stored as that employee's knowledge, viewable and removable, and used in their sessions. Same controls via REST, MCP, CLI and voice. Verify on the live console, desktop and phone.\n[ ] s2 (~30 min) You need from the tables too. You need to see what model it's getting built on, show its number in the queue, show the agent it's assigned to. It has to be assigned to an employee. If we don't have any builder employees, you have to hire one. Notify me if I want to hire somebody; if I approve it, you hire somebody new. Give them a persona, give them the tools and all that. You need to be able to train the employees with website data.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-table-columns-model-queue-assigned.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-table-columns-model-queue-assigned.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-table-columns-model-queue-assigned <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-table-columns-model-queue-assigned --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-table-columns-model-queue-assigned <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-table-columns-model-queue-assigned \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: orchestrator-table-columns-model-queue-assigned\n\n## Brett said (verbatim)\nAt: 2026-11-10T00:17:45.319Z\n> You need from the tables too. You need to see what model it's getting built on, show its number in the queue, show the agent it's assigned to. It has to be assigned to an employee. If we don't have any builder employees, you have to hire one. Notify me if I want to hire somebody; if I approve it, you hire somebody new. Give them a persona, give them the tools and all that. You need to be able to train the employees with website data.\n\n## What to build\nContinue build \"Orchestrator table columns (model, queue #, assigned employee) + auto-hire builders with approval + train employees on website data\" (orchestrator-table-columns-model-queue-assigned) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 00:17):\n\"You need from the tables too. You need to see what model it's getting built on, show its number in the queue, show the agent it's assigned to. It has to be assigned to an employee. If we don't have any builder employees, you have to hire one. Notify me if I want to hire somebody; if I approve it, you hire somebody new. Give them a persona, give them the tools and all that. You need to be able to train the employees with website data.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/orchestrator-table-columns-model-queue-assigned\nSteps in this phase (2 left, ~50 min):\n[x] s1 (~30 min) Builds on the HR/employees build (assign-an-employee-to-every-role-action-type-and); upgrade that, don't duplicate. 1) Orchestrator and Build Manager tables get columns: model (Opus/Fable/etc.), queue position number, assigned employee (avatar + name, links to profile). Sortable and shown on the expandable root rows. 2) Every build must be assigned to an employee in the builder job category. 3) When there's no available builder, the orchestrator sends Brett an AmberX notification: 'Hire a new builder?' with Approve/Deny. On approve, HR hires one automatically: name, avatar, persona, voice, job category builder, tools and permissions from the builder role, added to the roster, and the waiting build is assigned. No hire without approval. 4) Training: any employee can be trained on website data. Add URLs or a site to crawl from their profile; the content is fetched, stored as that employee's knowledge, viewable and removable, and used in their sessions. Same controls via REST, MCP, CLI and voice. Verify on the live console, desktop and phone.\n[ ] s2 (~30 min) You need from the tables too. You need to see what model it's getting built on, show its number in the queue, show the agent it's assigned to. It has to be assigned to an employee. If we don't have any builder employees, you have to hire one. Notify me if I want to hire somebody; if I approve it, you hire somebody new. Give them a persona, give them the tools and all that. You need to be able to train the employees with website data.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-table-columns-model-queue-assigned.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-table-columns-model-queue-assigned.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-table-columns-model-queue-assigned <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-table-columns-model-queue-assigned --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step orchestrator-table-columns-model-queue-assigned <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-table-columns-model-queue-assigned \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -140451,18 +140459,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-orchestrator-table-columns-model-queue-assigned--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T22:45:32.880Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T22:45:32.880Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -140471,7 +140479,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T22:45:32.880Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -140514,12 +140522,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:02:28.836Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T00:19:35.487Z",
-     "updatedAt": "2026-11-10T00:19:35.487Z"
+     "updatedAt": "2026-11-14T23:02:29.484Z"
     },
     {
      "id": "s3",
@@ -140539,12 +140547,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:03:47.712Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T00:19:35.487Z",
-     "updatedAt": "2026-11-10T00:19:35.487Z"
+     "updatedAt": "2026-11-14T23:03:48.005Z"
     }
    ],
    "profiles": [
@@ -140555,7 +140563,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140719,7 +140727,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140958,7 +140966,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142106,7 +142114,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142266,7 +142274,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142430,7 +142438,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142594,7 +142602,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142934,7 +142942,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -143098,7 +143106,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -143291,7 +143299,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144452,7 +144460,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144608,7 +144616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145267,7 +145275,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -147088,7 +147096,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -147693,7 +147701,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148094,7 +148102,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148565,7 +148573,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149064,7 +149072,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149452,7 +149460,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149619,7 +149627,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150570,7 +150578,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150726,7 +150734,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150882,7 +150890,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151042,7 +151050,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151202,7 +151210,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151358,7 +151366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151537,7 +151545,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151546,7 +151554,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-14T22:44:34.891Z",
+   "updatedAt": "2026-11-14T23:01:23.343Z",
    "builtAt": "",
    "notes": [
     {
@@ -151596,9 +151604,26 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T18:50:38.760Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-pass-approval-hook-deep-link-amberx-notification--lenny.",
+     "at": "2026-11-14T22:45:59.743Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pass-approval-hook-deep-link-amberx-notification--lenny, shared account login)",
+     "at": "2026-11-14T22:46:07.943Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-14T22:49:16.092Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I'm gonna need a link to the pass, a hook to it.",
@@ -151607,7 +151632,7 @@
     "session": "",
     "link": "",
     "by": "pass-approval-hook-deep-link-amberx-notification",
-    "brief": "# Build: pass-approval-hook-deep-link-amberx-notification\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:10:29.492Z\n> I'm gonna need a link to the pass, a hook to it.\n\n## What to build\nContinue build \"Pass approval hook: deep link + AmberX notification Approve button for veto passes\" (pass-approval-hook-deep-link-amberx-notification) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:10):\n\"I'm gonna need a link to the pass, a hook to it.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/pass-approval-hook-deep-link-amberx-notification\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Design the pass-approval contract shared by console, Molly and AmberX. Define the deep link URL format for a pending pass (console_show/console_open target 'pass:<id>'). Define the short-lived, single-use, signed approve/deny action token embedded in links and notification actions, with its expiry, replay guard and binding to pass id and decision. Define the push notification payload with Approve/Deny action ids. Define the pass_grant result fields (approve_url, deny_url, deep_link). Write it as a contract doc and shared types.\nRead first: docs/contracts/pass-approval.md, packages/shared/pass-approval/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step pass-approval-hook-deep-link-amberx-notification <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link pass-approval-hook-deep-link-amberx-notification --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step pass-approval-hook-deep-link-amberx-notification <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note pass-approval-hook-deep-link-amberx-notification \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: pass-approval-hook-deep-link-amberx-notification\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:10:29.492Z\n> I'm gonna need a link to the pass, a hook to it.\n\n## What to build\nContinue build \"Pass approval hook: deep link + AmberX notification Approve button for veto passes\" (pass-approval-hook-deep-link-amberx-notification) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:10):\n\"I'm gonna need a link to the pass, a hook to it.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/pass-approval-hook-deep-link-amberx-notification\nSteps in this phase (8 left, ~3.8 h):\n[ ] s2 (~30 min) Server side: implement the pass action-token sign/verify module and a pass-approval service that approves or denies a pending veto pass by id. Accept a signed action token or an authenticated owner session, and make both paths audit-logged and idempotent. Reuse the existing Token control approve/deny logic instead of duplicating it.\n[ ] s3 (~30 min) REST routes for passes: GET /api/passes/pending, GET /api/passes/:id (state), POST /api/passes/:id/approve and /deny (owner session), and POST /api/passes/action (signed token, no navigation, for background notification actions). Add a deep-link resolver for console_show/console_open target 'pass:<id>'.\n[ ] s4 (~20 min) Extend pass_grant so its result returns deep_link, approve_url and deny_url for the pending pass, letting Claude hand the link to Brett. Update the tool description to say so.\n[ ] s5 (~30 min) Console UI: a pass-approval view that the deep link opens straight to the pending pass, showing requester, scope and veto window with Approve/Deny buttons. Wire it to the REST routes and make the existing banner and Token control → Passes link to it. API part in this step: deep link target pass:<id>, state read via GET /api/passes/:id, and approve/deny actions via the same routes.\n[ ] s6 (~25 min) Molly: handle the same pass:<id> deep link and open the pending pass with Approve/Deny, calling the shared REST routes.\n[ ] s7 (~30 min) AmberX push notification: when a veto pass is requested, send a push with Approve/Deny actions that call POST /api/passes/action with the signed token in the background, without opening the app. Tapping the notification body opens the deep link. Show the success or failure result as a follow-up notification.\n[ ] s8 (~30 min) Full API parity: add MCP tools (console actions pass_list_pending, pass_get, pass_approve, pass_deny; control@1 planner/token entries), CLI commands (axf pass list|show|approve|deny|link), and AmberX voice intents ('approve the pass', 'deny the pass', 'open the pending pass') that all reach the same service. Brett can then approve from his own session.\n[ ] s9 (~30 min) Tests and wrap-up. Cover token sign/verify, including expiry, replay and wrong-pass rejection. Cover the REST approve/deny/action routes, the pass_grant result fields, deep link resolution, and MCP/CLI parity. Write the report at _claude/builds/reports/pass-approval-hook-deep-link-amberx-notification.md, add the THREADS row, and open the PR, stating how each surface is reached (deep link, state read, actions; REST, MCP, CLI, voice).\nRead first: apps/console-web/plugins/token-control/, packages/shared/pass-approval/, apps/console-web/server/routes/, apps/console-web/mcp/, apps/console-web/plugins/token-control/ui/, apps/console-web/src/deep-links/, apps/molly/, apps/amberx/notifications/, bin/axf, apps/amberx/voice/, apps/console-web/plugins/token-control/test/, apps/console-web/test/, _claude/builds/reports/pass-approval-hook-deep-link-amberx-notification.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step pass-approval-hook-deep-link-amberx-notification <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link pass-approval-hook-deep-link-amberx-notification --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step pass-approval-hook-deep-link-amberx-notification <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note pass-approval-hook-deep-link-amberx-notification \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -151684,12 +151709,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:49:16.092Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
-     "updatedAt": "2026-11-10T18:03:26.974Z"
+     "updatedAt": "2026-11-14T22:49:16.531Z"
     },
     {
      "id": "s3",
@@ -151709,12 +151734,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:53:07.625Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
-     "updatedAt": "2026-11-10T18:03:26.974Z"
+     "updatedAt": "2026-11-14T22:53:07.930Z"
     },
     {
      "id": "s4",
@@ -151734,12 +151759,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:54:08.643Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
-     "updatedAt": "2026-11-10T18:03:26.974Z"
+     "updatedAt": "2026-11-14T22:54:08.957Z"
     },
     {
      "id": "s5",
@@ -151759,12 +151784,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:58:53.763Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
-     "updatedAt": "2026-11-10T18:03:26.974Z"
+     "updatedAt": "2026-11-14T22:58:54.020Z"
     },
     {
      "id": "s6",
@@ -151783,12 +151808,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:01:23.343Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
-     "updatedAt": "2026-11-10T18:03:26.974Z"
+     "updatedAt": "2026-11-14T23:01:23.622Z"
     },
     {
      "id": "s7",
@@ -151878,7 +151903,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152333,7 +152358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153601,7 +153626,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155505,7 +155530,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155697,7 +155722,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155918,7 +155943,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -156068,7 +156093,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156228,7 +156253,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156453,7 +156478,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156639,7 +156664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156844,7 +156869,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157053,7 +157078,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157271,7 +157296,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157492,7 +157517,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157717,7 +157742,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157943,7 +157968,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158172,7 +158197,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158401,7 +158426,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158631,7 +158656,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -159285,7 +159310,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -160903,7 +160928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161102,7 +161127,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161358,7 +161383,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161546,7 +161571,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161741,7 +161766,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161925,7 +161950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163069,7 +163094,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163259,7 +163284,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163561,7 +163586,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172676,7 +172701,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173469,7 +173494,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174876,7 +174901,7 @@
    "title": "One to-do, notes and tasks plugin in the console; take it out of AmberX",
    "category": "one-app",
    "detail": "Brett said: \"take the to-do manager and everything and the notes from AmberX and move it to the console and remove all the notes things from the console. I want just one to-do, note and task management plugin to be in the console. Take it out of AmberX.\" First slice of the one-app merge. Keep all existing data; AmberX Android reads it from the console.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -174885,7 +174910,7 @@
    "pr": "#527",
    "mergedAt": "2026-11-13T17:18:08Z",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-13T17:22:04Z",
+   "updatedAt": "2026-11-14T22:44:56.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -175089,7 +175114,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -175396,7 +175421,7 @@
    "title": "Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)",
    "category": "merge",
    "detail": "Branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides conflicts with main in 7 files: ChromeContext.tsx (framework + amberx-droid, axhub-web, console-web, molly copies), build-orchestrator/web/pipeline.tsx, framework/spec/PORTING.md. Brett: pull main in and merge it right away. Keep both sides' intent (tap-to-confirm #524 and skins).",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175406,8 +175431,8 @@
    "mergedAt": "2026-11-13T06:23:47Z",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-13T06:32:10Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T22:59:46.687Z",
+   "builtAt": "2026-11-14T22:59:46.687Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -175488,6 +175513,22 @@
     {
      "text": "Shipped manifest sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o rev 1 sent to Shipped features (orchestrator): PR #532, 88 file(s), 0 test line(s), 1 open.",
      "at": "2026-11-13T06:32:10Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda, shared account login)",
+     "at": "2026-11-14T22:57:24.235Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda.",
+     "at": "2026-11-14T22:57:16.879Z"
+    },
+    {
+     "text": "Headless run axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda: brief only · start 11.4K tokens ($0.03) · cost $0.15 · 6 turns · 6 tools, MCP none",
+     "at": "2026-11-14T22:59:46.687Z"
+    },
+    {
+     "text": "PR #532 already merged to main as 60e76d149 (Nov 13); its code matches branch head ddf66f7ed except build-state files. Nothing left to land.",
+     "at": "2026-11-14T22:59:31.613Z"
     }
    ],
    "approvals": [],
@@ -175499,7 +175540,7 @@
     "session": "",
     "link": "",
     "by": "fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
-    "brief": "# Build: fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)\" (fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o) [merge] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o · PR #532\nSteps in this phase (1 left, ~20 min):\n[x] s1 (~30m) Merge origin/main into the Build Plan 1 branch; resolve the 7 conflicts keeping both tap-to-confirm (#524) and the skins work; rebake app copies of ChromeContext from framework\n[ ] s2 (~20m) Run checks, push, open or update its PR, land through the gate; alert Brett if anything fails and retry\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)\" (fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o) [merge] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o · PR #532\nSteps in this phase (1 left, ~20 min):\n[x] s1 (~30m) Merge origin/main into the Build Plan 1 branch; resolve the 7 conflicts keeping both tap-to-confirm (#524) and the skins work; rebake app copies of ChromeContext from framework\n[ ] s2 (~20m) Run checks, push, open or update its PR, land through the gate; alert Brett if anything fails and retry\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -175583,12 +175624,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:59:33.545Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T22:16:05.977Z",
-     "updatedAt": "2026-11-12T22:16:05.977Z"
+     "updatedAt": "2026-11-14T22:59:33.844Z"
     }
    ],
    "profiles": [
@@ -175599,7 +175640,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -176304,7 +176345,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -176487,7 +176528,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -176649,7 +176690,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179196,7 +179237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -180447,7 +180488,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -181507,7 +181548,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182566,7 +182607,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -185497,7 +185538,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -186294,7 +186335,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -186302,7 +186343,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T17:31:10.315Z",
+   "updatedAt": "2026-11-14T23:00:46.084Z",
    "builtAt": "",
    "notes": [
     {
@@ -186408,6 +186449,14 @@
     {
      "text": "Renamed from always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:31:10.315Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-always-fill-every-slot-when-slots-are--paulie.",
+     "at": "2026-11-14T23:00:38.580Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-always-fill-every-slot-when-slots-are--paulie, shared account login)",
+     "at": "2026-11-14T23:00:46.084Z"
     }
    ],
    "approvals": [
@@ -186427,8 +186476,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu",
-    "brief": "# Build: always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds\" (always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~50 min):\n[ ] s1 (~10 min) Add the step-dependency contract to builds@1. Steps get an optional `after: [stepId]` list and a `claim: {runId, slot, account, branch, at}` record. Old builds with no `after` stay sequential, so each step waits for the previous one. Update the schema, `framework/core/build-pipeline.mjs` header docs and `_claude/builds/README.md`.\n[ ] s2 (~10 min) Make `framework/cli/builds-store.mjs` keep `after` and `claim` on steps through normBuild and the newer-wins merge. Add a migration that leaves old steps implicitly sequential. Check for dependency cycles and for `after` ids that point at missing steps.\n[ ] s3 (~10 min) Add `readySteps(build)` and `claimStep` / `releaseStep` to `framework/core/build-pipeline.mjs`. A step is ready when everything in its `after` list is done and it has no live claim. Claims are model-aware (the step's pinned model) and expire after a TTL.\n[ ] s4 (~10 min) Add the fill-slots planner `planFill({slots, accounts, running, queue, pending, settings})` to `framework/core/build-pipeline.mjs`. It fills every free slot in this order: ready steps of running builds, then Queue builds by priority, then Pending builds when auto-queue is on. It respects the agent cap, the memory floor, per-account model limits (Fable phases only to accounts with Fable) and budget caps. It returns the list of launches with the reason for each.\n[ ] s5 (~10 min) Write the contract for merging parallel steps back. Each parallel step runs on branch `<build-branch>--s<n>` in its own worktree off the build branch, then merges into the build branch when done. A merge conflict releases the claim and turns the step into a sequential retry with a note. Put the spec in `framework/spec/BUILD-PARALLEL.md` and add fixtures for `readySteps`, claims and `planFill` in `framework/spec/fixtures/build-pipeline-fill.json`.\nRead first: framework/schemas/builds.json, framework/core/build-pipeline.mjs, _claude/builds/README.md, framework/cli/builds-store.mjs, framework/cli/builds-live.mjs, framework/spec/BUILD-PARALLEL.md, framework/spec/fixtures/build-pipeline-fill.json\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu \"…\"); the build goes back to Pending for Brett.\n",
+    "by": "always-fill-every-slot-when-slots-are",
+    "brief": "# Build: always-fill-every-slot-when-slots-are\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds\" (always-fill-every-slot-when-slots-are) — Phase 2, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/always-fill-every-slot-when-slots-are · PR #582\nSteps in this phase (1 left, ~10 min):\n[x] s9 (~8 min) Store migration: give existing builds no `dependsOn` (they keep running one step at a time). Add `builds-store.mjs verify` checks for a dependsOn that points at a missing step and for dependency cycles. Version the change in the journal.\n[x] s10 (~8 min) Splitter: change pipeline.mjs intake so the Opus split prompt also asks for `dependsOn` per step (default: the previous step) and `files`, and so the reply is parsed and validated with no cycles. Hand-written steps are left untouched.\n[x] s11 (~8 min) Add the owner-only Claude settings `builds.fillSlots` (run independent steps in parallel, default on) and `builds.autoQueuePending` (default off; only Brett's console click changes it) plus `builds.maxParallelPerBuild` (default 3). Register them in claude-settings with their owner-only flags and help text.\n[x] s12 (~10 min) Parallel step worktrees: add `pipeline.mjs` helpers that create a step worktree and branch `<build-branch>--s<n>` from the build branch, and when the step is done, merge it back into the build branch under the store lock. A merge conflict sends the step back as `blocked` with a note and re-runs it after the steps it clashed with.\n[x] s13 (~10 min) Step-scoped launches: let deploy/claude-headless.sh take `--step <id>`. The brief then carries only that step, its `dependsOn` results and the files it touches. Each step books its own agent slot through agent-slots.mjs, and model-gate is checked per step.\n[x] s14 (~10 min) Dispatcher: change `pipeline.mjs tick` to call planFill every minute and launch everything it returns until the slots or accounts run out. Record each launch on the build (step `runningIn`, session and worktree) through builds-live. A crashed step goes back to ready, with at most 3 runs.\n[x] s15 (~8 min) Auto-queue pending: when `builds.autoQueuePending` is on and slots are left after every ready step and Queue build has one, move split Pending builds that have no clashes to the Queue in priority order, with a build note (`auto-queued: slots free`) and one alert through axf.notify@1 (declared in notify.json).\n[x] s16 (~8 min) Reconciler: teach builds-reconcile.mjs about parallel steps, so a step session that is not alive is reset to ready with its worktree kept, and a build counts as `built` only when every step branch has merged back.\n[x] s17 (~7 min) agent-slots: add a `fill` view that shows free slots and what planFill would launch next (dry run), and make the idle alert ('nothing running while the Queue has work') also fire when there are free slots and ready steps.\n[x] s18 (~10 min) REST API: add build-orchestrator routes GET /pipeline/fill (state: slots, ready steps, the plan, settings), POST /pipeline/fill/run (one tick now), POST /builds/:id/steps/:step/deps (set dependsOn), POST /pipeline/settings (fillSlots and maxParallelPerBuild; autoQueuePending is refused unless Brett's own session sends it).\n[x] s19 (~10 min) Make the same actions available through MCP, the CLI and voice: plugin commands pipeline-fill-status, pipeline-fill-run, pipeline-step-deps and pipeline-fill-settings; `pipeline.mjs fill status|run|deps|set`; AmberX voice actions with the same names. All four go through one shared handler.\n[x] s20 (~10 min) Pipeline tab UI: add a Slots strip (one chip per slot: which build and step runs there, or free) and a badge on each build showing 'N steps running in parallel'. Use framework controls and tokens only, a TabGroup or toolbar with role=toolbar and a settings id.\n[x] s21 (~10 min) Step dependency view: in the build detail, list each step's dependsOn with an editor (a multi-select of earlier steps) and show the state (ready, waiting on, running in slot N). Wire it to POST /steps/:step/deps.\n[x] s22 (~10 min) Settings sub-tab (Settings → Plugins → Build orchestrator): Fill every slot, Max parallel steps per build, Auto-queue pending builds (owner-only, greyed out for sessions), with the level toolbar. Add console_show deep links `builds/pipeline/slots`, `builds/<id>/steps` and `settings/plugins/build-orchestrator#fill`.\n[x] s23 (~7 min) Help and glossary: add descriptions for the new commands, routes, settings and CLI to the plugin help and to _claude/builds/README.md (Pipeline: fill every slot). Run glossary-index catalog.mjs --check.\n[x] s24 (~10 min) Tests: dispatcher integration test with a fake claude (HOME/.local/bin) and 4 slots running two builds, one a DAG. Check that the steps fill the slots, a clash is held back, the step branches merge back and auto-queue only fires when the setting is on. Also run test.py for the routes, including the owner-only refusal.\n[ ] s25 (~10 min) UI Review: take shots of the Slots strip, step deps and settings on desktop and phone (vite preview with /api/me mocked), with 3 options as assets (strip layouts) in plugins/build-orchestrator/assets/, and submit through review.mjs.\n[x] s26 (~10 min) Final: run check-build-pipeline-fill, check-builds-store, check-theme, check-controls, check-toolbars, check-chrome-assets and the plugin lifecycle check. Write the report _claude/builds/reports/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu.md, add the THREADS.md row, link the branch, and open the PR saying how each feature is reached (deep link, REST, MCP, CLI, voice) and that UI Review is waiting.\nRead first: apps/console-web/plugins/build-orchestrator/assets/, apps/console-web/plugins/ui-review/review.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step always-fill-every-slot-when-slots-are <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link always-fill-every-slot-when-slots-are --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step always-fill-every-slot-when-slots-are <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note always-fill-every-slot-when-slots-are \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -186436,12 +186485,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T10:35:08.117Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-always-fill-every-slot-when-slots-are--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T23:00:36.515Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T07:42:03.981Z",
@@ -186453,7 +186502,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T23:00:36.515Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -186462,7 +186511,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T23:00:36.515Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -187125,7 +187174,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -189739,7 +189788,7 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -189747,7 +189796,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-13T17:33:19.803Z",
+   "updatedAt": "2026-11-14T22:45:07.626Z",
    "builtAt": "",
    "notes": [
     {
@@ -190148,7 +190197,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194984,14 +195033,14 @@
    "title": "Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)",
    "category": "projects",
    "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/projects-own-everything-per-project",
    "pr": "#605",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-13T17:36:54.377Z",
+   "updatedAt": "2026-11-14T22:44:54.116Z",
    "builtAt": "",
    "notes": [
     {
@@ -195219,7 +195268,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196348,14 +196397,14 @@
    "title": "Server gate: one session per build, no duplicate launches",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-13T17:37:52.367Z",
+   "updatedAt": "2026-11-14T22:44:50.248Z",
    "builtAt": "",
    "notes": [
     {
@@ -196576,7 +196625,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200192,7 +200241,7 @@
    "title": "Restore the Asset Designer plugin (merged Nov 10, now missing)",
    "category": "",
    "detail": "_claude/builds/shipped/asset-designer.json says the Asset Designer plugin (no-code; apps/console-web/plugins/asset-designer, id ai.amberx.axf.console.asset-designer) merged 2026-11-10T04:39Z, but the folder is not in main now and branch claude/asset-designer is deleted.\n1. Find it in git history (git log --all -- apps/console-web/plugins/asset-designer, reflog, any branch/PR/combine branch), find the commit that removed it and why.\n2. Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.\n3. If history is gone, rebuild from the shipped spec's steps.\n4. Installed and enabled by default, in nav and console.actions, REST/MCP/CLI/voice. Tests, Shipped features. Report what removed it so it doesn't happen again.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200200,7 +200249,7 @@
    "pr": "#631",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-13T19:41:04.838Z",
+   "updatedAt": "2026-11-14T22:45:10.953Z",
    "builtAt": "",
    "notes": [
     {
@@ -200447,7 +200496,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200481,7 +200530,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200489,7 +200538,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-13T19:41:04.838Z",
+   "updatedAt": "2026-11-14T22:45:14.180Z",
    "builtAt": "",
    "notes": [
     {
@@ -200648,7 +200697,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200678,7 +200727,7 @@
    "title": "Quick settings: pinned, collapsible pane at the top of every settings interface",
    "category": "",
    "detail": "Every settings interface (console Settings, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and future ones - framework default, enforced by a check) gets a 'Quick settings' pane at the very top:\n- Pinned: does not scroll; everything else scrolls underneath it.\n- Collapses vertically with a small handle/arrow button; the handle style is configurable in settings; collapsed state remembered.\n- Contents, in order: (1) Skin: shows the current skin; checkbox 'Override console skin' to apply a different skin to just this interface. (2) Default assets for this interface (navigation menu, toolbar, tab group, settings interface, etc.): shows the current asset for each; picker greyed out until 'Override console default' is ticked. (3) Override notice: when anything here overrides the skin or console defaults, show 'This is overriding the current skin/defaults' and reuse the existing 'N assets are controlled by their own settings' (chrome.edits) line that expands to list every override, each with reset.\n- Any picked asset must have a manifest and pass schema conformance before applying.\n- Reachable by REST/MCP/CLI/voice/control@1. Tests, help entries, Shipped features.\nWorks together with the 'all settings interfaces open in a floating dialog' and per-instance settings-window picker builds.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200686,7 +200735,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:07:49.026Z",
-   "updatedAt": "2026-11-13T18:54:23.539Z",
+   "updatedAt": "2026-11-14T22:45:18.724Z",
    "builtAt": "",
    "notes": [
     {
@@ -200969,7 +201018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201005,7 +201054,7 @@
    "title": "New asset type: animated expanding row picker replaces every dropdown",
    "category": "",
    "detail": "Brett: no more drop-down menus anywhere. New asset type (e.g. 'expander-picker') that replaces every dropdown/select in the framework:\n- Collapsed: a row showing the setting's name and current value, with a small arrow.\n- Tap the arrow (or row): the row expands with an animation into a subgrid of all options (cards/tiles, can show previews), pushing content below down; no floating dropdown.\n- Tap an option once: it is selected/highlighted (preview where possible).\n- Tap the same option again: applies it and the subgrid animates closed.\n- Animation uses motion tokens; respects reduced-motion; keyboard and screen-reader accessible.\n- Make it the framework default for every select/dropdown control, existing and future (migrate all current dropdowns, add a check that fails on new raw dropdowns). Ship 3 design options to UI Review.\n- Asset schema + manifest + conformance tests; skinnable via tokens; reachable by REST/MCP/CLI/voice/control@1.\n- Shipped features entry.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201013,7 +201062,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-13T19:03:30.844Z",
+   "updatedAt": "2026-11-14T22:45:21.866Z",
    "builtAt": "",
    "notes": [
     {
@@ -201344,7 +201393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -202357,7 +202406,7 @@
    "title": "Prompting engine with control panel (events, macros, pipelines)",
    "category": "",
    "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones.\n- Reachable by REST/MCP/CLI/voice/control@1.\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.\nMODEL: Brett wants Fable for the engine, event/macro schema and contract steps; Opus is fine for UI steps. Brett pre-approves the Fable upgrade for those steps.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -202365,7 +202414,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-14T22:45:26.017Z",
    "builtAt": "",
    "notes": [
     {
@@ -202656,7 +202705,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -203153,7 +203202,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203161,7 +203210,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T20:31:16.091Z",
+   "updatedAt": "2026-11-14T22:45:33.294Z",
    "builtAt": "",
    "notes": [
     {
@@ -203650,7 +203699,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204144,7 +204193,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204152,7 +204201,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-14T22:45:41.203Z",
    "builtAt": "",
    "notes": [
     {
@@ -204437,7 +204486,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205671,7 +205720,7 @@
    "title": "Console app: wake-word voice listener, voice approvals, every console command by voice",
    "category": "",
    "detail": "Voice control for the console Android app (wrapper, parts 1-4), working offline where possible.\n- Always-on wake-word listener, with a wake phrase Brett sets in Settings (several allowed). Runs on-device (offline engine, e.g. Vosk/whisper.cpp + a local intent matcher), with a mic-on indicator and an off switch.\n- After the wake phrase the app answers out loud ('What's up?') and listens for a command.\n- Voice approvals: 'approve' reads pending approvals one at a time (who asked, what it does); Brett says approve, deny, skip or details. 'Approve all pending' and 'deny all' ask for one spoken confirm. Works from the floating overlay and the lock screen.\n- Settings by voice, e.g. 'change the veto timer to two hours' (the axHub veto countdown, so he has that long to veto something before it runs/builds), with the value read back.\n- Command catalog: every console action, plugin command, control@1 target and pipeline gets a voice entry, built from the API registry so new plugins appear automatically. Multi-field actions run as a spoken wizard that asks for each missing field ('create a new project' -> 'name?' -> 'Gizmo Johnson' -> confirm). Covers projects, builds/pipelines (file, split, prioritise, land, stop), approvals, settings, tokens/skins, notes/tasks, navigation.\n- A Voice commands screen lists every command and its phrasings, searchable, with custom phrases Brett adds.\n- Destructive commands always need a spoken confirm.\n- Full API parity. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -205679,7 +205728,7 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-14T01:30:42.077Z",
+   "updatedAt": "2026-11-14T22:45:44.764Z",
    "builtAt": "",
    "notes": [
     {
@@ -206026,7 +206075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -207272,7 +207321,7 @@
    "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -207280,7 +207329,7 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-13T19:41:04.838Z",
+   "updatedAt": "2026-11-14T22:45:47.740Z",
    "builtAt": "",
    "notes": [
     {
@@ -207435,7 +207484,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208472,7 +208521,7 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208481,7 +208530,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T20:22:07Z",
+   "updatedAt": "2026-11-14T22:45:52.236Z",
    "builtAt": "",
    "notes": [
     {
@@ -208669,7 +208718,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -209210,7 +209259,7 @@
    "title": "Skin animations: swatches, skin-switch sweep, picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -209219,7 +209268,7 @@
    "mergedAt": "2026-11-14T20:51:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-14T21:01:04Z",
+   "updatedAt": "2026-11-14T22:45:56.240Z",
    "builtAt": "",
    "notes": [
     {
@@ -209510,7 +209559,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210649,7 +210698,7 @@
    "title": "Own token sets for grids and tab groups",
    "category": "",
    "detail": "Today grids only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants), and tab groups only have --fx-tab-py/--fx-tab-px padding and --fx-tabs-per-row. Both borrow the general colour tokens (--fx-surface, --fx-border, accent), so hover, selected and active states can't be styled on their own. Add dedicated token families in tokens.style, following skins and editable in Token Control, the UI Manager and per instance.\nGRID: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency (default 100%).\nTAB GROUP: bar background and border; tab text, background and border for idle, hover, active/selected, pressed, disabled and focus ring; active indicator (underline/pill) colour and thickness; badge on tab; fold/overflow button; gap; radius per style (underline, pills, boxed, segmented, plain, chips); transparency (default 100%).\nWire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210658,7 +210707,7 @@
    "mergedAt": "2026-11-14T22:33:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-14T22:40:11Z",
+   "updatedAt": "2026-11-14T22:46:04.458Z",
    "builtAt": "",
    "notes": [
     {
@@ -210921,7 +210970,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210954,7 +211003,7 @@
    "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
    "category": "",
    "detail": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n1. TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n2. SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n3. DEFAULT SKIN: there is always a built-in default skin that is locked.\n4. SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.\n5. EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).\n6. Restore previous edit / Restore from axHub work through the snapshots.\n7. Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210963,7 +211012,7 @@
    "mergedAt": "2026-11-14T21:33:25Z",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-14T21:42:04Z",
+   "updatedAt": "2026-11-14T22:46:11.318Z",
    "builtAt": "",
    "notes": [
     {
@@ -211294,7 +211343,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211548,7 +211597,7 @@
    "title": "Per-toolbar settings: fix failing chrome-settings check and land",
    "category": "",
    "detail": "Branch claude/per-instance-settings-picker-merge-main (worktree /root/axf-builds/per-instance-settings-picker-merge-main) now has origin/main merged (commit 617aa0a7d). The fixture clash in framework/spec/fixtures/chrome-settings.json was resolved by taking main's version and regenerating the fixtures, but framework/spec/check-chrome-settings.mts now fails with a deepStrictEqual. Find which expectation differs (likely the per-instance fields vs main's tab-rows fields), fix the rules or regenerate the fixtures so both features' expectations hold, run the full chrome-settings and theme/control checks, commit, push, then land on main. Feature: every individual toolbar, tab group, menu and dialog instance gets its own settings interface (including transparency) that changes only that instance.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -211557,7 +211606,7 @@
    "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-13T20:50:47Z",
+   "updatedAt": "2026-11-14T22:46:17.186Z",
    "builtAt": "",
    "notes": [
     {
@@ -211737,7 +211786,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -212068,7 +212117,7 @@
    "title": "Context menus plugin: one true source on axHub, Claude-generated by skill level",
    "category": "",
    "detail": "Replaces the archived context-menu-plugin-ai-generated-slim.\n- New console plugin 'Context menus', integrated with the UI Manager (its menus show there per element/zone).\n- ONE TRUE SOURCE: every context menu definition is stored on axHub (not local), as context-menu@1 assets, readable and writable by every plugin and app through the hub API. Plugins register the actions/hooks they offer; menus reference them.\n- The plugin lists every context menu in the app (per zone/element/page, with its parent app, plugin or page), searchable, with preview, edit and Restore per row, snapshots and restore like skins.\n- AI generation (needs Claude; greyed out with a clear error when the Claude badge isn't green): generate the context menus for the whole app at a chosen level. BEGINNER: a few big, obvious actions. AMATEUR: common actions. PRO: full working set grouped. ADVANCED CODER: meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, run commands). Higher levels map the app more meticulously. Menus are slim by default (no wasted space, rarely used items folded away). The user picks the level, and it can differ per app/page.\n- Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -212076,7 +212125,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-13T21:17:05.927Z",
+   "updatedAt": "2026-11-14T22:46:20.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -212360,7 +212409,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -213312,7 +213361,7 @@
    "title": "Lander regenerates generated files on clash",
    "category": "",
    "detail": "Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213321,7 +213370,7 @@
    "mergedAt": "2026-11-13T23:38:48Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T23:52:38Z",
+   "updatedAt": "2026-11-14T22:46:24.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -213502,7 +213551,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -213518,7 +213567,7 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213526,8 +213575,8 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T21:16:23.568Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T22:57:04.842Z",
+   "builtAt": "2026-11-14T22:56:26.136Z",
    "notes": [
     {
      "text": "UPDATE: Brett chose to PULL the per-toolbar landing out of main first (a reverse-patch commit of e5639b79f..ec579ee23, excluding _claude, pushed about 20:55). So this hotfix must: start from claude/per-toolbar-settings-fix-failing-chrome, merge current main (which includes the pull-out commit, so revert that pull-out commit on this branch), fix the double app menu/banner/nav on desktop, prove it with the count test, then land the fixed per-toolbar settings back on main and redeploy.",
@@ -213576,6 +213625,22 @@
     {
      "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-13T21:16:23.568Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-desktop-console-draws-app-menu--joey.",
+     "at": "2026-11-14T22:52:18.934Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-desktop-console-draws-app-menu--joey, shared account login)",
+     "at": "2026-11-14T22:52:21.321Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-desktop-console-draws-app-menu--joey: brief only · start 11.6K tokens ($0.03) · cost $0.43 · 18 turns · 6 tools, MCP none",
+     "at": "2026-11-14T22:56:26.136Z"
+    },
+    {
+     "text": "Session axf-hotfix-desktop-console-draws-app-menu--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T22:57:04.842Z"
     }
    ],
    "approvals": [],
@@ -213587,7 +213652,7 @@
     "session": "",
     "link": "",
     "by": "hotfix-desktop-console-draws-app-menu",
-    "brief": "# Build: hotfix-desktop-console-draws-app-menu\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:53:50.393Z\n> there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings\n\n## What to build\nContinue build \"HOTFIX: desktop console draws app menu, banners and nav twice\" (hotfix-desktop-console-draws-app-menu) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:53):\n\"there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.\n[ ] s2 (~10 min) there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/hotfix-desktop-console-draws-app-menu.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/hotfix-desktop-console-draws-app-menu.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step hotfix-desktop-console-draws-app-menu <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link hotfix-desktop-console-draws-app-menu --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step hotfix-desktop-console-draws-app-menu <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note hotfix-desktop-console-draws-app-menu \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: hotfix-desktop-console-draws-app-menu\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:53:50.393Z\n> there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings\n\n## What to build\nContinue build \"HOTFIX: desktop console draws app menu, banners and nav twice\" (hotfix-desktop-console-draws-app-menu) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:53):\n\"there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/hotfix-desktop-console-draws-app-menu · PR #658\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.\n[ ] s2 (~10 min) there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/hotfix-desktop-console-draws-app-menu.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/hotfix-desktop-console-draws-app-menu.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step hotfix-desktop-console-draws-app-menu <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link hotfix-desktop-console-draws-app-menu --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step hotfix-desktop-console-draws-app-menu <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note hotfix-desktop-console-draws-app-menu \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -213595,19 +213660,19 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T22:52:18.360Z",
+    "runs": 1,
     "lastRun": {
-     "at": "2026-11-13T21:16:22.820Z",
+     "at": "2026-11-14T22:57:03.959Z",
      "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 3,
-     "account": "",
-     "session": "axf-hotfix-desktop-console-draws-app-menu--lenny"
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-hotfix-desktop-console-draws-app-menu--joey"
     },
     "split": {
      "at": "2026-11-13T21:14:45.379Z",
@@ -213617,9 +213682,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b91717a9-c832-49af-9ac7-5fd5a4873a0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T22:52:18.360Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -213628,7 +213693,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T22:52:18.360Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -213649,12 +213714,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:54:15.837Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T21:14:45.379Z",
-     "updatedAt": "2026-11-13T21:14:45.379Z"
+     "updatedAt": "2026-11-14T22:54:16.161Z"
     },
     {
      "id": "s2",
@@ -213671,12 +213736,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:54:57.126Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T21:14:45.379Z",
-     "updatedAt": "2026-11-13T21:14:45.379Z"
+     "updatedAt": "2026-11-14T22:54:57.783Z"
     },
     {
      "id": "s3",
@@ -213696,12 +213761,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:55:59.589Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T21:14:45.379Z",
-     "updatedAt": "2026-11-13T21:14:45.379Z"
+     "updatedAt": "2026-11-14T22:56:01.617Z"
     }
    ],
    "profiles": [
@@ -213712,7 +213777,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -213877,7 +213942,7 @@
    "title": "Auto-land: merge main and land (land.mjs clash)",
    "category": "",
    "detail": "Branch claude/auto-land-every-finished-build-lands clashed with main in apps/console-web/plugins/push-banner/land/land.mjs, a real source clash with the just-landed lander-regenerates-generated-files-clash (generated-files@1). Merge origin/main, keep BOTH: main's regenerate-generated-files-on-clash logic and this branch's auto-land queue/sweeper. Run the push-banner and orchestrator tests, push, then land on main right away. After it lands, the sweeper should start landing every finished build by itself.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213885,7 +213950,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-13T23:59:03.281Z",
+   "updatedAt": "2026-11-14T22:46:30.553Z",
    "builtAt": "",
    "notes": [
     {
@@ -214202,7 +214267,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214238,7 +214303,7 @@
    "title": "Land batch: merge main into each finished build and land",
    "category": "",
    "detail": "vps.build_land still aborts on clashes in GENERATED files only (axf.lock.json, control/inventory.json, help framework.json): the new generated-files@1 logic landed in the repo, but /opt/axf-batch/resolve.py (used by vps.build_land on axHub's side) hasn't picked it up. 1) Wire /opt/axf-batch/resolve.py to call the repo's generated-files@1 resolver. 2) Then, one at a time, merge origin/main into each branch, regenerate generated files, run its tests, push, and land on main: toolbar-widgets-attach-any-banner-style, icon-map-icon-packs-every-icon-badge-app, token-registry-skin-editor-live-sandbox, per-instance-settings-small-live-preview, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, full-voice-control-resolve-inventory, orchestrator-custom-groups-custom-tabs, demo-pipelines-guided-walkthrough-live, console-app-wake-word-voice-listener, hotfix-desktop-console-draws-app-menu (PR #658 regression test). Real source clashes: keep both sides and test. Report each result. Redeploy the console after the batch.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214247,7 +214312,7 @@
    "mergedAt": "2026-11-14T12:57:15Z",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T13:02:07Z",
+   "updatedAt": "2026-11-14T22:46:33.269Z",
    "builtAt": "",
    "notes": [
     {
@@ -214860,7 +214925,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -214876,7 +214941,7 @@
    "title": "Console app: land parts 1-4 and build the APK",
    "category": "",
    "detail": "Brett wants the new console Android app APK ready to download. Merge origin/main into each and land, in order: console-android-app-thin-webview-wrapper (part 1, shell), console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic (part 2 notes a NativeBridge.java clash with part 3: keep both and make them compile together), console-app-part-4-console-side-safe, then console-app-wake-word-voice-listener. Regenerate generated files on clash, and run the JUnit and web tests. Then trigger the Android CI build for the console app, put the APK download link in the report, and send Brett a phone notification through AmberX with the link.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214884,7 +214949,7 @@
    "pr": "#643",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-14T02:10:15.313Z",
+   "updatedAt": "2026-11-14T22:46:37.010Z",
    "builtAt": "",
    "notes": [
     {
@@ -215435,7 +215500,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -217034,14 +217099,14 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T04:47:26.735Z",
+   "updatedAt": "2026-11-14T22:46:41.431Z",
    "builtAt": "",
    "notes": [
     {
@@ -217802,7 +217867,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -218158,14 +218223,14 @@
    "title": "Launch landing page + waitlist with referral ranking",
    "category": "Launch",
    "detail": "Brett wants to launch AmberX. Public landing page leading with one hook ('talk and it builds your app'), 60-second demo video slot, waitlist signup with referral move-up-the-line ranking, Stripe-ready pricing section (free trial then $30/month), token-driven and themable. Deploy on the VPS via Coolify on the amberxai.com domain (confirm in Hostinger DNS).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-14T04:46:42.929Z",
+   "updatedAt": "2026-11-14T22:46:44.342Z",
    "builtAt": "",
    "notes": [
     {
@@ -218307,7 +218372,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -218337,14 +218402,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T12:40:56.408Z",
+   "updatedAt": "2026-11-14T22:46:47.154Z",
    "builtAt": "",
    "notes": [
     {
@@ -219035,7 +219100,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -219784,7 +219849,7 @@
    "title": "Hotfix: toolbar settings still change nothing (live console)",
    "category": "hotfix",
    "detail": "Brett (Nov 14): 'the toolbar settings still don't work. When I click the toolbar and go to its settings, the settings don't change anything.' Earlier builds touched this (fix-toolbar-settings-doing-nothing, chrome-settings-actually-apply-toolbars, per-toolbar-settings PR #650, per-instance picker #642/#622) but it's still broken on the live console. Reproduce on the LIVE console first (open a toolbar's settings, change each setting, confirm whether the stored value changes and whether the toolbar re-renders). Find which of those PRs never landed vs. what's genuinely broken, land or fix, and verify on the live console after redeploy.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -219792,8 +219857,8 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T17:41:05Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T23:02:08.642Z",
+   "builtAt": "2026-11-14T23:02:03.463Z",
    "notes": [
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--lenny, own login copy)",
@@ -219826,6 +219891,18 @@
     {
      "text": "Shipped manifest sm-hotfix-toolbar-settings-still-change rev 1 sent to Shipped features (orchestrator): landed c3e5b59d7, 20 file(s), 0 test line(s), 1 open.",
      "at": "2026-11-14T17:41:05Z"
+    },
+    {
+     "text": "s4: #673 merged (c3e5b59d7); live console runs d465d20c0 with the fix in its bundle; check-chrome-apply 174/174 on the deployed revision. No hands-on click-through: console needs an axHub login this runner lacks. Verified alert raised (pipeline:end:hotfix-toolbar-settings-still-change) but went to the bell only: alert rules push only error+ to the phone. Separate bug found: pipeline-core ALERT_LINK '#/build-orchestrator' is rejected by POST /api/alerts (400: link must be http(s)://, view: or settings:), so every dispatcher alert (idle, launched, ended, failed, selfcheck) is silently dropped. Fix: ALERT_LINK = 'view:build-orchestrator'. Needs its own build.",
+     "at": "2026-11-14T23:02:08.642Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-toolbar-settings-still-change--gina.",
+     "at": "2026-11-14T22:52:28.017Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--gina, shared account login)",
+     "at": "2026-11-14T22:52:30.774Z"
     }
    ],
    "approvals": [],
@@ -219958,12 +220035,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:02:03.463Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T16:51:14.646Z",
-     "updatedAt": "2026-11-14T16:51:14.646Z"
+     "updatedAt": "2026-11-14T23:02:03.914Z"
     }
    ],
    "profiles": [
@@ -219974,7 +220051,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -220694,7 +220771,7 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-14T22:42:25.237Z",
+   "updatedAt": "2026-11-14T23:03:26.387Z",
    "builtAt": "",
    "notes": [
     {
@@ -220734,7 +220811,16 @@
      "at": "2026-11-14T22:42:25.237Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-14T22:46:40.829Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I want a plugin that replaces all drop down select boxes with a themable dialogue that matches the theme; skins have to touch them; they must conform to the token system",
@@ -220743,7 +220829,7 @@
     "session": "",
     "link": "",
     "by": "picker-dialog-plugin-replaces-all",
-    "brief": "# Build: picker-dialog-plugin-replaces-all\n\n## Brett said (verbatim)\nAt: 2026-11-14T18:13:15.368Z\n> I want a plugin that replaces all drop down select boxes with a themable dialogue that matches the theme; skins have to touch them; they must conform to the token system\n\n## What to build\nContinue build \"Picker dialog plugin replaces all dropdowns\" (picker-dialog-plugin-replaces-all) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 18:13):\n\"I want a plugin that replaces all drop down select boxes with a themable dialogue that matches the theme; skins have to touch them; they must conform to the token system\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~50 min):\n[ ] s1 (~10 min) Design picker@1 contract: picker-model engine spec (options, groups, icons, descriptions, multiple, search threshold, value/labels, open/choose/close state) and the swap contract that replaces native <select>, custom dropdowns and comboboxes, written in framework/spec/PICKER.md with the Kotlin twin recorded as a deferred gap in PORTING.md\n[ ] s2 (~10 min) Reference engine framework/core/engines/picker.ts: normalise options from a native select / option list, filter by search, group, toggle for single/multi, keyboard model (arrows, home/end, type-ahead, enter, escape), choose-by-name matcher for voice; export it from the core index\n[ ] s3 (~10 min) Golden fixture framework/spec/fixtures/picker.json plus generator and check entries (gen-fixtures.mts, framework/spec/check-picker.mts) covering filter, group, multi toggle, keyboard moves and name matching\n[ ] s4 (~10 min) Register the picker token family in the token registry (surface, backdrop, header, search, option row, hover, focus, selected, disabled, check, group label, sheet handle, radius, padding, gap, every state, light and dark) and make the theme/style engines compile them to --fx-picker-* defaults matching today's dropdown look\n[ ] s5 (~10 min) Add a picker style target to framework/schemas/customize.json (parts box/text/icon/items) so skin-coverage@1 styles it; update the skin upgrader to add picker defaults to every existing skin; run check-skin-coverage.mjs and regenerate fixtures and JSON schemas\nRead first: framework/spec/PICKER.md, framework/spec/PORTING.md, framework/core/engines/picker.ts, framework/core/index.ts, framework/spec/gen-fixtures.mts, framework/spec/fixtures/picker.json, framework/spec/check-picker.mts, framework/schemas/asset-types.json, framework/core/engines/theme.ts, framework/core/engines/style.ts, framework/assets/, framework/schemas/customize.json, framework/core/engines/skin-coverage.mjs, framework/assets/skin/, framework/schemas/json/, framework/spec/fixtures/\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step picker-dialog-plugin-replaces-all <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link picker-dialog-plugin-replaces-all --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step picker-dialog-plugin-replaces-all <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note picker-dialog-plugin-replaces-all \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: picker-dialog-plugin-replaces-all\n\n## Brett said (verbatim)\nAt: 2026-11-14T18:13:15.368Z\n> I want a plugin that replaces all drop down select boxes with a themable dialogue that matches the theme; skins have to touch them; they must conform to the token system\n\n## What to build\nContinue build \"Picker dialog plugin replaces all dropdowns\" (picker-dialog-plugin-replaces-all) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 18:13):\n\"I want a plugin that replaces all drop down select boxes with a themable dialogue that matches the theme; skins have to touch them; they must conform to the token system\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/picker-dialog-plugin-replaces-all · PR #676\nSteps in this phase (17 left, ~2.8 h):\n[ ] s6 (~10 min) Shared React component framework/react/components/PickerField.tsx: field shows current value (and count for multi); tap opens the dialog\n[ ] s7 (~10 min) PickerDialog.tsx: themed dialog on desktop, bottom sheet on phone (layout breakpoint token); search box past the threshold, grouped sections, icons and descriptions, checkboxes for multi; tokens only, with styles in framework/ui/axf.css\n[ ] s8 (~10 min) Accessibility pass on PickerField/PickerDialog: role=dialog/listbox/option, aria-selected/aria-multiselectable, focus trap and return focus, engine keyboard model wired, labels from the source select; framework controls only\n[ ] s9 (~10 min) Swap layer framework/react/pickerSwap.ts: when enabled, AxfProvider routes framework SelectField/Dropdown/Combobox to PickerField, and a MutationObserver enhances remaining native <select> elements (hidden select kept as the source of truth, change events fired); off restores the originals untouched\n[ ] s10 (~10 min) Removable plugin scaffold apps/console-web/plugins/picker-dialog: plugin.json (builtWith, description, lifecycle dataDir, web library that switches pickerSwap on), install.mjs, uninstall.mjs, README; plugin off = original dropdowns\n[ ] s11 (~10 min) Settings sub-tab under Settings → Plugins → Picker dialog (enable, search threshold, phone sheet on/off, per-app exclusions) with level toolbar, settings asset and control@1 targets registered for console control\n[ ] s12 (~10 min) API: REST routes in the plugin server (state: enabled, open picker, its options and value; actions: open <target>, choose <option name>, close, settings get/set) with data-axf-target addresses on every picker\n[ ] s13 (~10 min) API parity: MCP plugin commands, console actions picker.open / picker.choose / picker.close, axf CLI subcommand and AmberX voice phrases ('open the <field> picker', 'choose <option>'), all routed through the same handlers; console_show deep link to the settings tab\n[ ] s14 (~10 min) Migrate the framework's own selects (framework/react, framework/libs/settings) to SelectField so they swap cleanly; grep for raw <select> and custom dropdowns and list leftovers\n[ ] s15 (~10 min) Migrate the console's custom dropdowns and comboboxes in apps/console-web/src and plugins to SelectField / PickerField (first half: src/views)\n[ ] s16 (~10 min) Migrate the remaining console plugin dropdowns (second half: apps/console-web/plugins/*/web) to SelectField / PickerField\n[ ] s17 (~10 min) CI gate framework/cli/check-pickers.mjs: fails on hand-made dropdowns outside SelectField/PickerField, plus check-theme.mjs coverage of picker CSS (no literal colours/sizes); ratchet baseline; wire into CI\n[ ] s18 (~10 min) Re-bake shared assets and framework into console, axHub web, AmberX and demo (shared-assets.mjs bake, rebake.mjs); run tracker.mjs, schemas, validate --framework\n[ ] s19 (~10 min) Tests: plugin test (enable/disable restores originals, REST/MCP/CLI/voice open+choose parity), Playwright desktop and phone (sheet, search, multi, keyboard), theme-swap.mjs and a skin swap restyle the picker\n[ ] s20 (~10 min) Help entry and glossary description, Shipped features ledger rows, plugin-lifecycle check --after-uninstall\n[ ] s21 (~10 min) UI Review: 3 picker look options as assets in plugins/picker-dialog/assets/picker/ with desktop + phone shots via review.mjs submit --choices\n[ ] s22 (~10 min) Run the full check sweep, write _claude/builds/reports/picker-dialog-plugin-replaces-all.md (how each feature is reached: deep link, REST, MCP, CLI, voice), THREADS row, push branch, open PR and link it with builds-live.mjs\nRead first: framework/react/components/PickerField.tsx, framework/react/index.ts, framework/react/components/PickerDialog.tsx, framework/ui/axf.css, framework/react/pickerSwap.ts, framework/react/AxfProvider.tsx, framework/react/components/SelectField.tsx, apps/console-web/plugins/picker-dialog/plugin.json, apps/console-web/plugins/picker-dialog/install.mjs, apps/console-web/plugins/picker-dialog/uninstall.mjs, apps/console-web/plugins/picker-dialog/README.md, apps/console-web/plugins/picker-dialog/web/, apps/console-web/plugins/picker-dialog/assets/settings/, apps/console-web/plugins/picker-dialog/server/routes.py, apps/console-web/plugins/picker-dialog/commands.json, apps/console-web/plugins/picker-dialog/picker.mjs, framework/cli/axf.mjs, framework/react/, framework/libs/settings/, apps/console-web/src/, apps/console-web/plugins/, framework/cli/check-pickers.mjs, framework/spec/picker-baseline.json, .github/workflows/android.yml, apps/console-web/src/axf/, apps/*/src/axf/assets, tracker.json, framework/catalog/status.json, apps/console-web/plugins/picker-dialog/test.mjs, apps/console-web/scripts/theme-swap.mjs, apps/console-web/plugins/picker-dialog/help.md, apps/console-web/plugins/glossary-index/, apps/console-web/plugins/picker-dialog/assets/, apps/console-web/plugins/ui-review/, _claude/builds/reports/picker-dialog-plugin-replaces-all.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step picker-dialog-plugin-replaces-all <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link picker-dialog-plugin-replaces-all --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step picker-dialog-plugin-replaces-all <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note picker-dialog-plugin-replaces-all \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -220751,12 +220837,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T18:13:17.455Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-picker-dialog-plugin-replaces-all--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T22:42:20.457Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:15:13.052Z",
@@ -220768,7 +220854,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:42:20.457Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -220777,7 +220863,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T22:42:20.457Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -220932,12 +221018,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:46:40.829Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:15:13.052Z",
-     "updatedAt": "2026-11-14T18:15:13.052Z"
+     "updatedAt": "2026-11-14T22:46:41.160Z"
     },
     {
      "id": "s7",
@@ -220957,12 +221043,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:47:39.100Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:15:13.052Z",
-     "updatedAt": "2026-11-14T18:15:13.052Z"
+     "updatedAt": "2026-11-14T22:47:39.408Z"
     },
     {
      "id": "s8",
@@ -220982,12 +221068,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:48:44.888Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:15:13.052Z",
-     "updatedAt": "2026-11-14T18:15:13.052Z"
+     "updatedAt": "2026-11-14T22:48:45.392Z"
     },
     {
      "id": "s9",
@@ -221008,12 +221094,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:50:51.660Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:15:13.052Z",
-     "updatedAt": "2026-11-14T18:15:13.052Z"
+     "updatedAt": "2026-11-14T22:50:52.369Z"
     },
     {
      "id": "s10",
@@ -221035,12 +221121,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:57:39.293Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:15:13.052Z",
-     "updatedAt": "2026-11-14T18:15:13.052Z"
+     "updatedAt": "2026-11-14T22:57:40.345Z"
     },
     {
      "id": "s11",
@@ -221060,12 +221146,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:59:28.997Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:15:13.052Z",
-     "updatedAt": "2026-11-14T18:15:13.052Z"
+     "updatedAt": "2026-11-14T22:59:29.237Z"
     },
     {
      "id": "s12",
@@ -221085,12 +221171,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:03:26.387Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:15:13.052Z",
-     "updatedAt": "2026-11-14T18:15:13.052Z"
+     "updatedAt": "2026-11-14T23:03:26.838Z"
     },
     {
      "id": "s13",
@@ -221353,7 +221439,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -221377,7 +221463,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-14T22:42:41.729Z",
+   "updatedAt": "2026-11-14T22:58:57.573Z",
    "builtAt": "",
    "notes": [
     {
@@ -221417,7 +221503,16 @@
      "at": "2026-11-14T22:42:41.729Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-14T22:51:15.025Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "replace other browser elements like the dropdowns with themed ones",
@@ -221426,7 +221521,7 @@
     "session": "",
     "link": "",
     "by": "themed-native-controls-plugin",
-    "brief": "# Build: themed-native-controls-plugin\n\n## Brett said (verbatim)\nAt: 2026-11-14T18:14:25.063Z\n> replace other browser elements like the dropdowns with themed ones\n\n## What to build\nContinue build \"Themed native controls plugin\" (themed-native-controls-plugin) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 18:14):\n\"replace other browser elements like the dropdowns with themed ones\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~50 min):\n[ ] s1 (~10 min) Design the themed-controls@1 contract: the list of control families (datetime, color, dialogs, checkbox, radio, range, file, number, tooltip, scrollbar), a per-family on/off setting, the native fallback when the plugin is off, and the phone rule (bottom sheet below the phone breakpoint). Write it in framework/spec/THEMED-CONTROLS.md and add a deferred Android twin note to framework/spec/PORTING.md\n[ ] s2 (~10 min) Add token families to the token registry for checkbox, radio, range and number (every state: rest, hover, focus, active, checked, disabled, invalid; light and dark), with defaults that match today's native look in the soft-studio theme\n[ ] s3 (~10 min) Add token families for the datetime calendar, color picker, themed dialogs (alert/confirm/prompt), file drop zone + progress, tooltip and scrollbar (every state, light and dark), with defaults that match today's look\n[ ] s4 (~10 min) Skin coverage: give each new token family a style target or skin declaration so check-skin-coverage passes, and add the skin upgrader rule that writes defaults matching today's look into existing skins. Run schemas, regenerate JSON Schemas and fixtures\n[ ] s5 (~10 min) Reference engine framework/core/engines/themed-controls.ts: resolve which families are active from settings (global switch + per family), pick the surface for a viewport (popover or bottom sheet), and turn a native element's attributes into control props. Add a fixture and a check-themed-controls.mts test\nRead first: framework/spec/THEMED-CONTROLS.md, framework/spec/PORTING.md, framework/schemas/asset-types.json, framework/schemas/customize.json, framework/assets/style-theme/, framework/core/engines/skin-coverage.mjs, framework/cli/skins.mjs, framework/schemas/json/, framework/spec/fixtures/, framework/core/engines/themed-controls.ts, framework/spec/fixtures/themed-controls.json, framework/spec/check-themed-controls.mts\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step themed-native-controls-plugin <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link themed-native-controls-plugin --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step themed-native-controls-plugin <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note themed-native-controls-plugin \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: themed-native-controls-plugin\n\n## Brett said (verbatim)\nAt: 2026-11-14T18:14:25.063Z\n> replace other browser elements like the dropdowns with themed ones\n\n## What to build\nContinue build \"Themed native controls plugin\" (themed-native-controls-plugin) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 18:14):\n\"replace other browser elements like the dropdowns with themed ones\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/themed-native-controls-plugin\nSteps in this phase (25 left, ~3.8 h):\n[ ] s6 (~10 min) Scaffold the removable plugin apps/console-web/plugins/themed-controls (plugin.json with builtWith, install.mjs, uninstall.mjs, lifecycle dataDir, settings sub-tab under Settings → Plugins with a master switch and one switch per family, plus the level toolbar). Plugin off = native controls come back\n[ ] s7 (~10 min) Plugin API base: REST routes (GET state, POST settings per family, POST enable/disable), plugin commands for MCP, an `axf themed-controls` CLI and voice actions (themed-controls.toggle / .state); deep link view:settings/tab:plugins/themed-controls registered with console control\n[ ] s8 (~10 min) Runtime host in the web library: a MutationObserver that finds native inputs in the enabled families and swaps in themed controls (keeps the original input hidden and in sync, so forms and value reads keep working), and undoes it all on disable\n[ ] s9 (~10 min) Themed checkbox and radio from the framework Switch/Radio controls on the new tokens: keyboard (Space, arrow keys in groups), aria-checked, focus ring from tokens\n[ ] s10 (~10 min) Themed range slider and number stepper (− / + buttons, hold to repeat, min/max/step, arrow keys, aria-valuenow), tokens only\n[ ] s11 (~10 min) Wire checkbox/radio/range/number into the host swap and register their targets with console control (state read + set value per control); API and CLI/voice actions for them\n[ ] s12 (~10 min) Themed calendar dialog for date inputs: month grid, today, min/max, keyboard grid navigation, screen reader labels; popover on desktop, bottom sheet on phone\n[ ] s13 (~10 min) Time and datetime-local pickers (hour/minute columns, 12/24h from locale) reusing the calendar; swap date, time and datetime-local inputs in the host\n[ ] s14 (~8 min) Datetime API: deep link opens a picker for a target, state read of the open picker, actions to set a value / open / close through REST, MCP, CLI and voice\n[ ] s15 (~10 min) Themed color picker dialog: theme swatches, recent colours, hue/saturation area, hex field, keyboard, bottom sheet on phone; swap color inputs\n[ ] s16 (~6 min) Color picker API (open, set, read) on REST, MCP, CLI and voice, plus control targets\n[ ] s17 (~10 min) Themed alert/confirm/prompt dialogs plus an async shim: axf.dialogs.alert/confirm/prompt return Promises; window.alert/confirm/prompt are swapped only while the family is on and restored on off; focus trap and Escape/Enter\n[ ] s18 (~10 min) Move console and framework calls of window.alert/confirm/prompt onto the async API (grep and convert, awaiting the result)\n[ ] s19 (~8 min) Dialogs API: list open dialogs, answer one (OK/Cancel/text) through REST, MCP, CLI and voice; a dialog that would confirm a destructive action still needs confirm\n[ ] s20 (~10 min) Themed file drop zone: click to browse, drag and drop, file list, per-file progress bar, accept/multiple respected, keyboard + aria-live upload status; swap file inputs\n[ ] s21 (~6 min) File drop API: state (files, progress) readable, clear/cancel actions on REST, MCP, CLI and voice\n[ ] s22 (~10 min) Themed tooltips: move title attributes to data-axf-tip and show a token-styled tooltip on hover/focus (long-press on touch), aria-describedby kept, restored on off\n[ ] s23 (~6 min) Themed scrollbars: scrollbar-color/width and ::-webkit-scrollbar rules from tokens under a root class the plugin toggles; nothing on touch where overlay scrollbars are native\n[ ] s24 (~6 min) Tooltip and scrollbar settings (delay, width) as tokens and settings, reachable through the plugin API, CLI and voice\n[ ] s25 (~10 min) Conformance: run check-theme, check-controls, check-console-control, check-skin-coverage and plugin-lifecycle check --after-uninstall; fix any literal values or missing targets\n[ ] s26 (~10 min) Re-bake the framework into the console and the shared-asset apps (rebake.mjs, shared-assets.mjs bake), typecheck and build the console\n[ ] s27 (~10 min) Playwright tests desktop and phone: every family themed when on, native when off, keyboard path, bottom sheet on phone, dialog shim resolves, theme swap restyles them (theme-swap.mjs)\n[ ] s28 (~8 min) Help page and glossary entries for the plugin and each family, plus its notify.json if it sends anything; Shipped features rows come from the build hook, check they are there\n[ ] s29 (~10 min) UI Review: shoot desktop + phone for each family and submit with at least 3 asset options (themed-controls style presets) via review.mjs --choices\n[ ] s30 (~10 min) Final checks (tracker.mjs --check, validate --framework, plugin tests), write _claude/builds/reports/themed-controls-plugin.md, add the THREADS.md row, open the PR saying how each feature is reached (deep link, REST, MCP, CLI, voice) and that UI Review is waiting, link it with builds-live.mjs\nRead first: apps/console-web/plugins/themed-controls/plugin.json, apps/console-web/plugins/themed-controls/install.mjs, apps/console-web/plugins/themed-controls/uninstall.mjs, apps/console-web/plugins/themed-controls/web/settings.tsx, apps/console-web/plugins/themed-controls/server/routes.py, apps/console-web/plugins/themed-controls/commands.json, apps/console-web/plugins/themed-controls/cli.mjs, apps/console-web/plugins/themed-controls/web/host.ts, apps/console-web/plugins/themed-controls/web/index.ts, framework/react/components/Checkbox.tsx, framework/react/components/RadioGroup.tsx, framework/ui/axf.css, framework/react/components/Slider.tsx, framework/react/components/NumberStepper.tsx, apps/console-web/plugins/themed-controls/web/families/basic.ts, framework/react/components/DatePicker.tsx, framework/react/components/TimePicker.tsx, apps/console-web/plugins/themed-controls/web/families/datetime.ts, framework/react/components/ColorPicker.tsx, apps/console-web/plugins/themed-controls/web/families/color.ts, framework/react/dialogs/nativeDialogs.tsx, apps/console-web/plugins/themed-controls/web/families/dialogs.ts, apps/console-web/src/, apps/console-web/plugins/, framework/react/, framework/react/components/FileDrop.tsx, apps/console-web/plugins/themed-controls/web/families/file.ts, framework/react/tooltip.ts, apps/console-web/plugins/themed-controls/web/families/tooltip.ts, apps/console-web/plugins/themed-controls/web/families/scrollbar.ts, apps/console-web/plugins/themed-controls/, framework/react/components/, apps/console-web/src/axf/, framework/schemas/shared-assets.json, apps/console-web/plugins/themed-controls/test/themed-controls.spec.ts, apps/console-web/scripts/theme-swap.mjs, apps/console-web/plugins/themed-controls/help.md, apps/console-web/plugins/glossary-index/, apps/console-web/plugins/themed-controls/assets/, _claude/builds/reports/themed-controls-plugin/shots/, _claude/builds/reports/themed-controls-plugin.md, _claude/THREADS.md, framework/catalog/status.json\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step themed-native-controls-plugin <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link themed-native-controls-plugin --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step themed-native-controls-plugin <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note themed-native-controls-plugin \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -221434,12 +221529,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T18:14:28.290Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-themed-native-controls-plugin--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T22:42:36.275Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:17:59.202Z",
@@ -221451,7 +221546,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:42:36.275Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -221460,7 +221555,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T22:42:36.275Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -221616,12 +221711,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:51:15.025Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:17:59.202Z",
-     "updatedAt": "2026-11-14T18:17:59.202Z"
+     "updatedAt": "2026-11-14T22:51:15.891Z"
     },
     {
      "id": "s7",
@@ -221642,12 +221737,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:54:50.157Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:17:59.202Z",
-     "updatedAt": "2026-11-14T18:17:59.202Z"
+     "updatedAt": "2026-11-14T22:55:15.145Z"
     },
     {
      "id": "s8",
@@ -221667,12 +221762,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:58:57.572Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:17:59.202Z",
-     "updatedAt": "2026-11-14T18:17:59.202Z"
+     "updatedAt": "2026-11-14T22:58:58.015Z"
     },
     {
      "id": "s9",
@@ -222236,7 +222331,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -222252,16 +222347,16 @@
    "title": "Land all skin builds",
    "category": "",
    "detail": "Land these one at a time, in order. For each: fetch its remote branch (pull --rebase or merge the remote branch first; build_land push was rejected as non-fast-forward), merge origin/main, resolve conflicts keeping both sides' features, regenerate generated files (generated-files@1), run tests, push, merge to main. Order: skins-plugin-merge-main-and-land (Skins plugin; installing it hides the built-in skins panel, removing it brings it back), skin-config-panel-merge-main-and-land, every-skin-ships-light-dark-colour-theme, console-skin-axhub-only, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, token-registry-skin-editor-live-sandbox, own-token-sets-for-grids-and-tab-groups. Archive superseded older branches (skins-plugin-own-removable-console, skin-configuration-panel-before-ai-makes, professional-skins-rebuild-whole-app, fix-merge-conflicts-pr-557-professional) after checking their commits are included. Then run /usr/local/bin/axf-console-update to redeploy, verify the console loads with no doubled chrome, and send Brett a phone notification through AmberX listing what landed.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/land-all-skin-builds",
-   "pr": "",
+   "pr": "#679",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T22:44:50.407Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T22:51:21.447Z",
+   "builtAt": "2026-11-14T22:50:08.994Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -222294,6 +222389,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-all-skin-builds--joey, shared account login)",
      "at": "2026-11-14T22:32:19.498Z"
+    },
+    {
+     "text": "Headless run axf-land-all-skin-builds--joey: brief only · start 15.2K tokens ($0.05) · cost $52.93 · 358 turns · 6 tools, MCP none",
+     "at": "2026-11-14T22:51:21.447Z"
     }
    ],
    "approvals": [],
@@ -222945,12 +223044,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:48:14.818Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:19:09.863Z",
-     "updatedAt": "2026-11-14T18:19:09.863Z"
+     "updatedAt": "2026-11-14T22:48:15.545Z"
     },
     {
      "id": "s25",
@@ -222971,12 +223070,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:50:08.993Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:19:09.863Z",
-     "updatedAt": "2026-11-14T18:19:09.863Z"
+     "updatedAt": "2026-11-14T22:50:10.410Z"
     }
    ],
    "profiles": [
@@ -222987,7 +223086,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -223712,7 +223811,7 @@
    "pr": "#678",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-14T22:41:42.413Z",
+   "updatedAt": "2026-11-14T23:02:30.348Z",
    "builtAt": "",
    "notes": [
     {
@@ -223942,12 +224041,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:44:25.792Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T22:44:26.005Z"
     },
     {
      "id": "s6",
@@ -223967,12 +224066,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:46:15.677Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T22:46:16.567Z"
     },
     {
      "id": "s7",
@@ -223993,12 +224092,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:48:12.985Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T22:48:13.557Z"
     },
     {
      "id": "s8",
@@ -224019,12 +224118,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:50:32.627Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T22:50:33.701Z"
     },
     {
      "id": "s9",
@@ -224045,12 +224144,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:53:33.407Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T22:53:33.654Z"
     },
     {
      "id": "s10",
@@ -224071,12 +224170,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:58:26.406Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T22:58:26.839Z"
     },
     {
      "id": "s11",
@@ -224096,12 +224195,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:00:29.338Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T23:00:29.803Z"
     },
     {
      "id": "s12",
@@ -224122,12 +224221,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:02:30.348Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T23:02:30.744Z"
     },
     {
      "id": "s13",
@@ -224535,7 +224634,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -224551,7 +224650,7 @@
    "title": "Console look becomes default axHub skin",
    "category": "",
    "detail": "Snapshot the live console's current look exactly as it is now (skin, colour theme light and dark, every token value including opacityGlass 0.7, typography, density, radius, behaviour/animation themes, toolbar/banner/nav chrome settings) into a new skin asset 'Console (default)' and publish it on axHub as THE default skin. Make every app (console, AmberX web, Android apps, any app built from the framework) inherit its skin from axHub's default right now: apps with no override pick it up immediately; apps with their own edits keep only their edited tokens (per the skin-axhub-override rules) and inherit the rest. Keep a backup of each app's previous skin so it can be restored in one tap. Run AFTER land-all-skin-builds finishes so it builds on the landed skins plugin/axHub-only/override code; if those aren't landed yet, wait for them. Verify with pixel-diff that the console looks identical before and after, and screenshot every app desktop and phone. Redeploy, then send Brett a phone notification. Full API and voice ('make this the default look'), tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -224559,7 +224658,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T22:43:44.849Z",
+   "updatedAt": "2026-11-14T22:52:09.247Z",
    "builtAt": "",
    "notes": [
     {
@@ -224601,6 +224700,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-look-becomes-default-axhub-skin--rhonda, shared account login)",
      "at": "2026-11-14T22:42:14.595Z"
+    },
+    {
+     "text": "Headless run axf-console-look-becomes-default-axhub-skin--rhonda: brief only · start 11.5K tokens ($0.03) · cost $1.57 · 57 turns · 6 tools, MCP none",
+     "at": "2026-11-14T22:52:07.649Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 17 steps left: back in the Queue (run 2).",
+     "at": "2026-11-14T22:52:09.247Z"
     }
    ],
    "approvals": [],
@@ -224621,18 +224728,18 @@
     "queuedAt": "2026-11-14T22:19:03.857Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-look-becomes-default-axhub-skin--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T22:42:12.388Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-14T22:23:07.434Z",
+     "at": "2026-11-14T22:52:07.124Z",
      "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 20,
+     "outcome": "requeued",
+     "stepsLeft": 17,
      "account": "mossesx-max-",
-     "session": "axf-console-look-becomes-default-axhub-skin--lenny"
+     "session": "axf-console-look-becomes-default-axhub-skin--rhonda"
     },
     "split": {
      "at": "2026-11-14T22:21:08.816Z",
@@ -224642,14 +224749,14 @@
      "note": "Split by Claude into 20 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 17 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-14T22:42:12.388Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-14T22:21:10.904Z",
+     "at": "2026-11-14T22:52:11.216Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -224702,12 +224809,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:45:15.339Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:21:08.816Z",
-     "updatedAt": "2026-11-14T22:21:08.816Z"
+     "updatedAt": "2026-11-14T22:45:15.676Z"
     },
     {
      "id": "s3",
@@ -224726,12 +224833,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:51:42.308Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:21:08.816Z",
-     "updatedAt": "2026-11-14T22:21:08.816Z"
+     "updatedAt": "2026-11-14T22:51:42.601Z"
     },
     {
      "id": "s4",
@@ -225177,7 +225284,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
