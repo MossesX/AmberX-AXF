@@ -1,0 +1,14 @@
+{
+  "$axf": "token-manifest-baseline@1",
+  "note": "Plugins that pre-date the token-registry@1 manifest rule (Nov 13 2026). A folder here may still lack a plugin.json `tokens` block; once it carries one it must leave this list (the list only shrinks; spec/check-token-registry.mjs). New plugins are never added here.",
+  "exempt": [
+    "activity", "agent-manager", "agent-slots", "agent-swarm", "agent-voice", "ai-assistant", "ai-keys", "alerts-bell", "amberx-listeners", "approvals-banner",
+    "audio-extract", "basic-filter", "brand-library", "build-breaker", "build-orchestrator", "build-profiles", "builds-page", "changes-grid", "chat-viewer",
+    "claude-accounts", "claude-badge", "claude-handoff", "claude-session", "claude-settings", "codebase-changes", "console-commands", "console-terminal",
+    "container-access", "context-menu-designer", "crew-live", "demonstration-designer", "fable-rebuilds", "feature-assist", "feature-matrix", "follow-amber",
+    "github-app", "glossary-index", "hub-sync", "main-build-status", "maintenance", "mcp-client", "md-studio", "molly-guide", "notes-browser",
+    "notify-control", "output-recorder", "plan-studio", "plugin-commands", "plugin-manager", "plugin-switches", "plugin-update", "plugins-menu", "project-switcher",
+    "project-wizard", "push-banner", "ref-links", "session-checkin", "shipped-features", "snapshot-manager", "systems-check", "theme-editor", "theme-manager",
+    "todo-manager", "token-control", "ui-review", "voice-notes", "whats-shipped"
+  ]
+}

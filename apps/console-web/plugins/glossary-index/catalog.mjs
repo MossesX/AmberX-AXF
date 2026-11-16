@@ -163,7 +163,7 @@ function pluginEntries() {
       out.push(entry({
         id: `command:${folder}:${c.id}`, term: c.title || titleCase(c.id), kind: 'command', category: `Plugins › ${name} › Commands`,
         plugin: folder, app: 'Dev Console', summary: c.description || c.title || titleCase(c.id), generic: !c.description, detail: c.description, source: rel(pj),
-        api: [{ kind: 'rest', name: `${c.route?.split(' ')[0] || 'GET'} /api/plugins/${folder}${c.route?.split(' ')[1] || `/${c.id}`}` }, { kind: 'mcp', name: `${folder.replace(/-/g, '_')}_${String(c.id).replace(/-/g, '_')}` }, { kind: 'cli', name: `axf ${folder} ${c.id}` }],
+        api: [{ kind: 'rest', name: `${c.route?.split(' ')[0] || 'GET'} /api/plugins/${folder}${c.route?.split(' ')[1] || `/${c.id}`}` }, { kind: 'mcp', name: c.tool || `${folder.replace(/-/g, '_')}_${String(c.id).replace(/-/g, '_')}` }, { kind: 'cli', name: `axf ${folder} ${c.id}` }],
         related: [`plugin:${folder}`], tags: [c.readOnly ? 'read-only' : 'changes'],
       }));
     }

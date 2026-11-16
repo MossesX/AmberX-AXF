@@ -1,0 +1,24 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "gate.lander-paused",
+      "label": "Auto-lander paused",
+      "group": "builds",
+      "app": "console",
+      "source": "Gate & rules",
+      "description": "The auto-lander was paused (from the Auto-lander tab, the CLI, MCP or voice): nothing new lands until it is resumed. Resolved when it resumes.",
+      "match": { "source": "gate", "keyPrefix": "gate:lander-paused" },
+      "priority": "high"
+    },
+    {
+      "id": "gate.pr-held",
+      "label": "PR held by the gate",
+      "group": "builds",
+      "app": "console",
+      "source": "Gate & rules",
+      "description": "A PR waiting to land fails a gate rule and needs a fix (red CI, a failing check, a code clash, UI Review changes). Once per PR and rule; resolved when it passes or leaves the line.",
+      "match": { "source": "gate", "keyPrefix": "gate:pr-held:" }
+    }
+  ]
+}

@@ -48,7 +48,8 @@
       "framework/schemas/project-rules.json",
       "tracker.json",
       "sessions/",
-      "changes/"
+      "changes/",
+      "build-rules/"
     ]
   },
   "owners": [

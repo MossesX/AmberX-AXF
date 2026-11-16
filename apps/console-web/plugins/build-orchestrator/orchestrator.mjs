@@ -37,6 +37,10 @@ import { approverFrom, upgradeLine, upgradePolicy } from '../../../../framework/
 import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs';
 import { readPolicy as readContextPolicy, rulesFor } from '../../../../framework/cli/headless-context.mjs';
 import { briefBudget } from '../../../../framework/core/headless-context.mjs';
+import * as BR from '../../../../framework/core/build-rules.mjs';
+
+/** The session's share of the build rules for one build (brief-blocks@1); null when the store can't be read. */
+function storeBlocks(b) { try { return BR.briefBlocks(BR.load().store, { id: b.id, title: b.title, text: b.detail || '' }); } catch { return null; } }
 
 loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
@@ -131,8 +135,11 @@ async function main(argv) {
     const n = core.nextUp(b, s.rules);
     return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: model UPGRADE ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1}). Stop here: request-upgrade ${b.id} ${n.phase.index}` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);
   }
-  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); let t = core.brief(b, s.rules);
-    if (!rest.includes('--no-rules')) { const r = rulesFor(t, { model: (core.nextUp(b, s.rules).phase?.model || '').toLowerCase(), name: b.id }); if (r.text) t = `${t}\n\n${r.text}`; }
+  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`);
+    // the session's rules come from the build rules store (build-rules@1), as at dispatch
+    const blocks = storeBlocks(b);
+    let t = core.brief(b, s.rules, { blocks });
+    if (!rest.includes('--no-rules')) { if (blocks?.blocks?.rules) t = `${t}\n\n${blocks.blocks.rules}`; else { const r = rulesFor(t, { model: (core.nextUp(b, s.rules).phase?.model || '').toLowerCase(), name: b.id }); if (r.text) t = `${t}\n\n${r.text}`; } }
     const budget = briefBudget(t, readContextPolicy()); if (!budget.ok) process.stderr.write(`orchestrator: ${budget.warning}\n`);
     return out({ ok: true, brief: t, budget }, t); }
   if (cmd === 'request-upgrade') {
