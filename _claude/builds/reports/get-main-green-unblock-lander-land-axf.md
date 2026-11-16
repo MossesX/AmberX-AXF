@@ -220,3 +220,24 @@ Both are fixed in #724 (bd8a8f0ed, then the commit before bf3d87e43). Along the 
 - **`data-store/test.py`** gave the backup job only 5 s (now 30 s).
 
 All fixed (72cfbbb1a) and merged into the Postgres branch, whose `pg_dump` extracts use the same helper (62fc60196). Light list after the fixes: all pass except systems-check, which #724 fixes on main.
+
+## Main is green (s9 done, 21:18)
+
+- **#724 queue run 4** (43951006418, queue/pr-724): CI scope, Build engine sweep, Web Dev Console (React/TS) + Python API, and AmberX APK + native tests all **success**. Gradle wasn't in scope.
+- The lander **merged #724 on its own at 21:01** (764f8270a): "merge queue: tested as queue/pr-724". #685, tested on top of it in the stack, merged right after (3953207bd). Those are the first queue merges since 2026-11-15 10:06.
+- **Main CI on 3953207bd** (43955861472): success. Gradle ran and passed. The other jobs were skipped because the queue already ran them on the same code.
+- #719 is a subset of #724, so it now has nothing left to add.
+
+Main was red from 2026-11-15 11:45 to 2026-11-16 21:01, about 33 hours. Nothing landed in that time.
+
+Every fix that reached main:
+1. AmberX `@console/api` bridge (from #719)
+2. Gate page-head description (from #719)
+3. gate `axf-not-plugin:ui-review` markers (from #719)
+4. `ubuntu-24.04` runner pin (from #719)
+5. theme-swap zero-alpha
+6. unique heavy-slot ids
+7. gate token manifest
+8. framework help re-baked into every app
+9. claude-settings TabGroup literal id
+10. systems-check test no longer racing the monitor
