@@ -808,10 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 11:53 UTC · `gate-rules-plugin-in-the-console` → queued, note (all) · console
-- 2026-11-15 11:54 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · orchestrator
-- 2026-11-15 11:54 UTC · `pending-tab-one-collapsed-row-per-2` → running, note (all) · pipeline
-- 2026-11-15 11:54 UTC · `pending-tab-one-collapsed-row-per-2` branch claude/pending-tab-one-collapsed-row-per-2 (all) · pipeline
 - 2026-11-15 11:55 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · mcp
 - 2026-11-15 11:55 UTC · `every-grid-1-2-rows-per-item-set-skin` note (all) · mcp
 - 2026-11-15 11:56 UTC · `every-grid-1-2-rows-per-item-set-skin` note (all) · orchestrator
@@ -1208,6 +1204,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:23 UTC · `fix-build-whose-session-finishes-phase-e` s12 done, → built (all) · orchestrator
 - 2026-11-16 13:23 UTC · `fix-build-whose-session-finishes-phase-e` note (all) · orchestrator
 - 2026-11-16 13:23 UTC · `group-chat-audio-hear-agents-talk-while` s4 done (all) · orchestrator
+- 2026-11-16 13:24 UTC · `fix-build-whose-session-finishes-phase-e` → pending, note (all) · pipeline
+- 2026-11-16 13:24 UTC · `console-look-becomes-default-axhub-skin` → running, note (all) · pipeline
+- 2026-11-16 13:24 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
+- 2026-11-16 13:24 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
 
 ## Token passes (log)
 
