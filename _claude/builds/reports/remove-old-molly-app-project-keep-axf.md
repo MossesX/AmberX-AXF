@@ -77,3 +77,25 @@ rows, old build reports (`_claude/builds/reports/molly-*.md`), dated handoffs an
 (`_claude/memory/handoff-*`, `_claude/sessions/*`, `_claude/shared/notes/**`), and the build records in
 `_claude/builds/store.json` / `orchestrator.json` / `origins.json` / `framework/plan/pending.json` (exports, changed only
 through orchestrator.mjs / plans.mjs).
+
+## Still useful (s2): what moves, and where
+
+Nothing outside `apps/molly/` imports its code; its assets (`src/assets/{app-menu,nav-menu,toolbar,xlayout}/molly.json`,
+`settings/chrome-*-molly.json`) are Molly's own and no other app reads them. The framework engines Molly drove (xlayout@1,
+chrome@1, embed@1 host messages, banner strip, nav-style@1) are generic and stay in `framework/` with a neutral host id.
+
+The console's "Molly guide" is already the **Gizmo guide** in the UI and is live: AmberX's developer commands
+(`/api/ai/molly` → the guide's `/ask`) and the AmberX walkthrough re-record go through it. Deleting it would break both,
+so its function moves to a plugin without the Molly name:
+
+| Item | From | To |
+|---|---|---|
+| Walkthrough window (walkthrough@1 player: Next / Previous / Repeat / Close, spoken steps, highlight) | `plugins/molly-guide/web` | `plugins/gizmo-guide/web` |
+| Ask route, walkthrough list, AmberX walkthrough re-record (`/ask`, `/walkthroughs`, `/amberx-walkthrough/rerecord`) | `/api/plugins/molly-guide/*` | `/api/plugins/gizmo-guide/*` |
+| Settings `molly-guide.speak` / `.runSteps` / `.autoOpen` | sub-tab `molly-guide` | `gizmo-guide.*`, sub-tab `gizmo-guide` (saved values copied once) |
+| Data `walkthroughs.json` | `.axf-console/plugins/molly-guide/` | `.axf-console/plugins/gizmo-guide/` (moved once on start) |
+| Actions `gizmo.ask` / `.replay` / `.next` / `.prev` / `.close` | registered by the guide | unchanged; hidden aliases `molly.*` retired |
+| Help entries (help.json) | scope `plugin:molly-guide` | help topic `plugin:gizmo-guide` (console help, Help mode) |
+| Agent-manager README lines on Molly | `agent-manager/README.md` | dropped; Gizmo is the add-on that does this |
+| Molly add-on persona / skills (codebase, walkthroughs, builds, VPS, DNS) | `addons/molly/addon.json` | nothing to move: Gizmo's add-on carries the same skills and tools |
+| Molly app's per-app chrome settings, nav / app menu / toolbar assets | `apps/molly/src/assets` | nothing to move: Molly-only |
