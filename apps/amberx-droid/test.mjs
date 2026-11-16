@@ -1249,6 +1249,8 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   for (const k of ['sk-ant-api03-' + 'Ab3'.repeat(10), 'ghp_' + 'a1B2'.repeat(9), 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.abcDEF12345', 'password: hunter22', 'AKIA' + 'ABCDEFGHIJKLMNOP'])
     ok(findSecrets(`Settings ${k} end`).length > 0, `walkthrough scan catches ${k.slice(0, 6)}…`);
   eq(findSecrets('3 waiting · Restart the demo web app · runs in 1:15 · commit 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b'), [], 'walkthrough scan: ordinary screen text (and a commit sha) is clean');
+  eq(findSecrets('CI: https://github.com/Owner/Repo-Name/actions/runs/43541234567/job/123456789012345678 failed'), [], 'walkthrough scan: a GitHub run link is not a key');
+  ok(findSecrets('https://github.com/Owner/Repo/actions/runs/1?token=' + 'Ab3x'.repeat(10)).length > 0, 'walkthrough scan: a key in a GitHub link query is still caught');
   const plug = readFileSync(new URL('./src/plugins/walkthrough/web/index.tsx', import.meta.url), 'utf8');
   ok(/menu: 'axhub'/.test(plug) && /menu: 'help'/.test(plug), 'walkthrough: in the AmberX menu and Help');
   ok(/'walkthrough\.open'/.test(plug) && /<track kind="captions"/.test(plug) && /SPEEDS\.map/.test(plug), 'walkthrough: open action, captions, speed presets');

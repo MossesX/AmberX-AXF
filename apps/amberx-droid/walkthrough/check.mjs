@@ -19,10 +19,15 @@ export const SECRET_PATTERNS = [
   ['long random string', /\b(?=[A-Za-z0-9+/_-]*[0-9])(?=[A-Za-z0-9+/_-]*[A-Z])(?=[A-Za-z0-9+/_-]*[a-z])[A-Za-z0-9+/_-]{32,}\b/],
 ];
 
+// Plain links into a GitHub repo (a workflow run, a pull request, a commit, a file) are paths, not keys: they show on live
+// console pages and are dropped before the scan. Only the path shape below; a query string is still scanned.
+const REPO_LINK = /\bgithub\.com\/[\w.-]+\/[\w.-]+\/(?:actions\/runs|pull|commit|tree|blob|issues|compare)\/[\w./-]+/g;
+
 export function findSecrets(text) {
   const hits = [];
+  const body = String(text).replace(REPO_LINK, 'github-link');
   for (const [name, re] of SECRET_PATTERNS) {
-    const m = String(text).match(re);
+    const m = body.match(re);
     if (m) hits.push({ name, sample: `${m[0].slice(0, 4)}…(${m[0].length} chars)` });
   }
   return hits;
