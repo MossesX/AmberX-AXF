@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:28:45.465Z",
+ "updatedAt": "2026-11-16T23:28:59.127Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -163244,8 +163244,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T23:28:26.476Z",
-   "builtAt": "2026-11-16T23:28:26.477Z",
+   "updatedAt": "2026-11-16T23:28:28.907Z",
+   "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
      "text": "Brett Nov 16 CHANGE: do NOT rebuild, clear or touch the existing Plan Studio. Build a brand-new separate plugin called 'Plan Studio 2.0' (id plan-studio-2), starting empty, nothing synced into it. Everything else in this build applies to Plan Studio 2.0: unlimited nesting, full context menus, full voice/MCP control, explicit links to the to-do manager, orchestrator, notes and Shipped features.",
@@ -163322,6 +163322,10 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-rebuild-plan-studio-cleared-out--joey, shared account login)",
      "at": "2026-11-16T23:14:21.584Z"
+    },
+    {
+     "text": "Self-check: fable-rebuild-plan-studio-cleared-out had no session on record but axf-fable-rebuild-plan-studio-cleared-out--joey is alive: kept running and tracking it.",
+     "at": "2026-11-16T23:28:28.907Z"
     }
    ],
    "approvals": [
