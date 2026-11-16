@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:57:12.976Z",
+ "updatedAt": "2026-11-16T13:57:30.131Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139600,7 +139600,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T13:56:12.613Z",
+   "updatedAt": "2026-11-16T13:56:51.798Z",
    "builtAt": "",
    "notes": [
     {
@@ -139766,6 +139766,10 @@
     {
      "text": "Started run 3 on mossesx-max- (Opus, Phase 3): axf-demo-video-series-three-minute-browser--gina.",
      "at": "2026-11-16T13:46:22.929Z"
+    },
+    {
+     "text": "Reconciler: PR #667 names s1, s5, s6, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s7, s2, s3 done",
+     "at": "2026-11-16T13:56:51.798Z"
     },
     {
      "text": "Self-check: demo-video-series-three-minute-browser had no session on record but axf-demo-video-series-three-minute-browser--gina is alive: kept running and tracking it.",
@@ -140229,9 +140233,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-16T13:56:51.798Z",
+     "note": "PR #667 (claude/demo-video-series-three-minute-browser)",
      "uid": "st-mwfvo8cj074yj8",
      "createdAt": "2026-11-14T04:00:35.413Z"
     },
@@ -151305,7 +151309,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-16T13:56:44.139Z",
+   "updatedAt": "2026-11-16T13:56:51.798Z",
    "builtAt": "",
    "notes": [
     {
@@ -151367,6 +151371,10 @@
     {
      "text": "Reconciler: PR #709 names s1, s2 done",
      "at": "2026-11-16T13:31:23.690Z"
+    },
+    {
+     "text": "Reconciler: PR #709 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12 done",
+     "at": "2026-11-16T13:56:51.798Z"
     }
    ],
    "approvals": [
@@ -151656,8 +151664,8 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-16T13:56:44.139Z",
-     "note": "",
+     "doneAt": "2026-11-16T13:56:51.798Z",
+     "note": "PR #709 (claude/vps-sends-shipped-features-every-merge)",
      "uid": "st-mwhsubnt0cno97",
      "createdAt": "2026-11-15T12:16:53.896Z"
     },
