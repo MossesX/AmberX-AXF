@@ -4,57 +4,13 @@
   "root": "apps/console-web/plugins",
   "script": "framework/cli/plugin-settings-audit.mjs",
   "summary": {
-    "plugins": 72,
+    "plugins": 71,
     "withScreen": 44,
-    "withoutScreen": 28,
+    "withoutScreen": 27,
     "withSettingsTab": 71,
-    "missingSettingsTab": [
-      "notes-tasks"
-    ],
-    "screensWithGear": 3,
-    "screensMissingGear": [
-      "agent-manager",
-      "agent-swarm",
-      "agent-voice",
-      "ai-assistant",
-      "amberx-listeners",
-      "audio-extract",
-      "brand-library",
-      "build-breaker",
-      "build-orchestrator",
-      "builds-page",
-      "changes-grid",
-      "chat-viewer",
-      "claude-accounts",
-      "claude-handoff",
-      "claude-settings",
-      "codebase-changes",
-      "context-menu-designer",
-      "crew-live",
-      "demonstration-designer",
-      "fable-rebuilds",
-      "feature-matrix",
-      "gate",
-      "glossary-index",
-      "maintenance",
-      "mcp-client",
-      "md-studio",
-      "notes-browser",
-      "notify-control",
-      "output-recorder",
-      "plan-studio",
-      "plugin-commands",
-      "plugin-manager",
-      "plugin-update",
-      "shipped-features",
-      "skin-editor",
-      "skin-gallery",
-      "theme-editor",
-      "theme-manager",
-      "todo-manager",
-      "token-control",
-      "ui-review"
-    ],
+    "missingSettingsTab": [],
+    "screensWithGear": 44,
+    "screensMissingGear": [],
     "noScreen": [
       "activity",
       "agent-slots",
@@ -74,7 +30,6 @@
       "hub-sync",
       "main-build-status",
       "molly-guide",
-      "notes-tasks",
       "plugin-switches",
       "plugins-menu",
       "project-switcher",
@@ -85,7 +40,7 @@
       "wake-listener",
       "whats-shipped"
     ],
-    "complete": 30
+    "complete": 71
   },
   "plugins": [
     {
@@ -106,13 +61,20 @@
       "settingsSections": [
         "example"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/_template/web/index.tsx:25",
+          "kind": "screen",
+          "target": "example",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "activity",
@@ -157,8 +119,8 @@
       "settingsSections": [
         "agent-manager"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": true,
       "gears": [
         {
@@ -167,11 +129,17 @@
           "target": "agent-manager",
           "own": true,
           "headerHint": false
+        },
+        {
+          "at": "apps/console-web/plugins/agent-manager/web/views.tsx:46",
+          "kind": "screen",
+          "target": "agent-manager",
+          "own": true,
+          "headerHint": true,
+          "shared": true
         }
       ],
-      "missing": [
-        "gear"
-      ]
+      "missing": []
     },
     {
       "folder": "agent-slots",
@@ -211,13 +179,20 @@
       "settingsSections": [
         "agent-swarm"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/agent-swarm/web/ui.tsx:49",
+          "kind": "screen",
+          "target": "agent-swarm",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "agent-voice",
@@ -237,13 +212,20 @@
       "settingsSections": [
         "agent-voice"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/agent-voice/web/console.tsx:62",
+          "kind": "screen",
+          "target": "agent-voice",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "ai-assistant",
@@ -265,10 +247,18 @@
       "settingsSections": [
         "ai-assistant"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": true,
       "gears": [
+        {
+          "at": "apps/console-web/plugins/ai-assistant/web/index.tsx:26",
+          "kind": "screen",
+          "target": "ai-assistant",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        },
         {
           "at": "apps/console-web/plugins/ai-assistant/web/menu.ts:12",
           "kind": "menu",
@@ -277,9 +267,7 @@
           "headerHint": false
         }
       ],
-      "missing": [
-        "gear"
-      ]
+      "missing": []
     },
     {
       "folder": "ai-keys",
@@ -352,13 +340,20 @@
         "amberx-listeners"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/amberx-listeners/web/index.tsx:117",
+          "kind": "screen",
+          "target": "amberx-listeners",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "approvals-banner",
@@ -403,10 +398,18 @@
       "settingsSections": [
         "audio-extract"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": true,
       "gears": [
+        {
+          "at": "apps/console-web/plugins/audio-extract/web/index.tsx:280",
+          "kind": "screen",
+          "target": "audio-extract",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        },
         {
           "at": "apps/console-web/plugins/audio-extract/web/menu.ts:9",
           "kind": "menu",
@@ -415,9 +418,7 @@
           "headerHint": false
         }
       ],
-      "missing": [
-        "gear"
-      ]
+      "missing": []
     },
     {
       "folder": "basic-filter",
@@ -461,13 +462,20 @@
       "settingsSections": [
         "logos"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/brand-library/web/index.tsx:22",
+          "kind": "screen",
+          "target": "brand-library",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "build-breaker",
@@ -487,13 +495,20 @@
       "settingsSections": [
         "build-breaker.tab"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/build-breaker/web/ui.tsx:170",
+          "kind": "screen",
+          "target": "build-breaker",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "build-orchestrator",
@@ -514,13 +529,20 @@
         "build-orchestrator",
         "pending"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/build-orchestrator/web/ui.tsx:113",
+          "kind": "screen",
+          "target": "build-orchestrator",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "build-profiles",
@@ -562,13 +584,20 @@
         "builds-page"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/builds-page/web/ui.tsx:250",
+          "kind": "screen",
+          "target": "builds-page",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "changes-grid",
@@ -588,13 +617,20 @@
       "settingsSections": [
         "changes-grid"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/changes-grid/web/index.tsx:113",
+          "kind": "screen",
+          "target": "changes-grid",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "chat-viewer",
@@ -614,8 +650,8 @@
       "settingsSections": [
         "chat-viewer"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": true,
       "gears": [
         {
@@ -624,11 +660,25 @@
           "target": "chat-viewer",
           "own": true,
           "headerHint": false
+        },
+        {
+          "at": "apps/console-web/plugins/chat-viewer/web/ui.tsx:238",
+          "kind": "screen",
+          "target": "chat-viewer",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        },
+        {
+          "at": "apps/console-web/plugins/chat-viewer/web/ui.tsx:93",
+          "kind": "screen",
+          "target": "chat-viewer",
+          "own": true,
+          "headerHint": true,
+          "shared": true
         }
       ],
-      "missing": [
-        "gear"
-      ]
+      "missing": []
     },
     {
       "folder": "claude-accounts",
@@ -648,13 +698,20 @@
         "claude-accounts"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/claude-accounts/web/index.tsx:290",
+          "kind": "screen",
+          "target": "claude-accounts",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "claude-badge",
@@ -705,13 +762,28 @@
       "settingsSections": [
         "claude-handoff"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/claude-handoff/web/ui.tsx:274",
+          "kind": "screen",
+          "target": "claude-handoff",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        },
+        {
+          "at": "apps/console-web/plugins/claude-handoff/web/ui.tsx:62",
+          "kind": "screen",
+          "target": "claude-handoff",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "claude-session",
@@ -751,13 +823,20 @@
         "claude-settings"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/claude-settings/web/index.tsx:161",
+          "kind": "screen",
+          "target": "claude-settings",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "codebase-changes",
@@ -777,13 +856,20 @@
       "settingsSections": [
         "codebase-changes"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/codebase-changes/web/ui.tsx:299",
+          "kind": "screen",
+          "target": "codebase-changes",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "console-commands",
@@ -883,13 +969,20 @@
       "settingsSections": [
         "context-menu-designer"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/context-menu-designer/web/index.tsx:41",
+          "kind": "screen",
+          "target": "context-menu-designer",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "crew-live",
@@ -909,13 +1002,20 @@
       "settingsSections": [
         "crew-live"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/crew-live/web/ui.tsx:311",
+          "kind": "screen",
+          "target": "crew-live",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "demonstration-designer",
@@ -933,13 +1033,20 @@
         "demonstration-designer"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/demonstration-designer/web/page.tsx:282",
+          "kind": "screen",
+          "target": "demonstration-designer",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "fable-rebuilds",
@@ -961,13 +1068,20 @@
       "settingsSections": [
         "fable-rebuilds"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/fable-rebuilds/web/ui.tsx:45",
+          "kind": "screen",
+          "target": "fable-rebuilds",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "feature-assist",
@@ -1019,13 +1133,20 @@
       "settingsSections": [
         "feature-matrix"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/feature-matrix/web/ui.tsx:85",
+          "kind": "screen",
+          "target": "feature-matrix",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "follow-amber",
@@ -1065,13 +1186,20 @@
         "gate"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/gate/web/GateView.tsx:37",
+          "kind": "screen",
+          "target": "gate",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "github-app",
@@ -1116,13 +1244,20 @@
       "settingsSections": [
         "glossary-index"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/glossary-index/web/index.tsx:240",
+          "kind": "screen",
+          "target": "glossary-index",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "hub-sync",
@@ -1165,7 +1300,7 @@
         "main-build-status"
       ],
       "gear": true,
-      "gearInHeader": false,
+      "gearInHeader": true,
       "settingsMenuItem": false,
       "gears": [
         {
@@ -1173,7 +1308,8 @@
           "kind": "screen",
           "target": "main-build-status",
           "own": true,
-          "headerHint": false
+          "headerHint": true,
+          "shared": true
         }
       ],
       "missing": []
@@ -1194,13 +1330,20 @@
         "maintenance"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/maintenance/web/index.tsx:374",
+          "kind": "screen",
+          "target": "maintenance",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "mcp-client",
@@ -1220,10 +1363,18 @@
       "settingsSections": [
         "mcp"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": true,
       "gears": [
+        {
+          "at": "apps/console-web/plugins/mcp-client/web/index.tsx:63",
+          "kind": "screen",
+          "target": "mcp",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        },
         {
           "at": "apps/console-web/plugins/mcp-client/web/menu.ts:9",
           "kind": "menu",
@@ -1232,9 +1383,7 @@
           "headerHint": false
         }
       ],
-      "missing": [
-        "gear"
-      ]
+      "missing": []
     },
     {
       "folder": "md-studio",
@@ -1252,13 +1401,20 @@
         "md-studio"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/md-studio/web/index.tsx:47",
+          "kind": "screen",
+          "target": "md-studio",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "molly-guide",
@@ -1300,33 +1456,20 @@
       "settingsSections": [
         "notes-browser"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
-    },
-    {
-      "folder": "notes-tasks",
-      "id": null,
-      "name": "notes-tasks",
-      "template": false,
-      "manifest": false,
-      "screen": false,
-      "views": [],
-      "dialogs": [],
-      "settingsTab": false,
-      "settingsTabs": [],
-      "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
-      "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "settings-tab"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/notes-browser/web/index.tsx:113",
+          "kind": "screen",
+          "target": "notes-browser",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "notify-control",
@@ -1344,13 +1487,20 @@
         "notify-control"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/notify-control/web/index.tsx:196",
+          "kind": "screen",
+          "target": "notify-control",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "output-recorder",
@@ -1370,10 +1520,18 @@
       "settingsSections": [
         "output-recorder"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": true,
       "gears": [
+        {
+          "at": "apps/console-web/plugins/output-recorder/web/index.tsx:203",
+          "kind": "screen",
+          "target": "output-recorder",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        },
         {
           "at": "apps/console-web/plugins/output-recorder/web/menu.ts:7",
           "kind": "menu",
@@ -1382,9 +1540,7 @@
           "headerHint": false
         }
       ],
-      "missing": [
-        "gear"
-      ]
+      "missing": []
     },
     {
       "folder": "plan-studio",
@@ -1403,13 +1559,20 @@
         "plan-studio"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/plan-studio/web/ui.tsx:66",
+          "kind": "screen",
+          "target": "plan-studio",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "plugin-commands",
@@ -1427,13 +1590,20 @@
         "plugin-commands"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/plugin-commands/web/index.tsx:90",
+          "kind": "screen",
+          "target": "plugin-commands",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "plugin-manager",
@@ -1457,8 +1627,8 @@
       "settingsSections": [
         "plugin-manager"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
       "gears": [
         {
@@ -1469,7 +1639,15 @@
           "headerHint": true
         },
         {
-          "at": "apps/console-web/plugins/plugin-manager/web/PluginManager.tsx:393",
+          "at": "apps/console-web/plugins/plugin-manager/web/PluginManager.tsx:12",
+          "kind": "screen",
+          "target": "plugin-manager",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        },
+        {
+          "at": "apps/console-web/plugins/plugin-manager/web/PluginManager.tsx:400",
           "kind": "screen",
           "target": null,
           "own": false,
@@ -1483,9 +1661,7 @@
           "headerHint": false
         }
       ],
-      "missing": [
-        "gear"
-      ]
+      "missing": []
     },
     {
       "folder": "plugin-switches",
@@ -1529,13 +1705,20 @@
       "settingsSections": [
         "plugin-update"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/plugin-update/web/index.tsx:124",
+          "kind": "screen",
+          "target": "plugin-update",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "plugins-menu",
@@ -1618,15 +1801,16 @@
         "project-wizard"
       ],
       "gear": true,
-      "gearInHeader": false,
+      "gearInHeader": true,
       "settingsMenuItem": false,
       "gears": [
         {
-          "at": "apps/console-web/plugins/project-wizard/web/index.tsx:112",
+          "at": "apps/console-web/plugins/project-wizard/web/index.tsx:92",
           "kind": "screen",
           "target": "project-wizard",
           "own": true,
-          "headerHint": false
+          "headerHint": true,
+          "shared": true
         }
       ],
       "missing": []
@@ -1648,7 +1832,7 @@
         "push-banner"
       ],
       "gear": true,
-      "gearInHeader": false,
+      "gearInHeader": true,
       "settingsMenuItem": false,
       "gears": [
         {
@@ -1656,7 +1840,8 @@
           "kind": "screen",
           "target": "push-banner",
           "own": true,
-          "headerHint": false
+          "headerHint": true,
+          "shared": true
         }
       ],
       "missing": []
@@ -1701,15 +1886,16 @@
         "session-checkin"
       ],
       "gear": true,
-      "gearInHeader": false,
+      "gearInHeader": true,
       "settingsMenuItem": false,
       "gears": [
         {
-          "at": "apps/console-web/plugins/session-checkin/web/index.tsx:90",
+          "at": "apps/console-web/plugins/session-checkin/web/index.tsx:91",
           "kind": "screen",
           "target": "session-checkin",
           "own": true,
-          "headerHint": false
+          "headerHint": true,
+          "shared": true
         }
       ],
       "missing": []
@@ -1730,13 +1916,20 @@
         "shipped-features"
       ],
       "settingsSections": [],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/shipped-features/web/ui.tsx:284",
+          "kind": "screen",
+          "target": "shipped-features",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "skin-editor",
@@ -1757,13 +1950,20 @@
       "settingsSections": [
         "skin-editor"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/skin-editor/web/SkinEditor.tsx:179",
+          "kind": "screen",
+          "target": "skin-editor",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "skin-gallery",
@@ -1784,8 +1984,8 @@
       "settingsSections": [
         "skin-gallery"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": true,
       "gears": [
         {
@@ -1794,11 +1994,17 @@
           "target": "skin-gallery",
           "own": true,
           "headerHint": false
+        },
+        {
+          "at": "apps/console-web/plugins/skin-gallery/web/SkinsScreen.tsx:70",
+          "kind": "screen",
+          "target": "skin-gallery",
+          "own": true,
+          "headerHint": true,
+          "shared": true
         }
       ],
-      "missing": [
-        "gear"
-      ]
+      "missing": []
     },
     {
       "folder": "snapshot-manager",
@@ -1889,13 +2095,20 @@
       "settingsSections": [
         "theme-editor"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/theme-editor/web/index.tsx:24",
+          "kind": "screen",
+          "target": "theme-editor",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "theme-manager",
@@ -1915,13 +2128,20 @@
       "settingsSections": [
         "theme-manager"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/theme-manager/web/index.tsx:50",
+          "kind": "screen",
+          "target": "theme-manager",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "todo-manager",
@@ -1943,13 +2163,20 @@
       "settingsSections": [
         "todo-manager"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/todo-manager/web/ui.tsx:37",
+          "kind": "screen",
+          "target": "todo-manager",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "token-control",
@@ -1969,13 +2196,20 @@
       "settingsSections": [
         "token-control"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/token-control/web/index.tsx:227",
+          "kind": "screen",
+          "target": "token-control",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "ui-review",
@@ -1996,13 +2230,20 @@
       "settingsSections": [
         "ui-review.tab"
       ],
-      "gear": false,
-      "gearInHeader": false,
+      "gear": true,
+      "gearInHeader": true,
       "settingsMenuItem": false,
-      "gears": [],
-      "missing": [
-        "gear"
-      ]
+      "gears": [
+        {
+          "at": "apps/console-web/plugins/ui-review/web/ui.tsx:265",
+          "kind": "screen",
+          "target": "ui-review",
+          "own": true,
+          "headerHint": true,
+          "shared": true
+        }
+      ],
+      "missing": []
     },
     {
       "folder": "voice-notes",
@@ -2023,15 +2264,16 @@
         "voice-notes"
       ],
       "gear": true,
-      "gearInHeader": false,
+      "gearInHeader": true,
       "settingsMenuItem": true,
       "gears": [
         {
-          "at": "apps/console-web/plugins/voice-notes/web/index.tsx:435",
+          "at": "apps/console-web/plugins/voice-notes/web/index.tsx:436",
           "kind": "screen",
           "target": "voice-notes",
           "own": true,
-          "headerHint": false
+          "headerHint": true,
+          "shared": true
         },
         {
           "at": "apps/console-web/plugins/voice-notes/web/menu.ts:7",
@@ -2092,7 +2334,7 @@
         "whats-shipped"
       ],
       "gear": true,
-      "gearInHeader": false,
+      "gearInHeader": true,
       "settingsMenuItem": false,
       "gears": [
         {
@@ -2100,7 +2342,8 @@
           "kind": "screen",
           "target": "whats-shipped",
           "own": true,
-          "headerHint": false
+          "headerHint": true,
+          "shared": true
         }
       ],
       "missing": []

@@ -79,7 +79,8 @@ check(pluginSettingsGearAddress(TAB) === 'button:plugin-settings-gear-voice-note
 check(pluginSettingsGearLabel('Voice notes', TAB) === 'Voice notes settings' && pluginSettingsGearLabel(undefined, TAB) === 'voice-notes settings', 'label is "<Plugin> settings", the tab id when no name');
 check(ADDRESS === 'view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes', 'the sub-tab address the gear opens');
 const fixture = JSON.parse(readFileSync(join(root, 'spec/fixtures/plugin-settings.json'), 'utf8'));
-check(fixture.out.address[TAB]?.address === ADDRESS, 'the fixture carries the same address');
+// the fixture's examples use fictional folders (sample-notes): the same address with that tab id
+check(fixture.out.address['sample-notes']?.address === ADDRESS.replace(`=${TAB}`, '=sample-notes'), 'the fixture carries the same address');
 
 /* ---- 2. the header in a plugin view ---- */
 {
