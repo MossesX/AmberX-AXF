@@ -16,7 +16,8 @@
         "target": "panel:gizmo-guide",
         "title": "Gizmo guide",
         "kind": "screen",
-        "text": "Narrated walkthroughs in a small floating window. Ask from Help → Ask Gizmo to show me… (action gizmo.ask): Gizmo answers, and when the answer is a walkthrough the window plays it step by step, moving the console, highlighting each spot and reading it aloud. Next, Previous, Repeat and Close, or the arrow keys and Escape. It never opens by itself on load; walkthroughs asked for from AmberX open here only with the opt-in switch. Settings → Plugins → Gizmo guide (settings.open:gizmo-guide). API: POST /api/plugins/gizmo-guide/ask, GET /api/plugins/gizmo-guide/walkthroughs, console_show function:gizmo.ask, axf console run gizmo.ask, voice \"ask Gizmo to show me …\"."
+        "text": "Narrated walkthroughs in a small floating window. Ask from Help → Ask Gizmo to show me…: Gizmo answers, and when the answer is a walkthrough the window plays it step by step, moving the console, highlighting each spot and reading it aloud. Next, Previous, Repeat and Close, or the arrow keys and Escape. It never opens by itself on load.",
+        "more": "Walkthroughs asked for from AmberX open here only with the opt-in switch (Settings → Plugins → Gizmo guide, settings.open:gizmo-guide). API: POST /api/plugins/gizmo-guide/ask, GET /api/plugins/gizmo-guide/walkthroughs, console_show function:gizmo.ask, axf console run gizmo.ask, voice \"ask Gizmo to show me …\"."
       },
       {
         "target": "close-the-walkthrough",

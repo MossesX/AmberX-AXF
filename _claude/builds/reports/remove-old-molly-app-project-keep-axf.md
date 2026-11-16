@@ -126,3 +126,10 @@ Removed together on every surface:
 
 The axf CLI had no Molly subcommand. Tests updated: agent-manager (178), agent-voice (41 + 22), gizmo-guide (20),
 AmberX server (172), AmberX web (2335).
+
+## Ratchets (s9)
+
+`chrome-baseline.json` (re-written: 18 files, 25 findings, unchanged), `conform-baseline.json` (286, unchanged) and the
+help coverage never counted a Molly file (apps/molly was outside their scans), so no count moved. Help coverage stays
+at 100% for console-web, axHub web and the framework; the new gizmo-guide help entry is within the 600-character rule.
+Glossary coverage is rebuilt in s13.
