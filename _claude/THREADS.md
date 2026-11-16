@@ -808,8 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 12:30 UTC · `refactor-profile-today` PR #140, note (all) · reconciler
-- 2026-11-16 12:30 UTC · `threads-after-129` PR #135, note (all) · reconciler
 - 2026-11-16 12:30 UTC · `threads-amberx-keep` PR #117, note (all) · reconciler
 - 2026-11-16 12:30 UTC · `threads-amberx-shell` PR #116, note (all) · reconciler
 - 2026-11-16 12:30 UTC · `threads-carry-on` PR #114, note (all) · reconciler
@@ -1208,6 +1206,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 18:29 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
 - 2026-11-16 18:30 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · builds-live
 - 2026-11-16 18:30 UTC · `owner-recognized-everywhere-veto` → pending (all) · mcp
+- 2026-11-16 18:30 UTC · `owner-recognized-everywhere-veto` → queued, note (all) · brett
+- 2026-11-16 18:30 UTC · `owner-recognized-everywhere-veto` note (all) · cli
 
 ## Token passes (log)
 
