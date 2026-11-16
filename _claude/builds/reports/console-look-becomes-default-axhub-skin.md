@@ -54,3 +54,9 @@ Spec: `framework/spec/APPEARANCE-SOURCE.md` → "The hub default skin: `defaultS
 - Font scale 80 is not in the skin: `axf.display.fontScale` is a per-app display setting, not a look key.
 - `axf validate --framework`: valid (545 assets).
 - `npx -y tsx framework/spec/skin-snapshot-diff.mts console-default <snapshot>` compiles the skin as the hub default (with the shared document's own token overrides removed, so the floor has to carry them) and diffs slots, the asset data behind each slot, colour and style tokens, spacing, hidden chrome and token settings: a fresh app on the floor 45 slots, 0 differences; the console after `adoptHubDefault` 45 slots, 0 differences; dark pair `fresh-dark` is a dark theme.
+
+## Bake (s8, Opus)
+- `shared-assets.mjs bake`: 529 shared assets (now with `skin/console-default`) baked into console-web, axhub-web, amberx-droid and molly. `shared-assets.mjs check`: 4 apps ship all 529, no own copies.
+- `rebake.mjs apply --force` for the same four: their baked `src/axf/{core,react,ui,schemas,libs}` were behind the framework (no hub-default engine, older `appearance.ts`, `skin-rules`, settings panel); `status` read them as "edited" only because merges had updated baked files without the lock. All four are `current` now; console `tsc --noEmit` passes.
+- Expenses has no baked `src/axf`: it is a peeled Next.js app on its vendored `@axf/core` + `axf-tokens`, so there is nothing for `rebake.mjs` to write; its six chrome-settings copies are checked by `chrome-settings.mjs check` (5 apps, 6 types each: pass). It takes the look from the hub like the others (s13).
+- `apps/demo` and `apps/walkthrough-studio` stay stale (left out of shared assets by Brett, Nov 1 2026).

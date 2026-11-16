@@ -1,0 +1,99 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "console-default",
+  "name": "Console (default)",
+  "version": "1.0.0",
+  "description": "The Dev Console's look as it stood on Nov 14 2026, made the hub default skin: Soft Studio on Arctic Daylight (Fresh Dark at night), classic IDE layout with the toolbar at the bottom, calm motion, compact type, density and sizing, the Amber signature nav, the AmberX banner folded into its group, tight spacing. Every app stands on it unless it picks its own skin; an app's own picks are drawn over it.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "light",
+    "dark",
+    "console",
+    "skin",
+    "professional"
+  ],
+  "data": {
+    "layoutTheme": "classic-ide",
+    "colorTheme": "arctic-daylight",
+    "colorThemes": {
+      "light": "arctic-daylight",
+      "dark": "fresh-dark"
+    },
+    "styleTheme": "soft-studio",
+    "behaviorTheme": "calm",
+    "assets": {
+      "action-button": "settings",
+      "agent-card": "backstage-pass",
+      "animated-logo": "amberx-anim-014",
+      "app-menu": "standard-desktop",
+      "avatar": "account",
+      "badge": "new",
+      "banner": "amberx-branded",
+      "branding": "amberx",
+      "button": "rounded-solid",
+      "clock": "digital-12h",
+      "container": "soft-card",
+      "context-menu": "compact-classic",
+      "counter": "alerts",
+      "density": "compact",
+      "dialog": "centered-modal",
+      "divider": "rule",
+      "dock-layout": "grid-2x2",
+      "gauge": "classic-arc",
+      "icon-pack": "amberx-outline",
+      "label": "version",
+      "link": "docs",
+      "logo": "wordmark",
+      "logo-mark": "amberx-lockup",
+      "meter": "striped-pill",
+      "nav-menu": "amber-signature",
+      "nav-style": "accordion",
+      "popup": "corner-solid",
+      "progress": "build",
+      "search-bar": "everything",
+      "settings": "standard",
+      "sizing": "compact",
+      "slider": "classic-round",
+      "spacer": "gap",
+      "status": "online",
+      "style-package": "amber-signature",
+      "tab-group": "underline",
+      "theme-switch": "fresh-day-night",
+      "toolbar": "standard-icons",
+      "typography": "compact"
+    },
+    "preview": {
+      "caption": "The console's look: Soft Studio on Arctic Daylight, toolbar at the bottom, compact and calm."
+    },
+    "extras": {
+      "spacing": "tight",
+      "hidden": {
+        "nav-menu": false,
+        "toolbar": false
+      },
+      "settings": {
+        "axf.tokens.style": {
+          "*": {
+            "opacityGlass": 0.7
+          }
+        },
+        "axf.tokens.layout": {
+          "*": {
+            "toolbarPosition": "bottom"
+          }
+        },
+        "axf.banners.group": {
+          "floating": false,
+          "folded": true,
+          "x": 0,
+          "y": 70,
+          "w": 0,
+          "h": 0
+        }
+      }
+    },
+    "iconPack": "amberx-outline"
+  }
+}
