@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:42 UTC · `molly-gap-console-warm-token` note (all) · orchestrator
 - 2026-11-16 16:42 UTC · `molly-gap-axhub-cors-live` note (all) · orchestrator
 - 2026-11-16 16:43 UTC · `molly-multi-instance-tabs` → archived, note (all) · cli
 - 2026-11-16 16:43 UTC · `molly-one-shell` → archived, note (all) · cli
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:17 UTC · `banner-widget-shapes-more-than-circle` s20 done (all) · foreign-write
 - 2026-11-16 20:17 UTC · `banner-widget-shapes-more-than-circle` s21 done (all) · orchestrator
 - 2026-11-16 20:18 UTC · `banner-widget-shapes-more-than-circle` s22 done (all) · orchestrator
+- 2026-11-16 20:19 UTC · `banner-widget-shapes-more-than-circle` s23 done (all) · orchestrator
 
 ## Token passes (log)
 
