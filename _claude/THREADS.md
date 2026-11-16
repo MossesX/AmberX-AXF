@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:44 UTC · `auto-lander-grid-one-row-per-build` s4 done (all) · orchestrator
 - 2026-11-16 19:45 UTC · `fix-red-ci-blocked-builds-they-land` s20 done (all) · orchestrator
 - 2026-11-16 19:45 UTC · `auto-lander-grid-one-row-per-build` s3 done, → complete (all) · orchestrator
 - 2026-11-16 19:46 UTC · `auto-lander-grid-one-row-per-build` note (all) · orchestrator
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:39 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
 - 2026-11-16 23:39 UTC · `axhub-veto-countdown-setting-read-only` s6 done (all) · orchestrator
 - 2026-11-16 23:40 UTC · `amberx-open-url-must-open-page-even-when` s12 done (all) · orchestrator
+- 2026-11-16 23:40 UTC · `axhub-veto-countdown-setting-read-only` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
