@@ -6,11 +6,11 @@
     "nav": 16,
     "tabGroups": 27,
     "tabs": 78,
-    "settingsTabs": 71,
+    "settingsTabs": 72,
     "settings": 89,
-    "functions": 274,
+    "functions": 280,
     "buttons": 62,
-    "plugins": 71
+    "plugins": 72
   },
   "views": [
     {
@@ -2057,6 +2057,13 @@
       "label": "Audio Output Recorder",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.output-recorder"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=pending-banner",
+      "id": "pending-banner",
+      "label": "Pending banner",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.pending-banner"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-commands",
@@ -6077,6 +6084,107 @@
       "file": "plugins/output-recorder/web/index.tsx"
     },
     {
+      "address": "function:pending-banner.open",
+      "kind": "function",
+      "id": "pending-banner.open",
+      "label": "Show the Pending banner (or one pending build: pending-banner.open:<id>)",
+      "detail": "Action · Pending banner",
+      "keywords": [
+        "pending-banner.open",
+        "pending",
+        "banner",
+        "open"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.pending-banner",
+      "file": "plugins/pending-banner/web/index.tsx"
+    },
+    {
+      "address": "function:pending-banner.queue",
+      "kind": "function",
+      "id": "pending-banner.queue",
+      "label": "Send pending builds to the Queue (pending-banner.queue:<id,id>)",
+      "detail": "Action · Pending banner",
+      "keywords": [
+        "pending-banner.queue",
+        "pending",
+        "banner",
+        "queue"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.pending-banner",
+      "file": "plugins/pending-banner/web/index.tsx"
+    },
+    {
+      "address": "function:pending-banner.queue-all",
+      "kind": "function",
+      "id": "pending-banner.queue-all",
+      "label": "Send every pending build to the Queue",
+      "detail": "Action · Pending banner",
+      "keywords": [
+        "pending-banner.queue-all",
+        "pending",
+        "banner",
+        "queue",
+        "all"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.pending-banner",
+      "file": "plugins/pending-banner/web/index.tsx"
+    },
+    {
+      "address": "function:pending-banner.hold",
+      "kind": "function",
+      "id": "pending-banner.hold",
+      "label": "Put pending builds in the Queue on hold (pending-banner.hold:<id,id>)",
+      "detail": "Action · Pending banner",
+      "keywords": [
+        "pending-banner.hold",
+        "pending",
+        "banner",
+        "hold"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.pending-banner",
+      "file": "plugins/pending-banner/web/index.tsx"
+    },
+    {
+      "address": "function:pending-banner.archive",
+      "kind": "function",
+      "id": "pending-banner.archive",
+      "label": "Archive pending builds (pending-banner.archive:<id,id>)",
+      "detail": "Action · Pending banner",
+      "keywords": [
+        "pending-banner.archive",
+        "pending",
+        "banner",
+        "archive"
+      ],
+      "effect": "destructive",
+      "params": true,
+      "destructive": true,
+      "plugin": "ai.amberx.axf.console.pending-banner",
+      "file": "plugins/pending-banner/web/index.tsx"
+    },
+    {
+      "address": "function:pending-banner.check",
+      "kind": "function",
+      "id": "pending-banner.check",
+      "label": "Check the Pending list now",
+      "detail": "Action · Pending banner",
+      "keywords": [
+        "pending-banner.check",
+        "pending",
+        "banner",
+        "check"
+      ],
+      "effect": "read",
+      "plugin": "ai.amberx.axf.console.pending-banner",
+      "file": "plugins/pending-banner/web/index.tsx"
+    },
+    {
       "address": "function:plan-studio.open",
       "kind": "function",
       "id": "plan-studio.open",
@@ -9907,6 +10015,30 @@
       "provides": [],
       "requires": [],
       "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.pending-banner",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.pending-banner",
+      "label": "Pending banner",
+      "folder": "pending-banner",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "pending-banner",
+        "Pending banner",
+        "A banner listing every build waiting in Pending, with a count badge"
+      ],
+      "aliases": [
+        "pending-banner",
+        "pending banner"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=pending-banner",
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "ai.amberx.axf.console.build-orchestrator"
+      ]
     },
     {
       "address": "plugin:ai.amberx.axf.console.plan-studio",

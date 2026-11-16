@@ -1,0 +1,19 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "pending.landed",
+      "label": "A build landed in Pending",
+      "group": "builds",
+      "app": "console",
+      "source": "Pending banner",
+      "description": "A build arrived in Pending: new from a request, or fallen back from a run (with why). One notice per build, pushed to AmberX; it clears once the build leaves Pending (queued, held, archived).",
+      "match": {
+        "source": "pending-banner",
+        "keyPrefix": "pending-banner:landed:"
+      },
+      "push": true,
+      "priority": "high"
+    }
+  ]
+}

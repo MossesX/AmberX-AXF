@@ -1,0 +1,23 @@
+/* Pending banner: same shape as the approvals and systems check banners. Theme tokens only; controls are the framework's. */
+.axp-pending-banner { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-pending-banner__head { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); flex-wrap: wrap; min-width: 0 }
+/* a row you tap (data-fx-row); `button.` outranks the framework row reset */
+button.axp-pending-banner__text { all: unset; flex: 1 1 0; min-width: 0; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); font-weight: 600; cursor: pointer; white-space: nowrap; overflow: hidden }
+.axp-pending-banner__text:focus-visible, .axp-pending-banner__more:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-pending-banner__headline { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis }
+/* the count badge: a pill (shape stays fixed), accent from the theme */
+.axp-pending-banner__count { flex: 0 0 auto; min-width: calc(var(--fx-font-size) * 1.5); padding: 0 var(--fx-dens-gap-sm); border-radius: 999px; background: var(--fx-accent); color: var(--fx-accent-text); font-variant-numeric: tabular-nums; text-align: center; font-size: var(--fx-type-root-sm) }
+.axp-pending-banner__acts { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex: 0 0 auto; flex-wrap: wrap }
+.axp-pending-banner__row { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-xl); min-width: 0; border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md) }
+.axp-pending-banner__row[data-why='fell-back'] .axp-pending-banner__why { color: var(--fx-warning) }
+.axp-pending-banner__body { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-pending-banner__line { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-pending-banner__title { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-pending-banner__steps { flex: 0 0 auto; font-variant-numeric: tabular-nums; white-space: nowrap }
+.axp-pending-banner__what, .axp-pending-banner__why { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-pending-banner__flat { margin: 0 }
+.axp-pending-banner__hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+button.axp-pending-banner__more { all: unset; cursor: pointer; padding-left: var(--fx-dens-gap-4xl) }
+/* Phones: the moves wrap under the text instead of squeezing it */
+:where([data-fx-narrow]) .axp-pending-banner__row { flex-wrap: wrap }
+:where([data-fx-narrow]) .axp-pending-banner__row > .axp-pending-banner__acts { flex-basis: 100% }

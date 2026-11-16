@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "pending-banner-help",
+  "name": "Pending banner help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Pending banner.",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:pending-banner",
+    "entries": [
+      { "target": "pending-queue-all", "title": "Send all to Queue", "text": "Moves every build waiting in Pending to the Queue in one tap. The dispatcher starts each one when a slot and an account for its model are free." },
+      { "target": "pending-queue-picked", "title": "Queue the ticked builds", "text": "Moves just the builds you ticked to the Queue." },
+      { "target": "pending-hold-picked", "title": "Hold the ticked builds", "text": "Moves the ticked builds into the Queue on hold: they keep their place, and nothing starts until you release them in the orchestrator." },
+      { "target": "pending-archive-picked", "title": "Archive the ticked builds", "text": "Moves the ticked builds to the Archive. You can bring them back from the orchestrator's Archive tab." },
+      { "target": "pending-banner", "title": "Pending banner settings", "text": "What the Pending banner shows now, a check-now button and how to reach the same moves from the API, MCP, the CLI and voice." },
+      { "target": "banner:pending", "title": "Pending builds", "text": "Every build waiting in Pending: what it does, its priority, steps done and why it is there (new, or fell back from a run). Queue, Hold, Archive or Open each one, tick several for a bulk move, or send them all to the Queue.", "kind": "screen" }
+    ]
+  }
+}
