@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:35 UTC · `gate-rules-plugin-in-the-console` note (all) · pipeline
 - 2026-11-15 12:35 UTC · `data-container-axf-data-holds-all` s10 done (all) · orchestrator
 - 2026-11-15 12:35 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
 - 2026-11-15 12:36 UTC · `vps-sends-shipped-features-every-merge` → pending, note (all) · pipeline
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 14:19 UTC · `vps-sends-shipped-features-every-merge` s16 done (all) · orchestrator
 - 2026-11-16 14:22 UTC · `vps-sends-shipped-features-every-merge` s17 done, → built (all) · orchestrator
 - 2026-11-16 14:23 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
+- 2026-11-16 14:23 UTC · `vps-sends-shipped-features-every-merge` s17 undone, → running, note (all) · foreign-write
 
 ## Token passes (log)
 
