@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6745,
- "updatedAt": "2026-11-16T19:30:53.817Z",
+ "rev": 6746,
+ "updatedAt": "2026-11-16T19:31:06.449Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246646,7 +246646,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:16:56.830Z",
-   "updatedAt": "2026-11-16T19:30:15.854Z",
+   "updatedAt": "2026-11-16T19:30:58.222Z",
    "builtAt": "",
    "notes": [
     {
@@ -246691,12 +246691,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T19:17:11.838Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-pending-banner-list-every-pending-build--rhonda",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T19:19:49.423Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:19:19.385Z",
@@ -246706,9 +246706,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0de3e76f-e459-4f5e-a5b9-961ef7386bb3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:19:49.423Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -246717,7 +246717,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:19:49.423Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -246760,12 +246760,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:30:58.222Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:19:19.385Z",
-     "updatedAt": "2026-11-16T19:19:19.385Z"
+     "updatedAt": "2026-11-16T19:30:58.641Z"
     },
     {
      "id": "s3",
