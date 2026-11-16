@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:59:47.992Z",
+ "updatedAt": "2026-11-16T22:59:59.169Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -167647,21 +167647,64 @@
    "title": "Icon packs with drag-drop pack designer",
    "category": "",
    "detail": "FABLE build, fresh on current main, replacing the stale icon-map-icon-packs-every-icon-badge-app (archived). Icon map of every icon spot in every app (icons, badges, app icons). Icon packs swap any or all of them per app or hub-wide, with reset. Very powerful, polished, easy drag-and-drop Icon Pack Designer with live preview. Randomly generated icons and whole packs. Import icons from many sources (open icon libraries, SVG/PNG upload, URLs, other packs). Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-16T22:59:46.098Z",
+   "updatedAt": "2026-11-16T22:59:49.081Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T22:59:49.081Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "Use Fable. Very powerful, nice, easy to use drag and drop, random generated ones, import icons from different sources. Make it sick.",
     "at": "2026-11-16T22:59:46.098Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "banner-widget-shapes-plus-change-icon",
+   "title": "Banner widget shapes plus change icon",
+   "category": "",
+   "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-16T22:59:51.546Z",
+   "updatedAt": "2026-11-16T22:59:55.906Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T22:59:55.906Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Rebuild.",
+    "at": "2026-11-16T22:59:51.546Z",
     "source": "",
     "session": "",
     "link": "",
