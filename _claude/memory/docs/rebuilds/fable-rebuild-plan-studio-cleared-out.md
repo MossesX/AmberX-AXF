@@ -97,8 +97,7 @@ the CLI and voice, because all of them call one pure core (`web/tree-core.mjs`) 
   test 109/109 with the new phrasebook.
 
 ## Known gaps
-- `check-console-control.mjs` is red on this branch and on main for the same reason: a tab row in
-  `plugins/claude-settings/web/index.tsx:234` uses a run-time id. Not from this build.
+- `check-console-control.mjs` was red on main (a Claude settings tab row whose id came from a constant); fixed in s3.
 - No screenshots or ui-choices options: this worktree has no built console to capture from; the page follows the
   framework controls and tokens and the plugin-pages design check. First live run should capture one shot of the tree
   and the context menu (`axf shot … --group "fable-rebuild-plan-studio-cleared-out"`).
@@ -106,3 +105,14 @@ the CLI and voice, because all of them call one pure core (`web/tree-core.mjs`) 
   `plugin.json` and verified by `plugin-commands.mjs check`.
 - `plan-tree@1` lives in the plugin; if a second consumer appears (AmberX offline, axHub), promote it to
   `framework/core/engines/` with a fixture.
+
+## Phase 2 (s2, Opus): page layouts
+- **Added:** `web/layout-core.mjs` (+ `.d.mts`) and `web/layout.tsx`. The page is four sections (Tree, Editor, Say,
+  Trash) shown as a nav menu (default), a TabGroup across the top, or IDE dockable panes with a TabGroup in each pane
+  (drag between panes, drop into another tab group, split on edges, resize, close, reopen). IDE arrangements come from
+  the framework's `dock-layout@1` assets, the same ones the original Plan Studio's layouts build uses.
+- **Changed:** the Tree · Trash tab row (`plan-studio-2.tabs`) is gone; its place is the layout. Tab rows are now
+  `plan-studio-2.sections` (tabs layout) and `plan-studio-2.pane` (IDE). The command box is its own section (Say).
+- **API:** actions `plan-studio-2.layout`, `.dock`, `.section`, `.collapse-all`, `.expand-all`; settings
+  `plan-studio-2.pageLayout`, `.dock`, `.tab`. No server routes or contracts changed.
+- **Tests:** 14 → 17 checks. Build report: `_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md`.
