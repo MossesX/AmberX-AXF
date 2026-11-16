@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 15:01 UTC · `shipped-features-open-button-views-each` s3 done (all) · orchestrator
 - 2026-11-15 15:02 UTC · `build-rules-tab-gate-rules-vps-owns` s11 done (all) · orchestrator
 - 2026-11-15 15:02 UTC · `shipped-features-open-button-views-each` s4 done (all) · orchestrator
 - 2026-11-15 15:02 UTC · `phone-connect-small-android-companion` s7 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:45 UTC · `remove-old-molly-app-project-keep-axf` s14 done (all) · orchestrator
 - 2026-11-16 16:46 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s2 done, s4 done, s5 done, s6 done, s7 done, s8 done, s10 done (all) · foreign-write
 - 2026-11-16 16:46 UTC · `molly-gap-expenses-cors` → queued, note (all) · pipeline
+- 2026-11-15 01:25 UTC · `molly-gap-expenses-cors` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:47:09.564Z",
+ "updatedAt": "2026-11-16T16:47:25.713Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107199,7 +107199,7 @@
    "title": "Molly gap: Expenses allows Molly's origin on /api/expenses/v1/* (CORS with credentials) so native screens read the ledger",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://expenses.amberxai.com/api/expenses/v1/entries?limit=1 answers 401 with no Access-Control-Allow-Origin and the preflight answers 204 with no CORS headers, so a browser on Molly cannot call the ledger API with the axs_session cookie. The route handler (apps/expenses/app/api/expenses/v1/[...path]/route.ts, or proxy.ts) should answer an allow-list of amberxai.com app origins with Access-Control-Allow-Origin echoing the origin, Allow-Credentials true, Allow-Headers content-type, accept, authorization, x-expenses-user, Allow-Methods GET POST PATCH OPTIONS, Vary Origin, and an OPTIONS handler. Molly side is in place: apps/molly/src/molly/credentials.ts (expenses provider: cookie session or bearer token + X-Expenses-User).",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
@@ -107207,7 +107207,7 @@
    "pr": "#701",
    "createdAt": "2026-11-10T22:09:28.380Z",
    "updatedAt": "2026-11-16T16:47:07.511Z",
-   "builtAt": "",
+   "builtAt": "2026-11-16T16:47:07.511Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -107323,8 +107323,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-15T01:25:29.049Z",
      "note": "",
      "uid": "st-mwb8vf7w06zan6",
      "createdAt": "2026-11-10T22:11:15.788Z"
