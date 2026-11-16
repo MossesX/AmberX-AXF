@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:54 UTC · `duplicate-gate-vps-checks-shipped` s4 done (all) · orchestrator
 - 2026-11-16 13:54 UTC · `ui-manager-floating-window-to-select-any` s14 done, note (all) · orchestrator
 - 2026-11-16 13:55 UTC · `duplicate-gate-vps-checks-shipped` note (all) · orchestrator
 - 2026-11-16 13:55 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:20 UTC · `pending-banner-list-every-pending-build` note (all) · orchestrator
 - 2026-11-16 19:20 UTC · `toolbars-moved-to-side-become-vertical` added (0 steps) (all) · console
 - 2026-11-16 19:20 UTC · `toolbars-moved-to-side-become-vertical` → queued, note (all) · console
+- 2026-11-16 19:20 UTC · `toolbars-moved-to-side-become-vertical` note (all) · mcp
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:20:20.505Z",
+ "updatedAt": "2026-11-16T19:20:34.994Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161382,7 +161382,7 @@
    "title": "Toolbars moved to the side become a vertical column next to the content",
    "category": "",
    "detail": "When any toolbar is moved to the left or right (Move from its context menu, settings, API), it must render as a vertical column beside the content: buttons stacked top to bottom, the content area beside it takes the remaining width, nothing pushed down. Top/bottom stay horizontal rows. Applies to every toolbar asset in every app (framework layout rule, tokens only), snaps without overlapping neighbours, collapses to icons when narrow, phone falls back sensibly. Add a test that a left/right toolbar never adds height above the content. Same placement via REST, MCP, CLI, voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -161390,9 +161390,13 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:20:15.430Z",
+   "updatedAt": "2026-11-16T19:20:26.286Z",
    "builtAt": "",
    "notes": [
+    {
+     "text": "Brett Nov 16: same for tab bars / tab groups (framework TabGroup on the tab-group asset): moved left or right, they render as a vertical tab column beside the content, never pushing content down.",
+     "at": "2026-11-16T19:20:26.286Z"
+    },
     {
      "text": "Queued by console.",
      "at": "2026-11-16T19:20:15.430Z"
