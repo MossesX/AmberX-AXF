@@ -35,7 +35,7 @@ import console_context as cx
 router = APIRouter()
 
 PLUGIN_DIR = Path(__file__).resolve().parents[1]
-ROOT = PLUGIN_DIR.parents[2]  # the repo root
+ROOT = PLUGIN_DIR.parents[3]  # the repo root (plugins/<folder> → plugins → console-web → apps → root)
 PIPELINE = ROOT / "apps" / "console-web" / "plugins" / "build-orchestrator" / "pipeline.mjs"
 ALERT_SOURCE = "pending-banner"
 ALERT_PREFIX = "pending-banner:landed:"
@@ -45,7 +45,7 @@ CHECK_S = 60
 CACHE_S = 5
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 # Notes the orchestrator writes when a build goes (back) to Pending: the latest one says why it is there.
-FALLBACK_NOTE = re.compile(r"(back to pending|back in pending|held in pending|in pending|returned|fell back|stopped early|ran out|usage limit|session ended)", re.I)
+FALLBACK_NOTE = re.compile(r"(back to pending|back in pending|held in pending|in pending|returned|fell back|stopped early|ran out|usage limit|session ended|paused|no live session)", re.I)
 
 
 def data_dir() -> Path:
@@ -126,6 +126,9 @@ def why_pending(row: dict[str, Any], build: dict[str, Any]) -> dict[str, str]:
         if note:
             parts.append(_text(note.get("text"), 300))
         return {"kind": "fell-back", "text": " ".join(parts)[:400], "at": str((last or {}).get("at") or (note or {}).get("at") or "")}
+    if done:  # it ran before (steps are ticked) but left no run record or note saying how it came back
+        total = int((row.get("steps") or {}).get("total") or 0)
+        return {"kind": "fell-back", "text": f"Stopped with {done} of {total} steps done; no note on why.", "at": str(row.get("updatedAt") or "")}
     return {"kind": "new", "text": "New: waiting for its first trip to the Queue.", "at": str(row.get("createdAt") or "")}
 
 

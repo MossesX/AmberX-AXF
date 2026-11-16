@@ -105,8 +105,16 @@ build("alpha", "Alpha build", said="Make the alpha thing work.")
 build("beta", "Beta build", done=2, total=5, last={"at": "2026-11-16T12:00:00Z", "outcome": "returned", "stepsLeft": 3, "account": "max-1"},
       notes=[{"text": "Queued by Brett.", "at": "x"}, {"text": "Back to Pending (dispatcher): the session ended with 3 steps left.", "at": "y"}], priority="High")
 build("gamma", "Gamma build", detail="Adds a gamma. More words follow here.", priority="")
+build("theta", "Theta build", done=4, total=9, notes=[{"text": "Reconciler: paused: no live session or process runs it (worktree kept); was running", "at": "z"}])
+build("iota", "Iota build", done=1, total=2)
 write_store()
 
+r = c.get(f"{P}/list?fresh=true").json()
+ok(r["rows"][3]["why"]["kind"] == "fell-back" and "paused" in r["rows"][3]["why"]["text"], "why: a reconciler pause counts as falling back")
+ok(r["rows"][4]["why"]["kind"] == "fell-back" and "1 of 2 steps done" in r["rows"][4]["why"]["text"], "why: steps already done without a note still says it fell back")
+for gone in ("theta", "iota"):
+    BUILDS.pop(gone)
+write_store()
 r = c.get(f"{P}/list?fresh=true").json()
 ok(r["count"] == 3 and [x["id"] for x in r["rows"]] == ["alpha", "beta", "gamma"], "list: every Pending build, in the orchestrator's order")
 rows = {x["id"]: x for x in r["rows"]}
