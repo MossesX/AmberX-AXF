@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6536,
- "updatedAt": "2026-11-16T16:40:55.509Z",
+ "rev": 6537,
+ "updatedAt": "2026-11-16T16:41:16.425Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242143,7 +242143,7 @@
    "title": "Re-sync stuck branches so the lander can push them",
    "category": "",
    "detail": "Split from get-main-green-unblock-lander-land-axf. 1) Re-sync the 4 branches whose push failed because local and GitHub differ: server-gate-one-session-per-build-no, one-source-truth-console-shows-only-what, console-axhub-retry-failed-calls, demo-video-series-three-minute-browser (keep both sides' commits; never force-delete work). 2) Drop the stray branch merge-main-land-one-source-truth-console and the stray land-native-bridge-mic. 3) auto-lander-controls-in-the-gate-plugin: commit its uncommitted worktree changes if they belong to the build, otherwise drop them; regenerate inventory.json; keep both sides in framework/cli/axf.mjs. Then let the auto-lander take them. Do NOT touch axf-data / Postgres branches.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -242152,7 +242152,7 @@
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
    "updatedAt": "2026-11-16T16:40:52.641Z",
-   "builtAt": "",
+   "builtAt": "2026-11-16T16:40:52.641Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -242462,12 +242462,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:40:36.300Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:32:36.505Z",
-     "updatedAt": "2026-11-16T16:32:36.505Z"
+     "updatedAt": "2026-11-16T16:40:36.675Z"
     }
    ],
    "profiles": [
@@ -242478,7 +242478,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
