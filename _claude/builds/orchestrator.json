@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:19:58.151Z",
+ "updatedAt": "2026-11-16T23:20:14.774Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142445,19 +142445,23 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-14T17:52:20.336Z",
+   "updatedAt": "2026-11-16T23:20:12.320Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 15 steps (2 Fable).",
      "at": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:12.320Z"
     }
    ],
    "approvals": [],

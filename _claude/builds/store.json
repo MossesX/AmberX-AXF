@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7002,
- "updatedAt": "2026-11-16T23:19:58.151Z",
+ "rev": 7003,
+ "updatedAt": "2026-11-16T23:20:14.774Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -222536,19 +222536,23 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-14T17:52:20.336Z",
+   "updatedAt": "2026-11-16T23:20:12.320Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 15 steps (2 Fable).",
      "at": "2026-11-14T17:47:32.020Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:12.320Z"
     }
    ],
    "approvals": [],
@@ -222566,8 +222570,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-16T23:20:10.359Z",
+    "queuedBy": "brett",
     "account": "",
     "session": "",
     "slot": "",
@@ -223183,7 +223187,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
