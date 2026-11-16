@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6788,
- "updatedAt": "2026-11-16T19:48:33.258Z",
+ "rev": 6789,
+ "updatedAt": "2026-11-16T19:48:48.819Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247114,7 +247114,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:48:21.694Z",
+   "updatedAt": "2026-11-16T19:48:46.482Z",
    "builtAt": "2026-11-16T19:48:18.308Z",
    "notes": [
     {
@@ -247152,6 +247152,10 @@
     {
      "text": "Reconciler: branch claude/toolbars-moved-to-side-become-vertical (no PR yet)",
      "at": "2026-11-16T19:41:08.651Z"
+    },
+    {
+     "text": "Headless run axf-toolbars-moved-to-side-become-vertical--joey: brief only · start 15.9K tokens ($0.05) · cost $4.66 · 117 turns · 6 tools, MCP none",
+     "at": "2026-11-16T19:48:46.482Z"
     },
     {
      "text": "All 3 steps done. Not from this build: check-console-control fails on main at apps/console-web/plugins/claude-settings/web/index.tsx:234 (a tab group with no address). Layout toolbarPosition enum widened on Opus (additive); a Fable review can confirm.",
