@@ -18,6 +18,12 @@ import { dbfs, type VoiceConfig } from './plugins/voice/web/handsfree';
 import { setVetoHost, type VetoState } from './axf/libs/hub/veto';
 import { FATAL_RECOGNITION, QUICK_END_MS, restartDelay } from './listeners';
 
+/** open-url-route@1 on the phone (Java OpenUrlRoute / AxppLink.openPage). */
+export type OpenPagesGrant = 'overlay' | 'full-screen' | 'notifications';
+export interface OpenPagesAttempt { route: string; opened: boolean; reason: string }
+export interface OpenPagesResult { url: string; route: string; opened: boolean; notified: boolean; reason: string; attempts?: OpenPagesAttempt[]; at?: number }
+export interface OpenPagesState { overlay: boolean; fullScreenIntent: boolean; notifications: boolean; consoleSignedIn: boolean; overlayReady: boolean; locked: boolean; order: string[]; last: OpenPagesResult | null }
+
 export interface MonitorConfig {
   hub: string;
   /** seconds between checks, 15–300 */
@@ -117,6 +123,12 @@ export interface NativeApi {
   overlayPermission(): Promise<{ allowed: boolean }>;
   /** Ask for the microphone + notifications (Android 13+) permissions. */
   permissions(): Promise<{ microphone: boolean; notifications: boolean }>;
+  /** Settings → Open pages: what AmberX may use to open a page (open-url-route@1) and the last open_url result. */
+  openPagesState(): Promise<OpenPagesState>;
+  /** Opens the Android screen that grants overlay ("Display over other apps"), full-screen notices or notifications. */
+  openPagesGrant(opts: { which: OpenPagesGrant }): Promise<{ opened: boolean; which: OpenPagesGrant; error?: string }>;
+  /** Test open: open_url's route order on a page (default the Dev Console) → the result (route, opened, reason, attempts). */
+  openPagesTest(opts?: { url?: string; where?: 'auto' | 'console' | 'overlay' | 'browser' }): Promise<OpenPagesResult>;
   /**
    * Veto calls (the veto banner plugin, console `plugins/approvals-banner`, through lib-hub's `setVetoHost`): Deny,
    * Approve now or Shelve with the phone's hub session (POST /auth/api/approvals/<id>/<action>, hub Origin + CSRF; Java
@@ -452,6 +464,14 @@ const web: NativeApi = {
   },
   async voiceStatus() { return { listening: webVoice.listening, microphone: webVoice.stream !== null, overlayAllowed: false }; },
   async overlayPermission() { return { allowed: false }; },
+  // Open pages in a browser: nothing to grant; Test open opens the page in a new tab (the console-tab route is the phone's)
+  async openPagesState() { return { overlay: false, fullScreenIntent: false, notifications: false, consoleSignedIn: false, overlayReady: false, locked: false, order: [], last: null }; },
+  async openPagesGrant({ which }) { return { opened: false, which, error: 'browser' }; },
+  async openPagesTest(opts) {
+    const url = opts?.url ?? 'https://console.amberxai.com/';
+    const w = typeof window !== 'undefined' ? window.open(url, '_blank') : null;
+    return { url, route: w ? 'direct' : 'none', opened: !!w, notified: false, reason: w ? 'direct-start' : 'attempt-failed' };
+  },
   // Veto calls in a browser: the banner plugin rings its own alarm and opens the hub page for Deny / Approve / Shelve
   // (the hub only takes them under its own Origin).
   async vetoAction() { return { ok: false, error: 'browser' }; },

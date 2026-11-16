@@ -630,4 +630,63 @@ public class AmberxNativePlugin extends Plugin {
         boolean notify = Build.VERSION.SDK_INT < 33 || getPermissionState("notifications") == PermissionState.GRANTED;
         call.resolve(new JSObject().put("microphone", getPermissionState("microphone") == PermissionState.GRANTED).put("notifications", notify));
     }
+
+    /* ---------------------------------------------------------------- Open pages (open-url-route@1 on the phone) */
+
+    /**
+     * Settings → Open pages and the bridge's state read: what AmberX may use to put a page on screen (Display over other
+     * apps, full-screen notices, notifications, signed in to the console) and the last open_url result.
+     */
+    @PluginMethod
+    public void openPagesState(PluginCall call) {
+        try {
+            OpenUrlRoute.Phone p = AxppLink.phoneNow(getContext(), "auto");
+            JSObject o = new JSObject()
+                .put("$axf", OpenUrlRoute.SCHEMA)
+                .put("overlay", p.overlay).put("fullScreenIntent", p.fullScreenIntent).put("notifications", p.notifications)
+                .put("consoleSignedIn", p.consoleSignedIn).put("overlayReady", p.overlayReady).put("locked", p.locked)
+                .put("order", new org.json.JSONArray(OpenUrlRoute.order(p)));
+            org.json.JSONObject last = AxppLink.last(getContext());
+            o.put("last", last == null ? org.json.JSONObject.NULL : last);
+            call.resolve(o);
+        } catch (Exception e) {
+            call.reject(String.valueOf(e.getMessage()));
+        }
+    }
+
+    /** Opens the Android settings screen that grants [which]: overlay, full-screen or notifications. */
+    @PluginMethod
+    public void openPagesGrant(PluginCall call) {
+        String which = call.getString("which", "overlay");
+        android.content.Context c = getContext();
+        android.content.Intent i;
+        if ("full-screen".equals(which) && Build.VERSION.SDK_INT >= 34) {
+            i = new android.content.Intent(android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, android.net.Uri.parse("package:" + c.getPackageName()));
+        } else if ("notifications".equals(which) || "full-screen".equals(which)) {
+            i = new android.content.Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, c.getPackageName());
+        } else {
+            i = DetectionOverlay.permissionIntent(c);
+        }
+        try {
+            getActivity().startActivity(i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK));
+            call.resolve(new JSObject().put("opened", true).put("which", which));
+        } catch (RuntimeException e) {
+            call.resolve(new JSObject().put("opened", false).put("which", which).put("error", String.valueOf(e.getMessage())));
+        }
+    }
+
+    /** Test open: runs open_url's route order on [url] (default the Dev Console) and resolves with the result. */
+    @PluginMethod
+    public void openPagesTest(PluginCall call) {
+        String raw = call.getString("url", OverlayPageRules.HOME);
+        String where = call.getString("where", "auto");
+        io.execute(() -> {
+            try {
+                String url = OpenUrlRules.allowed(raw);
+                call.resolve(js(AxppLink.openPage(getContext(), url, "chrome", where)));
+            } catch (Exception e) {
+                call.reject(String.valueOf(e.getMessage()));
+            }
+        });
+    }
 }

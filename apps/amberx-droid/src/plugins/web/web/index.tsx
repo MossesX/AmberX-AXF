@@ -13,6 +13,7 @@ import type { Item } from '../../notes/web/core';
 import { addItem, addList, flatTree, type Store } from '../../notes/web/core';
 import { mutate, useNotes } from '../../notes/web/store';
 import { MAX_TABS, WEB_LIST, clipToItem, hostOf, toUrl } from './core';
+import { OPEN_PAGES_TAB, OpenPagesPanel } from './OpenPages';
 import './web.css';
 
 const ID = 'ai.amberx.amberx.web';
@@ -176,7 +177,11 @@ export const library: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-10-27' },
   views: { web: { title: 'Web', icon: 'monitor', keywords: ['web', 'browser', 'page', 'bookmark', 'clip', 'link'], render: () => <WebView /> } },
   nav: { label: 'Work', items: [{ id: 'web', label: 'Web', icon: 'monitor', view: 'web' }] },
-  settingsTabs: [{ id: 'web', label: 'Web', icon: 'monitor', order: 60, parent: 'plugins' }],
+  settingsTabs: [
+    { id: 'web', label: 'Web', icon: 'monitor', order: 60, parent: 'plugins' },
+    { id: OPEN_PAGES_TAB, label: 'Open pages', icon: 'external-link', order: 61, parent: 'plugins', description: 'How AmberX opens a page Amber asks for: permissions, the order it tries, Test open' },
+  ],
+  settingsPanels: [{ id: 'amberx.open-pages', tab: OPEN_PAGES_TAB, title: 'Open pages', icon: 'external-link', order: 0, render: () => <OpenPagesPanel /> }],
   settings: [{
     id: 'amberx.web', label: 'Web', icon: 'monitor', tab: 'web', settings: [
       { key: K.home, label: 'Open on start', kind: 'text', default: '', description: 'An address to open in a tab when AmberX starts (empty = none).' },
