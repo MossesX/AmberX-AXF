@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:57 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · pipeline
 - 2026-11-16 13:56 UTC · `demo-video-series-three-minute-browser` s3 done, note (all) · reconciler
 - 2026-11-16 13:56 UTC · `vps-sends-shipped-features-every-merge` s12 done, note (all) · reconciler
 - 2026-11-16 13:57 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:21 UTC · `auto-lander-grid-one-row-per-build` note (all) · orchestrator
 - 2026-11-16 19:22 UTC · `toolbars-moved-to-side-become-vertical` note (all) · mcp
 - 2026-11-16 19:22 UTC · `auto-lander-grid-one-row-per-build` note (all) · builds-live
+- 2026-11-16 19:22 UTC · `reset-all-button-every-asset-override` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
