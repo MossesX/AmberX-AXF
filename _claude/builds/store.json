@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6902,
- "updatedAt": "2026-11-16T20:49:53.100Z",
+ "rev": 6903,
+ "updatedAt": "2026-11-16T20:50:17.271Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244384,7 +244384,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T20:49:51.101Z",
+   "updatedAt": "2026-11-16T20:50:14.801Z",
    "builtAt": "2026-11-16T20:49:51.102Z",
    "notes": [
     {
@@ -244462,6 +244462,10 @@
     {
      "text": "Brief only: brief is 29603 characters (~7401 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-16T19:08:27.711Z"
+    },
+    {
+     "text": "Headless run axf-settings-interface-gear-every-plugin--sully: brief only · start 19.2K tokens ($0.07) · cost $26.28 · 341 turns · 6 tools, MCP none",
+     "at": "2026-11-16T20:50:14.801Z"
     }
    ],
    "approvals": [
@@ -245245,7 +245249,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
