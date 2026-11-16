@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6809,
- "updatedAt": "2026-11-16T19:58:03.849Z",
+ "rev": 6810,
+ "updatedAt": "2026-11-16T19:58:11.897Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -241885,11 +241885,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/fix-red-ci-blocked-builds-they-land",
-   "pr": "",
+   "branch": "fix/ci-common-cause",
+   "pr": "#726",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:55:46.472Z",
+   "updatedAt": "2026-11-16T19:58:00.389Z",
    "builtAt": "",
    "notes": [
     {
@@ -242592,7 +242592,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

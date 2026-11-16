@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:58:03.849Z",
+ "updatedAt": "2026-11-16T19:58:11.897Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157479,11 +157479,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/fix-red-ci-blocked-builds-they-land",
-   "pr": "",
+   "branch": "fix/ci-common-cause",
+   "pr": "#726",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:55:46.472Z",
+   "updatedAt": "2026-11-16T19:58:00.389Z",
    "builtAt": "",
    "notes": [
     {
