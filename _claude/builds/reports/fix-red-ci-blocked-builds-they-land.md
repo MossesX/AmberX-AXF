@@ -159,6 +159,7 @@ axf-data / Postgres branches not touched.
 - **Not run locally**: Gradle kernel tests (no Gradle on the VPS); CI decides for group-chat-audio's ConformanceTest.
 - **Still open**: themed-native-controls (light PR checks, ci-scope), context-menus (glossary ratchet), picker-dialog
   (check-agent-slots on CI). Each is queued and rejoins when green.
-- **Overlap**: `get-main-green-unblock-lander-land-axf` has #724 for main; #726 holds only H, I and J and doesn't change
-  the same files.
+- **Overlap**: `get-main-green-unblock-lander-land-axf`'s #724 also re-bakes the shared help (I) and writes the gate
+  token manifest (J), and both are generated outputs, so whichever lands first makes the other's copy a no-op. H (the
+  control-inventory scanner) is only in #726.
 - No UI added, so no API surface.
