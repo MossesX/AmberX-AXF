@@ -808,9 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s10 done (all) · orchestrator
-- 2026-11-15 14:59 UTC · `phone-connect-small-android-companion` s5 done (all) · orchestrator
-- 2026-11-15 14:59 UTC · `shipped-features-open-button-views-each` s1 done (all) · orchestrator
 - 2026-11-15 15:01 UTC · `shipped-features-open-button-views-each` s2 done (all) · orchestrator
 - 2026-11-15 15:01 UTC · `phone-connect-small-android-companion` s6 done (all) · orchestrator
 - 2026-11-15 15:01 UTC · `shipped-features-open-button-views-each` s3 done (all) · orchestrator
@@ -1208,6 +1205,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s8 done (all) · orchestrator
 - 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s9 done (all) · orchestrator
 - 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s10 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → complete (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-old-molly-app-project-keep-axf` s14 done (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6545,
- "updatedAt": "2026-11-16T16:45:37.525Z",
+ "rev": 6546,
+ "updatedAt": "2026-11-16T16:46:03.331Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179293,7 +179293,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T16:45:15.296Z",
+   "updatedAt": "2026-11-16T16:45:27.038Z",
    "builtAt": "",
    "notes": [
     {
@@ -179319,6 +179319,10 @@
     {
      "text": "Split by Claude into 10 steps (0 Fable).",
      "at": "2026-11-13T07:12:11.360Z"
+    },
+    {
+     "text": "Built together with remove-old-molly-app-project-keep-axf (branch claude/remove-old-molly-app-project-keep-axf): the molly add-on and _offer_molly are gone (an installed copy is retired once on start), the guide moved to gizmo-guide (AmberX uses it, so it is renamed rather than deleted), nothing opens on load. Report _claude/builds/reports/remove-old-molly-app-project-keep-axf.md.",
+     "at": "2026-11-16T16:45:21.878Z"
     }
    ],
    "approvals": [],
@@ -179624,7 +179628,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -240469,7 +240473,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-16T16:41:09.552Z",
+   "updatedAt": "2026-11-16T16:45:59.529Z",
    "builtAt": "",
    "notes": [
     {
@@ -240898,12 +240902,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:45:59.529Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:19:58.360Z",
-     "updatedAt": "2026-11-16T16:19:58.360Z"
+     "updatedAt": "2026-11-16T16:45:59.943Z"
     },
     {
      "id": "s15",
@@ -240963,7 +240967,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
