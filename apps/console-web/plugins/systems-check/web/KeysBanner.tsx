@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
-import { FixPanel, StatusDot, WhyLine, call, guidedOrder, isKeyIssue, issues, loadSystemCheck, useSys, type Check } from './SystemCheck';
+import { FixPanel, LinkTo, StatusDot, WhyLine, call, guidedOrder, isKeyIssue, issues, loadSystemCheck, useSys, type Check } from './SystemCheck';
 
 /*
  * Live keys (Oct 30 2026, Brett: the GITHUB_TOKEN went dead and nothing told him): every key is tested against its
@@ -88,7 +88,7 @@ export function KeysDialog() {
           <h3 className="axp-systems-check-h" style={{ marginTop: 0 }}><StatusDot s={c.status} /> {c.title}</h3>
           <p className="fx-small" style={{ margin: 0 }}>{c.summary}</p>
           <WhyLine c={c} />
-          {c.links.length > 0 && <p className="fx-small" style={{ margin: 0 }}>{c.links.map((l, i) => <span key={l.url}>{i ? ' · ' : ''}<a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a></span>)}</p>}
+          {c.links.length > 0 && <p className="fx-small" style={{ margin: 0 }}>{c.links.map((l, i) => <span key={l.url}>{i ? ' · ' : ''}<LinkTo l={l} /></span>)}</p>}
           {(c.status === 'error' || c.status === 'warn') && <KeyAutoFix c={c} ai={ai} />}
           <FixPanel c={c} />
         </section>

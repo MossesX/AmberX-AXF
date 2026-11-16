@@ -468,12 +468,63 @@ export function needsSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
 export const ALERT_SOURCE = 'pipeline';
-export const ALERT_LINK = '#/build-orchestrator';
+/** A console address (console-control@1), not a URL hash: the alerts library opens `view:` links in the console. */
+export const ALERT_LINK = 'view:build-orchestrator';
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what
  * notify.json's types match on: pipeline:idle, pipeline:run:<id> (started), pipeline:end:<id> (ended / failed), pipeline:split:<id>.
  */
+// ------------------------------------------------------------------ fell back to Pending (Brett, Nov 16 2026)
+
+/**
+ * fell-back@1 — "Every time something falls back to Pending, I need a fucking alert somewhere." Any write of the builds
+ * store that moves a build from the Queue or Building back to Pending (a session stopped with steps left, a reconciler
+ * pause, a self-check release, a CI or land failure, an unqueue: anything) fires a build-hook@1 `status` event; the
+ * listener (fell-back.mjs) keeps one record per build in the plugin's data folder, and the systems check shows each one
+ * as a red banner item with Requeue and Open, pushed once to the AmberX app. The record goes when the build leaves
+ * Pending again (requeued, archived, deleted, finished) or is put on hold.
+ *   ledger = { $axf: 'fell-back@1', builds: { <id>: { id, title, from, at, by, eventId } } }
+ */
+export const FELL_BACK_SCHEMA = 'fell-back@1';
+export const FELL_BACK_FROM = ['queued', 'running', 'waiting'];
+export const emptyFellBack = () => ({ $axf: FELL_BACK_SCHEMA, builds: {} });
+
+/** Fold build-event@1 events into the ledger (idempotent on event id; replays and out-of-order deliveries are safe). */
+export function foldFellBack(ledger, events) {
+  const out = ledger && typeof ledger === 'object' && ledger.builds && typeof ledger.builds === 'object' ? { $axf: FELL_BACK_SCHEMA, builds: { ...ledger.builds } } : emptyFellBack();
+  for (const e of list(events)) {
+    const id = str(e?.build?.id, 80); if (!id) continue;
+    const cur = out.builds[id];
+    const at = str(e.at, 40);
+    if (cur && at && cur.at && at < cur.at) continue; // older than what the ledger holds
+    if (e.event === 'cancelled') { delete out.builds[id]; continue; }
+    if (e.event !== 'status') continue;
+    if (e.to === 'pending' && FELL_BACK_FROM.includes(e.from)) {
+      out.builds[id] = { id, title: str(e.build?.title, 300), from: str(e.from, 20), at, by: str(e.by, 80), eventId: str(e.id, 200) };
+    } else if (e.to !== 'pending') delete out.builds[id];
+  }
+  return out;
+}
+
+const NOTE_SLACK_MS = 2 * 60 * 1000;
+const TAB_OF = { queued: 'Queue', running: 'Building', waiting: 'Building' };
+/**
+ * One ledger record against the build as it is now: null once it no longer belongs on the banner (not pending, deleted,
+ * held, gone), else { id, title, from, since, by, why, stepsLeft, stepsTotal, link }. `why` = the newest build note
+ * written around or after the fall-back, else the pipeline note, else the last run's outcome, else who moved it.
+ */
+export function fellBackView(rec, b) {
+  if (!rec || !b || b.deleted || b.status !== 'pending' || b.pipeline?.heldAt) return null;
+  const steps = list(b.steps);
+  const left = steps.filter((s) => !s.done).length;
+  const t0 = Date.parse(rec.at) - NOTE_SLACK_MS; // a session often writes its note just before the status flips
+  const note = list(b.notes).filter((n) => Date.parse(n?.at) >= t0).map((n) => str(n.text, 600)).pop();
+  const lr = b.pipeline?.lastRun;
+  const why = note || str(b.pipeline?.note, 400) || (lr ? `last run ${lr.outcome} with ${lr.stepsLeft} step${lr.stepsLeft === 1 ? '' : 's'} left (${lr.account || '?'})` : '') || `moved by ${rec.by || 'unknown'}`;
+  return { id: b.id, title: str(b.title, 300) || rec.title, from: TAB_OF[rec.from] || rec.from, since: rec.at, by: rec.by, why: str(why, 600), stepsLeft: left, stepsTotal: steps.length, link: ALERT_LINK };
+}
+
 // ------------------------------------------------------------------ self-check
 
 /**

@@ -23,6 +23,51 @@ const now = '2026-11-08T01:00:00.000Z';
 const step = (id, model, done = false) => ({ id, uid: `u-${id}`, text: `${id} work`, model, estimate: '25 min', done, doneAt: done ? now : '', skip: false, files: [], checks: [], session: 'same', agent: false, why: '', phase: '', group: '', note: '' });
 const build = (id, status, steps, extra = {}) => ({ id, title: id, status, steps, createdAt: now, updatedAt: now, notes: [], approvals: [], upgradeRequests: [], deleted: false, hidden: false, ...extra });
 
+// ---------------- fell-back@1 (Brett, Nov 16 2026: an alert every time a build falls back to Pending)
+t('alerts open the orchestrator by its console address', () => {
+  assert.equal(P.ALERT_LINK, 'view:build-orchestrator');
+  assert.equal(P.alertFor('idle', { reason: 'x' }).link, 'view:build-orchestrator');
+});
+t('foldFellBack: Queue / Building → Pending is recorded, anything else leaves it', () => {
+  const ev = (id, from, to, at, extra = {}) => ({ id: `${id}:${at}:status`, event: 'status', at, by: 'dispatcher', from, to, build: { id, title: `T ${id}` }, ...extra });
+  let l = P.foldFellBack(null, [ev('a', 'running', 'pending', '2026-11-16T10:00:00Z'), ev('b', 'queued', 'pending', '2026-11-16T10:01:00Z'),
+    ev('c', 'pending', 'pending', '2026-11-16T10:02:00Z'), ev('d', 'built', 'pending', '2026-11-16T10:03:00Z'), ev('w', 'waiting', 'pending', '2026-11-16T10:04:00Z')]);
+  assert.deepEqual(Object.keys(l.builds).sort(), ['a', 'b', 'w']);
+  assert.equal(l.builds.a.from, 'running'); assert.equal(l.builds.a.by, 'dispatcher'); assert.equal(l.$axf, 'fell-back@1');
+  l = P.foldFellBack(l, [ev('a', 'pending', 'queued', '2026-11-16T11:00:00Z'), ev('b', 'pending', 'archived', '2026-11-16T11:00:00Z'), { event: 'cancelled', at: '2026-11-16T11:00:00Z', build: { id: 'w' } }]);
+  assert.deepEqual(Object.keys(l.builds), [], 'requeued, archived and deleted builds leave the ledger');
+  l = P.foldFellBack(l, [ev('a', 'queued', 'pending', '2026-11-16T12:00:00Z'), ev('a', 'pending', 'queued', '2026-11-16T11:30:00Z')]);
+  assert.equal(l.builds.a.at, '2026-11-16T12:00:00Z', 'an older event never undoes a newer fall-back');
+  assert.deepEqual(P.foldFellBack(l, [ev('a', 'queued', 'pending', '2026-11-16T12:00:00Z')]), l, 'replays are harmless');
+});
+t('fellBackView: which, why, steps left, since; null once requeued, held, deleted', () => {
+  const rec = { id: 'x', title: 'X', from: 'running', at: '2026-11-16T12:00:00Z', by: 'reconcile' };
+  const b = build('x', 'pending', [step('s1', 'Opus', true), step('s2', 'Opus'), step('s3', 'Opus')], { notes: [{ text: 'old', at: '2026-11-15T00:00:00Z' }, { text: 'Reconciler: paused', at: '2026-11-16T11:59:30Z' }] });
+  const v = P.fellBackView(rec, b);
+  assert.equal(v.from, 'Building'); assert.equal(v.stepsLeft, 2); assert.equal(v.stepsTotal, 3); assert.equal(v.why, 'Reconciler: paused'); assert.equal(v.since, rec.at); assert.equal(v.link, 'view:build-orchestrator');
+  assert.match(P.fellBackView(rec, { ...b, notes: [], pipeline: { lastRun: { outcome: 'returned', stepsLeft: 2, account: 'acc' } } }).why, /returned with 2 steps left/);
+  assert.equal(P.fellBackView(rec, { ...b, notes: [] }).why, 'moved by reconcile');
+  assert.equal(P.fellBackView(rec, { ...b, status: 'queued' }), null);
+  assert.equal(P.fellBackView(rec, { ...b, pipeline: { heldAt: now } }), null);
+  assert.equal(P.fellBackView(rec, { ...b, deleted: true }), null);
+  assert.equal(P.fellBackView(rec, null), null);
+});
+process.env.AXF_FELL_BACK_FILE = join(mkdtempSync(join(tmpdir(), 'fell-back-')), 'fell-back.json');
+const FB = await import('./fell-back.mjs');
+const fbStore = { builds: [build('p', 'pending', [step('s1', 'Opus')]), build('q', 'queued', [step('s1', 'Opus')])] };
+let fbItems = null;
+{
+  FB.onBuildEvents([{ id: 'p:1:status', event: 'status', at: '2026-11-16T12:00:00Z', by: 'cli', from: 'queued', to: 'pending', build: { id: 'p', title: 'P' } },
+    { id: 'q:1:status', event: 'status', at: '2026-11-16T12:00:00Z', by: 'cli', from: 'running', to: 'pending', build: { id: 'q', title: 'Q' } }]);
+  fbItems = await FB.listFellBack({ store: fbStore });
+}
+t('fell-back.mjs: listener writes the ledger, list prunes what left Pending', () => {
+  assert.deepEqual(fbItems.map((x) => x.id), ['p']);
+  assert.deepEqual(Object.keys(FB.readLedger().builds), ['p'], 'q left Pending: pruned');
+  assert.equal(FB.clearFellBack('p'), true); assert.deepEqual(Object.keys(FB.readLedger().builds), []);
+  delete process.env.AXF_FELL_BACK_FILE;
+});
+
 // ---------------- build-pipeline@1 record
 t('normPipeline: empty → null, fields in shape', () => {
   assert.equal(BP.normPipeline(null), null); assert.equal(BP.normPipeline({}), null);

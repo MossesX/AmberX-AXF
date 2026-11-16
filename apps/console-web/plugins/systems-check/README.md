@@ -43,6 +43,20 @@ broken is a **red banner item** saying what broke, what it **breaks** and **sinc
   registers its own check there, `push-banner-github` ("Push banner reaches GitHub": red with no route, amber when it
   reads through axHub but has no local token for PRs and merges).
 
+## Builds that fall back to Pending (Nov 16 2026)
+Brett: "Every time something falls back to Pending, I need a fucking alert somewhere." Every builds store write that
+moves a build from the Queue or Building back to Pending (a session stopped with steps left, a reconciler pause, a
+self-check release, a CI or land failure, an unqueue: anything) fires a build-hook@1 `status` event; the Build
+orchestrator's listener (`plugins/build-orchestrator/fell-back.mjs`, fell-back@1) keeps one record per build, and its
+server registers one red item per build here (`build-fell-back:<id>`): which build, why, steps left, since when, with
+**Requeue** (the item's ask-first auto-fix) and **Open** (`view:build-orchestrator`). Pushed once to the AmberX app;
+the item goes green (alert resolved) and away when the build is requeued, archived, deleted, finished or put on hold.
+Same without the console: REST `GET /api/plugins/build-orchestrator/pipeline/fell-back`,
+`POST …/pipeline/fell-back/requeue {id}`; MCP / voice plugin commands `pipeline-fell-back`, `pipeline-fell-back-requeue`;
+CLI `node apps/console-web/plugins/build-orchestrator/fell-back.mjs list` and `pipeline.mjs queue <id>`.
+Health item links may be console addresses (`view:…`, `settings:…`): they open in the console and show as buttons on
+the banner row.
+
 ## Fix it yourself: auto-fix + GitHub through axHub (Oct 30 2026)
 Brett: "Why do I have to tell you to fix something when you have the tools to do it?"
 - **Auto-fix:** a health@1 check may carry `autoFix: {label, run, mitigated?}` (built-in checks get one with

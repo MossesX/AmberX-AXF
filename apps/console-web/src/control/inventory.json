@@ -1663,7 +1663,7 @@
       "view": null,
       "plugin": "ai.amberx.axf.console.systems-check",
       "file": "plugins/systems-check/web/SystemCheck.tsx",
-      "line": 569,
+      "line": 589,
       "tabs": [
         {
           "address": "tab:systems-check.views=grid",
