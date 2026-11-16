@@ -814,8 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 18:01 UTC · `get-main-green-unblock-lander-land-axf` s13 done (all) · orchestrator
-- 2026-11-16 18:24 UTC · `axhub-veto-countdown-setting-read-only` added (0 steps) (all) · console
 - 2026-11-16 18:24 UTC · `axhub-veto-countdown-setting-read-only` → queued, note (all) · console
 - 2026-11-16 18:25 UTC · `axhub-veto-countdown-setting-read-only` note (all) · mcp
 - 2026-11-16 18:26 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
@@ -1214,6 +1212,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 22:52 UTC · `change-to-move-amberx-web-app-console` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `auto-land-every-finished-build-lands` → archived, note (all) · builds-live
 - 2026-11-16 22:53 UTC · `toolbar-widgets-in-any-banner-style` note (all) · builds-live
+- 2026-11-16 22:52 UTC · `console-android-app-thin-webview-wrapper` → archived, note (all) · cli
+- 2026-11-16 22:53 UTC · `console-app-part-2-native-floating-2` → archived, note (all) · cli
 
 ## Token passes (log)
 
