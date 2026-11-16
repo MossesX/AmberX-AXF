@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:23:50.542Z",
+ "updatedAt": "2026-11-16T19:25:56.824Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161353,7 +161353,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:21:53.865Z",
+   "updatedAt": "2026-11-16T19:25:51.997Z",
    "builtAt": "",
    "notes": [
     {
@@ -161367,6 +161367,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ad17b5ca-3671-43f7-8bd9-6757abe1c7a8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-16T19:21:53.865Z"
+    },
+    {
+     "text": "Brett Nov 16: columns must be sortable by tapping the header: PR number, build name, commits behind main (plus status). Show the PR number as its own column.",
+     "at": "2026-11-16T19:25:51.997Z"
     }
    ],
    "approvals": [],
