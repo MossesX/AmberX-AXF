@@ -184,4 +184,5 @@ t('every reason code has words, every route a success reason, and the registry l
   assert.deepEqual(Object.keys(R.REGISTRY), ['schema', 'request', 'plan', 'result', 'version', 'routes', 'opens', 'where', 'browsers', 'foregrounds', 'defaultHosts', 'maxUrl', 'consoleStaleMs', 'reasons']);
 });
 t('schemas/open-url-route.json + schemas/json/open-url-*.schema.json are current (run axf schemas)', () => { assert.ok(same(JSON.parse(rd('framework/schemas/open-url-route.json')), R.REGISTRY)); for (const [name, s] of Object.entries(R.jsonSchemas())) assert.ok(same(JSON.parse(rd(`framework/schemas/json/${name}`)), s), name); });
+t('PORTING.md indexes the contract and records the deferred twins', () => { const p = rd('framework/spec/PORTING.md'); assert.match(p, /\| Open-url route \(`open-url-route@1`/); assert.match(p, /## Deferred: open-url route@1/); });
 console.log(`check-open-url-route: ${n} checks passed`);
