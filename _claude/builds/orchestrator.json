@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:38:05.729Z",
+ "updatedAt": "2026-11-16T23:38:18.646Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120555,15 +120555,15 @@
    "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
    "category": "",
    "detail": "",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the",
-   "pr": "",
+   "pr": "#762",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T23:37:25.374Z",
+   "updatedAt": "2026-11-16T23:37:51.614Z",
    "builtAt": "2026-11-16T23:37:25.374Z",
    "notes": [
     {
@@ -120609,6 +120609,10 @@
     {
      "text": "Claude account: hulu0241 (axf-remove-molly-completely-delete-the-molly-add-on---earl, shared account login)",
      "at": "2026-11-16T23:26:02.700Z"
+    },
+    {
+     "text": "s9 done on this build's branch: guard framework/spec/check-no-molly.mjs (in CI) + full sweep green. Branch = claude/remove-old-molly-app-project-keep-axf (PR #760) + main merged + s9; it supersedes #760 (main's newer systems-check test fix restored, a stray apps/molly file dropped). Land this one and close #760, or land #760 first; either way merges clean.",
+     "at": "2026-11-16T23:37:28.831Z"
     }
    ],
    "approvals": [],
