@@ -38,3 +38,9 @@ Out of scope, not touched: `claude/axf-data-postgres-real-tables-own`, `claude/d
 
 - s7: the worktree had no tracked changes left at 5fde0e9bd (local == origin); only the dispatcher's untracked session files (`.axf-brief.md`, `.axf-look-follow.log`, `<build>.jsonl/.log`), which every build worktree carries. Nothing to commit, nothing to stash.
 - s8: merged origin/main into the branch (5fde0e9bd → 61013c9db). `framework/cli/axf.mjs` conflict resolved keeping both sides: main's `axf voice …` route first, then the branch's plugin-declared CLI words (`plugin.json` `cli`, e.g. `axf lander status`); both commands answer. `apps/console-web/src/control/inventory.json` regenerated with `apps/console-web/scripts/control-inventory.mjs` (`--check` current). Checks: `node --check framework/cli/axf.mjs`, gate `test.mjs` 21/21, gate `test.build-rules.mjs` 7/7, `plugin-lifecycle check gate` clean, `check-console-control` clean. Pushed fast-forward.
+
+## Lander handoff (s9)
+
+All five builds re-linked with `builds-live.mjs link <id> --branch claude/<id> --pr <n>` (they were already linked; status `built`): #610, #598, #589, #667, #705, all open.
+#667 (demo video series) was still a draft although every step of its build is ticked; the lander skips drafts, so it was marked ready for review.
+`land.mjs queue list` lists all five; none is queued yet only because CI on the new heads is still running or hasn't started. The lander adds each one by itself once its checks are green. Nothing was added or merged by hand.
