@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7042,
- "updatedAt": "2026-11-16T23:32:14.934Z",
+ "rev": 7058,
+ "updatedAt": "2026-11-16T23:38:18.646Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27459,8 +27459,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -94042,15 +94044,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-10T23:44:06.945Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-10T23:48:05.012Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 2,
      "account": "mossesx-max-",
-     "session": "axf-molly-banner-match--rhonda"
+     "session": "axf-molly-banner-match--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -101191,8 +101197,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -110407,8 +110415,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -123610,15 +123620,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T01:44:38.113Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T01:55:06.415Z",
      "exit": 1,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 3,
      "account": "account-5",
-     "session": "axf-molly-native-expenses--rhonda"
+     "session": "axf-molly-native-expenses--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -123888,15 +123902,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-10T23:13:17.993Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-10T23:20:03.196Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "account-5",
-     "session": "axf-molly-sign-in-once--sully"
+     "session": "axf-molly-sign-in-once--sully",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -124281,15 +124299,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T03:13:32.895Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T03:38:02.383Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-orchestrator-checks-shipped-features-before-spli--rhonda"
+     "session": "axf-orchestrator-checks-shipped-features-before-spli--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -137975,8 +137997,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -140532,15 +140556,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T22:45:32.880Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:04:05.472Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-orchestrator-table-columns-model-queue-assigned--earl"
+     "session": "axf-orchestrator-table-columns-model-queue-assigned--earl",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -140948,8 +140976,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -146898,8 +146928,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -147324,15 +147356,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-11T23:25:08.702Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T00:15:03.308Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-full-api-cli-control-of-everything-plus-an-offli--joey"
+     "session": "axf-full-api-cli-control-of-everything-plus-an-offli--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -147907,8 +147943,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -149298,8 +149336,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -151610,15 +151650,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T10:38:25.274Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T10:43:01.956Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda"
+     "session": "axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -151776,8 +151820,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -153553,8 +153599,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -155754,8 +155802,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T20:41:31.157Z",
@@ -155975,8 +156025,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -156509,15 +156561,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T01:47:27.720Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T01:58:02.337Z",
      "exit": 1,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 3,
      "account": "mossesx-max-",
-     "session": "axf-open-any-website-by-voice-on-the-phone-optionall--sully"
+     "session": "axf-open-any-website-by-voice-on-the-phone-optionall--sully",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -156702,8 +156758,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -156900,15 +156958,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T02:22:11.770Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T02:33:03.375Z",
      "exit": 1,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "account-5",
-     "session": "hl-mwcx9z46-f6"
+     "session": "hl-mwcx9z46-f6",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -157109,15 +157171,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T01:44:52.810Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T01:55:07.791Z",
      "exit": 1,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 3,
      "account": "account-5",
-     "session": "axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny"
+     "session": "axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -157334,8 +157400,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -157548,15 +157616,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-10T23:23:12.403Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-10T23:26:04.326Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-api-accounts-need-no-approval-builds-route-there--paulie"
+     "session": "axf-api-accounts-need-no-approval-builds-route-there--paulie",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -157773,15 +157845,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-10T23:21:13.313Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-10T23:24:04.730Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "account-5",
-     "session": "axf-orchestrator-merge-first-switch-separate-merger--joey"
+     "session": "axf-orchestrator-merge-first-switch-separate-merger--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -158014,8 +158090,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -158236,15 +158314,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-10T23:26:11.877Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-10T23:43:03.638Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully"
+     "session": "axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -158465,15 +158547,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T02:18:11.326Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T02:20:07.523Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "account-5",
-     "session": "axf-rebuild-gizmo-from-scratch-full-claude-style-cha--lenny"
+     "session": "axf-rebuild-gizmo-from-scratch-full-claude-style-cha--lenny",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -158699,15 +158785,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-12T01:55:14.610Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T02:40:12.374Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 2,
      "account": "mossesx-max-",
-     "session": "axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully"
+     "session": "axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -159353,15 +159443,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-10T23:37:53.361Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-10T23:41:03.521Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-ai-assistant-gizmo-moved-to-the-console-remove-t--earl"
+     "session": "axf-ai-assistant-gizmo-moved-to-the-console-remove-t--earl",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -160157,15 +160251,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-15T01:24:21.442Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T01:28:06.664Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-molly-gap-axhub-cors--gina"
+     "session": "axf-molly-gap-axhub-cors--gina",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -160396,15 +160494,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T16:47:14.644Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T16:50:13.277Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-molly-gap-expenses-cors--joey"
+     "session": "axf-molly-gap-expenses-cors--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -160637,15 +160739,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T03:13:21.437Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T03:17:06.355Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-molly-gap-console-token-handoff--gina"
+     "session": "axf-molly-gap-console-token-handoff--gina",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -160885,15 +160991,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-12T01:54:08.639Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T02:15:08.982Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 2,
      "account": "account-5",
-     "session": "axf-molly-gap-remote-actions--paulie"
+     "session": "axf-molly-gap-remote-actions--paulie",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -161070,8 +161180,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T23:09:40.929Z",
@@ -161262,15 +161374,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-10T23:38:03.674Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-10T23:45:05.447Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-auto-requeue-builds-whose-session-stops-early-go--gina"
+     "session": "axf-auto-requeue-builds-whose-session-stops-early-go--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-10T23:37:48.400Z",
@@ -161522,15 +161638,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-11T00:16:07.794Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-11T00:36:03.217Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 2,
      "account": "mossesx-max-",
-     "session": "axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda"
+     "session": "axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-10T23:47:18.616Z",
@@ -161721,8 +161841,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T23:47:34.514Z",
@@ -161909,15 +162031,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-11T00:08:16.721Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-11T00:24:02.559Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-merge-review-one-by-one-every-built-but-unmerged--gina"
+     "session": "axf-merge-review-one-by-one-every-built-but-unmerged--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-11T00:07:57.417Z",
@@ -162100,8 +162226,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-11T01:12:19.794Z",
@@ -162511,15 +162639,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:56:20.868Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:57:03.446Z",
      "exit": 3,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 6,
      "account": "mossesx-max-",
-     "session": "axf-fix-axhub-36-pull-main-in-failed--rhonda"
+     "session": "axf-fix-axhub-36-pull-main-in-failed--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T11:07:46.715Z",
@@ -163304,15 +163436,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T02:00:37.729Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T02:23:03.796Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "account-5",
-     "session": "axf-vps-server-gate-no-build-starts-without-an-orche--paulie"
+     "session": "axf-vps-server-gate-no-build-starts-without-an-orche--paulie",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -163501,8 +163637,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -163708,15 +163846,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-12T02:50:14.085Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T03:13:03.345Z",
      "exit": 1,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-build-plan-1-skins-one-row-build-tables-backgrou--rhonda"
+     "session": "axf-build-plan-1-skins-one-row-build-tables-backgrou--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -164044,15 +164186,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T10:37:52.173Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T10:45:20.510Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-owner-recognized-everywhere-veto-countdown-only---earl"
+     "session": "axf-owner-recognized-everywhere-veto-countdown-only---earl",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -164223,15 +164369,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T10:43:09.520Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T10:48:02.765Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-console-and-axhub-retry-failed-calls-themselves---joey"
+     "session": "axf-console-and-axhub-retry-failed-calls-themselves---joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -164372,8 +164522,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -164472,8 +164624,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -164616,8 +164770,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -164800,15 +164956,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T10:37:41.673Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T10:46:04.955Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-server-gate-one-session-per-build-no-duplicate-l--sully"
+     "session": "axf-server-gate-one-session-per-build-no-duplicate-l--sully",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -164925,15 +165085,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T02:52:13.861Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T10:39:06.698Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-all-banners-hide-when-empty--joey"
+     "session": "axf-all-banners-hide-when-empty--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -165093,8 +165257,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -165261,15 +165427,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T03:05:28.144Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T03:35:04.520Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-merge-all-ready-buttons-server-side-lander--paulie"
+     "session": "axf-merge-all-ready-buttons-server-side-lander--paulie",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -165380,8 +165550,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -172243,8 +172415,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:36:46.032Z",
@@ -172403,15 +172577,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T11:25:40.599Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:31:03.702Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-show-commits-behind-main-on-every-build-table-an--gina"
+     "session": "axf-show-commits-behind-main-on-every-build-table-an--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T10:40:28.980Z",
@@ -172528,8 +172706,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:44:42.157Z",
@@ -172644,8 +172824,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:49:48.779Z",
@@ -172780,15 +172962,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T11:25:46.013Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:36:03.318Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda"
+     "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T10:50:36.976Z",
@@ -172934,15 +173120,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T20:42:37.390Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T21:00:11.424Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 2,
      "account": "mossesx-max-",
-     "session": "axf-fix-the-step-splitter-claude-exit-1-input-must-b--rhonda"
+     "session": "axf-fix-the-step-splitter-claude-exit-1-input-must-b--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T10:53:18.716Z",
@@ -173028,8 +173218,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -173221,15 +173413,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T00:46:14.486Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T00:51:04.694Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-amberx-approval-pop-up-not-showing-only-the-andr--earl"
+     "session": "axf-amberx-approval-pop-up-not-showing-only-the-andr--earl",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -173403,8 +173599,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -173684,15 +173882,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-12T18:07:11.653Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T18:21:03.006Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-plugin-review-map-what-each-plugin-does-depends---lenny"
+     "session": "axf-plugin-review-map-what-each-plugin-does-depends---lenny",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -173756,8 +173958,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T18:20:11.920Z",
@@ -174046,8 +174250,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T18:34:28.186Z",
@@ -174229,8 +174435,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T18:42:14.237Z",
@@ -174465,15 +174673,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-12T22:15:14.526Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T22:33:04.407Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 12,
      "account": "mossesx-max-",
-     "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--earl"
+     "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T20:45:00.435Z",
@@ -174580,8 +174792,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -174718,8 +174932,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -174864,15 +175080,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T22:46:08.743Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T23:16:43.152Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-github-client-plugin-see-and-control-every-pr-st--paulie"
+     "session": "axf-github-client-plugin-see-and-control-every-pr-st--paulie",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -175033,8 +175253,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -175207,15 +175429,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T01:52:11.782Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T02:06:03.430Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-one-account-picker-choose-the-single-claude-acco--gina"
+     "session": "axf-one-account-picker-choose-the-single-claude-acco--gina",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -175403,8 +175629,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -175646,15 +175874,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T01:46:09.134Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T01:54:03.558Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-server-every-failed-merge-alerts-brett-immediate--joey"
+     "session": "axf-server-every-failed-merge-alerts-brett-immediate--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -175804,15 +176036,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T01:58:11.445Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T02:03:03.526Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda"
+     "session": "axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -175988,15 +176224,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T06:14:29.774Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T06:23:31.791Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--joey"
+     "session": "axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -176156,8 +176396,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -176261,8 +176503,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -176387,8 +176631,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:16:08.502Z",
@@ -176500,8 +176746,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:16:42.326Z",
@@ -176679,8 +176927,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:23:43.766Z",
@@ -176844,8 +177094,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:26:22.319Z",
@@ -177032,8 +177284,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:26:43.501Z",
@@ -177224,8 +177478,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:31:24.959Z",
@@ -177393,15 +177649,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-13T06:14:47.983Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T08:44:01.956Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--sully"
+     "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T06:14:22.635Z",
@@ -177554,8 +177814,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:41:19.671Z",
@@ -177759,15 +178021,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T11:25:18.500Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:28:43.716Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-change-to-move-amberx-web-app-into-the-console-a--paulie"
+     "session": "axf-change-to-move-amberx-web-app-into-the-console-a--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T00:41:27.700Z",
@@ -177880,8 +178146,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T00:41:48.903Z",
@@ -178102,8 +178370,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T00:43:27.498Z",
@@ -178298,8 +178568,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T01:11:10.433Z",
@@ -178589,15 +178861,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-13T03:28:15.605Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T03:39:03.355Z",
      "exit": 1,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 9,
      "account": "mossesx-max-",
-     "session": "axf-skin-configuration-panel-before-ai-makes-a-skin---lenny"
+     "session": "axf-skin-configuration-panel-before-ai-makes-a-skin---lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T01:16:06.682Z",
@@ -178782,8 +179058,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:25:16.456Z",
@@ -178956,15 +179234,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T07:08:11.318Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T07:57:02.406Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie"
+     "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T06:39:04.188Z",
@@ -179100,15 +179382,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T06:56:46.988Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T07:20:09.682Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina"
+     "session": "axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T06:56:37.518Z",
@@ -179305,8 +179591,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T07:42:03.981Z",
@@ -179357,17 +179645,17 @@
    "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "alias": "remove-molly-completely-delete-molly-add",
    "branch": "claude/remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the",
-   "pr": "",
+   "pr": "#762",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T23:26:02.701Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T23:37:51.614Z",
+   "builtAt": "2026-11-16T23:37:25.374Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -179412,6 +179700,10 @@
     {
      "text": "Claude account: hulu0241 (axf-remove-molly-completely-delete-the-molly-add-on---earl, shared account login)",
      "at": "2026-11-16T23:26:02.700Z"
+    },
+    {
+     "text": "s9 done on this build's branch: guard framework/spec/check-no-molly.mjs (in CI) + full sweep green. Branch = claude/remove-old-molly-app-project-keep-axf (PR #760) + main merged + s9; it supersedes #760 (main's newer systems-check test fix restored, a stray apps/molly file dropped). Land this one and close #760, or land #760 first; either way merges clean.",
+     "at": "2026-11-16T23:37:28.831Z"
     }
    ],
    "approvals": [],
@@ -179435,8 +179727,10 @@
     "session": "axf-remove-molly-completely-delete-the-molly-add-on---earl",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T23:25:51.201Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T07:12:11.360Z",
@@ -179687,12 +179981,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:37:25.373Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T07:12:11.360Z",
-     "updatedAt": "2026-11-13T07:12:11.360Z"
+     "updatedAt": "2026-11-16T23:37:25.828Z"
     },
     {
      "id": "s10",
@@ -179729,7 +180023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179913,8 +180207,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T07:14:57.750Z",
@@ -180808,15 +181104,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T10:43:20.478Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T10:46:09.181Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 12,
      "account": "mossesx-max-",
-     "session": "axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie"
+     "session": "axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T10:37:10.223Z",
@@ -180900,8 +181200,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:41:23.599Z",
@@ -181070,8 +181372,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:43:00.026Z",
@@ -181187,15 +181491,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T10:48:26.846Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:17:23.245Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-fix-merge-conflicts-on-pr-557-professional-skins--earl"
+     "session": "axf-fix-merge-conflicts-on-pr-557-professional-skins--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T10:44:27.308Z",
@@ -181312,8 +181620,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:45:18.367Z",
@@ -181482,8 +181792,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:17:21.962Z",
@@ -182193,15 +182505,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-13T11:17:35.907Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:20:08.054Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 20,
      "account": "mossesx-max-",
-     "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny"
+     "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T11:15:09.567Z",
@@ -182334,15 +182650,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T11:37:09.309Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:44:02.685Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-overlay-opens-pages-the-floating-toolbar-expands--earl"
+     "session": "axf-overlay-opens-pages-the-floating-toolbar-expands--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T11:28:36.977Z",
@@ -182506,16 +182826,16 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "alias": "server-watchdog-orchestrator-auto",
-   "branch": "",
+   "branch": "claude/server-watchdog-orchestrator-auto-recovers-stuck",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-16T23:18:10.638Z",
+   "updatedAt": "2026-11-16T23:33:26.275Z",
    "builtAt": "",
    "notes": [
     {
@@ -182525,6 +182845,14 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:18:10.638Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-server-watchdog-orchestrator-auto-recovers-stuck--joey.",
+     "at": "2026-11-16T23:33:22.974Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-server-watchdog-orchestrator-auto-recovers-stuck--joey, shared account login)",
+     "at": "2026-11-16T23:33:26.275Z"
     }
    ],
    "approvals": [],
@@ -182535,8 +182863,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "server-watchdog-orchestrator-auto-recovers-stuck",
+    "brief": "# Build: server-watchdog-orchestrator-auto-recovers-stuck\n\n## Brett said (verbatim)\nAt: 2026-11-13T11:45:00.916Z\n> Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.\n\n## What to build\nContinue build \"Server watchdog: orchestrator auto-recovers stuck or killed builds\" (server-watchdog-orchestrator-auto-recovers-stuck) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 11:45):\n\"Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Design the watchdog@1 contract in framework/core/build-watchdog.mjs. A build counts as stuck when it is marked running or queued-running and has no live session: the pid is gone, the tmux session is missing, the heartbeat (lastSeenAt) is older than staleMin, or an exit code is recorded (143 killed, 137 OOM, 1 failed, usage limit). For each case, define the action: reset the running step, release the slot, requeue, retry on the same or another account, or give up after maxRetries and go back to Pending with a banner item. Also define the recovery record shape { at, buildId, phase, step, cause, exit, action, attempt, account, notified }.\n[ ] s2 (~10 min) Add the JSON schema framework/schemas/build-watchdog.json and register recovery records on builds@1. This adds an optional `recoveries[]` on a build, which normBuild must keep, plus the journal kind `watchdog-recover`. Old records with no recoveries load unchanged, so no migration is needed. Show this in builds-store verify.\n[ ] s3 (~10 min) Add golden fixtures for the decision table (killed 143, exit 1, stale heartbeat, live session left alone, retry cap reached, usage limit moves to another account) and a check script. Wire the check into CI.\nRead first: framework/core/build-watchdog.mjs, framework/schemas/build-watchdog.json, framework/cli/builds-store.mjs, framework/core/build-pipeline.mjs, framework/spec/fixtures/build-watchdog.json, framework/spec/check-build-watchdog.mjs, .github/workflows/android.yml\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-watchdog-orchestrator-auto-recovers-stuck <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step server-watchdog-orchestrator-auto-recovers-stuck <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-watchdog-orchestrator-auto-recovers-stuck \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -182544,12 +182872,14 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:18:09.849Z",
     "queuedBy": "brett",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-server-watchdog-orchestrator-auto-recovers-stuck--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "",
+    "launchedAt": "2026-11-16T23:33:20.871Z",
+    "runs": 1,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:47:31.261Z",
@@ -182561,7 +182891,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T23:33:20.871Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -182570,7 +182900,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T23:33:20.871Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -183111,7 +183441,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -183245,8 +183575,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:48:17.662Z",
@@ -183777,8 +184109,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:57:37.071Z",
@@ -184489,15 +184823,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T12:17:15.710Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T13:34:02.785Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-ui-review-gate-switch-default-off--lenny"
+     "session": "axf-ui-review-gate-switch-default-off--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T12:17:01.586Z",
@@ -185011,8 +185349,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:26:26.762Z",
@@ -185289,8 +185629,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:32:26.587Z",
@@ -185382,8 +185724,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:34:25.303Z",
@@ -185605,8 +185949,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:34:43.631Z",
@@ -185824,8 +186170,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:35:38.612Z",
@@ -185962,8 +186310,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -186232,8 +186582,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -186505,15 +186857,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T03:05:28.144Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T03:35:04.520Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-merge-all-ready-buttons-server-side-lander--paulie"
+     "session": "axf-merge-all-ready-buttons-server-side-lander--paulie",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -186735,8 +187091,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -187038,15 +187396,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T23:14:27.253Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T23:16:29.421Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "hulu0241",
-     "session": "axf-always-fill-every-slot-when-slots-are--gina"
+     "session": "axf-always-fill-every-slot-when-slots-are--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T07:42:03.981Z",
@@ -187856,8 +188218,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:32:26.587Z",
@@ -188164,8 +188528,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:16:08.502Z",
@@ -188380,8 +188746,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -188572,15 +188940,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T11:25:18.500Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:28:43.716Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-change-to-move-amberx-web-app-into-the-console-a--paulie"
+     "session": "axf-change-to-move-amberx-web-app-into-the-console-a--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T00:41:27.700Z",
@@ -188817,8 +189189,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:31:24.959Z",
@@ -189037,8 +189411,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T18:42:14.237Z",
@@ -189309,15 +189685,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:10:32.487Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:17:04.041Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-console-axhub-retry-failed-calls--joey"
+     "session": "axf-console-axhub-retry-failed-calls--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -189590,15 +189970,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-13T11:17:35.907Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:20:08.054Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 20,
      "account": "mossesx-max-",
-     "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny"
+     "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T11:15:09.567Z",
@@ -190257,8 +190641,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:43:00.026Z",
@@ -190513,15 +190899,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T13:12:13.730Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T13:24:06.377Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-fix-build-whose-session-finishes-phase-e--lenny"
+     "session": "axf-fix-build-whose-session-finishes-phase-e--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T10:37:10.223Z",
@@ -190967,15 +191357,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T10:48:26.846Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:17:23.245Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-fix-merge-conflicts-on-pr-557-professional-skins--earl"
+     "session": "axf-fix-merge-conflicts-on-pr-557-professional-skins--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T10:44:27.308Z",
@@ -191168,15 +191562,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T20:42:37.390Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T21:00:11.424Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 2,
      "account": "mossesx-max-",
-     "session": "axf-fix-the-step-splitter-claude-exit-1-input-must-b--rhonda"
+     "session": "axf-fix-the-step-splitter-claude-exit-1-input-must-b--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T10:53:18.716Z",
@@ -191441,8 +191839,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:35:54.396Z",
@@ -191711,8 +192111,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:36:46.032Z",
@@ -191939,15 +192341,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T22:46:08.743Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T23:16:43.152Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-github-client-plugin-see-and-control-every-pr-st--paulie"
+     "session": "axf-github-client-plugin-see-and-control-every-pr-st--paulie",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -192345,8 +192751,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:25:16.456Z",
@@ -192936,15 +193344,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-12T22:15:14.526Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T22:33:04.407Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 12,
      "account": "mossesx-max-",
-     "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--earl"
+     "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T20:45:00.435Z",
@@ -193463,8 +193875,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -193847,15 +194261,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:08:13.680Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:12:53.768Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-one-source-truth-console-shows-only-what--lenny"
+     "session": "axf-one-source-truth-console-shows-only-what--lenny",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -194057,15 +194475,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-12T03:13:32.895Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T03:38:02.383Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-orchestrator-checks-shipped-features-before-spli--rhonda"
+     "session": "axf-orchestrator-checks-shipped-features-before-spli--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -194278,15 +194700,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T10:38:25.274Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T10:43:01.956Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda"
+     "session": "axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -194570,15 +194996,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:06:12.490Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:12:55.619Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-owner-recognized-everywhere-veto--earl"
+     "session": "axf-owner-recognized-everywhere-veto--earl",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -194766,8 +195196,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:49:48.779Z",
@@ -194992,15 +195424,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-12T18:07:11.653Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-12T18:21:03.006Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-plugin-review-map-what-each-plugin-does-depends---lenny"
+     "session": "axf-plugin-review-map-what-each-plugin-does-depends---lenny",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -195237,15 +195673,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-13T06:14:47.983Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T08:44:01.956Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--sully"
+     "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T06:14:22.635Z",
@@ -195882,8 +196322,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -196109,8 +196551,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:44:42.157Z",
@@ -196344,15 +196788,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T01:58:11.445Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T02:03:03.526Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda"
+     "session": "axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -196540,15 +196988,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T06:56:46.988Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T07:20:09.682Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina"
+     "session": "axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T06:56:37.518Z",
@@ -197020,15 +197472,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T01:46:09.134Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T01:54:03.558Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-server-every-failed-merge-alerts-brett-immediate--joey"
+     "session": "axf-server-every-failed-merge-alerts-brett-immediate--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -197258,15 +197714,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:04:23.303Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:08:05.717Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-server-gate-one-session-per-build-no--sully"
+     "session": "axf-server-gate-one-session-per-build-no--sully",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -197538,15 +197998,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T11:25:40.599Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:31:03.702Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-show-commits-behind-main-on-every-build-table-an--gina"
+     "session": "axf-show-commits-behind-main-on-every-build-table-an--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T10:40:28.980Z",
@@ -197821,15 +198285,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-13T03:28:15.605Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T03:39:03.355Z",
      "exit": 1,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 9,
      "account": "mossesx-max-",
-     "session": "axf-skin-configuration-panel-before-ai-makes-a-skin---lenny"
+     "session": "axf-skin-configuration-panel-before-ai-makes-a-skin---lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T01:16:06.682Z",
@@ -198273,15 +198741,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T07:08:11.318Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T07:57:02.406Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie"
+     "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T06:39:04.188Z",
@@ -199545,8 +200017,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -199754,15 +200228,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T11:25:46.013Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T11:36:03.318Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda"
+     "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-12T10:50:36.976Z",
@@ -199961,8 +200439,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -200143,8 +200623,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:41:01.294Z",
@@ -200451,8 +200933,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:46:32.016Z",
@@ -200693,15 +201177,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T17:49:19.495Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T17:50:09.770Z",
      "exit": 3,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 3,
      "account": "mossesx-max-",
-     "session": "axf-per-instance-settings-window-picker--gina"
+     "session": "axf-per-instance-settings-window-picker--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T17:47:52.425Z",
@@ -200894,8 +201382,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:53:12.928Z",
@@ -201108,8 +201598,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:02:00.272Z",
@@ -201450,15 +201942,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T18:36:18.505Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T19:03:05.739Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-all-settings-interfaces-open-floating--rhonda"
+     "session": "axf-all-settings-interfaces-open-floating--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:04:33.661Z",
@@ -201699,8 +202195,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:08:41.600Z",
@@ -202067,15 +202565,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-15T00:27:21.094Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T01:06:06.426Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-new-asset-type-animated-expanding-row--earl"
+     "session": "axf-new-asset-type-animated-expanding-row--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:14:50.263Z",
@@ -202451,8 +202953,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:16:38.686Z",
@@ -202800,15 +203304,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T18:19:54.760Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T19:10:07.155Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-decision-dialog-ui-review-other--paulie"
+     "session": "axf-decision-dialog-ui-review-other--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:18:38.236Z",
@@ -203122,8 +203630,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:19:10.056Z",
@@ -203458,8 +203968,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:19:43.693Z",
@@ -203797,8 +204309,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:21:42.427Z",
@@ -204040,15 +204554,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T18:36:14.104Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T18:57:47.090Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-transparency-token-works-every-dialog--sully"
+     "session": "axf-transparency-token-works-every-dialog--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:28:04.217Z",
@@ -204433,15 +204951,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-16T13:23:15.243Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T13:58:04.843Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 4,
      "account": "mossesx-max-",
-     "session": "axf-ui-manager-floating-window-to-select-any--gina"
+     "session": "axf-ui-manager-floating-window-to-select-any--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:31:36.507Z",
@@ -204982,15 +205504,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T19:19:07.577Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T19:35:10.929Z",
      "exit": 1,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-console-android-app-thin-webview-wrapper--sully"
+     "session": "axf-console-android-app-thin-webview-wrapper--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:39:44.852Z",
@@ -205388,8 +205914,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:42:36.411Z",
@@ -205680,8 +206208,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:44:41.589Z",
@@ -206022,15 +206552,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T19:29:11.351Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T19:43:04.021Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-console-app-part-3-native-bridge-mic--gina"
+     "session": "axf-console-app-part-3-native-bridge-mic--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:43:07.133Z",
@@ -206318,8 +206852,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:43:37.409Z",
@@ -206615,15 +207151,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-13T19:30:50.870Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T19:44:03.918Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 7,
      "account": "mossesx-max-",
-     "session": "axf-console-app-part-2-native-floating-2--lenny"
+     "session": "axf-console-app-part-2-native-floating-2--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:46:01.392Z",
@@ -206943,8 +207483,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:48:10.123Z",
@@ -207329,8 +207871,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:51:47.804Z",
@@ -207750,15 +208294,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-15T01:03:18.277Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T01:08:06.570Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-skin-axhub-override-switch-greyed-out--earl"
+     "session": "axf-skin-axhub-override-switch-greyed-out--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T18:57:42.948Z",
@@ -208014,15 +208562,15 @@
    "title": "Land project-create-mcp: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-create-mcp clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolving by keeping both sides' entries (catalog/status and porting notes are additive), run tests, push, then land it on main. No feature changes.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/land-project-create-mcp-resolve-clash",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-16T23:20:49.719Z",
+   "updatedAt": "2026-11-16T23:36:44.149Z",
    "builtAt": "",
    "notes": [
     {
@@ -208032,6 +208580,10 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:20:49.719Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-land-project-create-mcp-resolve-clash--gina.",
+     "at": "2026-11-16T23:36:44.149Z"
     }
    ],
    "approvals": [],
@@ -208042,8 +208594,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "land-project-create-mcp-resolve-clash",
+    "brief": "# Build: land-project-create-mcp-resolve-clash\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:01:01.567Z\n> land create projects by API\n\n## What to build\nContinue build \"Land project-create-mcp: resolve clash in status.json and PORTING.md\" (land-project-create-mcp-resolve-clash) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:01):\n\"land create projects by API\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Branch claude/project-create-mcp clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolving by keeping both sides' entries (catalog/status and porting notes are additive), run tests, push, then land it on main. No feature changes.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step land-project-create-mcp-resolve-clash <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step land-project-create-mcp-resolve-clash <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note land-project-create-mcp-resolve-clash \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Every notification is in the one registry (Nov 6 2026, Brett: \"I need to control all the notifications.\"): every notification goes through the console's alert hub or asks capability `axf.notify@1` before it sends; a plugin that sends one declares it in its own `notify.json` (`notify-types@1`), and the Notifications panel controls it (Plugins → Notifications; `axf notify-control …`, MCP `notify-control_*`). Approvals and veto notices are guarded: only Brett's own click turns them down, never a session or agent. `python apps/console-web/plugins/notify-control/test.py` fails on an alert source no registry names.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -208051,12 +208603,14 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:20:48.607Z",
     "queuedBy": "brett",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-land-project-create-mcp-resolve-clash--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-16T23:36:41.890Z",
+    "runs": 1,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:03:24.115Z",
@@ -208068,7 +208622,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T23:36:41.890Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -208077,7 +208631,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T23:36:41.890Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -208161,7 +208715,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208248,8 +208802,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:05:57.629Z",
@@ -208604,15 +209160,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:15:54.090Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:22:08.088Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-land-project-duplicate-boilerplate--rhonda"
+     "session": "axf-land-project-duplicate-boilerplate--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T19:07:47.374Z",
@@ -208841,15 +209401,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T19:53:15.999Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T19:55:08.737Z",
      "exit": 3,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-land-drive-live-console-first-resolve--paulie"
+     "session": "axf-land-drive-live-console-first-resolve--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T19:32:39.232Z",
@@ -209045,15 +209609,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T19:35:33.966Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T19:40:17.010Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-land-rename-long-builds-resolve-clash--gina"
+     "session": "axf-land-rename-long-builds-resolve-clash--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T19:34:28.140Z",
@@ -209241,8 +209809,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:35:01.361Z",
@@ -209417,8 +209987,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:37:31.490Z",
@@ -209623,15 +210195,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T19:43:15.087Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T19:58:43.500Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-per-instance-settings-picker-merge-main--lenny"
+     "session": "axf-per-instance-settings-picker-merge-main--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T19:38:35.332Z",
@@ -209880,15 +210456,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:35:28.763Z",
     "runs": 4,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:38:06.748Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-skin-config-panel-merge-main-and-land--sully"
+     "session": "axf-skin-config-panel-merge-main-and-land--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T19:48:39.672Z",
@@ -210107,15 +210687,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-13T19:56:14.274Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T20:17:04.505Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 3,
      "account": "mossesx-max-",
-     "session": "axf-skins-plugin-merge-main-and-land--rhonda"
+     "session": "axf-skins-plugin-merge-main-and-land--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T19:49:27.897Z",
@@ -210297,8 +210881,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:51:51.749Z",
@@ -210634,8 +211220,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:50:55.023Z",
@@ -210948,15 +211536,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T19:59:07.053Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T20:16:06.858Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-full-voice-control-merge-main-and-land--lenny"
+     "session": "axf-full-voice-control-merge-main-and-land--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T19:54:58.989Z",
@@ -211235,15 +211827,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-14T03:35:14.704Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T04:15:03.598Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-icon-map-icon-packs-every-icon-badge-app--gina"
+     "session": "axf-icon-map-icon-packs-every-icon-badge-app--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T19:58:41.893Z",
@@ -211556,8 +212152,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:01:33.332Z",
@@ -211871,8 +212469,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:02:34.017Z",
@@ -212130,8 +212730,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:03:11.292Z",
@@ -212452,8 +213054,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:06:18.849Z",
@@ -212837,15 +213441,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T20:18:14.562Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T20:31:05.476Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-dispatcher-gate-never-launch-build--paulie"
+     "session": "axf-dispatcher-gate-never-launch-build--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T20:08:53.774Z",
@@ -213075,15 +213683,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:17:21.049Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:23:07.968Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-per-toolbar-settings-fix-failing-chrome--sully"
+     "session": "axf-per-toolbar-settings-fix-failing-chrome--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T20:09:48.693Z",
@@ -213251,8 +213863,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:12:53.564Z",
@@ -213623,15 +214237,19 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T21:17:04.659Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 7,
      "account": "",
-     "session": "axf-context-menus-plugin-one-true-source--gina"
+     "session": "axf-context-menus-plugin-one-true-source--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T20:16:04.552Z",
@@ -213942,8 +214560,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:46:35.586Z",
@@ -214300,8 +214920,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:48:36.828Z",
@@ -214501,15 +215123,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T20:50:31.267Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T21:00:24.464Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-full-voice-control-resolve-inventory--paulie"
+     "session": "axf-full-voice-control-resolve-inventory--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T20:49:14.342Z",
@@ -214678,8 +215304,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:49:51.654Z",
@@ -214925,15 +215553,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:23:17.794Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:30:30.541Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-lander-regenerates-generated-files-clash--lenny"
+     "session": "axf-lander-regenerates-generated-files-clash--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T20:52:05.784Z",
@@ -215162,15 +215794,19 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-13T21:16:22.820Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 3,
      "account": "",
-     "session": "axf-hotfix-desktop-console-draws-app-menu--lenny"
+     "session": "axf-hotfix-desktop-console-draws-app-menu--lenny",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T21:14:45.379Z",
@@ -215377,8 +216013,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -215531,15 +216169,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-13T23:41:19.408Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:38:12.478Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-auto-land-merge-main-land-land-mjs-clash--joey"
+     "session": "axf-auto-land-merge-main-land-land-mjs-clash--joey",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T23:40:57.282Z",
@@ -215929,15 +216571,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:23:43.044Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:34:06.938Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-land-batch-merge-main-each-finished--gina"
+     "session": "axf-land-batch-merge-main-each-finished--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T23:43:15.961Z",
@@ -216593,15 +217239,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:28:18.128Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T02:57:06.180Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 4,
      "account": "mossesx-max-",
-     "session": "axf-console-app-land-parts-1-4-build-apk--rhonda"
+     "session": "axf-console-app-land-parts-1-4-build-apk--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-13T23:51:45.676Z",
@@ -217198,8 +217848,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T23:52:35.076Z",
@@ -217676,8 +218328,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T04:43:31.383Z",
@@ -218565,15 +219219,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T12:28:09.521Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T13:11:02.901Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-hotfix-get-main-ci-green-theme-swap--sully"
+     "session": "axf-hotfix-get-main-ci-green-theme-swap--sully",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -218818,8 +219476,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T04:47:26.735Z",
@@ -219719,15 +220379,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-14T03:51:29.271Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T04:39:08.123Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-ui-directory-plugin-self-updating-data--gina"
+     "session": "axf-ui-directory-plugin-self-updating-data--gina",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -219980,8 +220644,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -220358,15 +221024,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-16T13:24:57.284Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T15:17:02.676Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-demo-video-series-three-minute-browser--gina"
+     "session": "axf-demo-video-series-three-minute-browser--gina",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -221079,15 +221749,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T13:13:13.711Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T13:26:04.002Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-group-chat-audio-hear-agents-talk-while--joey"
+     "session": "axf-group-chat-audio-hear-agents-talk-while--joey",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -221339,15 +222013,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T16:46:23.975Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T17:09:03.708Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-builds-share-one-claude-login-write--earl"
+     "session": "axf-builds-share-one-claude-login-write--earl",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -221600,15 +222278,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T16:51:21.042Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T17:11:03.683Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-ui-review-filter-and-search-by-pr--rhonda"
+     "session": "axf-ui-review-filter-and-search-by-pr--rhonda",
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -221827,8 +222509,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -222030,8 +222714,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T17:47:32.020Z",
@@ -222776,8 +223462,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:15:13.052Z",
@@ -223492,8 +224180,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:17:59.202Z",
@@ -224406,8 +225096,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:19:09.863Z",
@@ -225164,8 +225856,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T22:17:52.893Z",
@@ -225926,8 +226620,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T22:20:10.644Z",
@@ -226847,15 +227543,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T13:24:18.129Z",
     "runs": 3,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T14:17:05.961Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-console-look-becomes-default-axhub-skin--rhonda"
+     "session": "axf-console-look-becomes-default-axhub-skin--rhonda",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-14T22:21:08.816Z",
@@ -227469,8 +228169,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:12:50.235Z",
@@ -227803,8 +228505,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:15:00.410Z",
@@ -228120,8 +228824,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:20:49.007Z",
@@ -228453,15 +229159,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-14T23:46:40.547Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-14T23:53:05.271Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-merge-main-land-console-app-part-4--paulie"
+     "session": "axf-merge-main-land-console-app-part-4--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-14T23:22:06.089Z",
@@ -228793,8 +229503,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:41:43.500Z",
@@ -229100,8 +229812,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:42:59.971Z",
@@ -229419,15 +230133,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-15T00:15:47.364Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T00:40:19.965Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-merge-main-land-console-app-part-2--sully"
+     "session": "axf-merge-main-land-console-app-part-2--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-15T00:12:41.963Z",
@@ -229764,8 +230482,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T00:13:25.615Z",
@@ -230054,7 +230774,7 @@
    "pr": "#589",
    "priority": "P0",
    "createdAt": "2026-11-15T00:07:23.857Z",
-   "updatedAt": "2026-11-16T23:30:53.248Z",
+   "updatedAt": "2026-11-16T23:32:34.817Z",
    "builtAt": "",
    "notes": [
     {
@@ -230092,6 +230812,14 @@
     {
      "text": "Claude account: hulu0241 (axf-merge-main-land-console-axhub-retry--lenny, shared account login)",
      "at": "2026-11-16T23:30:53.248Z"
+    },
+    {
+     "text": "Headless run axf-merge-main-land-console-axhub-retry--lenny: brief only · start 13.5K tokens ($0.04) · cost $0.16 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-16T23:32:34.817Z"
+    },
+    {
+     "text": "Stopped at s7: Brett archived PR #589 on 2026-11-16 22:53 UTC (\"more than 500 commits behind main. Branch kept.\"); it is now 1520 behind and the queue had already kicked it out for CI red on main. Did not re-merge or reopen, that would override the archive. To revive the retry-ladder work, rebuild it fresh on main. Report updated.",
+     "at": "2026-11-16T23:32:25.914Z"
     }
    ],
    "approvals": [],
@@ -230115,8 +230843,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T00:14:18.287Z",
@@ -230359,7 +231089,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -230492,15 +231222,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-15T19:57:09.845Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T20:13:02.977Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-auto-lander-controls-in-the-gate-plugin--earl"
+     "session": "axf-auto-lander-controls-in-the-gate-plugin--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-15T04:19:53.877Z",
@@ -231073,15 +231807,19 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T04:28:04.730Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 37,
      "account": "",
-     "session": "axf-move-build-orchestrator-to-axhub--joey"
+     "session": "axf-move-build-orchestrator-to-axhub--joey",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-15T04:22:44.529Z",
@@ -232059,7 +232797,7 @@
    "title": "Data container: axf-data holds all console data",
    "category": "",
    "detail": "Brett's final layout: the console is screens ONLY, with no work and no data in it. New private container 'axf-data' (Coolify, auto-restart, no public port or DNS, internal Docker network only) holds ALL the data: notes, builds store/journal/history, settings, planner items, UI reviews, everything the console stores today. Four parts: console = UI only; axf-molly = does the work (orchestrator, gate, lander); axHub = routes plus credentials/keys only (NO app data stored in axHub); axf-data = stores everything. Goal: if the console goes down, all data and notes stay available (through axHub tools) and builds keep running. Stage it safely: an API in front of the store, migrate with count checks and a backup, run in shadow first, then cut over, and no data is ever lost. Add daily backups. Coordinate with the move-build-orchestrator-to-axhub build (axf-molly reads and writes the builds store through axf-data). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -232067,8 +232805,8 @@
    "pr": "#704",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-16T23:31:28.089Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T23:36:16.487Z",
+   "builtAt": "2026-11-16T23:35:36.106Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -232141,6 +232879,14 @@
     {
      "text": "Claude account: hulu0241 (axf-data-container-axf-data-holds-all--rhonda, shared account login)",
      "at": "2026-11-16T23:31:28.089Z"
+    },
+    {
+     "text": "Session axf-data-container-axf-data-holds-all--rhonda on hulu0241 ended (exit 0); the build was already built.",
+     "at": "2026-11-16T23:36:13.710Z"
+    },
+    {
+     "text": "Headless run axf-data-container-axf-data-holds-all--rhonda: brief only · start 17.8K tokens ($0.06) · cost $0.44 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-16T23:36:16.487Z"
     }
    ],
    "approvals": [
@@ -232170,12 +232916,23 @@
     "queuedAt": "2026-11-16T23:17:37.454Z",
     "queuedBy": "brett",
     "account": "hulu0241",
-    "session": "axf-data-container-axf-data-holds-all--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "Phase 2",
     "launchedAt": "2026-11-16T23:31:13.598Z",
     "runs": 1,
-    "lastRun": null,
+    "crashes": 0,
+    "lastRun": {
+     "at": "2026-11-16T23:36:10.474Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "hulu0241",
+     "session": "axf-data-container-axf-data-holds-all--rhonda",
+     "phase": "Phase 2"
+    },
     "split": {
      "at": "2026-11-15T04:30:21.947Z",
      "by": "orchestrator",
@@ -232893,12 +233650,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:35:36.105Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T15:13:00.792Z",
-     "updatedAt": "2026-11-15T15:13:01.264Z"
+     "updatedAt": "2026-11-16T23:35:36.667Z"
     }
    ],
    "profiles": [
@@ -232909,7 +233666,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -232994,15 +233751,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-15T11:54:29.199Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T12:22:23.949Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-pending-tab-one-collapsed-row-per-2--paulie"
+     "session": "axf-pending-tab-one-collapsed-row-per-2--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-15T11:54:07.014Z",
@@ -233482,8 +234243,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T11:56:35.624Z",
@@ -234239,15 +235002,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-15T11:58:22.439Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T12:16:55.098Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 18,
      "account": "mossesx-max-",
-     "session": "axf-gate-rules-plugin-in-the-console--earl"
+     "session": "axf-gate-rules-plugin-in-the-console--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-15T11:57:45.983Z",
@@ -234943,8 +235710,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T12:11:05.553Z",
@@ -235179,15 +235948,19 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T12:36:03.280Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 16,
      "account": "",
-     "session": "axf-vps-sends-shipped-features-every-merge--joey"
+     "session": "axf-vps-sends-shipped-features-every-merge--joey",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-15T12:16:53.896Z",
@@ -235737,8 +236510,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T12:22:22.822Z",
@@ -235940,8 +236715,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T13:24:00.647Z",
@@ -236491,8 +237268,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-15T13:27:28.497Z",
@@ -237342,15 +238121,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T16:26:37.487Z",
     "runs": 2,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T17:28:02.802Z",
      "exit": 143,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-phone-connect-small-android-companion--sully"
+     "session": "axf-phone-connect-small-android-companion--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-15T13:39:21.685Z",
@@ -238336,15 +239119,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-15T14:57:29.625Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-15T16:17:03.298Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-shipped-features-open-button-views-each--sully"
+     "session": "axf-shipped-features-open-button-views-each--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-15T14:57:11.931Z",
@@ -238842,8 +239629,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -239023,8 +239812,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T13:08:41.019Z",
@@ -239616,8 +240407,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T13:15:34.793Z",
@@ -241126,8 +241919,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:19:58.360Z",
@@ -241700,15 +242495,19 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T17:30:06.556Z",
      "exit": 143,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 14,
      "account": "",
-     "session": "axf-get-main-green-unblock-lander-land-axf--paulie"
+     "session": "axf-get-main-green-unblock-lander-land-axf--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-16T16:25:07.589Z",
@@ -242335,8 +243134,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:31:32.976Z",
@@ -243030,8 +243831,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:32:36.505Z",
@@ -243393,8 +244196,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:34:41.229Z",
@@ -243620,8 +244425,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:55:29.231Z",
@@ -243750,7 +244557,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T23:26:39.165Z",
+   "updatedAt": "2026-11-16T23:36:12.907Z",
    "builtAt": "",
    "notes": [
     {
@@ -243828,8 +244635,10 @@
     "session": "axf-axhub-veto-countdown-setting-read-only--sully",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T23:17:52.842Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T18:26:46.768Z",
@@ -243948,12 +244757,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:29:03.522Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:26:46.768Z",
-     "updatedAt": "2026-11-16T18:26:46.768Z"
+     "updatedAt": "2026-11-16T23:29:03.896Z"
     },
     {
      "id": "s5",
@@ -243975,12 +244784,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:36:12.907Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:26:46.768Z",
-     "updatedAt": "2026-11-16T18:26:46.768Z"
+     "updatedAt": "2026-11-16T23:36:13.358Z"
     },
     {
      "id": "s6",
@@ -244167,7 +244976,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244224,8 +245033,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T18:29:38.397Z",
@@ -244912,15 +245723,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T18:34:01.102Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T19:03:07.897Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 25,
      "account": "mossesx-max-",
-     "session": "axf-settings-interface-gear-every-plugin--earl"
+     "session": "axf-settings-interface-gear-every-plugin--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-16T18:31:29.535Z",
@@ -245730,8 +246545,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T18:33:17.177Z",
@@ -246071,7 +246888,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T23:31:32.015Z",
+   "updatedAt": "2026-11-16T23:36:43.996Z",
    "builtAt": "",
    "notes": [
     {
@@ -246153,8 +246970,10 @@
     "session": "axf-amberx-open-url-must-open-page-even-when--paulie",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T23:17:18.218Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T18:40:21.344Z",
@@ -246426,12 +247245,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:33:22.490Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:40:21.344Z",
-     "updatedAt": "2026-11-16T18:40:21.344Z"
+     "updatedAt": "2026-11-16T23:33:22.822Z"
     },
     {
      "id": "s11",
@@ -246451,12 +247270,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:36:43.996Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:40:21.344Z",
-     "updatedAt": "2026-11-16T18:40:21.344Z"
+     "updatedAt": "2026-11-16T23:36:44.404Z"
     },
     {
      "id": "s12",
@@ -246568,7 +247387,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246653,15 +247472,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T19:05:58.434Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T19:52:07.140Z",
      "exit": 0,
      "outcome": "returned",
+     "reason": "",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-reset-all-button-every-asset-override--paulie"
+     "session": "axf-reset-all-button-every-asset-override--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-16T19:05:16.473Z",
@@ -247064,15 +247887,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T19:16:48.399Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T19:33:55.050Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-alert-every-time-build-falls-back-to--earl"
+     "session": "axf-alert-every-time-build-falls-back-to--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-16T19:14:22.611Z",
@@ -247254,8 +248081,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:19:19.385Z",
@@ -247441,8 +248270,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:21:53.865Z",
@@ -247684,8 +248515,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:22:41.951Z",
@@ -247867,15 +248700,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T19:46:04.279Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T20:06:06.733Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-every-settings-interface-gets--paulie"
+     "session": "axf-every-settings-interface-gets--paulie",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-16T19:25:58.523Z",
@@ -248056,8 +248893,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:31:58.924Z",
@@ -248240,8 +249079,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:33:52.963Z",
@@ -248431,15 +249272,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T20:24:12.031Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T20:41:08.452Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-to-do-manager-fully-voice-mcp-controlled--earl"
+     "session": "axf-to-do-manager-fully-voice-mcp-controlled--earl",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-16T20:23:51.246Z",
@@ -248624,8 +249469,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T20:26:54.993Z",
@@ -249378,15 +250225,19 @@
     "session": "",
     "slot": "",
     "model": "Opus",
+    "phase": "",
     "launchedAt": "2026-11-16T20:29:03.156Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T23:29:15.832Z",
      "exit": 0,
      "outcome": "finished",
+     "reason": "",
      "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-fable-rebuild-plan-studio-cleared-out--joey"
+     "session": "axf-fable-rebuild-plan-studio-cleared-out--joey",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-16T20:28:44.064Z",
@@ -249564,8 +250415,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -249692,8 +250545,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
@@ -249773,8 +250628,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T22:47:04.263Z",
@@ -250322,15 +251179,19 @@
     "session": "",
     "slot": "",
     "model": "Fable",
+    "phase": "",
     "launchedAt": "2026-11-16T22:49:42.023Z",
     "runs": 1,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-16T23:19:03.085Z",
      "exit": 0,
      "outcome": "requeued",
+     "reason": "",
      "stepsLeft": 11,
      "account": "mossesx-max-",
-     "session": "axf-own-look-per-grid-and-tab-group--sully"
+     "session": "axf-own-look-per-grid-and-tab-group--sully",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-16T22:48:13.206Z",
@@ -250832,8 +251693,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T22:52:37.783Z",
@@ -251415,8 +252278,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T22:49:23.111Z",
@@ -251988,8 +252853,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T22:54:06.193Z",
@@ -252932,8 +253799,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T22:55:41.491Z",
@@ -253859,8 +254728,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T22:57:32.183Z",
@@ -254683,8 +255554,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T22:58:37.445Z",
@@ -255152,7 +256025,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-16T23:30:49.544Z",
+   "updatedAt": "2026-11-16T23:37:51.601Z",
    "builtAt": "",
    "notes": [
     {
@@ -255197,8 +256070,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T23:02:45.499Z",
@@ -255360,12 +256235,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:34:04.257Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:02:45.499Z",
-     "updatedAt": "2026-11-16T23:02:45.499Z"
+     "updatedAt": "2026-11-16T23:34:04.590Z"
     },
     {
      "id": "s7",
@@ -255384,12 +256259,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:36:43.087Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:02:45.499Z",
-     "updatedAt": "2026-11-16T23:02:45.499Z"
+     "updatedAt": "2026-11-16T23:36:43.467Z"
     },
     {
      "id": "s8",
@@ -255409,12 +256284,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:37:51.601Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:02:45.499Z",
-     "updatedAt": "2026-11-16T23:02:45.499Z"
+     "updatedAt": "2026-11-16T23:37:51.918Z"
     },
     {
      "id": "s9",
@@ -255999,7 +256874,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -256072,8 +256947,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T23:03:57.915Z",
@@ -256652,8 +257529,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T23:24:34.880Z",
@@ -257324,8 +258203,10 @@
     "session": "",
     "slot": "",
     "model": "",
+    "phase": "",
     "launchedAt": "",
     "runs": 0,
+    "crashes": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T23:28:18.115Z",
