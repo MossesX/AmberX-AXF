@@ -3,7 +3,7 @@
 Brett, Nov 16 2026: "They all need a settings page. They all need a settings interface." Many plugins keep their
 options in their own config file behind GET/PUT /config. This turns that config into the service console control
 reads and writes (`runs: server`), so the options listed in plugin.json `settings.options` are read and set without a
-browser through REST (/api/plugins/plugin-manager/settings/<folder>), MCP, the CLI and voice, with the plugin's own
+browser through REST (the Plugin Manager's settings routes), MCP, the CLI and voice, with the plugin's own
 validation:
 
     plugin_options.provide("brand-library", read=lambda: get_config(), write=lambda patch: put_config(patch),

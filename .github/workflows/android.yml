@@ -138,6 +138,8 @@ jobs:
         run: node framework/cli/check-toolbars.mjs
       - name: Console control — every view, tab row, setting, plugin, toolbar, grid and button has a console-control address (ratchet framework/spec/console-control-baseline.json only goes down)
         run: node framework/cli/check-console-control.mjs
+      - name: Plugin settings — every plugin declares plugin-settings@1 with its Settings → Plugins tab, and every plugin screen carries the shared PluginSettingsGear (file:line)
+        run: node framework/cli/check-plugin-settings.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
         run: node framework/cli/check-banner-widgets.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
@@ -304,6 +306,7 @@ jobs:
             npx -y tsx framework/spec/check-orchestrator-focus.mts  # a build asked for by a console command: kept for the tab that mounts later, settled once shown, its row selector  # axf-plugin:build-orchestrator
             node framework/spec/check-nightly-deploy.mjs
             node framework/spec/check-plugin-commands.mjs               # plugin-commands@1: every plugin's commands and reads from routes, actions, data folder and plugin.json; projections; every plugin covered
+            node framework/spec/check-plugin-settings-cli.mjs           # check-plugin-settings.mjs on throw-away plugins: missing block, missing gear, hand-made gear, gear for another tab, each named file:line
             node framework/spec/check-plugin-settings.mjs               # plugin-settings@1: every plugin's Settings → Plugins sub-tab, sections (enable, info, logs), option keys and gear; fixture replay, schema = engine, every console manifest, control address
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
@@ -375,6 +378,7 @@ jobs:
             python apps/console-web/plugins/claude-session/test.py  # axf-plugin:claude-session
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
+            python apps/console-web/server/test_plugin_options.py    # plugin-settings@1 options: a plugin's config as console control's server-run settings service (get, set, refusals)
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state

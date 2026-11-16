@@ -30,25 +30,25 @@
  },
  "in": {
   "none": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ]
    }
   },
   "noneNoScreen": {
-   "folder": "apps/console-web/plugins/push-banner",
+   "folder": "apps/console-web/plugins/sample-banner",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.push-banner",
-    "name": "Push banner",
+    "id": "ai.amberx.axf.console.sample-banner",
+    "name": "Sample banner",
     "provides": [
-     "settings-tab:push-banner"
+     "settings-tab:sample-banner"
     ]
    }
   },
@@ -64,40 +64,40 @@
    }
   },
   "partial": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes"
+     "tab": "sample-notes"
     }
    }
   },
   "full": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
      "$axf": "plugin-settings@1",
-     "tab": "voice-notes",
+     "tab": "sample-notes",
      "parent": "plugins",
      "sections": [
       "enable",
       "info",
       "logs",
       "options",
-      "voice-notes.triggers"
+      "sample-notes.triggers"
      ],
      "options": [
       "axf.voiceNotes.triggers",
@@ -108,20 +108,20 @@
    }
   },
   "reordered": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes",
+     "tab": "sample-notes",
      "sections": [
       "logs",
-      "voice-notes.lists",
+      "sample-notes.lists",
       "enable",
       "info"
      ]
@@ -129,46 +129,46 @@
    }
   },
   "noScreenFull": {
-   "folder": "apps/console-web/plugins/push-banner",
+   "folder": "apps/console-web/plugins/sample-banner",
    "manifest": {
     "$axf": "plugin@1",
     "id": "x",
-    "name": "Push banner",
+    "name": "Sample banner",
     "provides": [
-     "settings-tab:push-banner",
-     "dialog:push-banner.setup"
+     "settings-tab:sample-banner",
+     "dialog:sample-banner.setup"
     ],
     "settings": {
-     "tab": "push-banner",
+     "tab": "sample-banner",
      "gear": false,
      "options": [
-      "push-banner.show"
+      "sample-banner.show"
      ]
     }
    }
   },
   "junk": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": "yes"
    }
   },
   "wrongTab": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
      "tab": "Voice Notes"
@@ -176,14 +176,14 @@
    }
   },
   "otherTab": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
      "tab": "voice"
@@ -191,47 +191,47 @@
    }
   },
   "noTabProvided": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes"
+     "view:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes"
+     "tab": "sample-notes"
     }
    }
   },
   "topLevel": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes",
+     "tab": "sample-notes",
      "parent": "general"
     }
    }
   },
   "dropsDefaults": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes",
+     "tab": "sample-notes",
      "sections": [
       "options"
      ]
@@ -239,17 +239,17 @@
    }
   },
   "repeats": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes",
+     "tab": "sample-notes",
      "sections": [
       "enable",
       "info",
@@ -264,17 +264,17 @@
    }
   },
   "badKeys": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes",
+     "tab": "sample-notes",
      "options": [
       "has space"
      ],
@@ -284,48 +284,48 @@
    }
   },
   "gearOffWithScreen": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes",
+     "tab": "sample-notes",
      "gear": false
     }
    }
   },
   "gearOnNoScreen": {
-   "folder": "apps/console-web/plugins/push-banner",
+   "folder": "apps/console-web/plugins/sample-banner",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "settings-tab:push-banner"
+     "settings-tab:sample-banner"
     ],
     "settings": {
-     "tab": "push-banner",
+     "tab": "sample-banner",
      "gear": true
     }
    }
   },
   "gearString": {
-   "folder": "apps/console-web/plugins/voice-notes",
+   "folder": "apps/console-web/plugins/sample-notes",
    "manifest": {
     "$axf": "plugin@1",
-    "id": "ai.amberx.axf.console.voice-notes",
-    "name": "Voice notes",
+    "id": "ai.amberx.axf.console.sample-notes",
+    "name": "Sample notes",
     "provides": [
-     "view:voice-notes",
-     "settings-tab:voice-notes"
+     "view:sample-notes",
+     "settings-tab:sample-notes"
     ],
     "settings": {
-     "tab": "voice-notes",
+     "tab": "sample-notes",
      "gear": "yes"
     }
    }
@@ -335,7 +335,7 @@
   "defaults": {
    "none": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -347,7 +347,7 @@
    },
    "noneNoScreen": {
     "$axf": "plugin-settings@1",
-    "tab": "push-banner",
+    "tab": "sample-banner",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -371,7 +371,7 @@
    },
    "partial": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -383,7 +383,7 @@
    },
    "full": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -395,7 +395,7 @@
    },
    "reordered": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -407,7 +407,7 @@
    },
    "noScreenFull": {
     "$axf": "plugin-settings@1",
-    "tab": "push-banner",
+    "tab": "sample-banner",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -419,7 +419,7 @@
    },
    "junk": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -431,7 +431,7 @@
    },
    "wrongTab": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -443,7 +443,7 @@
    },
    "otherTab": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -455,7 +455,7 @@
    },
    "noTabProvided": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -467,7 +467,7 @@
    },
    "topLevel": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -479,7 +479,7 @@
    },
    "dropsDefaults": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -491,7 +491,7 @@
    },
    "repeats": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -503,7 +503,7 @@
    },
    "badKeys": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -515,7 +515,7 @@
    },
    "gearOffWithScreen": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -527,7 +527,7 @@
    },
    "gearOnNoScreen": {
     "$axf": "plugin-settings@1",
-    "tab": "push-banner",
+    "tab": "sample-banner",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -539,7 +539,7 @@
    },
    "gearString": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -553,7 +553,7 @@
   "normalized": {
    "none": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -565,7 +565,7 @@
    },
    "noneNoScreen": {
     "$axf": "plugin-settings@1",
-    "tab": "push-banner",
+    "tab": "sample-banner",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -589,7 +589,7 @@
    },
    "partial": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -601,14 +601,14 @@
    },
    "full": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
      "info",
      "logs",
      "options",
-     "voice-notes.triggers"
+     "sample-notes.triggers"
     ],
     "options": [
      "axf.voiceNotes.triggers",
@@ -618,20 +618,20 @@
    },
    "reordered": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
      "info",
      "logs",
-     "voice-notes.lists"
+     "sample-notes.lists"
     ],
     "options": [],
     "gear": true
    },
    "noScreenFull": {
     "$axf": "plugin-settings@1",
-    "tab": "push-banner",
+    "tab": "sample-banner",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -639,13 +639,13 @@
      "logs"
     ],
     "options": [
-     "push-banner.show"
+     "sample-banner.show"
     ],
     "gear": false
    },
    "junk": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -681,7 +681,7 @@
    },
    "noTabProvided": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -693,7 +693,7 @@
    },
    "topLevel": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "general",
     "sections": [
      "enable",
@@ -705,7 +705,7 @@
    },
    "dropsDefaults": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -718,7 +718,7 @@
    },
    "repeats": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -733,7 +733,7 @@
    },
    "badKeys": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -747,7 +747,7 @@
    },
    "gearOffWithScreen": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -759,7 +759,7 @@
    },
    "gearOnNoScreen": {
     "$axf": "plugin-settings@1",
-    "tab": "push-banner",
+    "tab": "sample-banner",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -771,7 +771,7 @@
    },
    "gearString": {
     "$axf": "plugin-settings@1",
-    "tab": "voice-notes",
+    "tab": "sample-notes",
     "parent": "plugins",
     "sections": [
      "enable",
@@ -784,10 +784,10 @@
   },
   "problems": {
    "none": [
-    "\"settings\" is missing (plugin-settings@1: its Settings → Plugins sub-tab, sections, option keys and gear; default {\"$axf\":\"plugin-settings@1\",\"tab\":\"voice-notes\",\"parent\":\"plugins\",\"sections\":[\"enable\",\"info\",\"logs\"],\"options\":[],\"gear\":true})"
+    "\"settings\" is missing (plugin-settings@1: its Settings → Plugins sub-tab, sections, option keys and gear; default {\"$axf\":\"plugin-settings@1\",\"tab\":\"sample-notes\",\"parent\":\"plugins\",\"sections\":[\"enable\",\"info\",\"logs\"],\"options\":[],\"gear\":true})"
    ],
    "noneNoScreen": [
-    "\"settings\" is missing (plugin-settings@1: its Settings → Plugins sub-tab, sections, option keys and gear; default {\"$axf\":\"plugin-settings@1\",\"tab\":\"push-banner\",\"parent\":\"plugins\",\"sections\":[\"enable\",\"info\",\"logs\"],\"options\":[],\"gear\":false})"
+    "\"settings\" is missing (plugin-settings@1: its Settings → Plugins sub-tab, sections, option keys and gear; default {\"$axf\":\"plugin-settings@1\",\"tab\":\"sample-banner\",\"parent\":\"plugins\",\"sections\":[\"enable\",\"info\",\"logs\"],\"options\":[],\"gear\":false})"
    ],
    "noneNoTab": [
     "\"settings\" is missing (plugin-settings@1: its Settings → Plugins sub-tab, sections, option keys and gear; default {\"$axf\":\"plugin-settings@1\",\"tab\":\"notes-tasks\",\"parent\":\"plugins\",\"sections\":[\"enable\",\"info\",\"logs\"],\"options\":[],\"gear\":false})"
@@ -803,10 +803,10 @@
     "\"settings\".tab is its settings tab id (lowercase, digits, . _ -)"
    ],
    "otherTab": [
-    "\"settings\".tab \"voice\" isn't a tab it provides (\"settings-tab:voice-notes\")"
+    "\"settings\".tab \"voice\" isn't a tab it provides (\"settings-tab:sample-notes\")"
    ],
    "noTabProvided": [
-    "\"settings\".tab \"voice-notes\": the plugin provides no \"settings-tab:voice-notes\"; every plugin has a Settings → Plugins sub-tab"
+    "\"settings\".tab \"sample-notes\": the plugin provides no \"settings-tab:sample-notes\"; every plugin has a Settings → Plugins sub-tab"
    ],
    "topLevel": [
     "\"settings\".parent is \"plugins\": plugin settings are a sub-tab of Settings → Plugins, never a top-level tab"
@@ -824,7 +824,7 @@
     "\"settings\".options is a list of setting keys"
    ],
    "gearOffWithScreen": [
-    "\"settings\".gear is false but the plugin has a screen (view:voice-notes): every screen carries the gear that opens its settings"
+    "\"settings\".gear is false but the plugin has a screen (view:sample-notes): every screen carries the gear that opens its settings"
    ],
    "gearOnNoScreen": [
     "\"settings\".gear is true but the plugin has no screen to carry it (no \"view:<id>\" in provides)"
@@ -848,10 +848,10 @@
     "\"settings\".tab is its settings tab id (lowercase, digits, . _ -)"
    ],
    "otherTab": [
-    "\"settings\".tab \"voice\" isn't a tab it provides (\"settings-tab:voice-notes\")"
+    "\"settings\".tab \"voice\" isn't a tab it provides (\"settings-tab:sample-notes\")"
    ],
    "noTabProvided": [
-    "\"settings\".tab \"voice-notes\": the plugin provides no \"settings-tab:voice-notes\"; every plugin has a Settings → Plugins sub-tab"
+    "\"settings\".tab \"sample-notes\": the plugin provides no \"settings-tab:sample-notes\"; every plugin has a Settings → Plugins sub-tab"
    ],
    "topLevel": [
     "\"settings\".parent is \"plugins\": plugin settings are a sub-tab of Settings → Plugins, never a top-level tab"
@@ -869,7 +869,7 @@
     "\"settings\".options is a list of setting keys"
    ],
    "gearOffWithScreen": [
-    "\"settings\".gear is false but the plugin has a screen (view:voice-notes): every screen carries the gear that opens its settings"
+    "\"settings\".gear is false but the plugin has a screen (view:sample-notes): every screen carries the gear that opens its settings"
    ],
    "gearOnNoScreen": [
     "\"settings\".gear is true but the plugin has no screen to carry it (no \"view:<id>\" in provides)"
@@ -880,17 +880,17 @@
   },
   "target": {
    "none": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "noneNoScreen": {
-    "tab": "push-banner",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
-    "action": "settings.open:push-banner",
-    "label": "Push banner settings",
+    "tab": "sample-banner",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-banner",
+    "action": "settings.open:sample-banner",
+    "label": "Sample banner settings",
     "gear": false
    },
    "noneNoTab": {
@@ -901,119 +901,119 @@
     "gear": false
    },
    "partial": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "full": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "reordered": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "noScreenFull": {
-    "tab": "push-banner",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
-    "action": "settings.open:push-banner",
-    "label": "Push banner settings",
+    "tab": "sample-banner",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-banner",
+    "action": "settings.open:sample-banner",
+    "label": "Sample banner settings",
     "gear": false
    },
    "junk": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "wrongTab": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "otherTab": {
     "tab": "voice",
     "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice",
     "action": "settings.open:voice",
-    "label": "Voice notes settings",
+    "label": "Sample notes settings",
     "gear": true
    },
    "noTabProvided": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "topLevel": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "dropsDefaults": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "repeats": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "badKeys": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    },
    "gearOffWithScreen": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": false
    },
    "gearOnNoScreen": {
-    "tab": "push-banner",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
-    "action": "settings.open:push-banner",
-    "label": "Voice notes settings",
+    "tab": "sample-banner",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-banner",
+    "action": "settings.open:sample-banner",
+    "label": "Sample notes settings",
     "gear": true
    },
    "gearString": {
-    "tab": "voice-notes",
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes",
-    "label": "Voice notes settings",
+    "tab": "sample-notes",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes",
+    "label": "Sample notes settings",
     "gear": true
    }
   },
   "address": {
-   "voice-notes": {
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
-    "action": "settings.open:voice-notes"
+   "sample-notes": {
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes",
+    "action": "settings.open:sample-notes"
    },
-   "plugin-manager": {
-    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-manager",
-    "action": "settings.open:plugin-manager"
+   "sample-manager": {
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-manager",
+    "action": "settings.open:sample-manager"
    },
    "a.b_c-d": {
     "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=a.b_c-d",

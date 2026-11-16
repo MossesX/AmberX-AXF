@@ -8,12 +8,12 @@
  *   plugin.settings.set:<plugin>:<key>:<value>    set one of its own options (PUT …/settings/<folder>; owner-only refused)
  *
  * <plugin> is its folder, manifest id or name (case-insensitive). The REST routes are the Plugin Manager's
- * (/api/plugins/plugin-manager/settings/…), so REST, MCP, the CLI (`axf plugin-settings …`) and voice answer the same.
+ * (its settings routes), so REST, MCP, the CLI (`axf plugin-settings …`) and voice answer the same.
  */
 import type { AxfRuntime } from '../axf/core';
 import { settingsAddress } from '../axf/core/plugin-settings.mjs';
 import { executeControl, describeAnswer } from '../control/executor';
-import { bundledPlugins, pluginFetch, type BundledPlugin } from '../plugins';
+import { bundledPlugins, pluginFetch, pluginProviding, type BundledPlugin } from '../plugins';
 import { pluginTabId } from '../settings/pluginTabs';
 
 export const PLUGIN_SETTINGS_ACTIONS = {
@@ -41,7 +41,9 @@ export function setArgs(args: string[]): { plugin: string; key: string; value: s
 }
 
 const fetchJson = async (folder: string, init?: RequestInit): Promise<Record<string, unknown>> => {
-  const r = await pluginFetch('plugin-manager', `settings/${folder}`, init);
+  const host = pluginProviding('service:axf.plugin-settings@1'); // the Plugin Manager, by capability
+  if (!host) return { ok: false, message: 'The Plugin Manager is not installed, so plugin settings can\'t be read here.' };
+  const r = await pluginFetch(host, `settings/${folder}`, init);
   const j = (await r.json().catch(() => ({}))) as Record<string, unknown>;
   return r.ok ? j : { ok: false, message: String(j.detail ?? r.statusText) };
 };

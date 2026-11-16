@@ -17,7 +17,8 @@
     "action:plugin-manager.open",
     "action:plugin-manager.window",
     "context-menu:default/plugin-manager",
-    "settings-tab:plugin-manager"
+    "settings-tab:plugin-manager",
+    "service:axf.plugin-settings@1"
   ],
   "optional": [],
   "uiEditor": [

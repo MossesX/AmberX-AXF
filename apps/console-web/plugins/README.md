@@ -71,7 +71,7 @@ copies `_template` and renames it, with its settings already wired (plugin-setti
 plugin.json (its Settings → Plugins sub-tab, the default enable / info / logs sections, its option keys, `gear`), the
 sub-tab and one example option in web/index.tsx, and the screen header as `PluginScreenHeader`, whose gear opens the
 sub-tab. A plugin without a screen drops its view and sets `"gear": false`; every option key it registers goes in
-`settings.options` (REST /api/plugins/plugin-manager/settings/<folder>, MCP plugin-settings-*, `axf plugin-settings`,
+`settings.options` (REST: the Plugin Manager's settings routes, MCP plugin-settings-*, `axf plugin-settings`,
 voice plugin.settings.*). Or by hand: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description,
 `lifecycle.dataDir`), the `id`, `FOLDER` and views in `web/index.tsx`, the routes in `server/__init__.py`, and the
 folder name in `install.mjs` / `uninstall.mjs`.

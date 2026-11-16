@@ -23,26 +23,26 @@ const rd = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-const base = { $axf: 'plugin@1', id: 'ai.amberx.axf.console.voice-notes', name: 'Voice notes', provides: ['view:voice-notes', 'settings-tab:voice-notes'] };
+const base = { $axf: 'plugin@1', id: 'ai.amberx.axf.console.sample-notes', name: 'Sample notes', provides: ['view:sample-notes', 'settings-tab:sample-notes'] };
 const IN = {
-  none: { folder: 'apps/console-web/plugins/voice-notes', manifest: base },
-  noneNoScreen: { folder: 'apps/console-web/plugins/push-banner', manifest: { ...base, id: 'ai.amberx.axf.console.push-banner', name: 'Push banner', provides: ['settings-tab:push-banner'] } },
+  none: { folder: 'apps/console-web/plugins/sample-notes', manifest: base },
+  noneNoScreen: { folder: 'apps/console-web/plugins/sample-banner', manifest: { ...base, id: 'ai.amberx.axf.console.sample-banner', name: 'Sample banner', provides: ['settings-tab:sample-banner'] } },
   noneNoTab: { folder: 'apps/console-web/plugins/notes-tasks', manifest: { ...base, id: 'ai.amberx.axf.console.notes-tasks', name: 'Notes tasks', provides: ['action:notes-tasks.sync'] } },
-  partial: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice-notes' } } },
-  full: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { $axf: 'plugin-settings@1', tab: 'voice-notes', parent: 'plugins', sections: ['enable', 'info', 'logs', 'options', 'voice-notes.triggers'], options: ['axf.voiceNotes.triggers', 'axf.voiceNotes.beep'], gear: true } } },
-  reordered: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice-notes', sections: ['logs', 'voice-notes.lists', 'enable', 'info'] } } },
-  noScreenFull: { folder: 'apps/console-web/plugins/push-banner', manifest: { ...base, id: 'x', name: 'Push banner', provides: ['settings-tab:push-banner', 'dialog:push-banner.setup'], settings: { tab: 'push-banner', gear: false, options: ['push-banner.show'] } } },
-  junk: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: 'yes' } },
-  wrongTab: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'Voice Notes' } } },
-  otherTab: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice' } } },
-  noTabProvided: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, provides: ['view:voice-notes'], settings: { tab: 'voice-notes' } } },
-  topLevel: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice-notes', parent: 'general' } } },
-  dropsDefaults: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice-notes', sections: ['options'] } } },
-  repeats: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice-notes', sections: ['enable', 'info', 'logs', 'logs'], options: ['a', 'a'] } } },
-  badKeys: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice-notes', options: ['has space'], extra: 1, $axf: 'plugin-settings@2' } } },
-  gearOffWithScreen: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice-notes', gear: false } } },
-  gearOnNoScreen: { folder: 'apps/console-web/plugins/push-banner', manifest: { ...base, provides: ['settings-tab:push-banner'], settings: { tab: 'push-banner', gear: true } } },
-  gearString: { folder: 'apps/console-web/plugins/voice-notes', manifest: { ...base, settings: { tab: 'voice-notes', gear: 'yes' } } },
+  partial: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'sample-notes' } } },
+  full: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { $axf: 'plugin-settings@1', tab: 'sample-notes', parent: 'plugins', sections: ['enable', 'info', 'logs', 'options', 'sample-notes.triggers'], options: ['axf.voiceNotes.triggers', 'axf.voiceNotes.beep'], gear: true } } },
+  reordered: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'sample-notes', sections: ['logs', 'sample-notes.lists', 'enable', 'info'] } } },
+  noScreenFull: { folder: 'apps/console-web/plugins/sample-banner', manifest: { ...base, id: 'x', name: 'Sample banner', provides: ['settings-tab:sample-banner', 'dialog:sample-banner.setup'], settings: { tab: 'sample-banner', gear: false, options: ['sample-banner.show'] } } },
+  junk: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: 'yes' } },
+  wrongTab: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'Voice Notes' } } },
+  otherTab: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'voice' } } },
+  noTabProvided: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, provides: ['view:sample-notes'], settings: { tab: 'sample-notes' } } },
+  topLevel: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'sample-notes', parent: 'general' } } },
+  dropsDefaults: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'sample-notes', sections: ['options'] } } },
+  repeats: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'sample-notes', sections: ['enable', 'info', 'logs', 'logs'], options: ['a', 'a'] } } },
+  badKeys: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'sample-notes', options: ['has space'], extra: 1, $axf: 'plugin-settings@2' } } },
+  gearOffWithScreen: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'sample-notes', gear: false } } },
+  gearOnNoScreen: { folder: 'apps/console-web/plugins/sample-banner', manifest: { ...base, provides: ['settings-tab:sample-banner'], settings: { tab: 'sample-banner', gear: true } } },
+  gearString: { folder: 'apps/console-web/plugins/sample-notes', manifest: { ...base, settings: { tab: 'sample-notes', gear: 'yes' } } },
 };
 
 const out = { defaults: {}, normalized: {}, problems: {}, problemsOptional: {}, target: {}, address: {}, badAddress: [] };
@@ -53,7 +53,7 @@ for (const [k, c] of Object.entries(IN)) {
   out.problemsOptional[k] = P.checkSettings(c.manifest, { folder: c.folder, required: false });
   out.target[k] = P.settingsTarget(c.manifest, { folder: c.folder });
 }
-for (const id of ['voice-notes', 'plugin-manager', 'a.b_c-d']) out.address[id] = { address: P.settingsAddress(id), action: P.settingsOpenAction(id) };
+for (const id of ['sample-notes', 'sample-manager', 'a.b_c-d']) out.address[id] = { address: P.settingsAddress(id), action: P.settingsOpenAction(id) };
 for (const bad of ['', 'Voice Notes', 'x/y', 42, null]) { try { P.settingsAddress(bad); out.badAddress.push({ in: bad, threw: false }); } catch { out.badAddress.push({ in: bad, threw: true }); } }
 
 if (WRITE) {
@@ -77,16 +77,16 @@ t('bad addresses', () => assert.deepEqual(out.badAddress, fix.out.badAddress));
 
 /* ---------- behaviour the fixture must show ---------- */
 t('no block: default, no problem when optional, one when required', () => {
-  assert.deepEqual(out.defaults.none, { $axf: P.SCHEMA, tab: 'voice-notes', parent: 'plugins', sections: ['enable', 'info', 'logs'], options: [], gear: true });
+  assert.deepEqual(out.defaults.none, { $axf: P.SCHEMA, tab: 'sample-notes', parent: 'plugins', sections: ['enable', 'info', 'logs'], options: [], gear: true });
   assert.deepEqual(out.problemsOptional.none, []);
   assert.equal(out.problems.none.length, 1); assert.match(out.problems.none[0], /"settings" is missing/);
 });
 t('no screen: default gear off; no tab provided: folder name', () => { assert.equal(out.defaults.noneNoScreen.gear, false); assert.equal(out.defaults.noneNoTab.tab, 'notes-tasks'); });
 t('partial fills the defaults', () => assert.deepEqual(out.normalized.partial, out.defaults.none));
 t('full is kept, in order, no problems', () => { assert.deepEqual(out.normalized.full, IN.full.manifest.settings); assert.deepEqual(out.problems.full, []); });
-t('defaults lead, in their order; the plugin\'s own sections follow', () => assert.deepEqual(out.normalized.reordered.sections, ['enable', 'info', 'logs', 'voice-notes.lists']));
+t('defaults lead, in their order; the plugin\'s own sections follow', () => assert.deepEqual(out.normalized.reordered.sections, ['enable', 'info', 'logs', 'sample-notes.lists']));
 t('no screen, gear false, options: fine', () => assert.deepEqual(out.problems.noScreenFull, []));
-for (const [k, re] of [['junk', /is a plugin-settings@1 block/], ['wrongTab', /tab is its settings tab id/], ['otherTab', /isn't a tab it provides \("settings-tab:voice-notes"\)/], ['noTabProvided', /provides no "settings-tab:voice-notes"/], ['topLevel', /never a top-level tab/], ['dropsDefaults', /drops "enable", "info", "logs"/], ['gearOffWithScreen', /has a screen \(view:voice-notes\)/], ['gearOnNoScreen', /no screen to carry it/], ['gearString', /gear is true or false/]]) {
+for (const [k, re] of [['junk', /is a plugin-settings@1 block/], ['wrongTab', /tab is its settings tab id/], ['otherTab', /isn't a tab it provides \("settings-tab:sample-notes"\)/], ['noTabProvided', /provides no "settings-tab:sample-notes"/], ['topLevel', /never a top-level tab/], ['dropsDefaults', /drops "enable", "info", "logs"/], ['gearOffWithScreen', /has a screen \(view:sample-notes\)/], ['gearOnNoScreen', /no screen to carry it/], ['gearString', /gear is true or false/]]) {
   t(`problem ${k}`, () => { assert.equal(out.problems[k].length, 1, JSON.stringify(out.problems[k])); assert.match(out.problems[k][0], re); });
 }
 t('repeats: two problems', () => { assert.equal(out.problems.repeats.length, 2); assert.match(out.problems.repeats[0], /repeats a section/); assert.match(out.problems.repeats[1], /repeats a key/); });
@@ -125,7 +125,7 @@ t('plugins seen', () => assert.ok(declared + defaulted > 0));
 const ct = readFileSync(join(ROOT, 'framework/react/controlTargets.ts'), 'utf8');
 t('address pieces = controlTargets.ts', () => {
   assert.ok(ct.includes(`SETTINGS_VIEW_ADDRESS = '${P.SETTINGS_VIEW}'`)); assert.ok(ct.includes(`SETTINGS_TAB_ROW = '${P.SETTINGS_TAB_ROW}'`)); assert.ok(ct.includes(`SETTINGS_SUBTAB_ROW = '${P.SETTINGS_SUBTAB_ROW}'`));
-  assert.equal(P.settingsAddress('voice-notes'), 'view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes');
+  assert.equal(P.settingsAddress('sample-notes'), 'view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=sample-notes');
 });
 
 console.log(`✓ plugin-settings@1: ${n} checks; ${declared} console plugins declare a settings block, ${defaulted} run on the default`);

@@ -12465,7 +12465,9 @@
       "core": true,
       "view": "view:plugin-manager",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-manager",
-      "provides": [],
+      "provides": [
+        "service:axf.plugin-settings@1"
+      ],
       "requires": [],
       "optional": []
     },

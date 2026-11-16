@@ -55,7 +55,7 @@ export function pluginSettingsTabs(m) { return provides(m).filter((p) => p.start
 /** Does the plugin have a screen a gear can sit on? */
 export function hasScreen(m) { return pluginViews(m).length > 0; }
 
-/** The folder's short name ('apps/console-web/plugins/voice-notes' → 'voice-notes'). */
+/** The folder's short name ('apps/console-web/plugins/my-plugin' → 'my-plugin'). */
 const shortFolder = (folder) => String(folder ?? '').split('/').filter(Boolean).pop() ?? '';
 
 /**

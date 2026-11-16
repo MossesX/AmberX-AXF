@@ -16,7 +16,7 @@
  *
  * <plugin> is its folder under apps/console-web/plugins. Exit codes: 0 ok · 1 failed · 2 usage · 4 no console open.
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { settingsAddress, normalizeSettings } from '../core/plugin-settings.mjs';
@@ -25,7 +25,16 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PLUGINS = join(ROOT, 'apps', 'console-web', 'plugins');
 export const SUBCOMMANDS = ['list', 'get', 'set', 'enable', 'disable', 'logs', 'open'];
 const FOLDER = /^[a-z0-9][a-z0-9-]{1,47}$/;
-const PM = '/api/plugins/plugin-manager';
+/** The settings routes live in the plugin that provides service:axf.plugin-settings@1 (the Plugin Manager), found by
+ *  capability, never by folder name. */
+export const CAPABILITY = 'service:axf.plugin-settings@1';
+export function provider(plugins = PLUGINS) {
+  if (!existsSync(plugins)) return null;
+  for (const d of readdirSync(plugins).sort()) {
+    try { if (JSON.parse(readFileSync(join(plugins, d, 'plugin.json'), 'utf8')).provides?.includes(CAPABILITY)) return d; } catch { /* not a plugin */ }
+  }
+  return null;
+}
 
 const WITH_VALUE = new Set(['limit', 'level', 'remote']);
 /** argv → { words, flags }; --limit, --level and --remote take a value, other flags are switches. */
@@ -57,6 +66,9 @@ export function toRequest(argv, { plugins = PLUGINS } = {}) {
   const { words, flags } = parseArgs(argv);
   const [sub, folder, ...rest] = words;
   if (!SUBCOMMANDS.includes(sub)) throw new Error(`usage: axf plugin-settings ${SUBCOMMANDS.join('|')} <plugin> …`);
+  const host = sub === 'open' ? '' : provider(plugins);
+  if (sub !== 'open' && !host) throw new Error(`no plugin provides ${CAPABILITY} (install the Plugin Manager)`);
+  const PM = `/api/plugins/${host}`;
   if (sub === 'list') return { method: 'GET', path: `${PM}/settings` };
   if (!folder || !FOLDER.test(folder)) throw new Error(`usage: axf plugin-settings ${sub} <plugin folder>`);
   switch (sub) {

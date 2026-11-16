@@ -96,7 +96,7 @@ export async function main(argv, io = { log: (s) => console.log(s), error: (s) =
   if (flags.json) { io.log(JSON.stringify(r, null, 2)); return 0; }
   io.log(`${r.dryRun ? '(dry run) would create' : '✓ created'} plugins/${r.folder} — ${r.name} (${r.id})`);
   io.log(`  settings: Settings → Plugins → ${r.name} (tab ${r.tab}), sections ${r.settings.sections.join(', ')}, options ${r.settings.options.join(', ') || 'none'}, gear on its screen header`);
-  io.log(`  reach it: axf plugin-settings get ${r.folder} · REST /api/plugins/plugin-manager/settings/${r.folder} · voice plugin.settings.open:${r.folder}`);
+  io.log(`  reach it: axf plugin-settings get ${r.folder} · REST GET settings/${r.folder} on the Plugin Manager · voice plugin.settings.open:${r.folder}`);
   io.log('  next: node framework/cli/plugin-lifecycle.mjs check ' + r.folder + ' · node framework/spec/check-plugin-settings.mjs · node framework/cli/check-plugin-settings.mjs');
   return 0;
 }
