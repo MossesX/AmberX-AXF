@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6602,
- "updatedAt": "2026-11-16T17:28:06.041Z",
+ "rev": 6603,
+ "updatedAt": "2026-11-16T17:28:21.691Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -241069,7 +241069,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T17:27:17.647Z",
+   "updatedAt": "2026-11-16T17:28:08.378Z",
    "builtAt": "",
    "notes": [
     {
@@ -241103,6 +241103,14 @@
     {
      "text": "Headless run axf-get-main-green-unblock-lander-land-axf--paulie: brief only · start 16.4K tokens ($0.05) · cost $1.42 · 78 turns · 6 tools, MCP none",
      "at": "2026-11-16T17:27:17.647Z"
+    },
+    {
+     "text": "Session ended (exit 143) with 14 steps left: back in the Queue (run 1).",
+     "at": "2026-11-16T17:28:05.938Z"
+    },
+    {
+     "text": "Dispatch gate: get-main-green-unblock-lander-land-axf still has axf-get-main-green-unblock-lander-land-axf--paulie alive: not launched again, tracking that session.",
+     "at": "2026-11-16T17:28:08.378Z"
     }
    ],
    "approvals": [],
@@ -241128,7 +241136,14 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T17:28:05.203Z",
+     "exit": 143,
+     "outcome": "requeued",
+     "stepsLeft": 14,
+     "account": "",
+     "session": "axf-get-main-green-unblock-lander-land-axf--paulie"
+    },
     "split": {
      "at": "2026-11-16T16:25:07.589Z",
      "by": "orchestrator",
@@ -241137,7 +241152,7 @@
      "note": "Split by Claude into 19 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session ended (exit 143) with 14 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -241641,7 +241656,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T17:28:06.041Z",
+ "updatedAt": "2026-11-16T17:28:21.691Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -156800,7 +156800,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T17:27:17.647Z",
+   "updatedAt": "2026-11-16T17:28:08.378Z",
    "builtAt": "",
    "notes": [
     {
@@ -156834,6 +156834,14 @@
     {
      "text": "Headless run axf-get-main-green-unblock-lander-land-axf--paulie: brief only · start 16.4K tokens ($0.05) · cost $1.42 · 78 turns · 6 tools, MCP none",
      "at": "2026-11-16T17:27:17.647Z"
+    },
+    {
+     "text": "Session ended (exit 143) with 14 steps left: back in the Queue (run 1).",
+     "at": "2026-11-16T17:28:05.938Z"
+    },
+    {
+     "text": "Dispatch gate: get-main-green-unblock-lander-land-axf still has axf-get-main-green-unblock-lander-land-axf--paulie alive: not launched again, tracking that session.",
+     "at": "2026-11-16T17:28:08.378Z"
     }
    ],
    "approvals": [],
