@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7007,
- "updatedAt": "2026-11-16T23:21:20.841Z",
+ "rev": 7008,
+ "updatedAt": "2026-11-16T23:21:39.963Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -249246,14 +249246,14 @@
    "title": "Fable rebuild: To-do manager with unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the To-do manager plugin (todo-manager) on Fable. Unlimited nesting of any item in any item: lists inside lists, notes inside lists, lists inside notes, notes inside notes, to-dos and tasks anywhere, no depth limit (one tree model, drag to move/reorder at any level, collapse/expand, breadcrumbs). Full context menu on every list and item: New list/note/to-do/task inside, Rename, Edit, Duplicate, Move to, Delete (confirm + undo), Complete, Export. Everything voice and MCP controlled: every action exposed as plugin-commands MCP tools, console-control addresses, CLI and AmberX voice ('make a list called X inside Y'). Migrate existing lists and entries. Professional UI on framework controls and tokens only, desktop and phone. Supersedes to-do-manager-fully-voice-mcp-controlled (fold its notes in). Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fable-rebuild-to-do-manager-unlimited",
    "pr": "",
    "createdAt": "2026-11-16T20:24:18.253Z",
-   "updatedAt": "2026-11-16T21:20:52.204Z",
+   "updatedAt": "2026-11-16T23:21:38.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -249283,6 +249283,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T21:20:52.204Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
+     "at": "2026-11-16T23:21:38.029Z"
     }
    ],
    "approvals": [],
@@ -249916,7 +249920,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
