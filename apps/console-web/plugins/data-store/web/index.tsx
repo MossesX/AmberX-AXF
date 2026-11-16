@@ -1,5 +1,6 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { appMenu } from './menu';
 import { BackupPanel, ModePanel, RowsView, StagesView, StatusPanel, currentView, useDataStore } from './DataStoreTab';
 import panels from '../assets/settings/data-store-panels.json';
 import rows from '../assets/settings/data-store-rows.json';
@@ -18,6 +19,7 @@ function Loaded({ children }: { children: (s: NonNullable<ReturnType<typeof useD
 
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.data-store', // = plugin.json "id"
+  appMenu,
   label: 'Data store',
   version: '0.1.0',
   builtWith: { model: 'opus', builtAt: '2026-11-15' },

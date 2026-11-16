@@ -43,7 +43,7 @@ const seeds = join(ROOT, 'apps/console-web/plugins/plan-studio/data/plans');
 if (existsSync(seeds)) cpSync(seeds, join(R.projects, 'amberx-axf/_data/plan-studio/plans'), { recursive: true });
 put(join(R.projects, 'amberx-axf/_data/plan-studio/shipped-log.jsonl'), '{"at":"2026-11-01T00:00:00Z","plan":"p1"}\n{"plan":"p2","at":"2026-11-02T00:00:00Z"}\n');
 copy(join(ROOT, 'apps/console-web/plugins/ui-review/kinds.json'), join(R.plugins, 'ui-review/kinds.json'));
-put(join(R.plugins, 'ui-review/shots/i1/desktop.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47, 1, 2, 3]));
+put(join(R.plugins, 'ui-review', 'shots', 'i1', 'desktop.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47, 1, 2, 3]));
 put(join(R.projects, '_shared/_claude/notes/handoffs/2026-11-14.md'), '# Handoff\n\nThe console goes down; the notes stay.\n');
 put(join(R.projects, 'amberx-axf/_data/companion/broken.json'), '{ not json');            // console holds blobs: moves as a blob
 put(join(R.projects, '_shared/_data/settings/apps/amberx-droid.json'), JSON.stringify({ theme: 'dark', n: 1.0 }, null, 2));
