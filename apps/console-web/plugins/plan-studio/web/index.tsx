@@ -11,6 +11,7 @@ import { appMenu } from './menu';
 import { CaptureDialog } from './capture';
 import { focusPlan, PlanStudioPage } from './ui';
 import { FOLDER, KEYS, VIEW } from './api';
+import { CategoryTreePanel } from './categories';
 
 const ID = 'ai.amberx.axf.console.plan-studio';
 const DIALOG = 'plan-studio.capture';
@@ -60,6 +61,7 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.layout, label: 'Plans open as', kind: 'choice', default: 'grid', options: [{ value: 'tree', label: 'Tree' }, { value: 'grid', label: 'Grid' }, { value: 'groups', label: 'Sub-grids' }, { value: 'board', label: 'Board' }, { value: 'roadmap', label: 'Roadmap' }, { value: 'reader', label: 'Reader' }] },
       { key: KEYS.sort, label: 'Default order', kind: 'choice', default: 'priority', options: [{ value: 'priority', label: 'Priority' }, { value: 'updated', label: 'Last changed' }, { value: 'target', label: 'Target date' }, { value: 'title', label: 'Title' }] },
       { key: KEYS.group, label: 'Sub-grids group by', kind: 'choice', default: 'category', options: [{ value: 'category', label: 'Category' }, { value: 'status', label: 'Status' }, { value: 'project', label: 'Project' }, { value: 'tag', label: 'Tag' }, { value: 'priority', label: 'Priority' }] },
+      { key: KEYS.defaultStatus, label: 'New plans start as', kind: 'choice', default: 'draft', options: [{ value: 'idea', label: 'Idea' }, { value: 'draft', label: 'Draft' }, { value: 'parked', label: 'Parked' }, { value: 'ready', label: 'Ready' }] },
       { key: KEYS.autosave, label: 'Autosave saved plans while editing', kind: 'toggle', default: true },
       { key: KEYS.autoApply, label: 'Apply small AI edits straight away (with Undo)', kind: 'toggle', default: false },
       { key: KEYS.banner, label: 'Show “+ Plan” on the banner', kind: 'toggle', default: true },
@@ -67,5 +69,9 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.voiceLang, label: 'Voice language', kind: 'choice', default: 'en-US', options: [{ value: 'en-US', label: 'English (US)' }, { value: 'en-GB', label: 'English (UK)' }, { value: 'en-CA', label: 'English (Canada)' }] },
     ],
   }],
-  settingsPanels: [{ id: 'plan-studio.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [
+    // the category tree, read-only here: it is edited in Plan Studio (the Catalog tab), saved on the hub
+    { id: 'plan-studio.categories', tab: FOLDER, title: 'Category tree', icon: 'folder', order: 30, render: () => <CategoryTreePanel /> },
+    { id: 'plan-studio.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+  ],
 };

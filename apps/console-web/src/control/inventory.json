@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 196,
+    "settings": 197,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -1494,7 +1494,7 @@
       "view": "plan-studio",
       "plugin": "ai.amberx.axf.console.plan-studio",
       "file": "plugins/plan-studio/web/ui.tsx",
-      "line": 111,
+      "line": 107,
       "tabs": [
         {
           "address": "view:plan-studio/tab:plan-studio.tabs=plans",
@@ -3808,6 +3808,27 @@
       "detail": "Settings › Plugins › Plan Studio",
       "keywords": [
         "plan-studio.group",
+        "Plan Studio"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.plan-studio",
+      "file": "plugins/plan-studio/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio/setting:plan-studio.defaultStatus",
+      "kind": "setting",
+      "label": "New plans start as",
+      "key": "plan-studio.defaultStatus",
+      "type": "choice",
+      "options": [
+        "idea",
+        "draft",
+        "parked",
+        "ready"
+      ],
+      "detail": "Settings › Plugins › Plan Studio",
+      "keywords": [
+        "plan-studio.defaultStatus",
         "Plan Studio"
       ],
       "runs": "console",

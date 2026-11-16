@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PluginScreenHeader, Segmented, TabGroup, useRuntime } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
-import { api, call, fmtDay, KEYS, putPlan, reload, savePlan, setPart, statusInfo, useBusy, useStudio } from './api';
+import { api, call, fmtDay, FOLDER, KEYS, putPlan, reload, savePlan, setPart, statusInfo, useBusy, useStudio } from './api';
 import { CommandBox, VoicePanel } from './ai';
 import { PlanEditor } from './editor';
 import { CatalogTab } from './catalog';
@@ -62,13 +62,9 @@ function revealItem(ref: string) {
 
 export function Head({ count }: { count?: number }) {
   return (
-    <header className="fx-pagehead axp-plan-studio__head">
-      <div>
-        <p className="fx-eyebrow">Builds · plans{count ? ` · ${count}` : ''}</p>
-        <h1>Plan Studio</h1>
-        <p className="fx-muted">Every plan in one place: write it, file it, find it, and turn it into a build when it's ready.</p>
-      </div>
-    </header>
+    // plugin-settings@1: the shared header carries the gear that opens Settings → Plugins → Plan Studio
+    <PluginScreenHeader tab={FOLDER} title="Plan Studio" className="axp-plan-studio__head" eyebrow={`Builds · plans${count ? ` · ${count}` : ''}`}
+      lede="Every plan in one place: write it, file it, find it, and turn it into a build when it's ready." />
   );
 }
 
@@ -126,11 +122,14 @@ export function PlanStudioPage() {
 
 export function NewPlanButton({ onNew }: { onNew: (p: Plan) => void }) {
   const { state } = useStudio();
+  const rt = useRuntime();
+  // Settings → Plugins → Plan Studio → Default status (plan-settings@1 option plan-studio.defaultStatus)
+  const status = String(rt.settings.get(KEYS.defaultStatus) || 'draft');
   const [menu, setMenu] = useState(false);
   const all = state?.templates.all ?? pc.BUILT_IN_TEMPLATES;
   return (
     <span className="axp-plan-studio__new">
-      <Button size="sm" tone="primary" icon="plus" onClick={() => onNew(pc.normalize({ title: '', status: 'draft' }))}>New plan</Button>
+      <Button size="sm" tone="primary" icon="plus" onClick={() => onNew(pc.normalize({ title: '', status }))}>New plan</Button>
       <IconButton icon="chevron-down" label="New from a template" aria-expanded={menu} onClick={() => setMenu(!menu)} />
       {menu && (
         <div className="fx-menu axp-plan-studio__menu" role="menu">

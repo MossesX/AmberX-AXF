@@ -44,6 +44,7 @@
       "framework/spec/CONTROL.md"
     ]
   },
+  "settings": { "$axf": "plugin-settings@1", "tab": "plan-studio", "parent": "plugins", "sections": ["enable", "info", "logs", "options", "plan-studio.categories"], "options": ["plan-studio.defaultStatus", "plan-studio.layout", "plan-studio.sort", "plan-studio.group", "plan-studio.autosave", "plan-studio.autoApply", "plan-studio.banner", "plan-studio.voiceOut", "plan-studio.voiceLang"], "gear": true },
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": {
     "model": "opus",

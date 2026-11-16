@@ -10,6 +10,7 @@ export const VIEW = 'plan-studio';
 export const KEYS = {
   layout: 'plan-studio.layout', sort: 'plan-studio.sort', group: 'plan-studio.group', autoApply: 'plan-studio.autoApply',
   banner: 'plan-studio.banner', voiceLang: 'plan-studio.voiceLang', voiceOut: 'plan-studio.voiceOut', autosave: 'plan-studio.autosave',
+  defaultStatus: 'plan-studio.defaultStatus',
 } as const;
 export const api = pluginApi(FOLDER, 'Plan Studio', { unavailable: 'Plan Studio is switched off or its server part is not running.' });
 
