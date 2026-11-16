@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` added (0 steps) (all) · console
 - 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` → queued, note (all) · console
 - 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` note (all) · mcp
 - 2026-11-16 19:12 UTC · `fix-red-ci-blocked-builds-they-land` → running, note (all) · pipeline
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:18 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
 - 2026-11-16 23:18 UTC · `every-plugin-screen-gets-a-settings-gear` → queued, note (all) · brett
 - 2026-11-16 23:18 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued, note (all) · brett
+- 2026-11-16 23:18 UTC · `orchestrator-table-columns-model-queue-assigned` → built (all) · builds-live
 
 ## Token passes (log)
 
