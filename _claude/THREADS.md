@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 04:34 UTC · `auto-lander-controls-in-the-gate-plugin` s3 done (all) · orchestrator
 - 2026-11-15 04:34 UTC · `auto-lander-controls-in-the-gate-plugin` s5 done (all) · orchestrator
 - 2026-11-15 04:35 UTC · `auto-lander-controls-in-the-gate-plugin` s6 done (all) · orchestrator
 - 2026-11-15 04:35 UTC · `auto-lander-controls-in-the-gate-plugin` s7 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:09 UTC · `duplicate-gate-vps-checks-shipped` note (all) · orchestrator
 - 2026-11-16 13:09 UTC · `banner-widget-shapes-more-than-circle` → running, note (all) · mcp
 - 2026-11-16 13:09 UTC · `console-app-land-parts-1-4-build-apk` → archived (all) · mcp
+- 2026-11-16 13:10 UTC · `context-menus-plugin-one-true-source` note (all) · mcp
 
 ## Token passes (log)
 

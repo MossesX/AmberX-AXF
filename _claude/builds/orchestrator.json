@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:09:34.547Z",
+ "updatedAt": "2026-11-16T13:10:24.424Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134797,7 +134797,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-15T01:27:30.456Z",
+   "updatedAt": "2026-11-16T13:10:22.649Z",
    "builtAt": "2026-11-15T01:26:56.489Z",
    "notes": [
     {
@@ -134851,6 +134851,10 @@
     {
      "text": "Phase 2 done. Still owed: desktop and phone UI Review shots. rebuild-shots needs the playwright npm package, which isn't installed in the VPS checkout (only the Chromium builds in ~/.cache/ms-playwright are there).",
      "at": "2026-11-15T01:27:06.155Z"
+    },
+    {
+     "text": "Brett (Nov 16): KEEP. Menus must be fully DYNAMIC: built at runtime from what every installed/enabled plugin registers for the right-clicked thing (no hardcoded lists). Enabling, disabling or installing a plugin adds/removes its items instantly with no rebuild, and items follow the current skin. Verify before landing.",
+     "at": "2026-11-16T13:10:22.649Z"
     }
    ],
    "approvals": [
