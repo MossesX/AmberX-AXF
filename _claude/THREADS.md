@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 12:30 UTC · `threads-110-merged` PR #111, note (all) · reconciler
 - 2026-11-16 12:30 UTC · `threads-oauth-soft` PR #109, note (all) · reconciler
 - 2026-11-16 12:30 UTC · `project-thread-y6pzy7` PR #78, note (all) · reconciler
 - 2026-11-16 12:30 UTC · `project-thread-vfc6wi` PR #68, note (all) · reconciler
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 18:31 UTC · `settings-interface-gear-every-plugin` note (all) · builds-live
 - 2026-11-16 18:32 UTC · `fix-red-ci-blocked-builds-they-land` → running, note (all) · mcp
 - 2026-11-16 18:33 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · orchestrator
+- 2026-11-16 18:33 UTC · `all-settings-interfaces-open-floating` → running (all) · mcp
 
 ## Token passes (log)
 
