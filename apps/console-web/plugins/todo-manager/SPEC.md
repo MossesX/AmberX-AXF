@@ -121,12 +121,20 @@ server can pass it straight through.
 | restore | `restore(doc, token)` | puts a trashed subtree back where it was (root when the parent is gone); 404 `unknown-token`, 409 `id-taken` if an id now exists |
 | collapse | `collapse(doc, id, collapsed)` / `collapseAll(doc, collapsed, { under })` | view state |
 | undo | `undo(doc, token?)` | reverts the op with that token (the latest when absent) by putting every touched node back to its `before`. Refused 409 `stale` when a touched node changed after that op. Undoing a delete also drops the trash entry; undoing a restore puts it back |
-| bulk | `bulk(doc, ids, action, args)` | `delete` · `move` · `complete` · `duplicate` · `edit` · `collapse` applied to each root in `ids` (descendants of another selected id are skipped). One op, one undo |
+| bulk | `bulk(doc, ids, action, args)` | `delete` · `move` · `complete` · `duplicate` · `edit` · `collapse` applied to each root in `ids` (descendants of another selected id are skipped, `rootsOf`). One op, one undo; a bulk delete has one trash token |
+| renumber | `renumber(doc, parentId)` | fresh short keys for a parent's children, order unchanged |
+| emptyTrash | `emptyTrash(doc)` | forgets every trashed subtree; journalled, the one op that cannot be undone |
+
+In code `delete` is `deleteNode` (also exported as `remove`), since `delete` is a reserved word. Every operation takes a
+`ctx` `{ now, by, cascade, token }` as its last argument so the server can stamp who made the change and tests can fix
+the clock.
 
 Reads (no doc change): `node(doc, id)`, `children(doc, id|null)`, `descendants(doc, id)`, `ancestors(doc, id)`,
-`breadcrumbs(doc, id)`, `depth(doc, id)`, `tree(doc, { root, depth, showDone })` (nested view with roll-ups),
-`flat(doc, { root, respectCollapsed })` (what a tree view draws), `search(doc, { q, kind, done, tag, due, under })`,
-`rollups(doc)` (one post-order pass for every node), `pathOf`, `resolvePath`, `validate`, `stats`.
+`breadcrumbs(doc, id)`, `depth(doc, id)`, `isSelfOrAncestor`, `tree(doc, { root, depth, showDone })` (nested view with
+roll-ups), `flat(doc, { root, respectCollapsed, showDone })` (what a tree view draws), `search(doc, { q, kind, done,
+tag, due, under, limit })`, `rollups(doc)` (one post-order pass for every node), `pathOf`, `resolvePath`,
+`resolveParent`, `parsePath`, `validate`, `stats`, `trashList`, `opLog(doc, { limit, nodeId })`, `undoable(doc, token)`,
+`findOp`.
 
 ## 6. Completion and the cascade rule
 

@@ -1034,3 +1034,92 @@ export function bulk(doc, ids, action, args = {}, ctx = {}) {
   const { doc: next, op } = txn.commit(action, roots.length === 1 ? roots[0] : null, { bulk: true, action, ids: roots, ...(action === 'move' ? { parentId: args.parentId ?? args.parent ?? null } : {}) }, extra);
   return { doc: next, count: roots.length, results, token: action === 'delete' ? txn.token : undefined, op };
 }
+
+// ================================================================================================ op log and undo (s5)
+
+const sameNode = (a, b) => a === b || (!!a && !!b && JSON.stringify(a) === JSON.stringify(b));
+
+/** The op with that token, or the latest op when no token is given. */
+export function findOp(doc, token = null) {
+  if (token == null) return doc.ops.at(-1) ?? null;
+  return doc.ops.find((o) => o.token === String(token)) ?? null;
+}
+
+/** Follow an undo chain to the op it ultimately reverts; `redo` is true when undoing this op re-applies that op. */
+function effectiveOp(doc, op) {
+  let cur = op;
+  let hops = 0;
+  while (cur && cur.op === 'undo' && cur.undoes && hops < LIMITS.ops) {
+    cur = doc.ops.find((o) => o.token === cur.undoes) ?? null;
+    hops++;
+  }
+  return { base: cur, redo: hops % 2 === 1 };
+}
+
+/**
+ * Can this op (the latest when no token) be undone now? { ok, reason, op }. Refused when a touched node changed since
+ * (`stale`), when the op left nothing to revert (`nothing`), or when it emptied the trash (`not-undoable`).
+ */
+export function undoable(doc, token = null) {
+  const op = findOp(doc, token);
+  if (!op) return { ok: false, reason: 'unknown-token', op: null };
+  if (op.args?.emptyTrash) return { ok: false, reason: 'not-undoable', op };
+  if (!op.touched.length) return { ok: false, reason: 'nothing', op };
+  for (const t of op.touched) {
+    const cur = doc.nodes[t.id];
+    if (t.after == null ? cur !== undefined : !sameNode(cur, t.after)) return { ok: false, reason: 'stale', op, nodeId: t.id };
+  }
+  return { ok: true, reason: '', op };
+}
+
+/**
+ * undo(doc, token?) → { doc, undone, op }: every node the op touched goes back to its `before`. A delete's trash entry is
+ * dropped, a restore's is put back; undoing an undo redoes. 404 unknown token, 409 `stale` / `nothing` / `not-undoable`.
+ */
+export function undo(doc, token = null, ctx = {}) {
+  const check = undoable(doc, token);
+  if (!check.ok) {
+    if (check.reason === 'unknown-token') throw new TodoError('unknown-token', `No op ${token}`, 404);
+    const why = { stale: `Something changed since (${check.nodeId}); undo refused`, nothing: 'That change left nothing to undo', 'not-undoable': 'Emptying the trash cannot be undone' };
+    throw new TodoError(check.reason, why[check.reason], 409);
+  }
+  const target = check.op;
+  const txn = new Txn(doc, ctx);
+  const removed = [];
+  for (const t of target.touched) {
+    if (t.before == null) { txn.remove(t.id); removed.push(t.after); } else txn.set({ ...t.before });
+  }
+  // keep the trash in step with what the undo did to the nodes
+  const { base, redo } = effectiveOp(doc, target);
+  const trashToken = base?.trashToken ?? target.trashToken;
+  if (trashToken) {
+    const dropping = (base?.op === 'delete' && !redo) || (base?.op === 'restore' && redo);
+    if (dropping) txn.trash = txn.trash.filter((t) => t.token !== trashToken);
+    else if (removed.length) {
+      const ids = new Set(removed.map((n) => n.id));
+      for (const root of removed.filter((n) => n.parentId == null || !ids.has(n.parentId))) {
+        const sub = [root];
+        const stack = [root.id];
+        while (stack.length) { const pid = stack.pop(); for (const n of removed) if (n.parentId === pid) { sub.push(n); stack.push(n.id); } }
+        txn.trash.push({ token: trashToken, at: txn.now, rootId: root.id, parentId: root.parentId, nodes: sub });
+      }
+    }
+  }
+  const extra = { undoes: target.token };
+  if (trashToken) extra.trashToken = trashToken;
+  const { doc: next, op } = txn.commit('undo', target.nodeId ?? null, { of: target.op, seq: target.seq }, extra);
+  return { doc: next, undone: target, op };
+}
+
+/** Recent ops, newest first, summarised for the journal view and `todo_log`. `nodeId` limits to ops that touched it. */
+export function opLog(doc, { limit = 50, nodeId = null } = {}) {
+  const out = [];
+  for (let i = doc.ops.length - 1; i >= 0 && out.length < limit; i--) {
+    const o = doc.ops[i];
+    if (nodeId != null && !o.touched.some((t) => t.id === String(nodeId)) && o.nodeId !== String(nodeId)) continue;
+    const main = o.touched.find((t) => t.id === o.nodeId) ?? o.touched[0];
+    const title = (main?.after ?? main?.before)?.title ?? '';
+    out.push({ seq: o.seq, token: o.token, at: o.at, op: o.op, nodeId: o.nodeId, title, args: o.args ?? {}, touched: o.touched.length, by: o.by ?? '', undoes: o.undoes, undoable: undoable(doc, o.token).ok });
+  }
+  return out;
+}
