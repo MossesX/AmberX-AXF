@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:47:25.713Z",
+ "updatedAt": "2026-11-16T16:47:40.257Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107206,8 +107206,8 @@
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "#701",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-16T16:47:07.511Z",
-   "builtAt": "2026-11-16T16:47:07.511Z",
+   "updatedAt": "2026-11-16T16:47:19.678Z",
+   "builtAt": "2026-11-16T16:47:19.678Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -107252,6 +107252,14 @@
     {
      "text": "Self-check: molly-gap-expenses-cors was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-16T16:46:15.857Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-molly-gap-expenses-cors--joey.",
+     "at": "2026-11-16T16:47:15.484Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-expenses-cors--joey, shared account login)",
+     "at": "2026-11-16T16:47:19.678Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6550,
- "updatedAt": "2026-11-16T16:47:25.713Z",
+ "rev": 6551,
+ "updatedAt": "2026-11-16T16:47:40.257Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160275,8 +160275,8 @@
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "#701",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-16T16:47:07.511Z",
-   "builtAt": "2026-11-16T16:47:07.511Z",
+   "updatedAt": "2026-11-16T16:47:19.678Z",
+   "builtAt": "2026-11-16T16:47:19.678Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -160321,6 +160321,14 @@
     {
      "text": "Self-check: molly-gap-expenses-cors was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-16T16:46:15.857Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-molly-gap-expenses-cors--joey.",
+     "at": "2026-11-16T16:47:15.484Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-expenses-cors--joey, shared account login)",
+     "at": "2026-11-16T16:47:19.678Z"
     }
    ],
    "approvals": [],
@@ -160340,12 +160348,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:05.835Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-molly-gap-expenses-cors--joey",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-15T01:22:31.081Z",
-    "runs": 1,
+    "launchedAt": "2026-11-16T16:47:14.644Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-15T01:26:07.130Z",
      "exit": 0,
@@ -160356,9 +160364,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-15T01:22:31.081Z",
+    "dispatchedAt": "2026-11-16T16:47:14.644Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -160367,7 +160375,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T01:22:31.081Z",
+    "pickedAt": "2026-11-16T16:47:14.644Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -160451,7 +160459,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
