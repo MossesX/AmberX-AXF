@@ -143,17 +143,19 @@ def _store_dir() -> Path:
     return Path(os.environ.get("AXF_DATA_STORE_DIR") or _roots()["data"] / "data-store")
 
 
-_mode_cache: dict[str, Any] = {"mtime": None, "doc": None}
+_mode_cache: dict[str, Any] = {"mtime": None, "size": None, "file": None, "doc": None}
+_MODE_FRESH_NS = 2_000_000_000  # a mode file written in the last 2 s is always read again (framework/core/data-files.mjs)
 
 
 def mode_doc() -> dict:
     f = _store_dir() / "mode.json"
     try:
-        mt = f.stat().st_mtime_ns
+        st = f.stat()
     except OSError:
         return {"mode": "local", "namespaces": {}}
-    if _mode_cache["mtime"] != mt:
-        _mode_cache.update(mtime=mt, doc=storage.read_json(f, {"mode": "local", "namespaces": {}}))
+    recent = time.time_ns() - st.st_mtime_ns < _MODE_FRESH_NS
+    if recent or _mode_cache["file"] != str(f) or _mode_cache["mtime"] != st.st_mtime_ns or _mode_cache["size"] != st.st_size:
+        _mode_cache.update(mtime=st.st_mtime_ns, size=st.st_size, file=str(f), doc=storage.read_json(f, {"mode": "local", "namespaces": {}}))
     return _mode_cache["doc"]
 
 

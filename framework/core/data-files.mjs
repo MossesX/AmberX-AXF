@@ -114,12 +114,19 @@ export function nsIdOf(key) { const [ns, first] = key.split('/'); return NAMESPA
 
 // ── mode ──
 const storeDir = (env = process.env) => resolve(env.AXF_DATA_STORE_DIR || join(roots(env).data, 'data-store'));
-let modeCache = { mtime: -1, file: '', doc: null };
+// Cached by mtime + size. Two writes inside one timestamp tick can keep the same mtime (seen on CI runners: a write
+// after a cutover still went to the local file), so a file written in the last 2 s is always read again.
+let modeCache = { mtime: -1, size: -1, file: '', doc: null };
+const MODE_FRESH_MS = 2000;
 export function modeDoc(env = process.env) {
   const f = join(storeDir(env), 'mode.json');
-  let mt;
-  try { mt = statSync(f).mtimeMs; } catch { return { mode: 'local', namespaces: {} }; }
-  if (modeCache.file !== f || modeCache.mtime !== mt) { let doc; try { doc = JSON.parse(readFileSync(f, 'utf8')); } catch { doc = { mode: 'local', namespaces: {} }; } modeCache = { mtime: mt, file: f, doc }; }
+  let st;
+  try { st = statSync(f); } catch { return { mode: 'local', namespaces: {} }; }
+  const recent = Date.now() - st.mtimeMs < MODE_FRESH_MS;
+  if (recent || modeCache.file !== f || modeCache.mtime !== st.mtimeMs || modeCache.size !== st.size) {
+    let doc; try { doc = JSON.parse(readFileSync(f, 'utf8')); } catch { doc = { mode: 'local', namespaces: {} }; }
+    modeCache = { mtime: st.mtimeMs, size: st.size, file: f, doc };
+  }
   return modeCache.doc;
 }
 export function modeOf(key, env = process.env) {
