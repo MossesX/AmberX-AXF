@@ -15,6 +15,7 @@ import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/car
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
+import { hostWidgetStyleErrors } from '../core/engines/toolbar-widget-rules.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
@@ -199,6 +200,7 @@ export function validateAsset(raw) {
   errors.push(...(brandAssetErrors(raw.type, raw.data) ?? []));
   const host = hostSpec(raw.type);
   if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
+  if (host) errors.push(...hostWidgetStyleErrors(host.field, raw.data)); // toolbar-widgets@1: widget style + shape (mirrors core/validate.ts)
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {
     errors.push('data.defaultRole must reference a role id');
   }

@@ -35,9 +35,24 @@ export interface HostSpec {
 
 const hostRegistry = new Map<string, HostSpec>();
 
+/**
+ * Host instances (toolbar-widgets@1, Nov 16 2026): a chrome kind the app shows many of (toolbars: the app's, a page's, a
+ * workspace's) hosts widgets per instance. The host id is `<type>@<instance>` (`toolbar@settings-toolbar`), and the
+ * type's spec answers for every instance. The app's own instance (`app`) is the bare type, so the banner's and the app
+ * toolbar's saved arrangements keep their keys.
+ */
+export const HOST_INSTANCE_SEP = '@';
+export const HOST_APP_INSTANCE = 'app';
+export const instanceHost = (host: string, instance?: string | null): string => (!instance || instance === HOST_APP_INSTANCE ? host : `${host}${HOST_INSTANCE_SEP}${instance}`);
+export function splitHost(h: string): { host: string; instance: string } {
+  const i = h.indexOf(HOST_INSTANCE_SEP);
+  return i < 0 ? { host: h, instance: HOST_APP_INSTANCE } : { host: h.slice(0, i), instance: h.slice(i + 1) || HOST_APP_INSTANCE };
+}
+
 /** Register (or replace) a host. The two framework hosts come from asset-types.json; libraries may add more. */
 export function registerHost(h: HostSpec): void { hostRegistry.set(h.host, { ...h, types: [...h.types], sides: [...h.sides] }); }
-export function hostSpec(host: string): HostSpec | undefined { return hostRegistry.get(host); }
+/** The spec of a host, or of a host instance (`toolbar@x` answers as `toolbar`). */
+export function hostSpec(host: string): HostSpec | undefined { return hostRegistry.get(host) ?? (host.includes(HOST_INSTANCE_SEP) ? hostRegistry.get(splitHost(host).host) : undefined); }
 export function hostSpecs(): HostSpec[] { return [...hostRegistry.values()]; }
 export function isHost(type: string): boolean { return hostRegistry.has(type); }
 

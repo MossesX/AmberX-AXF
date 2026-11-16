@@ -227,7 +227,7 @@ const stripSlot = (s: ToolbarWidgetSlot): BannerWidgetPref => {
 
 /* ---------------- snap, never overlap: the sizing order (Brett, Oct 28 2026) ---------------- */
 
-export interface FitItem {
+export interface ToolbarFitItem {
   key: string;
   /** the width it takes on the bar at its size, px */
   width: number;
@@ -235,9 +235,9 @@ export interface FitItem {
   /** may it leave the bar for ⋯? */
   overflow: boolean;
 }
-export interface FitPlan {
+export interface ToolbarFitPlan {
   /** widgets per side, in bar order */
-  sides: Record<string, readonly FitItem[]>;
+  sides: Record<string, readonly ToolbarFitItem[]>;
   /** the flexible piece between the sides (the toolbar's buttons and search), its natural width and its minimum; null when there is none */
   flex: { width: number; min: number } | null;
   /** the gap between items and between pieces, px */
@@ -249,7 +249,7 @@ export interface FitPlan {
   /** false for a toolbar with no ⋯ menu: too wide goes straight to scrolling */
   overflowMenu?: boolean;
 }
-export interface FitResult {
+export interface ToolbarFitResult {
   /** each side's width, px (its content; the ⋯ button counted once it is there) */
   sides: Record<string, number>;
   /** the flexible piece's width after shrinking, px */
@@ -264,7 +264,7 @@ export interface FitResult {
   width: number;
 }
 
-const sum = (items: readonly FitItem[], gap: number) => items.reduce((s, i) => s + i.width, 0) + gap * Math.max(0, items.length - 1);
+const sum = (items: readonly ToolbarFitItem[], gap: number) => items.reduce((s, i) => s + i.width, 0) + gap * Math.max(0, items.length - 1);
 
 /**
  * The order things give way in when a toolbar is too narrow: (1) a side is never narrower than what is on it; (2) the
@@ -272,11 +272,11 @@ const sum = (items: readonly FitItem[], gap: number) => items.reduce((s, i) => s
  * the bar first within a priority), until the rest plus the ⋯ button fit; (4) still too wide: the bar scrolls sideways and
  * every piece and item is a snap point. Nothing is ever clipped or drawn over a neighbour. Same arithmetic on every port.
  */
-export function fitToolbar(plan: FitPlan, available: number): FitResult {
+export function fitToolbar(plan: ToolbarFitPlan, available: number): ToolbarFitResult {
   const sides = Object.keys(plan.sides);
   const gap = Math.max(0, plan.gap);
   const pad = Math.max(0, plan.padding ?? 0) * 2;
-  let items: Record<string, FitItem[]> = Object.fromEntries(sides.map((s) => [s, [...(plan.sides[s] ?? [])]]));
+  let items: Record<string, ToolbarFitItem[]> = Object.fromEntries(sides.map((s) => [s, [...(plan.sides[s] ?? [])]]));
   const overflow: string[] = [];
   const flexFull = plan.flex ? Math.max(0, plan.flex.width) : 0;
   const flexMin = plan.flex ? Math.max(0, Math.min(plan.flex.min, plan.flex.width)) : 0;
