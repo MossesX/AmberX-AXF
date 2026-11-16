@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6361,
- "updatedAt": "2026-11-16T13:06:34.429Z",
+ "rev": 6362,
+ "updatedAt": "2026-11-16T13:08:30.472Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214829,7 +214829,7 @@
    "title": "Auto-land: merge main and land (land.mjs clash)",
    "category": "",
    "detail": "Branch claude/auto-land-every-finished-build-lands clashed with main in apps/console-web/plugins/push-banner/land/land.mjs, a real source clash with the just-landed lander-regenerates-generated-files-clash (generated-files@1). Merge origin/main, keep BOTH: main's regenerate-generated-files-on-clash logic and this branch's auto-land queue/sweeper. Run the push-banner and orchestrator tests, push, then land on main right away. After it lands, the sweeper should start landing every finished build by itself.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214837,8 +214837,8 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-15T00:37:48.258Z",
-   "builtAt": "2026-11-14T23:24:07.334Z",
+   "updatedAt": "2026-11-16T13:08:28.813Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -215182,7 +215182,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {

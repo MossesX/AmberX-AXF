@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 04:26 UTC · `move-build-orchestrator-to-axhub` → queued (all) · mcp
 - 2026-11-15 04:26 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
 - 2026-11-15 04:27 UTC · `move-build-orchestrator-to-axhub` → running, note (all) · pipeline
 - 2026-11-15 04:28 UTC · `data-container-axf-data-holds-all` added (0 steps) (all) · console
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:06 UTC · `duplicate-gate-vps-checks-shipped` added (0 steps) (all) · console
 - 2026-11-16 13:06 UTC · `duplicate-gate-vps-checks-shipped` → queued, note (all) · console
 - 2026-11-16 13:06 UTC · `duplicate-gate-vps-checks-shipped` note (all) · mcp
+- 2026-11-16 13:08 UTC · `auto-land-merge-main-land-land-mjs-clash` → archived (all) · mcp
 
 ## Token passes (log)
 
