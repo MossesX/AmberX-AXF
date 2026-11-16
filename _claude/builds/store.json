@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6671,
- "updatedAt": "2026-11-16T19:03:08.424Z",
+ "rev": 6672,
+ "updatedAt": "2026-11-16T19:03:26.331Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244217,7 +244217,7 @@
    "title": "Settings interface and gear for every plugin",
    "category": "",
    "detail": "Brett: every plugin needs a settings interface. Audit: 44 plugins with a screen; 10 have no settings tab (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review), and hub-sync's screen has no gear. Check plugins WITHOUT a screen too. Give EVERY plugin a Settings → Plugins sub-tab (at minimum enable/disable, info, logs, plus its real options), and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when any plugin lacks a settings tab, or a plugin screen lacks the gear. Full API parity.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244225,7 +244225,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:02:24.030Z",
+   "updatedAt": "2026-11-16T19:03:11.530Z",
    "builtAt": "",
    "notes": [
     {
@@ -244279,6 +244279,10 @@
     {
      "text": "Dispatch gate: settings-interface-gear-every-plugin still has axf-settings-interface-gear-every-plugin--gina alive: not launched again, tracking that session.",
      "at": "2026-11-16T18:52:09.899Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 25 steps left: back in Pending for Brett.",
+     "at": "2026-11-16T19:03:11.530Z"
     }
    ],
    "approvals": [
@@ -244310,16 +244314,16 @@
     "queuedAt": "2026-11-16T18:27:41.302Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-settings-interface-gear-every-plugin--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T18:34:01.102Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-16T18:37:03.897Z",
+     "at": "2026-11-16T19:03:07.897Z",
      "exit": 0,
-     "outcome": "requeued",
-     "stepsLeft": 27,
+     "outcome": "returned",
+     "stepsLeft": 25,
      "account": "mossesx-max-",
      "session": "axf-settings-interface-gear-every-plugin--earl"
     },
@@ -244331,14 +244335,14 @@
      "note": "Split by Claude into 28 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 27 steps left: back in the Queue (run 1).",
+    "note": "Session on mossesx-max- stopped on its own with 25 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-16T18:34:01.102Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-16T18:37:06.856Z",
+     "at": "2026-11-16T19:03:13.428Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -245054,7 +245058,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
