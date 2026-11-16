@@ -4,7 +4,7 @@
  * keep the same console-control addresses through data-axf-scope / data-axf-target.
  */
 import type { ReactNode } from 'react';
-import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
+import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { useGateLayout } from './rows';
 
 export interface GateListProps<R> {
@@ -12,6 +12,7 @@ export interface GateListProps<R> {
   rowId: (r: R) => string; rowLabel: (r: R) => string; rowTone?: (r: R) => string;
   hidden?: readonly string[]; expanded?: readonly string[]; onToggleExpand?: (id: string) => void; renderDetail?: (r: R) => ReactNode;
   selected?: string | null; onRowClick?: (r: R) => void; empty: ReactNode;
+  sort?: GridSort; onSort?: (col: string | null) => void; multi?: readonly string[];
 }
 
 export function GateList<R>(p: GateListProps<R>) {
@@ -21,21 +22,23 @@ export function GateList<R>(p: GateListProps<R>) {
       <DataGrid<R>
         id={p.id} label={p.label} groups={[{ id: p.id, title: p.title, rows: p.rows, groups: [] }]} columns={p.columns}
         rowId={p.rowId} rowLabel={p.rowLabel} hidden={p.hidden ?? []} compact={view === 'compact'} rowTone={p.rowTone}
-        expanded={p.expanded} onToggleExpand={p.onToggleExpand} renderDetail={p.renderDetail}
+        expanded={p.expanded} onToggleExpand={p.onToggleExpand} renderDetail={p.renderDetail} sort={p.sort} onSort={p.onSort} multi={p.multi}
         selected={p.selected ?? null} onRowClick={p.onRowClick ? (r) => p.onRowClick?.(r) : undefined} empty={p.empty}
       />
     );
   }
   const [head, ...rest] = p.columns.filter((c) => !(p.hidden ?? []).includes(c.id));
+  const sc = p.sort ? p.columns.find((c) => c.id === p.sort!.col) : undefined;
+  const rows = sc?.sortValue ? [...p.rows].sort((a, b) => { const x = sc.sortValue!(a); const y = sc.sortValue!(b); return (x < y ? -1 : x > y ? 1 : 0) * p.sort!.dir; }) : p.rows;
   return (
     <section className="axp-gate__cards" aria-label={p.label} data-axf-scope={`grid:${p.id}`}>
       <p className="axp-gate__label">{p.title}</p>
       {!p.rows.length && p.empty}
-      {p.rows.map((r) => {
+      {rows.map((r) => {
         const id = p.rowId(r);
         const open = p.expanded?.includes(id);
         return (
-          <article key={id} className={`axp-gate__card fx-surface${p.selected === id ? ' is-selected' : ''}`} data-tone={p.rowTone?.(r) ?? ''} data-axf-target={`row:${id}`} aria-label={p.rowLabel(r)}
+          <article key={id} className={`axp-gate__card fx-surface${p.selected === id || p.multi?.includes(id) ? ' is-selected' : ''}`} data-tone={p.rowTone?.(r) ?? ''} data-axf-target={`row:${id}`} aria-label={p.rowLabel(r)}
             onClick={() => p.onRowClick?.(r)}>
             {head && <div className="axp-gate__card-head">{head.render(r)}</div>}
             <dl className="axp-gate__card-body">

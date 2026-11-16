@@ -157,6 +157,42 @@
         "description": "Resume the auto-lander in its current mode. Logged in History."
       },
       {
+        "id": "lander-grid",
+        "route": "GET /lander/grid",
+        "title": "Auto-lander: grid (one row per build, behind main)",
+        "readOnly": true,
+        "tool": "lander_grid",
+        "description": "Everything waiting to be merged, one row per build: PR, build, commits behind main, what it does and why it is blocked (lander-grid@1). filter (\"behind>500\", \"pr:712\", \"held\", \"stale\", words), sort pr|build|behind, dir, stale (include records with no PR and no branch)."
+      },
+      {
+        "id": "lander-merge-main",
+        "route": "POST /lander/merge-main",
+        "title": "Auto-lander: merge main + fix",
+        "tool": "lander_merge_main",
+        "description": "Merge main into a build's branch now ({build}: id, PR or branch). Generated files are resolved; code conflicts go to the lander's fix agent on its next round."
+      },
+      {
+        "id": "lander-hold",
+        "route": "POST /lander/hold",
+        "title": "Auto-lander: hold / release a build",
+        "tool": "lander_hold",
+        "description": "Hold a build in the auto-lander ({build, why?}) or release it ({build, on: false}). Logged in History."
+      },
+      {
+        "id": "lander-archive",
+        "route": "POST /lander/archive",
+        "title": "Auto-lander: archive builds (confirm)",
+        "tool": "lander_archive",
+        "description": "Archive builds ({builds: [id|pr|branch, ...]}), two-step confirm: each goes to the Archive, leaves the auto-lander list at once and its open PR is closed with a note (branch kept)."
+      },
+      {
+        "id": "lander-clean",
+        "route": "POST /lander/clean",
+        "title": "Auto-lander: clean stale records",
+        "tool": "lander_clean",
+        "description": "Drop stale records (no PR and no branch on the remote) from the auto-lander list."
+      },
+      {
         "id": "settings",
         "route": "GET /settings",
         "title": "Gate: plugin settings",

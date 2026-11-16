@@ -24,3 +24,6 @@
 .axp-gate__card-body { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 30), 1fr)); gap: var(--fx-dens-gap-sm); }
 .axp-gate__card-field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; }
 .axp-gate__card-field dd { margin: 0; overflow-wrap: anywhere; }
+/* Auto-lander grid: the second line (what it does · why blocked) stays one line, the row menu opens under the row */
+.axp-gate__line { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-gate__rowmenu { position: static; display: inline-block; max-width: 100%; }

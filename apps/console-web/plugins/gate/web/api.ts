@@ -12,6 +12,9 @@ export interface GateRule { id: string; kind: string; enabled: boolean; severity
 export interface RuleSet { rev: number; at: string; rules: GateRule[]; migratedFrom?: { keys: string[] } }
 export interface Verdict { pr: number; pass: boolean; held: boolean; blockedBy: string; reasons: string[]; warnings: string[]; known?: boolean; results: { id: string; verdict: string; reason: string; severity: string }[] }
 export interface Waiting { position: number; pr: number; title: string; build: string; branch: string; state: string; rule: string; reason: string; since: string; url?: string; gate?: { pass: boolean; blockedBy: string; reasons: string[] } }
+/** lander-grid@1: one row per build waiting to merge. */
+export interface GridRow { build: string; pr: number | null; title: string; what: string; why: string; branch: string; url: string; state: string; rule: string; behind: number | null; onRemote: boolean; held: boolean; stale: boolean; since: string }
+export interface LanderGrid { main: string; sort: string; dir: string; filter: string; total: number; stale: number; items: GridRow[] }
 export interface Run { startedAt: string; finishedAt: string; result: string; mode: string; reasonText: string; landing: { pr: number; title: string; build: string } | null; merged: number[] }
 export interface LanderStatus { status: string; enabled: boolean; paused: boolean; pause: { why: string; by: string; at: string } | null; mode: string; mergeQueue: boolean; modeSince: string; modeBy: string; landing: { pr: number; title: string; build: string; since: string } | null; counts: { waiting: number; runs: number }; lastRun: Run | null; at: string }
 export interface HistoryEntry { at: string; by: string; kind: 'rule' | 'lander'; action: string; id?: string; pr?: number; before?: unknown; after?: unknown; reason: string | { title: string; description: string } }
@@ -51,3 +54,9 @@ export const isTab = (t: unknown): t is GateTab => typeof t === 'string' && (TAB
 export function showTab(tab: GateTab): void { wanted = tab; for (const l of listeners) l(tab); }
 export function takeWantedTab(): GateTab | null { const t = wanted; wanted = null; return t; }
 export function onShowTab(l: Listener): () => void { listeners.add(l); return () => { listeners.delete(l); }; }
+
+// ------------------------------------------------------------------ the grid changed (a row action from a menu or voice)
+
+const gridListeners = new Set<() => void>();
+export function gridChanged(): void { for (const l of gridListeners) l(); }
+export function onGridChanged(l: () => void): () => void { gridListeners.add(l); return () => { gridListeners.delete(l); }; }

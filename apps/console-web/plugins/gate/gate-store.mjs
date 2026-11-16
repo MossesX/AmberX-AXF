@@ -11,12 +11,13 @@
  * AXF_GATE_LANDER_CLI (the lander's CLI; else land/land.mjs in the provider's folder), AXF_GATE_NOW (tests: a fixed
  * clock). Plain Node built-ins only.
  */
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as gate from '../../../../framework/core/gate-rules.mjs';
+import { storeFile as buildsStoreFile } from '../../../../framework/cli/builds-store.mjs';
 
 export const HERE = dirname(fileURLToPath(import.meta.url));
 export const FOLDER = 'gate';
@@ -121,6 +122,67 @@ export function createStore(opts = {}) {
       const out = (r.stdout || '').trim();
       let json = null; try { json = JSON.parse(out.split('\n').pop() || 'null'); } catch { /* text */ }
       return { ok: r.status === 0, code: r.status === 0 ? '' : 'failed', out: out.slice(-2000), err: (r.stderr || r.error?.message || '').trim().slice(-600), json };
+    },
+
+    /** Start a lander command detached (merge main can take minutes); its output goes to <landerDir>/<log>. */
+    landerSpawn(args, log) {
+      if (!landerCli) return { ok: false, code: 'unavailable', err: 'no lander CLI' };
+      if (process.env.AXF_GATE_SPAWN === 'off') return { ok: true, started: false, args };
+      mkdirSync(landerDir, { recursive: true });
+      const fd = openSync(join(landerDir, log), 'a');
+      spawn(process.execPath, [landerCli, ...args], { cwd: root, detached: true, stdio: ['ignore', fd, fd], env: { ...process.env, AXF_PUSH_BANNER_DIR: landerDir, AXF_CREW_SAY: process.env.AXF_CREW_SAY || 'off' } }).unref();
+      return { ok: true, started: true, args };
+    },
+    /** Take builds off land.json now (archive, clean): the next round rebuilds it from the builds store anyway. */
+    dropLand(ids) {
+      const set = new Set(ids); const l = store.land();
+      const items = (l.items || []).filter((x) => !set.has(x.id));
+      if (landerDir && items.length !== (l.items || []).length) writeJson(lf('land.json'), { ...l, items });
+      return (l.items || []).length - items.length;
+    },
+
+    // ---------------------------------------------------------------- git: how far behind main each branch is
+    /**
+     * { main, heads: { branch: sha }, behind: { branch: n } } from the remote refs the lander's fetch keeps fresh.
+     * Counts are cached by (main sha, branch sha) in behind.json, so a poll costs one for-each-ref when nothing moved.
+     * AXF_GATE_BEHIND (tests) is a JSON { branch: n } used as is.
+     */
+    behindMain(branches) {
+      if (env('AXF_GATE_BEHIND')) { const b = JSON.parse(env('AXF_GATE_BEHIND')); return { main: 'test', heads: Object.fromEntries(Object.keys(b).map((k) => [k, 'test'])), behind: b }; }
+      const git = (a) => spawnSync('git', a, { cwd: root, encoding: 'utf8', timeout: 20000 });
+      const refs = git(['for-each-ref', '--format=%(refname:strip=3) %(objectname)', 'refs/remotes/origin']);
+      const heads = {};
+      for (const l of (refs.stdout || '').split('\n')) { const [n, sha] = l.split(' '); if (n && sha) heads[n] = sha; }
+      const main = heads.main || '';
+      const cache = readJson(f('behind.json'), {}) || {};
+      const next = { main, counts: cache.main === main ? cache.counts || {} : {} };
+      const behind = {};
+      for (const b of new Set(branches.filter(Boolean))) {
+        const sha = heads[b]; if (!sha || !main) continue;
+        let n = next.counts[sha];
+        if (n === undefined) { const r = git(['rev-list', '--count', `${sha}..${main}`]); n = r.status === 0 ? Number(r.stdout.trim()) : null; if (n !== null) next.counts[sha] = n; }
+        behind[b] = n;
+      }
+      if (main && JSON.stringify(next) !== JSON.stringify(cache)) { try { writeJson(f('behind.json'), next); } catch { /* cache only */ } }
+      return { main, heads, behind };
+    },
+
+    // ---------------------------------------------------------------- the builds store (status, what each build does)
+    /** { id: { status, title, branch, hidden, deleted } } from the builds store; {} when it can't be read. */
+    builds() {
+      if (env('AXF_GATE_BUILDS')) return JSON.parse(env('AXF_GATE_BUILDS'));
+      const s = readJson(buildsStoreFile(), null);
+      const out = {};
+      for (const b of s?.builds || []) out[b.id] = { status: b.status, title: b.title || '', branch: b.branch || '', hidden: !!b.hidden, deleted: !!b.deleted };
+      return out;
+    },
+    /** Archive builds through the orchestrator (its archive closes the PR and drops the land entry: archive-pr.mjs). */
+    archiveBuild(id, { by = 'console' } = {}) {
+      if (env('AXF_GATE_ORCH') === 'off') return { ok: true, id };
+      const cli = join(root, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs');
+      const r = spawnSync(process.execPath, [cli, 'act', 'archive', id, '--json'], { cwd: root, encoding: 'utf8', timeout: 60000, env: { ...process.env, AXF_ACTOR: by } });
+      let j = null; try { j = JSON.parse((r.stdout || '').trim().split('\n').pop()); } catch { /* text */ }
+      return r.status === 0 && j?.ok !== false ? { ok: true, id } : { ok: false, id, err: String(j?.error || r.stderr || r.stdout || 'archive failed').trim().slice(-300) };
     },
 
     // ---------------------------------------------------------------- history (append-only JSONL)

@@ -16,6 +16,9 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   GET  lander/mode · POST lander/mode {mergeQueue}   the one Merge queue on/off switch (takes effect at once)
   POST lander/land-now {pr, confirm?}   two-step: puts the PR at the head of the line in the current mode
   POST lander/pause {why?} · POST lander/resume
+  GET  lander/grid [?filter&sort&dir&stale]   lander-grid@1: one row per build (PR, build, commits behind main)
+  POST lander/merge-main {build} · POST lander/hold {build, on?, why?} · POST lander/clean
+  POST lander/archive {builds, confirm?}   two-step: archives builds, closes their PRs (branch kept)
   GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?}
   Build rules (build-rules@1, framework/spec/BUILD-RULES.md; build-rules-api.mjs):
   GET  build-rules [?doer&kind&phase&enabled&q]   the store with each rule's last run
@@ -353,3 +356,33 @@ async def settings_set(request: Request) -> JSONResponse:
 
 
 ensure_health()
+
+
+@router.get("/lander/grid")
+async def lander_grid(filter: str = "", sort: str = "", dir: str = "", stale: str = "") -> JSONResponse:  # noqa: A002
+    """The Auto-lander grid: one row per build waiting to merge (PR, build, commits behind main, what it does, why blocked)."""
+    return await _read("lander_grid", {"filter": filter, "sort": sort, "dir": dir, "stale": stale})
+
+
+@router.post("/lander/merge-main")
+async def lander_merge_main(request: Request) -> JSONResponse:
+    """Merge main into a build's branch now ({build}); code conflicts go to the lander's fix agent."""
+    return await _write("lander_merge_main", request)
+
+
+@router.post("/lander/hold")
+async def lander_hold(request: Request) -> JSONResponse:
+    """Hold ({build, why?}) or release ({build, on: false}) a build in the auto-lander."""
+    return await _write("lander_hold", request)
+
+
+@router.post("/lander/archive")
+async def lander_archive(request: Request) -> JSONResponse:
+    """Archive builds ({builds: [...]}); two-step confirm. Each open PR is closed with a note, the branch kept."""
+    return await _write("lander_archive", request)
+
+
+@router.post("/lander/clean")
+async def lander_clean(request: Request) -> JSONResponse:
+    """Drop stale records (no PR, no branch on the remote) from the auto-lander list."""
+    return await _write("lander_clean", request)

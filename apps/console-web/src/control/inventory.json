@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 274,
+    "functions": 279,
     "buttons": 62,
     "plugins": 71
   },
@@ -5397,6 +5397,92 @@
         "resume"
       ],
       "effect": "write",
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:lander.grid",
+      "kind": "function",
+      "id": "lander.grid",
+      "label": "How many builds wait to merge, how far behind main",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "lander.grid",
+        "lander",
+        "grid"
+      ],
+      "effect": "read",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:lander.row.open",
+      "kind": "function",
+      "id": "lander.row.open",
+      "label": "Open a waiting build's PR",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "lander.row.open",
+        "lander",
+        "row",
+        "open"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:lander.row.merge-main",
+      "kind": "function",
+      "id": "lander.row.merge-main",
+      "label": "Merge main into a waiting build and fix",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "lander.row.merge-main",
+        "lander",
+        "row",
+        "merge",
+        "main"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:lander.row.hold",
+      "kind": "function",
+      "id": "lander.row.hold",
+      "label": "Hold or release a build in the auto-lander",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "lander.row.hold",
+        "lander",
+        "row",
+        "hold"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:lander.row.archive",
+      "kind": "function",
+      "id": "lander.row.archive",
+      "label": "Archive builds and close their PRs",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "lander.row.archive",
+        "lander",
+        "row",
+        "archive"
+      ],
+      "effect": "destructive",
+      "params": true,
+      "destructive": true,
       "plugin": "ai.amberx.axf.console.gate",
       "file": "plugins/gate/web/actions.ts"
     },

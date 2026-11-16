@@ -5,6 +5,11 @@
  *   gate.rule:<id>[:on|off]      switch one gate rule (no on/off = flip it)
  *   lander.land-now:<pr>         land a PR next (destructive: the console confirms first)
  *   lander.pause[:why] · lander.resume
+ *   lander.row.open:<build|pr>        open a build's PR (Auto-lander grid row menu)
+ *   lander.row.merge-main:<build|pr>  merge main into its branch now; code conflicts go to the fix agent
+ *   lander.row.hold:<build|pr>[:off]  hold it in the auto-lander (off = release)
+ *   lander.row.archive:<build|pr>[,…] archive it (destructive: the console confirms first); its open PR is closed, branch kept
+ *   lander.grid[:filter]              say how many builds wait and how far behind main the worst one is
  *   gate.build-rules.open[:id]            open the Build rules tab (and one rule's History)
  *   gate.build-rules.list[:vps|session]   say how many build rules there are and who does them
  *   gate.build-rules.toggle:<id>[:on|off] switch one build rule (no on/off = flip it)
@@ -13,7 +18,7 @@
  *   gate.build-rules.run:<build>:<phase>  run a phase's rules for a build now (before | after | gate)
  */
 import type { AxfRuntime } from '@console/axf/core';
-import { confirmed, gateCall, isTab, showTab, type BuildRule, type BuildRuleList, type GateRule, type LanderStatus } from './api';
+import { confirmed, gateCall, gridChanged, isTab, showTab, type BuildRule, type BuildRuleList, type GateRule, type LanderGrid, type LanderStatus } from './api';
 import { showBuildRule } from './buildRulesState';
 
 const fail = (rt: AxfRuntime) => (e: Error) => rt.toast(e.message, 'danger', 'Gate & rules');
@@ -37,6 +42,38 @@ export function registerGateActions(rt: AxfRuntime): void {
   rt.actions.register('lander.resume', () => {
     void gateCall<LanderStatus>('lander/resume', 'POST', { by: 'voice' }).then((r) => rt.toast(`The auto-lander is back on (${r.mergeQueue ? 'merge queue' : 'one at a time'}).`, 'success', 'Auto-lander'), fail(rt));
   }, { label: 'Resume the auto-lander', effect: 'write' });
+
+  // ---------------------------------------------------------------- the Auto-lander grid's row actions (same REST as MCP and the CLI)
+  const AL = 'Auto-lander';
+  const need = (what: string, ex: string) => (ref: string) => { if (!ref) rt.toast(`Say which build or PR, for example ${what}:${ex}.`, 'warning', AL); return !!ref; };
+  rt.actions.register('lander.grid', (args) => {
+    void gateCall<LanderGrid>(`lander/grid?filter=${encodeURIComponent(args.join(':'))}`).then((g) => {
+      const worst = [...g.items].sort((a, b) => (b.behind ?? -1) - (a.behind ?? -1))[0];
+      rt.toast(`${g.items.length} builds wait to merge${worst ? `; ${worst.build} is furthest behind main (${worst.behind ?? '?'} commits)` : ''}.`, 'info', AL);
+    }, fail(rt));
+  }, { label: 'How many builds wait to merge, how far behind main', params: true, effect: 'read' });
+  rt.actions.register('lander.row.open', ([ref = '']) => {
+    if (!need('lander.row.open', '712')(ref)) return;
+    void gateCall<LanderGrid>(`lander/grid?stale=true&filter=${encodeURIComponent(/^#?\d+$/.test(ref) ? `pr:${ref.replace('#', '')}` : ref)}`).then((g) => {
+      const r = g.items.find((x) => x.build === ref || String(x.pr) === ref.replace('#', '') || x.branch === ref) ?? g.items[0];
+      if (!r) { rt.toast(`No build ${ref} waits to merge.`, 'warning', AL); return; }
+      if (r.url) window.open(r.url, '_blank', 'noopener');
+      else rt.toast(`${r.build} has no PR yet (branch ${r.branch}).`, 'info', AL);
+    }, fail(rt));
+  }, { label: 'Open a waiting build\'s PR', params: true, effect: 'navigate' });
+  rt.actions.register('lander.row.merge-main', ([ref = '']) => {
+    if (!need('lander.row.merge-main', 'my-build')(ref)) return;
+    void gateCall<{ build: string; message: string }>('lander/merge-main', 'POST', { build: ref, by: 'console' }).then((r) => { rt.toast(`${r.build}: ${r.message}.`, 'success', AL); gridChanged(); }, fail(rt));
+  }, { label: 'Merge main into a waiting build and fix', params: true, effect: 'write' });
+  rt.actions.register('lander.row.hold', ([ref = '', want = '']) => {
+    if (!need('lander.row.hold', 'my-build')(ref)) return;
+    void gateCall<{ build: string; held: boolean }>('lander/hold', 'POST', { build: ref, on: want !== 'off', by: 'console' }).then((r) => { rt.toast(`${r.build} is ${r.held ? 'held: the auto-lander skips it' : 'released'}.`, 'success', AL); gridChanged(); }, fail(rt));
+  }, { label: 'Hold or release a build in the auto-lander', params: true, effect: 'write' });
+  rt.actions.register('lander.row.archive', ([refs = '']) => {
+    if (!need('lander.row.archive', 'my-build')(refs)) return;
+    void confirmed<{ archived: { build: string }[]; refused: { build: string; error: string }[] }>('lander/archive', { builds: refs.split(','), by: 'console', reason: 'Archived from the Auto-lander grid' })
+      .then((r) => { rt.toast(`Archived ${r.archived.map((a) => a.build).join(', ') || 'nothing'}; open PRs are being closed (branches kept).${r.refused.length ? ` Refused: ${r.refused.map((a) => `${a.build} (${a.error})`).join(', ')}.` : ''}`, r.refused.length ? 'warning' : 'success', AL); gridChanged(); }, fail(rt));
+  }, { label: 'Archive builds and close their PRs', params: true, effect: 'destructive' });
 
   // ---------------------------------------------------------------- build rules (build-rules@1): the same REST as MCP and the CLI
   const BR = 'Build rules';

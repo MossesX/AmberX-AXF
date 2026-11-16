@@ -1,15 +1,19 @@
 /**
  * Auto-lander tab: the one Merge queue on/off switch (`setting:gate.lander.mergeQueue`), the status card (running /
- * paused / idle / off, since when, the PR landing now, the line), the PRs waiting (`grid:gate.waiting`, one row a PR:
- * which rule holds it and why), the last runs (`grid:gate.runs`) and the toolbar (role="toolbar", settings id
- * gate.lander): Land now (the selected PR; asks first), Pause / Resume (`button:gate-land-now | gate-pause | gate-resume`).
- * Every press is the REST route the CLI (`axf gate lander …`), MCP (lander_*) and voice use.
+ * paused / idle / off, since when, the PR landing now, the line), the grid of everything waiting to be merged
+ * (`grid:gate.waiting`, lander-grid@1: ONE row per build, exactly three columns PR · build · commits behind main, each
+ * sortable; the second line under the name only for what it does and why it is blocked), the last runs
+ * (`grid:gate.runs`) and two toolbars (role="toolbar"): gate.lander (Merge queue, Land now, Pause / Resume) and
+ * gate.lander.grid (filter e.g. "behind > 500", Select + bulk Archive, Show stale, Clean stale). Each row's menu
+ * (`button:gate-row-menu-<build>`) holds Open, Merge main + fix, Hold / Release and Archive: the console actions
+ * lander.row.* that voice uses too. Every press is the REST route the CLI (`axf gate lander …`) and MCP (lander_*) use.
  */
-import { useMemo, useState } from 'react';
-import { Button, Chip, Container, Switch, TextField, useControlTargets, useRuntime, type ControlTargetDef } from '@console/axf/react';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Chip, Container, IconButton, MenuList, Switch, TextField, useControlTargets, useRuntime, type ControlTargetDef } from '@console/axf/react';
+import type { GridSort } from '@console/axf/libs/datagrid';
 import type { GridColumn } from '@console/axf/libs/datagrid';
 import { GateList } from './GateList';
-import { confirmed, gateCall, type LanderStatus, type Run, type Waiting } from './api';
+import { confirmed, gateCall, onGridChanged, type GridRow, type LanderGrid, type LanderStatus, type Run } from './api';
 import { useGridRows } from './rows';
 import { usePoll } from './usePoll';
 
@@ -22,7 +26,13 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
   const rt = useRuntime();
   const rows = useGridRows();
   const st = usePoll<LanderStatus>('lander', refreshSec);
-  const wt = usePoll<{ items: Waiting[] }>('lander/waiting', refreshSec);
+  const [filter, setFilter] = useState('');
+  const [showStale, setShowStale] = useState(false);
+  const wt = usePoll<LanderGrid>(`lander/grid?filter=${encodeURIComponent(filter)}${showStale ? '&stale=true' : ''}`, refreshSec);
+  const [sort, setSort] = useState<GridSort>({ col: 'behind', dir: -1 });
+  const [menuFor, setMenuFor] = useState<string | null>(null);
+  const [selecting, setSelecting] = useState(false);
+  const [picked, setPicked] = useState<string[]>([]);
   const rn = usePoll<{ items: Run[] }>('lander/runs?limit=30', refreshSec);
   const [selected, setSelected] = useState<number | null>(null);
   const [why, setWhy] = useState('');
@@ -31,6 +41,7 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
   const waiting = wt.data?.items ?? [];
   const runs = rn.data?.items ?? [];
   const reloadAll = async () => { await Promise.all([st.reload(), wt.reload(), rn.reload()]); };
+  useEffect(() => onGridChanged(() => { setPicked([]); setMenuFor(null); void reloadAll(); }), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const act = async (key: string, run: () => Promise<unknown>, done: string) => {
     setBusy(key);
@@ -41,21 +52,34 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
   const landNow = (pr: number) => act(`land-${pr}`, () => confirmed('lander/land-now', { pr, reason: 'Land now from the Auto-lander tab' }), `#${pr} lands next.`);
   const pause = () => act('pause', () => gateCall('lander/pause', 'POST', { why: why || 'paused from the console' }), 'The auto-lander is paused: what is in flight finishes, nothing new starts.');
   const resume = () => act('resume', () => gateCall('lander/resume', 'POST', {}), 'The auto-lander is running again.');
+  const archivePicked = () => act('archive', () => confirmed('lander/archive', { builds: picked, reason: `Bulk archive of ${picked.length} build(s) from the Auto-lander grid` }), `Archived ${picked.length} build(s); their open PRs are being closed (branches kept).`).then(() => setPicked([]));
+  const clean = () => act('clean', () => gateCall('lander/clean', 'POST', { reason: 'Clean stale records from the Auto-lander grid' }), 'Stale records (no PR, no branch) are off the list.');
+  const onSort = (col: string | null) => setSort((cur) => (!col ? null : cur?.col === col ? { col, dir: cur.dir === 1 ? -1 : 1 } : { col, dir: col === 'behind' ? -1 : 1 }));
+  const rowMenu = (w: GridRow) => [
+    { id: 'open', label: w.pr ? `Open PR #${w.pr}` : 'Open (no PR yet)', icon: 'external', action: `lander.row.open:${w.build}` },
+    { id: 'merge-main', label: 'Merge main + fix', icon: 'branch', action: `lander.row.merge-main:${w.build}` },
+    { id: 'hold', label: w.held ? 'Release' : 'Hold', icon: w.held ? 'play' : 'pause', action: `lander.row.hold:${w.build}${w.held ? ':off' : ''}` },
+    { id: 's1', separator: true },
+    { id: 'archive', label: 'Archive (closes the PR, keeps the branch)', icon: 'box', action: `lander.row.archive:${w.build}` },
+  ];
 
   const targets = useMemo<ControlTargetDef[]>(() => [
     { address: 'setting:gate.lander.mergeQueue', kind: 'setting', label: 'Merge queue on / off', keywords: ['gate', 'lander', 'merge queue', 'one at a time'], get: () => s?.mergeQueue ?? null, set: (v: unknown) => setMode(v === true || v === 'on' || v === 'true') },
   ], [s?.mergeQueue]); // eslint-disable-line react-hooks/exhaustive-deps
   useControlTargets(targets, String(s?.mergeQueue));
 
-  const waitCols: GridColumn<Waiting>[] = [
-    { id: 'position', label: '#', width: 'calc(var(--fx-space) * 10)', sortable: true, sortValue: (w) => w.position, render: (w) => <span>{w.position}</span> },
-    { id: 'pr', label: 'PR', width: 'calc(var(--fx-space) * 88)', fixed: true, sortable: true, sortValue: (w) => w.pr, render: (w) => (
-      <span className="axp-gate__cell"><strong>#{w.pr} {w.title}</strong>{rows === 2 && <span className="axp-gate__sub">{w.build || w.branch}</span>}</span>
+  const waitCols: GridColumn<GridRow>[] = [
+    { id: 'pr', label: 'PR', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (w) => w.pr ?? 0, render: (w) => <span>{w.pr ? `#${w.pr}` : '—'}</span> },
+    { id: 'build', label: 'Build', width: 'minmax(0, 1fr)', fixed: true, sortable: true, sortValue: (w) => w.build, render: (w) => (
+      <span className="axp-gate__cell axp-gate__cell--row">
+        <span className="axp-gate__cell">
+          <strong>{w.build}</strong>
+          {rows === 2 && (w.what || w.why) && <span className="axp-gate__sub axp-gate__line">{[w.what, w.why].filter(Boolean).join(' · ')}</span>}
+        </span>
+        {!selecting && <IconButton id={`gate-row-menu-${w.build}`} icon="more" label={`Actions for ${w.build}`} aria-expanded={menuFor === w.build} onClick={(e) => { e.stopPropagation(); setMenuFor((cur) => (cur === w.build ? null : w.build)); }} />}
+      </span>
     ) },
-    { id: 'build', label: 'Build', width: 'calc(var(--fx-space) * 48)', render: (w) => <span className="axp-gate__sub">{w.build}</span> },
-    { id: 'rule', label: 'Held by', width: 'calc(var(--fx-space) * 28)', sortable: true, sortValue: (w) => w.rule, render: (w) => (w.rule ? <Chip tone="warning">{w.rule}</Chip> : <span className="axp-gate__sub">{w.state}</span>) },
-    { id: 'reason', label: 'Why', width: 'calc(var(--fx-space) * 100)', render: (w) => <span className="axp-gate__cell">{w.reason}{rows === 2 && w.gate && !w.gate.pass && w.gate.reasons[0] && w.gate.reasons[0] !== w.reason && <span className="axp-gate__sub">{w.gate.reasons[0]}</span>}</span> },
-    { id: 'act', label: '', width: 'calc(var(--fx-space) * 28)', render: (w) => <Button size="sm" id={`gate-land-now-${w.pr}`} busy={busy === `land-${w.pr}`} confirm={`Land #${w.pr} next? It still has to pass every rule.`} onClick={(e) => { e.stopPropagation(); void landNow(w.pr); }}>Land next</Button> },
+    { id: 'behind', label: 'Behind main', width: 'calc(var(--fx-space) * 22)', align: 'end', sortable: true, sortValue: (w) => w.behind ?? -1, render: (w) => <span title={w.onRemote ? `${w.branch} vs main` : `${w.branch} is not on GitHub`}>{w.behind ?? '?'}</span> },
   ];
   const runCols: GridColumn<Run>[] = [
     { id: 'startedAt', label: 'When', width: 'calc(var(--fx-space) * 36)', fixed: true, sortable: true, sortValue: (r) => r.startedAt, render: (r) => <span>{when(r.startedAt)}</span> },
@@ -87,11 +111,26 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
           </div>
         )}
       </Container>
-      <GateList<Waiting>
-        id="gate.waiting" label="Waiting to land" title={`Waiting (${waiting.length})`} rows={waiting} columns={waitCols}
-        rowId={(w) => String(w.pr)} rowLabel={(w) => `#${w.pr} ${w.title}`} hidden={rows === 1 ? ['build'] : []}
-        selected={selected ? String(selected) : null} onRowClick={(w) => setSelected((cur) => (cur === w.pr ? null : w.pr))} rowTone={(w) => stateTone(w.state)}
-        empty={<p className="axp-gate__sub">{wt.data ? 'Nothing waits to land.' : 'Loading…'}</p>}
+      <div className="axp-gate__bar" role="toolbar" aria-label="Waiting to merge" data-axf-toolbar="gate.lander.grid">
+        <TextField label="Filter" value={filter} onChange={setFilter} placeholder="behind > 500, pr:712, held, words" />
+        <Switch label="Show stale" checked={showStale} onChange={setShowStale} hint={`Records with no PR and no branch on GitHub (${wt.data?.stale ?? 0} hidden).`} />
+        <span className="axp-gate__bar-end">
+          {!!wt.data?.stale && <Button id="gate-clean-stale" icon="trash" busy={busy === 'clean'} confirm={`Drop ${wt.data.stale} stale record(s) (no PR, no branch) from the list?`} onClick={() => void clean()}>Clean stale</Button>}
+          <Button id="gate-select" icon="check" tone={selecting ? 'primary' : undefined} onClick={() => { setSelecting((v) => !v); setPicked([]); setMenuFor(null); }}>{selecting ? 'Done' : 'Select'}</Button>
+          {selecting && <Button id="gate-archive-selected" icon="box" disabled={!picked.length} busy={busy === 'archive'} confirm={`Archive ${picked.length} build(s)? Their open PRs are closed with a note; the branches are kept.`} onClick={() => void archivePicked()}>{`Archive ${picked.length || ''}`.trim()}</Button>}
+        </span>
+      </div>
+      <GateList<GridRow>
+        id="gate.waiting" label="Waiting to merge" title={`Waiting to merge (${waiting.length}${wt.data && wt.data.total !== waiting.length ? ` of ${wt.data.total}` : ''})`} rows={waiting} columns={waitCols}
+        rowId={(w) => w.build} rowLabel={(w) => `${w.pr ? `#${w.pr} ` : ''}${w.build}`}
+        sort={sort} onSort={onSort} multi={picked}
+        expanded={menuFor ? [menuFor] : []} renderDetail={(w) => (
+          <div className="axp-gate__rowmenu fx-popover" role="menu" aria-label={`Actions for ${w.build}`}><MenuList items={rowMenu(w)} onDone={() => setMenuFor(null)} /></div>
+        )}
+        selected={selecting ? null : waiting.find((w) => w.pr === selected)?.build ?? null}
+        onRowClick={(w) => (selecting ? setPicked((cur) => (cur.includes(w.build) ? cur.filter((x) => x !== w.build) : [...cur, w.build])) : setSelected((cur) => (cur === w.pr || !w.pr ? null : w.pr)))}
+        rowTone={(w) => stateTone(w.held ? 'held' : w.state)}
+        empty={<p className="axp-gate__sub">{wt.data ? (filter ? 'Nothing matches the filter.' : 'Nothing waits to merge.') : 'Loading…'}</p>}
       />
       <GateList<Run>
         id="gate.runs" label="Last runs" title={`Last runs (${runs.length})`} rows={runs} columns={runCols}

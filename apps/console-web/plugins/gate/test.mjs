@@ -42,7 +42,8 @@ function seed() {
 const FAKE = join(TMP, 'fake-land.mjs');
 writeFileSync(FAKE, `import { appendFileSync } from 'node:fs';\nappendFileSync(${JSON.stringify(CALLS)}, JSON.stringify(process.argv.slice(2)) + '\\n');\nconsole.log(JSON.stringify({ ok: true }));\n`);
 const calls = () => { try { return readFileSync(CALLS, 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
-const ENV = { AXF_GATE_DIR: GATE, AXF_GATE_LANDER_DIR: LAND, AXF_GATE_LANDER_CLI: FAKE, AXF_GATE_NOW: NOW };
+const ENV = { AXF_GATE_DIR: GATE, AXF_GATE_LANDER_DIR: LAND, AXF_GATE_LANDER_CLI: FAKE, AXF_GATE_NOW: NOW, AXF_GATE_BEHIND: JSON.stringify({ 'claude/notes': 12, 'claude/red': 640 }), AXF_GATE_BUILDS: JSON.stringify({ gone: { status: 'archived' } }), AXF_GATE_ORCH: 'off', AXF_GATE_SPAWN: 'off', AXF_ARCHIVE_PR: 'off' };
+Object.assign(process.env, ENV);
 Object.assign(process.env, ENV);
 
 const { createStore } = await import('./gate-store.mjs');
@@ -178,7 +179,7 @@ try {
     assert.deepEqual(a, b, `axf gate ${args.join(' ')} == ${op}`);
   };
   t('every op is reachable from the CLI', () => {
-    const reached = new Set([['rules', 'list'], ['rules', 'get', 'x'], ['rules', 'set', 'x', 'severity', 'warn'], ['rules', 'on', 'x'], ['rules', 'reset'], ['check', '1'], ['history'], ['lander', 'status'], ['lander', 'waiting'], ['lander', 'runs'], ['lander', 'mode'], ['lander', 'land-now', '1'], ['lander', 'pause'], ['lander', 'resume'], ['settings'], ['settings', 'set', 'refreshSec', '60'],
+    const reached = new Set([['rules', 'list'], ['rules', 'get', 'x'], ['rules', 'set', 'x', 'severity', 'warn'], ['rules', 'on', 'x'], ['rules', 'reset'], ['check', '1'], ['history'], ['lander', 'status'], ['lander', 'waiting'], ['lander', 'runs'], ['lander', 'mode'], ['lander', 'land-now', '1'], ['lander', 'pause'], ['lander', 'resume'], ['lander', 'grid'], ['lander', 'merge-main', 'x'], ['lander', 'hold', 'x'], ['lander', 'archive', 'x'], ['lander', 'clean'], ['settings'], ['settings', 'set', 'refreshSec', '60'],
       ['build-rules', 'list'], ['build-rules', 'get', 'x'], ['build-rules', 'add', 'x', '--title', 't'], ['build-rules', 'edit', 'x', 'title', 't'], ['build-rules', 'on', 'x'], ['build-rules', 'delete', 'x'], ['build-rules', 'history'], ['build-rules', 'runs'], ['build-rules', 'run', 'b', '--phase', 'after'], ['build-rules', 'brief', 'b']].map((a) => parseCli(a).op));
     assert.deepEqual([...reached].sort(), [...OPS].sort());
   });
@@ -200,6 +201,36 @@ try {
     same(['settings'], 'settings_get');
     same(['settings', 'set', 'defaultTab', 'history'], 'settings_set');
   });
+  t('the Auto-lander grid: one row per build, behind main, sort, filter, stale hidden, archived never', () => {
+    seed();
+    const land = JSON.parse(readFileSync(join(LAND, 'land.json'), 'utf8'));
+    land.items.push({ id: 'old', pr: null, title: 'Old', branch: 'claude/old', state: 'blocked', reason: { kind: 'held', text: 'old: held' } }, { id: 'gone', pr: 712, title: 'Gone', branch: 'claude/gone', state: 'ready' }, { id: 'notes', pr: 710, title: 'Notes again', branch: 'claude/notes', state: 'ready' });
+    json(join(LAND, 'land.json'), land);
+    const g = api('lander_grid');
+    assert.deepEqual(g.items.slice(0, 2).map((r) => [r.pr, r.build, r.behind]), [[711, 'red', 640], [710, 'notes', 12]]); // most behind first; queue PRs (no branch count) after
+    assert.equal(new Set(g.items.map((r) => r.build)).size, g.items.length); assert.ok(!g.items.some((r) => r.build === 'gone'));
+    assert.equal(g.stale, 1); assert.ok(g.items[0].why.includes('CI is red'));
+    assert.deepEqual(api('lander_grid', { filter: 'behind > 500' }).items.map((r) => r.build), ['red']);
+    assert.deepEqual(api('lander_grid', { filter: 'pr:710' }).items.map((r) => r.build), ['notes']);
+    const byPr = api('lander_grid', { sort: 'pr', dir: 'asc' }).items.map((r) => r.pr); assert.deepEqual(byPr, [...byPr].sort((a, b) => a - b));
+    assert.ok(api('lander_grid', { stale: true }).items.some((r) => r.build === 'old'));
+    assert.deepEqual(api('lander_clean').dropped, ['old']);
+    assert.ok(!api('lander_grid', { stale: true }).items.some((r) => r.build === 'old'));
+  });
+  t('row actions: hold / release / merge main through the lander, archive asks first and drops the row', () => {
+    seed();
+    assert.equal(api('lander_hold', { build: '#711', why: 'later' }).held, true);
+    assert.equal(api('lander_hold', { build: 'red', on: false }).held, false);
+    assert.equal(api('lander_merge_main', { build: 'notes' }).build, 'notes');
+    const ask = api('lander_archive', { builds: ['red', '710'] });
+    assert.equal(ask.code, 'confirmation_required'); assert.deepEqual(ask.builds.map((b) => b.build), ['red', 'notes']);
+    const r = api('lander_archive', { builds: ['red', '710'], confirm: ask.confirm });
+    assert.deepEqual(r.archived.map((a) => a.build), ['red', 'notes']);
+    assert.ok(!api('lander_grid').items.some((r) => r.build === 'red' || r.build === 'notes'));
+    const h = api('history', { kind: 'lander' }).items.map((e) => e.action);
+    for (const a of ['hold', 'release', 'merge-main', 'archive']) assert.ok(h.includes(a), a);
+  });
+  t('CLI and API agree on the grid', () => { same(['lander', 'grid', '--filter', 'behind>100'], 'lander_grid'); same(['lander', 'grid', '--sort', 'pr', '--stale'], 'lander_grid'); });
   t('the CLI exits 3 when a press needs a confirm, 2 on a usage error', () => {
     seed(); assert.equal(node(['rules', 'reset']).status, 3); assert.equal(node(['rules', 'frobnicate']).status, 2);
   });

@@ -102,6 +102,105 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
       return { items: lander.state().waiting.filter((w) => (!rule || w.rule === rule) && (!state || w.state === state)) };
     },
 
+    /**
+     * The Auto-lander grid (lander-grid@1, Brett Nov 16 2026: "make it one row. I need to see everything waiting to be
+     * merged and how far behind main"): ONE row per build, three columns (PR, build, commits behind main) plus the
+     * second line (what it does, why it is blocked). Everything the lander knows that is not merged: land.json's
+     * finished builds (any state) and, in merge-queue mode, the queue. Archived / deleted builds never show; stale
+     * records (no PR and no branch on the remote) are hidden unless `stale` is set.
+     *   filter  "behind>500", "behind<10", "pr:712", "held", "blocked", "stale", or words matched on build / title / why
+     *   sort    pr | build | behind (default behind, most first); dir asc | desc
+     */
+    grid({ filter = '', sort = 'behind', dir = '', stale = false } = {}) {
+      const st = lander.state(); const builds = store.builds(); const ctl = store.landControl();
+      const byBuild = new Map();
+      const add = (r) => { const cur = byBuild.get(r.build); byBuild.set(r.build, cur ? { ...r, ...Object.fromEntries(Object.entries(cur).filter(([, v]) => v !== '' && v !== null && v !== undefined)) } : r); };
+      const verdict = new Map(st.waiting.map((w) => [w.pr, w]));
+      for (const x of store.land().items || []) {
+        const w = x.pr ? verdict.get(x.pr) : null;
+        add({ build: x.id, pr: pr(x.pr) || null, title: x.title || '', branch: x.branch || '', url: x.url || '', state: x.state === 'blocked' ? 'held' : x.state || 'waiting', rule: w?.rule || '', why: String(w?.reason || x.reason?.text || '').replace(`${x.id}: `, ''), since: x.since || '', aliases: x.alsoBuilds || [] });
+      }
+      for (const w of st.waiting) if (w.build && !byBuild.has(w.build)) add({ build: w.build, pr: w.pr, title: w.title || '', branch: w.branch || '', url: w.url || '', state: w.state, rule: w.rule || '', why: w.reason || '', since: w.since || '', aliases: [] });
+      const rows0 = [...byBuild.values()].filter((r) => { const b = builds[r.build]; return !b || (!b.deleted && b.status !== 'archived' && b.status !== 'complete'); });
+      const { main, heads, behind } = store.behindMain(rows0.map((r) => r.branch));
+      let rows = rows0.map((r) => {
+        const onRemote = !!heads[r.branch];
+        const held = !!ctl.holds?.[r.build];
+        return { ...r, url: r.url || (r.pr ? `https://github.com/${process.env.AXF_LAND_REPO_SLUG || 'MossesX/AmberX-AXF'}/pull/${r.pr}` : ''), what: r.title || builds[r.build]?.title || '', behind: behind[r.branch] ?? null, onRemote, held, stale: !r.pr && !onRemote };
+      });
+      const staleCount = rows.filter((r) => r.stale).length;
+      const f = String(filter || '').trim().toLowerCase().replace(/behind\s*([<>]=?|=)\s*(\d+)/g, 'behind$1$2').replace(/pr\s*:\s*#?(\d+)/g, 'pr:$1');
+      const showStale = stale === true || stale === 'true' || /\bstale\b/.test(f);
+      if (!showStale) rows = rows.filter((r) => !r.stale);
+      for (const term of f.split(/\s+/).filter(Boolean)) {
+        const m = term.match(/^behind([<>]=?|=)(\d+)$/);
+        if (m) { const n = Number(m[2]); const op = m[1]; rows = rows.filter((r) => r.behind !== null && (op === '>' ? r.behind > n : op === '>=' ? r.behind >= n : op === '<' ? r.behind < n : op === '<=' ? r.behind <= n : r.behind === n)); continue; }
+        const p = term.match(/^(?:pr:|#)(\d+)$/); if (p) { rows = rows.filter((r) => r.pr === Number(p[1])); continue; }
+        if (term === 'stale') { rows = rows.filter((r) => r.stale); continue; }
+        if (term === 'held' || term === 'blocked') { rows = rows.filter((r) => r.state === 'held' || r.held); continue; }
+        rows = rows.filter((r) => `${r.build} ${r.title} ${r.why} ${r.branch}`.toLowerCase().includes(term));
+      }
+      const key = ['pr', 'build', 'behind'].includes(sort) ? sort : 'behind';
+      const desc = dir ? dir === 'desc' : key === 'behind';
+      const val = (r) => (key === 'build' ? r.build : r[key] ?? -1);
+      rows.sort((a, b) => { const x = val(a); const y = val(b); const c = typeof x === 'string' ? x.localeCompare(y) : x - y; return desc ? -c : c; });
+      return { $axf: 'lander-grid@1', at: st.at, main, sort: key, dir: desc ? 'desc' : 'asc', filter: f, total: rows0.length - staleCount, stale: staleCount, items: rows };
+    },
+
+    /** One grid row by build id, alias, PR number or branch. */
+    findRow(ref) {
+      const s = String(ref ?? '').replace(/^#/, '');
+      const all = lander.grid({ stale: true }).items;
+      return all.find((r) => r.build === s || r.aliases?.includes(s) || r.branch === s || (pr(s) && r.pr === pr(s))) || null;
+    },
+
+    /** Merge main into a build's branch now (the lander's merge-main, detached: it fetches and may take minutes). Code conflicts go to the lander's fix agent on its next round. */
+    mergeMain({ build, by = 'console', reason = '' } = {}) {
+      const row = lander.findRow(build); if (!row) throw err('not_found', `the auto-lander has no build ${build}`);
+      const r = store.landerSpawn(['merge-main', row.build], 'merge-main.log');
+      if (!r.ok) throw err(r.code || 'failed', r.err || 'could not start merge-main');
+      log('merge-main', { by, reason, pr: row.pr || 0, after: { build: row.build, behind: row.behind } });
+      return { ok: true, build: row.build, pr: row.pr, started: r.started !== false, message: `merging main into ${row.branch}; code conflicts go to the fix agent on the next round` };
+    },
+
+    /** Hold / release a build in the auto-lander (land.mjs hold | release). */
+    hold({ build, on = true, why = '', by = 'console', reason = '' } = {}) {
+      const row = lander.findRow(build); if (!row) throw err('not_found', `the auto-lander has no build ${build}`);
+      const r = store.landerCommand(on ? ['hold', row.build, ...(why ? ['--why', String(why).slice(0, 200)] : [])] : ['release', row.build]);
+      if (!r.ok) throw err('failed', `the lander refused: ${r.err || r.out}`);
+      log(on ? 'hold' : 'release', { by, reason: reason || why, pr: row.pr || 0, after: { build: row.build, held: on } });
+      return { ok: true, build: row.build, pr: row.pr, held: on };
+    },
+
+    /**
+     * Archive builds (bulk, two-step): the first call answers { confirm, builds }; the second archives each through the
+     * orchestrator (which closes its open PR with a note, branch kept) and takes it off the list at once.
+     */
+    archive({ builds: refs = [], by = 'console', reason = '', confirm = '' } = {}) {
+      const list = (Array.isArray(refs) ? refs : String(refs).split(',')).map((x) => String(x).trim()).filter(Boolean);
+      if (!list.length) throw err('invalid', 'builds is a list of build ids, PR numbers or branches');
+      const all = lander.grid({ stale: true }).items;
+      const rows = list.map((ref) => { const s = ref.replace(/^#/, ''); return all.find((r) => r.build === s || r.aliases?.includes(s) || r.branch === s || (pr(s) && r.pr === pr(s))) || { build: s, pr: null, missing: true }; });
+      const key = rows.map((r) => r.build).sort().join(',');
+      if (!confirm) return { ok: false, code: 'confirmation_required', confirm: store.issueConfirm('lander.archive', key), builds: rows.map((r) => ({ build: r.build, pr: r.pr })) };
+      if (!store.takeConfirm('lander.archive', key, confirm)) throw err('invalid', 'the confirm token is wrong or expired: ask again');
+      const done = []; const refused = [];
+      for (const r of rows) {
+        const a = store.archiveBuild(r.build, { by });
+        if (a.ok) { store.dropLand([r.build]); done.push({ build: r.build, pr: r.pr }); } else refused.push({ build: r.build, error: a.err });
+      }
+      log('archive', { by, reason, after: { archived: done.map((d) => d.build), refused: refused.map((d) => d.build) } });
+      return { ok: true, archived: done, refused };
+    },
+
+    /** Clean: take every stale record (no PR, no branch on the remote) off land.json now. */
+    clean({ by = 'console', reason = '' } = {}) {
+      const stale = lander.grid({ stale: true, filter: 'stale' }).items.map((r) => r.build);
+      const n = store.dropLand(stale);
+      if (n) log('clean', { by, reason, after: { dropped: stale } });
+      return { ok: true, dropped: stale, count: n };
+    },
+
     runs({ limit = 20, result = '' } = {}) {
       const n = Math.min(gate.RUNS_MAX, Math.max(1, Number(limit) || 20));
       return { items: store.runs().filter((r) => !result || r.result === result).reverse().slice(0, n) };

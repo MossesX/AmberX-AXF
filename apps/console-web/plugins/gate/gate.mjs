@@ -40,7 +40,7 @@ export function buildRulesVerdict(build, { dir } = {}) {
   return { build, ran: true, failing: results.filter((r) => r.result === 'fail').map((r) => r.id), results };
 }
 
-export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'settings_get', 'settings_set', ...BUILD_RULE_OPS]);
+export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'lander_grid', 'lander_merge_main', 'lander_hold', 'lander_archive', 'lander_clean', 'settings_get', 'settings_set', ...BUILD_RULE_OPS]);
 
 /** The plugin's own settings (Settings → Plugins → Gate): key → { type, default, … }. */
 export const SETTINGS = Object.freeze({
@@ -161,6 +161,11 @@ export function createGate(opts = {}) {
     lander_land_now(i = {}) { const r = lander.landNow({ pr: i.pr, by: by(i), reason: i.reason || '', confirm: i.confirm || '' }); return r.ok === false ? { ...r, message: `lands #${r.pr} next: call again with confirm` } : r; },
     lander_pause(i = {}) { return { ok: true, ...lander.pause({ why: i.why || '', by: by(i), reason: i.reason || '' }) }; },
     lander_resume(i = {}) { return { ok: true, ...lander.resume({ by: by(i), reason: i.reason || '' }) }; },
+    lander_grid(i = {}) { return { ok: true, ...lander.grid({ filter: i.filter || '', sort: i.sort || '', dir: i.dir || '', stale: boolOf(i.stale) === true }) }; },
+    lander_merge_main(i = {}) { return lander.mergeMain({ build: i.build || i.pr, by: by(i), reason: i.reason || '' }); },
+    lander_hold(i = {}) { const on = i.on === undefined ? true : boolOf(i.on); if (on === undefined) return fail('invalid', 'on is true or false'); return lander.hold({ build: i.build || i.pr, on, why: i.why || '', by: by(i), reason: i.reason || '' }); },
+    lander_archive(i = {}) { const r = lander.archive({ builds: i.builds ?? i.build ?? i.pr, by: by(i), reason: i.reason || '', confirm: i.confirm || '' }); return r.ok === false ? { ...r, message: `archives ${r.builds.map((b) => b.build).join(', ')} and closes their PRs: call again with confirm` } : r; },
+    lander_clean(i = {}) { return lander.clean({ by: by(i), reason: i.reason || '' }); },
     ...createBuildRulesOps({ confirms: store }),
     settings_get() { return { ok: true, settings: settingsOf(store), schema: SETTINGS }; },
     settings_set(i = {}) {
@@ -222,6 +227,8 @@ const USAGE = [
   'axf gate history [--kind rule|lander] [--since <date>] [--pr <n>] [--rule <id>] [--action <a>] [--limit <n>]',
   'axf gate lander status | waiting [--rule r] [--state s] | runs [--limit n] [--result r]',
   'axf gate lander mode [on|off] | land-now <pr> [--confirm <token>] | pause [--why "…"] | resume',
+  'axf gate lander grid [--filter "behind>500"] [--sort pr|build|behind] [--dir asc|desc] [--stale]',
+  'axf gate lander merge-main <build|pr> | hold <build|pr> [--why "…"] | release <build|pr> | archive <build|pr>[,…] [--confirm <token>] | clean',
   'axf gate settings [get] | settings set <key> <value>',
   'axf gate build-rules list [--doer vps|session] [--kind k] [--phase p] [--enabled true|false] [--q text]',
   'axf gate build-rules get <id> | on <id> | off <id> | delete <id> [--confirm <token>]',
@@ -294,6 +301,11 @@ export function parseCli(argv) {
     if (b === 'land-now' && c) return { op: 'lander_land_now', input: { pr: c, ...pick('confirm'), ...who } };
     if (b === 'pause') return { op: 'lander_pause', input: { ...pick('why'), ...who } };
     if (b === 'resume') return { op: 'lander_resume', input: { ...who } };
+    if (b === 'grid') return { op: 'lander_grid', input: { ...pick('filter', 'sort', 'dir'), ...(f.stale ? { stale: true } : {}) } };
+    if (b === 'merge-main' && c) return { op: 'lander_merge_main', input: { build: c, ...who } };
+    if ((b === 'hold' || b === 'release') && c) return { op: 'lander_hold', input: { build: c, on: b === 'hold', ...pick('why'), ...who } };
+    if (b === 'archive' && c) return { op: 'lander_archive', input: { builds: c.split(','), ...pick('confirm'), ...who } };
+    if (b === 'clean') return { op: 'lander_clean', input: { ...who } };
     return { usage: true };
   }
   if (a === 'settings') {
@@ -319,6 +331,8 @@ export function textOf(op, r) {
     case 'lander_status': case 'lander_mode_set': case 'lander_pause': case 'lander_resume':
       return `auto-lander ${r.status} · merge queue ${onOff(r.mergeQueue)} (${r.mode})${r.paused ? ` · paused: ${r.pause?.why || 'no reason given'}` : ''}${r.landing ? ` · landing #${r.landing.pr}` : ''} · ${r.counts.waiting} waiting`;
     case 'lander_mode': return r.status ? `merge queue ${onOff(r.mergeQueue)} (${r.mode}) · auto-lander ${r.status}` : `merge queue ${onOff(r.mergeQueue)}${r.since ? ` since ${r.since}${r.by ? ` (${r.by})` : ''}` : ''}`;
+    case 'lander_grid': return [`${'PR'.padEnd(6)} ${'build'.padEnd(46)} behind main`, ...r.items.map((w) => `${(w.pr ? `#${w.pr}` : '—').padEnd(6)} ${w.build.slice(0, 46).padEnd(46)} ${w.behind ?? '?'}${w.why ? `\n       ${w.why.slice(0, 110)}` : ''}`), `${r.items.length} shown · ${r.total} waiting · ${r.stale} stale hidden`].join('\n');
+    case 'lander_archive': return r.archived ? `archived ${r.archived.map((a) => a.build).join(', ') || 'nothing'}${r.refused.length ? ` · refused ${r.refused.map((a) => `${a.build} (${a.error})`).join(', ')}` : ''}` : r.message;
     case 'lander_waiting': return r.items.map((w) => `${String(w.position).padStart(3)} #${w.pr} ${w.state.padEnd(8)} ${w.rule ? `[${w.rule}] ` : ''}${w.reason}`).join('\n') || 'nothing waits';
     case 'lander_runs': return r.items.map((x) => `${x.startedAt} ${x.result.padEnd(8)} ${x.landing?.pr ? `#${x.landing.pr} ` : ''}${x.reasonText}`).join('\n') || 'no runs yet';
     case 'lander_land_now': return `#${r.pr} lands next (${r.via})`;
