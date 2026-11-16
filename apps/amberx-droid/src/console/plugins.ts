@@ -7,7 +7,7 @@
 import { authHeaders, createApiClient, STANDARD_MESSAGES, type ApiClient, type TokenStore } from '../axf/libs/apiclient';
 
 /** No token in the page: AmberX's server adds the console token. */
-const noToken: TokenStore = { key: '', event: 'amberx:console-token', get: () => '', set: () => {}, clear: () => {}, subscribe: () => () => {} };
+export const noToken: TokenStore = { key: '', event: 'amberx:console-token', get: () => '', set: () => {}, clear: () => {}, subscribe: () => () => {} };
 
 function pluginUrl(folder: string, path: string): string { return `/api/console/plugins/${folder}/${path.replace(/^\/+/, '')}`; }
 
