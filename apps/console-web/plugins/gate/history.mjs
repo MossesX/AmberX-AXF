@@ -2,12 +2,12 @@
  * Gate history (gate-history@1, framework/spec/GATE.md → gate.history): one append-only JSONL file in the plugin's data
  * folder, through the store adapter. Every rule change (who, when, before / after) and every lander action (mode, pause,
  * resume, land now) is one line:
- *   { $axf: 'gate-history@1', at, by, kind: 'rule' | 'lander', action, id?, pr?, before?, after?, reason }
+ *   { $axf: 'gate-history@1', at, by, kind: 'rule' | 'lander' | 'build-rule', action, id?, pr?, before?, after?, reason }
  * Lines are only ever added; once the file holds more than the plugin's history size (setting historySize, default
  * 2000) by a fifth, the oldest are dropped in one rewrite.
  */
 export const FRAME = 'gate-history@1';
-export const KINDS = Object.freeze(['rule', 'lander']);
+export const KINDS = Object.freeze(['rule', 'lander', 'build-rule']);
 export const HISTORY_DEFAULT = 2000;
 export const HISTORY_MAX = 20000;
 export const READ_MAX = 500;
