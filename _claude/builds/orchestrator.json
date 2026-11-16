@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:28:04.944Z",
+ "updatedAt": "2026-11-16T23:28:20.654Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -166683,12 +166683,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-16T23:25:41.104Z",
+   "updatedAt": "2026-11-16T23:28:18.115Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T23:25:41.104Z"
+    },
+    {
+     "text": "Split by Claude into 20 steps (4 Fable).",
+     "at": "2026-11-16T23:28:18.115Z"
     }
    ],
    "approvals": [],
@@ -166705,7 +166709,446 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the step-group contract: add optional `group`, `dependsOn` (step ids) and `files` to builds@1 steps and a `groups[]` record on the build (id, steps, state, slot, account, branch, worktree, mergedAt, mergeOrder) in framework/core/build-pipeline.mjs with a JSDoc spec block; unset = one sequential group, so old builds read the same",
+     "model": "Fable",
+     "why": "schema design of the builds store contract every writer and view reads",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-pipeline.mjs",
+      "framework/spec/BUILD-GROUPS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv01zn77",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s2",
+     "text": "Migration + normalisation: builds store normBuild keeps the new step and group fields (it drops unknown fields today), a read-time migration gives every existing build a single implicit group, and the journal records group writes; extend framework/spec/check-builds-store.mjs so the migration loses nothing",
+     "model": "Fable",
+     "why": "store migration that must lose nothing across every build",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/core/build-pipeline.mjs",
+      "framework/spec/check-builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv02s9zj",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s3",
+     "text": "Grouping engine: pure function planGroups(build) in framework/core/build-groups.mjs builds a dependency graph from step `files` overlap and explicit `dependsOn`, gives each group its steps in sequence, and returns parallel groups plus a merge order (topological, then step order); only builds with an estimate over 30 min (setting, default 30) are split",
+     "model": "Fable",
+     "why": "engine internals that decide what runs in parallel across slots",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-groups.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv03p3zr",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s4",
+     "text": "Fixtures for the grouping engine: framework/spec/fixtures/build-groups.json (independent steps, shared file chain, explicit dependsOn, cycle refused, build under 30 min stays one group) and framework/spec/check-build-groups.mjs that runs planGroups against them",
+     "model": "Fable",
+     "why": "conformance contract for the grouping engine",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/fixtures/build-groups.json",
+      "framework/spec/check-build-groups.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv04g4mj",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s5",
+     "text": "Splitter prompt: pipeline.mjs intake asks the Opus split call to fill `files` and `dependsOn` per step, validates the answer, runs planGroups and stores `groups[]` on the build; hand-written steps get groups worked out from their files without a re-split",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv05fmsl",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s6",
+     "text": "Group worktrees and sub-branches: helper apps/console-web/plugins/build-orchestrator/groups.mjs creates a worktree per group off the build branch at `<build-branch>--g<n>`, records it on the group, and removes it after merge; node_modules symlinked from a sibling worktree like today",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/groups.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv06jbzy",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s7",
+     "text": "Dispatcher fan-out: pipeline.mjs tick starts each ready group (all its dependsOn groups merged) in its own agent slot via agent-slots.mjs, picking any usable account through deploy/claude-workers.mjs route that runs the group's model, and still honours the step model pin and agent cap",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "framework/cli/agent-slots.mjs",
+      "deploy/claude-workers.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv07e57l",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s8",
+     "text": "Headless launch per group: deploy/claude-headless.sh takes `--group <n>` and `--worktree <path>`, the brief lists only that group's steps (Brett said block kept), session name `axf-<build>-g<n>`, and step ticks land on the shared build record under the store lock",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv08cs6q",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s9",
+     "text": "Group lifecycle: a group whose steps are all done goes to `ready-to-merge`; a crashed group goes back to the queue (3 runs max, as builds do); a group waiting on another shows `waiting` with what it waits on; dependent groups start only after the merge",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/groups.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv092vov",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s10",
+     "text": "Merge back in order: groups.mjs merge merges each finished group's sub-branch onto the build branch in mergeOrder (merge, never rebase, store and THREADS merge drivers applied), a conflict marks the group `merge-conflict` with a banner item and a Fix with Claude action, and the build is `built` only once every group is merged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/groups.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0a6w3h",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s11",
+     "text": "Landing through the orchestrator: the build opens one PR from the build branch only after the last merge-back and goes into the merge queue as one entry; sub-branches never get PRs (push banner auto-PR skips `--g<n>` branches)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/push-banner"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0bep10",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s12",
+     "text": "Server gate rule: add build rule `parallel-groups` to the build-rules@1 store (builds over the threshold are split into groups, groups merge in order before landing, sessions never merge groups themselves) and the VPS check that holds a PR with unmerged groups",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate",
+      "framework/spec/BUILD-RULES.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0cc5nw",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s13",
+     "text": "Settings: Settings → Plugins → Build orchestrator gets `Split builds over (min)` (default 30), `Max parallel groups per build` (default 3, within the agent cap) and `Parallel groups` on/off, in the settings registry with level tags",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/settings",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0d5wnt",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s14",
+     "text": "Per-group progress UI: the orchestrator build view shows a Groups panel (each group's steps done/total, state, slot, account, branch, merge order, waiting on) built from framework controls and tokens only, registered with data-axf-target addresses `row:<build>/group:g<n>`",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0ezsgm",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s15",
+     "text": "Group actions in the UI: Start now, Re-run, Merge now, Move up/down in merge order and Ungroup (run sequential), destructive ones with confirm, wired to the same functions the dispatcher uses",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web",
+      "apps/console-web/plugins/build-orchestrator/groups.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0fxh8i",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s16",
+     "text": "REST API: routes under /api/plugins/build-orchestrator/groups: GET a build's groups and state, POST plan / start / rerun / merge / reorder / ungroup, GET and PUT the three settings; deep link view:builds/tab:orchestrator row:<build>/group:g<n> for console_show",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0ge8ui",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s17",
+     "text": "MCP, CLI and voice: plugin commands `orchestrator-groups-*` (MCP through plugin-commands), `pipeline.mjs groups list|plan|start|rerun|merge|reorder|ungroup <id>`, console actions for AmberX voice (`groups.show`, `groups.start`, `groups.merge`), all calling the same functions as REST",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/commands.json",
+      "apps/console-web/plugins/build-orchestrator/actions"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0hl65d",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s18",
+     "text": "Tests: pipeline group dispatch with a fake claude in HOME/.local/bin (two independent groups start in two slots, a dependent group waits, merge order holds, a conflict raises the banner item), plus REST/MCP/CLI parity test",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0iaenc",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s19",
+     "text": "UI Review: shoot the Groups panel desktop and phone, submit 3 options (ui-choices@1 assets under plugins/build-orchestrator/assets) with review.mjs submit; help stub and glossary descriptions for the new commands and settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets",
+      "apps/console-web/plugins/build-orchestrator/help"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0jqaxz",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s20",
+     "text": "Run the checks (check-build-groups, check-builds-store, check-build-steps, check-theme, check-controls, check-console-control, plugin-lifecycle), write _claude/builds/reports/orchestrator-runs-long-builds-across.md (what's added, how each part is reached by REST/MCP/CLI/voice, deferred Kotlin twin noted in PORTING.md), THREADS row, push, link the build and open the PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-runs-long-builds-across.md",
+      "_claude/THREADS.md",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjw9ltv0kdeoy",
+     "createdAt": "2026-11-16T23:28:18.115Z"
+    }
+   ]
   }
  ]
 }

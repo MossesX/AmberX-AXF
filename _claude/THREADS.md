@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:29 UTC · `alert-every-time-build-falls-back-to` s2 done (all) · orchestrator
 - 2026-11-16 19:29 UTC · `pending-banner-list-every-pending-build` s1 done, → running (all) · orchestrator
 - 2026-11-16 19:30 UTC · `assets-menu-hide-any-asset-hidden-list` added (0 steps) (all) · console
 - 2026-11-16 19:30 UTC · `pending-banner-list-every-pending-build` note (all) · orchestrator
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:26 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
 - 2026-11-16 23:27 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → running, branch claude/remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the, note (all) · builds-live
 - 2026-11-16 23:28 UTC · `icon-packs-with-drag-drop-pack-designer` s4 done (all) · orchestrator
+- 2026-11-16 23:28 UTC · `orchestrator-runs-long-builds-across` note (all) · orchestrator
 
 ## Token passes (log)
 
