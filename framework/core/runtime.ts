@@ -14,7 +14,7 @@ import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout'
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
-import { compileShape } from './engines/shape';
+import { SHAPE_HISTORY_SETTING, SHAPE_SETTING, SHAPE_SKIN_SETTING, bannerShapeDefault, compileShape, normalizeShapeHistory, recordShapeEdit, resolveShapeAt, restorePreviousShape, shapeId, shapeInlineVars, shapeScopeKey, shapeScopeLevel, type ShapeLevel, type ShapeResolved } from './engines/shape';
 import { isIconName, normalizeWidgetIcons, setWidgetIcon, widgetIconOf, widgetIconsSetting, type WidgetIcons } from './engines/widgeticons';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
@@ -1383,6 +1383,100 @@ export class AxfRuntime {
     this.resetHostArrangement('banner');
   }
 
+  /* ---------------- widget shapes (core/engines/shape.ts): global → skin → app → instance, Restore previous edit ---------------- */
+
+  /** A shape asset's data ('' or an unknown id = null: the engine's default). */
+  shapeData(id: string): unknown { return id && this.registry.has('shape' as AssetType, id) ? this.registry.get('shape' as AssetType, id)!.data : null; }
+
+  /** Per-skin overrides of a skin's shape (the skin editor's Shapes section). */
+  shapeSkinOverrides(): Record<string, string> {
+    const raw = this.settings.get(SHAPE_SKIN_SETTING) as unknown;
+    const out: Record<string, string> = {};
+    if (raw && typeof raw === 'object' && !Array.isArray(raw)) for (const [k, v] of Object.entries(raw)) { const id = shapeId(v); if (id && /^[a-z0-9][a-z0-9-]*$/.test(k)) out[k] = id; }
+    return out;
+  }
+
+  /** The shape a skin draws: its override (Shapes section), else its own `assets.shape`, '' = none. */
+  skinShape(skin?: string): string {
+    const id = skin ?? this.skinInForce().id;
+    if (!id) return '';
+    return this.shapeSkinOverrides()[id] || shapeId((this.skinData(id) as { assets?: Record<string, unknown> } | null)?.assets?.shape);
+  }
+
+  /** What one level of the chain holds right now ('' = inherit). Keys: shapeScopeKey (engines/shape.ts). */
+  shapeAtKey(key: string): string {
+    const where = shapeScopeLevel(key);
+    if (!where) return '';
+    if (where.level === 'instance') return shapeId(this.bannerWidgetPrefs()[where.widget!]?.shape);
+    if (where.level === 'global') return shapeId(this.settings.get(SHAPE_SETTING));
+    if (where.level === 'skin') return this.skinShape();
+    // app: the app's own slot pick (swap:shape:<id>), unless it is only the skin's shape carried into the slot
+    const active = shapeId((this.state.active as Record<string, string | undefined>).shape);
+    return active && active !== this.skinShape() ? active : '';
+  }
+
+  /** The shape in force at a place (one banner widget, or the app when no widget): id, deciding level, chain. */
+  resolveShape(widget?: string | null): ShapeResolved {
+    const r = resolveShapeAt(widget ? { widget } : null, (k) => this.shapeAtKey(k));
+    if (r.level !== 'default') return r;
+    // nobody picked anywhere: the banner asset's own default (circle for icon-only widgets, pill for chips)
+    const iconOnly = !!widget && this.bannerWidgetView(widget).size === 'icon';
+    return { ...r, id: bannerShapeDefault(this.assetOrNull('banner')?.data, iconOnly) };
+  }
+
+  /** Inline token vars for one widget whose shape differs from the app's (per-instance); null = the app's tokens apply. */
+  widgetShapeVars(widget: string): { id: string; vars: Record<string, string> } | null {
+    const mine = this.resolveShape(widget), app = this.resolveShape();
+    return mine.id === app.id ? null : { id: mine.id, vars: shapeInlineVars(this.shapeData(mine.id)) };
+  }
+
+  /** The edit history Restore previous edit reads. */
+  shapeHistory() { return normalizeShapeHistory(this.settings.get(SHAPE_HISTORY_SETTING)); }
+
+  /** Write one level ('' = inherit) without touching the history. */
+  private writeShapeLevel(level: ShapeLevel, id: string, widget?: string): boolean {
+    if (level === 'instance') return !!widget && this.setBannerWidget(widget, { shape: id || null });
+    if (level === 'global') { if (id) this.settings.set(SHAPE_SETTING, id); else this.settings.clear(SHAPE_SETTING); }
+    else if (level === 'skin') {
+      const skin = this.skinInForce().id;
+      if (!skin) { this.toast('No skin in force here: pick a skin first, or set the app or global shape.', 'info', 'Widget shape'); return false; }
+      const next = { ...this.shapeSkinOverrides() };
+      if (id) next[skin] = id; else delete next[skin];
+      if (Object.keys(next).length) this.settings.set(SHAPE_SKIN_SETTING, next as never); else this.settings.clear(SHAPE_SKIN_SETTING);
+    } else if (!id) {
+      const back = this.skinShape() || (this.manifest.defaults as Record<string, string | undefined>).shape;
+      if (back && this.registry.has('shape' as AssetType, back)) this.swap('shape' as AssetType, back);
+    } else if (!this.swap('shape' as AssetType, id)) return false;
+    this.set({});
+    return true;
+  }
+
+  /** Pick a shape at one level ('' = back to inherit). Recorded for Restore previous edit. */
+  setShape(level: ShapeLevel, id: string, widget?: string): boolean {
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Widget shape'); return false; }
+    const next = shapeId(id);
+    if (id && (!next || !this.registry.has('shape' as AssetType, next))) { this.toast(`No shape "${id}".`, 'warning', 'Widget shape'); return false; }
+    let key: string;
+    try { key = shapeScopeKey(level, widget); } catch { this.toast('Pick a banner widget first.', 'warning', 'Widget shape'); return false; }
+    const before = this.shapeAtKey(key);
+    if (!this.writeShapeLevel(level, next, widget)) return false;
+    this.settings.set(SHAPE_HISTORY_SETTING, recordShapeEdit(this.shapeHistory(), key, before, next, new Date().toISOString()) as never);
+    this.terminal.ok('shape', `${key}: ${before || 'inherit'} → ${next || 'inherit'}`);
+    return true;
+  }
+
+  /** Put back what a level held before its last edit (a second restore brings the edit back). */
+  restoreShape(level: ShapeLevel, widget?: string): boolean {
+    let key: string;
+    try { key = shapeScopeKey(level, widget); } catch { return false; }
+    const r = restorePreviousShape(this.shapeHistory(), key, new Date().toISOString());
+    if (!r) { this.toast('Nothing to restore here yet.', 'info', 'Widget shape'); return false; }
+    if (!this.writeShapeLevel(level, r.id, widget)) return false;
+    this.settings.set(SHAPE_HISTORY_SETTING, r.history as never);
+    this.terminal.ok('shape', `${key}: restored ${r.id || 'inherit'}`);
+    return true;
+  }
+
   /* ---------------- widget icons (core/engines/widgeticons.ts): Change icon… on any host widget ---------------- */
 
   /** The host widget under the last right-click or long-press (`{ host, widget }`), set by the context menu host. */
@@ -2620,7 +2714,7 @@ export class AxfRuntime {
       meterStyle(this.assetOrNull('meter')?.data),
       tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
       // shape@1 (core/engines/shape.ts): the shape every chip-like banner widget is cut to (slot `widget`); no asset = the pill every widget drew before
-      compileShape(this.assetOrNull('shape')?.data),
+      compileShape(this.shapeData(this.resolveShape().id)),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),

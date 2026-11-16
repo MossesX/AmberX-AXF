@@ -158,8 +158,15 @@ export type ShapeLevel = (typeof SHAPE_LEVELS)[number];
 export const SHAPE_KEY_GLOBAL = 'global';
 export const SHAPE_KEY_SKIN = 'skin';
 export const SHAPE_KEY_APP = 'app';
-/** The hub-wide setting the global level reads. */
-export const SHAPE_SETTING = 'axf.shape';
+/**
+ * The hub-wide setting the global level reads. Under `axf.tokens.` (control@1 token overrides), so it travels in the
+ * shared appearance document and reaches every app; the skin overrides and the edit history sit next to it.
+ */
+export const SHAPE_SETTING = 'axf.tokens.shape.global';
+/** Per-skin overrides of a skin's own shape (`{ <skin id>: <shape id> }`): the skin editor's Shapes section. */
+export const SHAPE_SKIN_SETTING = 'axf.tokens.shape.skin';
+/** The edit history Restore previous edit reads (ShapeHistory). */
+export const SHAPE_HISTORY_SETTING = 'axf.tokens.shape.history';
 /** The per-widget setting prefix and suffix: `axf.banner.widget.<type:id>.shape`. */
 export const SHAPE_WIDGET_SETTING_PREFIX = 'axf.banner.widget.';
 export const SHAPE_WIDGET_SETTING_SUFFIX = '.shape';

@@ -12,7 +12,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SHAPE_DEFAULT_KIND, SHAPE_KINDS, SHAPE_RADII, SHAPE_TYPE, normalizeShape, shapeErrors, shapeRadius, shapeSquare } from '../core/engines/shape-rules.mjs';
+import { SHAPE_WIDGET_TOKENS, SHAPE_DEFAULT_KIND, SHAPE_KINDS, SHAPE_RADII, SHAPE_TYPE, normalizeShape, shapeErrors, shapeRadius, shapeSquare } from '../core/engines/shape-rules.mjs';
 import { SHAPE_HISTORY_MAX, SHAPE_LEVELS, SHAPE_POLYGONS, compileShape, forgetShapeEdit, normalizeShapeHistory, previousShape, recordShapeEdit, resolveShape, resolveShapeAt, restorePreviousShape, shapeClip, shapeMask, shapeScopeChain, shapeScopeKey, shapeScopeLevel, shapeToken, squirclePath, squirclePolygon, superellipsePoints } from '../core/engines/shape';
 import { bannerWidgetView, normalizeBannerWidgetPref, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { normalizeSkin, skinCoverage, skinCovers, skinErrors, skinSlots } from '../core/engines/skin';
@@ -46,6 +46,7 @@ for (const c of fx.cases) eq(run[c.fn]!(c.input), c.expected, `${c.fn} ${c.name}
 // the registry: a Controls slot, optional, every kind known to the engine, in the same place in both type lists, declared `by: slot`
 const spec = JSON.parse(readFileSync(join(here, '../schemas/asset-types.json'), 'utf8')).types;
 eq(spec[SHAPE_TYPE].enums.kind, [...SHAPE_KINDS], 'registry kinds = engine kinds');
+eq(Object.keys(compileShape(null).vars), [...SHAPE_WIDGET_TOKENS], 'the written-out widget tokens = what the engine compiles');
 check(spec[SHAPE_TYPE].optional === true && !spec[SHAPE_TYPE].attachable && !spec[SHAPE_TYPE].widget, 'shape is an optional slot, not a widget');
 eq(spec[SHAPE_TYPE].skin?.by, 'slot', 'the registry declares how a skin reaches a shape: the slot');
 eq(Object.keys(spec).indexOf(SHAPE_TYPE), (ASSET_TYPES as readonly string[]).indexOf(SHAPE_TYPE), 'ASSET_TYPES order matches the registry');

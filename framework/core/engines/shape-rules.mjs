@@ -43,6 +43,12 @@ export const SHAPE_MASK_MAX = 2000;
 /** The box a mask path is drawn in when the asset names none. */
 export const SHAPE_VIEWBOX_DEFAULT = '0 0 100 100';
 
+/**
+ * The compiled token set of the default slot (`widget`), written out so the theme checks know them (engines/shape.ts
+ * builds them per slot; spec/check-shape.mts checks the two lists agree).
+ */
+export const SHAPE_WIDGET_TOKENS = ['--fx-shape-widget-radius', '--fx-shape-widget-clip', '--fx-shape-widget-mask', '--fx-shape-widget-corner', '--fx-shape-widget-aspect'];
+
 /** The default radius step of each kind (what `corners` overrides). */
 export const KIND_RADIUS = { circle: 'pill', pill: 'pill', rounded: 'md', square: 'none', squircle: 'lg', hexagon: 'none', diamond: 'none', tag: 'none', corners: 'md', mask: 'none' };
 /** Radius step → stylesheet value: theme tokens, never a literal size (999px is the pill shape, allowed by check-theme). */

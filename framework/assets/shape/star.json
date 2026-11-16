@@ -4,7 +4,7 @@
   "id": "star",
   "name": "Star (mask example)",
   "version": "1.0.0",
-  "description": "A five-point star cut from an SVG path. An example of a mask shape: any closed path (M … Z) in its own viewBox, stretched over the widget. Keeps a square box.",
+  "description": "A five-point star cut from an SVG path. An example of a mask shape: any closed path (M … Z) in its own viewBox (0 0 100 100 unless it names one), stretched over the widget. Keeps a square box.",
   "author": "AmberX AXF",
   "tags": [
     "shape",
@@ -13,7 +13,6 @@
   "data": {
     "kind": "mask",
     "mask": "M 50.0 2.0 L 62.3 35.0 L 97.6 36.5 L 70.0 58.5 L 79.4 92.5 L 50.0 73.0 L 20.6 92.5 L 30.0 58.5 L 2.4 36.5 L 37.7 35.0 Z",
-    "viewBox": "0 0 100 100",
     "square": true
   }
 }
