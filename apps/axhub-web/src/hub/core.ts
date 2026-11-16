@@ -9,6 +9,8 @@
 
 /** A request id the hub hands out (UUID), checked before it goes into a route or a URL. */
 export const APPROVAL_ID_RE = /^[0-9a-f-]{36}$/;
+/** Fields of the approval settings page a deep link may ring (`#/approvals/settings?field=…`). */
+export const SETTINGS_FIELD_RE = /^(vetoSeconds|vetoWarningSeconds|readOnlySkipsVeto)$/;
 /** A handoff run id (`20261022-143005-ab12`). */
 export const RUN_ID_RE = /^\d{8}-\d{6}-[a-z0-9]{4}$/;
 /** A view name the shell knows, for routes that aren't one of the hub's own. */
@@ -38,6 +40,11 @@ export function parseRoute(hash: string): Route {
     const status = query.get('status') ?? '';
     return { view: 'home', params: (APPROVAL_FILTERS as readonly string[]).includes(status) && status !== 'all' ? { status } : {} };
   }
+  if (a === 'approvals' && b === 'settings' && parts.length === 2) {
+    // `?field=vetoSeconds`: the field a deep link rings (axHub decision 119)
+    const field = query.get('field') ?? '';
+    return { view: 'approval-settings', params: SETTINGS_FIELD_RE.test(field) ? { field } : {} };
+  }
   if (a === 'approvals' && b === 'log' && parts.length === 2) {
     // `?pass=any|<id>`: the calls that ran under a pass (axHub decision 112)
     const pass = query.get('pass') ?? '';
@@ -61,6 +68,8 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
   switch (view) {
     case 'home':
       return params.status && params.status !== 'all' && (APPROVAL_FILTERS as readonly string[]).includes(params.status) ? `#/approvals?status=${params.status}` : '#/approvals';
+    case 'approval-settings':
+      return SETTINGS_FIELD_RE.test(params.field ?? '') ? `#/approvals/settings?field=${params.field}` : '#/approvals/settings';
     case 'approvals-log':
       return PASS_FILTER_RE.test(params.pass ?? '') ? `#/approvals/log?pass=${encodeURIComponent(params.pass!)}` : '#/approvals/log';
     case 'approval':

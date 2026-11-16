@@ -33,6 +33,12 @@
             "view": "passes"
           },
           {
+            "id": "approval-settings",
+            "label": "Approval settings",
+            "icon": "settings",
+            "view": "approval-settings"
+          },
+          {
             "id": "approvals-log",
             "label": "Approvals log",
             "icon": "list",

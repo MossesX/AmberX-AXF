@@ -161,6 +161,11 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
     // The open row is lib-approvals' shared details panel (Nov 1 2026: every approval row expandable).
     ok(/<ApprovalDetailsPanel/.test(row) && /detailsOfHubEntry\(HUB, item\)/.test(row), 'an open row shows the shared details panel');
   }
+  eq(parseRoute('#/approvals/settings'), { view: 'approval-settings', params: {} }, '#/approvals/settings opens the approval settings (axHub decision 119)');
+  eq(parseRoute('#/approvals/settings?field=vetoSeconds'), { view: 'approval-settings', params: { field: 'vetoSeconds' } }, 'the deep link rings the veto countdown field');
+  eq(parseRoute('#/approvals/settings?field=bogus'), { view: 'approval-settings', params: {} }, 'an unknown field is dropped');
+  eq(routeHash('approval-settings', { field: 'vetoSeconds' }), '#/approvals/settings?field=vetoSeconds', 'the settings address round-trips');
+  eq(routeHash('approval-settings', {}), '#/approvals/settings', 'no field, no query');
   eq(parseRoute('#/approvals?status=pending'), { view: 'home', params: { status: 'pending' } }, 'a filter is kept');
   eq(parseRoute('#/approvals?status=bogus'), { view: 'home', params: {} }, 'an unknown filter is dropped');
   eq(parseRoute('#/approvals?status=all'), { view: 'home', params: {} }, '"all" is no filter');
