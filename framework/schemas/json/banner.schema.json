@@ -56,7 +56,127 @@
             "text"
           ]
         },
-        "attach": {}
+        "attach": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "id",
+              "at"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "clock",
+                  "search-bar",
+                  "action-button",
+                  "logo",
+                  "label",
+                  "status",
+                  "counter",
+                  "progress",
+                  "avatar",
+                  "link",
+                  "theme-switch",
+                  "spacer",
+                  "divider",
+                  "badge"
+                ],
+                "description": "string — a type the host takes (its `attach.types`, else every attachable type; a `widgets` host takes every widget type)"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+                "description": "string — the asset id (envelope idPattern); an entry whose asset doesn't exist is skipped at run time and refused by axf validate"
+              },
+              "at": {
+                "enum": [
+                  "left",
+                  "center",
+                  "right"
+                ],
+                "description": "string — one of the host's sides (banner: left | center | right; toolbar: start | end)"
+              },
+              "order": {
+                "type": "number",
+                "description": "number — lower comes first on its side; the host's own entries default to index × 10, run-time ones to 1000 + index × 10, a person's additions to 2000 + index × 10"
+              },
+              "widget": {
+                "type": "object",
+                "description": "object — banner widget style: { label?: string (name in the picker and for voice; default the asset's name), icon?: string, size?: icon | compact | normal | wide (default compact; clocks, search bars, logos, avatars, spacers, dividers, progress and the theme switch keep their own shape until a size is picked), show?: auto | both | icon | text | number (default auto), priority?: 1–9 (default 5; low numbers leave for the ⋯ menu first), hideWhenEmpty?: boolean (default false), overflow?: boolean (default true; false keeps it on the bar), hidden?: boolean (default false; hidden until the person ticks it), aliases?: string[] (extra words voice and search match it by) }",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "icon": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "enum": [
+                      "icon",
+                      "compact",
+                      "normal",
+                      "wide"
+                    ]
+                  },
+                  "show": {
+                    "enum": [
+                      "auto",
+                      "both",
+                      "icon",
+                      "text",
+                      "number"
+                    ]
+                  },
+                  "priority": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9
+                  },
+                  "hideWhenEmpty": {
+                    "type": "boolean"
+                  },
+                  "overflow": {
+                    "type": "boolean"
+                  },
+                  "hidden": {
+                    "type": "boolean"
+                  },
+                  "aliases": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "maxItems": 12
+                  }
+                },
+                "additionalProperties": false
+              },
+              "shape": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+                "description": "string — a shape@1 asset id this widget is cut to (over the host's `shape` default; under a person's, the app's, the skin's or the global pick)"
+              }
+            }
+          }
+        },
+        "shape": {
+          "type": "object",
+          "description": "{ icon?: <shape@1 asset id>, chip?: <shape@1 asset id> } — the host's default widget shapes: icon for icon-only / square widgets (the shape engine's default circle), chip for widgets with text (default pill). The lowest level of the shape chain: a widget's own `shape`, the app, the skin or the global pick wins.",
+          "properties": {
+            "icon": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+            },
+            "chip": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+            }
+          },
+          "additionalProperties": false
+        }
       }
     }
   }

@@ -361,6 +361,45 @@ export function validateHostAttachments(type, list) {
   return errors;
 }
 
+/**
+ * JSON Schema of one host entry (asset-types.json → hostEntry; toolbar-widgets@1): type, id, at, order, the banner
+ * widget style (`widget`) and a shape@1 ref (`shape`), for the generated editor schemas of every widget host.
+ */
+export function hostEntrySchema(type) {
+  const h = hostSpec(type);
+  const e = spec.hostEntry;
+  const w = e.widget;
+  const id = { type: 'string', pattern: spec.envelope.idPattern };
+  return {
+    type: 'object',
+    required: e.required,
+    properties: {
+      type: { enum: h.types, description: e.optional_fields.type },
+      id: { ...id, description: e.optional_fields.id },
+      at: { enum: h.sides, description: e.optional_fields.at },
+      order: { type: 'number', description: e.optional_fields.order },
+      widget: {
+        type: 'object',
+        description: e.optional_fields.widget,
+        properties: {
+          label: { type: 'string' }, icon: { type: 'string' },
+          size: { enum: w.sizes }, show: { enum: w.shows },
+          priority: { type: 'integer', minimum: w.priority.min, maximum: w.priority.max },
+          hideWhenEmpty: { type: 'boolean' }, overflow: { type: 'boolean' }, hidden: { type: 'boolean' },
+          aliases: { type: 'array', items: { type: 'string', minLength: 1 }, maxItems: w.aliasesMax },
+        },
+        additionalProperties: false,
+      },
+      shape: { ...id, description: e.optional_fields.shape },
+    },
+  };
+}
+/** JSON Schema of a host's `shape` default (asset-types.json → hostEntry.hostShape). */
+export function hostShapeSchema() {
+  const id = { type: 'string', pattern: spec.envelope.idPattern };
+  return { type: 'object', description: spec.hostEntry.hostShape, properties: { icon: id, chip: id }, additionalProperties: false };
+}
+
 /** Layout slot contract — mirrors validateSlots in core/validate.ts. */
 export function validateSlots(slots) {
   const regions = spec.types.layout.slots.regions;
@@ -865,6 +904,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     const menuItem = { $ref: '#/$defs/menuItem' };
     if (type === 'app-menu') props.menus = { type: 'array', items: { type: 'object', required: ['id', 'label', 'items'], properties: { id: { type: 'string' }, label: { type: 'string' }, order: { type: 'number' }, items: { type: 'array', items: menuItem } } } };
     if (type === 'context-menu') props.targets = { type: 'object', required: ts.nested?.targets ?? [], additionalProperties: { type: 'array', items: menuItem } };
+    // Widget hosts (asset-types.json → hostEntry; toolbar-widgets@1): the attach / widgets list entries and the host's default widget shapes
+    const host = hostSpec(type);
+    if (host) { props[host.field] = { type: 'array', items: hostEntrySchema(type) }; props.shape = hostShapeSchema(); }
     // scale assets (typography, density, sizing): every group optional, fields typed + ranged from the shared registry
     if (isScaleType(type)) Object.assign(props, scaleSchemaProperties(type));
     if (type === 'nav-style') Object.assign(props, navStyleSchemaProperties());
