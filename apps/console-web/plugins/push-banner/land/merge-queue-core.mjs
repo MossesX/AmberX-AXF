@@ -227,7 +227,7 @@ export const QUEUE_COMMANDS = Object.freeze([
 ]);
 
 /** Apply one control command (add | remove | move | kick | clear-kick). Returns the new control document. */
-export function applyQueueControl(doc, cmd, pr, { why = '', to = 0, head = '', at = new Date().toISOString(), current = [] } = {}) {
+export function applyQueueControl(doc, cmd, pr, { why = '', to = 0, head = '', at = new Date().toISOString(), current = [], currentAt = '' } = {}) {
   const d = { $axf: QUEUE_CONTROL_FRAME, order: [], removed: {}, kicked: {}, added: [], ...(doc && typeof doc === 'object' ? doc : {}) };
   d.order = [...(d.order || [])].filter(num); d.removed = { ...(d.removed || {}) }; d.kicked = { ...(d.kicked || {}) }; d.added = [...(d.added || [])].filter(num);
   const n = typeof pr === 'string' ? Number(pr.replace(/^#/, '')) : pr;
@@ -238,8 +238,12 @@ export function applyQueueControl(doc, cmd, pr, { why = '', to = 0, head = '', a
   else if (cmd === 'move') {
     const i = Number(to);
     if (!Number.isInteger(i) || i < 0) throw new Error('to is the new index (0 = front)');
-    // the order Brett sees now becomes the manual order, with this PR at its new place
-    const base = [...new Set([...(current || []).filter(num), ...d.order])].filter((x) => x !== n);
+    // the order Brett sees now becomes the manual order, with this PR at its new place. `current` is the order of the
+    // last round (written at `currentAt`); when the manual order changed after that round it already holds that order
+    // plus the later moves, so it leads: two moves before the next round both count instead of the second undoing the first.
+    const cur = (current || []).filter(num);
+    const manualNewer = Boolean(d.updatedAt && currentAt && String(d.updatedAt) > String(currentAt));
+    const base = [...new Set(manualNewer ? [...d.order, ...cur] : [...cur, ...d.order])].filter((x) => x !== n);
     base.splice(Math.min(i, base.length), 0, n);
     d.order = base.slice(0, 100);
   } else throw new Error(`unknown command ${cmd}`);
