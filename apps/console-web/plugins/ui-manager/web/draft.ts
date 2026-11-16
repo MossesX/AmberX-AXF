@@ -15,6 +15,7 @@ import {
   diffOverrides, normalizeOverrides, withOverride, withoutOverride,
   type Overrides, type Prop, type Scalar,
 } from '../../../../../framework/core/engines/ui-manager-rules.mjs';
+import { rebaseDraft } from '../lib/draft.mjs';
 import { applyCss, refreshLive } from './apply';
 import { fetchJson } from './useElements';
 
@@ -103,10 +104,7 @@ export async function applyDraft(by = 'window'): Promise<{ error?: string; entry
   if (!state.start || !state.draft) return { error: 'Nothing to apply.' };
   emit({ busy: true });
   const now = normalizeOverrides(await fetchJson<Overrides>('overrides'));
-  let doc = now;
-  for (const c of diffOverrides(state.start, state.draft)) {
-    doc = c.to === undefined ? withoutOverride(doc, c.element, c.prop) : normalizeOverrides({ ...doc, elements: { ...doc.elements, [c.element]: { ...(doc.elements[c.element] ?? {}), [c.prop]: c.to } } });
-  }
+  const doc = rebaseDraft(state.start, state.draft, now);
   const r = await post<{ error?: string; entry?: { id: string } }>('apply', { pending: doc, by, reason: `UI Manager: ${state.summary.length} change(s)` });
   if (r.error) { emit({ busy: false, errors: [r.error] }); return r; }
   emit({ ...EMPTY });

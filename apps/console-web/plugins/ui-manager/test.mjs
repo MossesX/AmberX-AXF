@@ -367,5 +367,15 @@ t('library: export any UI as an asset library, publish to the hub library, packa
   core.reset();
 });
 
+const { rebaseDraft } = await import('./lib/draft.mjs');
+t('window draft: Apply rebases on what is saved now (last save wins per key), a pending reset removes the key', () => {
+  const start = { elements: { 'asset:toolbar': { transparency: 80 }, 'asset:banner': { visible: false } } };
+  const draft = { elements: { 'asset:toolbar': { transparency: 50 } } }; // changed one, reset the banner
+  const now = { elements: { 'asset:toolbar': { transparency: 80 }, 'asset:banner': { visible: false }, 'asset:nav': { transparency: 40 } } }; // nav saved meanwhile
+  const out = rebaseDraft(start, draft, now);
+  assert.deepEqual(out.elements, { 'asset:toolbar': { transparency: 50 }, 'asset:nav': { transparency: 40 } });
+  assert.deepEqual(rebaseDraft(start, start, now).elements, now.elements, 'an empty draft changes nothing');
+});
+
 rmSync(TMP, { recursive: true, force: true });
 console.log(`✓ ui-manager: ${n} test groups passed`);
