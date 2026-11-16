@@ -6051,6 +6051,18 @@
    "from": "detail",
    "addenda": []
   },
+  "pending-banner-list-every-pending-build": {
+   "said": "I need a pending banner that lists all the pending things and lets me send everything to the queue right from the banner.",
+   "at": "2026-11-16T19:16:56.830Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "pending-grid-view": {
    "said": "everything from today and the refactor goes into the Refactor profile).",
    "at": "2026-10-27",
