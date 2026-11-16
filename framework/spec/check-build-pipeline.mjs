@@ -19,7 +19,7 @@ const WRITE = process.argv.includes('--write');
 
 const BP = await import('../core/build-pipeline.mjs');
 const { setUpgradePolicy } = await import('../core/model-switch.mjs');
-const P = await import(join(ROOT, 'apps/console-web/plugins/build-orchestrator/pipeline-core.mjs'));
+const P = await import(join(ROOT, 'apps/console-web/plugins/build-orchestrator/pipeline-core.mjs')); // axf-plugin:build-orchestrator
 
 let n = 0; let failed = 0;
 const ok = (cond, what) => { n++; if (!cond) { failed++; console.error(`FAIL ${what}`); } };

@@ -51,6 +51,8 @@
       "apps/console-web/scripts/console-control.e2e.mjs",
       "framework/cli/project-seed.mjs",
       "framework/spec/check-build-limit.mjs",
+      "framework/spec/check-build-pipeline.mjs",
+      "framework/cli/builds-reconcile.mjs",
       "framework/spec/check-projects.mjs"
     ]
   },
