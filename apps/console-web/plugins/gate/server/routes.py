@@ -17,6 +17,16 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   POST lander/land-now {pr, confirm?}   two-step: puts the PR at the head of the line in the current mode
   POST lander/pause {why?} · POST lander/resume
   GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?}
+  Build rules (build-rules@1, framework/spec/BUILD-RULES.md; build-rules-api.mjs):
+  GET  build-rules [?doer&kind&phase&enabled&q]   the store with each rule's last run
+  POST build-rules {rule | id, title, text, doer, kind, phase, …}   add a rule
+  GET  build-rules/brief ?build&title&text&ui     what a session's brief would get (brief-blocks@1)
+  GET  build-rules/history [?id&action&since&limit]   every change (build-rule-history@1)
+  GET  build-rules/runs [?id&build&result&since&limit]   every check / fix run (build-rule-run@1)
+  POST build-rules/run {build, phase, rules?, dryRun?}   run a phase now (dry run changes nothing)
+  GET  build-rules/<id> · PUT build-rules/<id> {patch | fields}
+  POST build-rules/<id>/toggle {enabled?}         on / off (no enabled = flip)
+  POST build-rules/<id>/delete {confirm?}         two-step: the first call answers confirmation_required with a token
 
 Writes take `by` and `reason` ({title, description} or text) from the body; `by` defaults to the signed-in user.
 """
@@ -265,6 +275,70 @@ async def lander_resume(request: Request) -> JSONResponse:
 
 
 # ---------------------------------------------------------------------- the plugin's settings
+
+# ---------------------------------------------------------------------- build rules (build-rules@1)
+
+@router.get("/build-rules")
+async def build_rules_list(doer: str = "", kind: str = "", phase: str = "", enabled: str = "", q: str = "") -> JSONResponse:
+    """Every build rule with its doer, kind, phase, on/off and last run; filters doer, kind, phase, enabled, q."""
+    return await _read("build_rules_list", {"doer": doer, "kind": kind, "phase": phase, "enabled": enabled, "q": q})
+
+
+@router.post("/build-rules")
+async def build_rules_add(request: Request) -> JSONResponse:
+    """Add a build rule ({rule} or its fields). Logged in the rule history."""
+    return await _write("build_rules_add", request)
+
+
+@router.get("/build-rules/brief")
+async def build_rules_brief(build: str = "", title: str = "", text: str = "", ui: str = "") -> JSONResponse:
+    """The session's share of the rules for a build (brief-blocks@1): what the dispatcher puts in its brief."""
+    return await _read("build_rules_brief", {"build": build, "title": title, "text": text, "ui": ui})
+
+
+@router.get("/build-rules/history")
+async def build_rules_history(id: str = "", action: str = "", since: str = "", limit: int = 100) -> JSONResponse:
+    """Every change to the build rules, newest first (build-rule-history@1)."""
+    return await _read("build_rules_history", {"id": id, "action": action, "since": since, "limit": limit})
+
+
+@router.get("/build-rules/runs")
+async def build_rules_runs(id: str = "", build: str = "", result: str = "", since: str = "", limit: int = 100) -> JSONResponse:
+    """Every check and fix the VPS ran, newest first (build-rule-run@1)."""
+    return await _read("build_rules_runs", {"id": id, "build": build, "result": result, "since": since, "limit": limit})
+
+
+@router.post("/build-rules/run")
+async def build_rules_run(request: Request) -> JSONResponse:
+    """Run one phase (before, after, gate) of the build rules for a build now; dryRun changes nothing."""
+    body = await _body(request)
+    data = {**body, "by": body.get("by") or _who(request)}
+    return answer(await run_in_threadpool(run, "build_rules_run", data, 1500))
+
+
+@router.get("/build-rules/{rule_id}")
+async def build_rules_get(rule_id: str) -> JSONResponse:
+    """One build rule with its last runs and its change history."""
+    return await _read("build_rules_get", {"id": rule_id})
+
+
+@router.put("/build-rules/{rule_id}")
+async def build_rules_edit(rule_id: str, request: Request) -> JSONResponse:
+    """Change a build rule: title, text, doer, kind, phase, check, autofix, briefBlock, applies, when, note."""
+    return await _write("build_rules_edit", request, {"id": rule_id})
+
+
+@router.post("/build-rules/{rule_id}/toggle")
+async def build_rules_toggle(rule_id: str, request: Request) -> JSONResponse:
+    """Switch a build rule on or off ({enabled}; none = flip)."""
+    return await _write("build_rules_toggle", request, {"id": rule_id})
+
+
+@router.post("/build-rules/{rule_id}/delete")
+async def build_rules_delete(rule_id: str, request: Request) -> JSONResponse:
+    """Delete a build rule; the first call answers confirmation_required with a token, the second sends confirm."""
+    return await _write("build_rules_delete", request, {"id": rule_id})
+
 
 @router.get("/settings")
 async def settings_get() -> JSONResponse:

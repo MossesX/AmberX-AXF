@@ -5,10 +5,10 @@
     "views": 65,
     "nav": 16,
     "tabGroups": 28,
-    "tabs": 85,
+    "tabs": 86,
     "settingsTabs": 70,
     "settings": 87,
-    "functions": 261,
+    "functions": 267,
     "buttons": 62,
     "plugins": 70
   },
@@ -1394,12 +1394,17 @@
       "view": "gate",
       "plugin": "ai.amberx.axf.console.gate",
       "file": "plugins/gate/web/GateView.tsx",
-      "line": 36,
+      "line": 37,
       "tabs": [
         {
           "address": "view:gate/tab:gate.tabs=rules",
           "value": "rules",
           "label": "Rules"
+        },
+        {
+          "address": "view:gate/tab:gate.tabs=build-rules",
+          "value": "build-rules",
+          "label": "Build rules"
         },
         {
           "address": "view:gate/tab:gate.tabs=auto-lander",
@@ -5401,6 +5406,114 @@
         "resume"
       ],
       "effect": "write",
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.build-rules.open",
+      "kind": "function",
+      "id": "gate.build-rules.open",
+      "label": "Open the build rules",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.build-rules.open",
+        "gate",
+        "build",
+        "rules",
+        "open"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.build-rules.list",
+      "kind": "function",
+      "id": "gate.build-rules.list",
+      "label": "How many build rules, and who does them",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.build-rules.list",
+        "gate",
+        "build",
+        "rules",
+        "list"
+      ],
+      "effect": "read",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.build-rules.toggle",
+      "kind": "function",
+      "id": "gate.build-rules.toggle",
+      "label": "Switch a build rule on or off",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.build-rules.toggle",
+        "gate",
+        "build",
+        "rules",
+        "toggle"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.build-rules.who",
+      "kind": "function",
+      "id": "gate.build-rules.who",
+      "label": "Who does a build rule",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.build-rules.who",
+        "gate",
+        "build",
+        "rules",
+        "who"
+      ],
+      "effect": "read",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.build-rules.add",
+      "kind": "function",
+      "id": "gate.build-rules.add",
+      "label": "Add a build rule",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.build-rules.add",
+        "gate",
+        "build",
+        "rules",
+        "add"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.build-rules.run",
+      "kind": "function",
+      "id": "gate.build-rules.run",
+      "label": "Run the build rules for a build",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.build-rules.run",
+        "gate",
+        "build",
+        "rules",
+        "run"
+      ],
+      "effect": "write",
+      "params": true,
       "plugin": "ai.amberx.axf.console.gate",
       "file": "plugins/gate/web/actions.ts"
     },
@@ -9412,7 +9525,8 @@
       ],
       "view": "view:gate",
       "provides": [
-        "service:axf.gate@1"
+        "service:axf.gate@1",
+        "service:axf.build-rules@1"
       ],
       "requires": [],
       "optional": [

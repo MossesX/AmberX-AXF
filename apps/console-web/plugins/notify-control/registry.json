@@ -23,6 +23,7 @@
     { "id": "sessions", "label": "Claude sessions", "icon": "sparkles" },
     { "id": "console", "label": "Console", "icon": "terminal" },
     { "id": "amberx", "label": "AmberX app", "icon": "smartphone" },
+    { "id": "phone", "label": "Phone Connect", "icon": "smartphone" },
     { "id": "banners", "label": "Status banners", "icon": "layout" },
     { "id": "other", "label": "Not in the registry yet", "icon": "help" }
   ],
