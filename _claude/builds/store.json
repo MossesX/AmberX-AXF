@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6453,
- "updatedAt": "2026-11-16T13:59:09.567Z",
+ "rev": 6454,
+ "updatedAt": "2026-11-16T13:59:23.313Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219516,14 +219516,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T13:59:07.598Z",
+   "updatedAt": "2026-11-16T13:59:09.991Z",
    "builtAt": "",
    "notes": [
     {
@@ -219701,6 +219701,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 1 step left: back in the Queue (run 2).",
      "at": "2026-11-16T13:59:07.598Z"
+    },
+    {
+     "text": "Dispatch gate: demo-video-series-three-minute-browser still has axf-demo-video-series-three-minute-browser--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-16T13:59:09.991Z"
     }
    ],
    "approvals": [
@@ -219740,7 +219744,7 @@
     "queuedAt": "2026-11-16T13:22:50.158Z",
     "queuedBy": "build:fix-build-whose-session-finishes-phase-e",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-demo-video-series-three-minute-browser--gina",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-16T13:24:57.284Z",
@@ -220309,7 +220313,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {

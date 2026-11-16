@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:19 UTC · `pending-tab-one-collapsed-row-per-2` s13 done (all) · orchestrator
 - 2026-11-15 12:19 UTC · `data-container-axf-data-holds-all` → running, note (all) · mcp
 - 2026-11-15 12:20 UTC · `move-build-orchestrator-to-axhub` note (all) · mcp
 - 2026-11-15 12:20 UTC · `data-container-axf-data-holds-all` → queued (all) · mcp
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-16 13:58 UTC · `demo-video-series-three-minute-browser` s3 done (all) · orchestrator
 - 2026-11-16 13:59 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · pipeline
+- 2026-11-16 13:59 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
 
 ## Token passes (log)
 
