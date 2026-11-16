@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7074,
- "updatedAt": "2026-11-16T23:48:27.920Z",
+ "rev": 7075,
+ "updatedAt": "2026-11-16T23:48:45.775Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208599,7 +208599,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-16T23:38:08.349Z",
+   "updatedAt": "2026-11-16T23:48:30.292Z",
    "builtAt": "",
    "notes": [
     {
@@ -208641,7 +208641,7 @@
     "queuedAt": "2026-11-16T23:20:48.607Z",
     "queuedBy": "brett",
     "account": "",
-    "session": "axf-land-project-create-mcp-resolve-clash--gina",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
@@ -208689,12 +208689,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T23:48:30.292Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:03:24.115Z",
-     "updatedAt": "2026-11-13T19:03:24.115Z"
+     "updatedAt": "2026-11-16T23:48:30.702Z"
     },
     {
      "id": "s2",
