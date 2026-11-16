@@ -15,6 +15,18 @@ to-dos, tasks) with subtasks, checklists, tags, due dates, custom fields per kin
     POST /entries/bulk          {ids, action: delete|move|duplicate|patch, listId?, parentId?, patch?}
     POST /entries/reorder       {ids}
 
+By name (server/voice.py; what MCP, the CLI and voice use, no ids needed). Each answers {ok, say, …}:
+    POST /by-name/list-create   {title, parent?}         POST /by-name/list-rename  {list, title}
+    POST /by-name/list-move     {list, position | parent} POST /by-name/list-delete {list, confirm}
+    POST /by-name/entry-add     {list, title, kind?, body?, under?}   POST /by-name/entry-edit {entry, list?, title?, body?, status?, priority?, kind?}
+    POST /by-name/entry-move    {entry, to, from?}       POST /by-name/entry-complete {entry, list?, done?}
+    POST /by-name/entry-delete  {entry, list?, confirm}  POST /by-name/list-and-entry {list, title, kind?}
+    GET  /by-name/find?q=&kind=&status=                  GET /by-name/lists-read?list=   GET /by-name/export?list=
+    POST /voice                 {text, confirm?}: a spoken phrase (voice.json) → one of the above, with `say`
+
+The console's voice endpoint (console_control_voice, /api/console-control/voice) hands any phrase it doesn't know to
+this plugin through plugin_services `axf.voice-phrases@1:todo-manager`.
+
 Data: one file, todo-store@1, in the plugin's data folder (`AXF_TODO_DIR` overrides), 0600, written atomically; one per
 project (projects@1): AmberX AXF keeps `store.json`, any other project `projects/<id>/store.json`.
 """
@@ -29,6 +41,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import Response
 
 import console_context as cx
+from . import voice as V
 from .model import KINDS, Invalid, Store, text
 
 router = APIRouter()
@@ -205,3 +218,101 @@ async def put_entry(eid: int, req: Request) -> dict[str, Any]:
 def delete_entry(eid: int) -> dict[str, Any]:
     return {"ok": True, "count": _call(STORE.delete_entry, eid)}
 
+
+
+# ---------------------------------------------------------------- by name (voice, MCP, CLI)
+
+
+def _named(op: str, b: dict[str, Any]) -> dict[str, Any]:
+    r = _call(V.OPS[op], STORE.current(), b)
+    if r.get("code") == "confirmation_required":
+        raise HTTPException(409, r["say"])
+    return r
+
+
+@router.post("/by-name/list-create", status_code=201)
+async def by_name_list_create(req: Request) -> dict[str, Any]:
+    return _named("list-create", await _body(req))
+
+
+@router.post("/by-name/list-rename")
+async def by_name_list_rename(req: Request) -> dict[str, Any]:
+    return _named("list-rename", await _body(req))
+
+
+@router.post("/by-name/list-move")
+async def by_name_list_move(req: Request) -> dict[str, Any]:
+    return _named("list-move", await _body(req))
+
+
+@router.post("/by-name/list-delete")
+async def by_name_list_delete(req: Request) -> dict[str, Any]:
+    return _named("list-delete", await _body(req))
+
+
+@router.post("/by-name/list-and-entry", status_code=201)
+async def by_name_list_and_entry(req: Request) -> dict[str, Any]:
+    return _named("list-and-entry", await _body(req))
+
+
+@router.post("/by-name/entry-add", status_code=201)
+async def by_name_entry_add(req: Request) -> dict[str, Any]:
+    return _named("entry-add", await _body(req))
+
+
+@router.post("/by-name/entry-edit")
+async def by_name_entry_edit(req: Request) -> dict[str, Any]:
+    return _named("entry-edit", await _body(req))
+
+
+@router.post("/by-name/entry-move")
+async def by_name_entry_move(req: Request) -> dict[str, Any]:
+    return _named("entry-move", await _body(req))
+
+
+@router.post("/by-name/entry-complete")
+async def by_name_entry_complete(req: Request) -> dict[str, Any]:
+    return _named("entry-complete", await _body(req))
+
+
+@router.post("/by-name/entry-delete")
+async def by_name_entry_delete(req: Request) -> dict[str, Any]:
+    return _named("entry-delete", await _body(req))
+
+
+@router.get("/by-name/find")
+def by_name_find(q: str = "", kind: str = "", status: str = "") -> dict[str, Any]:
+    return _named("find", {"q": q, "kind": kind, "status": status})
+
+
+@router.get("/by-name/lists-read")
+def by_name_lists_read(list: str = "") -> dict[str, Any]:  # noqa: A002 — the query field is called list
+    return _named("lists-read", {"list": list})
+
+
+@router.get("/by-name/export")
+def by_name_export(list: str = "") -> dict[str, Any]:  # noqa: A002
+    return _named("export", {"list": list})
+
+
+def hear(said: str, confirm: bool = False) -> dict[str, Any] | None:
+    """A spoken phrase → run it on the active project's store; None when it isn't a Todo manager phrase."""
+    return V.hear(STORE.current(), str(said or "")[:300], confirm)
+
+
+@router.post("/voice")
+async def voice(req: Request) -> dict[str, Any]:
+    b = await _body(req)
+    said = text(b.get("text"), 300).strip()
+    if not said:
+        raise HTTPException(400, "text is required")
+    r = hear(said, b.get("confirm") is True)
+    return r or {"ok": False, "code": "invalid", "heard": said, "say": "That isn't a Todo manager phrase. Try: make a list called Groceries."}
+
+
+try:  # the console's voice endpoint asks every plugin that hears phrases (optional: tests run without it)
+    import plugin_services as _ps
+
+    _ps.provide("axf.voice-phrases@1:todo-manager", hear, folder="todo-manager")
+except ImportError:  # pragma: no cover
+    pass

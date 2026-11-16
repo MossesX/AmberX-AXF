@@ -155,6 +155,60 @@ cx.set_context(project_dir=lambda p: Path(p))
 check("back to AmberX AXF: same lists", [x["id"] for x in c.get("/p/lists").json()["lists"]] == base_lists)
 check("back to AmberX AXF: other project's list not here", all(x["title"] != "Seeds" for x in c.get("/p/lists").json()["lists"]))
 
+# ---- by name + voice (server/voice.py, voice.json): what MCP, the CLI and AmberX use
+V = mod.hear
+r = V("Make a new list called New build and a note called Build.")
+check("voice: Brett's phrase → list + note", r and r["ok"] and r["command"] == "list-and-entry", r)
+nb = next((x for x in c.get("/p/lists").json()["lists"] if x["title"] == "New build"), None)
+check("voice: list keeps the case said", nb is not None, [x["title"] for x in c.get("/p/lists").json()["lists"]])
+es = c.get(f"/p/lists/{nb['id']}/entries").json()["entries"] if nb else []
+check("voice: note Build inside New build", [(e["kind"], e["title"]) for e in es] == [("note", "Build")], es)
+r = V("make a list called new build")
+check("voice: same name twice → no duplicate", r["ok"] and r["created"] is False, r)
+check("voice: add a to-do", V("add a to-do called Fix tests to new build")["entry"]["kind"] == "todo")
+check("voice: add a task", V("Amber, add a task called Ship it to New build")["entry"]["title"] == "Ship it")
+check("voice: what's in", "3 items" in V("what's in new build")["say"], V("what's in new build"))
+check("voice: mark done", V("mark ship it as done")["entry"]["status"] == "done")
+check("voice: not done", V("mark ship it not done")["entry"]["status"] == "open")
+check("voice: priority", V("set ship it priority to high")["entry"]["priority"] == "high")
+c.post("/p/by-name/list-create", json={"title": "Later"})
+check("voice: move entry", V("move ship it to later")["list"]["title"] == "Later")
+check("voice: rename list", V("rename the list later to Someday")["list"]["title"] == "Someday")
+check("voice: list position", V("move the list someday to position 1")["position"] == 1)
+check("voice: find", V("find tasks about ship")["entries"][0]["title"] == "Ship it")
+check("voice: export", V("export the list new build")["markdown"].count("Build") >= 1)
+r = V("delete ship it")
+check("voice: delete asks first", r["ok"] is False and r["code"] == "confirmation_required", r)
+check("voice: delete with confirm", V("delete ship it confirm")["ok"] is True)
+r = V("add a note called X to nowhere at all")
+check("voice: unknown list said plainly", r["ok"] is False and r["code"] == "not_found" and "nowhere" in r["say"], r)
+c.post("/p/by-name/list-create", json={"title": "Build log"})
+c.post("/p/by-name/list-create", json={"title": "Build notes"})
+r = V("add a note called Y to build")
+check("voice: ambiguous name refused, candidates named", r["code"] == "ambiguous" and "Build log" in r["say"], r)
+check("voice: not ours → None", V("open settings") is None)
+check("voice route", c.post("/p/voice", json={"text": "read my lists"}).json()["say"].startswith("5 lists"))
+check("voice route: unknown phrase", c.post("/p/voice", json={"text": "sing a song"}).json()["code"] == "invalid")
+r = c.post("/p/by-name/entry-add", json={"list": "Someday", "title": "Water plants", "kind": "task"})
+check("by-name entry-add (REST/MCP/CLI)", r.status_code == 201 and r.json()["entry"]["title"] == "Water plants", r.text)
+check("by-name list-delete needs confirm", c.post("/p/by-name/list-delete", json={"list": "Someday"}).status_code == 409)
+r = c.post("/p/by-name/list-delete", json={"list": "Someday", "confirm": True})
+check("by-name list-delete", r.json().get("deleted", {}).get("entries") == 1, r.text)
+check("by-name find", c.get("/p/by-name/find", params={"q": "fix"}).json()["entries"][0]["list"] == "New build")
+check("by-name 404 plain", c.post("/p/by-name/entry-complete", json={"entry": "nope"}).status_code == 404)
+import plugin_services as _ps  # noqa: E402
+check("voice service registered", any(n == "axf.voice-phrases@1:todo-manager" for n, _ in _ps.get_all("axf.voice-phrases@1:")))
+
+# ---- the console's voice endpoint hands Todo manager phrases over (console_control_api.plugin_voice)
+try:
+    import console_control_api as _cca  # noqa: E402
+except Exception as _e:  # noqa: BLE001 — the console server's modules need its context; skip with why
+    print(f"  (console voice hand-over not checked here: {_e})")
+else:
+    r = _cca.plugin_voice("add a note called Hand over to new build")
+    check("console voice → todo-manager", r and r["ok"] and r["plugin"] == "todo-manager" and r["entry"]["title"] == "Hand over", r)
+    check("console voice: not ours → None", _cca.plugin_voice("scroll down") is None)
+
 print(f"todo-manager: {ok} passed, {len(fails)} failed")
 for x in fails:
     print("  ✗", x)
