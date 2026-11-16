@@ -141,3 +141,23 @@ Every control is a framework control with a `data-axf-target`; tokens only (`--f
 
 - s1 this note. s2 spec + JSON Schemas. s3 engine + export. s4 keys + migration + validators. s5 fixture + PORTING.md
   (Kotlin twin deferred: `ToolbarWidgetsEngine.kt`, `AxfToolbar` instance hosts, the Compose picker).
+
+## Decided while building (Phase 1)
+
+- **A toolbar with no asset of its own** (a hand-drawn strip carrying `data-axf-toolbar="<id>"`) resolves as an empty
+  list under the app toolbar's `shape` defaults: run-time widgets attached to that instance and the person's slots draw
+  there, nothing of the app toolbar's own list does (`rt.toolbarInstanceData`).
+- **Legacy arrangement retires on the first save.** `saveToolbarWidgetSlots` folds `axf.widgets.arrange.toolbar` into the
+  app toolbar's slots, clears that key first, then writes the slots. Reading it as a layer until then keeps the order
+  on every device that has not saved yet.
+- **Kernel fix:** `SettingsRegistry.clear` replaced the in-memory values with what storage held, so a session without
+  storage (headless runtime, the spec checks) lost every other in-memory setting when one key was cleared. It now merges
+  the way `set` already did (storage wins per key). Found by the toolbar-widgets runtime check; the four other checks
+  that clear settings (chrome-apply, embed, hub-look, interface) stay green.
+- **Fixture drift:** regenerating produced only `toolbar-widgets.json` (new) and the three new `validation.json` cases.
+- **Phase 2 (Opus) reads from here:** runtime `toolbarInstanceWidgets / toolbarWidgetSlots / addToolbarWidget /
+  removeToolbarWidget / setToolbarWidget / moveToolbarWidget / resetToolbarWidgets / setToolbarWidgetStyle`,
+  `attachToToolbar(a, instance)`; the React `Toolbar` / `AssetToolbar` should draw `toolbarInstanceWidgets(instance)`
+  and put each item's `attrs` on the item; arrange mode on a toolbar should call `moveToolbarWidget` (the app toolbar's
+  `moveHostItem('toolbar', …)` still works through the legacy layer until then). `fitToolbar` is the contract the CSS
+  must match when the toolbar gets its ⋯ button and the sides' `minmax(max-content, 1fr)` grid like the banner's.

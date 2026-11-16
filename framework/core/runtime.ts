@@ -1574,11 +1574,18 @@ export class AxfRuntime {
 
   /* ---------------- toolbar-widgets@1: widgets on any toolbar, banner style (core/engines/toolbar-widgets.ts) ---------------- */
 
-  /** The toolbar asset one instance draws from: the app's active toolbar for `app`, else the toolbar asset with that id; null when hidden or missing. */
+  /**
+   * The toolbar asset one instance draws from: the app's active toolbar for `app` (null when hidden), the toolbar asset
+   * with that id for a page toolbar, else (a toolbar with no asset of its own: a hand-drawn strip carrying
+   * `data-axf-toolbar="<id>"`) an empty list under the app toolbar's shape defaults, so run-time widgets and the person's
+   * slots still draw there.
+   */
   private toolbarInstanceData(instance: string): AssetDataMap['toolbar'] | null {
     if (instance === TOOLBAR_APP_INSTANCE) return this.slotHidden('toolbar') ? null : this.chromeData('toolbar', TOOLBAR_APP_INSTANCE);
     const own = this.registry.get('toolbar', instance) as Asset<'toolbar'> | undefined;
-    return own ? this.chromeData('toolbar', instance, own.data) : this.chromeData('toolbar', instance);
+    if (own) return this.chromeData('toolbar', instance, own.data);
+    const app = this.chromeData('toolbar', TOOLBAR_APP_INSTANCE);
+    return { ...(app ?? {}), widgets: [] } as AssetDataMap['toolbar'];
   }
 
   /** The person's slots for one toolbar (`axf.toolbar.<id>.widgets`): what they added and their choices; [] when none or damaged. */
@@ -1612,8 +1619,9 @@ export class AxfRuntime {
   private saveToolbarWidgetSlots(instance: string, next: ToolbarWidgetSlot[], what: string): boolean {
     if (!isToolbarInstanceId(instance)) return false;
     if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Toolbar widgets'); return false; }
-    if (toolbarSlotsEmpty(next)) this.settings.clear(TOOLBAR_WIDGETS_KEY(instance)); else this.settings.set(TOOLBAR_WIDGETS_KEY(instance), JSON.stringify(next));
+    // the legacy key goes first (its side + order are already in `next`), then the slots are written
     if (instance === TOOLBAR_APP_INSTANCE && this.settings.get(ARRANGE_KEY('toolbar')) != null) this.settings.clear(ARRANGE_KEY('toolbar'));
+    if (toolbarSlotsEmpty(next)) this.settings.clear(TOOLBAR_WIDGETS_KEY(instance)); else this.settings.set(TOOLBAR_WIDGETS_KEY(instance), JSON.stringify(next));
     this.terminal.ok('widgets', `toolbar ${instance}: ${what}`);
     this.set({});
     return true;
