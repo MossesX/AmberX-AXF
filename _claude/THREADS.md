@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:05 UTC · `reset-all-button-every-asset-override` → running, note (all) · pipeline
 - 2026-11-16 19:06 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
 - 2026-11-16 19:06 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
 - 2026-11-16 19:06 UTC · `reset-all-button-every-asset-override` branch claude/reset-all-button-every-asset-override (all) · pipeline
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:16 UTC · `rebuild-own-token-sets-every-grid-tab` note, removed (all) · cli
 - 2026-11-16 23:16 UTC · `amberx-open-url-must-open-page-even-when` → queued, note (all) · brett
 - 2026-11-16 23:16 UTC · `axhub-veto-countdown-setting-read-only` → queued, note (all) · brett
+- 2026-11-16 23:17 UTC · `own-look-per-grid-and-tab-group` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
