@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6640,
- "updatedAt": "2026-11-16T18:34:57.843Z",
+ "rev": 6641,
+ "updatedAt": "2026-11-16T18:35:19.277Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201160,7 +201160,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201168,7 +201168,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-16T18:33:23.860Z",
+   "updatedAt": "2026-11-16T18:35:10.369Z",
    "builtAt": "",
    "notes": [
     {
@@ -201218,6 +201218,10 @@
     {
      "text": "Session axf-all-settings-interfaces-open-floating--joey on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-15T00:20:20.557Z"
+    },
+    {
+     "text": "Self-check: all-settings-interfaces-open-floating was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-16T18:35:10.369Z"
     }
    ],
    "approvals": [],
@@ -201237,7 +201241,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:03:06.496Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -201259,7 +201263,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c5306804-4e34-4054-b61f-210257efd14f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-15T00:09:20.551Z",
     "planned": {
@@ -201376,7 +201380,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
