@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6539,
- "updatedAt": "2026-11-16T16:42:37.763Z",
+ "rev": 6540,
+ "updatedAt": "2026-11-16T16:43:09.591Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -91440,15 +91440,15 @@
    "title": "Molly: new tab (+), multiple instances of an app, tab context menu, reset layout findable, every surface draggable",
    "category": "Molly",
    "detail": "Build molly-multi-instance-tabs (Fable: touches windows@1 / dock@1 / xlayout@1 / embed@1 contracts). New tab (+) at the end of every tab group with a picker (AmberX / axHub / Console / Expenses / any Molly plugin view / Duplicate this tab); multiple instances of the same app, each its own tab + iframe + console client (instance in the tab spec and the embed marker), labelled Console 2…, renameable, remembered across reloads; tab right-click: New tab / Duplicate / Rename / Close / Close others / Move to pane / Pop out to window; Reset layout in View, in the right-click of any pane or tab bar, in xLayout settings and as a console control, confirmed first and undoable. Addendum: any screen, plugin view, panel, dialog or app instance can be dragged by its title or tab into another tab group, a new pane (drop zones on any edge), out to a floating window or back, on the shared dock engine (dock@1); phone long-press then drag; drop targets highlighted; undo after every drop; rule in RULES.md / PORTING.md.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-multi-instance-tabs",
    "pr": "#328",
    "createdAt": "2026-11-04T16:09:41.799Z",
-   "updatedAt": "2026-11-16T16:42:07.865Z",
-   "builtAt": "2026-11-04T16:38:37.644Z",
+   "updatedAt": "2026-11-16T16:43:03.142Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
@@ -91461,6 +91461,10 @@
     {
      "text": "Cancelled by build remove-old-molly-app-project-keep-axf (Nov 16 2026): Brett said \"Molly's dead. Kill it.\" The Molly app (apps/molly) is removed, so this Molly-only build is retired to the Archive.",
      "at": "2026-11-16T16:42:07.865Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli).",
+     "at": "2026-11-16T16:43:03.142Z"
     }
    ],
    "approvals": [],
@@ -91575,7 +91579,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123005,7 +123009,7 @@
    "title": "Molly is the one native shell for every app (no embedding); all-apps menus; layout modes with IDE + tab-group containers; Patches leftovers retired",
    "category": "Molly",
    "detail": "Brief: /root/axf-builds/molly-one-shell-r2/.brief.md (r1/r2 runs died before doing anything; r3 = this run). Patches itself was already removed by kill-patches-pilot; this build clears what is left.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -123013,8 +123017,8 @@
    "pr": "#395",
    "priority": "P0",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-16T16:42:15.745Z",
-   "builtAt": "2026-11-10T22:39:24.231Z",
+   "updatedAt": "2026-11-16T16:43:06.220Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Reuse plan (s1 audit): #328 framework tab-group/dock work -> s10; #341 banner asset part -> s7; #344 drag-to-tab -> s10 (drag from menu onto a container); #322 apps-control-surface + #369 ui-registry-shortcuts -> s4/s6 (every screen/action already registered: shell-surface@1 should read them, not duplicate); #323 app-voice-commands -> s12; #372 settings-sections-everywhere -> s13. Superseded: every Molly frame/embed path (FrameDeck, xLayout's chrome take-over of embedded apps, embed instance). Gaps parked as builds: molly-native-expenses, molly-sign-in-once.",
@@ -123067,6 +123071,10 @@
     {
      "text": "Cancelled by build remove-old-molly-app-project-keep-axf (Nov 16 2026): Brett said \"Molly's dead. Kill it.\" The Molly app (apps/molly) is removed, so this Molly-only build is retired to the Archive.",
      "at": "2026-11-16T16:42:15.745Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli).",
+     "at": "2026-11-16T16:43:06.220Z"
     }
    ],
    "approvals": [
@@ -123442,7 +123450,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -160232,14 +160240,14 @@
    "title": "Molly gap: Expenses allows Molly's origin on /api/expenses/v1/* (CORS with credentials) so native screens read the ledger",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://expenses.amberxai.com/api/expenses/v1/entries?limit=1 answers 401 with no Access-Control-Allow-Origin and the preflight answers 204 with no CORS headers, so a browser on Molly cannot call the ledger API with the axs_session cookie. The route handler (apps/expenses/app/api/expenses/v1/[...path]/route.ts, or proxy.ts) should answer an allow-list of amberxai.com app origins with Access-Control-Allow-Origin echoing the origin, Allow-Credentials true, Allow-Headers content-type, accept, authorization, x-expenses-user, Allow-Methods GET POST PATCH OPTIONS, Vary Origin, and an OPTIONS handler. Molly side is in place: apps/molly/src/molly/credentials.ts (expenses provider: cookie session or bearer token + X-Expenses-User).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "#701",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-15T01:26:07.794Z",
+   "updatedAt": "2026-11-16T16:42:43.170Z",
    "builtAt": "",
    "notes": [
     {
@@ -160277,6 +160285,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-15T01:26:07.794Z"
+    },
+    {
+     "text": "Cancelled by build remove-old-molly-app-project-keep-axf (Nov 16 2026): Brett said \"Molly's dead. Kill it.\" The Molly app (apps/molly) is removed, so this Molly-only build is retired to the Archive.",
+     "at": "2026-11-16T16:42:43.170Z"
     }
    ],
    "approvals": [],
@@ -160407,7 +160419,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -160444,7 +160456,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "#511",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-15T00:44:10.931Z",
+   "updatedAt": "2026-11-16T16:42:36.706Z",
    "builtAt": "2026-11-12T03:16:35.159Z",
    "notes": [
     {
@@ -160510,6 +160522,10 @@
     {
      "text": "Session axf-molly-gap-console-token-handoff--gina on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-12T03:17:06.955Z"
+    },
+    {
+     "text": "Cancelled by build remove-old-molly-app-project-keep-axf (Nov 16 2026): Brett said \"Molly's dead. Kill it.\" The Molly app (apps/molly) is removed, so this Molly-only build is retired to the Archive.",
+     "at": "2026-11-16T16:42:36.706Z"
     }
    ],
    "approvals": [],
@@ -160634,7 +160650,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -160671,7 +160687,7 @@
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-15T00:44:12.537Z",
+   "updatedAt": "2026-11-16T16:42:39.999Z",
    "builtAt": "2026-11-12T02:31:02.862Z",
    "notes": [
     {
@@ -160741,6 +160757,10 @@
     {
      "text": "Headless run axf-molly-gap-remote-actions--paulie: brief only · start 10.9K tokens ($0.03) · cost $11.01 · 163 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:37:21.556Z"
+    },
+    {
+     "text": "Cancelled by build remove-old-molly-app-project-keep-axf (Nov 16 2026): Brett said \"Molly's dead. Kill it.\" The Molly app (apps/molly) is removed, so this Molly-only build is retired to the Archive.",
+     "at": "2026-11-16T16:42:39.999Z"
     }
    ],
    "approvals": [
@@ -160874,7 +160894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -164319,9 +164339,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:40:10.776Z",
-   "updatedAt": "2026-11-12T02:40:10.776Z",
+   "updatedAt": "2026-11-16T16:42:47.657Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Cancelled by build remove-old-molly-app-project-keep-axf (Nov 16 2026): Brett said \"Molly's dead. Kill it.\" The Molly app (apps/molly) is removed, so this Molly-only build is retired to the Archive.",
+     "at": "2026-11-16T16:42:47.657Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -164418,7 +164443,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -164454,9 +164479,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:40:42.227Z",
-   "updatedAt": "2026-11-12T02:40:42.227Z",
+   "updatedAt": "2026-11-16T16:42:51.860Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Cancelled by build remove-old-molly-app-project-keep-axf (Nov 16 2026): Brett said \"Molly's dead. Kill it.\" The Molly app (apps/molly) is removed, so this Molly-only build is retired to the Archive.",
+     "at": "2026-11-16T16:42:51.860Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -164553,7 +164583,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -164922,9 +164952,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:46:12.077Z",
-   "updatedAt": "2026-11-12T02:46:12.077Z",
+   "updatedAt": "2026-11-16T16:42:56.261Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Cancelled by build remove-old-molly-app-project-keep-axf (Nov 16 2026): Brett said \"Molly's dead. Kill it.\" The Molly app (apps/molly) is removed, so this Molly-only build is retired to the Archive.",
+     "at": "2026-11-16T16:42:56.261Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -165021,7 +165056,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
