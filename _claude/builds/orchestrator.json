@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:28:03.567Z",
+ "updatedAt": "2026-11-16T20:28:45.789Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162773,7 +162773,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:27:17.386Z",
+   "updatedAt": "2026-11-16T20:28:44.064Z",
    "builtAt": "",
    "notes": [
     {
@@ -162787,6 +162787,10 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T20:27:17.386Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"11fc71db-c0de-46e5-97a7-1fb14dc25f77\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T20:28:44.064Z"
     }
    ],
    "approvals": [],
@@ -162803,7 +162807,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjpuoio0178or",
+     "createdAt": "2026-11-16T20:28:44.064Z"
+    },
+    {
+     "id": "s2",
+     "text": "Same thing for Plan Studio. I don't want anything synced with Plan Studio, I want it all cleared out, nothing in it, and rebuild the whole thing. Professional, powerful, full context menu, voice controlled, integrated with everything else.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjpuoio02tqaw",
+     "createdAt": "2026-11-16T20:28:44.064Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjpuoio034bom",
+     "createdAt": "2026-11-16T20:28:44.064Z"
+    }
+   ]
   },
   {
    "id": "plan-studio-collapse-all-expand-all",

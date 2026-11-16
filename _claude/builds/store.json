@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6866,
- "updatedAt": "2026-11-16T20:28:03.567Z",
+ "rev": 6867,
+ "updatedAt": "2026-11-16T20:28:45.789Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248750,7 +248750,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:27:17.386Z",
+   "updatedAt": "2026-11-16T20:28:44.064Z",
    "builtAt": "",
    "notes": [
     {
@@ -248764,6 +248764,10 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T20:27:17.386Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"11fc71db-c0de-46e5-97a7-1fb14dc25f77\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T20:28:44.064Z"
     }
    ],
    "approvals": [],
@@ -248790,9 +248794,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-16T20:28:44.064Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"11fc71db-c0de-46e5-97a7-1fb14dc25f77\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -248802,7 +248812,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjpuoio0178or",
+     "title": "",
+     "text": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:28:44.064Z",
+     "updatedAt": "2026-11-16T20:28:44.064Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjpuoio02tqaw",
+     "title": "",
+     "text": "Same thing for Plan Studio. I don't want anything synced with Plan Studio, I want it all cleared out, nothing in it, and rebuild the whole thing. Professional, powerful, full context menu, voice controlled, integrated with everything else.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:28:44.064Z",
+     "updatedAt": "2026-11-16T20:28:44.064Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjpuoio034bom",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T20:28:44.064Z",
+     "updatedAt": "2026-11-16T20:28:44.064Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -248811,12 +248891,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T20:28:44.064Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
