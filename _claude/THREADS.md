@@ -808,8 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:38 UTC · `phone-connect-small-android-companion` note (all) · mcp
-- 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
 - 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` → running, note (all) · pipeline
 - 2026-11-15 13:39 UTC · `phone-connect-small-android-companion` branch claude/phone-connect-small-android-companion (all) · pipeline
 - 2026-11-15 13:39 UTC · `gate-rules-plugin-in-the-console` note (all) · orchestrator
@@ -1208,6 +1206,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:37 UTC · `re-sync-stuck-branches-lander-can-push` s5 done (all) · orchestrator
 - 2026-11-16 16:38 UTC · `fix-red-ci-blocked-builds-they-land` s1 done, → running (all) · orchestrator
 - 2026-11-16 16:38 UTC · `remove-old-molly-app-project-keep-axf` s11 done (all) · orchestrator
+- 2026-11-16 16:38 UTC · `re-sync-stuck-branches-lander-can-push` s6 done (all) · orchestrator
+- 2026-11-16 16:38 UTC · `re-sync-stuck-branches-lander-can-push` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
