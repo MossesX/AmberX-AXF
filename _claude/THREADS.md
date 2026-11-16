@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 15:14 UTC · `axf-data-postgres-real-tables-own` branch claude/axf-data-postgres-real-tables-own (all) · pipeline
 - 2026-11-15 15:14 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
 - 2026-11-15 15:14 UTC · `build-rules-tab-gate-rules-vps-owns` s16 done (all) · orchestrator
 - 2026-11-15 15:14 UTC · `build-rules-tab-gate-rules-vps-owns` s17 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 17:01 UTC · `fix-console-deep-links-open-page-lands` PR #721, note (all) · reconciler
 - 2026-11-16 17:01 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
 - 2026-11-16 17:02 UTC · `get-main-green-unblock-lander-land-axf` s5 done (all) · orchestrator
+- 2026-11-16 17:06 UTC · `hotfix-toolbar-settings-still-change` note (all) · mcp
 
 ## Token passes (log)
 

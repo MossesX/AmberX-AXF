@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6578,
- "updatedAt": "2026-11-16T17:02:48.658Z",
+ "rev": 6579,
+ "updatedAt": "2026-11-16T17:06:57.462Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221326,7 +221326,7 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T23:05:52.963Z",
+   "updatedAt": "2026-11-16T17:06:55.483Z",
    "builtAt": "2026-11-14T23:02:03.463Z",
    "notes": [
     {
@@ -221376,6 +221376,10 @@
     {
      "text": "Headless run axf-hotfix-toolbar-settings-still-change--gina: brief only · start 11.1K tokens ($0.03) · cost $2.36 · 60 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:05:52.963Z"
+    },
+    {
+     "text": "Brett (Nov 16 17:02): toolbar settings (per-toolbar settings) STILL don't work. Check whether the Nov 15 hand-merge of PR #503 (bug-asset-settings-nav-menu-tab-bar-toolbar-chan) is actually on main AND deployed in the running console; then finish this hotfix, fix its CI, land it, redeploy the console, and verify on a real toolbar that changing its settings applies and sticks.",
+     "at": "2026-11-16T17:06:55.483Z"
     }
    ],
    "approvals": [],
@@ -221524,7 +221528,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
