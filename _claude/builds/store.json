@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6873,
- "updatedAt": "2026-11-16T20:32:50.719Z",
+ "rev": 6874,
+ "updatedAt": "2026-11-16T20:33:02.773Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248750,7 +248750,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:32:48.965Z",
+   "updatedAt": "2026-11-16T20:32:56.716Z",
    "builtAt": "",
    "notes": [
     {
@@ -248839,8 +248839,8 @@
      "id": "s1",
      "uid": "st-mwjpuoio0178or",
      "title": "",
-     "text": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-     "model": "Opus",
+     "text": "DO NOT TOUCH, CLEAR OR DELETE the existing Plan Studio (plan-studio) or any of its plans. Build a brand-new separate plugin 'Plan Studio 2.0' (id plan-studio-2), starting empty, nothing auto-synced into it. Unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Explicit links only to the to-do manager, orchestrator, notes and Shipped features. Professional UI on framework controls and tokens, desktop and phone.",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -248853,15 +248853,15 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T20:28:44.064Z",
-     "updatedAt": "2026-11-16T20:28:44.064Z"
+     "updatedAt": "2026-11-16T20:32:54.197Z"
     },
     {
      "id": "s2",
      "uid": "st-mwjpuoio02tqaw",
      "title": "",
-     "text": "Same thing for Plan Studio. I don't want anything synced with Plan Studio, I want it all cleared out, nothing in it, and rebuild the whole thing. Professional, powerful, full context menu, voice controlled, integrated with everything else.",
+     "text": "Plan Studio 2.0 views: a layout switcher on its toolbar with (1) nav menu, (2) tab group across the top, (3) IDE drag-and-drop dockable panes with a tab group in each pane, drag tabs between panes, drop into other tab groups, split on edges; plus Collapse all / Expand all. Same layout assets as the old Plan Studio's layouts build. The old Plan Studio stays untouched.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -248875,9 +248875,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T20:28:44.064Z",
-     "updatedAt": "2026-11-16T20:28:44.064Z"
+     "updatedAt": "2026-11-16T20:32:56.967Z"
     },
     {
      "id": "s3",
@@ -248913,7 +248913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
