@@ -2,7 +2,7 @@
 /**
  * Settings open in a floating dialog by default (build all-settings-interfaces-open-floating, Nov 13 2026), end to end
  * against `vite preview` of dist/: app.settings and settings.open:<tab> open a glass dialog over the screen you are on,
- * Open as page moves it to the Settings page, `axf.settings.opensAs` = page keeps the page.
+ * There is no page option (Brett, Nov 16 2026): no Open as page, no `axf.settings.opensAs`.
  *
  *   node scripts/settings-open.e2e.mjs            (build first: npm run build)
  *   SO_E2E_PORT=7098 · PW_CHROMIUM=<chromium path> · SO_E2E_SHOTS=<dir> (desktop + phone shots of the dialog)
@@ -55,7 +55,7 @@ try {
     let s = await st();
     ok(s.dialog === 'axf.settings.all' && s.screen === screen0, `${name}: Settings opens in a dialog over ${screen0} (${s.dialog} on ${s.screen})`);
     ok(await page.$eval('.fx-dialog', (el) => el.getAttribute('data-fx-dialog-surface') === 'glass' && /blur/.test(getComputedStyle(el).backdropFilter || getComputedStyle(el).webkitBackdropFilter || '')), `${name}: the dialog is glass`);
-    ok(await page.$('[data-axf-settings-popout]'), `${name}: Open as page is there`);
+    ok(!(await page.$('[data-axf-settings-popout]')), `${name}: no Open as page (always a popup)`);
     await sleep(400);
     if (SHOTS) await page.screenshot({ path: join(SHOTS, `settings-dialog-${name}.png`) });
 
@@ -68,19 +68,13 @@ try {
     await sleep(400);
     if (SHOTS) await page.screenshot({ path: join(SHOTS, `settings-tab-dialog-${name}.png`) });
 
-    // Open as page → the Settings page on the same tab, dialog gone
-    await page.click('[data-axf-settings-popout]');
-    await page.waitForFunction(() => window.axfConsoleControlState().screen === 'settings', null, { timeout: 10_000 });
-    s = await st();
-    ok(s.screen === 'settings' && !s.dialog, `${name}: Open as page shows the Settings page`);
-
-    // the per-user option: page keeps the page
-    await run({ verb: 'set', address: 'setting:axf.settings.opensAs', value: 'page' });
-    await run({ verb: 'open', address: 'view:home' }).catch(() => {});
+    // the retired option does nothing: a saved "page" value is not a setting any more, Settings still pops up
+    await page.keyboard.press('Escape');
+    const gone = await run({ verb: 'get', address: 'setting:axf.settings.opensAs' }).then((r) => r, (e) => ({ ok: false, error: String(e) }));
+    ok(!gone || gone.ok === false, `${name}: setting:axf.settings.opensAs is gone`);
     await run({ verb: 'open', address: 'view:settings' });
     s = await st();
-    ok(s.screen === 'settings' && !s.dialog, `${name}: Settings open in = page opens the page`);
-    await run({ verb: 'set', address: 'setting:axf.settings.opensAs', value: 'dialog' });
+    ok(s.dialog === 'axf.settings.all', `${name}: Settings still opens as a popup`);
     await ctx.close();
   }
   console.log(`settings-open e2e: ${checks} checks passed${SHOTS ? ` (shots in ${SHOTS})` : ''}`);

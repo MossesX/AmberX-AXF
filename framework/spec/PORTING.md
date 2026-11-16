@@ -308,9 +308,9 @@ resumes, replays the same rule: no auto-open on start, opt-in only, nothing olde
 ## Deferred: settings open in a floating dialog (Nov 13 2026)
 
 `framework/core/engines/settingsopen.ts` (build `all-settings-interfaces-open-floating`): every settings interface
-opens in a floating glass dialog by default (`app.settings`, `settings.open[:tab]`), per-user `axf.settings.opensAs`
-= page keeps the page, `settings.page[:tab]` forces it. Web only; the Kotlin twin (`lib-settings` opening its screen in a
-dialog by default) is a deferred gap, no new Android work. Check: `framework/spec/check-settings-open.mts`.
+always opens in a floating glass dialog (`app.settings`, `settings.open[:tab]`); there is no page / pane / floating
+choice (removed Nov 16 2026). Web only; the Kotlin twin (`lib-settings` always opening its screen in a dialog, with no
+placement option) is a deferred gap, no new Android work. Check: `framework/spec/check-settings-open.mts`.
 ## Deferred: the console app's on-device wake listener (Nov 13 2026)
 Build `console-app-wake-word-voice-listener` (Fable). The wake listener is the console plugin `apps/console-web/plugins/wake-listener`
 (wake-listener@1: wake phrases, switch, state machine, command catalog and spoken wizard in `core.mjs` / `catalog.mjs`; the page

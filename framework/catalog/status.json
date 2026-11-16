@@ -2293,7 +2293,7 @@
     "status": "built",
     "wave": 1,
     "module": "lib-settings",
-    "notes": "Every settings interface opens in a floating glass dialog by default (core/engines/settingsopen.ts; Brett Nov 13 2026). app.settings / settings.open[:tab] → dialog; per-user axf.settings.opensAs = page keeps the page; settings.page[:tab] (Open as page button) and settings.opensas:<words>; CI framework/spec/check-settings-open.mts fails any code that navigates to the Settings page instead. Kotlin twin deferred."
+    "notes": "Every settings interface always opens as a floating glass popup (core/engines/settingsopen.ts; Brett Nov 13 + Nov 16 2026). app.settings / settings.open[:tab] → dialog; the page / pane / floating choice (axf.settings.opensAs, settings.opensas, settings.page, Open as page) is removed and saved values are dropped on load; CI framework/spec/check-settings-open.mts fails code that navigates to the Settings page or brings any such option back. Kotlin twin deferred."
   },
   "ui.opacity.surfaces": {
     "status": "built",

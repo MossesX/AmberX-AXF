@@ -26,7 +26,7 @@ export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CO
 import { SkinScope } from '../../react/components/SkinScope';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
-import { SETTINGS_ALL_DIALOG, SETTINGS_OPENS_AS_DEFAULT, SETTINGS_OPENS_AS_KEY, SETTINGS_TAB_DIALOG, parseSettingsOpensAs, settingsOpenRoute, settingsOpensAsOptions } from '../../core/engines/settingsopen';
+import { RETIRED_SETTINGS_OPEN_KEYS, SETTINGS_ALL_DIALOG, SETTINGS_TAB_DIALOG, settingsOpenRoute } from '../../core/engines/settingsopen';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
@@ -835,19 +835,11 @@ export function TabContent({ id, all = false }: { id: string; all?: boolean }) {
   return plugin ? <SkinScope kind="plugin" id={plugin} className="fx-plugin-scope"><TabBody id={id} all={all} /></SkinScope> : <TabBody id={id} all={all} />;
 }
 
-/** A settings tab on its own, in a dialog: its name, the level toolbar and its panels and groups. */
-/** "Open as page" in every settings dialog: the same settings on the full Settings page (`settings.page[:tab]`). */
-function PopOutButton({ tab }: { tab?: string }) {
-  const rt = useRuntime();
-  return <Button id="settings-pop-out" size="sm" icon="external-link" data-axf-settings-popout="" onClick={() => rt.dispatch(tab ? `settings.page:${tab}` : 'settings.page')}>Open as page</Button>;
-}
-
-/** The whole settings interface in a floating dialog (`app.settings`, `settings.open` without a tab; the default). */
+/** The whole settings interface in a floating dialog (`app.settings`, `settings.open` without a tab; always). */
 function AllDialog() {
   return (
     <div className="fx-stack axf-settings--dialog axf-settings--alldialog" data-axf-settings-all="">
-      <div className="axf-settings__dialoghead"><span /><PopOutButton /></div>
-      <SettingsView />
+            <SettingsView />
     </div>
   );
 }
@@ -861,7 +853,7 @@ function TabDialog({ id }: { id: string }) {
   if (!tab) return <p className="fx-muted">No settings tab "{id}".</p>;
   return (
     <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}>
-      <div className="axf-settings__dialoghead"><p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p><PopOutButton tab={id} /></div>
+      <div className="axf-settings__dialoghead"><p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p></div>
       {ui.levels && bar && <SettingsLevelBar level={level} />}
       <TabContent id={id} />
     </div>
@@ -1098,14 +1090,13 @@ export const library: AxfWebLibrary = {
     rt.settings.onChange(APPEARANCE_LOCK_KEY, () => applyAppLook(rt));
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
-    // Every settings interface opens in a floating dialog by default (Brett, Nov 13 2026: "I want by default all settings
-    // interfaces, whether they're built already or not built, to default to open in a dialogue"). The route comes from
-    // core/engines/settingsopen.ts; `axf.settings.opensAs` = page keeps the page; `settings.page` always opens the page.
-    const openSettings = (tab: string | undefined, forcePage = false) => {
-      const owner = tab ? rt.settings.getTab(tab)?.module : undefined;
-      const r = settingsOpenRoute({ tab, forcePage, pref: rt.settings.get(SETTINGS_OPENS_AS_KEY), ownerPlacement: owner ? rt.placementOf(owner) : null, view: rt.getState().view, hostTakes: rt.hostTakes('settings') });
+    // Every settings interface opens in a floating dialog (Brett, Nov 13 2026: "I want by default all settings
+    // interfaces, whether they're built already or not built, to default to open in a dialogue"; Nov 16 2026: always,
+    // the choice is gone). The route comes from core/engines/settingsopen.ts.
+    for (const k of RETIRED_SETTINGS_OPEN_KEYS) if (k in rt.settings.savedValues()) rt.settings.clear(k);
+    const openSettings = (tab: string | undefined) => {
+      const r = settingsOpenRoute({ tab, view: rt.getState().view, hostTakes: rt.hostTakes('settings') });
       if (r.via === 'dialog') { rt.openDialog(r.dialog, r.tab ? { tab: r.tab } : {}); return; }
-      if (rt.getState().dialog?.id === TAB_DIALOG || rt.getState().dialog?.id === ALL_DIALOG) rt.closeDialog();
       rt.navigate(VIEW);
       if (r.tab) {
         rt.settings.set(TAB_KEY, r.tab);
@@ -1113,12 +1104,6 @@ export const library: AxfWebLibrary = {
       }
     };
     rt.actions.register('app.settings', () => openSettings(undefined), { label: 'Settings' });
-    rt.actions.register('settings.page', ([tab]) => openSettings(tab || undefined, true), { label: 'Open Settings as a page', params: true });
-    rt.actions.register('settings.opensas', ([w]) => {
-      const v = w ? parseSettingsOpensAs(w) : (rt.settings.get(SETTINGS_OPENS_AS_KEY) === 'page' ? 'dialog' : 'page');
-      if (!v) { rt.toast(`Say "dialog" or "page", not "${w}".`, 'warning', 'Settings open as'); return; }
-      rt.settings.set(SETTINGS_OPENS_AS_KEY, v);
-    }, { label: 'Settings open in a dialog or as a page', params: true, effect: 'write' });
     // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
     rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });
     rt.actions.register('settings.level', ([l]) => { const lv = settingsLevel(settingsUi(rt), l); if (l) rt.settings.set(SETTINGS_LEVEL_KEY, lv); }, { label: 'Pick the settings level', params: true });
@@ -1175,7 +1160,6 @@ export const library: AxfWebLibrary = {
         { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 100, min: 80, max: 140, step: 5, requires: 'assets.swap', description: 'Percent of the normal size.' },
         { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true, requires: 'assets.swap', description: 'Off reduces motion.' },
         LEVEL_BAR_SETTING,
-        { key: SETTINGS_OPENS_AS_KEY, label: 'Settings open in', kind: 'choice', scope: 'user', default: SETTINGS_OPENS_AS_DEFAULT, options: settingsOpensAsOptions(), description: 'Where every settings interface opens: a floating dialog over the screen you are on (default), or the Settings page. Each dialog has Open as page too.' },
       ],
     },
     {
