@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6464,
- "updatedAt": "2026-11-16T14:11:42.687Z",
+ "rev": 6465,
+ "updatedAt": "2026-11-16T14:12:10.550Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212480,11 +212480,11 @@
     "all"
    ],
    "order": {
-    "all": 842
+    "all": 843
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -212718,11 +212718,11 @@
     "all"
    ],
    "order": {
-    "all": 841
+    "all": 842
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226028,7 +226028,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-16T14:08:07.376Z",
+   "updatedAt": "2026-11-16T14:11:41Z",
    "builtAt": "",
    "notes": [
     {
@@ -226134,6 +226134,10 @@
     {
      "text": "s13: live publish staged, not run. Deployed apps don't ship console-default yet (old baked framework), and the console moved to AmberX Signature Day on Nov 15 after Brett's request. Systems check item hub-default-skin turns red after deploy with an ask-first Auto fix that runs skins.mjs default set console-default --adopt (backups first).",
      "at": "2026-11-16T13:44:15.980Z"
+    },
+    {
+     "text": "Shipped manifest sm-console-look-becomes-default-axhub-skin rev 1 sent to Shipped features (api): landed 56503d108, 31 file(s), 2 test line(s), 3 open.",
+     "at": "2026-11-16T14:11:41Z"
     }
    ],
    "approvals": [
@@ -226209,6 +226213,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-console-look-becomes-default-axhub-skin",
+    "rev": 1,
+    "at": "2026-11-16T14:11:41Z",
+    "landedCommit": "56503d108d3f9c59214fc576b29047430b390916"
    },
    "steps": [
     {
@@ -226729,7 +226739,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

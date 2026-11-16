@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:26 UTC · `gate-rules-plugin-in-the-console` s10 done (all) · orchestrator
 - 2026-11-15 12:28 UTC · `gate-rules-plugin-in-the-console` s11 done (all) · orchestrator
 - 2026-11-15 12:28 UTC · `gate-rules-plugin-in-the-console` s11 done (all) · foreign-write
 - 2026-11-15 12:28 UTC · `data-container-axf-data-holds-all` s6 done (all) · orchestrator
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 14:11 UTC · `merge-main-land-console-axhub-retry` note (all) · merge-watch
 - 2026-11-16 14:11 UTC · `land-all-skin-builds` → complete, merged, note (all) · merge-watch
 - 2026-11-16 14:11 UTC · `merge-main-land-change-to-move-amberx` → complete, merged, note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `console-look-becomes-default-axhub-skin` note (all) · merge-watch
 
 ## Token passes (log)
 
