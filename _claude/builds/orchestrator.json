@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T14:23:23.672Z",
+ "updatedAt": "2026-11-16T14:29:16.610Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -56,6 +56,16 @@
    "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 8ee0adce5.",
+     "at": "2026-11-16T14:09:57Z"
+    },
+    {
+     "text": "Shipped manifest sm-hotfix-console-deploy-build-id rev 1 sent to Shipped features (api): landed 8ee0adce5, 4 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:09:57Z"
+    }
+   ],
    "id": "hotfix-console-deploy-build-id",
    "title": "hotfix-console-deploy-build-id",
    "category": "",
@@ -70,16 +80,6 @@
    "createdAt": "2026-11-14T14:39:15Z",
    "updatedAt": "2026-11-16T14:09:57Z",
    "builtAt": "2026-11-14T14:39:15Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 8ee0adce5.",
-     "at": "2026-11-16T14:09:57Z"
-    },
-    {
-     "text": "Shipped manifest sm-hotfix-console-deploy-build-id rev 1 sent to Shipped features (api): landed 8ee0adce5, 4 file(s), 2 test line(s), 0 open.",
-     "at": "2026-11-16T14:09:57Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -94,9 +94,20 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as c1a92b67b.",
+     "at": "2026-11-16T14:10:21Z"
+    },
+    {
+     "text": "Shipped manifest sm-console-skin-axhub-only rev 1 sent to Shipped features (api): landed c1a92b67b, 1 file(s), 1 test line(s), 0 open.",
+     "at": "2026-11-16T14:10:21Z"
+    }
+   ],
    "id": "console-skin-axhub-only",
    "title": "console-skin-axhub-only",
    "category": "",
@@ -111,16 +122,6 @@
    "createdAt": "2026-11-14T19:11:08Z",
    "updatedAt": "2026-11-16T14:10:21Z",
    "builtAt": "2026-11-14T19:11:08Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as c1a92b67b.",
-     "at": "2026-11-16T14:10:21Z"
-    },
-    {
-     "text": "Shipped manifest sm-console-skin-axhub-only rev 1 sent to Shipped features (api): landed c1a92b67b, 1 file(s), 1 test line(s), 0 open.",
-     "at": "2026-11-16T14:10:21Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -135,9 +136,20 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 05d23b6f3.",
+     "at": "2026-11-16T14:09:41Z"
+    },
+    {
+     "text": "Shipped manifest sm-context-menu-console-settings rev 1 sent to Shipped features (api): landed 05d23b6f3, 14 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:09:41Z"
+    }
+   ],
    "id": "context-menu-console-settings",
    "title": "context-menu-console-settings",
    "category": "",
@@ -152,16 +164,6 @@
    "createdAt": "2026-11-13T18:54:20Z",
    "updatedAt": "2026-11-16T14:09:41Z",
    "builtAt": "2026-11-13T18:54:20Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 05d23b6f3.",
-     "at": "2026-11-16T14:09:41Z"
-    },
-    {
-     "text": "Shipped manifest sm-context-menu-console-settings rev 1 sent to Shipped features (api): landed 05d23b6f3, 14 file(s), 2 test line(s), 0 open.",
-     "at": "2026-11-16T14:09:41Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -176,23 +178,10 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
-   "id": "test-project-seed",
-   "title": "test-project-seed",
-   "category": "",
-   "detail": "",
-   "status": "complete",
-   "hidden": false,
-   "source": "shipped",
-   "pendingId": "",
-   "branch": "claude/test-project-seed",
-   "pr": "#578",
-   "mergedAt": "2026-11-13T19:28:06Z",
-   "createdAt": "2026-11-13T19:28:06Z",
-   "updatedAt": "2026-11-16T14:11:20.988Z",
-   "builtAt": "2026-11-13T19:28:06Z",
    "notes": [
     {
      "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as ea98536da.",
@@ -207,6 +196,20 @@
      "at": "2026-11-16T14:11:20.988Z"
     }
    ],
+   "id": "test-project-seed",
+   "title": "test-project-seed",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/test-project-seed",
+   "pr": "#578",
+   "mergedAt": "2026-11-13T19:28:06Z",
+   "createdAt": "2026-11-13T19:28:06Z",
+   "updatedAt": "2026-11-16T14:11:20.988Z",
+   "builtAt": "2026-11-13T19:28:06Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -221,9 +224,20 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 038e4fb02.",
+     "at": "2026-11-16T14:09:09Z"
+    },
+    {
+     "text": "Shipped manifest sm-overlay-pages rev 1 sent to Shipped features (api): landed 038e4fb02, 16 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:09:09Z"
+    }
+   ],
    "id": "overlay-pages",
    "title": "overlay-pages",
    "category": "",
@@ -238,16 +252,6 @@
    "createdAt": "2026-11-13T17:20:32Z",
    "updatedAt": "2026-11-16T14:09:09Z",
    "builtAt": "2026-11-13T17:20:32Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 038e4fb02.",
-     "at": "2026-11-16T14:09:09Z"
-    },
-    {
-     "text": "Shipped manifest sm-overlay-pages rev 1 sent to Shipped features (api): landed 038e4fb02, 16 file(s), 2 test line(s), 0 open.",
-     "at": "2026-11-16T14:09:09Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -262,9 +266,20 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as f9391678a.",
+     "at": "2026-11-16T14:09:27Z"
+    },
+    {
+     "text": "Shipped manifest sm-orch-build-id-40-chars rev 1 sent to Shipped features (api): landed f9391678a, 16 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:09:27Z"
+    }
+   ],
    "id": "orch-build-id-40-chars",
    "title": "orch-build-id-40-chars",
    "category": "",
@@ -279,16 +294,6 @@
    "createdAt": "2026-11-13T17:22:23Z",
    "updatedAt": "2026-11-16T14:09:27Z",
    "builtAt": "2026-11-13T17:22:23Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as f9391678a.",
-     "at": "2026-11-16T14:09:27Z"
-    },
-    {
-     "text": "Shipped manifest sm-orch-build-id-40-chars rev 1 sent to Shipped features (api): landed f9391678a, 16 file(s), 2 test line(s), 0 open.",
-     "at": "2026-11-16T14:09:27Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -303,9 +308,20 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 5b8fb0e4c.",
+     "at": "2026-11-16T14:09:33Z"
+    },
+    {
+     "text": "Shipped manifest sm-notes-tasks-r2-land rev 1 sent to Shipped features (api): landed 5b8fb0e4c, 7 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:09:33Z"
+    }
+   ],
    "id": "notes-tasks-r2-land",
    "title": "notes-tasks-r2-land",
    "category": "",
@@ -320,16 +336,6 @@
    "createdAt": "2026-11-13T18:42:32Z",
    "updatedAt": "2026-11-16T14:09:33Z",
    "builtAt": "2026-11-13T18:42:32Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 5b8fb0e4c.",
-     "at": "2026-11-16T14:09:33Z"
-    },
-    {
-     "text": "Shipped manifest sm-notes-tasks-r2-land rev 1 sent to Shipped features (api): landed 5b8fb0e4c, 7 file(s), 2 test line(s), 0 open.",
-     "at": "2026-11-16T14:09:33Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -344,9 +350,20 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 0f67f0d7f.",
+     "at": "2026-11-16T14:07:54Z"
+    },
+    {
+     "text": "Shipped manifest sm-hotfix-launcher-splitter rev 1 sent to Shipped features (api): landed 0f67f0d7f, 2 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:07:54Z"
+    }
+   ],
    "id": "hotfix-launcher-splitter",
    "title": "hotfix-launcher-splitter",
    "category": "",
@@ -361,16 +378,6 @@
    "createdAt": "2026-11-13T01:09:01Z",
    "updatedAt": "2026-11-16T14:07:54Z",
    "builtAt": "2026-11-13T01:09:01Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 0f67f0d7f.",
-     "at": "2026-11-16T14:07:54Z"
-    },
-    {
-     "text": "Shipped manifest sm-hotfix-launcher-splitter rev 1 sent to Shipped features (api): landed 0f67f0d7f, 2 file(s), 2 test line(s), 0 open.",
-     "at": "2026-11-16T14:07:54Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -385,9 +392,20 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 5497cc657.",
+     "at": "2026-11-16T14:08:55Z"
+    },
+    {
+     "text": "Shipped manifest sm-overlay-float rev 1 sent to Shipped features (api): landed 5497cc657, 15 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:08:55Z"
+    }
+   ],
    "id": "overlay-float",
    "title": "overlay-float",
    "category": "",
@@ -402,16 +420,6 @@
    "createdAt": "2026-11-13T17:20:15Z",
    "updatedAt": "2026-11-16T14:08:55Z",
    "builtAt": "2026-11-13T17:20:15Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 5497cc657.",
-     "at": "2026-11-16T14:08:55Z"
-    },
-    {
-     "text": "Shipped manifest sm-overlay-float rev 1 sent to Shipped features (api): landed 5497cc657, 15 file(s), 2 test line(s), 0 open.",
-     "at": "2026-11-16T14:08:55Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -426,9 +434,20 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 32e55adee.",
+     "at": "2026-11-16T14:07:17Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-land-gizmo-chat-report rev 1 sent to Shipped features (api): landed 32e55adee, 1 file(s), 2 test line(s), 0 open.",
+     "at": "2026-11-16T14:07:17Z"
+    }
+   ],
    "id": "urgent-land-gizmo-chat-report",
    "title": "urgent-land-gizmo-chat-report",
    "category": "",
@@ -443,16 +462,6 @@
    "createdAt": "2026-11-15T10:06:16Z",
    "updatedAt": "2026-11-16T14:07:17Z",
    "builtAt": "2026-11-15T10:06:16Z",
-   "notes": [
-    {
-     "text": "Recorded from its shipped manifest (api): it was started outside the builds store and landed as 32e55adee.",
-     "at": "2026-11-16T14:07:17Z"
-    },
-    {
-     "text": "Shipped manifest sm-urgent-land-gizmo-chat-report rev 1 sent to Shipped features (api): landed 32e55adee, 1 file(s), 2 test line(s), 0 open.",
-     "at": "2026-11-16T14:07:17Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -467,7 +476,8 @@
     "from": "report",
     "addenda": []
    },
-   "steps": []
+   "steps": [],
+   "rev": 0
   },
   {
    "notes": [
@@ -152770,13 +152780,17 @@
     {
      "text": "Headless run axf-vps-sends-shipped-features-every-merge--lenny: brief only · start 15.5K tokens ($0.05) · cost $16.09 · 240 turns · 6 tools, MCP none",
      "at": "2026-11-16T14:23:07.480Z"
+    },
+    {
+     "text": "Reconciler: PR #709 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17 done",
+     "at": "2026-11-16T14:29:14.787Z"
     }
    ],
    "id": "vps-sends-shipped-features-every-merge",
    "title": "VPS sends Shipped features on every merge to main (+ backfill)",
    "category": "",
    "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -152784,8 +152798,8 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-16T14:23:07.480Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T14:29:14.787Z",
+   "builtAt": "2026-11-16T14:29:14.787Z",
    "approvals": [
     {
      "phase": 1,
@@ -153182,9 +153196,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-16T14:29:14.787Z",
+     "note": "PR #709 (claude/vps-sends-shipped-features-every-merge)",
      "uid": "st-mwhsubnt0hpj2j",
      "createdAt": "2026-11-15T12:16:53.896Z"
     }
