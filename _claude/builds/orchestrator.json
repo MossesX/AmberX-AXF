@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:20:45.849Z",
+ "updatedAt": "2026-11-16T23:21:05.383Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126289,16 +126289,21 @@
    "title": "axHub: raise per-project memory file cap from 500 to 750",
    "category": "axhub",
    "detail": "Brett said: \"We'll keep that at 750. Yeah, 750.\" In MossesX/axHub packages/core/src/memory-files.ts, MEMORY_LIMITS.filesPerRepo 500 -> 750 (keep it a safety limit). Update any tests that assert 500. Run tests, merge to main, redeploy axHub on the VPS (Coolify) so the live hub uses it. Note amberx-axf _claude already holds 662 files, so writes are blocked until this is live. Then append two rules to amberx-axf rules/RULES.md: (1) whenever you mention a build to Brett, say in one plain sentence what it does; (2) framework work is web + Android only for now, Python and other stacks get placeholders only.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T16:58:18.760Z",
-   "updatedAt": "2026-11-13T16:58:18.760Z",
+   "updatedAt": "2026-11-16T23:21:01.232Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:21:01.232Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -128452,7 +128457,7 @@
    "title": "Prompting engine: control panel to create events that pop decisions and run tools, macros or pipelines",
    "category": "",
    "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones (UI Review, veto, model upgrade).\n- Everything reachable by REST/MCP/CLI/voice/control@1 ('when a build fails, ask me to retry or archive').\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128460,12 +128465,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-13T18:19:10.056Z",
+   "updatedAt": "2026-11-16T23:20:57.140Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"70ed6722-9617-4cb4-9adc-a07533d9b22d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:19:10.056Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:57.140Z"
     }
    ],
    "approvals": [],
@@ -130329,7 +130338,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build. If the contract isn't there yet, define the overlay side against the names in the parent's detail and note them.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130337,12 +130346,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-13T18:44:41.589Z",
+   "updatedAt": "2026-11-16T23:20:52.279Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"7eb278c6-794b-4b54-ba95-2f9723ef61d4\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:44:41.589Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:52.279Z"
     }
    ],
    "approvals": [],
@@ -131998,7 +132011,7 @@
    "title": "Land project-create-mcp: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-create-mcp clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolving by keeping both sides' entries (catalog/status and porting notes are additive), run tests, push, then land it on main. No feature changes.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132006,12 +132019,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-13T19:03:24.115Z",
+   "updatedAt": "2026-11-16T23:20:49.719Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"448aa5c7-b46a-4452-8841-f91ded413ef3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T19:03:24.115Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:49.719Z"
     }
    ],
    "approvals": [],
@@ -132862,19 +132879,23 @@
    "title": "Land per-instance settings picker: resolve clash in Overlays.tsx",
    "category": "",
    "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-13T19:37:31.490Z",
+   "updatedAt": "2026-11-16T23:20:46.506Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a54de3c9-d6da-4a1b-94df-48b7fb181427\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T19:37:31.490Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:46.506Z"
     }
    ],
    "approvals": [],
@@ -133408,7 +133429,7 @@
    "title": "Skin animations: animated colour swatches, skin-switch sweep, swatch picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -133416,12 +133437,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-13T19:51:51.749Z",
+   "updatedAt": "2026-11-16T23:20:43.631Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"89c39c0e-3ed6-4f0a-91fa-32fcbf885271\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T19:51:51.749Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:43.631Z"
     }
    ],
    "approvals": [],
@@ -134280,19 +134305,23 @@
    "title": "Grids get their own full token set (colours, hover, selected, lines)",
    "category": "",
    "detail": "Today grids/tables only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants) and borrow the general colour tokens, so hover/selected/striping can't be styled per grid. Add a dedicated grid token family in tokens.style, following skins and editable in Token Control, the UI Manager and per instance:\n- Header background, text, border, sort arrow, filter chip.\n- Row background, alternate (striped) row, hover row, selected row, focused row, expanded-row background, disabled row.\n- Grid line colour, outer border, cell padding, row height/density, radius.\n- Group header, sticky column shadow, empty-state text.\n- Transparency per grid (per the transparency rule: every surface reads its own transparency token, default 100%).\nWire every grid/table component (framework controls, every plugin's tables, the expandable rows) to read them. Add a CI check against hard-coded grid colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Use Fable for the token schema.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T19:57:20.524Z",
-   "updatedAt": "2026-11-13T20:01:33.332Z",
+   "updatedAt": "2026-11-16T23:20:36.078Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"3beeeff0-ecc8-413c-bfb0-08f7bb474e9c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T20:01:33.332Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:36.078Z"
     }
    ],
    "approvals": [],
@@ -134491,7 +134520,7 @@
    "title": "Grid token set: colours, hover, selected, lines",
    "category": "",
    "detail": "Today grids/tables only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants) and borrow the general colour tokens, so hover/selected/striping can't be styled per grid. Add a dedicated grid token family in tokens.style, following skins and editable in Token Control, the UI Manager and per instance: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency per grid (default 100%). Wire every grid/table component to read them, and add a CI check against hard-coded grid colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134499,12 +134528,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:29.839Z",
-   "updatedAt": "2026-11-13T20:02:34.017Z",
+   "updatedAt": "2026-11-16T23:20:33.264Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"023b2825-a31b-4e08-b1b1-99a3b4891b7e\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T20:02:34.017Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-16T23:20:33.264Z"
     }
    ],
    "approvals": [],

@@ -814,14 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:13 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
-- 2026-11-16 19:13 UTC · `settings-interface-gear-every-plugin` s4 done, → running (all) · orchestrator
-- 2026-11-16 19:13 UTC · `alert-every-time-build-falls-back-to` → queued (all) · mcp
-- 2026-11-16 19:13 UTC · `fix-red-ci-blocked-builds-they-land` → running, note (all) · builds-live
-- 2026-11-16 19:14 UTC · `reset-all-button-every-asset-override` s3 done (all) · orchestrator
-- 2026-11-16 19:14 UTC · `alert-every-time-build-falls-back-to` note (all) · orchestrator
-- 2026-11-16 19:14 UTC · `hotfix-orchestrator-grid-columns-don-t` s8 done (all) · orchestrator
-- 2026-11-16 19:15 UTC · `reset-all-button-every-asset-override` s4 done (all) · orchestrator
 - 2026-11-16 19:16 UTC · `settings-interface-gear-every-plugin` s5 done (all) · orchestrator
 - 2026-11-16 19:16 UTC · `banner-widget-shapes-more-than-circle` → running (all) · mcp
 - 2026-11-16 19:16 UTC · `pending-banner-list-every-pending-build` added (0 steps) (all) · console
@@ -1214,6 +1206,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:19 UTC · `icon-packs-with-drag-drop-pack-designer` s2 done (all) · orchestrator
 - 2026-11-16 23:20 UTC · `orchestrator-stale-row-watchdog-vps` → queued, note (all) · brett
 - 2026-11-16 23:20 UTC · `amberx-open-url-must-open-page-even-when` s3 done (all) · orchestrator
+- 2026-11-16 23:20 UTC · `grid-token-set-colours-hover-selected` → queued, note (all) · brett
+- 2026-11-16 23:20 UTC · `grids-get-their-own-full-token-set` → queued, note (all) · brett
+- 2026-11-16 23:20 UTC · `skin-animations-animated-colour-swatches` → queued, note (all) · brett
+- 2026-11-16 23:20 UTC · `land-per-instance-settings-picker` → queued, note (all) · brett
+- 2026-11-16 23:20 UTC · `land-project-create-mcp-resolve-clash` → queued, note (all) · brett
+- 2026-11-16 23:20 UTC · `console-app-part-2-native-floating` → queued, note (all) · brett
+- 2026-11-16 23:20 UTC · `prompting-engine-control-panel-to-create` → queued, note (all) · brett
+- 2026-11-16 23:21 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` → queued, note (all) · brett
 
 ## Token passes (log)
 
