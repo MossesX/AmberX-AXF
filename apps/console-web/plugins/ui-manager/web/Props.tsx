@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Button, Chip, IconButton, Note, SelectField, Switch, useRuntime } from '@console/axf/react';
 import type { PropRow, Scalar, UiElement } from '../../../../../framework/core/engines/ui-manager-rules.mjs';
 import { refreshLive } from './apply';
+import { exportLibrary } from './bridge';
 import { setUi, type UiState } from './state';
 import { fetchJson } from './useElements';
 import { queryProps } from '../lib/query.mjs';
@@ -64,6 +65,7 @@ function Row({ el, row }: { el: string; row: PropRow }) {
 }
 
 export function Props({ id, ui }: { id: string; ui: UiState }) {
+  const rt = useRuntime();
   const [ans, setAns] = useState<RowsAnswer | null>(null);
   useEffect(() => { let live = true; setAns(null); fetchJson<RowsAnswer>(`element?id=${encodeURIComponent(id)}`).then((a) => live && setAns(a), () => live && setAns({ error: 'The UI Manager server part is not answering.' })); return () => { live = false; }; }, [id, ui.rev]);
   if (!ans) return <p className="fx-muted">Loading…</p>;
@@ -75,6 +77,7 @@ export function Props({ id, ui }: { id: string; ui: UiState }) {
         <span className="axp-uim__grow"><strong>{ans.element?.label}</strong> <code className="fx-small axp-uim__muted">{id}</code></span>
         <span className="fx-small axp-uim__muted">{rows.length} of {ans.items?.length ?? 0} properties · {ans.overrides ?? 0} changed</span>
         {ans.overrides ? <Button size="sm" tone="ghost" icon="undo" onClick={() => void resetProp(id)}>Reset all</Button> : null}
+        <Button size="sm" tone="ghost" icon="download" title="Export this element as an asset library: its asset with the changes written in, its token values and a manifest" onClick={() => void exportLibrary(rt, [id], { name: ans.element?.label ?? '' })}>Export</Button>
       </div>
       {(ans.items?.length ?? 0) > 6 ? <PropFilters ui={ui} /> : null}
       <ul className={ui.view === 'grid' ? 'axp-uim__grid' : 'axp-uim__props'}>{rows.map((r) => <Row key={r.id} el={id} row={r} />)}</ul>

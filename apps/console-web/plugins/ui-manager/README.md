@@ -69,6 +69,36 @@ Everything the window does is reachable without it, through one set of functions
 | properties of an element | `GET element?id=` (`q`, `groups`, `changed`) | `ui-manager_element` | `ui-manager.mjs props asset:toolbar --groups Tokens` | |
 | set / reset | `POST set`, `POST reset` | `ui-manager_set-element`, `ui-manager_reset` | `ui-manager.mjs set asset:toolbar transparency 80` | via `ui-manager.say` |
 
+## Export any UI as an asset library (ui-library@1)
+
+Any element (or everything changed) exports as one self-contained, schema-validated library (`libraryFrom` /
+`libraryErrors` in the rules engine; IO in `lib/library.mjs`):
+
+- **assets**: the asset in force for each exported slot, with the UI Manager's field and token changes written in under a
+  new id `<asset>-<library>` (an unchanged asset the catalog already ships is named, not copied);
+- **token values**: what a look element set (`tokens.theme.surface` …; a colour reference resolves to the literal of
+  the theme in force), replayed as control@1 overrides;
+- **manifest**: the asset per slot, what is hidden, transparency per element; plus the **overrides** (ui-overrides@1)
+  rewritten to the patched ids, so another console replays the export exactly.
+
+It lands in the **shared hub library** (`/projects/_shared/_data/libraries/ui/<id>.json` + `index.json`,
+ui-library-index@1, next to the appearance document every app reads) and downloads as one **package**
+(`<id>.ui-library.json`, `GET library/{id}/download`). Import (`libraryImportPlan`): `framework` writes the assets into
+`framework/assets` (the shared set: every listed app bakes it with `shared-assets.mjs bake --all`, every future app on
+`axf init` gets it, so they conform without doing anything); `app <dir>` into the app's `src/assets`
+(`src/assets-overrides` for an id the shared set has); `project <dir>` into `assets/`; `skin` writes the skin@1 asset
+the library makes (`libraryAsSkin`: sections from its slots, filled from the asset in force; hidden chrome and the
+token values under `extras`), usable with `skins.mjs use <app> <id>`; `console` puts the assets where this plugin's
+catalog reads them and applies the overrides as one change-log entry. JSON Schema: `framework/schemas/json/ui-library.schema.json`.
+
+| Do | REST (`/api/plugins/ui-manager/…`) | MCP / control@1 | CLI | Console action / voice |
+|---|---|---|---|---|
+| export | `POST library/export {elements?, all?, id?, name?, publish?, skin?}` | `ui-manager_library-export` | `ui-manager.mjs library --id x --name "…" [--publish] [--skin] [--out f]` | `ui-manager.export[:<element>]` (Export buttons in the window) |
+| list the hub library | `GET libraries` | `ui-manager_libraries` | `ui-manager.mjs libraries` | |
+| one library / package | `GET library/{id}` · `GET library/{id}/download` | `ui-manager_library` | `ui-manager.mjs library-get <id or file> [--skin]` | |
+| validate a package | `POST library/validate {library}` | `ui-manager_library-validate` | `ui-manager.mjs library-validate --pending f` | |
+| import | `POST library/import {id \| library, into, dir?, force?, plan?}` | `ui-manager_library-import` | `ui-manager.mjs import <id or file> --into framework\|app\|project\|skin\|console [--dir d]` | |
+
 ## How elements register (new plugins appear on their own)
 
 `lib/manifest.mjs` turns every installed plugin's existing `plugin.json` into elements: the plugin itself

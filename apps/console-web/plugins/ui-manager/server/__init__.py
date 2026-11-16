@@ -21,6 +21,14 @@ Every route runs the plugin's Node core (ui-manager.mjs --json), the same code t
   GET  changes?limit=                      the change log (who, when, element, property, old → new)
   POST undo                                body { id, by? }  undo one change-log entry
   GET  catalog | overrides                 what the choices come from · the saved overrides
+  POST library/export                      body { elements?: [ids or words], all?, id?, name?, description?, publish?, skin? }
+                                           export the UI as an asset library (ui-library@1: assets + token values + manifest), schema-validated;
+                                           publish = into the shared hub library; skin = also the skin@1 asset it makes
+  GET  libraries                           every library in the shared hub library (ui-library-index@1)
+  GET  library/{id}                        one library; ?skin=true adds the skin@1 asset it makes
+  GET  library/{id}/download               the downloadable package (<id>.ui-library.json, Content-Disposition: attachment)
+  POST library/validate                    body { library }  every problem in a library document (empty = valid), nothing saved
+  POST library/import                      body { library | id, into: framework|app|project|skin|console, dir?, force?, plan? }
 """
 from __future__ import annotations
 
@@ -31,7 +39,7 @@ from typing import Any
 
 from fastapi import APIRouter, Request
 from fastapi.concurrency import run_in_threadpool
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 router = APIRouter()
 FOLDER = "ui-manager"
@@ -214,3 +222,72 @@ async def catalog() -> JSONResponse:
 @router.get("/overrides")
 async def overrides() -> JSONResponse:
     return await run_in_threadpool(_run, "overrides")
+
+
+# ---------------------------------------------------------------- asset libraries (ui-library@1)
+
+def _with_doc(cmd: str, doc: Any, *args: str) -> JSONResponse:
+    """Run a command on a document handed in by the caller (a library package): written to a temp file for the CLI."""
+    import tempfile
+
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=True) as f:
+        json.dump(doc, f)
+        f.flush()
+        return _run(cmd, *args, "--pending", f.name) if cmd == "library-validate" else _run(cmd, f.name, *args)
+
+
+@router.post("/library/export")
+async def library_export(request: Request) -> JSONResponse:
+    """Export the UI as an asset library: the selected elements (ids, labels or words; default: everything changed)."""
+    b = await _body(request)
+    els = b.get("elements")
+    flags = [*_opt("id", b.get("id")), *_opt("name", b.get("name")), *_opt("description", b.get("description")), *_opt("version", b.get("version")), *_opt("by", b.get("by"))]
+    if isinstance(els, list) and els:
+        flags += ["--elements", ",".join(str(e) for e in els)]
+    elif isinstance(els, str) and els:
+        flags += ["--elements", els]
+    flags += (["--all"] if b.get("all") else []) + (["--publish"] if b.get("publish") else []) + (["--skin"] if b.get("skin") else [])
+    return await run_in_threadpool(_run, "library", *flags)
+
+
+@router.get("/libraries")
+async def libraries() -> JSONResponse:
+    return await run_in_threadpool(_run, "libraries")
+
+
+@router.get("/library/{id}")
+async def library_get(id: str, skin: bool = False) -> JSONResponse:
+    return await run_in_threadpool(_run, "library-get", id, *(["--skin"] if skin else []))
+
+
+@router.get("/library/{id}/download")
+async def library_download(id: str) -> Response:
+    """The downloadable package: one file, <id>.ui-library.json."""
+    r = await run_in_threadpool(_run, "library-get", id)
+    if r.status_code != 200:
+        return r
+    body = json.loads(bytes(r.body))
+    lib = body.get("library") or {}
+    name = str(body.get("package") or f"{lib.get('id', 'library')}.ui-library.json")
+    return Response(json.dumps(lib, indent=2) + "\n", media_type="application/json", headers={"content-disposition": f'attachment; filename="{name}"', "x-content-type-options": "nosniff"})
+
+
+@router.post("/library/validate")
+async def library_validate(request: Request) -> JSONResponse:
+    b = await _body(request)
+    if not isinstance(b.get("library"), dict):
+        return JSONResponse({"error": "validate needs { library: ui-library@1 }", "code": "invalid"}, status_code=400)
+    return await run_in_threadpool(_with_doc, "library-validate", b["library"])
+
+
+@router.post("/library/import")
+async def library_import(request: Request) -> JSONResponse:
+    """Import a library (by hub id or as a document) into framework | app | project | skin | console."""
+    b = await _body(request)
+    into = str(b.get("into") or "framework")
+    flags = ["--into", into, *_opt("dir", b.get("dir")), *_opt("by", b.get("by")), *_opt("reason", b.get("reason"))] + (["--force"] if b.get("force") else []) + (["--plan"] if b.get("plan") else [])
+    if isinstance(b.get("library"), dict):
+        return await run_in_threadpool(_with_doc, "import", b["library"], *flags)
+    if not b.get("id"):
+        return JSONResponse({"error": "import needs { id } (a hub library) or { library } (a package)", "code": "invalid"}, status_code=400)
+    return await run_in_threadpool(_run, "import", str(b["id"]), *flags)

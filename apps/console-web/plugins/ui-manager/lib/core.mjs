@@ -8,6 +8,7 @@ import * as R from '../../../../../framework/core/engines/ui-manager-rules.mjs';
 import { buildCatalog, pluginManifests } from './catalog.mjs';
 import { allManifestElements } from './manifest.mjs';
 import * as Q from './query.mjs';
+import * as L from './library.mjs';
 import { readChanges, readOverrides, readSelection, saveOverrides, saveSelection, undoEntry, VIEWS } from './store.mjs';
 import * as S from './say.mjs';
 
@@ -145,6 +146,62 @@ export const catalogInfo = (w = world()) => ({ types: Object.keys(w.catalog.type
 
 /** The console's live target snapshot (console-control-targets@1) from a file, for "On screen now" without the UI. */
 export function targetsFromFile(file) { try { return JSON.parse(readFileSync(file, 'utf8')); } catch { return null; } }
+
+/* ================================================================== asset libraries (ui-library@1) */
+
+/**
+ * Build a library from the selected elements (`elements`: ids, labels or words; default: everything that carries an
+ * override; `all`: every element with an asset type) and the overrides in force. Nothing is saved; `publish` puts it in
+ * the shared hub library, `skin` adds the skin@1 asset it makes. The answer carries the download package's file name.
+ */
+export function library({ elements = [], all = false, id = '', name = '', description = '', version = '1.0.0', by = 'brett', publish = false, skin = false } = {}, w = world()) {
+  const only = all ? w.elements.filter((e) => e.assetType).map((e) => e.id) : (Array.isArray(elements) ? elements : String(elements).split(',')).map((x) => String(x).trim()).filter(Boolean).map((x) => resolveWords(x, w).id);
+  const lib = R.libraryFrom(w.elements, readOverrides(), w.catalog, { id, name, description, version, by, only });
+  if (lib.error) throw new UiManagerError('validation', lib.error);
+  const errors = R.libraryErrors(lib, w.catalog);
+  if (errors.length) throw new UiManagerError('validation', errors.join('; '));
+  const out = { library: lib, valid: true, package: L.packageOf(lib).filename, ...(skin ? { skin: R.libraryAsSkin(lib, w.catalog) } : {}) };
+  if (publish) { const p = L.publish(lib); if (p.error) throw new UiManagerError('validation', p.error); out.published = p; }
+  return out;
+}
+
+/** Every library in the shared hub library. */
+export const libraries = () => L.listHub();
+
+/** One library by id (the hub) or file; `skin` adds the skin@1 asset it makes. */
+export function libraryGet(what, { skin = false } = {}, w = world()) {
+  const lib = L.resolveLibrary(what);
+  if (!lib) throw new UiManagerError('not_found', `no library ${what}; on the hub: ${L.listHub().items.map((i) => i.id).join(', ') || '(none)'}`);
+  return { library: lib, errors: R.libraryErrors(lib, w.catalog), package: L.packageOf(lib).filename, ...(skin ? { skin: R.libraryAsSkin(lib, w.catalog) } : {}) };
+}
+
+/** Validate a library document (a package someone hands in) against the schema rules and this console's catalog. */
+export const libraryValidate = (raw, w = world()) => { const errors = R.libraryErrors(raw, w.catalog); return { ok: !errors.length, errors }; };
+
+/**
+ * Import a library (hub id, file or document) into: framework (the shared set), app <dir>, project <dir>, skin, or
+ * console (assets into this plugin's assets folder, overrides applied as one change). `plan` only lists the files.
+ */
+export function libraryImport(what, { into = 'framework', dir = '', force = false, plan = false, by = 'brett', reason = '' } = {}, w = world()) {
+  const lib = L.resolveLibrary(what);
+  if (!lib) throw new UiManagerError('not_found', `no library ${typeof what === 'object' ? what?.id ?? '' : what}`);
+  const errors = R.libraryErrors(lib);
+  if (errors.length) throw new UiManagerError('validation', errors.join('; '));
+  if (!R.IMPORT_TARGETS.includes(into)) throw new UiManagerError('invalid', `into: one of ${R.IMPORT_TARGETS.join(', ')}`);
+  if ((into === 'app' || into === 'project') && !dir) throw new UiManagerError('invalid', `import into ${into} needs the folder (dir)`);
+  if (plan) { const p = R.libraryImportPlan(lib, { into, dir: into === 'app' || into === 'project' ? dir : '', catalog: w.catalog, sharedRefs: L.sharedRefs(), pluginAssets: L.PLUGIN_ASSETS }); if (p.error) throw new UiManagerError('invalid', p.error); return { ...p, files: p.files.map((f) => f.path), library: lib.id }; }
+  const r = L.writePlan(lib, { into, dir, catalog: w.catalog, force });
+  if (r.error) throw new UiManagerError('invalid', r.error);
+  let applied = null;
+  if (into === 'console' && r.overrides && Object.keys(r.overrides.elements).length) {
+    const fresh = world({ fresh: true });
+    const merged = R.normalizeOverrides({ elements: { ...readOverrides().elements, ...r.overrides.elements } });
+    const bad = R.overridesErrors(merged, fresh.elements, fresh.catalog);
+    if (bad.length) throw new UiManagerError('validation', `imported overrides: ${bad.join('; ')}`);
+    applied = apply(merged, { by, reason: reason || `import library ${lib.id}` }, fresh);
+  }
+  return { library: lib.id, into: r.into, base: r.base, written: r.written, skipped: r.skipped, note: r.note, ...(applied ? { applied } : {}) };
+}
 
 /* ================================================================== selection, view and what a person says */
 

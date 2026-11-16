@@ -461,6 +461,202 @@ export function undoChange(raw, entry) {
   return doc;
 }
 
+/* ================================================================== asset libraries (ui-library@1) */
+
+/**
+ * Export any UI as an asset library (step s14, Nov 16 2026): one self-contained document that carries the assets the
+ * exported elements read (the asset in force per slot, patched with field overrides under a new id), the token values
+ * they set, and a manifest (which asset each slot uses, what is hidden, transparency). Validated by `libraryErrors`,
+ * published to the shared hub library and downloaded as one file; imported into the framework's shared set (every
+ * listed app and every future app bakes it), an app, a project folder, a skin (`libraryAsSkin`) or a console
+ * (`libraryImportPlan`). Pure.
+ */
+export const LIBRARY_FRAME = 'ui-library@1';
+export const LIBRARY_INDEX_FRAME = 'ui-library-index@1';
+export const LIBRARY_MAX_BYTES = 512 * 1024;
+export const LIBRARY_ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
+export const ASSET_ID = /^[a-z0-9][a-z0-9-]{0,79}$/;
+/** Where an import may land (`libraryImportPlan` into). */
+export const IMPORT_TARGETS = ['framework', 'app', 'project', 'skin', 'console'];
+/** Skin section → the slot type (skin@1 data fields), so a library turns into a skin without a hand-written map. */
+const SKIN_SECTION_SLOTS = { colorTheme: 'color-theme', styleTheme: 'style-theme', layoutTheme: 'layout', behaviorTheme: 'behavior-theme', iconPack: 'icon-pack' };
+/** Slot types a skin never names (skin-rules.mjs SKIN_NEVER): a library leaves them to the app. */
+const SKIN_NEVER_TYPES = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+const TOKEN_SETTINGS_PREFIX = 'axf.tokens.';
+
+const setAt = (data, path, value) => { const parts = String(path).split('.'); let at = data; for (const p of parts.slice(0, -1)) { if (!isObj(at[p])) at[p] = {}; at = at[p]; } at[parts.at(-1)] = value; return data; };
+const clone = (v) => JSON.parse(JSON.stringify(v));
+
+/** A full asset@1 document from a catalog entry ({ id, name, data }) of a type. */
+export function assetDocument(type, entry, { id = entry.id, name = entry.name, description = '', author = '', version = '1.0.0', tags = [] } = {}) {
+  return { $axf: 'asset@1', type, id, name: name || id, version, ...(description ? { description } : {}), ...(author ? { author } : {}), ...(tags.length ? { tags } : {}), data: clone(entry.data ?? {}) };
+}
+
+/**
+ * Build a library from the elements (`only` ids, shortcuts resolved; default: every element carrying an override) and the
+ * overrides in force. Per element with an asset type: its asset in force (the `asset` override wins), patched with
+ * `field:` overrides under the id `<asset>-<library>`; a look element's token overrides become the library's token
+ * values (a colour reference resolves to the theme's literal); `visible` / `transparency` land in the manifest. The
+ * exported overrides keep every value as it was set (references stay references) with asset ids rewritten to the
+ * patched copies, so an import into another console replays them exactly. → the document, or { error }.
+ */
+export function libraryFrom(elements, overridesRaw, catalog, { id = '', name = '', description = '', by = 'brett', at = new Date().toISOString(), only = [], version = '1.0.0', app = 'console' } = {}) {
+  const doc = normalizeOverrides(overridesRaw);
+  const wanted = (Array.isArray(only) ? only : [only]).filter(Boolean).map((x) => resolveElement(x, elements)).filter(Boolean);
+  const chosen = wanted.length ? uniq(wanted) : Object.keys(doc.elements).map((eid) => resolveElement(eid, elements)).filter(Boolean);
+  if (!chosen.length) return { error: 'nothing to export: select an element or change something first' };
+  const libId = slug(id || name || (chosen.length === 1 ? chosen[0].label : 'console-look')).slice(0, 48) || 'library';
+  if (!LIBRARY_ID.test(libId)) return { error: `library id ${libId}: 2 to 48 lower-case letters, digits and dashes` };
+  const lib = {
+    $axf: LIBRARY_FRAME, id: libId, name: str(name, 120) || (chosen.length === 1 ? chosen[0].label : humanize(libId)), version: str(version, 20) || '1.0.0',
+    ...(str(description, 400) ? { description: str(description, 400) } : {}), author: str(by, 80) || 'brett', createdAt: at, app: str(app, 40) || 'console', ...(catalog?.skin ? { skin: catalog.skin } : {}),
+    elements: [], manifest: { slots: {}, hidden: {}, transparency: {} }, assets: [], tokens: {}, overrides: { $axf: OVERRIDES_FRAME, elements: {} },
+  };
+  const theme = activeData(catalog, 'color-theme')?.tokens ?? {};
+  for (const e of chosen) {
+    lib.elements.push({ id: e.id, label: e.label, kind: e.kind, category: e.category, ...(e.assetType ? { assetType: e.assetType } : {}) });
+    const over = doc.elements[e.id] ?? {};
+    const props = propsOf(e, catalog);
+    const type = e.assetType;
+    const out = {};
+    if (over.visible === false) lib.manifest.hidden[type || e.id] = true;
+    if (typeof over.transparency === 'number') lib.manifest.transparency[e.id] = over.transparency;
+    if (type && (catalog.assets?.[type] ?? []).length) {
+      const baseId = typeof over.asset === 'string' ? over.asset : activeId(catalog, type);
+      const entry = (catalog.assets[type] ?? []).find((a) => a.id === baseId) ?? catalog.assets[type][0];
+      const fields = Object.entries(over).filter(([k]) => k.startsWith('field:'));
+      const ownTokens = TOKEN_TARGETS[type] ? Object.entries(over).filter(([k]) => k.startsWith(`token:${TOKEN_TARGETS[type]}:`)) : [];
+      const patched = fields.length || ownTokens.length;
+      const assetId = patched ? `${entry.id}-${libId}`.slice(0, 80).replace(/-+$/, '') : entry.id;
+      const asset = assetDocument(type, entry, { id: assetId, name: patched ? `${entry.name || entry.id} (${lib.name})` : entry.name, author: lib.author, description: patched ? `From ${lib.name}: ${entry.name || entry.id} with the UI Manager's changes written in.` : '', tags: patched ? ['ui-library', libId] : [] });
+      for (const [k, v] of fields) { const p = props.find((x) => x.id === k); if (p?.path) setAt(asset.data, p.path, v); }
+      for (const [k, v] of ownTokens) {
+        const p = props.find((x) => x.id === k);
+        if (!p?.path) continue;
+        const value = p.kind === 'token' && typeof v === 'string' && v.startsWith(TOKEN_REF) ? theme[v.slice(1)] ?? v : v;
+        setAt(asset.data, p.target === 'tokens.theme' ? `tokens.${p.path}` : p.path, value);
+        lib.tokens[p.target] = { ...(lib.tokens[p.target] ?? {}), [p.path]: value };
+      }
+      if (!lib.assets.some((a) => a.type === type && a.id === assetId)) lib.assets.push(asset);
+      lib.manifest.slots[type] = assetId;
+      out.asset = assetId;
+    }
+    for (const [k, v] of Object.entries(over)) {
+      if (k === 'asset' || k.startsWith('field:') || (type && TOKEN_TARGETS[type] && k.startsWith(`token:${TOKEN_TARGETS[type]}:`))) continue;
+      out[k] = v;
+    }
+    if (Object.keys(out).length) lib.overrides.elements[e.id] = out;
+  }
+  if (JSON.stringify(lib).length > LIBRARY_MAX_BYTES) return { error: `library over ${LIBRARY_MAX_BYTES} bytes: export fewer elements` };
+  return lib;
+}
+
+/**
+ * Every problem in a library document (empty = valid): the frame, the id, the manifest, every asset an asset@1 of a
+ * known type (when a catalog is given) with an id, every slot naming an asset the library carries or the catalog knows,
+ * every token set a control@1 target, the overrides well-formed. Nothing is written.
+ */
+export function libraryErrors(raw, catalog = null) {
+  const errors = [];
+  if (!isObj(raw)) return ['library: not an object'];
+  if (raw.$axf !== LIBRARY_FRAME) errors.push(`$axf: must be ${LIBRARY_FRAME}`);
+  if (!LIBRARY_ID.test(String(raw.id ?? ''))) errors.push('id: 2 to 48 lower-case letters, digits and dashes');
+  if (!str(raw.name, 120)) errors.push('name: required');
+  if (!str(raw.version, 20)) errors.push('version: required');
+  if (!Array.isArray(raw.elements) || !raw.elements.length) errors.push('elements: at least one exported element');
+  else for (const e of raw.elements) if (!isObj(e) || !ELEMENT_ID.test(String(e.id ?? ''))) errors.push(`elements: ${JSON.stringify(e)?.slice(0, 60)} is not an element`);
+  const assets = Array.isArray(raw.assets) ? raw.assets : [];
+  if (!Array.isArray(raw.assets)) errors.push('assets: must be a list');
+  const carried = new Set();
+  for (const a of assets) {
+    if (!isObj(a) || a.$axf !== 'asset@1') { errors.push(`assets: ${JSON.stringify(a)?.slice(0, 60)} is not an asset@1`); continue; }
+    if (!ASSET_ID.test(String(a.id ?? ''))) errors.push(`assets: id ${String(a.id)} is not an asset id`);
+    if (typeof a.type !== 'string' || !a.type) errors.push(`assets.${a.id}: no type`);
+    else if (catalog && !catalog.types?.[a.type]) errors.push(`assets.${a.id}: unknown asset type ${a.type}`);
+    if (!isObj(a.data)) errors.push(`assets.${a.id}: data must be an object`);
+    if (carried.has(`${a.type}/${a.id}`)) errors.push(`assets: ${a.type}/${a.id} twice`);
+    carried.add(`${a.type}/${a.id}`);
+  }
+  if (!isObj(raw.manifest) || !isObj(raw.manifest.slots)) errors.push('manifest.slots: required');
+  else {
+    for (const [type, aid] of Object.entries(raw.manifest.slots)) {
+      if (typeof aid !== 'string' || !ASSET_ID.test(aid)) { errors.push(`manifest.slots.${type}: not an asset id`); continue; }
+      if (catalog && !catalog.types?.[type]) errors.push(`manifest.slots.${type}: unknown asset type`);
+      const known = carried.has(`${type}/${aid}`) || (catalog?.assets?.[type] ?? []).some((a) => a.id === aid);
+      if (!known) errors.push(`manifest.slots.${type}: ${aid} is neither in the library nor known`);
+    }
+    if ('hidden' in raw.manifest && !isObj(raw.manifest.hidden)) errors.push('manifest.hidden: must be an object');
+    if ('transparency' in raw.manifest && !isObj(raw.manifest.transparency)) errors.push('manifest.transparency: must be an object');
+    for (const [k, v] of Object.entries(isObj(raw.manifest.transparency) ? raw.manifest.transparency : {})) if (typeof v !== 'number' || v < 0 || v > 100) errors.push(`manifest.transparency.${k}: 0 to 100`);
+  }
+  if ('tokens' in raw) {
+    if (!isObj(raw.tokens)) errors.push('tokens: must be an object of token sets');
+    else for (const [target, map] of Object.entries(raw.tokens)) {
+      if (!Object.values(TOKEN_TARGETS).includes(target)) errors.push(`tokens.${target}: not a control@1 token set`);
+      if (!isObj(map)) errors.push(`tokens.${target}: must be an object of path → value`);
+      else for (const [p, v] of Object.entries(map)) if (!SCALAR(v)) errors.push(`tokens.${target}.${p}: not a value`);
+    }
+  }
+  if ('overrides' in raw) {
+    if (!isObj(raw.overrides)) errors.push('overrides: must be a ui-overrides@1 document');
+    else if (raw.overrides.$axf !== undefined && raw.overrides.$axf !== OVERRIDES_FRAME) errors.push(`overrides.$axf: must be ${OVERRIDES_FRAME}`);
+  }
+  if (JSON.stringify(raw).length > LIBRARY_MAX_BYTES) errors.push(`library over ${LIBRARY_MAX_BYTES} bytes`);
+  return errors;
+}
+
+/**
+ * The library as a skin@1 asset: the four sections and the icon pack from its slots (the catalog's asset in force fills
+ * a section the library leaves out, so the skin passes the skin checks), every other slot under `assets`, hidden
+ * chrome under `extras.hidden`, the token values under `extras.settings` as control@1 overrides (`axf.tokens.<set>`).
+ */
+export function libraryAsSkin(lib, catalog = null, { id = lib.id, name = lib.name } = {}) {
+  const slots = { ...(lib.manifest?.slots ?? {}) };
+  const data = { assets: {} };
+  for (const [field, type] of Object.entries(SKIN_SECTION_SLOTS)) {
+    const v = slots[type] ?? (field === 'iconPack' ? '' : catalog ? activeId(catalog, type) : '');
+    if (v) data[field] = v;
+    delete slots[type];
+  }
+  for (const [type, aid] of Object.entries(slots)) if (!SKIN_NEVER_TYPES.includes(type)) data.assets[type] = aid;
+  const hidden = Object.fromEntries(Object.entries(lib.manifest?.hidden ?? {}).filter(([k]) => /^[a-z0-9-]+$/.test(k)));
+  const settings = {};
+  for (const [target, map] of Object.entries(lib.tokens ?? {})) if (Object.keys(map).length) settings[`${TOKEN_SETTINGS_PREFIX}${target.replace(/^tokens\./, '')}`] = { '*': { ...map } };
+  if (Object.keys(hidden).length || Object.keys(settings).length) data.extras = { ...(Object.keys(hidden).length ? { hidden } : {}), ...(Object.keys(settings).length ? { settings } : {}) };
+  data.preview = { caption: `Exported from the ${lib.app ?? 'console'} UI Manager${lib.description ? `: ${lib.description}` : '.'}`.slice(0, 200) };
+  return { $axf: 'asset@1', type: 'skin', id: slug(id).slice(0, 48), name: name || lib.name, version: lib.version ?? '1.0.0', description: `Skin made from the asset library ${lib.name}.`, author: lib.author ?? 'brett', tags: ['skin', 'ui-library', lib.id], data };
+}
+
+/**
+ * What an import writes, for one target: `framework` (the shared set: framework/assets/<type>/<id>.json, every listed
+ * app and every future app bakes it), `app` (an app folder: src/assets, or src/assets-overrides for an id the shared
+ * set already has, `sharedRefs`), `project` (a plain assets/ folder), `skin` (one skin@1 asset), `console` (the assets
+ * into the console plugin's assets folder plus the overrides to apply through the UI Manager). Paths are relative to
+ * `dir`; nothing is written here.
+ */
+export function libraryImportPlan(lib, { into = 'framework', dir = '.', catalog = null, sharedRefs = [], skinDir = 'framework/assets/skin', pluginAssets = 'assets' } = {}) {
+  if (!IMPORT_TARGETS.includes(into)) return { error: `import into: one of ${IMPORT_TARGETS.join(', ')}` };
+  const shared = new Set(sharedRefs);
+  const files = [];
+  const rel = (...p) => [dir, ...p].filter((x) => x && x !== '.').join('/').replace(/\/+/g, '/');
+  const assetPath = (a) => {
+    if (into === 'framework') return rel('framework/assets', a.type, `${a.id}.json`);
+    if (into === 'app') return rel(shared.has(`${a.type}/${a.id}`) ? 'src/assets-overrides' : 'src/assets', a.type, `${a.id}.json`);
+    if (into === 'project') return rel('assets', a.type, `${a.id}.json`);
+    return rel(pluginAssets, a.type, `${a.id}.json`);
+  };
+  if (into === 'skin') {
+    const skin = libraryAsSkin(lib, catalog);
+    files.push({ path: rel(skinDir, `${skin.id}.json`), json: skin });
+    for (const a of lib.assets ?? []) if (!shared.has(`${a.type}/${a.id}`)) files.push({ path: rel('framework/assets', a.type, `${a.id}.json`), json: a });
+    return { into, files, overrides: null, note: `skin ${skin.id}: use it with skins.mjs use <app> ${skin.id}` };
+  }
+  for (const a of lib.assets ?? []) files.push({ path: assetPath(a), json: a });
+  const overrides = into === 'console' ? normalizeOverrides(lib.overrides) : null;
+  const note = into === 'framework' ? 'shared set: run shared-assets.mjs bake --all so every app ships it' : into === 'console' ? `${overrideCount(overrides)} override(s) to apply` : `${files.length} asset file(s)`;
+  return { into, files, overrides, note };
+}
+
 /* ================================================================== schemas */
 
 const SCALAR_SCHEMA = { oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'boolean' }] };
@@ -495,6 +691,19 @@ export function uiManagerSchemas() {
         $axf: { const: CHANGE_FRAME }, id: { type: 'string', pattern: '^ch-[0-9]{1,17}-[a-z0-9-]{1,12}-[a-z0-9]{7}$' }, by: { type: 'string', maxLength: 80 }, at: { type: 'string', format: 'date-time' }, note: { type: 'string', maxLength: 400 },
         changes: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['element', 'prop'], properties: { element: { type: 'string', pattern: ELEMENT_ID.source }, prop: { type: 'string', pattern: PROP_ID.source }, from: SCALAR_SCHEMA, to: SCALAR_SCHEMA } } },
         undone: { type: 'boolean' }, undoes: { type: 'string' },
+      },
+    },
+    'ui-library': {
+      ...base('ui-library', LIBRARY_FRAME, 'Any UI exported as an asset library: the assets the exported elements read, the token values they set and a manifest (asset per slot, hidden, transparency), plus the overrides to replay them in another console.'),
+      required: ['$axf', 'id', 'name', 'version', 'author', 'createdAt', 'elements', 'manifest', 'assets'],
+      properties: {
+        $axf: { const: LIBRARY_FRAME }, id: { type: 'string', pattern: LIBRARY_ID.source }, name: { type: 'string', maxLength: 120 }, version: { type: 'string', maxLength: 20 }, description: { type: 'string', maxLength: 400 },
+        author: { type: 'string', maxLength: 80 }, createdAt: { type: 'string', format: 'date-time' }, app: { type: 'string', maxLength: 40 }, skin: { type: 'string', maxLength: 80 },
+        elements: { type: 'array', minItems: 1, items: { type: 'object', required: ['id'], properties: { id: { type: 'string', pattern: ELEMENT_ID.source }, label: { type: 'string' }, kind: { type: 'string' }, category: { type: 'string' }, assetType: { type: 'string' } } } },
+        manifest: { type: 'object', required: ['slots'], additionalProperties: false, properties: { slots: { type: 'object', additionalProperties: { type: 'string', pattern: ASSET_ID.source } }, hidden: { type: 'object', additionalProperties: { type: 'boolean' } }, transparency: { type: 'object', additionalProperties: { type: 'number', minimum: 0, maximum: 100 } } } },
+        assets: { type: 'array', items: { type: 'object', required: ['$axf', 'type', 'id', 'name', 'version', 'data'], properties: { $axf: { const: 'asset@1' }, type: { type: 'string' }, id: { type: 'string', pattern: ASSET_ID.source }, name: { type: 'string' }, version: { type: 'string' }, data: { type: 'object' } } } },
+        tokens: { type: 'object', propertyNames: { enum: Object.values(TOKEN_TARGETS) }, additionalProperties: { type: 'object', additionalProperties: SCALAR_SCHEMA } },
+        overrides: { $ref: id('ui-overrides') },
       },
     },
   };

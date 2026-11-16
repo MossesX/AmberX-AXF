@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axf.amberx.ai/schemas/ui-change.schema.json",
+  "title": "ui-change@1",
+  "description": "One applied change set of the UI Manager: who, when, and every element property that went from one value to another (a missing from / to = not set).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "id",
+    "by",
+    "at",
+    "changes",
+    "undone"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "ui-change@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^ch-[0-9]{1,17}-[a-z0-9-]{1,12}-[a-z0-9]{7}$"
+    },
+    "by": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "element",
+          "prop"
+        ],
+        "properties": {
+          "element": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._:/@=%+-]{0,199}$"
+          },
+          "prop": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.:_-]{0,119}$"
+          },
+          "from": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "undone": {
+      "type": "boolean"
+    },
+    "undoes": {
+      "type": "string"
+    }
+  }
+}

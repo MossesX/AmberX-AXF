@@ -8,7 +8,7 @@ import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { Button, Note, Segmented, useRuntime } from '@console/axf/react';
 import { facets as facetsOf, queryElements, queryTree } from '../lib/query.mjs';
 import { refreshLive } from './apply';
-import { pullState, shareSelection } from './bridge';
+import { exportLibrary, pullState, shareSelection } from './bridge';
 import { startPicker } from './picker';
 import { ElementFilters } from './Filters';
 import { Props } from './Props';
@@ -61,12 +61,13 @@ export function Manager() {
         <Button size="sm" icon="search" tone={ui.picking ? 'primary' : 'neutral'} aria-pressed={ui.picking} onClick={() => setUi((s) => ({ picking: !s.picking }))}>{ui.picking ? 'Click an element… (Esc)' : 'Pick on screen'}</Button>
         <Segmented size="sm" label="View" value={ui.view} options={VIEWS} onChange={(v) => setUi({ view: v })} />
         <span className="axp-uim__grow fx-small fx-muted">{all.length} elements · {visible.length} on screen</span>
+        <Button size="sm" icon="download" title="Export everything changed as an asset library: published to the hub library, the package downloaded" onClick={() => void exportLibrary(rt)}>Export library</Button>
         <Button size="sm" icon="refresh" onClick={() => setUi((s) => ({ rev: s.rev + 1 }))}>Refresh</Button>
       </div>
       <ElementFilters ui={ui} facets={facets} shown={shown} total={all.length} />
       {error ? <Note>{error}</Note> : null}
       <div className={`axp-uim__body${inline ? ' is-stacked' : ''}`}>
-        <nav className="axp-uim__tree" aria-label="Element categories">
+        <nav className="axp-uim__tree" aria-label="Element categories" data-axf-not-nav="element tree of the UI Manager, not a navigation menu">
           <Tree tree={tree} byId={byId} ui={ui} expand={inline ? (id) => <Props id={id} ui={ui} /> : undefined} />
         </nav>
         {!inline && (

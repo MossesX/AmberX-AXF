@@ -19,6 +19,12 @@
         "kind": "screen"
       },
       {
+        "target": "ui-manager.export",
+        "title": "Export as an asset library",
+        "text": "Export the selected element (or everything changed) as an asset library: the assets it reads with your changes written in, the token values it sets and a manifest. It is published to the shared hub library and downloaded as one package, importable into any app, project or skin; apps that ship the shared set pick it up when it is imported there.",
+        "kind": "button"
+      },
+      {
         "target": "ui-manager",
         "title": "UI Manager settings",
         "text": "The UI Manager's settings under Settings → Plugins: where its overrides and change log are kept, and the install / uninstall panel.",

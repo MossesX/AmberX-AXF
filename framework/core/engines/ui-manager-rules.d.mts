@@ -68,11 +68,33 @@ export function withOverride(raw: unknown, element: UiElement | string, prop: Pr
 export function withoutOverride(raw: unknown, element?: UiElement | string, propId?: string): Overrides;
 export function overridesErrors(raw: unknown, elements: UiElement[], catalog: UiCatalog): string[];
 export function propertyRows(element: UiElement, raw: unknown, catalog: UiCatalog): PropRow[];
-export function uiManagerSchemas(): Record<'ui-element' | 'ui-overrides' | 'ui-change', Record<string, unknown>>;
+export function uiManagerSchemas(): Record<'ui-element' | 'ui-overrides' | 'ui-change' | 'ui-library', Record<string, unknown>>;
 export function overrideCount(raw: unknown, elementId?: string): number;
 
 export function selectorOf(e: UiElement): string;
 export function previewPlan(elements: UiElement[], raw: unknown, catalog: UiCatalog): PreviewPlan;
+
+/** ui-library@1: any UI exported as an asset library (assets + token values + manifest + the overrides to replay it). */
+export interface AssetDocument { $axf: 'asset@1'; type: string; id: string; name: string; version: string; description?: string; author?: string; tags?: string[]; data: Record<string, Json> }
+export interface LibraryManifest { slots: Record<string, string>; hidden: Record<string, boolean>; transparency: Record<string, number> }
+export interface UiLibrary {
+  $axf: 'ui-library@1'; id: string; name: string; version: string; description?: string; author: string; createdAt: string; app: string; skin?: string;
+  elements: { id: string; label: string; kind: string; category: string; assetType?: string }[]; manifest: LibraryManifest; assets: AssetDocument[];
+  tokens: Record<string, Record<string, Scalar>>; overrides: Overrides;
+}
+export type ImportTarget = 'framework' | 'app' | 'project' | 'skin' | 'console';
+export interface ImportPlan { into: ImportTarget; files: { path: string; json: unknown }[]; overrides: Overrides | null; note: string }
+export const LIBRARY_FRAME: 'ui-library@1';
+export const LIBRARY_INDEX_FRAME: 'ui-library-index@1';
+export const LIBRARY_MAX_BYTES: number;
+export const LIBRARY_ID: RegExp;
+export const ASSET_ID: RegExp;
+export const IMPORT_TARGETS: ImportTarget[];
+export function assetDocument(type: string, entry: CatalogAsset, meta?: { id?: string; name?: string; description?: string; author?: string; version?: string; tags?: string[] }): AssetDocument;
+export function libraryFrom(elements: UiElement[], overridesRaw: unknown, catalog: UiCatalog, opts?: { id?: string; name?: string; description?: string; by?: string; at?: string; only?: string[]; version?: string; app?: string }): UiLibrary | { error: string };
+export function libraryErrors(raw: unknown, catalog?: UiCatalog | null): string[];
+export function libraryAsSkin(lib: UiLibrary, catalog?: UiCatalog | null, meta?: { id?: string; name?: string }): AssetDocument;
+export function libraryImportPlan(lib: UiLibrary, opts?: { into?: ImportTarget; dir?: string; catalog?: UiCatalog | null; sharedRefs?: string[]; skinDir?: string; pluginAssets?: string }): ImportPlan | { error: string };
 
 export function diffOverrides(beforeRaw: unknown, afterRaw: unknown): Change[];
 export function changeEntry(changes: Change[], meta?: { by?: string; at?: string; note?: string }): ChangeEntry;

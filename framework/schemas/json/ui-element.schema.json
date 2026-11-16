@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axf.amberx.ai/schemas/ui-element.schema.json",
+  "title": "ui-element@1",
+  "description": "One UI element the UI Manager can select; an On screen now entry is a shortcut { ref } to one of these.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "id",
+    "label",
+    "kind",
+    "category",
+    "tokens"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "ui-element@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._:/@=%+-]{0,199}$",
+      "maxLength": 200
+    },
+    "label": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "kind": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "chrome",
+        "screens",
+        "settings",
+        "dialogs",
+        "controls",
+        "widgets",
+        "look",
+        "plugins"
+      ]
+    },
+    "assetType": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "address": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "selector": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "plugin": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "app": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "screen": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "tokens": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "string",
+        "pattern": "^tokens\\.[a-z]+:[A-Za-z0-9_.-]+$"
+      }
+    }
+  }
+}

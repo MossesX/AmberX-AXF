@@ -6,7 +6,7 @@
  */
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -289,6 +289,82 @@ t('manifest: a new plugin appears with nothing written for the UI Manager; uiEle
   assert.ok(all.filter((e) => e.kind === 'plugin').length >= 20, 'every plugin');
   assert.ok(all.some((e) => e.id === 'ai.amberx.axf.console.ui-manager/window'), 'declared uiElements');
   assert.ok(core.rows('target:view:ui-manager').total >= 2, 'a derived element opens with its properties');
+});
+
+const L = await import('./lib/library.mjs');
+t('library: export any UI as an asset library, publish to the hub library, package, validate, import plans and console import', () => {
+  process.env.AXF_UI_LIBRARY_DIR = join(TMP, 'hub-library');
+  core.reset();
+  core.set('asset:toolbar', 'field:variant', 'labels');
+  core.set('asset:toolbar', 'transparency', 80);
+  core.set('asset:color-theme', 'token:tokens.theme:surface', 'accent');
+  core.set('asset:button', 'visible', false);
+  assert.throws(() => core.library({ elements: ['asset:dialog'], id: 'x' }), (e) => e.code === 'validation', 'a bad id is refused');
+  const r = core.library({ id: 'test-look', name: 'Test look', description: 'From the tests', by: 'tests', publish: true, skin: true });
+  const lib = r.library;
+  assert.equal(lib.$axf, 'ui-library@1'); assert.equal(r.valid, true); assert.equal(r.package, 'test-look.ui-library.json');
+  assert.deepEqual(lib.elements.map((e) => e.id).sort(), ['asset:button', 'asset:color-theme', 'asset:toolbar']);
+  const tb = lib.assets.find((a) => a.type === 'toolbar');
+  assert.equal(tb.id, `${cat.active.toolbar}-test-look`); assert.equal(tb.data.variant, 'labels', 'the field override is written into the exported asset'); assert.equal(tb.$axf, 'asset@1');
+  const th = lib.assets.find((a) => a.type === 'color-theme');
+  const accent = cat.assets['color-theme'].find((a) => a.id === cat.active['color-theme']).data.tokens.accent;
+  assert.equal(th.data.tokens.surface, accent, 'a colour reference resolves to the literal of the theme in force');
+  assert.deepEqual(lib.tokens, { 'tokens.theme': { surface: accent } });
+  assert.deepEqual(lib.manifest.slots, { toolbar: tb.id, 'color-theme': th.id, button: cat.active.button });
+  assert.deepEqual(lib.manifest.hidden, { button: true }); assert.deepEqual(lib.manifest.transparency, { 'asset:toolbar': 80 });
+  assert.deepEqual(lib.overrides.elements['asset:toolbar'], { asset: tb.id, transparency: 80 }, 'the overrides replay the library: asset ids rewritten to the patched copies');
+  assert.deepEqual(R.libraryErrors(lib, cat), []);
+  assert.ok(R.libraryErrors({ ...lib, manifest: { slots: { toolbar: 'nope' } } }, cat).some((e) => /neither in the library nor known/.test(e)));
+  assert.ok(R.libraryErrors({ ...lib, assets: [{ id: 'x' }] }).some((e) => /not an asset@1/.test(e)));
+  assert.equal(core.libraryValidate(lib).ok, true); assert.equal(core.libraryValidate({ $axf: 'nope' }).ok, false);
+  // the skin it makes: the sections filled from the asset in force, the tokens as control@1 overrides
+  assert.equal(r.skin.type, 'skin'); assert.equal(r.skin.data.colorTheme, th.id); assert.equal(r.skin.data.styleTheme, cat.active['style-theme']); assert.equal(r.skin.data.layoutTheme, cat.active.layout);
+  assert.deepEqual(r.skin.data.assets, { toolbar: tb.id, button: cat.active.button }); assert.deepEqual(r.skin.data.extras.settings, { 'axf.tokens.theme': { '*': { surface: accent } } }); assert.deepEqual(r.skin.data.extras.hidden, { button: true });
+  // the hub library
+  assert.equal(r.published.hub, join(TMP, 'hub-library')); assert.ok(existsSync(join(TMP, 'hub-library', 'test-look.json')) && existsSync(join(TMP, 'hub-library', 'index.json')));
+  assert.deepEqual(core.libraries().items.map((i) => [i.id, i.assets, i.elements, i.tokens]), [['test-look', 3, 3, 1]]);
+  assert.equal(core.libraryGet('test-look').library.id, 'test-look'); assert.deepEqual(core.libraryGet('test-look').errors, []);
+  assert.throws(() => core.libraryGet('nothing-here'), (e) => e.code === 'not_found');
+  assert.equal(L.packageOf(lib).filename, 'test-look.ui-library.json'); assert.equal(JSON.parse(L.packageOf(lib).text).id, 'test-look');
+  // import plans: the shared set, an app, a project, a skin, this console
+  const fw = core.libraryImport('test-look', { into: 'framework', plan: true });
+  assert.deepEqual(fw.files, [`framework/assets/toolbar/${tb.id}.json`, `framework/assets/color-theme/${th.id}.json`, `framework/assets/button/${cat.active.button}.json`], 'self-contained: the unchanged button asset is carried too');
+  const app = core.libraryImport('test-look', { into: 'app', dir: 'apps/axhub-web', plan: true });
+  assert.deepEqual(app.files, [`apps/axhub-web/src/assets/toolbar/${tb.id}.json`, `apps/axhub-web/src/assets/color-theme/${th.id}.json`, `apps/axhub-web/src/assets-overrides/button/${cat.active.button}.json`], 'new ids go to the app\'s own assets, an id the shared set has to assets-overrides');
+  assert.ok(core.libraryImport('test-look', { into: 'project', dir: '/tmp/x', plan: true }).files.every((f) => f.startsWith('/tmp/x/assets/')));
+  const sk = core.libraryImport('test-look', { into: 'skin', plan: true });
+  assert.equal(sk.files[0], 'framework/assets/skin/test-look.json');
+  assert.throws(() => core.libraryImport('test-look', { into: 'app', plan: true }), (e) => e.code === 'invalid', 'an app import needs its folder');
+  assert.throws(() => core.libraryImport('test-look', { into: 'nowhere' }), (e) => e.code === 'invalid');
+  // a real import into a project folder, then into this console (assets land where the catalog reads, overrides apply)
+  const proj = join(TMP, 'project');
+  const w1 = core.libraryImport('test-look', { into: 'project', dir: proj });
+  assert.equal(w1.written.length, 3); assert.equal(JSON.parse(readFileSync(join(proj, 'assets', 'toolbar', `${tb.id}.json`), 'utf8')).data.variant, 'labels');
+  assert.equal(core.libraryImport('test-look', { into: 'project', dir: proj }).skipped.length, 3, 'existing files are kept without force');
+  core.reset();
+  const pkg = join(TMP, 'test-look.ui-library.json');
+  writeFileSync(pkg, L.packageOf(lib).text);
+  const w2 = core.libraryImport(pkg, { into: 'console', by: 'tests' });
+  try {
+    assert.equal(w2.written.length, 3); assert.equal(w2.applied.changed, true);
+    assert.equal(core.rows('asset:toolbar').items.find((p) => p.id === 'asset').value, tb.id, 'the console now uses the imported asset');
+    assert.ok(core.choices('asset:toolbar', 'asset').options.some((o) => o.value === tb.id), 'the imported asset is a choice');
+  } finally {
+    for (const f of w2.written) rmSync(join(ROOT, f), { force: true });
+    // the plugin ships no assets of its own: the folders the import made go too, when they are empty
+    for (const d of [...new Set(w2.written.map((f) => dirname(join(ROOT, f)))), join(HERE, 'assets')]) { try { rmdirSync(d); } catch { /* not empty, or gone */ } }
+    core.reset();
+  }
+  // the CLI: export to a file, list, import plan
+  const run = (...a) => { const p = spawnSync('node', [join(HERE, 'ui-manager.mjs'), ...a, '--json'], { cwd: ROOT, encoding: 'utf8', env: { ...process.env } }); return { code: p.status, out: JSON.parse(p.stdout.trim().split('\n').pop()) }; };
+  core.set('asset:toolbar', 'transparency', 60);
+  const cli = run('library', '--id', 'cli-look', '--name', 'CLI look', '--out', join(TMP, 'cli.json'));
+  assert.equal(cli.code, 0); assert.equal(cli.out.wrote, join(TMP, 'cli.json')); assert.equal(JSON.parse(readFileSync(join(TMP, 'cli.json'), 'utf8')).id, 'cli-look');
+  assert.equal(run('libraries').out.items.length, 1, 'not published without --publish');
+  assert.equal(run('import', join(TMP, 'cli.json'), '--into', 'framework', '--plan').out.into, 'framework');
+  assert.equal(run('library-validate', '--pending', join(TMP, 'cli.json')).out.ok, true);
+  assert.equal(run('import', 'cli-look', '--into', 'console').code, 1, 'not on the hub');
+  core.reset();
 });
 
 rmSync(TMP, { recursive: true, force: true });

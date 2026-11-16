@@ -23,7 +23,7 @@ export function Tree({ tree, byId, ui, onOpen, expand }: { tree: TreeCategory[];
         const limit = shown[c.id] ?? PAGE;
         return (
           <li key={c.id} className="axp-uim__cat" role="treeitem" aria-expanded={open}>
-            <button type="button" className="axp-uim__cathead" data-fx-row onClick={() => setUi((s) => ({ collapsed: toggleIn(s.collapsed, c.id) }))}>
+            <button type="button" className="axp-uim__cathead" data-fx-row data-axf-target={`view:ui-manager/button:category-${c.id}`} onClick={() => setUi((s) => ({ collapsed: toggleIn(s.collapsed, c.id) }))}>
               <Icon name={open ? 'chevron-down' : 'chevron-right'} size={14} />
               <Icon name={c.icon} size={14} />
               <span className="axp-uim__grow">{c.label}</span>
@@ -38,7 +38,7 @@ export function Tree({ tree, byId, ui, onOpen, expand }: { tree: TreeCategory[];
                   const n = target?.overrides ?? 0;
                   return (
                     <li key={`${c.id}:${id}`} role="none">
-                      <button type="button" role="treeitem" aria-selected={on} data-fx-row className={`axp-uim__row${on ? ' is-on' : ''}`}
+                      <button type="button" role="treeitem" aria-selected={on} data-fx-row className={`axp-uim__row${on ? ' is-on' : ''}`} data-axf-target={`view:ui-manager/row:${id.replace(/\//g, '|')}`}
                         title={isShortcut(x) ? `Shortcut to ${x.label} in ${x.category}: same element, same settings` : id}
                         onClick={() => { setUi({ selected: on && expand ? '' : id }); onOpen?.(id); }}>
                         {isShortcut(x) ? <span className="axp-uim__shortcut"><Icon name="external" size={12} /></span> : null}

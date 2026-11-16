@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axf.amberx.ai/schemas/ui-library.schema.json",
+  "title": "ui-library@1",
+  "description": "Any UI exported as an asset library: the assets the exported elements read, the token values they set and a manifest (asset per slot, hidden, transparency), plus the overrides to replay them in another console.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "id",
+    "name",
+    "version",
+    "author",
+    "createdAt",
+    "elements",
+    "manifest",
+    "assets"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "ui-library@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "version": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "author": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "app": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "skin": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "elements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._:/@=%+-]{0,199}$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "assetType": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "required": [
+        "slots"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "slots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,79}$"
+          }
+        },
+        "hidden": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "transparency": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "$axf",
+          "type",
+          "id",
+          "name",
+          "version",
+          "data"
+        ],
+        "properties": {
+          "$axf": {
+            "const": "asset@1"
+          },
+          "type": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,79}$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "tokens.theme",
+          "tokens.style",
+          "tokens.layout",
+          "tokens.typography",
+          "tokens.density",
+          "tokens.sizing",
+          "tokens.nav"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        }
+      }
+    },
+    "overrides": {
+      "$ref": "https://axf.amberx.ai/schemas/ui-overrides.schema.json"
+    }
+  }
+}

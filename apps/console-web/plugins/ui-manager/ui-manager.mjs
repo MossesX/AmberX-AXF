@@ -17,8 +17,17 @@
  *   … catalog                                         what the choices come from
  *   … state | select <element or words> | view row|panel|grid     the window's selection and view (the open window follows)
  *   … say "select the main toolbar, set its transparency to 80"  what a person says (voice), run step by step
+ *   … library [--elements a,b | --all] [--id x] [--name "…"] [--description "…"] [--publish] [--skin] [--out file.json]
+ *                                                     export the UI as an asset library (ui-library@1): assets + token values + manifest,
+ *                                                     schema-validated; --publish puts it in the shared hub library, --out writes the package
+ *   … libraries                                       every library in the shared hub library
+ *   … library-get <id or file> [--skin]              one library (and the skin@1 asset it makes)
+ *   … library-validate --pending file.json           every problem in a library document (empty = valid)
+ *   … import <id or file> --into framework|app|project|skin|console [--dir folder] [--force] [--plan]
+ *                                                     import it: the shared set (every app bakes it), an app, a project folder, a skin, or this console
  *   add --json for one JSON result (the server drives it this way); exit 1 on an error with { error, code }.
  */
+import { writeFileSync } from 'node:fs';
 import * as core from './lib/core.mjs';
 
 const argv = process.argv.slice(2);
@@ -59,7 +68,16 @@ try {
     case 'overrides': out(core.overrides()); break;
     case 'validate': if (typeof flags.pending !== 'string') throw new core.UiManagerError('invalid', 'validate --pending file.json'); out(core.validate(core.targetsFromFile(flags.pending))); break;
     case 'schemas': out(core.schemas()); break;
-    default: throw new core.UiManagerError('invalid', 'commands: elements | tree | props | choices | set | reset | preview | validate | apply | changes | undo | catalog | overrides | schemas | state | select | view | say');
+    case 'library': {
+      const r = core.library({ elements: str('elements') ? str('elements').split(',') : words.slice(1), all: flags.all === true, id: str('id'), name: str('name'), description: str('description'), version: str('version') || '1.0.0', by, publish: flags.publish === true, skin: flags.skin === true });
+      if (typeof flags.out === 'string') { writeFileSync(flags.out, `${JSON.stringify(r.library, null, 2)}\n`); r.wrote = flags.out; }
+      out(r); break;
+    }
+    case 'libraries': out(core.libraries()); break;
+    case 'library-get': if (!a) throw new core.UiManagerError('invalid', 'library-get <id or file>'); out(core.libraryGet(a, { skin: flags.skin === true })); break;
+    case 'library-validate': if (typeof flags.pending !== 'string') throw new core.UiManagerError('invalid', 'library-validate --pending file.json'); out(core.libraryValidate(core.targetsFromFile(flags.pending))); break;
+    case 'import': if (!a) throw new core.UiManagerError('invalid', 'import <id or file> --into framework|app|project|skin|console [--dir folder]'); out(core.libraryImport(a, { into: str('into') || 'framework', dir: str('dir'), force: flags.force === true, plan: flags.plan === true, by, reason: str('reason') })); break;
+    default: throw new core.UiManagerError('invalid', 'commands: elements | tree | props | choices | set | reset | preview | validate | apply | changes | undo | catalog | overrides | schemas | state | select | view | say | library | libraries | library-get | library-validate | import');
   }
 } catch (e) {
   const code = e instanceof core.UiManagerError ? e.code : 'unexpected';

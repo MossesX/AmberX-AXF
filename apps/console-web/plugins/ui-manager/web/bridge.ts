@@ -9,12 +9,15 @@
  *   ui-manager.view:<row|panel|grid>                    how a selected element opens
  *   ui-manager.pick                                     inspector: the next click on the console selects
  *   ui-manager.search:<words>                           search the element tree
+ *   ui-manager.export[:<id or words>]                   export the element (default: everything changed) as an asset library:
+ *                                                       published to the shared hub library, the package downloaded
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { rankElements } from '../lib/say.mjs';
 import { refreshLive } from './apply';
 import { getUi, setUi, type ViewMode } from './state';
-import { fetchJson, snapshotAll } from './useElements';
+import { FOLDER, fetchJson, snapshotAll } from './useElements';
+import { pluginFetch } from '@console/plugins';
 import { openUiManager } from './window';
 
 interface SelectAnswer { selected?: string; label?: string; error?: string }
@@ -64,8 +67,35 @@ async function say(rt: AxfRuntime, text: string): Promise<void> {
   rt.toast(sets.length ? sets.join(' · ') : 'Done.', 'success', 'UI Manager');
 }
 
+interface ExportAnswer { library?: { id: string; name: string; assets: unknown[]; elements: unknown[] }; package?: string; published?: { hub: string }; error?: string }
+
+/**
+ * Export as an asset library (ui-library@1): the elements named (default: everything that carries an override) with
+ * the assets they read, their token values and a manifest. Published to the shared hub library, then the package is
+ * downloaded through the browser (the same file `GET library/<id>/download` serves).
+ */
+export async function exportLibrary(rt: AxfRuntime, elements: string[] = [], { name = '', download = true }: { name?: string; download?: boolean } = {}): Promise<ExportAnswer> {
+  const r = await post<ExportAnswer>('library/export', { elements, name, publish: true, by: BY });
+  if (r.error || !r.library) { rt.toast(r.error ?? 'Nothing to export: change something first.', 'warning', 'UI Manager'); return r; }
+  rt.toast(`${r.library.name}: ${r.library.assets.length} asset(s) from ${r.library.elements.length} element(s), published to the hub library.`, 'success', 'UI Manager');
+  if (download && typeof document !== 'undefined') {
+    try {
+      const res = await pluginFetch(FOLDER, `library/${encodeURIComponent(r.library.id)}/download`);
+      if (res.ok) {
+        const url = URL.createObjectURL(await res.blob());
+        const link = document.createElement('a');
+        link.href = url; link.download = r.package ?? `${r.library.id}.ui-library.json`;
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      }
+    } catch { /* the package stays on the hub; the CLI and REST serve it too */ }
+  }
+  return r;
+}
+
 export function registerActions(rt: AxfRuntime): void {
   const a = rt.actions;
+  a.register('ui-manager.export', (args) => { const w = args.join(':').trim(); void exportLibrary(rt, w ? [w] : []); }, { label: 'UI Manager: export as an asset library (element id or words; default: everything changed)', params: true, effect: 'write' });
   a.register('ui-manager.select', (args) => { const w = args.join(':').trim(); if (w) void selectWords(rt, w); else openUiManager(rt); }, { label: 'UI Manager: select an element (id or words)', params: true, effect: 'navigate' });
   a.register('ui-manager.say', (args) => { const t = args.join(':').trim(); if (t) void say(rt, t); }, { label: 'UI Manager: say it ("select the main toolbar, set its transparency to 80")', params: true, effect: 'write' });
   a.register('ui-manager.view', ([v]) => {
