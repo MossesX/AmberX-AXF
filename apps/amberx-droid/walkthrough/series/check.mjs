@@ -1,12 +1,15 @@
 // Checks the series scripts: shape, unique ids, known skins and apps, running time near 3:00, 60-second cuts,
 // and the staging rules (staged screens are said to be a preview; real-only videos have none).
-// Usage: node apps/amberx-droid/walkthrough/series/check.mjs [--table]
+// Usage: node apps/amberx-droid/walkthrough/series/check.mjs [--table] [--acts]
+//   --acts  every recordable cut (series-<id>, series-<id>-60) as the recorder sees it: pieces, devices, and how each
+//           scene is recorded (a hand-written act, a live screen by route, the designer mock, or a card)
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SERIES, VIDEOS, scenesOf, wordCount, estimateSeconds } from './scripts.mjs';
 import { MORE } from './more/index.mjs';
 import { SCENES as MOCK_SCENES } from './mock/build.mjs';
+import { seriesIds, seriesWalkthrough } from './walkthrough.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = join(here, '../../../..');
@@ -83,8 +86,21 @@ if (process.argv.includes('--table')) {
     if (v.short) row(`     ${v.id} 60s`, shortAsVideo(v));
   }
 }
+// Every cut must load as a recordable walkthrough: a device and a starting page per piece, an act per scene.
+const acts = [];
+for (const id of seriesIds()) {
+  try {
+    const w = seriesWalkthrough(id);
+    for (const e of w.walkthroughErrors(w.WALKTHROUGH, w.CHAPTERS)) problems.push(`${id}: ${e}`);
+    const n = {}; for (const c of w.CHAPTERS) for (const x of c.scenes) n[x.plan] = (n[x.plan] ?? 0) + 1;
+    acts.push({ id, pieces: w.CHAPTERS.map((c) => `${c.id}:${c.device[0]}`).join(' '), n });
+  } catch (e) { problems.push(`${id}: ${e.message}`); }
+}
+if (process.argv.includes('--acts')) {
+  for (const a of acts) console.log(`${a.id.padEnd(34)} act ${String(a.n.act ?? 0).padStart(2)}  screen ${String(a.n.route ?? 0).padStart(2)}  mock ${String(a.n.mock ?? 0).padStart(2)}  card ${String(a.n.card ?? 0).padStart(2)}   ${a.pieces}`);
+}
 if (problems.length) {
   console.error(problems.map((p) => `✗ ${p}`).join('\n'));
   process.exit(1);
 }
-console.log(`✓ ${VIDEOS.length + MORE.length} videos OK (${MORE.filter((v) => v.short).length} with a 60-second cut)`);
+console.log(`✓ ${VIDEOS.length + MORE.length} videos OK (${MORE.filter((v) => v.short).length} with a 60-second cut), ${acts.length} recordable cuts`);

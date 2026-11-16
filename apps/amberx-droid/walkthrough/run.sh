@@ -4,6 +4,8 @@
 set -euo pipefail
 cd /rec-app
 cp /rec/*.mjs /rec/*.html .
+# the three-minute series (WALKTHROUGH=series-…) loads its scripts, acts and the skins' tokens from series/
+rm -rf series && cp -r /rec/series .
 trap 'rm -f "${OUT:-/out}/state.json"' EXIT
 node tts.mjs
 # VOICE_ONLY: edited lines only, cut from the last recording

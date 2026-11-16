@@ -61,7 +61,42 @@ Driving it: in the recorder, `h.mock('matrix', { skin: 'atelier', rows: ['Receip
 `scenes`, `skins`) does the same; `window.wtStep()` is the recorder's step hook. The mock is a recording prop, not a
 console screen: it has no console-control address and ships with nothing.
 
-What the next steps do with this:
+## Recording (s3)
 
-- s3 turns each `shot` into an `act` with the recorder helpers (`mock`, `step`, `skin` for staged scenes) and records each video separately.
+Every video is its own walkthrough for the recorder in `../` and is recorded on its own, in its own work folder
+(`/opt/amberx-walkthrough-rec/series-<id>`):
+
+| Walkthrough id | What |
+|---|---|
+| `series-<video id>` | the full video (35: the seven above and the 28 in `more/`) |
+| `series-<video id>-60` | its 60-second cut (13) |
+
+`walkthrough.mjs` turns a video into chapters → scenes with an `act` each, and splits a chapter where the device changes
+(a phone scene inside a desktop video is recorded on the phone layout as its own piece; the assembler fits every piece
+into the video's frame: 1920×1080 for desktop videos, 1080×1920 for phone ones). `acts.mjs` decides how each scene is
+recorded:
+
+| Kind | When | What the camera does |
+|---|---|---|
+| act | a hand-written act in `ACTS` | the exact clicks the shot needs (tabs, rows, the held call) |
+| screen | a rule in `ROUTES` matches the shot | opens that screen of the live app (console, axHub web read live, writes kept in the browser; AmberX on demo data) |
+| mock | a staged scene with `mock` | that scene of the designer mock in the video's skin, steps played |
+| card | story b-roll, a staged scene with no mock, a terminal line, the Android hub app, the end card | a card on the video's skin that says what it is (B-roll, Preview · not shipped yet, Terminal, On the device) |
+
+Desktop recordings show a visible arrow cursor that glides to every target and rings on a click (the real mouse follows,
+so hover states show); phone recordings keep the touch dot. Every scene's visible text goes through the secrets scan.
+
+```bash
+node apps/amberx-droid/walkthrough/series/check.mjs --acts          # every cut: pieces, devices, act / screen / mock / card per scene
+bash apps/amberx-droid/walkthrough/series/record.sh                 # the seven core videos, one after another
+bash apps/amberx-droid/walkthrough/series/record.sh commute expenses-60
+bash apps/amberx-droid/walkthrough/series/record.sh all             # every video and cut
+ONLY=queue bash apps/amberx-droid/walkthrough/series/record.sh orchestrator-agents   # re-record one piece
+```
+
+Each run goes through the VPS heavy slot (`framework/cli/agent-slots.mjs`) and leaves `publish/` (MP4, captions,
+chapters, poster) unpublished; s4 publishes.
+
+What the next step does with this:
+
 - s4 adds narration, sync, the themed player (each video's `skin`), MP4 export and publishing.

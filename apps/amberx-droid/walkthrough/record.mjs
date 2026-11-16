@@ -42,16 +42,52 @@ const explainerHtml = () => sideHtml('explainer.html');
 // The staged designer mock of the demo video series (series/mock/build.mjs → designer-mock.html) at EXPLAINER + 'mock'.
 const MOCK = `${EXPLAINER}mock`;
 const mockHtml = () => sideHtml('designer-mock.html');
+// Cards of the demo video series at EXPLAINER + 'card#<json>': a story b-roll slot, a Preview, a terminal line, a device
+// that isn't a web page, the end card. Drawn on the video's skin (series/mock/tokens.json: the skins' --fx-* tokens).
+const CARD = `${EXPLAINER}card`;
+const skinVars = (() => {
+  for (const d of [HERE, '/rec']) { try { return Object.fromEntries(JSON.parse(readFileSync(`${d}/series/mock/tokens.json`, 'utf8')).skins.map((k) => [k.id, k.vars])); } catch { /* next */ } }
+  return {};
+})();
+const cardHtml = () => `<!doctype html><meta charset=utf-8><title>card</title><style id=vars></style><style>
+html,body{margin:0;height:100%;background:var(--fx-bg);color:var(--fx-text);font-family:var(--fx-font)}
+.c{box-sizing:border-box;height:100%;display:flex;flex-direction:column;justify-content:center;gap:calc(var(--fx-space) * 2);padding:calc(var(--fx-space) * 8)}
+.k{align-self:flex-start;background:var(--fx-accent);color:var(--fx-accent-text);border-radius:var(--fx-radius-lg);padding:calc(var(--fx-space) / 2) calc(var(--fx-space) * 1.5);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.t{color:var(--fx-muted);font-size:calc(var(--fx-font-size) * 1.4)}
+.x{font-family:var(--fx-font-display);font-size:calc(var(--fx-font-size) * 3);line-height:1.2;max-width:60ch}
+.k[data-kind=terminal]+.t+.x{font-family:var(--fx-font-mono);background:var(--fx-surface);border-radius:var(--fx-radius-lg);padding:calc(var(--fx-space) * 2)}
+</style><div class=c><div class=k id=k></div><div class=t id=t></div><div class=x id=x></div></div><script>
+const VARS = ${JSON.stringify(skinVars)};
+const LABEL = { story: 'B-roll', preview: 'Preview · not shipped yet', terminal: 'Terminal', device: 'On the device', end: 'AmberX in three minutes' };
+function show() {
+  let o = {}; try { o = JSON.parse(decodeURIComponent(location.hash.slice(1))); } catch {}
+  const v = VARS[o.skin] || Object.values(VARS)[0] || {};
+  document.getElementById('vars').textContent = ':root{' + Object.entries(v).map(([k, x]) => k + ':' + x).join(';') + '}';
+  const k = document.getElementById('k'); k.textContent = LABEL[o.kind] || ''; k.dataset.kind = o.kind || '';
+  document.getElementById('t').textContent = o.kind === 'end' ? '' : o.title || '';
+  document.getElementById('x').textContent = o.kind === 'end' ? (o.title || '') + (o.text ? ' — ' + o.text : '') : o.text || '';
+}
+addEventListener('hashchange', show); show();
+</script>`;
 const SCALE = 2;
 const durations = JSON.parse(readFileSync(`${OUT}/durations.json`, 'utf8'));
 const seed = JSON.parse(readFileSync(`${OUT}/seed.json`, 'utf8'));
 for (const d of ['raw', 'shots', 'texts']) mkdirSync(`${OUT}/${d}`, { recursive: true });
 
-// A touch dot (phone layout: no mouse pointer), the highlight ring, and the privacy blur.
-const PAGE_SETUP = `addEventListener('DOMContentLoaded', () => {
+// A touch dot (phone layout: no mouse pointer) or a visible arrow cursor (desktop: the screencast has no pointer of its
+// own), the highlight ring, and the privacy blur.
+const CURSOR = {
+  phone: '#wt-dot{position:fixed;left:-40px;top:-40px;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(255,170,40,.28);border:2px solid rgba(255,170,40,.9);z-index:2147483647;pointer-events:none;transition:left .35s ease,top .35s ease,transform .12s}',
+  desktop: '#wt-dot{position:fixed;left:-40px;top:-40px;width:28px;height:28px;z-index:2147483647;pointer-events:none;transition:left .45s cubic-bezier(.3,.7,.3,1),top .45s cubic-bezier(.3,.7,.3,1),transform .12s;transform-origin:3px 3px;' +
+    'background:no-repeat url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><path d="M3 2v20l5.5-5 3.6 8.4 3.4-1.5-3.6-8.2H19z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>') + '");' +
+    'filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}' +
+    '#wt-dot::after{content:"";position:absolute;left:-14px;top:-14px;width:32px;height:32px;border-radius:50%;border:3px solid rgba(255,176,46,.95);opacity:0;transform:scale(.4);transition:opacity .2s,transform .3s}' +
+    '#wt-dot.press::after{opacity:1;transform:scale(1)}',
+};
+const pageSetup = (kind) => `addEventListener('DOMContentLoaded', () => {
   const st = document.createElement('style');
   st.textContent = 'input[type=password],[data-amberx-sensitive]{filter:blur(9px)!important}' +
-    '#wt-dot{position:fixed;left:-40px;top:-40px;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(255,170,40,.28);border:2px solid rgba(255,170,40,.9);z-index:2147483647;pointer-events:none;transition:left .35s ease,top .35s ease,transform .12s}' +
+    ${JSON.stringify(kind === 'desktop' ? CURSOR.desktop : CURSOR.phone)} +
     '#wt-ring{position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #ffb02e;border-radius:10px;box-shadow:0 0 0 4000px rgba(0,0,0,.28),0 0 18px #ffb02e;transition:all .3s ease}' +
     '#wt-tag{position:fixed;z-index:2147483647;pointer-events:none;background:#ffb02e;color:#1b1203;font:700 14px/1.2 system-ui,sans-serif;padding:5px 9px;border-radius:8px;white-space:nowrap}';
   document.head.appendChild(st);
@@ -104,8 +140,11 @@ async function contextFor(kind) {
     recordVideo: { dir: `${OUT}/raw/tmp`, size: { width: d.viewport.width, height: d.viewport.height } },
     permissions: ['microphone'],
   });
-  await c.addInitScript(PAGE_SETUP);
-  await c.route(`${EXPLAINER}**`, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: route.request().url().startsWith(MOCK) ? mockHtml() : explainerHtml() }));
+  await c.addInitScript(pageSetup(kind));
+  await c.route(`${EXPLAINER}**`, (route) => {
+    const u = route.request().url();
+    return route.fulfill({ status: 200, contentType: 'text/html', body: u.startsWith(MOCK) ? mockHtml() : u.startsWith(CARD) ? cardHtml() : explainerHtml() });
+  });
   if (d.data === 'demo') demo = await installDemoHub(c, seed, hubLog);
   else await installReadOnly(c, hubLog);
   // Registered last so it wins: the appearance document as this recording should see it (RANDOM_LOOK chapters).
@@ -121,13 +160,18 @@ async function contextFor(kind) {
   return c;
 }
 
-function helpers(page, log) {
+function helpers(page, log, kind = 'phone') {
   const soft = async (what, fn) => { try { await fn(); } catch (e) { log.push(`  ! ${what}: ${String(e.message).split('\n')[0].slice(0, 160)}`); } };
   const loc = (sel) => page.locator(sel).filter({ visible: true }).first();
-  const dot = (x, y, press = false) => page.evaluate(([x, y, press]) => {
-    const d = document.getElementById('wt-dot'); if (!d) return;
-    d.style.left = `${x}px`; d.style.top = `${y}px`; d.style.transform = press ? 'scale(.7)' : '';
-  }, [x, y, press]).catch(() => {});
+  // The drawn pointer glides there; on desktop the real mouse follows, so hover states show as they would for a person.
+  const dot = async (x, y, press = false) => {
+    await page.evaluate(([x, y, press, desk]) => {
+      const d = document.getElementById('wt-dot'); if (!d) return;
+      d.style.left = `${x}px`; d.style.top = `${y}px`;
+      if (desk) d.classList.toggle('press', press); else d.style.transform = press ? 'scale(.7)' : '';
+    }, [x, y, press, kind === 'desktop']).catch(() => {});
+    if (kind === 'desktop') await page.mouse.move(x, y, { steps: 8 }).catch(() => {});
+  };
   const unring = () => page.evaluate(() => { document.getElementById('wt-ring')?.remove(); document.getElementById('wt-tag')?.remove(); }).catch(() => {});
   const ring = async (l, label) => {
     await l.scrollIntoViewIfNeeded({ timeout: 4000 });
@@ -168,6 +212,20 @@ function helpers(page, log) {
       if (!page.url().startsWith(MOCK)) { await page.goto(`${MOCK}#${id}${qs ? `?${qs}` : ''}`, { waitUntil: 'domcontentloaded' }); await page.waitForTimeout(600); }
       else await page.evaluate(([id, params]) => window.wtMock?.scene(id, params), [id, params]);
       await page.waitForTimeout(900);
+    }),
+    // another live app in the same page (a desktop chapter moving from the console to axHub); nothing when it's already there
+    app: (url) => soft(`app ${url}`, async () => {
+      if (new URL(page.url()).origin === new URL(url).origin) return;
+      await unring();
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }); await page.waitForTimeout(3500);
+    }),
+    // a series card (story b-roll slot, Preview, terminal, device, end card) on the video's skin
+    card: (o) => soft(`card ${o.kind}`, async () => {
+      await unring();
+      const href = `${CARD}#${encodeURIComponent(JSON.stringify(o))}`;
+      if (!page.url().startsWith(CARD)) await page.goto(href, { waitUntil: 'domcontentloaded' });
+      else await page.evaluate((h) => { location.hash = h; }, href.split('#')[1]);
+      await page.waitForTimeout(600);
     }),
     skin: (id) => soft(`skin ${id}`, async () => { await page.evaluate((id) => window.wtMock?.skin(id), id); await page.waitForTimeout(900); }),
     step: () => soft('step', () => page.evaluate(() => window.wtStep?.())),
@@ -295,8 +353,8 @@ for (const ch of CHAPTERS) {
   const page = await ctx.newPage();
   const t0 = Date.now();
   const log = [`## ${ch.id}${forcedLook ? ` (look: ${forcedLook.id})` : ''}`];
-  const h = helpers(page, log);
-  await page.goto(WALKTHROUGH.url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch((e) => log.push(`  ! open: ${e.message}`));
+  const h = helpers(page, log, kind);
+  await page.goto(ch.url ?? WALKTHROUGH.url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch((e) => log.push(`  ! open: ${e.message}`));
   await page.waitForTimeout(5000);
   const look = forcedLook ? forcedLook.id : await designPackageOf(page);
   if (ch.start && ch.start !== 'home' && kind === 'phone') await h.go(ch.start);
@@ -310,7 +368,7 @@ for (const ch of CHAPTERS) {
     const left = start + dur + 0.6 - (Date.now() - t0) / 1000;
     if (left > 0) await page.waitForTimeout(left * 1000);
     const end = (Date.now() - t0) / 1000;
-    scenes.push({ i, start, end, dur, say: s.say });
+    scenes.push({ i, start, end, dur, say: s.say, ...(s.plan ? { plan: s.plan } : {}) });
     writeFileSync(`${OUT}/texts/${ch.id}-${i}.txt`, await visibleText(page));
     await page.screenshot({ path: `${OUT}/shots/${ch.id}-${i}.jpg`, quality: 60 }).catch(() => {});
     log.push(`  ${i} ${start.toFixed(1)}-${end.toFixed(1)}s`);

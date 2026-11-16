@@ -1,5 +1,6 @@
 // Which walkthrough a run works on, and the edits made to it in AmberX (Walkthrough → Edit the voice).
-//   WALKTHROUGH=<id>   one of WALKTHROUGHS (default amberx-app, the AmberX tour)
+//   WALKTHROUGH=<id>   one of WALKTHROUGHS (default amberx-app, the AmberX tour), or a video of the three-minute series
+//                      (series-<video id>, series-<video id>-60: series/walkthrough.mjs)
 //   $OUT/voice.json    the voice edits (walkthrough-voice@1: voice, speed, per-scene narration), or VOICE_OVERRIDES_B64
 // Every recorder step (tts, record, assemble, check) loads the script through here, so an edited line is voiced,
 // timed and captioned the same way. The edits are data only: a voice name, a number and plain text per scene.
@@ -54,9 +55,13 @@ function readOverrides(out) {
 
 /** The walkthrough with its edits applied: { WALKTHROUGH, CHAPTERS, walkthroughErrors, overrides }. */
 export async function loadWalkthrough(id = process.env.WALKTHROUGH || 'amberx-app', out = process.env.OUT || '/out') {
-  const path = WALKTHROUGHS[id];
-  if (!path) throw new Error(`no walkthrough "${id}" (known: ${Object.keys(WALKTHROUGHS).join(', ')})`);
-  const mod = await import(path);
+  let mod;
+  if (id.startsWith('series-')) mod = (await import('./series/walkthrough.mjs')).seriesWalkthrough(id);
+  else {
+    const path = WALKTHROUGHS[id];
+    if (!path) throw new Error(`no walkthrough "${id}" (known: ${Object.keys(WALKTHROUGHS).join(', ')}, series-<video id>)`);
+    mod = await import(path);
+  }
   const overrides = normalizeOverrides(readOverrides(out), mod.CHAPTERS);
   const WALKTHROUGH = { ...mod.WALKTHROUGH, voice: overrides.voice ?? mod.WALKTHROUGH.voice, speed: overrides.speed ?? mod.WALKTHROUGH.speed ?? 1 };
   const CHAPTERS = mod.CHAPTERS.map((c) => ({ ...c, scenes: c.scenes.map((s, i) => ({ ...s, say: overrides.lines[`${c.id}-${i}`] ?? s.say })) }));
