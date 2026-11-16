@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:15 UTC · `duplicate-gate-vps-checks-shipped` s1 done, → running (all) · orchestrator
 - 2026-11-16 13:15 UTC · `phone-connect-small-android-companion` → queued (all) · mcp
 - 2026-11-16 13:15 UTC · `voice-designer-plugin-built-each` note (all) · orchestrator
 - 2026-11-16 13:15 UTC · `phone-connect-small-android-companion` → running (all) · mcp
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 18:51 UTC · `settings-interface-gear-every-plugin` s2 done, note (all) · orchestrator
 - 2026-11-16 18:51 UTC · `amberx-open-url-must-open-page-even-when` s2 done (all) · orchestrator
 - 2026-11-16 18:52 UTC · `settings-interface-gear-every-plugin` → queued, note (all) · pipeline
+- 2026-11-16 18:52 UTC · `settings-interface-gear-every-plugin` → running, note (all) · pipeline
 
 ## Token passes (log)
 

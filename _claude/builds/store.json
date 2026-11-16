@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6665,
- "updatedAt": "2026-11-16T18:52:16.481Z",
+ "rev": 6666,
+ "updatedAt": "2026-11-16T18:52:33.942Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244201,7 +244201,7 @@
    "title": "Settings interface and gear for every plugin",
    "category": "",
    "detail": "Brett: every plugin needs a settings interface. Audit: 44 plugins with a screen; 10 have no settings tab (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review), and hub-sync's screen has no gear. Check plugins WITHOUT a screen too. Give EVERY plugin a Settings → Plugins sub-tab (at minimum enable/disable, info, logs, plus its real options), and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when any plugin lacks a settings tab, or a plugin screen lacks the gear. Full API parity.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244209,7 +244209,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T18:52:07.087Z",
+   "updatedAt": "2026-11-16T18:52:09.899Z",
    "builtAt": "",
    "notes": [
     {
@@ -244259,6 +244259,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 26 steps left: back in the Queue (run 1).",
      "at": "2026-11-16T18:52:07.087Z"
+    },
+    {
+     "text": "Dispatch gate: settings-interface-gear-every-plugin still has axf-settings-interface-gear-every-plugin--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-16T18:52:09.899Z"
     }
    ],
    "approvals": [
@@ -244290,7 +244294,7 @@
     "queuedAt": "2026-11-16T18:27:41.302Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-settings-interface-gear-every-plugin--gina",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T18:34:01.102Z",
@@ -245034,7 +245038,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
