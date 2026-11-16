@@ -8,6 +8,9 @@
     POST /scroll    {dir, amount?, to?, address?}   scroll the active pane (or the pane of `address`)
     POST /plugins/{id}/enable|disable  {force?, by?}  turn a plugin on / off (server-side, no browser needed)
     POST /voice     {text, to?}             a spoken phrase → its command, run; `say` = the line to speak back
+    POST /navigate  {url, newTab?, to?}     open-url-route@1 console-tab: the tab Brett focused last opens the page
+                                            (amberxai.com https only) → open-url-result@1; 503 + fallThrough = try the phone
+    GET  /navigate/last?n=                  the last navigate requests and their routes / results
 
 Commands that need the page go to the open console over the console-commands relay (console-commands@1 `control`); the
 answer is the console's own envelope with its live `state`. No console open → 503 `unavailable` with `openUrl`.
@@ -341,6 +344,46 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
     return {**ans, "heard": text, "intent": intent, "command": {k: v for k, v in cmd.items() if k != "$axf"}, "say": cc.voice_reply(intent, ans, (hit or {}).get("label", ""))}
 
 
+NAVIGATE_PERM = "control.console.navigate"
+
+
+def open_url(url: Any, new_tab: Any = None, by: str = "api", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent") -> dict[str, Any]:
+    """open-url-route@1 `console-tab` (POST /navigate, MCP console_open_url, `axf console open-url`, AmberX): the console
+    tab Brett focused last opens the page → open-url-result@1 with `ok` (= opened) and `fallThrough` (try the phone).
+    Navigation, so policy `allow`; the host allowlist (amberxai.com) refuses everything else before any tab is asked."""
+    import open_url_route as our
+    g = grants if grants is not None else {"*"}
+    policy = {"tag": "allow", "effect": "navigate", "readOnly": True, "destructive": False, "requires": NAVIGATE_PERM}
+    cmd = {"verb": "navigate", "address": str(url or "")[:300]}
+    try:
+        if not granted(g, NAVIGATE_PERM):
+            raise cc.ControlError("denied", f"navigate needs {NAVIGATE_PERM}", requires=NAVIGATE_PERM)
+        check_rate(f"{audience}|{by}", False)
+        a = our.allowed_url(url)
+        if not a["ok"]:
+            r = {**our.console_result(str(url or "")[: our.MAX_URL], False, "url-refused", detail=a["detail"]), "ok": False, "code": "invalid", "field": "url"}
+        else:
+            relay = _relay()
+            if relay is None or not hasattr(relay, "navigate"):
+                r = {**our.console_result(a["url"], False, "no-console", detail="the Console commands plugin is off"), "ok": False, "code": "unavailable", "because": "no relay"}
+            else:
+                nb = new_tab if isinstance(new_tab, bool) else None
+                res = relay.navigate(a["url"], nb, by, audience, to)
+                r = {**res, "ok": bool(res.get("opened")), **({} if res.get("opened") else {"code": "unavailable" if res.get("fallThrough") else "invalid"})}
+    except cc.ControlError as e:
+        r = e.envelope()
+    r = {"$axf": r.get("$axf", "open-url-result@1"), **r, "policy": {k: policy[k] for k in ("tag", "effect", "readOnly", "destructive")}}
+    audit(cmd, r, by, audience, policy)
+    return r
+
+
+def open_url_last(audience: str = OWNER, n: int = 20) -> dict[str, Any]:
+    """GET /navigate/last: the last navigate requests (newest first) and their routes / results."""
+    relay = _relay()
+    items = relay.navigated(audience, n) if relay is not None and hasattr(relay, "navigated") else []
+    return {"$axf": "open-url-route@1", "ok": True, "items": items, "count": len(items)}
+
+
 def _kinds(v: str | None) -> list[str] | None:
     ks = [k.strip() for k in (v or "").split(",") if k.strip()]
     return ks or None
@@ -406,6 +449,21 @@ def router_for(auth: Any) -> APIRouter:
         if not text:
             return fail(cc.ControlError("invalid", "voice needs text", field="text"))
         return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent")))
+
+    @r.post("/navigate")
+    async def navigate_route(request: Request) -> JSONResponse:
+        """{url, newTab?, to?}: the console tab Brett focused last opens the page (open-url-route@1 console-tab).
+        200 = opened; 503 = no tab could (`fallThrough: true`, try the phone); 400 = not one of Brett's own https pages."""
+        b = await _body(request)
+        audience, name = audience_of(request)
+        r = await run_in_threadpool(open_url, b.get("url"), b.get("newTab"), str(b.get("by") or name)[:80], audience, grants_of(request), str(b.get("to") or "recent"))
+        status = 200 if r.get("ok") else 429 if r.get("because") == "rate limit" else cc.STATUS.get(str(r.get("code") or "unexpected"), 500)
+        return JSONResponse(r, status_code=status, headers={"X-AXF-Policy": "allow"})
+
+    @r.get("/navigate/last")
+    async def navigate_last(request: Request, n: int = 20) -> JSONResponse:
+        audience, _ = audience_of(request)
+        return JSONResponse(open_url_last(audience, n))
 
     @r.post("/plugins/{ref}/{op}")
     async def plugin(request: Request, ref: str, op: str) -> JSONResponse:

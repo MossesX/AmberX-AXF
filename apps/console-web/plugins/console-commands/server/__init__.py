@@ -753,6 +753,66 @@ def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: st
     return out
 
 
+NAVIGATE_ACK_S = 2.5    # how long the focused console tab gets to say it opened the page before the caller moves on
+_navigated: deque[dict[str, Any]] = deque(maxlen=20)  # the last navigate requests and their open-url-result@1
+
+
+def navigate(url: str, new_tab: bool | None = None, by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+    """open-url-route@1's first route, `console-tab`: the console tab Brett focused last (live, on screen) opens `url`
+    (a console route in place, another amberxai.com page in a new tab) and acks {opened, mode, reason}. → an
+    open-url-result@1; not opened → route none with `fallThrough` so the caller tries the phone's routes next.
+    Never queued: a page that waits for a tab to wake up is the wrong page by then."""
+    import open_url_route as our
+    a = our.allowed_url(url)
+    started = _now()
+    if not a["ok"]:
+        return _navigated_record(our.console_result(str(url or "")[: our.MAX_URL], False, "url-refused", detail=a["detail"]), by, audience, started, [])
+    url = a["url"]
+    now = _now()
+    with _lock:
+        cs = [c for c in _clients.values() if c["audience"] == audience and c.get("queue") is not None and (to in ("recent", "") or c["id"] == to)]
+        live = [c for c in cs if _live(c, now)]
+        live.sort(key=lambda c: (c.get("front", True) is False, -float(c.get("lastUsed") or 0)))
+        pick = live[0]["id"] if live else ""
+        front = bool(live and live[0].get("front", True) is not False)
+    if not pick:
+        return _navigated_record(our.console_result(url, False, "console-stale" if cs else "no-console"), by, audience, started, [])
+    if not front:
+        return _navigated_record(our.console_result(url, False, "console-behind"), by, audience, started, [])
+    mid = "nav-" + os.urandom(8).hex()
+    message = {"$axf": "console-command@1", "id": mid, "op": "navigate", "url": url, **({"newTab": bool(new_tab)} if new_tab is not None else {}),
+               "by": by or "api", "at": _iso(_now())}
+    tried, acks = try_in_turn([pick], message, audience, each=NAVIGATE_ACK_S)
+    with _lock:
+        _late.pop(mid, None)  # a late navigate opens nothing more: nothing to stop
+    a2 = acks.get(pick)
+    if not a2:
+        return _navigated_record(our.console_result(url, False, "console-stale"), by, audience, started, tried)
+    res = a2.get("result") if isinstance(a2.get("result"), dict) else {}
+    opened = bool(a2.get("ok")) and res.get("opened") is True
+    mode = str(res.get("mode") or "")[:20]
+    reason = "console-visible" if opened else str(res.get("reason") or "attempt-failed")
+    out = our.console_result(url, opened, reason, mode=mode, detail="" if opened else str(a2.get("message") or ""))
+    return _navigated_record({**out, "client": pick}, by, audience, started, tried)
+
+
+def _navigated_record(result: dict[str, Any], by: str, audience: str, started: float, tried: list[str]) -> dict[str, Any]:
+    out = {**result, "delivery": {"how": "live" if tried else "none", "tried": tried, "ms": int((_now() - started) * 1000)}}
+    with _lock:
+        _navigated.appendleft({"at": _iso(_now()), "by": by or "api", "audience": audience, "url": out.get("url", ""), "route": out["route"], "opened": out["opened"],
+                               "reason": out["reason"], "mode": out.get("mode", ""), "client": out.get("client", ""), "ms": out["delivery"]["ms"]})
+    _recent.appendleft({"at": _iso(_now()), "by": by or "api", "target": "console.navigate", "path": out.get("url", ""), "action": "navigate", "ok": bool(out["opened"]),
+                        "code": "" if out["opened"] else out["reason"], "message": out.get("message", ""), "audience": audience, "how": out["delivery"]["how"],
+                        "delivered": [{"client": out["client"], "ok": True, "message": out.get("message", "")}] if out.get("client") else []})
+    return out
+
+
+def navigated(audience: str = OWNER, n: int = 20) -> list[dict[str, Any]]:
+    """The last navigate requests (newest first) of this audience: url, route, opened, reason, mode, client, ms."""
+    with _lock:
+        return [{k: v for k, v in e.items() if k != "audience"} for e in _navigated if e["audience"] == audience][: max(1, min(n, 20))]
+
+
 CONTROL_VERBS = ("open", "state", "press", "set", "scroll", "focus", "search", "list", "plugin.enable", "plugin.disable")
 
 
@@ -1106,6 +1166,13 @@ class ConsoleCommands:
     def control(self, command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
         """A console-control@1 command for the open console → its answer (result + live state), or unavailable + openUrl."""
         return control(command, by, audience, to)
+
+    def navigate(self, url: str, new_tab: bool | None = None, by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+        """open-url-route@1 `console-tab`: the focused console tab opens `url` → open-url-result@1 (+ fallThrough)."""
+        return navigate(url, new_tab, by, audience, to)
+
+    def navigated(self, audience: str = OWNER, n: int = 20) -> list[dict[str, Any]]:
+        return navigated(audience, n)
 
     def queue_for_owner(self, command: dict[str, Any], grants: list[str], by: str = "") -> dict[str, Any]:
         e = queue_for_owner(command, grants, by)
