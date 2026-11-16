@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6765,
- "updatedAt": "2026-11-16T19:38:06.528Z",
+ "rev": 6779,
+ "updatedAt": "2026-11-16T19:45:30.693Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -194268,15 +194268,16 @@
    "title": "Owner recognized everywhere + veto countdown only on shell commands",
    "category": "axhub",
    "detail": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
-   "status": "queued",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/owner-recognized-everywhere-veto",
    "pr": "#601",
+   "mergedAt": "2026-11-16T19:09:18Z",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-16T18:30:25.768Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:42:13Z",
+   "builtAt": "2026-11-16T19:41:08.651Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -194385,6 +194386,14 @@
     {
      "text": "On hold (cli): Brett review Nov 16: on hold. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-16T18:30:25.768Z"
+    },
+    {
+     "text": "Reconciler: PR #601 merged",
+     "at": "2026-11-16T19:41:08.651Z"
+    },
+    {
+     "text": "Shipped manifest sm-owner-recognized-everywhere-veto rev 1 sent to Shipped features (orchestrator): landed d46ec0f78, 20 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-16T19:42:13Z"
     }
    ],
    "approvals": [],
@@ -194435,6 +194444,12 @@
     "heldAt": "2026-11-16T18:30:25.768Z",
     "heldBy": "cli",
     "heldWhy": "Brett review Nov 16: on hold"
+   },
+   "shipped": {
+    "id": "sm-owner-recognized-everywhere-veto",
+    "rev": 1,
+    "at": "2026-11-16T19:42:13Z",
+    "landedCommit": "d46ec0f788e957fe04dd915465c9428e5a8d790e"
    },
    "steps": [
     {
@@ -194512,7 +194527,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -233044,7 +233059,7 @@
    "title": "Every grid: 1 or 2 rows per item, set by the skin",
    "category": "",
    "detail": "Every grid/table/list in the console shows each item as 1 or 2 rows when collapsed, set by the active skin (a skin token, e.g. grid row-lines = 1 or 2), and expands on tap for details. Audit every grid in every plugin and move it onto the shared framework grid/row control so the skin decides; no plugin hard-codes its own row layout. Use the existing grid/tab-group token sets (#654). Skin editor gets the 1-row/2-row setting with live preview. API parity (read/set the setting via REST/MCP/CLI/voice). Tests, check-theme and check-controls green, help, Shipped features. Land when done.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -233052,7 +233067,7 @@
    "pr": "#707",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:17.286Z",
-   "updatedAt": "2026-11-15T12:50:54.308Z",
+   "updatedAt": "2026-11-16T19:44:03.134Z",
    "builtAt": "",
    "notes": [
     {
@@ -233086,6 +233101,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T12:50:54.308Z"
+    },
+    {
+     "text": "Clash note from hotfix-orchestrator-grid-columns-don-t (PR #729): DataGrid now draws 1 or 2 lines per row on one shared column definition (rowLines prop > axf.grid.rowLines.<grid id> > axf.grid.rowLines > 1; root attr data-axf-row-lines; primary = fixed columns on line 1). s5 here should feed the skin token grid.rowLines into that rather than add a second row renderer for DataGrid.",
+     "at": "2026-11-16T19:44:03.133Z"
     }
    ],
    "approvals": [],
@@ -233731,7 +233750,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -241206,7 +241225,7 @@
    "pr": "#723",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T18:41:07.823Z",
+   "updatedAt": "2026-11-16T19:41:08.651Z",
    "builtAt": "",
    "notes": [
     {
@@ -241276,6 +241295,10 @@
     {
      "text": "Reconciler: PR #723 names s1, s2, s3, s4, s5, s6, s7, s10, s11 done",
      "at": "2026-11-16T18:01:00.143Z"
+    },
+    {
+     "text": "Reconciler: PR #723 names s1, s2, s3, s4, s5, s6, s7, s9, s10, s11, s12, s13, s15 done",
+     "at": "2026-11-16T19:41:08.651Z"
     }
    ],
    "approvals": [],
@@ -241555,12 +241578,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-16T19:41:08.651Z",
+     "note": "PR #723 (claude/get-main-green-unblock-lander-land-axf)",
+     "rev": 2,
      "createdAt": "2026-11-16T16:25:07.589Z",
-     "updatedAt": "2026-11-16T16:25:07.589Z"
+     "updatedAt": "2026-11-16T19:41:08.652Z"
     },
     {
      "id": "s10",
@@ -241821,7 +241844,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -241845,7 +241868,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:37:56.738Z",
+   "updatedAt": "2026-11-16T19:45:25.792Z",
    "builtAt": "",
    "notes": [
     {
@@ -242433,12 +242456,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:45:25.792Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T19:45:26.513Z"
     },
     {
      "id": "s21",
@@ -242548,7 +242571,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244318,7 +244341,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:36:41.882Z",
+   "updatedAt": "2026-11-16T19:44:20.182Z",
    "builtAt": "",
    "notes": [
     {
@@ -244721,12 +244744,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:38:42.513Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:38:42.836Z"
     },
     {
      "id": "s11",
@@ -244746,12 +244769,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:41:50.990Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:41:51.285Z"
     },
     {
      "id": "s12",
@@ -244771,12 +244794,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:44:20.182Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:44:20.572Z"
     },
     {
      "id": "s13",
@@ -245179,7 +245202,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -245195,16 +245218,16 @@
    "title": "Hotfix: orchestrator grid columns don't line up",
    "category": "",
    "detail": "Brett: in the Build Orchestrator, the Pending grid (and every other tab's grid) has columns that don't line up; it looks like trash. Likely caused by the new skin Brett built on Fable (console-look-becomes-default-axhub-skin / every-grid-1-2-rows-per-item-set-skin). Fix the grid so header and every row share the same column widths (CSS grid template or a shared column definition from the grid asset tokens), in 1-row and 2-row modes, under every skin. Check every orchestrator tab and the other grids in the console. Screenshot before and after (headless Chrome, signed in). Add a test that fails when header and row column edges differ. Land it, redeploy, and check by hand on the live console.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/hotfix-orchestrator-grid-columns-don-t",
-   "pr": "",
+   "pr": "#729",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-16T19:14:54.141Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T19:44:20.879Z",
+   "builtAt": "2026-11-16T19:44:20.879Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -245225,6 +245248,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-orchestrator-grid-columns-don-t--lenny, shared account login)",
      "at": "2026-11-16T18:33:48.489Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-orchestrator-grid-columns-don-t--lenny: brief only · start 17.9K tokens ($0.06) · cost $6.71 · 180 turns · 6 tools, MCP none",
+     "at": "2026-11-16T19:44:20.879Z"
+    },
+    {
+     "text": "Phase 1 done: PR #729, in the merge queue. Header and rows share one column definition (subgrid); 1 or 2 lines per row via setting:axf.grid.rowLines. grid-align 420 cases, 0 failures (was 52). UI Review r-20261116-k7rk501 waiting. Still to do after landing + redeploy: hand check on the live console signed in.",
+     "at": "2026-11-16T19:43:57.392Z"
     }
    ],
    "approvals": [],
@@ -245496,12 +245527,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:41:07.864Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:33:17.177Z",
-     "updatedAt": "2026-11-16T18:33:17.177Z"
+     "updatedAt": "2026-11-16T19:41:08.267Z"
     },
     {
      "id": "s10",
@@ -245522,12 +245553,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:42:11.766Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:33:17.177Z",
-     "updatedAt": "2026-11-16T18:33:17.177Z"
+     "updatedAt": "2026-11-16T19:42:12.203Z"
     },
     {
      "id": "s11",
@@ -245549,12 +245580,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:43:53.433Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:33:17.177Z",
-     "updatedAt": "2026-11-16T18:33:17.177Z"
+     "updatedAt": "2026-11-16T19:43:53.934Z"
     }
    ],
    "profiles": [
@@ -245565,7 +245596,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -245581,7 +245612,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -245589,7 +245620,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T18:52:44.783Z",
+   "updatedAt": "2026-11-16T19:41:08.651Z",
    "builtAt": "",
    "notes": [
     {
@@ -245619,6 +245650,10 @@
     {
      "text": "Headless run axf-amberx-open-url-must-open-page-even-when--joey: brief only · start 17.8K tokens ($0.12) · cost $4.54 · 41 turns · 6 tools, MCP none",
      "at": "2026-11-16T18:52:44.783Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T19:41:08.651Z"
     }
    ],
    "approvals": [],
@@ -245656,7 +245691,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T19:42:07.484Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -246051,7 +246092,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246852,7 +246893,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T19:32:57.850Z",
+   "updatedAt": "2026-11-16T19:44:56.851Z",
    "builtAt": "",
    "notes": [
     {
@@ -246901,12 +246942,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T19:19:15.405Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-auto-lander-grid-one-row-per-build--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T19:32:50.439Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:21:53.865Z",
@@ -246916,9 +246957,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ad17b5ca-3671-43f7-8bd9-6757abe1c7a8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:32:50.439Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -246927,7 +246968,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:32:50.439Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -246948,12 +246989,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:44:47.517Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-16T19:21:53.865Z",
-     "updatedAt": "2026-11-16T19:26:54.812Z"
+     "updatedAt": "2026-11-16T19:44:48.074Z"
     },
     {
      "id": "s4",
@@ -246970,12 +247011,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:44:56.851Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:29:11.950Z",
-     "updatedAt": "2026-11-16T19:29:12.356Z"
+     "updatedAt": "2026-11-16T19:44:57.223Z"
     },
     {
      "id": "s2",
@@ -247053,11 +247094,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/toolbars-moved-to-side-become-vertical",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:37:53.578Z",
+   "updatedAt": "2026-11-16T19:41:08.651Z",
    "builtAt": "",
    "notes": [
     {
@@ -247091,6 +247132,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-toolbars-moved-to-side-become-vertical--joey, shared account login)",
      "at": "2026-11-16T19:32:34.136Z"
+    },
+    {
+     "text": "Reconciler: branch claude/toolbars-moved-to-side-become-vertical (no PR yet)",
+     "at": "2026-11-16T19:41:08.651Z"
     }
    ],
    "approvals": [],
@@ -247220,7 +247265,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
