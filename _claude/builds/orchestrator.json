@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:06:24.164Z",
+ "updatedAt": "2026-11-16T13:06:34.429Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -154143,16 +154143,26 @@
    "title": "Duplicate gate: VPS checks Shipped features before any build is filed or split",
    "category": "",
    "detail": "A VPS-run gate (plain code, no Claude tokens) registered as a 'before' rule in the Gate & rules Build rules store, doer VPS. Before any build is filed, queued or split, the VPS checks the ONE true feature store (Shipped features + in-progress records) AND main (plugins, files, settings). It also checks the lander/plugin's own state and log, so a feature that exists but is switched off is caught (e.g. auto-land existed on main but was off since Nov 4 and got rebuilt ~5 times). If a match is found, it BLOCKS the build and tells Brett what already exists, where it is, whether it's on or off, and what single setting or fix is actually needed. He can override with one tap/voice ('build it anyway'). Also blocks a new build that duplicates an already-queued/running/built-but-unlanded build, and points to that one instead. Fuzzy matching on titles, said text, plugin names and settings keys, with a similarity score shown. Log every block in Gate History. API parity (REST/MCP/CLI/voice). Tests: auto-land case must be caught. Land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-16T13:06:22.511Z",
-   "updatedAt": "2026-11-16T13:06:22.511Z",
+   "updatedAt": "2026-11-16T13:06:29.367Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-16T13:06:24.988Z"
+    },
+    {
+     "text": "Brett (Nov 16): build this INSIDE the Gate & rules plugin (apps/console-web/plugins/gate, landed Nov 15) as a rule in its Build rules tab, doer VPS. No new plugin. Blocks and overrides show in the plugin's History tab.",
+     "at": "2026-11-16T13:06:29.367Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
