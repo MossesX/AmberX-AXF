@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6369,
- "updatedAt": "2026-11-16T13:11:26.610Z",
+ "rev": 6370,
+ "updatedAt": "2026-11-16T13:11:36.089Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -190072,7 +190072,7 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -190080,7 +190080,7 @@
    "pr": "#685",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-16T13:11:25.054Z",
+   "updatedAt": "2026-11-16T13:11:27.406Z",
    "builtAt": "",
    "notes": [
     {
@@ -190520,7 +190520,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
