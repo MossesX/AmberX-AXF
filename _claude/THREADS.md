@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:47 UTC · `banner-widget-shapes-more-than-circle` → running, note (all) · pipeline
 - 2026-11-16 19:47 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
 - 2026-11-16 19:47 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
 - 2026-11-16 19:47 UTC · `toolbars-moved-to-side-become-vertical` s2 done (all) · orchestrator
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s2 done (all) · orchestrator
 - 2026-11-16 23:45 UTC · `axhub-veto-countdown-setting-read-only` s9 done (all) · orchestrator
 - 2026-11-16 23:47 UTC · `amberx-open-url-must-open-page-even-when` s13 done (all) · orchestrator
+- 2026-11-16 23:48 UTC · `icon-packs-with-drag-drop-pack-designer` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
