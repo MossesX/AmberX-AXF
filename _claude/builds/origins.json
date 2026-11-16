@@ -3242,6 +3242,18 @@
    "from": "",
    "addenda": []
   },
+  "fix-red-ci-blocked-builds-they-land": {
+   "said": "Put fix main on more than one slot, they won't conflict.",
+   "at": "2026-11-16T16:29:28.078Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fix-step-splitter-claude-exit-1-input": {
    "said": "Yeah",
    "at": "",
