@@ -5,14 +5,14 @@
  * demos into a tour. Advanced work (the step timeline, record by doing) is folded away at the bottom.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Container, Icon, Note, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, PluginScreenHeader, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as E from '../engine.mjs';
 import type { PitchStep, Topic } from '../engine.mjs';
 import stacked from '../assets/settings/demonstration-designer-page-stacked.json';
 import threeUp from '../assets/settings/demonstration-designer-page-three-up.json';
 import wide from '../assets/settings/demonstration-designer-page-wide.json';
-import { type DemoRecord, type Summary, PAGE_VIEW_KEY, applyScript, deleteDemo, deviceVoices, fmtSeconds, generate, getDemo, loadDemos, loadNarrators, loadSettings, loadTopics, narratorOptions, saveDemo, setChain, shareOf, startRecording, stopRecording, takeWanted, uploadMedia, useModel, clearRecording } from './model';
+import { type DemoRecord, type Summary, FOLDER, PAGE_VIEW_KEY, applyScript, deleteDemo, deviceVoices, fmtSeconds, generate, getDemo, loadDemos, loadNarrators, loadSettings, loadTopics, narratorOptions, saveDemo, setChain, shareOf, startRecording, stopRecording, takeWanted, uploadMedia, useModel, clearRecording } from './model';
 import { play, stop, useStage } from './stage';
 
 /** The page layout (a `settings` asset picked in UI Review): stacked, three-up or wide. */
@@ -278,13 +278,10 @@ export function DesignerPage() {
   const view = usePageView();
   return (
     <div className={`fx-stack fx-stack--lg axp-demonstration-designer axp-demonstration-designer--${view}`} data-view={view}>
-      <header className="fx-pagehead">
-        <div>
-          <p className="fx-eyebrow">Pitch · demonstrations{m.demosLoaded ? ` · ${rows.length} saved` : ''}</p>
-          <h1>Demonstration Designer</h1>
-          <p className="fx-muted">Pick what to show, how long, and a voice; Generate writes the pitch and plays it on your real data.</p>
-        </div>
-      </header>
+      {/* plugin-settings@1: the shared header carries the gear that opens Settings → Plugins → Demonstration Designer */}
+      <PluginScreenHeader tab={FOLDER} title="Demonstration Designer"
+        eyebrow={`Pitch · demonstrations${m.demosLoaded ? ` · ${rows.length} saved` : ''}`}
+        lede="Pick what to show, how long, and a voice; Generate writes the pitch and plays it on your real data." />
       {m.error && <Note tone="warning">{m.error}</Note>}
       <section className="fx-card axp-demonstration-designer__flow" aria-label="Make a pitch">
         <div className="fx-stack axp-demonstration-designer__pick" data-pick="1">

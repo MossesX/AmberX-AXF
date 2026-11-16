@@ -355,3 +355,24 @@ class Service:
 
 
 plugin_services.provide(SELF, Service(), HERE.name)
+
+
+# plugin-settings@1: the options in plugin.json settings.options (demonstration-designer.<section>.<key>), read and set
+# through console control (REST, MCP, CLI, voice) with the designer's own validation (server/plugin_options.py).
+def _flat_settings() -> dict[str, Any]:
+    return {f"{sec}.{k}": v for sec, vals in (get_settings() or {}).items() if isinstance(vals, dict) for k, v in vals.items()}
+
+
+def _set_flat(patch: dict[str, Any]) -> dict[str, Any]:
+    for k, v in patch.items():
+        post_settings({"key": k, "value": v})
+    return _flat_settings()
+
+
+try:
+    import plugin_options
+
+    plugin_options.provide("demonstration-designer", read=_flat_settings, write=_set_flat,
+                           fields={f"demonstration-designer.{k}": k for k in ("script.minutes", "script.product", "script.benefitsFirst", "narration.voice", "narration.captions", "stage.zoom", "stage.highlight", "music.on", "music.volume", "music.mood", "export.format", "export.keep")})
+except ImportError:  # a bare test run without the console server on the path
+    pass

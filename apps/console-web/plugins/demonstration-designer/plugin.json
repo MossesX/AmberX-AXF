@@ -13,7 +13,7 @@
   "provides": [
     "view:demonstration-designer",
     "settings-tab:demonstration-designer",
-    "service:demonstrations@1"
+    "service:demonstrations@1", "service:axf.plugin-options.demonstration-designer@1"
   ],
   "optional": [
     "axf.speech@1"
@@ -37,6 +37,7 @@
       "apps/console-web/plugins/README.md"
     ]
   },
+  "settings": { "$axf": "plugin-settings@1", "tab": "demonstration-designer", "parent": "plugins", "sections": ["enable", "info", "logs", "options"], "options": ["demonstration-designer.script.minutes", "demonstration-designer.script.product", "demonstration-designer.script.benefitsFirst", "demonstration-designer.narration.voice", "demonstration-designer.narration.captions", "demonstration-designer.stage.zoom", "demonstration-designer.stage.highlight", "demonstration-designer.music.on", "demonstration-designer.music.volume", "demonstration-designer.music.mood", "demonstration-designer.export.format", "demonstration-designer.export.keep"], "gear": true },
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,

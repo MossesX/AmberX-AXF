@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 180,
+    "settings": 192,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -5265,6 +5265,218 @@
       "runs": "server",
       "service": "axf.claude-settings@1",
       "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.script.minutes",
+      "kind": "setting",
+      "label": "Pitch length (minutes)",
+      "key": "demonstration-designer.script.minutes",
+      "type": "number",
+      "min": 1,
+      "max": 30,
+      "detail": "Settings › Plugins › Demonstration Designer › Script",
+      "keywords": [
+        "demonstration-designer.script.minutes",
+        "script",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.script.product",
+      "kind": "setting",
+      "label": "Product name",
+      "key": "demonstration-designer.script.product",
+      "type": "text",
+      "detail": "Settings › Plugins › Demonstration Designer › Script",
+      "keywords": [
+        "demonstration-designer.script.product",
+        "script",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.script.benefitsFirst",
+      "kind": "setting",
+      "label": "Benefits first",
+      "key": "demonstration-designer.script.benefitsFirst",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Demonstration Designer › Script",
+      "keywords": [
+        "demonstration-designer.script.benefitsFirst",
+        "script",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.narration.voice",
+      "kind": "setting",
+      "label": "Narrator voice",
+      "key": "demonstration-designer.narration.voice",
+      "type": "text",
+      "detail": "Settings › Plugins › Demonstration Designer › Narration",
+      "keywords": [
+        "demonstration-designer.narration.voice",
+        "narration",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.narration.captions",
+      "kind": "setting",
+      "label": "Captions",
+      "key": "demonstration-designer.narration.captions",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Demonstration Designer › Narration",
+      "keywords": [
+        "demonstration-designer.narration.captions",
+        "narration",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.stage.zoom",
+      "kind": "setting",
+      "label": "Zoom into each step",
+      "key": "demonstration-designer.stage.zoom",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Demonstration Designer › Stage",
+      "keywords": [
+        "demonstration-designer.stage.zoom",
+        "stage",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.stage.highlight",
+      "kind": "setting",
+      "label": "Highlight",
+      "key": "demonstration-designer.stage.highlight",
+      "type": "choice",
+      "options": [
+        "spotlight",
+        "outline"
+      ],
+      "detail": "Settings › Plugins › Demonstration Designer › Stage",
+      "keywords": [
+        "demonstration-designer.stage.highlight",
+        "stage",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.music.on",
+      "kind": "setting",
+      "label": "Background music",
+      "key": "demonstration-designer.music.on",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Demonstration Designer › Music",
+      "keywords": [
+        "demonstration-designer.music.on",
+        "music",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.music.volume",
+      "kind": "setting",
+      "label": "Music volume",
+      "key": "demonstration-designer.music.volume",
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "detail": "Settings › Plugins › Demonstration Designer › Music",
+      "keywords": [
+        "demonstration-designer.music.volume",
+        "music",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.music.mood",
+      "kind": "setting",
+      "label": "Music mood",
+      "key": "demonstration-designer.music.mood",
+      "type": "choice",
+      "options": [
+        "calm",
+        "upbeat",
+        "minimal"
+      ],
+      "detail": "Settings › Plugins › Demonstration Designer › Music",
+      "keywords": [
+        "demonstration-designer.music.mood",
+        "music",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.export.format",
+      "kind": "setting",
+      "label": "Export format",
+      "key": "demonstration-designer.export.format",
+      "type": "choice",
+      "options": [
+        "auto",
+        "mp4",
+        "webm"
+      ],
+      "detail": "Settings › Plugins › Demonstration Designer › Export",
+      "keywords": [
+        "demonstration-designer.export.format",
+        "export",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer/setting:demonstration-designer.export.keep",
+      "kind": "setting",
+      "label": "Exports kept",
+      "key": "demonstration-designer.export.keep",
+      "type": "number",
+      "min": 1,
+      "max": 200,
+      "detail": "Settings › Plugins › Demonstration Designer › Export",
+      "keywords": [
+        "demonstration-designer.export.keep",
+        "export",
+        "Demonstration Designer"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.demonstration-designer@1",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
     }
   ],
   "functions": [
@@ -11096,7 +11308,8 @@
       "view": "view:demonstration-designer",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer",
       "provides": [
-        "service:demonstrations@1"
+        "service:demonstrations@1",
+        "service:axf.plugin-options.demonstration-designer@1"
       ],
       "requires": [],
       "optional": [

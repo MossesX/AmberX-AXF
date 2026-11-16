@@ -1,0 +1,151 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "Demonstration Designer options (plugin-settings@1): pitch-settings@1 keys in plugin.json settings.options, read and set through server/plugin_options.py with the designer's own validation (demos.mjs settings set).",
+  "service": "axf.plugin-options.demonstration-designer@1",
+  "groups": [
+    {
+      "id": "script",
+      "label": "Script",
+      "icon": "file",
+      "order": 10
+    },
+    {
+      "id": "narration",
+      "label": "Narration",
+      "icon": "mic",
+      "order": 20
+    },
+    {
+      "id": "stage",
+      "label": "Stage",
+      "icon": "monitor",
+      "order": 30
+    },
+    {
+      "id": "music",
+      "label": "Music",
+      "icon": "music",
+      "order": 40
+    },
+    {
+      "id": "export",
+      "label": "Export",
+      "icon": "download",
+      "order": 50
+    }
+  ],
+  "settings": [
+    {
+      "key": "demonstration-designer.script.minutes",
+      "group": "script",
+      "label": "Pitch length (minutes)",
+      "kind": "number",
+      "default": 2,
+      "min": 1,
+      "max": 30,
+      "description": "How long a generated pitch runs."
+    },
+    {
+      "key": "demonstration-designer.script.product",
+      "group": "script",
+      "label": "Product name",
+      "kind": "text",
+      "default": "AmberX AXF",
+      "description": "The product the pitch names."
+    },
+    {
+      "key": "demonstration-designer.script.benefitsFirst",
+      "group": "script",
+      "label": "Benefits first",
+      "kind": "toggle",
+      "default": true,
+      "description": "Open with what it does for you, then show how."
+    },
+    {
+      "key": "demonstration-designer.narration.voice",
+      "group": "narration",
+      "label": "Narrator voice",
+      "kind": "text",
+      "default": "",
+      "description": "The narrator voice id (empty = the device's default voice)."
+    },
+    {
+      "key": "demonstration-designer.narration.captions",
+      "group": "narration",
+      "label": "Captions",
+      "kind": "toggle",
+      "default": true,
+      "description": "Show captions while the pitch plays."
+    },
+    {
+      "key": "demonstration-designer.stage.zoom",
+      "group": "stage",
+      "label": "Zoom into each step",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "key": "demonstration-designer.stage.highlight",
+      "group": "stage",
+      "label": "Highlight",
+      "kind": "choice",
+      "default": "spotlight",
+      "options": [
+        "spotlight",
+        "outline"
+      ],
+      "description": "How the current element is marked."
+    },
+    {
+      "key": "demonstration-designer.music.on",
+      "group": "music",
+      "label": "Background music",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "key": "demonstration-designer.music.volume",
+      "group": "music",
+      "label": "Music volume",
+      "kind": "number",
+      "default": 8,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "demonstration-designer.music.mood",
+      "group": "music",
+      "label": "Music mood",
+      "kind": "choice",
+      "default": "calm",
+      "options": [
+        "calm",
+        "upbeat",
+        "minimal"
+      ]
+    },
+    {
+      "key": "demonstration-designer.export.format",
+      "group": "export",
+      "label": "Export format",
+      "kind": "choice",
+      "default": "auto",
+      "options": [
+        "auto",
+        "mp4",
+        "webm"
+      ],
+      "description": "The video format Export video writes (auto = the best the browser records)."
+    },
+    {
+      "key": "demonstration-designer.export.keep",
+      "group": "export",
+      "label": "Exports kept",
+      "kind": "number",
+      "default": 12,
+      "min": 1,
+      "max": 200,
+      "description": "How many exported videos the output folder keeps; older ones are removed."
+    }
+  ]
+}
