@@ -808,8 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:09 UTC · `shipped-features-organized-sortable` → queued, note (all) · console
-- 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` note (all) · orchestrator
 - 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` → running, note (all) · pipeline
 - 2026-11-15 12:11 UTC · `shipped-features-organized-sortable` branch claude/shipped-features-organized-sortable (all) · pipeline
 - 2026-11-15 12:11 UTC · `pending-tab-one-collapsed-row-per-2` s10 done (all) · orchestrator
@@ -1208,6 +1206,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:44 UTC · `console-look-becomes-default-axhub-skin` s14 done (all) · orchestrator
 - 2026-11-16 13:45 UTC · `console-look-becomes-default-axhub-skin` note (all) · foreign-write
 - 2026-11-16 13:45 UTC · `vps-sends-shipped-features-every-merge` s9 done (all) · orchestrator
+- 2026-11-16 13:45 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · pipeline
+- 2026-11-16 13:45 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
 
 ## Token passes (log)
 

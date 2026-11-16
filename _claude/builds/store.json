@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6432,
- "updatedAt": "2026-11-16T13:45:50.347Z",
+ "rev": 6433,
+ "updatedAt": "2026-11-16T13:46:05.599Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219473,7 +219473,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T13:44:07.159Z",
+   "updatedAt": "2026-11-16T13:45:26.109Z",
    "builtAt": "",
    "notes": [
     {
@@ -219619,6 +219619,14 @@
     {
      "text": "Headless run axf-demo-video-series-three-minute-browser--joey: brief only · start 17.8K tokens ($0.12) · cost $8.09 · 51 turns · 6 tools, MCP none",
      "at": "2026-11-16T13:44:07.159Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
+     "at": "2026-11-16T13:45:18.465Z"
+    },
+    {
+     "text": "Dispatch gate: demo-video-series-three-minute-browser still has axf-demo-video-series-three-minute-browser--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-16T13:45:26.109Z"
     }
    ],
    "approvals": [
@@ -219656,23 +219664,23 @@
     "launchedAt": "2026-11-16T13:24:57.284Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-14T04:09:08.606Z",
+     "at": "2026-11-16T13:45:16.317Z",
      "exit": 0,
      "outcome": "requeued",
-     "stepsLeft": 7,
+     "stepsLeft": 2,
      "account": "mossesx-max-",
-     "session": "axf-demo-video-series-three-minute-browser--earl"
+     "session": "axf-demo-video-series-three-minute-browser--joey"
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-16T13:24:57.284Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-15T02:12:04.975Z",
+     "at": "2026-11-16T13:45:21.718Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -220219,7 +220227,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
