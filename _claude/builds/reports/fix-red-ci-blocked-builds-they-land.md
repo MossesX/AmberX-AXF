@@ -78,3 +78,21 @@ Branch `fix/ci-common-cause` (37995d9b9), PR [#719](https://github.com/MossesX/A
 
 Each blocked branch needs #719 (or main after it lands) merged in to go green; until #719 lands, branches merge
 `origin/fix/ci-common-cause` along with `origin/main`.
+
+## Per branch (s4–s22)
+
+Each branch: merge `origin/main` + `origin/fix/ci-common-cause`, take main's build/plan data (store, orchestrator, pending, plan, build queue: the branch copies were stale snapshots that would overwrite main's), drop the stale `test-sandbox` profile folder, regenerate the control inventory, fix the branch's own failures, run them locally.
+
+| Branch | What was done | Head |
+|---|---|---|
+| owner-recognized-everywhere-veto | merged main clean; data reset to main; theme-swap (A) fixed by #719 | 489c24996 |
+| land-project-duplicate-boilerplate | no CI run before (E); merged main clean; branch is a report + THREADS row only | 9cbebab7a |
+| pass-approval-hook-deep-link-amberx-notification | merged main clean (builds-live cases pass after merge); help entry for the pass page's All passes button | 4b5465ae5 |
+| picker-dialog-plugin-replaces-all | 9 source conflicts with main resolved (import unions, settings asset row Select + back(type), gen-fixtures both blocks, picker schema line); plugin.json opens false + builtWith.model opus | — |
+| all-settings-interfaces-open-floating | Overlays.tsx import conflict (union); stale test-sandbox profile folder removed; VetoHost.overlay resolved by main | — |
+| themed-native-controls-plugin | control@1 append-only clash with main's tokens.instances: tokens.controls moves to index 25 (26 targets), schema + fixture regenerated; skins.mjs keeps upgrade + skin-config; plugin.json opens false | — |
+| new-asset-type-animated-expanding-row | WindowHost import conflict; workflow lines merged (check-dropdowns, check-expander-picker kept); skin-config schema regenerated for expander-picker; validate --framework, skin-coverage, fixtures, glossary, help pass | 73a622e5e |
+| orchestrator-settings-collapsible-split | 4 conflicts with main's custom groups: both kept (server routes, test, actions, keywords, imports); stale test-sandbox removed; build-orchestrator test.py 52 pass | 0b9e5a794 |
+| context-menus-plugin-one-true-source | merged main (data only); help for the zone menus button; check-context-menus, fixtures, profiles, plugins, help pass | 675568066 |
+| projects-own-everything-per-project | merged main clean; help-kind + coverage failures already fixed on main; profiles, plugins, inventory, check-projects pass | c77e09ca4 |
+| pending-tab-one-collapsed-row-per-2 | merged main clean; amberx @console/api fixed by #719 | b2dab4aac |
