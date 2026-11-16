@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6486,
- "updatedAt": "2026-11-16T15:16:24.749Z",
+ "rev": 6487,
+ "updatedAt": "2026-11-16T15:17:04.976Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219563,7 +219563,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T15:16:23.070Z",
+   "updatedAt": "2026-11-16T15:17:03.377Z",
    "builtAt": "2026-11-16T14:11:20.988Z",
    "notes": [
     {
@@ -219757,6 +219757,10 @@
     {
      "text": "Phase 3 done: 7 core videos recorded live and published to AmberX → Walkthrough (series-<id>, full MP4 + 720p + 9:16/1:1/16:9 socials, secrets scan clean). Not recorded yet: the 28 more/ videos and 13 60-second cuts (bash apps/amberx-droid/walkthrough/series/record.sh all, then series/publish.sh; ~8-10 min each). Social downloads 404 until the next AmberX deploy after merge.",
      "at": "2026-11-16T15:16:07.642Z"
+    },
+    {
+     "text": "Session axf-demo-video-series-three-minute-browser--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T15:17:03.377Z"
     }
    ],
    "approvals": [
@@ -219796,22 +219800,22 @@
     "queuedAt": "2026-11-16T13:22:50.158Z",
     "queuedBy": "build:fix-build-whose-session-finishes-phase-e",
     "account": "mossesx-max-",
-    "session": "axf-demo-video-series-three-minute-browser--gina",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-16T13:24:57.284Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-16T13:59:06.967Z",
+     "at": "2026-11-16T15:17:02.676Z",
      "exit": 0,
-     "outcome": "requeued",
-     "stepsLeft": 1,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-demo-video-series-three-minute-browser--joey"
+     "session": "axf-demo-video-series-three-minute-browser--gina"
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 1 step left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-16T13:24:57.284Z",
     "planned": {
@@ -220365,7 +220369,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
