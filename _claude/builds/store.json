@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6482,
- "updatedAt": "2026-11-16T14:23:23.672Z",
+ "rev": 6483,
+ "updatedAt": "2026-11-16T14:29:16.610Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -234362,7 +234362,7 @@
    "title": "VPS sends Shipped features on every merge to main (+ backfill)",
    "category": "",
    "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -234370,8 +234370,8 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-16T14:23:07.480Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T14:29:14.787Z",
+   "builtAt": "2026-11-16T14:29:14.787Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -234440,6 +234440,10 @@
     {
      "text": "Headless run axf-vps-sends-shipped-features-every-merge--lenny: brief only · start 15.5K tokens ($0.05) · cost $16.09 · 240 turns · 6 tools, MCP none",
      "at": "2026-11-16T14:23:07.480Z"
+    },
+    {
+     "text": "Reconciler: PR #709 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17 done",
+     "at": "2026-11-16T14:29:14.787Z"
     }
    ],
    "approvals": [
@@ -234929,12 +234933,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 3,
+     "done": true,
+     "doneAt": "2026-11-16T14:29:14.787Z",
+     "note": "PR #709 (claude/vps-sends-shipped-features-every-merge)",
+     "rev": 4,
      "createdAt": "2026-11-15T12:16:53.896Z",
-     "updatedAt": "2026-11-16T14:23:09.722Z"
+     "updatedAt": "2026-11-16T14:29:14.788Z"
     }
    ],
    "profiles": [
@@ -234945,7 +234949,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
