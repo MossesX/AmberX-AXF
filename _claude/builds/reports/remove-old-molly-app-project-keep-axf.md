@@ -164,3 +164,20 @@ section now says the host app was removed and which framework parts stay), `docs
 superseded, the Nov 16 decision is added. `claude-sync sync` ran: this worktree has no sync baseline, so it held 115
 files "new on both sides", these five among them; they were not forced (that could overwrite newer hub copies written
 by other sessions). The VPS checkout's sync sends them once this lands on main.
+
+## Tracker and builds (s14)
+
+- `framework/catalog/catalog.json`, `status.json`, `libraries.json` had no Molly feature (one gate note names
+  `axf-molly`, kept). `tracker.mjs` regenerated: no change; `--check` passes.
+- Archived with a note naming this build (Molly-only): `molly-multi-instance-tabs`, `molly-one-shell`,
+  `molly-sign-in-once`, `molly-fable-version-the-one-interface-for-amberx`, `molly-flagship-skin-premium-sellable-uncluttered`,
+  `convert-every-app-into-a-molly-module-expenses-c`, `molly-gap-console-token-handoff`, `molly-gap-remote-actions`,
+  `molly-gap-expenses-token-handoff`, `molly-gap-console-warm-token`, `molly-gap-axhub-cors-live`.
+- `molly-gap-expenses-cors` has a live session claim, so it was not archived under it: it carries the note, and its PR
+  #701 is left open for that session to finish or drop. Once it ends, archive it and close #701.
+- Noted (mixed builds, the rest stands): `inline-edit-plugin-install-in-console-molly-and`,
+  `ai-assistant-in-molly-console-drives-by-api-open`, `apps-control-surface`, `per-agent-api-control-switch-in-each-employee-s`,
+  `land-round-2`.
+- Folded in and completed: `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` (all ten
+  steps ticked, note with this branch).
+- Kept: `axf-molly-container-orchestrator-gate` (the axf-molly container).
