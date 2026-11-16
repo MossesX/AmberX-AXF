@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6981,
- "updatedAt": "2026-11-16T23:13:50.216Z",
+ "rev": 6982,
+ "updatedAt": "2026-11-16T23:14:09.196Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -255667,13 +255667,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T22:59:48.582Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-icon-packs-with-drag-drop-pack-designer--lenny",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-16T23:04:20.932Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -255686,10 +255686,16 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
+    "dispatchedAt": "2026-11-16T23:04:20.932Z",
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-16T23:03:59.942Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T23:04:20.932Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -255717,7 +255723,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:02:45.499Z",
-     "updatedAt": "2026-11-16T23:13:45.092Z"
+     "updatedAt": "2026-11-16T23:14:06.686Z"
     },
     {
      "id": "s2",
@@ -256475,7 +256481,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
