@@ -19,6 +19,8 @@
     "action:approvals.deny",
     "action:approvals.approve-now",
     "action:approvals.shelve",
+    "action:approvals.settings",
+    "action:approvals.veto-seconds",
     "action:approvals.view",
     "action:approvals.approve",
     "action:approvals.decline",
@@ -37,7 +39,9 @@
     "auto": true,
     "items": [
       { "route": "POST /decide", "skip": "a person's tap only: it needs the signed-in browser's hub session, no session may ever call it" },
-      { "route": "GET /relay", "skip": "the browser's own probe" }
+      { "route": "GET /relay", "skip": "the browser's own probe" },
+      { "route": "GET /approval-settings", "skip": "read with the signed-in browser's hub session; sessions read it with axhub.settings_get" },
+      { "route": "POST /approval-settings", "skip": "the signed-in browser's hub session only; sessions change it with axhub.settings_set (the owner's approval)" }
     ]
   },
   "builtWith": {

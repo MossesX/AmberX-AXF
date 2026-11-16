@@ -47,6 +47,7 @@ DECIDED = "0123abcd-0123-4abc-8def-0000000000d0"
 seen: list[httpx.Request] = []
 # The owner account the console signs in with (AXF_HUB_RELAY_USER / _PASSWORD) and the sessions the hub takes now.
 hub_state = {"sessions": {"good"}, "signins": 0, "first": False, "busy": False}
+hub_settings = {"schemaVersion": 1, "vetoSeconds": 90, "vetoWarningSeconds": 0, "readOnlySkipsVeto": True}
 
 
 def hub(req: httpx.Request) -> httpx.Response:
@@ -69,8 +70,17 @@ def hub(req: httpx.Request) -> httpx.Response:
         return httpx.Response(401, json={"signedIn": False})
     if req.url.path == "/auth/api/session":
         return httpx.Response(200, json={"csrf": "c" * 12})
+    if req.url.path == "/auth/api/approvals/settings" and req.method == "GET":
+        return httpx.Response(200, json={"settings": dict(hub_settings), "defaults": {"vetoSeconds": 10}, "limits": {"min": 0, "max": 120}, "stored": True})
     if req.headers.get("origin") != "https://hub.example.test" or req.headers.get("x-axhub-csrf") != "c" * 12:
         return httpx.Response(403, json={"error": {"code": "denied", "message": "Only from the hub's own pages."}})
+    if req.url.path == "/auth/api/approvals/settings" and req.method == "PUT":
+        patch = json.loads(req.content)
+        if not 0 <= patch.get("vetoSeconds", 0) <= 120:
+            return httpx.Response(400, json={"error": {"code": "validation", "message": "vetoSeconds must be a whole number from 0 to 120."}})
+        before = hub_settings["vetoSeconds"]
+        hub_settings.update(patch)
+        return httpx.Response(200, json={"ok": True, "changed": f"approvals.vetoSeconds {before} → {hub_settings['vetoSeconds']}", "settings": dict(hub_settings), "stored": True})
     if EXPIRED in req.url.path:
         return httpx.Response(409, json={"error": {"code": "expired", "message": "That request expired."}})
     if DECIDED in req.url.path:
@@ -274,5 +284,25 @@ h = srv.health_probe()
 ok(h["status"] == "ok", f"health green with the owner sign-in {h}")
 del os.environ["AXF_HUB_RELAY_USER"]
 ok(srv.health_probe()["status"] == "warn", "health amber without it")
+
+# ---- approval settings (axHub decision 119): read and change the veto countdown with the admin's hub session
+srv.httpx.Client = HubClient
+who[0] = admin
+c.cookies.clear()
+c.cookies.set("axhub_session", "good")
+r = c.get("/approval-settings").json()
+ok(r["ok"] is True and r["settings"]["vetoSeconds"] == 90, f"settings read through the relay {r}")
+r = c.post("/approval-settings", json={"vetoSeconds": 10}, headers=ORIGIN).json()
+ok(r["ok"] is True and r["settings"]["vetoSeconds"] == 10 and "90 → 10" in r["changed"], f"countdown set to 10 s {r}")
+put = seen[-1]
+ok(put.method == "PUT" and put.headers.get("x-axhub-csrf") == "c" * 12 and put.headers.get("origin") == "https://hub.example.test", "the change carries the hub's CSRF and Origin")
+ok(hub_settings["vetoSeconds"] == 10, "the hub has the new value")
+for bad in ({"vetoSeconds": 500}, {"vetoSeconds": -5}, {"vetoSeconds": 1.5}, {"vetoSeconds": True}, {"other": 1}, {}, {"readOnlySkipsVeto": "yes"}):
+    ok(c.post("/approval-settings", json=bad, headers=ORIGIN).status_code == 400, f"refused before the hub: {bad}")
+ok(c.post("/approval-settings", json={"vetoSeconds": 0}, headers={"origin": "https://evil.example"}).status_code == 403, "only from the console's own pages")
+who[0] = user
+ok(c.post("/approval-settings", json={"vetoSeconds": 0}, headers=ORIGIN).status_code in (401, 403), "not for non-admins")
+who[0] = admin
+ok(hub_settings["vetoSeconds"] == 10, "nothing refused reached the hub")
 
 print(f"approvals-banner relay ok ({checks} checks)")
