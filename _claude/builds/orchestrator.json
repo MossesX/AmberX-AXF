@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:22:37.510Z",
+ "updatedAt": "2026-11-16T20:23:21.785Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162108,12 +162108,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:22:23.083Z",
-   "updatedAt": "2026-11-16T20:22:26.452Z",
+   "updatedAt": "2026-11-16T20:23:20.105Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T20:22:26.452Z"
+    },
+    {
+     "text": "Brett Nov 16: there is no way to delete a list from its right-click/long-press context menu. Add Delete (with confirm + undo) plus Rename, New list inside, and Move to every list's context menu, and the same for entries; all also voice/MCP controlled.",
+     "at": "2026-11-16T20:23:20.105Z"
     }
    ],
    "approvals": [],
