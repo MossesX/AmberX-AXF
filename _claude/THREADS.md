@@ -808,12 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:24 UTC · `data-container-axf-data-holds-all` s5 done, → running (all) · orchestrator
-- 2026-11-15 12:24 UTC · `gate-rules-plugin-in-the-console` s8 done (all) · orchestrator
-- 2026-11-15 12:24 UTC · `gate-rules-plugin-in-the-console` s9 done (all) · orchestrator
-- 2026-11-15 12:25 UTC · `every-grid-1-2-rows-per-item-set-skin` s4 done (all) · orchestrator
-- 2026-11-15 12:26 UTC · `every-grid-1-2-rows-per-item-set-skin` PR #707 (all) · builds-live
-- 2026-11-15 12:26 UTC · `every-grid-1-2-rows-per-item-set-skin` note (all) · orchestrator
 - 2026-11-15 12:26 UTC · `gate-rules-plugin-in-the-console` s10 done (all) · orchestrator
 - 2026-11-15 12:28 UTC · `gate-rules-plugin-in-the-console` s11 done (all) · orchestrator
 - 2026-11-15 12:28 UTC · `gate-rules-plugin-in-the-console` s11 done (all) · foreign-write
@@ -1208,6 +1202,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 14:10 UTC · `hotfix-console-deploy-build-id` added (0 steps) (all) · merge-watch
 - 2026-11-16 14:10 UTC · `console-skin-axhub-only` added (0 steps) (all) · merge-watch
 - 2026-11-16 14:10 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `land-batch-merge-main-each-finished` note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `demo-video-series-three-minute-browser` s4 done, → built, note (all) · reconciler
+- 2026-11-16 14:11 UTC · `test-project-seed` PR #578, note (all) · reconciler
+- 2026-11-16 14:11 UTC · `merge-main-land-console-axhub-retry` note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `land-all-skin-builds` → complete, merged, note (all) · merge-watch
+- 2026-11-16 14:11 UTC · `merge-main-land-change-to-move-amberx` → complete, merged, note (all) · merge-watch
 
 ## Token passes (log)
 
