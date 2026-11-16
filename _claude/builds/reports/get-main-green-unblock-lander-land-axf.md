@@ -182,3 +182,23 @@ The lander used the last one listed, the dirty one. That checkout was broken and
 - a correction note was added on the build.
 
 **Lander fix:** `worktrees()` now prefers the build's own folder (`claude/<id>` → `…/<id>`), otherwise the first one listed, so a stray checkout never stands in for the build's worktree. `land.test.mjs`: 113 checks.
+
+## Getting the main fix through the queue (s9, in progress)
+
+#719's own queue run failed on two more checks my s3/s4 sweep had missed:
+- **`check-agent-slots`**, "heavy lock caps at 2: 3 != 2". In s3 I had blamed my own session's env vars. It was a real race: heavy-slot ids were `hv-<pid>-<ms>`, so two calls in one process within the same millisecond shared an id, and the first to finish freed both slots.
+- **`check-token-registry`**: `gate/plugin.json` `tokens.uses` was missing 14 tokens.
+
+To give main one PR that fixes everything, #724 now merges `fix/ci-common-cause` (#719) and adds:
+- theme-swap zero-alpha (6bf967236)
+- unique heavy-slot ids and the regenerated gate token manifest (19a185b0f)
+- the framework help re-baked into axhub-web, console-web and molly (bd8a8f0ed), after #628 merged a help change with only the amberx-droid copy updated
+
+#719 was taken out of the queue with a reason and a comment on the PR.
+
+Queue history so far:
+- 18:46, #724 run 1: **cancelled**. The stack was rebuilt because main moved in code: #628 merged at about 19:02 through auto-land's direct "ready → merge" path, outside the queue. #628 had merged #719 into itself, so main gained #719's fixes that way.
+- 19:03, run 2: the sweep and AmberX passed. The Web Dev Console job failed on `check-help` (#628's help change).
+- 19:25, run 3: after bd8a8f0ed, pending.
+
+In a clean env the whole Alerts/MCP step (114 commands) passes locally. The only exceptions are host ones: port 7097 is in use, and live tmux sessions take the agent-slots test's slots.
