@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:25 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-16 13:25 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
 - 2026-11-16 13:26 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · pipeline
 - 2026-11-16 13:28 UTC · `console-look-becomes-default-axhub-skin` s7 done (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:08 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
 - 2026-11-16 19:08 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
 - 2026-11-16 19:08 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
+- 2026-11-16 19:09 UTC · `reset-all-button-every-asset-override` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
