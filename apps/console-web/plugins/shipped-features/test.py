@@ -104,7 +104,7 @@ OT = sys.modules["axf_console_plugins.shipped_features_test.open_target"]
 REG = OT.Registry([
     {"address": "view:ui-review", "kind": "view", "label": "UI Review"},
     {"address": "view:gate", "kind": "view", "label": "Gate & rules"},
-    {"address": "plugin:ai.amberx.axf.console.ui-review", "kind": "plugin", "folder": "ui-review", "label": "UI Review", "view": "view:ui-review"},
+    {"address": "plugin:ai.amberx.axf.console.ui-review", "kind": "plugin", "folder": "ui-review", "label": "UI Review", "view": "view:ui-review"},  # test data, axf-not-plugin:ui-review
     {"address": "plugin:ai.amberx.axf.console.push-banner", "kind": "plugin", "folder": "push-banner", "label": "Push banner",
      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner"},
     {"address": "plugin:ai.amberx.axf.console.gone", "kind": "plugin", "folder": "gone", "label": "Gone", "view": "view:gone"},
