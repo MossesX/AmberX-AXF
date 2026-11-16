@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6759,
- "updatedAt": "2026-11-16T19:33:51.080Z",
+ "rev": 6765,
+ "updatedAt": "2026-11-16T19:38:06.528Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -241845,7 +241845,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:33:48.587Z",
+   "updatedAt": "2026-11-16T19:37:56.738Z",
    "builtAt": "",
    "notes": [
     {
@@ -242409,12 +242409,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:37:56.738Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T19:37:57.130Z"
     },
     {
      "id": "s20",
@@ -242548,7 +242548,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244318,7 +244318,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:31:08.581Z",
+   "updatedAt": "2026-11-16T19:36:41.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -244671,12 +244671,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:34:55.768Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:34:56.076Z"
     },
     {
      "id": "s9",
@@ -244696,12 +244696,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:36:41.882Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:36:42.273Z"
     },
     {
      "id": "s10",
@@ -245179,7 +245179,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246467,7 +246467,7 @@
    "pr": "#728",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:32:11.063Z",
+   "updatedAt": "2026-11-16T19:33:56.029Z",
    "builtAt": "2026-11-16T19:30:30.748Z",
    "notes": [
     {
@@ -246505,6 +246505,10 @@
     {
      "text": "Session axf-alert-every-time-build-falls-back-to--earl on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-16T19:32:04.171Z"
+    },
+    {
+     "text": "Session axf-alert-every-time-build-falls-back-to--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T19:33:56.029Z"
     }
    ],
    "approvals": [],
@@ -246525,12 +246529,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-alert-every-time-build-falls-back-to--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T19:16:48.399Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-16T19:33:55.050Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-alert-every-time-build-falls-back-to--earl"
+    },
     "split": {
      "at": "2026-11-16T19:14:22.611Z",
      "by": "orchestrator",
@@ -246634,7 +246645,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247046,7 +247057,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:32:34.136Z",
+   "updatedAt": "2026-11-16T19:37:53.578Z",
    "builtAt": "",
    "notes": [
     {
@@ -247099,12 +247110,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-toolbars-moved-to-side-become-vertical--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T19:32:27.226Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:22:41.951Z",
@@ -247114,9 +247125,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"65af8f1f-b1dd-4a52-a727-086ed516a0d9\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:32:27.226Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -247125,7 +247136,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:32:27.226Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -247146,12 +247157,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:37:53.578Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:22:41.951Z",
-     "updatedAt": "2026-11-16T19:22:41.951Z"
+     "updatedAt": "2026-11-16T19:37:53.901Z"
     },
     {
      "id": "s2",
@@ -247442,7 +247453,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T19:33:57.886Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -247528,7 +247545,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247551,9 +247568,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-16T19:30:36.556Z",
-   "updatedAt": "2026-11-16T19:30:36.556Z",
+   "updatedAt": "2026-11-16T19:33:52.963Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a4b88901-ceae-465e-9b75-6c82a9bc594a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:33:52.963Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -247568,7 +247590,111 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-16T19:33:52.963Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a4b88901-ceae-465e-9b75-6c82a9bc594a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-16T19:33:57.886Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwjnw53701tlnl",
+     "title": "",
+     "text": "Rebuild of assets-menu-hide-any-asset-visible (branch lost, never shipped). A GLOBAL context menu item on every asset in every app (right-click / long-press): 'Hide'. Plus an Assets menu (global context menu item and Settings > Appearance) listing every asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, anything). Hidden ones move to a Hidden section, one tap shows them again. Saved per app on axHub, survives reload. Same list/hide/show on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:33:52.963Z",
+     "updatedAt": "2026-11-16T19:33:52.963Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwjnw53702pkjo",
+     "title": "",
+     "text": "Rebuild the build where I could hide anything: a menu showing all the assets, hide them, they move to hidden. A global context menu item.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:33:52.963Z",
+     "updatedAt": "2026-11-16T19:33:52.963Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwjnw53703ou5r",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/hide-any-ui-asset-global-context-menu.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/hide-any-ui-asset-global-context-menu.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-16T19:33:52.963Z",
+     "updatedAt": "2026-11-16T19:33:52.963Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -247577,12 +247703,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-16T19:33:52.963Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

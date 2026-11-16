@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:33:51.080Z",
+ "updatedAt": "2026-11-16T19:38:06.528Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157445,7 +157445,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:33:48.587Z",
+   "updatedAt": "2026-11-16T19:37:56.738Z",
    "builtAt": "",
    "notes": [
     {
@@ -157919,8 +157919,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:37:56.738Z",
      "note": "",
      "uid": "st-mwjhdnqq0jimlr",
      "createdAt": "2026-11-16T16:31:32.976Z"
@@ -159393,7 +159393,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:31:08.581Z",
+   "updatedAt": "2026-11-16T19:36:41.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -159682,8 +159682,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:34:55.768Z",
      "note": "",
      "uid": "st-mwjlnwn30ss2js",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -159704,8 +159704,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:36:41.882Z",
      "note": "",
      "uid": "st-mwjlnwn30te1xn",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -161144,7 +161144,7 @@
    "pr": "#728",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:32:11.063Z",
+   "updatedAt": "2026-11-16T19:33:56.029Z",
    "builtAt": "2026-11-16T19:30:30.748Z",
    "notes": [
     {
@@ -161182,6 +161182,10 @@
     {
      "text": "Session axf-alert-every-time-build-falls-back-to--earl on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-16T19:32:04.171Z"
+    },
+    {
+     "text": "Session axf-alert-every-time-build-falls-back-to--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T19:33:56.029Z"
     }
    ],
    "approvals": [],
@@ -161537,7 +161541,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:20:10.281Z",
-   "updatedAt": "2026-11-16T19:32:34.136Z",
+   "updatedAt": "2026-11-16T19:37:53.578Z",
    "builtAt": "",
    "notes": [
     {
@@ -161601,8 +161605,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:37:53.578Z",
      "note": "",
      "uid": "st-mwjnhrbz04xujf",
      "createdAt": "2026-11-16T19:22:41.951Z"
@@ -161865,9 +161869,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-16T19:30:36.556Z",
-   "updatedAt": "2026-11-16T19:30:36.556Z",
+   "updatedAt": "2026-11-16T19:33:52.963Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a4b88901-ceae-465e-9b75-6c82a9bc594a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-16T19:33:52.963Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -161882,7 +161891,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Rebuild of assets-menu-hide-any-asset-visible (branch lost, never shipped). A GLOBAL context menu item on every asset in every app (right-click / long-press): 'Hide'. Plus an Assets menu (global context menu item and Settings > Appearance) listing every asset on the current screen and app (toolbars, tab groups, banners, widgets, nav, menus, panels, anything). Hidden ones move to a Hidden section, one tap shows them again. Saved per app on axHub, survives reload. Same list/hide/show on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnw53701tlnl",
+     "createdAt": "2026-11-16T19:33:52.963Z"
+    },
+    {
+     "id": "s2",
+     "text": "Rebuild the build where I could hide anything: a menu showing all the assets, hide them, they move to hidden. A global context menu item.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnw53702pkjo",
+     "createdAt": "2026-11-16T19:33:52.963Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/hide-any-ui-asset-global-context-menu.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/hide-any-ui-asset-global-context-menu.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjnw53703ou5r",
+     "createdAt": "2026-11-16T19:33:52.963Z"
+    }
+   ]
   }
  ]
 }
