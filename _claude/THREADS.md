@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 16:47 UTC · `amberx-walkthrough-2-hour-indexed` → archived, note (all) · console
 - 2026-11-16 16:47 UTC · `fix-red-ci-blocked-builds-they-land` s2 done (all) · orchestrator
 - 2026-11-16 16:48 UTC · `fix-console-deep-links-open-page-lands` s1 done, → running (all) · orchestrator
 - 2026-11-16 16:48 UTC · `remove-old-molly-app-project-keep-axf` s15 done (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 20:38 UTC · `to-do-manager-fully-voice-mcp-controlled` s2 done (all) · orchestrator
 - 2026-11-16 20:39 UTC · `fable-rebuild-plan-studio-cleared-out` → queued, note (all) · pipeline
 - 2026-11-16 20:39 UTC · `plan-studio-collapse-all-expand-all` s1 done, → running (all) · orchestrator
+- 2026-11-16 20:39 UTC · `fable-rebuild-plan-studio-cleared-out` → running, note (all) · pipeline
 
 ## Token passes (log)
 
