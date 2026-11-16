@@ -230,6 +230,12 @@ stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs i
 archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
+Nov 14 2026 (build `fix-build-whose-session-finishes-phase-e`): the exit transition `nextStatusOnExit()` with
+`EXIT_REASONS` (all-done, phase-done, crash, crash-limit, upgrade-blocked, needs-brett, stopped), `pipeline.phase`,
+`pipeline.crashes`, `lastRun.reason` / `lastRun.phase`, `STATUS_AFTER.failed = pending`, the Errors tab for a
+crash-limited build in Pending; golden cases in `spec/fixtures/build-pipeline-exit.json` (`check-build-pipeline.mjs`).
+Same deferral: no Kotlin twin while Android is on hold; a port replays the fixture's `transition` block.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:
@@ -305,6 +311,12 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
 
+## Deferred: settings open in a floating dialog (Nov 13 2026)
+
+`framework/core/engines/settingsopen.ts` (build `all-settings-interfaces-open-floating`): every settings interface
+always opens in a floating glass dialog (`app.settings`, `settings.open[:tab]`); there is no page / pane / floating
+choice (removed Nov 16 2026). Web only; the Kotlin twin (`lib-settings` always opening its screen in a dialog, with no
+placement option) is a deferred gap, no new Android work. Check: `framework/spec/check-settings-open.mts`.
 ## Deferred: the console app's on-device wake listener (Nov 13 2026)
 Build `console-app-wake-word-voice-listener` (Fable). The wake listener is the console plugin `apps/console-web/plugins/wake-listener`
 (wake-listener@1: wake phrases, switch, state machine, command catalog and spoken wizard in `core.mjs` / `catalog.mjs`; the page

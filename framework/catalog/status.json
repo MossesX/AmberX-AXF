@@ -728,12 +728,6 @@
     "wave": 1,
     "module": "axf-ui"
   },
-  "ui.opacity.surfaces": {
-    "status": "built",
-    "wave": 1,
-    "module": "axf-ui",
-    "notes": "Style theme opacityDialog / opacitySettings / opacityPanel / opacityMenu / opacityToolbar / opacityBanner (default 1 = opaque; below 1 = see-through + frosted backdrop) → --fx-opacity-<kind> + --fx-backdrop-<kind> (engines/theme.ts SURFACE_KINDS); every surface root in axf.css reads its own; Token Control tokens.style + Element Explorer; per window: Window settings → Background (WindowSettings.surface); check-theme rule surface fails on a surface background without an --fx-opacity-* token. Kotlin twin deferred."
-  },
   "ui.a11y": {
     "status": "built",
     "wave": 1,
@@ -2294,6 +2288,18 @@
     "wave": 1,
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
+  },
+  "cx.settings.opendialog": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings",
+    "notes": "Every settings interface always opens as a floating glass popup (core/engines/settingsopen.ts; Brett Nov 13 + Nov 16 2026). app.settings / settings.open[:tab] → dialog; the page / pane / floating choice (axf.settings.opensAs, settings.opensas, settings.page, Open as page) is removed and saved values are dropped on load; CI framework/spec/check-settings-open.mts fails code that navigates to the Settings page or brings any such option back. Kotlin twin deferred."
+  },
+  "ui.opacity.surfaces": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Style theme opacityDialog / opacitySettings / opacityPanel / opacityMenu / opacityToolbar / opacityBanner (default 1 = opaque; below 1 = see-through + frosted backdrop) → --fx-opacity-<kind> + --fx-backdrop-<kind> (engines/theme.ts SURFACE_KINDS); every surface root in axf.css reads its own; Token Control tokens.style + Element Explorer; per window: Window settings → Background (WindowSettings.surface); check-theme rule surface fails on a surface background without an --fx-opacity-* token. Kotlin twin deferred."
   },
   "cx.contextmenu.consolesettings": {
     "status": "built",

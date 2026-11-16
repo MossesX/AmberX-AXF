@@ -30,7 +30,7 @@ jobs:
   # is on (repo variable AXF_MERGE_QUEUE=on), and nothing again on main when the queue already ran CI on the same code.
   scope:
     name: CI scope (what changed)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest rolls to 26.04, where Playwright 1.56 has no chromium (theme-swap)
     outputs:
       mode: ${{ steps.s.outputs.mode }}
       light: ${{ steps.s.outputs.light }}
@@ -57,7 +57,7 @@ jobs:
     name: Light PR checks (full run happens once, in the merge queue)
     needs: scope
     if: ${{ needs.scope.outputs.light == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
@@ -72,7 +72,7 @@ jobs:
     name: Build engine sweep (Node)
     needs: scope
     if: ${{ needs.scope.outputs.engine == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       AXF_BUILD_PROFILE: all   # the sweep checks the base profile's data whatever profile Brett has saved
     steps:
@@ -109,6 +109,7 @@ jobs:
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
+      - run: node framework/spec/check-build-pipeline.mjs           # build-pipeline@1 exit transition: phase done → Queue (same place, no crash counted), crash → Queue until the limit → Pending, blocked upgrade → Pending, all done → built; fixtures/build-pipeline-exit.json
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/groups.test.mjs   # build-groups@1: custom groups and tabs, state order and counts, smart rules, group actions, per project  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
@@ -218,7 +219,7 @@ jobs:
     name: Web Dev Console (React/TS) + Python API
     needs: scope
     if: ${{ needs.scope.outputs.console == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -303,6 +304,7 @@ jobs:
             node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
             npx -y tsx framework/spec/check-skin-switch.mts            # skin-switch@1: use / back-to-skin / restore-default / undo per scope (hub, app, ui, plugin): fixture replay, scope precedence, undo after restore, back clears only the overridden part
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
+            npx -y tsx framework/spec/check-settings-open.mts          # every settings interface opens in a floating glass dialog by default; fails on code that navigates to the Settings page instead
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
@@ -449,7 +451,7 @@ jobs:
     name: AmberX — web app in the Capacitor Android shell (APK + native unit tests)
     needs: scope
     if: ${{ needs.scope.outputs.amberx == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       AXF_BUILD_NUMBER: ${{ github.run_number }}
     steps:
@@ -496,7 +498,7 @@ jobs:
           retention-days: 14
   android:
     name: Gradle — framework modules, kernel tests, console APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
     needs: [scope, amberx]
     if: ${{ !cancelled() && needs.scope.outputs.android == 'true' }}
