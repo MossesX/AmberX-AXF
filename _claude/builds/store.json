@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6643,
- "updatedAt": "2026-11-16T18:36:25.449Z",
+ "rev": 6644,
+ "updatedAt": "2026-11-16T18:36:43.463Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201160,7 +201160,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201168,7 +201168,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-16T18:36:06.707Z",
+   "updatedAt": "2026-11-16T18:36:28.352Z",
    "builtAt": "",
    "notes": [
     {
@@ -201222,6 +201222,18 @@
     {
      "text": "Self-check: all-settings-interfaces-open-floating was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-16T18:35:10.369Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-all-settings-interfaces-open-floating--rhonda.",
+     "at": "2026-11-16T18:36:19.352Z"
+    },
+    {
+     "text": "Brief only: brief is 24290 characters (~6073 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T18:36:24.470Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-settings-interfaces-open-floating--rhonda, shared account login)",
+     "at": "2026-11-16T18:36:28.352Z"
     }
    ],
    "approvals": [],
@@ -201241,12 +201253,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:03:06.496Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-all-settings-interfaces-open-floating--rhonda",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-15T00:09:20.551Z",
-    "runs": 1,
+    "launchedAt": "2026-11-16T18:36:18.505Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-15T00:20:17.653Z",
      "exit": 0,
@@ -201263,9 +201275,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c5306804-4e34-4054-b61f-210257efd14f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-15T00:09:20.551Z",
+    "dispatchedAt": "2026-11-16T18:36:18.505Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -201274,7 +201286,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-15T00:09:20.551Z",
+    "pickedAt": "2026-11-16T18:36:18.505Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -201380,7 +201392,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {

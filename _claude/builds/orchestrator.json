@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T18:36:25.449Z",
+ "updatedAt": "2026-11-16T18:36:43.463Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127132,7 +127132,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127140,7 +127140,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-16T18:36:06.707Z",
+   "updatedAt": "2026-11-16T18:36:28.352Z",
    "builtAt": "",
    "notes": [
     {
@@ -127194,6 +127194,18 @@
     {
      "text": "Self-check: all-settings-interfaces-open-floating was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-16T18:35:10.369Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-all-settings-interfaces-open-floating--rhonda.",
+     "at": "2026-11-16T18:36:19.352Z"
+    },
+    {
+     "text": "Brief only: brief is 24290 characters (~6073 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T18:36:24.470Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-settings-interfaces-open-floating--rhonda, shared account login)",
+     "at": "2026-11-16T18:36:28.352Z"
     }
    ],
    "approvals": [],
