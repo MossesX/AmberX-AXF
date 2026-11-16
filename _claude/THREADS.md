@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:21 UTC · `pending-tab-one-collapsed-row-per-2` s14 done, → built (all) · orchestrator
 - 2026-11-15 12:20 UTC · `axf-molly-container-orchestrator-gate` added (0 steps) (all) · console
 - 2026-11-15 12:20 UTC · `axf-molly-container-orchestrator-gate` → queued, note (all) · console
 - 2026-11-15 12:20 UTC · `move-build-orchestrator-to-axhub` → archived (all) · mcp
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 14:06 UTC · `vps-sends-shipped-features-every-merge` s13 done (all) · orchestrator
 - 2026-11-16 14:06 UTC · `console-look-becomes-default-axhub-skin` s16 done (all) · foreign-write
 - 2026-11-16 14:07 UTC · `urgent-land-gizmo-chat-report` added (0 steps) (all) · merge-watch
+- 2026-11-16 14:08 UTC · `console-look-becomes-default-axhub-skin` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
