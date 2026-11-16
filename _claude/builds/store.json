@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6529,
- "updatedAt": "2026-11-16T16:38:13.700Z",
+ "rev": 6530,
+ "updatedAt": "2026-11-16T16:38:29.659Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -241460,7 +241460,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T16:33:07.802Z",
+   "updatedAt": "2026-11-16T16:38:22.032Z",
    "builtAt": "",
    "notes": [
     {
@@ -241501,12 +241501,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T16:29:30.231Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-fix-red-ci-blocked-builds-they-land--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T16:32:59.924Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:31:32.976Z",
@@ -241518,7 +241518,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T16:32:59.924Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -241527,7 +241527,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T16:32:59.924Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -241550,12 +241550,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:38:22.032Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T16:38:22.277Z"
     },
     {
      "id": "s2",
