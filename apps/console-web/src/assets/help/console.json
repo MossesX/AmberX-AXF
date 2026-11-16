@@ -204,7 +204,7 @@
       {
         "target": "view:agent-manager",
         "title": "Agent manager",
-        "text": "Your named agents (Molly and friends): who they are, what they know, what they may do.",
+        "text": "Your named agents (Gizmo and friends): who they are, what they know, what they may do.",
         "kind": "screen"
       },
       {

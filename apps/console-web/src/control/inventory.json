@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 274,
+    "functions": 270,
     "buttons": 62,
     "plugins": 71
   },
@@ -2001,6 +2001,13 @@
       "plugin": "ai.amberx.axf.console.github-app"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gizmo-guide",
+      "id": "gizmo-guide",
+      "label": "Gizmo guide",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.gizmo-guide"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index",
       "id": "glossary-index",
       "label": "Glossary & Index",
@@ -2020,13 +2027,6 @@
       "label": "Maintenance",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.maintenance"
-    },
-    {
-      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide",
-      "id": "molly-guide",
-      "label": "Gizmo guide",
-      "parent": "plugins",
-      "plugin": "ai.amberx.axf.console.molly-guide"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notes-browser",
@@ -2411,6 +2411,51 @@
       "file": "plugins/follow-amber/web/index.tsx"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gizmo-guide/setting:gizmo-guide.speak",
+      "kind": "setting",
+      "label": "Read each step out loud",
+      "key": "gizmo-guide.speak",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Gizmo guide",
+      "keywords": [
+        "gizmo-guide.speak",
+        "Gizmo guide"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.gizmo-guide",
+      "file": "plugins/gizmo-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gizmo-guide/setting:gizmo-guide.runSteps",
+      "kind": "setting",
+      "label": "Move the console to each step (run its action)",
+      "key": "gizmo-guide.runSteps",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Gizmo guide",
+      "keywords": [
+        "gizmo-guide.runSteps",
+        "Gizmo guide"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.gizmo-guide",
+      "file": "plugins/gizmo-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gizmo-guide/setting:gizmo-guide.autoOpen",
+      "kind": "setting",
+      "label": "Open walkthroughs asked for from AmberX by themselves",
+      "key": "gizmo-guide.autoOpen",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Gizmo guide",
+      "keywords": [
+        "gizmo-guide.autoOpen",
+        "Gizmo guide"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.gizmo-guide",
+      "file": "plugins/gizmo-guide/web/index.tsx"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=main-build-status/setting:main-build-status.show",
       "kind": "setting",
       "label": "Show the build status on the banner",
@@ -2508,51 +2553,6 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.maintenance",
       "file": "plugins/maintenance/web/index.tsx"
-    },
-    {
-      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide/setting:molly-guide.speak",
-      "kind": "setting",
-      "label": "Read each step out loud",
-      "key": "molly-guide.speak",
-      "type": "toggle",
-      "detail": "Settings › Plugins › Gizmo guide",
-      "keywords": [
-        "molly-guide.speak",
-        "Gizmo guide"
-      ],
-      "runs": "console",
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide/setting:molly-guide.runSteps",
-      "kind": "setting",
-      "label": "Move the console to each step (run its action)",
-      "key": "molly-guide.runSteps",
-      "type": "toggle",
-      "detail": "Settings › Plugins › Gizmo guide",
-      "keywords": [
-        "molly-guide.runSteps",
-        "Gizmo guide"
-      ],
-      "runs": "console",
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide/setting:molly-guide.autoOpen",
-      "kind": "setting",
-      "label": "Open walkthroughs asked for from AmberX by themselves",
-      "key": "molly-guide.autoOpen",
-      "type": "toggle",
-      "detail": "Settings › Plugins › Gizmo guide",
-      "keywords": [
-        "molly-guide.autoOpen",
-        "Gizmo guide"
-      ],
-      "runs": "console",
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener/setting:axf.voice.useClaude",
@@ -5516,6 +5516,76 @@
       "file": "plugins/gate/web/settingsStore.ts"
     },
     {
+      "address": "function:gizmo.ask",
+      "kind": "function",
+      "id": "gizmo.ask",
+      "label": "Ask Gizmo to show me how",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.ask",
+        "gizmo",
+        "ask"
+      ],
+      "plugin": "ai.amberx.axf.console.gizmo-guide",
+      "file": "plugins/gizmo-guide/web/index.tsx"
+    },
+    {
+      "address": "function:gizmo.replay",
+      "kind": "function",
+      "id": "gizmo.replay",
+      "label": "Replay the last walkthrough",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.replay",
+        "gizmo",
+        "replay"
+      ],
+      "plugin": "ai.amberx.axf.console.gizmo-guide",
+      "file": "plugins/gizmo-guide/web/index.tsx"
+    },
+    {
+      "address": "function:gizmo.next",
+      "kind": "function",
+      "id": "gizmo.next",
+      "label": "Walkthrough: next step",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.next",
+        "gizmo",
+        "next"
+      ],
+      "plugin": "ai.amberx.axf.console.gizmo-guide",
+      "file": "plugins/gizmo-guide/web/index.tsx"
+    },
+    {
+      "address": "function:gizmo.prev",
+      "kind": "function",
+      "id": "gizmo.prev",
+      "label": "Walkthrough: previous step",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.prev",
+        "gizmo",
+        "prev"
+      ],
+      "plugin": "ai.amberx.axf.console.gizmo-guide",
+      "file": "plugins/gizmo-guide/web/index.tsx"
+    },
+    {
+      "address": "function:gizmo.close",
+      "kind": "function",
+      "id": "gizmo.close",
+      "label": "Walkthrough: close",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.close",
+        "gizmo",
+        "close"
+      ],
+      "plugin": "ai.amberx.axf.console.gizmo-guide",
+      "file": "plugins/gizmo-guide/web/index.tsx"
+    },
+    {
       "address": "function:demo.generate",
       "kind": "function",
       "id": "demo.generate",
@@ -5880,132 +5950,6 @@
       ],
       "plugin": "ai.amberx.axf.console.md-studio",
       "file": "plugins/md-studio/web/index.tsx"
-    },
-    {
-      "address": "function:gizmo.ask",
-      "kind": "function",
-      "id": "gizmo.ask",
-      "label": "Ask Gizmo to show me how",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "gizmo.ask",
-        "gizmo",
-        "ask"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "function:gizmo.replay",
-      "kind": "function",
-      "id": "gizmo.replay",
-      "label": "Replay the last walkthrough",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "gizmo.replay",
-        "gizmo",
-        "replay"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "function:gizmo.next",
-      "kind": "function",
-      "id": "gizmo.next",
-      "label": "Walkthrough: next step",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "gizmo.next",
-        "gizmo",
-        "next"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "function:gizmo.prev",
-      "kind": "function",
-      "id": "gizmo.prev",
-      "label": "Walkthrough: previous step",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "gizmo.prev",
-        "gizmo",
-        "prev"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "function:gizmo.close",
-      "kind": "function",
-      "id": "gizmo.close",
-      "label": "Walkthrough: close",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "gizmo.close",
-        "gizmo",
-        "close"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "function:molly.ask",
-      "kind": "function",
-      "id": "molly.ask",
-      "label": "Ask Gizmo to show me how",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "molly.ask",
-        "molly",
-        "ask"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "function:molly.replay",
-      "kind": "function",
-      "id": "molly.replay",
-      "label": "Replay the last walkthrough",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "molly.replay",
-        "molly",
-        "replay"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "function:molly.next",
-      "kind": "function",
-      "id": "molly.next",
-      "label": "Walkthrough: next step",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "molly.next",
-        "molly",
-        "next"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
-    },
-    {
-      "address": "function:molly.prev",
-      "kind": "function",
-      "id": "molly.prev",
-      "label": "Walkthrough: previous step",
-      "detail": "Action · Gizmo guide",
-      "keywords": [
-        "molly.prev",
-        "molly",
-        "prev"
-      ],
-      "plugin": "ai.amberx.axf.console.molly-guide",
-      "file": "plugins/molly-guide/web/index.tsx"
     },
     {
       "address": "function:notify-control.open",
@@ -9664,6 +9608,28 @@
       ]
     },
     {
+      "address": "plugin:ai.amberx.axf.console.gizmo-guide",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.gizmo-guide",
+      "label": "Gizmo guide",
+      "folder": "gizmo-guide",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "gizmo-guide",
+        "Gizmo guide",
+        "Gizmo's narrated walkthroughs (walkthrough@1) in the console"
+      ],
+      "aliases": [
+        "gizmo-guide",
+        "gizmo guide"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gizmo-guide",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
       "address": "plugin:ai.amberx.axf.console.glossary-index",
       "kind": "plugin",
       "id": "ai.amberx.axf.console.glossary-index",
@@ -9800,28 +9766,6 @@
       "optional": [
         "service:axf.notes@1"
       ]
-    },
-    {
-      "address": "plugin:ai.amberx.axf.console.molly-guide",
-      "kind": "plugin",
-      "id": "ai.amberx.axf.console.molly-guide",
-      "label": "Gizmo guide",
-      "folder": "molly-guide",
-      "version": "0.1.0",
-      "detail": "Plugin · module",
-      "keywords": [
-        "molly-guide",
-        "Gizmo guide",
-        "Gizmo's narrated walkthroughs (walkthrough@1) in the console"
-      ],
-      "aliases": [
-        "molly-guide",
-        "gizmo guide"
-      ],
-      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide",
-      "provides": [],
-      "requires": [],
-      "optional": []
     },
     {
       "address": "plugin:ai.amberx.axf.console.notes-browser",
