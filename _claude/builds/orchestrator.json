@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:46:26.519Z",
+ "updatedAt": "2026-11-16T13:46:46.383Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139570,7 +139570,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T13:46:22.929Z",
+   "updatedAt": "2026-11-16T13:46:28.233Z",
    "builtAt": "",
    "notes": [
     {
@@ -139728,6 +139728,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
      "at": "2026-11-16T13:46:06.796Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-video-series-three-minute-browser--gina, shared account login)",
+     "at": "2026-11-16T13:46:28.233Z"
     },
     {
      "text": "Started run 3 on mossesx-max- (Opus, Phase 3): axf-demo-video-series-three-minute-browser--gina.",

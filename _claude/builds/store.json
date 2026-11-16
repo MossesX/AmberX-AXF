@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6434,
- "updatedAt": "2026-11-16T13:46:26.519Z",
+ "rev": 6435,
+ "updatedAt": "2026-11-16T13:46:46.383Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219473,7 +219473,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T13:46:22.929Z",
+   "updatedAt": "2026-11-16T13:46:28.233Z",
    "builtAt": "",
    "notes": [
     {
@@ -219633,6 +219633,10 @@
      "at": "2026-11-16T13:46:06.796Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-video-series-three-minute-browser--gina, shared account login)",
+     "at": "2026-11-16T13:46:28.233Z"
+    },
+    {
      "text": "Started run 3 on mossesx-max- (Opus, Phase 3): axf-demo-video-series-three-minute-browser--gina.",
      "at": "2026-11-16T13:46:22.929Z"
     }
@@ -219666,11 +219670,11 @@
     "queuedAt": "2026-11-16T13:22:50.158Z",
     "queuedBy": "build:fix-build-whose-session-finishes-phase-e",
     "account": "mossesx-max-",
-    "session": "axf-demo-video-series-three-minute-browser--gina",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T13:46:22.242Z",
-    "runs": 3,
+    "model": "Fable",
+    "launchedAt": "2026-11-16T13:24:57.284Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-16T13:46:05.168Z",
      "exit": 0,
@@ -219681,9 +219685,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
     "route": "",
-    "dispatchedAt": "2026-11-16T13:46:22.242Z",
+    "dispatchedAt": "2026-11-16T13:24:57.284Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -219692,7 +219696,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T13:46:22.242Z",
+    "pickedAt": "2026-11-16T13:24:57.284Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
