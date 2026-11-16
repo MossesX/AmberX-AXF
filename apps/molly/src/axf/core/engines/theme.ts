@@ -4,6 +4,7 @@
  * a theme asset restyles the whole app without a re-render.
  */
 import type { ColorThemeData, StyleThemeData } from '../types';
+import { componentTokenVars } from './component-tokens.mjs';
 import { ROW_MIN, SPACING_K, spacedRadius, type Spacing } from './spacing';
 
 export type VarMap = Record<string, string>;
@@ -50,6 +51,8 @@ export function styleThemeVars(s: StyleThemeData, spacing: Spacing = 'regular'):
     '--fx-opacity-scrim': String(s.opacityScrim ?? OPACITY_DEFAULTS.scrim),
     '--fx-opacity-glass': String(s.opacityGlass ?? OPACITY_DEFAULTS.glass),
     '--fx-wrap-groups': wrapGroups(s) ? '1' : '0',
+    // component-tokens@1: the grid and tab-group families a theme names (optional; the :root defaults stand otherwise)
+    ...componentTokenVars(s),
   };
 }
 
