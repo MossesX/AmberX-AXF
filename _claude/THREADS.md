@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:26 UTC · `console-app-part-3-native-bridge-mic` → archived (all) · mcp
 - 2026-11-16 19:27 UTC · `fix-red-ci-blocked-builds-they-land` s11 done, → running (all) · orchestrator
 - 2026-11-16 19:27 UTC · `settings-interface-gear-every-plugin` s6 done (all) · orchestrator
 - 2026-11-16 19:27 UTC · `fix-console-deep-links-open-page-lands` note (all) · mcp
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:25 UTC · `amberx-open-url-must-open-page-even-when` s5 done (all) · orchestrator
 - 2026-11-16 23:25 UTC · `orchestrator-runs-long-builds-across` added (0 steps) (all) · console
 - 2026-11-16 23:25 UTC · `orchestrator-runs-long-builds-across` → queued, note (all) · console
+- 2026-11-16 23:25 UTC · `banner-widget-shapes-plus-change-icon` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
