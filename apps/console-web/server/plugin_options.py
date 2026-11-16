@@ -40,7 +40,10 @@ class ConfigOptions:
         if unknown:
             return {"ok": False, "code": "not_found", "message": f"not an option here: {', '.join(unknown)}"}
         before = self.read() or {}
-        out = self.write({self.fields[k]: v for k, v in patch.items()}) or {}
+        try:
+            out = self.write({self.fields[k]: v for k, v in patch.items()}) or {}
+        except (ValueError, LookupError) as e:  # the plugin refused the value with a reason
+            return {"ok": False, "code": "validation", "message": str(e) or "refused by the plugin"}
         # the plugin's own clean-up drops a bad value and keeps the old one: say so instead of reporting success
         rejected = [k for k, v in patch.items() if isinstance(out, dict) and self.fields[k] in out and out[self.fields[k]] != v and out[self.fields[k]] == before.get(self.fields[k])]
         if rejected:

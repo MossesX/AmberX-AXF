@@ -1,0 +1,48 @@
+{
+  "$axf": "claude-settings-registry@1",
+  "readme": "Gate & rules options (plugin-settings@1): the plugin's own settings (GET / PUT settings) in plugin.json settings.options, read and set through server/plugin_options.py with the gate's own validation. Rules, build rules and the auto-lander (on / off, pause, mode, land) are deliberately not options: they are decisions made on the Gate & rules screen and through its own commands, never a settings write.",
+  "service": "axf.plugin-options.gate@1",
+  "groups": [
+    {
+      "id": "gate",
+      "label": "Gate & rules",
+      "icon": "shield",
+      "order": 10
+    }
+  ],
+  "settings": [
+    {
+      "key": "gate.refreshSec",
+      "group": "gate",
+      "label": "Refresh every (seconds)",
+      "kind": "number",
+      "default": 30,
+      "min": 5,
+      "max": 600,
+      "description": "How often the open tab asks the lander again."
+    },
+    {
+      "key": "gate.historySize",
+      "group": "gate",
+      "label": "History size (entries kept)",
+      "kind": "number",
+      "default": 2000,
+      "min": 50,
+      "max": 20000,
+      "description": "The oldest entries go once History holds more than this."
+    },
+    {
+      "key": "gate.defaultTab",
+      "group": "gate",
+      "label": "Tab it opens on",
+      "kind": "choice",
+      "default": "rules",
+      "options": [
+        "rules",
+        "build-rules",
+        "auto-lander",
+        "history"
+      ]
+    }
+  ]
+}

@@ -352,4 +352,27 @@ async def settings_set(request: Request) -> JSONResponse:
     return await _write("settings_set", request)
 
 
+# plugin-settings@1: refreshSec, historySize and defaultTab in plugin.json settings.options, read and set through
+# console control (REST, MCP, CLI, voice) with the gate's own validation (server/plugin_options.py). Nothing owner-only
+# is an option: rules and the auto-lander keep their own commands.
+def _gate_settings() -> dict[str, Any]:
+    return dict(run("settings_get", {}).get("settings") or {})
+
+
+def _gate_settings_set(patch: dict[str, Any]) -> dict[str, Any]:
+    r = run("settings_set", {**patch, "by": "plugin-settings"})
+    if not r.get("ok", True) or "settings" not in r:
+        raise ValueError(str(r.get("message") or r.get("error") or "refused"))
+    return dict(r["settings"])
+
+
+try:
+    import plugin_options
+
+    plugin_options.provide("gate", read=_gate_settings, write=_gate_settings_set,
+                           fields={f"gate.{k}": k for k in ("refreshSec", "historySize", "defaultTab")})
+except ImportError:  # a bare test run without the console server on the path
+    pass
+
+
 ensure_health()

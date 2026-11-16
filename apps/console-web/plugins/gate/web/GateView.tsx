@@ -5,8 +5,8 @@
  * auto-lander | history`; deep links `console_show view:gate/tab:gate.tabs=history`, `console_open gate`, action `gate.open:<tab>`.
  */
 import { useEffect, useState } from 'react';
-import { SkinScope, TabGroup } from '@console/axf/react';
-import { gateCall, isTab, onShowTab, takeWantedTab, type GateSettings, type GateTab } from './api';
+import { PluginScreenHeader, SkinScope, TabGroup } from '@console/axf/react';
+import { FOLDER, gateCall, isTab, onShowTab, takeWantedTab, type GateSettings, type GateTab } from './api';
 import { BuildRulesTab } from './BuildRulesTab';
 import { HistoryTab } from './HistoryTab';
 import { LanderTab } from './LanderTab';
@@ -33,7 +33,8 @@ export function GateView() {
   }, []);
   return (
     <SkinScope kind="plugin" id={PLUGIN_ID} className="axp-gate">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Gate &amp; rules</h1></div></header>
+      {/* plugin-settings@1: the shared header carries the gear that opens Settings → Plugins → Gate */}
+      <PluginScreenHeader tab={FOLDER} title="Gate & rules" eyebrow="Builds" gearLabel="Gate & rules settings" />
       <TabGroup<GateTab> id="gate.tabs" label="Gate & rules" value={tab} onChange={setTab}
         tabs={[{ value: 'rules', label: 'Rules', icon: 'shield' }, { value: 'build-rules', label: 'Build rules', icon: 'list' }, { value: 'auto-lander', label: 'Auto-lander', icon: 'branch' }, { value: 'history', label: 'History', icon: 'clock' }]}>
         <div className="axp-gate__panel">

@@ -32,7 +32,11 @@ export function GateSettings() {
       <TextField label="History size (entries kept)" type="number" value={size} onChange={setSize} hint="The oldest entries go once History holds more than this (50 to 20000)." />
       <SelectField label="Tab it opens on" value={tab} onChange={setTab} options={[{ value: 'rules', label: 'Rules' }, { value: 'auto-lander', label: 'Auto-lander' }, { value: 'history', label: 'History' }]} hint="Unless you were on another tab last time (the tab row remembers it)." />
       {error && <p className="axp-gate__err" role="alert">{error}</p>}
-      <div className="axp-gate__bar"><Button id="gate-settings-save" tone="primary" icon="save" busy={busy} disabled={!changed} onClick={() => void save()}>Save</Button></div>
+      <div className="axp-gate__bar">
+        <Button id="gate-settings-save" tone="primary" icon="save" busy={busy} disabled={!changed} onClick={() => void save()}>Save</Button>
+        {/* the rules, build rules and auto-lander themselves are on the Gate & rules screen (view:gate) */}
+        <Button id="gate-settings-open" tone="ghost" icon="shield" data-axf-target="button:gate-settings-open" onClick={() => rt.navigate('gate')}>Open Gate &amp; rules</Button>
+      </div>
     </div>
   );
 }

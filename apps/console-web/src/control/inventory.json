@@ -7,7 +7,7 @@
     "tabGroups": 26,
     "tabs": 78,
     "settingsTabs": 83,
-    "settings": 192,
+    "settings": 195,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -1401,7 +1401,7 @@
       "view": "gate",
       "plugin": "ai.amberx.axf.console.gate",
       "file": "plugins/gate/web/GateView.tsx",
-      "line": 37,
+      "line": 38,
       "tabs": [
         {
           "address": "view:gate/tab:gate.tabs=rules",
@@ -5477,6 +5477,64 @@
       "runs": "server",
       "service": "axf.plugin-options.demonstration-designer@1",
       "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate/setting:gate.refreshSec",
+      "kind": "setting",
+      "label": "Refresh every (seconds)",
+      "key": "gate.refreshSec",
+      "type": "number",
+      "min": 5,
+      "max": 600,
+      "detail": "Settings › Plugins › Gate & rules › Gate & rules",
+      "keywords": [
+        "gate.refreshSec",
+        "gate",
+        "Gate & rules"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.gate@1",
+      "plugin": "ai.amberx.axf.console.gate"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate/setting:gate.historySize",
+      "kind": "setting",
+      "label": "History size (entries kept)",
+      "key": "gate.historySize",
+      "type": "number",
+      "min": 50,
+      "max": 20000,
+      "detail": "Settings › Plugins › Gate & rules › Gate & rules",
+      "keywords": [
+        "gate.historySize",
+        "gate",
+        "Gate & rules"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.gate@1",
+      "plugin": "ai.amberx.axf.console.gate"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate/setting:gate.defaultTab",
+      "kind": "setting",
+      "label": "Tab it opens on",
+      "key": "gate.defaultTab",
+      "type": "choice",
+      "options": [
+        "rules",
+        "build-rules",
+        "auto-lander",
+        "history"
+      ],
+      "detail": "Settings › Plugins › Gate & rules › Gate & rules",
+      "keywords": [
+        "gate.defaultTab",
+        "gate",
+        "Gate & rules"
+      ],
+      "runs": "server",
+      "service": "axf.plugin-options.gate@1",
+      "plugin": "ai.amberx.axf.console.gate"
     }
   ],
   "functions": [
@@ -11438,7 +11496,8 @@
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
       "provides": [
         "service:axf.gate@1",
-        "service:axf.build-rules@1"
+        "service:axf.build-rules@1",
+        "service:axf.plugin-options.gate@1"
       ],
       "requires": [],
       "optional": [

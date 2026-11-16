@@ -29,4 +29,10 @@ r = svc.set({"demo.tile": "huge"})
 assert r["ok"] is False and r["code"] == "validation" and store["tile"] == "md", "a value the plugin drops is reported, not claimed"
 assert svc.set({"other": 1})["code"] == "not_found", "unknown keys refused"
 assert svc.set({"demo.names": False}) == {"ok": True} and store["names"] is False, "toggles"
-print("plugin_options: 7 checks passed")
+def refuse(patch):
+    raise ValueError("tab is logos or packs")
+
+
+bad = plugin_options.provide("demo2", read=lambda: dict(store), write=refuse, fields={"demo2.tab": "tab"})
+assert bad.set({"demo2.tab": "x"}) == {"ok": False, "code": "validation", "message": "tab is logos or packs"}, "a plugin's refusal comes back as validation"
+print("plugin_options: 8 checks passed")
