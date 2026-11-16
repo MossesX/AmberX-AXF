@@ -404,9 +404,15 @@
         ],
         "shape": [
           "circle",
+          "diamond",
+          "hexagon",
+          "leaf",
           "pill",
-          "rounded",
-          "square"
+          "rounded-square",
+          "square",
+          "squircle",
+          "star",
+          "tag"
         ],
         "banner": [
           "amberx-accent",
@@ -828,9 +834,15 @@
         ],
         "shape": [
           "circle",
+          "diamond",
+          "hexagon",
+          "leaf",
           "pill",
-          "rounded",
-          "square"
+          "rounded-square",
+          "square",
+          "squircle",
+          "star",
+          "tag"
         ],
         "banner": [
           "amberx-accent",
@@ -1258,9 +1270,15 @@
         ],
         "shape": [
           "circle",
+          "diamond",
+          "hexagon",
+          "leaf",
           "pill",
-          "rounded",
-          "square"
+          "rounded-square",
+          "square",
+          "squircle",
+          "star",
+          "tag"
         ],
         "banner": [
           "amberx-accent",
@@ -1682,9 +1700,15 @@
         ],
         "shape": [
           "circle",
+          "diamond",
+          "hexagon",
+          "leaf",
           "pill",
-          "rounded",
-          "square"
+          "rounded-square",
+          "square",
+          "squircle",
+          "star",
+          "tag"
         ],
         "banner": [
           "amberx-accent",
@@ -2077,9 +2101,15 @@
         ],
         "shape": [
           "circle",
+          "diamond",
+          "hexagon",
+          "leaf",
           "pill",
-          "rounded",
-          "square"
+          "rounded-square",
+          "square",
+          "squircle",
+          "star",
+          "tag"
         ],
         "banner": [
           "amberx-accent",
@@ -2501,9 +2531,15 @@
         ],
         "shape": [
           "circle",
+          "diamond",
+          "hexagon",
+          "leaf",
           "pill",
-          "rounded",
-          "square"
+          "rounded-square",
+          "square",
+          "squircle",
+          "star",
+          "tag"
         ],
         "banner": [
           "amberx-accent",

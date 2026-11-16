@@ -83,7 +83,11 @@
             "at": "right"
           }
         ],
-        "divider": true
+        "divider": true,
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
       },
       "extra": [],
       "placed": {
@@ -135,7 +139,11 @@
             "at": "right"
           }
         ],
-        "divider": true
+        "divider": true,
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
       },
       "extra": [
         {
@@ -204,7 +212,11 @@
             "at": "right"
           }
         ],
-        "divider": true
+        "divider": true,
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
       },
       "extra": [
         {
@@ -262,7 +274,11 @@
             "at": "right"
           }
         ],
-        "divider": true
+        "divider": true,
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
       },
       "extra": [
         {
@@ -314,7 +330,11 @@
           "text": "AmberX"
         },
         "attach": [],
-        "divider": true
+        "divider": true,
+        "shape": {
+          "icon": "circle",
+          "chip": "pill"
+        }
       },
       "extra": [
         {

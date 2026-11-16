@@ -14,7 +14,8 @@ import { dirname, join } from 'node:path';
 import { controlPaths } from '../../../../../framework/core/engines/control-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, effectiveTokenOverrides, normalizeTokenOverrides, tokenValueIn, withTokenOverride, withoutTokenOverride } from '../../../../../framework/core/engines/control-tokens.mjs';
 import { ROOT, DATA_DIR, ControlError } from './common.mjs';
-import { setSlotEverywhere } from '../../../../../framework/cli/skins.mjs';
+import { appIds, setSlotEverywhere } from '../../../../../framework/cli/skins.mjs';
+import * as shapes from '../../../../../framework/cli/shapes.mjs';
 
 const ASSETS = join(ROOT, 'framework', 'assets');
 const APPEARANCE_MAX = 16 * 1024;
@@ -98,6 +99,7 @@ export function runTokens(c) {
     throw new ControlError('not_implemented', `${c.target} was retired on Nov 1 2026 (look sliders and per-asset tokens); set the same value through tokens.theme / style / layout / typography / density / sizing instead`);
   }
   if (c.target === 'tokens.slots') return runSlots(c, doc);
+  if (c.target === 'tokens.shape') return runShapes(c);
   const spec = CONTROL_TOKEN_SLOTS[c.target];
   const paths = controlPaths(c.target) ?? [];
   switch (c.op) {
@@ -117,6 +119,42 @@ export function runTokens(c) {
       return { changed, ...(c.path ? { item: tokenRow(c.target, readAppearance(), paths.find((x) => x.id === c.path)) } : { cleared: Object.keys(before['*'] ?? {}) }) };
     }
     default: throw new ControlError('invalid', `${c.target} does not take ${c.op}`);
+  }
+}
+
+/** tokens.shape: the banner widget shape at one level (framework/cli/shapes.mjs is the writer). path = global | skin/<id> | widget/<app>/<type:id>. */
+function runShapes(c) {
+  const by = c.by || 'control';
+  const options = shapes.list().map((a) => a.id);
+  const parse = (path) => {
+    const p = String(path ?? '');
+    if (p === 'global') return { scope: 'global', where: {} };
+    let m = /^skin\/([a-z0-9][a-z0-9-]*)$/.exec(p);
+    if (m) return { scope: 'skin', where: { skin: m[1] } };
+    m = /^widget\/([a-z0-9-]+)\/([a-z0-9-]{1,40}:[A-Za-z0-9._-]{1,80})$/.exec(p);
+    if (m) return { scope: 'widget', where: { app: m[1], widget: m[2] } };
+    throw new ControlError('validation', 'tokens.shape path: global, skin/<skin id> or widget/<app>/<type:id>');
+  };
+  const row = (path) => { const { scope, where } = parse(path); return { id: path, kind: 'asset-id', value: shapes.levelValue(scope, where) || null, options }; };
+  try {
+    switch (c.op) {
+      case 'list': {
+        const items = [row('global'), ...Object.keys(shapes.get().skins).map((s) => row(`skin/${s}`)),
+          ...appIds().flatMap((app) => { try { return Object.keys(shapes.get(app).widgets).filter((k) => !k.endsWith('(phone)')).map((w) => row(`widget/${app}/${w}`)); } catch { return []; } })];
+        return { items, total: items.length, options };
+      }
+      case 'get': { const r = row(c.path ?? 'global'); return { item: r, value: r.value }; }
+      case 'set': {
+        if (typeof c.value !== 'string' || !options.includes(c.value)) throw new ControlError('validation', `no shape ${String(c.value)} (one of ${options.join(', ')})`);
+        const { scope, where } = parse(c.path ?? 'global');
+        return { changed: true, ...shapes.set(scope, c.value, where, by) };
+      }
+      case 'reset': { const { scope, where } = parse(c.path ?? 'global'); return { changed: true, ...shapes.set(scope, '', where, by) }; }
+      default: throw new ControlError('invalid', `${c.target} does not take ${c.op}`);
+    }
+  } catch (e) {
+    if (e instanceof ControlError) throw e;
+    throw new ControlError('validation', e.message);
   }
 }
 

@@ -416,7 +416,8 @@
       "plugins.commands",
       "plugins.reads",
       "tokens.nav",
-      "console.control"
+      "console.control",
+      "tokens.shape"
     ],
     "targetOps": {
       "tokens.theme": [
@@ -557,6 +558,12 @@
         "list",
         "get",
         "act"
+      ],
+      "tokens.shape": [
+        "list",
+        "get",
+        "set",
+        "reset"
       ]
     }
   },
@@ -776,7 +783,8 @@
       "items.hidden",
       "items.pinned"
     ],
-    "console.control": null
+    "console.control": null,
+    "tokens.shape": null
   },
   "normalize": {
     "list-layout": {
@@ -1197,7 +1205,7 @@
       "op must be one of: list, get, set, reset, add, remove, act"
     ],
     "wrong-target": [
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control, tokens.shape"
     ],
     "token-op-on-entity": [
       "amberx.items does not take reset (it takes list, get, set, add, remove, act)"
@@ -1213,7 +1221,7 @@
     ],
     "not-an-object": [
       "op must be one of: list, get, set, reset, add, remove, act",
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control, tokens.shape"
     ],
     "console-open-screen": [],
     "console-open-settings": [],

@@ -2312,6 +2312,21 @@
         "plugin.disable": "write"
       },
       "doc": "console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step (\"view:settings/tab:settings.tabs=plugins\", \"row:<build>/step:s3\", \"plugin:<id>\"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "tokens.shape": {
+      "domain": "tokens",
+      "label": "Banner widget shapes",
+      "asset": "shape",
+      "ops": [
+        "list",
+        "get",
+        "set",
+        "reset"
+      ],
+      "paths": "host",
+      "value": "asset-id",
+      "pathShape": "global | skin/<skin id> | widget/<app>/<type:id>",
+      "doc": "shape@1: the banner widget shape at one level. path global = the hub-wide pick (axf.tokens.shape.global, every app); skin/<skin id> = that skin's shape over its own assets.shape; widget/<app>/<type:id> = one banner widget's own shape in one app (e.g. widget/axf-console/clock:digital-12h). set = a shape asset id, reset = inherit. Same writer as framework/cli/shapes.mjs and the theme-manager /shapes routes."
     }
   },
   "aliases": {
@@ -2396,7 +2411,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.shape"
             ],
             "description": "what to control"
           },
@@ -2451,7 +2467,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.shape"
             ],
             "description": "what to control"
           },
@@ -2507,7 +2524,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.shape"
             ],
             "description": "what to control"
           },
@@ -2570,7 +2588,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.shape"
             ],
             "description": "what to control"
           },
@@ -2633,7 +2652,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.shape"
             ],
             "description": "what to control"
           },
@@ -2696,7 +2716,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.shape"
             ],
             "description": "what to control"
           },
@@ -2763,7 +2784,8 @@
               "plugins.commands",
               "plugins.reads",
               "tokens.nav",
-              "console.control"
+              "console.control",
+              "tokens.shape"
             ],
             "description": "what to control"
           },
@@ -2895,7 +2917,8 @@
       "plugins.commands",
       "plugins.reads",
       "tokens.nav",
-      "console.control"
+      "console.control",
+      "tokens.shape"
     ]
   },
   "schema": {
@@ -2947,7 +2970,8 @@
           "plugins.commands",
           "plugins.reads",
           "tokens.nav",
-          "console.control"
+          "console.control",
+          "tokens.shape"
         ]
       },
       "path": {
@@ -4123,6 +4147,16 @@
             }
           }
         },
+        "paths": "host"
+      },
+      "tokens.shape": {
+        "description": "shape@1: the banner widget shape at one level. path global = the hub-wide pick (axf.tokens.shape.global, every app); skin/<skin id> = that skin's shape over its own assets.shape; widget/<app>/<type:id> = one banner widget's own shape in one app (e.g. widget/axf-console/clock:digital-12h). set = a shape asset id, reset = inherit. Same writer as framework/cli/shapes.mjs and the theme-manager /shapes routes.",
+        "ops": [
+          "list",
+          "get",
+          "set",
+          "reset"
+        ],
         "paths": "host"
       }
     }
