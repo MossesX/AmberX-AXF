@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · pipeline
 - 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 - 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-16 13:58 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:22 UTC · `toolbars-moved-to-side-become-vertical` note (all) · orchestrator
 - 2026-11-16 19:23 UTC · `every-settings-interface-gets` added (0 steps) (all) · console
 - 2026-11-16 19:23 UTC · `every-settings-interface-gets` → queued, note (all) · console
+- 2026-11-16 19:23 UTC · `reset-all-button-every-asset-override` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
