@@ -1697,6 +1697,24 @@
         "title": "Find an option",
         "text": "Narrows the list to options whose name or group matches what you type.",
         "kind": "field"
+      },
+      {
+        "target": "open-as-page",
+        "title": "Open as page",
+        "text": "Moves these settings from the floating dialog onto the full Settings page, on the same tab.",
+        "related": [
+          "action:settings.page"
+        ],
+        "kind": "button"
+      },
+      {
+        "target": "settings-open-in",
+        "title": "Settings open in",
+        "text": "Where every settings interface opens: a floating dialog over the screen you're on (the default) or the Settings page. Your own choice; it follows you to every device.",
+        "related": [
+          "action:settings.opensas"
+        ],
+        "kind": "field"
       }
     ],
     "intros": [
