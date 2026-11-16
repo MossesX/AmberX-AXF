@@ -1472,7 +1472,7 @@
       "label": "Icon pack",
       "group": "Brand",
       "icon": "grid",
-      "description": "A named set of glyphs on one grid (icon-pack@1): style outline / filled / duotone / sharp / rounded, grid 16-48, stroke, linecap, glyphs name → path (commands only). Any name the pack lacks falls back to the framework glyph set. The branding package picks the active pack; the Icon component reads it.",
+      "description": "A glyph set (icon-pack@1, engine core/engines/icon-pack.ts, rules core/engines/icon-rules.mjs): style outline / filled / duotone / sharp / rounded, grid 16-48, stroke, linecap. `glyphs` = per-name entries (a glyph name → what to draw); `spots` = per-spot entries (an icon-map spot id → a glyph entry or the name of one in `glyphs`) which win over the name for that one place. A glyph entry draws from one source: path commands (`d`, `secondary`, `fill`), sanitised inline SVG (`svg`), a PNG data URI (`png`, size-capped), a font glyph (`font`) or a reference to another pack's glyph (`ref`: `pack:<id>/<name>` or `name:<glyph>`); each may carry its own `source` and `license`. `extends` names a parent pack (inherit@1: entries this pack lacks come from the parent, chains ≤ 4); `seed` records how a generated pack was made (core/engines/icon-gen.ts) so it can be re-rolled. Any name no pack in the chain has falls back to the framework glyph set (`fallback: framework`). A skin or branding package picks a pack; the scope chain (icon-scope@1, spec/ICON-MAP.md) says which pack is in force where.",
       "required": [
         "style",
         "grid",
@@ -1485,6 +1485,15 @@
           "duotone",
           "sharp",
           "rounded"
+        ],
+        "linecap": [
+          "round",
+          "square",
+          "butt"
+        ],
+        "fallback": [
+          "framework",
+          "none"
         ]
       },
       "optional": true,
@@ -1494,13 +1503,20 @@
       },
       "optional_fields": {
         "stroke": "number 0.5-4 (default 1.75)",
-        "linecap": "round | square | butt",
-        "fallback": "framework (default) | none"
+        "linecap": "round (default) | square | butt",
+        "fallback": "framework (default) | none",
+        "glyphs": "{ <name>: glyph } — per-name entries; a glyph is a path string or { d?, secondary?, fill?, svg?, png?, font?: { family, char }, ref?, source?, license?, tags? }; exactly one of d | svg | png | font | ref",
+        "spots": "{ <spot id>: glyph | \"<name>\" } — per-spot entries (icon-map@1 ids `<app>:<area>/<slot>`); a string names an entry in glyphs",
+        "extends": "inherit@1: id of the icon-pack this one extends; entries it does not set come from that pack (depth ≤ 4, no cycles)",
+        "source": "{ kind: builtin | upload | url | library | generated | mixed, url?, library?, importedAt? } — where the pack came from (per-glyph `source` overrides it)",
+        "license": "{ id: SPDX id or \"proprietary\", holder?, url? } — the pack's default licence (per-glyph `license` overrides it)",
+        "seed": "{ seed: string, style?: line | solid | duotone | rounded | geometric | pixel, grammar: icon-gen@1 version } — set on a generated pack; re-rolling with the same seed gives the same glyphs",
+        "appIcon": "{ shape: circle | squircle | rounded | square, bg: colour token, fg: colour token, padding: 0-0.4 } — how app-icon spots tile a glyph"
       },
       "skin": {
         "by": "reference",
         "via": "iconPack",
-        "why": "A skin may name the icon pack it draws its icons from (data.iconPack)."
+        "why": "A skin may name the icon pack it draws its icons from (data.iconPack); the scope chain (icon-scope@1) puts it in force at that place."
       }
     },
     "branding": {
@@ -1908,6 +1924,31 @@
         "sourceHash": "hash of the sources it was generated from (a different hash = out of sync)",
         "build": "the build that generated it",
         "keywords": "words for search (up to 200)"
+      }
+    },
+    "icon-map": {
+      "label": "Icon map",
+      "group": "Brand",
+      "icon": "grid",
+      "description": "The spot registry (icon-map@1, engine core/engines/icon-map.ts, rules core/engines/icon-rules.mjs, inventory spec/ICON-MAP.md): every place a UI draws an icon, a badge or an app icon, keyed `<app>:<area>/<slot>`. A spot has a kind (icon | badge | app-icon), the glyph it draws when no pack says otherwise (`glyph`; empty on a dynamic spot, whose name comes from data at run time and which packs reach through per-name entries), the size and tint tokens it is drawn with (never literal sizes or colours), tags for search, and an optional label and help. A collection: every icon-map asset is in force at once, merged with the spots components register at run time (rt.registerIconSpot), the same id deduped (an asset's entry wins over a runtime one). The coverage report (spots a pack has no glyph for) and the designer's spot tree are built from it.",
+      "required": [
+        "spots"
+      ],
+      "collection": true,
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "app": "string — the app whose spots this map lists (an app id, or `all` for the framework default map)",
+        "spots": "{ <spot id>: { kind: icon | badge | app-icon (default icon), glyph?: glyph name (empty = dynamic), dynamic?: boolean, size?: size token (`icon` default; icon-button, badge, app-icon, or a --fx-size-* token name), tint?: colour token (`text` default; muted, accent, accentText, success, warning, danger, info, brand1-3, currentColor), tags?: string[], label?, help?, files?: string[] } }",
+        "extends": "inherit@1: id of the icon-map this one extends; spots it does not list come from that map (depth ≤ 4)",
+        "generatedAt": "ISO time of the scan that wrote it (framework/cli/icon-map.mjs scan)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "An icon map is a registry of places, not a look: a skin changes what those places draw through the icon pack it names (icon-pack, by reference)."
       }
     },
     "uac-policy": {

@@ -1,4 +1,114 @@
 {
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "builtin",
+            "upload",
+            "url",
+            "library",
+            "generated",
+            "mixed"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "library": {
+          "type": "string"
+        },
+        "importedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9.+-]{0,63}$"
+        },
+        "holder": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "glyph": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "path data"
+        },
+        {
+          "type": "object",
+          "description": "one of d | svg | png | font | ref",
+          "properties": {
+            "d": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "secondary": {
+              "type": "string"
+            },
+            "fill": {
+              "type": "boolean"
+            },
+            "svg": {
+              "type": "string",
+              "maxLength": 8000
+            },
+            "png": {
+              "type": "string",
+              "pattern": "^data:image/png;base64,"
+            },
+            "font": {
+              "type": "object",
+              "required": [
+                "family",
+                "char"
+              ],
+              "properties": {
+                "family": {
+                  "type": "string"
+                },
+                "char": {
+                  "type": "string"
+                }
+              }
+            },
+            "ref": {
+              "type": "string",
+              "pattern": "^(?:pack:[a-z0-9][a-z0-9-]{1,47}\\/[a-z][a-z0-9-]*|name:[a-z][a-z0-9-]*)$"
+            },
+            "source": {
+              "$ref": "#/$defs/source"
+            },
+            "license": {
+              "$ref": "#/$defs/license"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "axf/icon-pack.schema.json",
   "title": "AmberX AXF Icon pack asset",
@@ -49,8 +159,149 @@
             "rounded"
           ]
         },
-        "grid": {},
-        "glyphs": {}
+        "grid": {
+          "type": "number",
+          "minimum": 16,
+          "maximum": 48
+        },
+        "glyphs": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/glyph"
+          }
+        },
+        "stroke": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 4
+        },
+        "linecap": {
+          "enum": [
+            "round",
+            "square",
+            "butt"
+          ]
+        },
+        "fallback": {
+          "enum": [
+            "framework",
+            "none"
+          ]
+        },
+        "spots": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9.-]*\\/[a-z0-9][a-z0-9.-]*$"
+          },
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              {
+                "$ref": "#/$defs/glyph"
+              }
+            ]
+          }
+        },
+        "extends": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "license": {
+          "$ref": "#/$defs/license"
+        },
+        "seed": {
+          "type": "object",
+          "required": [
+            "seed"
+          ],
+          "properties": {
+            "seed": {
+              "type": "string"
+            },
+            "style": {
+              "enum": [
+                "line",
+                "solid",
+                "duotone",
+                "rounded",
+                "geometric",
+                "pixel"
+              ]
+            },
+            "grammar": {
+              "type": "string"
+            }
+          }
+        },
+        "appIcon": {
+          "type": "object",
+          "properties": {
+            "shape": {
+              "enum": [
+                "circle",
+                "squircle",
+                "rounded",
+                "square"
+              ]
+            },
+            "bg": {
+              "enum": [
+                "currentColor",
+                "text",
+                "muted",
+                "bg",
+                "surface",
+                "accent",
+                "accentText",
+                "success",
+                "warning",
+                "danger",
+                "info",
+                "brand1",
+                "brand2",
+                "brand3"
+              ]
+            },
+            "fg": {
+              "enum": [
+                "currentColor",
+                "text",
+                "muted",
+                "bg",
+                "surface",
+                "accent",
+                "accentText",
+                "success",
+                "warning",
+                "danger",
+                "info",
+                "brand1",
+                "brand2",
+                "brand3"
+              ]
+            },
+            "padding": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.4
+            }
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     }
   }

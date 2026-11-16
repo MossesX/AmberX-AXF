@@ -5,6 +5,7 @@
  */
 import { installLibrary } from './libraries.mjs';
 import { brandAssetErrors } from '../core/engines/brand-rules.mjs';
+import { ICON_MAP_TYPE, ICON_PACK_TYPE, iconAssetErrors, iconSchemaProperties } from '../core/engines/icon-rules.mjs';
 import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines/scale-rules.mjs';
 import { isLayoutType, layoutErrors, layoutSchemaProperties } from '../core/engines/layout-rules.mjs';
 import { helpErrors } from '../core/engines/help-rules.mjs';
@@ -197,6 +198,8 @@ export function validateAsset(raw) {
   errors.push(...demoAssetErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
   errors.push(...(brandAssetErrors(raw.type, raw.data) ?? []));
+  // icon-map@1 / icon-pack@1 extended fields: ONE validator shared with core/validate.ts (core/engines/icon-rules.mjs)
+  errors.push(...(iconAssetErrors(raw.type, raw.data) ?? []));
   const host = hostSpec(raw.type);
   if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {
@@ -877,7 +880,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
     const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
     if (type === 'skin') Object.assign(props, skinSchemaProperties());
-    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
+    // icon-map@1 / icon-pack@1 (core/engines/icon-rules.mjs): spots, glyph sources, extends, source + licence, seed
+    const iconSchema = type === ICON_MAP_TYPE || type === ICON_PACK_TYPE ? iconSchemaProperties(type) : null;
+    if (iconSchema) Object.assign(props, iconSchema.properties);
+    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : iconSchema && Object.keys(iconSchema.$defs).length ? iconSchema.$defs : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
       $schema: 'https://json-schema.org/draft/2020-12/schema',

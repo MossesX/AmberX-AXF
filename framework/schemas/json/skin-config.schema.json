@@ -7992,6 +7992,21 @@
                         },
                         "fallback": {
                           "$ref": "#/$defs/mode"
+                        },
+                        "spots": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "extends": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "source": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "license": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "seed": {
+                          "$ref": "#/$defs/mode"
                         }
                       }
                     }

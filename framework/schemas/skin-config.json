@@ -23,7 +23,7 @@
   "summary": {
     "categories": 48,
     "groups": 289,
-    "options": 1147,
+    "options": 1152,
     "limits": 4,
     "sections": [
       "Themes",
@@ -3124,7 +3124,12 @@
             "glyphs",
             "stroke",
             "linecap",
-            "fallback"
+            "fallback",
+            "spots",
+            "extends",
+            "source",
+            "license",
+            "seed"
           ]
         }
       ],

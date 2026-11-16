@@ -28,6 +28,8 @@ export const ANIMATION_LIMITS = { durationMs: [300, 20000], delayMs: [0, 10000] 
 export const ICON_STYLES = ['outline', 'filled', 'duotone', 'sharp', 'rounded'];
 export const ICON_LIMITS = { grid: [16, 48], stroke: [0.5, 4], glyphs: 600, pathChars: 2000, nameChars: 48 };
 export const GLYPH_NAME = /^[a-z][a-z0-9-]*$/;
+/** A glyph entry that draws from svg, png, font or ref instead of path data (the deep checks are in icon-rules.mjs). */
+export const glyphHasOtherSource = (g) => isObj(g) && ((typeof g.svg === 'string' && g.svg.trim() !== '') || (typeof g.png === 'string' && g.png.trim() !== '') || isObj(g.font) || (typeof g.ref === 'string' && g.ref.trim() !== ''));
 
 /** Decoration places a branding package may style; an open list (apps and plugins may register more through `registerBrandSlot`). */
 export const BRAND_SLOTS = ['banner', 'window', 'floating-window', 'dialog', 'container', 'tab-group', 'toolbar', 'nav-menu', 'app-menu', 'context-menu', 'splash', 'favicon', 'empty-state'];
@@ -137,8 +139,10 @@ export function normalizeIconPack(raw) {
       if (!GLYPH_NAME.test(name) || name.length > ICON_LIMITS.nameChars) continue;
       const q = isObj(g) ? g : typeof g === 'string' ? { d: g } : {};
       const d = str(q.d, ICON_LIMITS.pathChars);
-      if (!d || !PATH_DATA.test(d)) continue;
-      glyphs[name] = { d, fill: q.fill === true, secondary: typeof q.secondary === 'string' && PATH_DATA.test(q.secondary) ? q.secondary.slice(0, ICON_LIMITS.pathChars) : '' };
+      // a glyph drawn from another source (svg | png | font | ref, icon-rules.mjs) keeps an empty path here: glyphSvg
+      // falls back to the framework icon for it, the icon-pack engine (engines/icon-pack.ts) draws it
+      if (d ? !PATH_DATA.test(d) : !glyphHasOtherSource(q)) continue;
+      glyphs[name] = { d: PATH_DATA.test(d) ? d : '', fill: q.fill === true, secondary: typeof q.secondary === 'string' && PATH_DATA.test(q.secondary) ? q.secondary.slice(0, ICON_LIMITS.pathChars) : '' };
     }
   }
   return {
@@ -166,7 +170,7 @@ export function iconPackErrors(raw) {
       if (!GLYPH_NAME.test(name) || name.length > ICON_LIMITS.nameChars) e.push(`data.glyphs.${name}: names are lowercase words with dashes`);
       const g = raw.glyphs[name];
       const d = typeof g === 'string' ? g : isObj(g) ? g.d : undefined;
-      if (typeof d !== 'string' || !d.trim()) e.push(`data.glyphs.${name}.d is required`);
+      if (typeof d !== 'string' || !d.trim()) { if (!glyphHasOtherSource(g)) e.push(`data.glyphs.${name}: needs one of d (path), svg, png, font or ref`); }
       else if (!PATH_DATA.test(d)) e.push(`data.glyphs.${name}.d: path commands and numbers only`);
       else if (d.length > ICON_LIMITS.pathChars) e.push(`data.glyphs.${name}.d: at most ${ICON_LIMITS.pathChars} characters`);
     }
