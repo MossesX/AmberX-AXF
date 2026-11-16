@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Self-test for the Gizmo guide's server part (no network): walkthrough@1 cleaning, storage, the ask route.
 
-    python3 apps/console-web/plugins/molly-guide/test.py
+    python3 apps/console-web/plugins/gizmo-guide/test.py
 """
 from __future__ import annotations
 
@@ -13,14 +13,14 @@ import types
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-os.environ["AXF_MOLLY_GUIDE_DIR"] = tempfile.mkdtemp(prefix="axf-molly-test-")
+os.environ["AXF_GIZMO_GUIDE_DIR"] = tempfile.mkdtemp(prefix="axf-gizmo-guide-test-")
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 import plugin_services  # noqa: E402
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
 sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
-spec = importlib.util.spec_from_file_location("axf_console_plugins.molly_guide", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
+spec = importlib.util.spec_from_file_location("axf_console_plugins.gizmo_guide", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
 mg = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mg)
 app = FastAPI()
@@ -38,7 +38,7 @@ def check(cond: bool, what: str) -> None:
     print(f"  ✓ {what}")
 
 
-print("molly-guide self-test")
+print("gizmo-guide self-test")
 text_, wt_ = mg.split_walkthrough('Here you go.\n```walkthrough\n{"id":"AI Setup!","title":"Set up AI","steps":[{"say":"Open settings.","do":"settings.open:ai","target":"#ai"},{"say":"x","do":"javascript:alert(1)","target":"<b>"},{"say":"y","do":"https://evil.example"},{"nope":1}]}\n```')
 check(text_ == "Here you go." and wt_ and wt_["id"] == "ai-setup" and len(wt_["steps"]) == 3, "block taken out of the answer, id cleaned, empty steps dropped")
 check([wt_["steps"][1]["do"], wt_["steps"][1]["target"], wt_["steps"][2]["do"]] == ["", "", ""], "script and link actions, markup targets dropped")
@@ -51,7 +51,7 @@ check(c.post("/mg/ask", json={"task": "hi"}).status_code == 503, "ask: no agents
 
 
 class FakeAgents:
-    def __init__(self, have=("gizmo", "molly")) -> None:
+    def __init__(self, have=("gizmo",)) -> None:
         self.have = have
         self.agent = None
 
@@ -68,14 +68,11 @@ fake = FakeAgents()
 plugin_services.provide("axf.agents@1", fake, "agent-manager")
 r = c.post("/mg/ask", json={"task": "show me how to change the theme", "app": "AmberX!", "page": "notes<script>"}).json()
 check(r["text"] == "Sure." and r["walkthrough"]["steps"][0]["do"] == "nav:themes" and r["walkthrough"]["source"] == "amberx", "ask: Gizmo's answer split into speech + a stored walkthrough")
-check(fake.agent == "gizmo", "ask: Gizmo answers (Molly is no longer an agent)")
+check(fake.agent == "gizmo", "ask: Gizmo answers")
 check(fake.task.startswith("[from amberx, page notesscript] "), "ask: app and page cleaned before they reach Gizmo")
-fake.have = ("molly",)
-c.post("/mg/ask", json={"task": "hi"})
-check(fake.agent == "molly", "ask: the old Molly add-on only as a fallback while Gizmo is off")
 fake.have = ()
 check(c.post("/mg/ask", json={"task": "hi"}).status_code == 503, "ask: neither installed = 503 naming Gizmo")
-fake.have = ("gizmo", "molly")
+fake.have = ("gizmo",)
 
 # Re-record AmberX's walkthrough: one veto call through Vinny, never without him
 import time as _t  # noqa: E402

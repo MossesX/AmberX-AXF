@@ -99,3 +99,15 @@ so its function moves to a plugin without the Molly name:
 | Agent-manager README lines on Molly | `agent-manager/README.md` | dropped; Gizmo is the add-on that does this |
 | Molly add-on persona / skills (codebase, walkthroughs, builds, VPS, DNS) | `addons/molly/addon.json` | nothing to move: Gizmo's add-on carries the same skills and tools |
 | Molly app's per-app chrome settings, nav / app menu / toolbar assets | `apps/molly/src/assets` | nothing to move: Molly-only |
+
+## Moved (s3)
+
+The guide now lives in `apps/console-web/plugins/gizmo-guide` (plugin `ai.amberx.axf.console.gizmo-guide`, "Gizmo guide").
+Its help topic is `plugin:gizmo-guide` (`help.json`, Help mode), with a screen entry for the window itself.
+
+- Deep link: the window registers `panel:gizmo-guide` (`data-axf-target` on both window states); the settings sub-tab is
+  `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gizmo-guide` (`settings.open:gizmo-guide`); the
+  window opens with `function:gizmo.ask`.
+- Saved data is not migrated: the old folder held only the last 20 walkthroughs, and the three switches default to the
+  same safe values (speak on, move on, auto-open off). The old data folder `.axf-console/plugins/molly-guide` in the
+  console container is unused from now on.

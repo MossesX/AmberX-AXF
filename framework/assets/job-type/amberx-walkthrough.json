@@ -41,7 +41,7 @@
         "default": "refresh after the latest changes"
       }
     ],
-    "brief": "Make (or re-record) the walkthrough video of {{app}}: {{flow}}. Reason: {{reason}}.\nUse the walkthrough tooling already in the repo (apps/walkthrough-studio, the molly-guide walkthrough@1 scripts); when the amberx-walkthrough build has landed, run its re-record command instead of recording by hand. Keep the old video until the new one is checked.\nReport: the video path or link, its length, the screens it covers, and anything that looked broken while recording.",
+    "brief": "Make (or re-record) the walkthrough video of {{app}}: {{flow}}. Reason: {{reason}}.\nUse the walkthrough tooling already in the repo (apps/walkthrough-studio, the gizmo-guide walkthrough@1 scripts); when the amberx-walkthrough build has landed, run its re-record command instead of recording by hand. Keep the old video until the new one is checked.\nReport: the video path or link, its length, the screens it covers, and anything that looked broken while recording.",
     "outputs": {
       "report": "_claude/builds/reports/jobs/amberx-walkthrough/{{stamp}}.md",
       "uiReviewGroup": "Walkthrough {{app}} - {{when}}",

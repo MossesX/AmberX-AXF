@@ -1,4 +1,4 @@
-"""Gizmo guide's server part (walkthrough@1, Oct 28 2026; Nov 13 2026: asks Gizmo, Molly is no longer an agent). Mounted at /api/plugins/molly-guide/ (console token required).
+"""Gizmo guide's server part (walkthrough@1, Oct 28 2026; asks Gizmo). Mounted at /api/plugins/gizmo-guide/ (console token required).
 
     POST /ask           {task, app?, page?} → {text, walkthrough?, tools, ms}
                         One task for Gizmo through the capability service axf.agents@1 (run_task: her tools, memory, and
@@ -30,9 +30,9 @@ from fastapi import APIRouter, HTTPException
 
 router = APIRouter()
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
-DATA = Path(os.environ.get("AXF_MOLLY_GUIDE_DIR", ROOT / ".axf-console" / "plugins" / "molly-guide"))
-# Nov 3 2026 decision: Gizmo replaced agent Molly. The old add-on is only a fallback while Gizmo is switched off.
-AGENTS = ("gizmo", "molly")
+DATA = Path(os.environ.get("AXF_GIZMO_GUIDE_DIR", ROOT / ".axf-console" / "plugins" / "gizmo-guide"))
+# The agents that may answer, in order (open list: another guide agent can be added here).
+AGENTS = ("gizmo",)
 WALK_KEEP = 20
 _lock = threading.Lock()
 _WALK_RE = re.compile(r"```walkthrough\s*(\{.*?\})\s*```", re.S)
@@ -171,7 +171,7 @@ def rerecord(body: dict[str, Any] | None = None) -> dict[str, Any]:
 
 
 def pick_agent(svc: Any) -> str | None:
-    """The agent that answers: Gizmo, else the old Molly add-on if it is still installed; None when neither is."""
+    """The first installed agent of AGENTS; None when none is."""
     for a in AGENTS:
         if svc.get_agent(a) is not None:
             return a

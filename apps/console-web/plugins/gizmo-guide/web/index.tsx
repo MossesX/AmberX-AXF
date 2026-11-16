@@ -1,12 +1,11 @@
 /**
- * Gizmo guide console plugin (ai.amberx.axf.console.molly-guide; folder name kept so saved settings and data stay), Oct 28 2026.
- * Nov 13 2026: Molly is no longer an agent (Nov 3 decision), so the guide asks Gizmo; it never opens by itself on load.
+ * Gizmo guide console plugin (ai.amberx.axf.console.gizmo-guide), Oct 28 2026. It asks Gizmo and never opens by itself on load.
  *
  * Brett: "if you ask how to set this option to that it will open up a floating window in the console and display the
  * walkthrough … a small overlay with next previous buttons that are narrated while she shows you step by step".
  *
- * - Ask: Help → "Ask Gizmo to show me…" (or `gizmo.ask`; `molly.ask` stays as an alias) opens the window with a question box; the question goes to
- *   this plugin's server (POST /api/plugins/molly-guide/ask), which hands it to Gizmo through axf.agents@1. Her answer
+ * - Ask: Help → "Ask Gizmo to show me…" (or `gizmo.ask`) opens the window with a question box; the question goes to
+ *   this plugin's server (POST /api/plugins/gizmo-guide/ask), which hands it to Gizmo through axf.agents@1. Her answer
  *   is spoken; when it holds a walkthrough@1, the window plays it.
  * - From AmberX: AmberX's server asks Gizmo through the same route, so the walkthrough is kept here; this plugin polls
  *   GET …/walkthroughs?after=<seq> while the console is visible. It opens a new one by itself only when the opt-in
@@ -22,14 +21,14 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { cleanWalkthrough, pollDecision, stepAt, targetSelector, type Walkthrough } from './walkthrough';
-import './molly-guide.css';
+import './gizmo-guide.css';
 
-const ID = 'ai.amberx.axf.console.molly-guide';
-const FOLDER = 'molly-guide';
-const KIND = 'molly.walkthrough';
+const ID = 'ai.amberx.axf.console.gizmo-guide';
+const FOLDER = 'gizmo-guide';
+const KIND = 'gizmo.walkthrough';
 const POLL_MS = 4000;
-const K = { speak: 'molly-guide.speak', auto: 'molly-guide.autoOpen', run: 'molly-guide.runSteps' } as const;
-const HIGHLIGHT = 'axp-molly-guide-target';
+const K = { speak: 'gizmo-guide.speak', auto: 'gizmo-guide.autoOpen', run: 'gizmo-guide.runSteps' } as const;
+const HIGHLIGHT = 'axp-gizmo-guide-target';
 /** when this page loaded: walkthroughs kept before it never open by themselves */
 const LOADED_AT = Date.now();
 
@@ -137,15 +136,15 @@ function GuideWindow() {
   if (g.walk) {
     const s = stepAt(g.walk, g.at);
     return (
-      <div className="fx-stack axp-molly-guide">
-        <div className="fx-row axp-molly-guide__head">
+      <div className="fx-stack axp-gizmo-guide" data-axf-target="panel:gizmo-guide">
+        <div className="fx-row axp-gizmo-guide__head">
           <span className="fx-eyebrow">{s.label}</span>
-          <strong className="axp-molly-guide__title">{g.walk.title}</strong>
+          <strong className="axp-gizmo-guide__title">{g.walk.title}</strong>
           <IconButton icon="x" label="Close the walkthrough" onClick={close} />
         </div>
-        <p className="axp-molly-guide__say" aria-live="polite">{s.step.say}</p>
-        <div className="axp-molly-guide__dots" aria-hidden="true">
-          {g.walk.steps.map((_, i) => <span key={i} className={`axp-molly-guide__dot${i === s.at ? ' is-on' : i < s.at ? ' is-done' : ''}`} />)}
+        <p className="axp-gizmo-guide__say" aria-live="polite">{s.step.say}</p>
+        <div className="axp-gizmo-guide__dots" aria-hidden="true">
+          {g.walk.steps.map((_, i) => <span key={i} className={`axp-gizmo-guide__dot${i === s.at ? ' is-on' : i < s.at ? ' is-done' : ''}`} />)}
         </div>
         <div className="fx-row fx-row--wrap">
           <Button size="sm" tone="quiet" icon="chevron-left" disabled={s.first} onClick={() => show(s.at - 1)}>Previous</Button>
@@ -158,7 +157,7 @@ function GuideWindow() {
     );
   }
   return (
-    <div className="fx-stack axp-molly-guide">
+    <div className="fx-stack axp-gizmo-guide" data-axf-target="panel:gizmo-guide">
       <p className="fx-muted">Ask Gizmo how to do something in the console: he'll show you, step by step.</p>
       <TextField label="What do you want to do?" value={q} onChange={setQ} placeholder="How do I switch the colour theme?" autoFocus />
       <div className="fx-row fx-row--wrap">
@@ -204,18 +203,18 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-10-28' },
   appMenu,
   tabs: { [KIND]: () => <GuideWindow /> },
-  settingsTabs: [{ id: 'molly-guide', label: 'Gizmo guide', icon: 'sparkles', order: 60, parent: 'plugins', description: 'Narrated walkthroughs from Gizmo in a floating window, only when you ask.' }],
+  settingsTabs: [{ id: 'gizmo-guide', label: 'Gizmo guide', icon: 'sparkles', order: 60, parent: 'plugins', description: 'Narrated walkthroughs from Gizmo in a floating window, only when you ask.' }],
   settings: [
-    { id: 'molly-guide.main', label: 'Walkthroughs', icon: 'sparkles', tab: 'molly-guide', order: 10, settings: [
+    { id: 'gizmo-guide.main', label: 'Walkthroughs', icon: 'sparkles', tab: 'gizmo-guide', order: 10, settings: [
       { key: K.speak, label: 'Read each step out loud', kind: 'toggle', default: true },
       { key: K.run, label: 'Move the console to each step (run its action)', kind: 'toggle', default: true },
       { key: K.auto, label: 'Open walkthroughs asked for from AmberX by themselves', kind: 'toggle', default: false },
     ] },
   ],
   settingsPanels: [
-    { id: 'molly-guide.try', tab: 'molly-guide', title: 'Try it', icon: 'play', order: 20, render: () => <TryPanel /> },
-    { id: 'molly-guide.amberx-video', tab: 'molly-guide', title: 'AmberX walkthrough video', icon: 'refresh', order: 30, render: () => <RerecordPanel /> },
-    { id: 'molly-guide.lifecycle', tab: 'molly-guide', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'gizmo-guide.try', tab: 'gizmo-guide', title: 'Try it', icon: 'play', order: 20, render: () => <TryPanel /> },
+    { id: 'gizmo-guide.amberx-video', tab: 'gizmo-guide', title: 'AmberX walkthrough video', icon: 'refresh', order: 30, render: () => <RerecordPanel /> },
+    { id: 'gizmo-guide.lifecycle', tab: 'gizmo-guide', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
     runtime = rt;
@@ -229,11 +228,6 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('gizmo.next', next, { label: 'Walkthrough: next step', searchable: false });
     rt.actions.register('gizmo.prev', prev, { label: 'Walkthrough: previous step', searchable: false });
     rt.actions.register('gizmo.close', closeIt, { label: 'Walkthrough: close', searchable: false });
-    // the old names keep working (AmberX voice commands, saved links), hidden from search
-    rt.actions.register('molly.ask', ask, { label: 'Ask Gizmo to show me how', searchable: false });
-    rt.actions.register('molly.replay', replay, { label: 'Replay the last walkthrough', searchable: false });
-    rt.actions.register('molly.next', next, { label: 'Walkthrough: next step', searchable: false });
-    rt.actions.register('molly.prev', prev, { label: 'Walkthrough: previous step', searchable: false });
     void poll();
     loop();
   },
@@ -248,7 +242,7 @@ function TryPanel() {
         setOn(v);
         if (v) play({ $axf: 'walkthrough@1', id: 'sample', title: 'Where the Gizmo guide lives', app: 'console', steps: [
           { say: 'This window is the Gizmo guide. Each step moves the console and reads itself out.', do: '', target: '' },
-          { say: 'Settings, Plugins, Gizmo guide: switch the voice or the auto-open here.', do: 'settings.open:molly-guide', target: 'molly-guide' },
+          { say: 'Settings, Plugins, Gizmo guide: switch the voice or the auto-open here.', do: 'settings.open:gizmo-guide', target: 'gizmo-guide' },
           { say: 'Ask him anything from Help, Ask Gizmo to show me. It only opens when you ask.', do: '', target: '' },
         ] });
         else close();

@@ -126,7 +126,7 @@ _CONSOLE_TOKEN = TokenFile(os.environ.get("AMBERX_CONSOLE_TOKEN_FILE") or None, 
 MOLLY_TIMEOUT = 300.0
 # Where the console serves the Gizmo guide (its walkthrough plugin's folder). If that plugin is removed the console answers
 # 404 and AmberX says Gizmo can't be reached; nothing here breaks.
-MOLLY_PLUGIN = re.sub(r"[^a-z0-9-]", "", os.environ.get("AMBERX_MOLLY_PLUGIN") or "molly-guide") or "molly-guide"
+MOLLY_PLUGIN = re.sub(r"[^a-z0-9-]", "", os.environ.get("AMBERX_MOLLY_PLUGIN") or "gizmo-guide") or "gizmo-guide"
 MOLLY_ASK = f"/api/plugins/{MOLLY_PLUGIN}/ask"
 WALKTHROUGH_RENDER = f"/api/plugins/{MOLLY_PLUGIN}/amberx-walkthrough/rerecord"  # re-voice / re-record a walkthrough
 MOLLY_WALKS = f"/api/plugins/{MOLLY_PLUGIN}/walkthroughs"

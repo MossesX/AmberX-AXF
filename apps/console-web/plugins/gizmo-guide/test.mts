@@ -1,5 +1,5 @@
 // @ts-nocheck: a Node test (node --experimental-strip-types), not part of the console's build
-/** Self-test for walkthrough@1 cleaning and stepping (node --experimental-strip-types apps/console-web/plugins/molly-guide/test.mts). */
+/** Self-test for walkthrough@1 cleaning and stepping (node --experimental-strip-types apps/console-web/plugins/gizmo-guide/test.mts). */
 import { cleanWalkthrough, pollDecision, stepAt, targetSelector, voiceMove } from './web/walkthrough.ts';
 let n = 0, bad = 0;
 const eq = (a, b, what) => { n++; if (JSON.stringify(a) !== JSON.stringify(b)) { bad++; console.error(`✗ ${what}: ${JSON.stringify(a)} ≠ ${JSON.stringify(b)}`); } };
@@ -25,5 +25,5 @@ eq(pollDecision([{ ...wk(4, 0), at: undefined }], 3, true, LOAD).open, null, 'no
 eq(pollDecision([wk(5, LOAD + 9), wk(4, LOAD + 5)], 3, true, LOAD).open?.seq, 5, 'auto on, new since load: the newest opens');
 eq(pollDecision([wk(3, LOAD + 9)], 3, true, LOAD), { lastSeq: 3, open: null }, 'nothing newer: nothing');
 eq(pollDecision([], -1, true, LOAD), { lastSeq: -1, open: null }, 'empty: nothing');
-console.log(`${bad ? '✗' : '✓'} molly-guide: ${n - bad}/${n}`);
+console.log(`${bad ? '✗' : '✓'} gizmo-guide: ${n - bad}/${n}`);
 process.exit(bad ? 1 : 0);

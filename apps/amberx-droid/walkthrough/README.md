@@ -30,7 +30,7 @@ WALKTHROUGH=stack node apps/amberx-droid/walkthrough/check.mjs                  
 
 In AmberX, Walkthrough → **Edit the voice** picks the Piper voice and speed and rewrites any scene's line
 (walkthrough-voice@1 edits: only what differs from the script, saved on axHub, table `voice` in folder `walkthrough`).
-**Re-voice** posts them to `POST /api/walkthrough/<id>/render` (hub admins) → the console's molly-guide
+**Re-voice** posts them to `POST /api/walkthrough/<id>/render` (hub admins) → the console's gizmo-guide
 `amberx-walkthrough/rerecord` → one veto call on axHub running `rebuild.sh` with the edits base64-encoded in
 `VOICE_OVERRIDES_B64` (kept as `<work>/voice.json` for later full re-records). Clips are cached by words + voice + speed,
 so only changed lines are voiced; a longer line holds the scene's last frame. **Re-record** runs the full recording.

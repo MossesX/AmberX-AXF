@@ -1,17 +1,23 @@
 {
   "$axf": "asset@1",
   "type": "help",
-  "id": "molly-guide-help",
-  "name": "molly-guide help",
+  "id": "gizmo-guide-help",
+  "name": "gizmo-guide help",
   "version": "0.1.0",
-  "description": "Help mode entries for plugin:molly-guide. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "description": "Help mode entries for plugin:gizmo-guide. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
   "author": "AmberX AXF",
   "tags": [
     "help"
   ],
   "data": {
-    "scope": "plugin:molly-guide",
+    "scope": "plugin:gizmo-guide",
     "entries": [
+      {
+        "target": "panel:gizmo-guide",
+        "title": "Gizmo guide",
+        "kind": "screen",
+        "text": "Narrated walkthroughs in a small floating window. Ask from Help → Ask Gizmo to show me… (action gizmo.ask): Gizmo answers, and when the answer is a walkthrough the window plays it step by step, moving the console, highlighting each spot and reading it aloud. Next, Previous, Repeat and Close, or the arrow keys and Escape. It never opens by itself on load; walkthroughs asked for from AmberX open here only with the opt-in switch. Settings → Plugins → Gizmo guide (settings.open:gizmo-guide). API: POST /api/plugins/gizmo-guide/ask, GET /api/plugins/gizmo-guide/walkthroughs, console_show function:gizmo.ask, axf console run gizmo.ask, voice \"ask Gizmo to show me …\"."
+      },
       {
         "target": "close-the-walkthrough",
         "title": "Close the walkthrough",
