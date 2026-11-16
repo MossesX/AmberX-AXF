@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6470,
- "updatedAt": "2026-11-16T14:14:43.746Z",
+ "rev": 6480,
+ "updatedAt": "2026-11-16T14:22:52.039Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226024,16 +226024,16 @@
    "title": "Console look becomes default axHub skin",
    "category": "",
    "detail": "Snapshot the live console's current look exactly as it is now (skin, colour theme light and dark, every token value including opacityGlass 0.7, typography, density, radius, behaviour/animation themes, toolbar/banner/nav chrome settings) into a new skin asset 'Console (default)' and publish it on axHub as THE default skin. Make every app (console, AmberX web, Android apps, any app built from the framework) inherit its skin from axHub's default right now: apps with no override pick it up immediately; apps with their own edits keep only their edited tokens (per the skin-axhub-override rules) and inherit the rest. Keep a backup of each app's previous skin so it can be restored in one tap. Run AFTER land-all-skin-builds finishes so it builds on the landed skins plugin/axHub-only/override code; if those aren't landed yet, wait for them. Verify with pixel-diff that the console looks identical before and after, and screenshot every app desktop and phone. Redeploy, then send Brett a phone notification. Full API and voice ('make this the default look'), tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-look-becomes-default-axhub-skin",
-   "pr": "",
+   "pr": "#717",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-16T14:14:42.260Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T14:17:06.592Z",
+   "builtAt": "2026-11-16T14:16:08.095Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -226142,6 +226142,18 @@
     {
      "text": "Shipped manifest sm-console-look-becomes-default-axhub-skin rev 1 sent to Shipped features (api): landed 56503d108, 31 file(s), 2 test line(s), 3 open.",
      "at": "2026-11-16T14:11:41Z"
+    },
+    {
+     "text": "s19: no redeploy or phone note yet. Deploy paths ship main only, and the note's text isn't true until the publish runs. After merge + nightly deploy, systems check hub-default-skin goes red, pushes once to AmberX, and its ask-first Auto fix publishes.",
+     "at": "2026-11-16T14:14:44.594Z"
+    },
+    {
+     "text": "Headless run axf-console-look-becomes-default-axhub-skin--rhonda: brief only · start 11.5K tokens ($0.03) · cost $14.14 · 266 turns · 6 tools, MCP none",
+     "at": "2026-11-16T14:16:08.095Z"
+    },
+    {
+     "text": "Session axf-console-look-becomes-default-axhub-skin--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-16T14:17:06.592Z"
     }
    ],
    "approvals": [
@@ -226181,18 +226193,18 @@
     "queuedAt": "2026-11-14T22:19:03.857Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-look-becomes-default-axhub-skin--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-16T13:24:18.129Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-15T00:00:15.489Z",
+     "at": "2026-11-16T14:17:05.961Z",
      "exit": 0,
-     "outcome": "requeued",
-     "stepsLeft": 14,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-console-look-becomes-default-axhub-skin--paulie"
+     "session": "axf-console-look-becomes-default-axhub-skin--rhonda"
     },
     "split": {
      "at": "2026-11-14T22:21:08.816Z",
@@ -226721,12 +226733,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T14:15:48.959Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:21:08.816Z",
-     "updatedAt": "2026-11-14T22:21:08.816Z"
+     "updatedAt": "2026-11-16T14:15:49.265Z"
     }
    ],
    "profiles": [
@@ -226737,7 +226749,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -234350,7 +234362,7 @@
    "title": "VPS sends Shipped features on every merge to main (+ backfill)",
    "category": "",
    "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -234358,8 +234370,8 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-16T14:06:36.784Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T14:22:50.320Z",
+   "builtAt": "2026-11-16T14:22:50.320Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -234837,12 +234849,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T14:15:07.895Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T12:16:53.896Z",
-     "updatedAt": "2026-11-15T12:16:53.896Z"
+     "updatedAt": "2026-11-16T14:15:08.472Z"
     },
     {
      "id": "s15",
@@ -234862,12 +234874,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T14:16:43.309Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T12:16:53.896Z",
-     "updatedAt": "2026-11-15T12:16:53.896Z"
+     "updatedAt": "2026-11-16T14:16:43.538Z"
     },
     {
      "id": "s16",
@@ -234888,12 +234900,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T14:19:05.422Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T12:16:53.896Z",
-     "updatedAt": "2026-11-15T12:16:53.896Z"
+     "updatedAt": "2026-11-16T14:19:05.779Z"
     },
     {
      "id": "s17",
@@ -234913,12 +234925,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T14:22:50.320Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-15T12:16:53.896Z",
-     "updatedAt": "2026-11-15T12:16:53.896Z"
+     "updatedAt": "2026-11-16T14:22:50.558Z"
     }
    ],
    "profiles": [
@@ -234929,7 +234941,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -238191,7 +238203,7 @@
    "title": "Duplicate gate: VPS checks Shipped features before any build is filed or split",
    "category": "",
    "detail": "A VPS-run gate (plain code, no Claude tokens) registered as a 'before' rule in the Gate & rules Build rules store, doer VPS. Before any build is filed, queued or split, the VPS checks the ONE true feature store (Shipped features + in-progress records) AND main (plugins, files, settings). It also checks the lander/plugin's own state and log, so a feature that exists but is switched off is caught (e.g. auto-land existed on main but was off since Nov 4 and got rebuilt ~5 times). If a match is found, it BLOCKS the build and tells Brett what already exists, where it is, whether it's on or off, and what single setting or fix is actually needed. He can override with one tap/voice ('build it anyway'). Also blocks a new build that duplicates an already-queued/running/built-but-unlanded build, and points to that one instead. Fuzzy matching on titles, said text, plugin names and settings keys, with a similarity score shown. Log every block in Gate History. API parity (REST/MCP/CLI/voice). Tests: auto-land case must be caught. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -238199,7 +238211,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T13:06:22.511Z",
-   "updatedAt": "2026-11-16T13:55:24.301Z",
+   "updatedAt": "2026-11-16T14:18:42.369Z",
    "builtAt": "",
    "notes": [
     {
@@ -238225,6 +238237,10 @@
     {
      "text": "Headless run axf-duplicate-gate-vps-checks-shipped--rhonda: brief only · start 16.0K tokens ($0.14) · cost $10.41 · 85 turns · 6 tools, MCP none",
      "at": "2026-11-16T13:55:24.301Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-16T14:18:42.369Z"
     }
    ],
    "approvals": [],
@@ -238263,10 +238279,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-16T13:08:42.534Z",
+     "at": "2026-11-16T14:19:06.198Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -238784,7 +238800,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
