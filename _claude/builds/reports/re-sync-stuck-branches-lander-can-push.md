@@ -19,3 +19,7 @@ which only touches builds-store snapshots (`_claude/builds/store.json`, `orchest
 Origin moved on, so the lander's plain push was rejected as non-fast-forward.
 
 Out of scope, not touched: `claude/axf-data-postgres-real-tables-own`, `claude/data-container-axf-data-holds-all`.
+
+## Re-syncs (merge origin into local, both sides kept, plain push)
+
+- s2 `claude/server-gate-one-session-per-build-no`: merged origin 949c25d49 into local be75e0ae8 → 8b5495bd1; builds-store files resolved by the `axf-builds` merge driver, no manual conflicts; pushed fast-forward.
