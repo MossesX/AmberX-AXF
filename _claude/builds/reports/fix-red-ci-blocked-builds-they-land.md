@@ -37,3 +37,31 @@ Latest failed `Android framework + console` run per branch (workflow_dispatch on
 - **D. Per-branch.** Real issues in the branch's own work (plugin.json fields, help kinds/targets, page head copy, stale plugin references, builds-live heal cases, glossary, kernel conformance). Fixed on each branch after the merge.
 - **E. No CI run.** Pushed with the broker token, which starts no workflow; needs a `workflow_dispatch` of android.yml.
 - **F. Main itself (shared).** `apps/console-web/plugins/wake-listener/web/flow.ts` imports `@console/api`; the amberx-droid build (which compiles console plugins) has no such alias, so the AmberX web build fails. Main's last full run (43710482736) failed on the same two amberx-droid steps. Every branch inherits it on merge.
+
+## Reproduced on main (s2)
+
+Fresh worktree of `origin/main` (b9d8b5892), every `run:` step of the `engine` job and the console job's amberx-droid
+step run locally with CI's env (`AXF_BUILD_PROFILE=all`, `AXF_DATA_DIR=off`).
+
+**Main is not green.** These fail on main itself, so every branch inherits them when it merges main:
+
+| Check | Error on main | Cause |
+|---|---|---|
+| Web Dev Console → amberx-droid re-bake + build; AmberX → Build the web app | `Rollup failed to resolve import "@console/api"` from `plugins/wake-listener/web/flow.ts` (amberx-droid has no `@console/api` alias) | F |
+| Build engine sweep → Plugin pages follow the design language | `plugins/gate/web/GateView.tsx:36 page head has no one-sentence description` | G |
+| Build engine sweep → Plugin lifecycle | `ui-review`: stale references in `plugins/gate/gate-store.mjs:91` and `plugins/gate/web/RulesTab.tsx:20` (the gate's rule id `ui-review`) | G |
+| Web Dev Console → Theme swap | not reproducible locally; fails on any `ubuntu-26.04` runner (Playwright 1.56 has no chromium build for it) | A |
+
+- **G. Gate plugin on main (shared).** The gate plugin landed with a page head without a description and names the
+  `ui-review` plugin id in its rule list, which the lifecycle check reads as a stale reference.
+
+Failures that only appear on this VPS, not in CI (ignored): `node:sqlite` missing (VPS Node 20, CI Node 22), saved
+Claude account tests (local account store), check-agent-slots (run inside a dispatched build session), pip PEP 668, a
+leftover `/tmp/sweep`.
+
+Branch-only failures (cause D) appear only on the branch head: plugin.json `opens`/`builtWith.model`, help kinds and
+targets, glossary, builds-live heal cases, kernel conformance. Causes B and C (check-profiles `test-sandbox`,
+`VetoHost.overlay`) go away with the merge of main.
+
+Overlap: `get-main-green-unblock-lander-land-axf` plans the same main fixes (s3–s7 on `fix/main-green`, not started at
+s2 time). This build fixes A, F and G once on `fix/ci-common-cause` and notes it on that build so it is not done twice.
