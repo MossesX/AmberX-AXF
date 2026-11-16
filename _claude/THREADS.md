@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 13:23 UTC · `build-rules-tab-gate-rules-vps-owns` added (0 steps) (all) · console
 - 2026-11-15 13:23 UTC · `build-rules-tab-gate-rules-vps-owns` → queued, note (all) · console
 - 2026-11-15 13:24 UTC · `home-cards-follow-plugin-off-home-always` note (all) · orchestrator
 - 2026-11-15 13:24 UTC · `home-cards-follow-plugin-off-home-always` note (all) · mcp
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:31 UTC · `fix-console-deep-links-open-page-lands` → queued, note (all) · console
 - 2026-11-16 16:31 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
 - 2026-11-16 16:31 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · builds-live
+- 2026-11-16 16:32 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · orchestrator
 
 ## Token passes (log)
 

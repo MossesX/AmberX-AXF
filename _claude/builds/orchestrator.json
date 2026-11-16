@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:31:41.973Z",
+ "updatedAt": "2026-11-16T16:32:38.282Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157640,12 +157640,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
-   "updatedAt": "2026-11-16T16:29:36.666Z",
+   "updatedAt": "2026-11-16T16:32:36.505Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T16:29:36.666Z"
+    },
+    {
+     "text": "Split by Claude into 10 steps (0 Fable).",
+     "at": "2026-11-16T16:32:36.505Z"
     }
    ],
    "approvals": [],
@@ -157662,7 +157666,223 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Inventory: list the 4 stuck branches, the 2 stray branches and the auto-lander-controls worktree; for each record local vs origin heads, ahead/behind counts and open PRs into a scratch note (no changes yet). Confirm no axf-data / Postgres branch is in scope.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/reports/re-sync-stuck-branches-lander-can-push.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0pj0ud",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s2",
+     "text": "Re-sync server-gate-one-session-per-build-no: fetch origin, merge origin's branch into local (keep both sides' commits, resolve store/THREADS with the merge drivers or take main's), push normally (no force).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "branch server-gate-one-session-per-build-no"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0q5trh",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s3",
+     "text": "Re-sync one-source-truth-console-shows-only-what the same way: merge origin into local keeping both sides, resolve conflicts, plain push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "branch one-source-truth-console-shows-only-what"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0rkeup",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s4",
+     "text": "Re-sync console-axhub-retry-failed-calls the same way: merge origin into local keeping both sides, resolve conflicts, plain push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "branch console-axhub-retry-failed-calls"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0s6hld",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s5",
+     "text": "Re-sync demo-video-series-three-minute-browser the same way: merge origin into local keeping both sides, resolve conflicts, plain push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "branch demo-video-series-three-minute-browser"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0tdrsl",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s6",
+     "text": "Drop the stray branches merge-main-land-one-source-truth-console and land-native-bridge-mic: first confirm every commit on each is already on main or on its real build branch (git cherry), note any that aren't in the report and keep them on a backup tag; then delete local + remote (remote delete through the GitHub App token, veto reason).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "branches merge-main-land-one-source-truth-console, land-native-bridge-mic"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0urfes",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s7",
+     "text": "auto-lander-controls-in-the-gate-plugin: review the worktree's uncommitted diff file by file; commit what belongs to the build (gate plugin / lander controls), drop the rest with a stash kept as a named backup.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/gate/",
+      "worktree auto-lander-controls-in-the-gate-plugin"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0vhrlg",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s8",
+     "text": "auto-lander-controls-in-the-gate-plugin: merge main, resolve framework/cli/axf.mjs keeping both sides' commands, regenerate inventory.json with its generator, run node --check on axf.mjs and the gate checks, commit and plain push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "inventory.json",
+      "apps/console-web/plugins/gate/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0w7dqr",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s9",
+     "text": "Link each re-synced branch to its build (builds-live.mjs link <id> --branch --pr), make sure each has an open PR, and confirm with land.mjs queue list that the auto-lander can see them (put them in the merge queue if it needs that, never merge by hand).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "_claude/builds/store.json",
+      "apps/console-web/plugins/push-banner/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0xcf5t",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    },
+    {
+     "id": "s10",
+     "text": "Tests + wrap-up: builds-store.mjs verify, git ls-remote shows local == origin for all 5 branches and the strays gone; write _claude/builds/reports/re-sync-stuck-branches-lander-can-push.md (before/after heads per branch, what was dropped and backed up, API: no UI added, so it's reached through land.mjs / MCP push_banner_mergequeue_* / REST merge queue / voice as before); add the THREADS row; open the PR for the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/re-sync-stuck-branches-lander-can-push.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjhf0rd0yjd6e",
+     "createdAt": "2026-11-16T16:32:36.505Z"
+    }
+   ]
   },
   {
    "id": "fix-console-deep-links-open-page-lands",
