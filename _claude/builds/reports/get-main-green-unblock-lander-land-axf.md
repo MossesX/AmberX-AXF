@@ -120,3 +120,18 @@ The `re-sync-stuck-branches-lander-can-push` build had already re-synced them be
 ## auto-lander-controls-in-the-gate-plugin worktree (s12)
 
 **Decision: nothing to commit or drop.** No tracked file has uncommitted changes. The untracked files are only the session brief and logs every worktree carries. The local head 61013c9db (the 11-16 16:38 merge of main) equals GitHub. PR #705 was kicked from the merge queue for the same reds main has (amberx `@console/api`, theme-swap). Once #719 and #724 land, a push or a main merge brings it back into the queue. Noted on the build.
+
+## axf-data container up (s13)
+
+Source: `claude/data-container-axf-data-holds-all` @ 050fac6b4 (level with GitHub). Read `services/axf-data/compose.yaml`, `Dockerfile` and `deploy/install-data.sh`. The installer is the documented path, and this session runs on the VPS, so it ran directly. No axHub call was needed.
+
+- `AXF_DEPLOY_LOG=/opt/axf/.axf-console/deploys/log.jsonl agent-slots heavy -- bash deploy/install-data.sh`:
+  - built `axf-data:latest`
+  - created the internal network `axf-data` (no route out, nothing published) and the volume `axf-data`
+  - wrote service tokens once to `/root/hub/data/axf-data/conf/env/{console,orchestrator,axhub,cli}.env` (0600; only their SHA-256 sits in `tokens.json`)
+  - installed `/etc/cron.d/axf-data-backup`
+  - appended a deploy-log record
+- **Health:** `docker ps` → `axf-data Up (healthy)`. `/v1/health` → `{"ok":true, … "volume":{"freeBytes":82.3 GB}}`. `keys.verified:false` is expected: no `AXF_DATA_KEYS_URL` is set yet, so only service tokens are accepted, no axHub data-tokens.
+- **Console reaches it:** `axf-console` is on the `axf-data` network. From inside the console, `GET http://axf-data:7700/v1/_meta/counts` with the console token → `{"$axf":"data-counts@1","counts":{},"cursor":0}`. That proves the network path and authentication. The store is empty, which is right for a fresh volume.
+- There is no `axhub` container on this host, so only the console was attached.
+- The console starts reading and writing through axf-data once the branch lands and the console redeploys with `conf/env/console.env` (s14).
