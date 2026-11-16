@@ -813,7 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:45 UTC · `console-look-becomes-default-axhub-skin` note (all) · foreign-write
 - 2026-11-16 13:45 UTC · `vps-sends-shipped-features-every-merge` s9 done (all) · orchestrator
 - 2026-11-16 13:45 UTC · `demo-video-series-three-minute-browser` → queued, note (all) · pipeline
 - 2026-11-16 13:45 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
@@ -1213,6 +1212,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:17 UTC · `alert-every-time-build-falls-back-to` branch claude/alert-every-time-build-falls-back-to (all) · pipeline
 - 2026-11-16 19:17 UTC · `pending-banner-list-every-pending-build` → queued, note (all) · console
 - 2026-11-16 19:17 UTC · `banner-widget-shapes-more-than-circle` → queued (all) · mcp
+- 2026-11-16 19:17 UTC · `reset-all-button-every-asset-override` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
