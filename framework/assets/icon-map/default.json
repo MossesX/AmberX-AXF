@@ -1,0 +1,5714 @@
+{
+  "$axf": "asset@1",
+  "type": "icon-map",
+  "id": "default",
+  "name": "Default icon map",
+  "version": "1.0.0",
+  "description": "Every icon, badge and app-icon spot found in the apps' source (711 spots, framework/cli/icon-map.mjs scan). Components register their spots at run time too; this map is the designed list the coverage report and the designer tree start from.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "all"
+  ],
+  "data": {
+    "app": "all",
+    "spots": {
+      "amberx-droid:app/favicon": {
+        "kind": "app-icon",
+        "glyph": "zap",
+        "tags": [
+          "amberx-droid",
+          "app",
+          "app-icon"
+        ]
+      },
+      "amberx-droid:app/launcher": {
+        "kind": "app-icon",
+        "glyph": "zap",
+        "tags": [
+          "amberx-droid",
+          "app",
+          "app-icon"
+        ]
+      },
+      "amberx-droid:plugin-ai/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "amberx-droid",
+          "ai"
+        ]
+      },
+      "amberx-droid:plugin-ai/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "amberx-droid",
+          "ai"
+        ]
+      },
+      "amberx-droid:plugin-commands/code": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "commands"
+        ]
+      },
+      "amberx-droid:plugin-commands/developer": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "commands"
+        ]
+      },
+      "amberx-droid:plugin-commands/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "amberx-droid",
+          "commands"
+        ]
+      },
+      "amberx-droid:plugin-commands/sparkles": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "commands"
+        ]
+      },
+      "amberx-droid:plugin-companion/check": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/maximize": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/mic": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/minimize": {
+        "kind": "icon",
+        "glyph": "minimize",
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/ok": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/pause": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/paused": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/restore": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/running": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-companion/x-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "companion"
+        ]
+      },
+      "amberx-droid:plugin-lifecycle/package": {
+        "kind": "icon",
+        "glyph": "package",
+        "tags": [
+          "amberx-droid",
+          "lifecycle"
+        ]
+      },
+      "amberx-droid:plugin-notes/arrow-left": {
+        "kind": "icon",
+        "glyph": "arrow-left",
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/check": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/cloud": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/file": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/folder": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/list": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/mic": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/ready": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-notes/refresh": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "notes"
+        ]
+      },
+      "amberx-droid:plugin-tasks/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "tasks"
+        ]
+      },
+      "amberx-droid:plugin-voice/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "voice"
+        ]
+      },
+      "amberx-droid:plugin-web/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "amberx-droid",
+          "web"
+        ]
+      },
+      "axhub-web:app/favicon": {
+        "kind": "app-icon",
+        "glyph": "cloud",
+        "tags": [
+          "axhub-web",
+          "app",
+          "app-icon"
+        ]
+      },
+      "axhub-web:view-held-call/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "axhub-web",
+          "held-call"
+        ]
+      },
+      "console-web:app/favicon": {
+        "kind": "app-icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "app",
+          "app-icon"
+        ]
+      },
+      "console-web:change-batch/applied": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/check-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/failed": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/invalid": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/minus": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/shield": {
+        "kind": "icon",
+        "glyph": "shield",
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:change-batch/x-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "change-batch"
+        ]
+      },
+      "console-web:command-text/copy": {
+        "kind": "icon",
+        "glyph": "copy",
+        "tags": [
+          "console-web",
+          "command-text"
+        ]
+      },
+      "console-web:empty-state/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "empty-state"
+        ]
+      },
+      "console-web:plugin-activity/alert": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/minimize": {
+        "kind": "icon",
+        "glyph": "minimize",
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/state-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-activity/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "activity"
+        ]
+      },
+      "console-web:plugin-agent-manager/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/info": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/minus": {
+        "kind": "icon",
+        "glyph": "minus",
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/package": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/skill": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/star": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/upload": {
+        "kind": "icon",
+        "glyph": "upload",
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/user": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-manager/zap": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-manager"
+        ]
+      },
+      "console-web:plugin-agent-slots/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "agent-slots"
+        ]
+      },
+      "console-web:plugin-agent-slots/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "agent-slots"
+        ]
+      },
+      "console-web:plugin-agent-swarm/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "agent-swarm"
+        ]
+      },
+      "console-web:plugin-agent-swarm/bell": {
+        "kind": "icon",
+        "glyph": "bell",
+        "tags": [
+          "console-web",
+          "agent-swarm"
+        ]
+      },
+      "console-web:plugin-agent-voice/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "agent-voice"
+        ]
+      },
+      "console-web:plugin-agent-voice/arrow-right": {
+        "kind": "icon",
+        "glyph": "arrow-right",
+        "tags": [
+          "console-web",
+          "agent-voice"
+        ]
+      },
+      "console-web:plugin-agent-voice/busy": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-voice"
+        ]
+      },
+      "console-web:plugin-agent-voice/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-voice"
+        ]
+      },
+      "console-web:plugin-agent-voice/mic": {
+        "kind": "icon",
+        "glyph": "mic",
+        "tags": [
+          "console-web",
+          "agent-voice"
+        ]
+      },
+      "console-web:plugin-agent-voice/shield": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "agent-voice"
+        ]
+      },
+      "console-web:plugin-agent-voice/upload": {
+        "kind": "icon",
+        "glyph": "upload",
+        "tags": [
+          "console-web",
+          "agent-voice"
+        ]
+      },
+      "console-web:plugin-agent-voice/user": {
+        "kind": "icon",
+        "glyph": "user",
+        "tags": [
+          "console-web",
+          "agent-voice"
+        ]
+      },
+      "console-web:plugin-ai-assistant/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/branch": {
+        "kind": "icon",
+        "glyph": "branch",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/check": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/cloud": {
+        "kind": "icon",
+        "glyph": "cloud",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/copy": {
+        "kind": "icon",
+        "glyph": "copy",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/edit": {
+        "kind": "icon",
+        "glyph": "edit",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/list": {
+        "kind": "icon",
+        "glyph": "list",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/mic": {
+        "kind": "icon",
+        "glyph": "mic",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/minus": {
+        "kind": "icon",
+        "glyph": "minus",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/monitor": {
+        "kind": "icon",
+        "glyph": "monitor",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/package": {
+        "kind": "icon",
+        "glyph": "package",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/play": {
+        "kind": "icon",
+        "glyph": "play",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/plus": {
+        "kind": "icon",
+        "glyph": "plus",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/refresh": {
+        "kind": "icon",
+        "glyph": "refresh",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/shield": {
+        "kind": "icon",
+        "glyph": "shield",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/sliders": {
+        "kind": "icon",
+        "glyph": "sliders",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/star": {
+        "kind": "icon",
+        "glyph": "star",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/tools": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/user": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-ai-assistant/zap": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ai-assistant"
+        ]
+      },
+      "console-web:plugin-approvals-banner/action-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "approvals-banner"
+        ]
+      },
+      "console-web:plugin-approvals-banner/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "approvals-banner"
+        ]
+      },
+      "console-web:plugin-approvals-banner/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "approvals-banner"
+        ]
+      },
+      "console-web:plugin-approvals-banner/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "approvals-banner"
+        ]
+      },
+      "console-web:plugin-approvals-banner/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "approvals-banner"
+        ]
+      },
+      "console-web:plugin-approvals-banner/upload": {
+        "kind": "icon",
+        "glyph": "upload",
+        "tags": [
+          "console-web",
+          "approvals-banner"
+        ]
+      },
+      "console-web:plugin-approvals-banner/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "approvals-banner"
+        ]
+      },
+      "console-web:plugin-basic-filter/action": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "basic-filter"
+        ]
+      },
+      "console-web:plugin-basic-filter/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "basic-filter"
+        ]
+      },
+      "console-web:plugin-brand-library/cloud": {
+        "kind": "icon",
+        "glyph": "cloud",
+        "tags": [
+          "console-web",
+          "brand-library"
+        ]
+      },
+      "console-web:plugin-brand-library/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "brand-library"
+        ]
+      },
+      "console-web:plugin-build-breaker/calendar": {
+        "kind": "icon",
+        "glyph": "calendar",
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-breaker/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-breaker/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-breaker/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-breaker/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-breaker/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-breaker/list": {
+        "kind": "icon",
+        "glyph": "list",
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-breaker/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-breaker/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "build-breaker"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/chart": {
+        "kind": "icon",
+        "glyph": "chart",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/chevron-right": {
+        "kind": "icon",
+        "glyph": "chevron-right",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/chevron-up": {
+        "kind": "icon",
+        "glyph": "chevron-up",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/eye": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/folder": {
+        "kind": "icon",
+        "glyph": "folder",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/list": {
+        "kind": "icon",
+        "glyph": "list",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/minimize": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/pause": {
+        "kind": "icon",
+        "glyph": "pause",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/play": {
+        "kind": "icon",
+        "glyph": "play",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/refresh": {
+        "kind": "icon",
+        "glyph": "refresh",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/user": {
+        "kind": "icon",
+        "glyph": "user",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-orchestrator/zap": {
+        "kind": "icon",
+        "glyph": "zap",
+        "tags": [
+          "console-web",
+          "build-orchestrator"
+        ]
+      },
+      "console-web:plugin-build-profiles/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "build-profiles"
+        ]
+      },
+      "console-web:plugin-builds-page/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "builds-page"
+        ]
+      },
+      "console-web:plugin-builds-page/edit": {
+        "kind": "icon",
+        "glyph": "edit",
+        "tags": [
+          "console-web",
+          "builds-page"
+        ]
+      },
+      "console-web:plugin-builds-page/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "builds-page"
+        ]
+      },
+      "console-web:plugin-builds-page/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "builds-page"
+        ]
+      },
+      "console-web:plugin-builds-page/move": {
+        "kind": "icon",
+        "glyph": "move",
+        "tags": [
+          "console-web",
+          "builds-page"
+        ]
+      },
+      "console-web:plugin-chat-viewer/check-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "chat-viewer"
+        ]
+      },
+      "console-web:plugin-chat-viewer/folder": {
+        "kind": "icon",
+        "glyph": "folder",
+        "tags": [
+          "console-web",
+          "chat-viewer"
+        ]
+      },
+      "console-web:plugin-chat-viewer/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "chat-viewer"
+        ]
+      },
+      "console-web:plugin-chat-viewer/mic": {
+        "kind": "icon",
+        "glyph": "mic",
+        "tags": [
+          "console-web",
+          "chat-viewer"
+        ]
+      },
+      "console-web:plugin-chat-viewer/source-of": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "chat-viewer"
+        ]
+      },
+      "console-web:plugin-chat-viewer/terminal": {
+        "kind": "icon",
+        "glyph": "terminal",
+        "tags": [
+          "console-web",
+          "chat-viewer"
+        ]
+      },
+      "console-web:plugin-chat-viewer/x-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "chat-viewer"
+        ]
+      },
+      "console-web:plugin-claude-accounts/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "claude-accounts"
+        ]
+      },
+      "console-web:plugin-claude-badge/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "claude-badge"
+        ]
+      },
+      "console-web:plugin-claude-badge/icon-of": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-badge"
+        ]
+      },
+      "console-web:plugin-claude-handoff/alert": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/check": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/check-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/done": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/minus": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/refresh": {
+        "kind": "icon",
+        "glyph": "refresh",
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/rocket": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/skip": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-handoff/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "claude-handoff"
+        ]
+      },
+      "console-web:plugin-claude-session/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "claude-session"
+        ]
+      },
+      "console-web:plugin-claude-session/play": {
+        "kind": "icon",
+        "glyph": "play",
+        "tags": [
+          "console-web",
+          "claude-session"
+        ]
+      },
+      "console-web:plugin-claude-session/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "claude-session"
+        ]
+      },
+      "console-web:plugin-claude-settings/key": {
+        "kind": "icon",
+        "glyph": "key",
+        "tags": [
+          "console-web",
+          "claude-settings"
+        ]
+      },
+      "console-web:plugin-claude-settings/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "claude-settings"
+        ]
+      },
+      "console-web:plugin-claude-settings/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "claude-settings"
+        ]
+      },
+      "console-web:plugin-claude-settings/zap": {
+        "kind": "icon",
+        "glyph": "zap",
+        "tags": [
+          "console-web",
+          "claude-settings"
+        ]
+      },
+      "console-web:plugin-codebase-changes/alert": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/bell": {
+        "kind": "icon",
+        "glyph": "bell",
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/branch": {
+        "kind": "icon",
+        "glyph": "branch",
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/code": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/info": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/minimize": {
+        "kind": "icon",
+        "glyph": "minimize",
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-codebase-changes/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "codebase-changes"
+        ]
+      },
+      "console-web:plugin-console-terminal/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/arrow-right": {
+        "kind": "icon",
+        "glyph": "arrow-right",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/branch": {
+        "kind": "icon",
+        "glyph": "branch",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/chevron-left": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/chevron-up": {
+        "kind": "icon",
+        "glyph": "chevron-up",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/claude-ai-voice": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/copy": {
+        "kind": "icon",
+        "glyph": "copy",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/file-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/icon-for": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/list": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/maximize": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/menu": {
+        "kind": "icon",
+        "glyph": "menu",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/mic": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/minimize": {
+        "kind": "icon",
+        "glyph": "minimize",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/minus": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/monitor": {
+        "kind": "icon",
+        "glyph": "monitor",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/paste": {
+        "kind": "icon",
+        "glyph": "paste",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/pause": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/play": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/plus": {
+        "kind": "icon",
+        "glyph": "plus",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/restore": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/session-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/settings": {
+        "kind": "icon",
+        "glyph": "settings",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/shield": {
+        "kind": "icon",
+        "glyph": "shield",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/terminal": {
+        "kind": "icon",
+        "glyph": "terminal",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/x-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-console-terminal/zap": {
+        "kind": "icon",
+        "glyph": "zap",
+        "tags": [
+          "console-web",
+          "console-terminal"
+        ]
+      },
+      "console-web:plugin-container-access/alert": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/batch": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/box": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/check-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/dir": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/file": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/folder": {
+        "kind": "icon",
+        "glyph": "folder",
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/info": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-container-access/shield": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "container-access"
+        ]
+      },
+      "console-web:plugin-context-menu-designer/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "context-menu-designer"
+        ]
+      },
+      "console-web:plugin-context-menu-designer/src-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "context-menu-designer"
+        ]
+      },
+      "console-web:plugin-context-menu-designer/zap": {
+        "kind": "icon",
+        "glyph": "zap",
+        "tags": [
+          "console-web",
+          "context-menu-designer"
+        ]
+      },
+      "console-web:plugin-crew-live/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "crew-live"
+        ]
+      },
+      "console-web:plugin-crew-live/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "crew-live"
+        ]
+      },
+      "console-web:plugin-crew-live/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "crew-live"
+        ]
+      },
+      "console-web:plugin-crew-live/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "crew-live"
+        ]
+      },
+      "console-web:plugin-crew-live/minus": {
+        "kind": "icon",
+        "glyph": "minus",
+        "tags": [
+          "console-web",
+          "crew-live"
+        ]
+      },
+      "console-web:plugin-crew-live/off": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "crew-live"
+        ]
+      },
+      "console-web:plugin-crew-live/play": {
+        "kind": "icon",
+        "glyph": "play",
+        "tags": [
+          "console-web",
+          "crew-live"
+        ]
+      },
+      "console-web:plugin-demonstration-designer/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "demonstration-designer"
+        ]
+      },
+      "console-web:plugin-demonstration-designer/play": {
+        "kind": "icon",
+        "glyph": "play",
+        "tags": [
+          "console-web",
+          "demonstration-designer"
+        ]
+      },
+      "console-web:plugin-demonstration-designer/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "demonstration-designer"
+        ]
+      },
+      "console-web:plugin-fable-rebuilds/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "fable-rebuilds"
+        ]
+      },
+      "console-web:plugin-fable-rebuilds/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "fable-rebuilds"
+        ]
+      },
+      "console-web:plugin-fable-rebuilds/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "fable-rebuilds"
+        ]
+      },
+      "console-web:plugin-fable-rebuilds/smartphone": {
+        "kind": "icon",
+        "glyph": "smartphone",
+        "tags": [
+          "console-web",
+          "fable-rebuilds"
+        ]
+      },
+      "console-web:plugin-fable-rebuilds/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "fable-rebuilds"
+        ]
+      },
+      "console-web:plugin-feature-assist/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "feature-assist"
+        ]
+      },
+      "console-web:plugin-feature-assist/check-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "feature-assist"
+        ]
+      },
+      "console-web:plugin-feature-assist/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "feature-assist"
+        ]
+      },
+      "console-web:plugin-feature-assist/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "feature-assist"
+        ]
+      },
+      "console-web:plugin-feature-assist/rocket": {
+        "kind": "icon",
+        "glyph": "rocket",
+        "tags": [
+          "console-web",
+          "feature-assist"
+        ]
+      },
+      "console-web:plugin-feature-assist/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "feature-assist"
+        ]
+      },
+      "console-web:plugin-feature-matrix/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "feature-matrix"
+        ]
+      },
+      "console-web:plugin-feature-matrix/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "feature-matrix"
+        ]
+      },
+      "console-web:plugin-feature-matrix/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "console-web",
+          "feature-matrix"
+        ]
+      },
+      "console-web:plugin-feature-matrix/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "feature-matrix"
+        ]
+      },
+      "console-web:plugin-feature-matrix/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "feature-matrix"
+        ]
+      },
+      "console-web:plugin-follow-amber/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "follow-amber"
+        ]
+      },
+      "console-web:plugin-glossary-index/edit": {
+        "kind": "icon",
+        "glyph": "edit",
+        "tags": [
+          "console-web",
+          "glossary-index"
+        ]
+      },
+      "console-web:plugin-glossary-index/grip": {
+        "kind": "icon",
+        "glyph": "grip",
+        "tags": [
+          "console-web",
+          "glossary-index"
+        ]
+      },
+      "console-web:plugin-glossary-index/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "glossary-index"
+        ]
+      },
+      "console-web:plugin-glossary-index/minus": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "glossary-index"
+        ]
+      },
+      "console-web:plugin-glossary-index/plus": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "glossary-index"
+        ]
+      },
+      "console-web:plugin-glossary-index/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "glossary-index"
+        ]
+      },
+      "console-web:plugin-lifecycle/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "lifecycle"
+        ]
+      },
+      "console-web:plugin-lifecycle/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "lifecycle"
+        ]
+      },
+      "console-web:plugin-main-build-status/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "main-build-status"
+        ]
+      },
+      "console-web:plugin-main-build-status/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "main-build-status"
+        ]
+      },
+      "console-web:plugin-main-build-status/github": {
+        "kind": "icon",
+        "glyph": "github",
+        "tags": [
+          "console-web",
+          "main-build-status"
+        ]
+      },
+      "console-web:plugin-main-build-status/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "main-build-status"
+        ]
+      },
+      "console-web:plugin-maintenance/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "maintenance"
+        ]
+      },
+      "console-web:plugin-maintenance/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "maintenance"
+        ]
+      },
+      "console-web:plugin-maintenance/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "maintenance"
+        ]
+      },
+      "console-web:plugin-maintenance/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "maintenance"
+        ]
+      },
+      "console-web:plugin-md-studio/alert": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/arrow-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/box": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/claude": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/copy": {
+        "kind": "icon",
+        "glyph": "copy",
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/download": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/edit": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/external": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/folder": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/import": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/lock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/notes": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/project": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-md-studio/sparkles": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "md-studio"
+        ]
+      },
+      "console-web:plugin-notes-browser/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "notes-browser"
+        ]
+      },
+      "console-web:plugin-notes-browser/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "notes-browser"
+        ]
+      },
+      "console-web:plugin-notes-browser/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "notes-browser"
+        ]
+      },
+      "console-web:plugin-notes-browser/folder": {
+        "kind": "icon",
+        "glyph": "folder",
+        "tags": [
+          "console-web",
+          "notes-browser"
+        ]
+      },
+      "console-web:plugin-notify-control/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "notify-control"
+        ]
+      },
+      "console-web:plugin-notify-control/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "notify-control"
+        ]
+      },
+      "console-web:plugin-plan-studio/alert": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/box": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/error": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/file": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/folder": {
+        "kind": "icon",
+        "glyph": "folder",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/heard": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/list": {
+        "kind": "icon",
+        "glyph": "list",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/mic": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/plus": {
+        "kind": "icon",
+        "glyph": "plus",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/state-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/upload": {
+        "kind": "icon",
+        "glyph": "upload",
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/user": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plan-studio/voice": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan-studio"
+        ]
+      },
+      "console-web:plugin-plugin-manager/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/branch": {
+        "kind": "icon",
+        "glyph": "branch",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/cloud": {
+        "kind": "icon",
+        "glyph": "cloud",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/download": {
+        "kind": "icon",
+        "glyph": "download",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/layout": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/monitor": {
+        "kind": "icon",
+        "glyph": "monitor",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/package": {
+        "kind": "icon",
+        "glyph": "package",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-manager/settings": {
+        "kind": "icon",
+        "glyph": "settings",
+        "tags": [
+          "console-web",
+          "plugin-manager"
+        ]
+      },
+      "console-web:plugin-plugin-switches/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "plugin-switches"
+        ]
+      },
+      "console-web:plugin-plugin-update/download": {
+        "kind": "icon",
+        "glyph": "download",
+        "tags": [
+          "console-web",
+          "plugin-update"
+        ]
+      },
+      "console-web:plugin-plugin-update/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugin-update"
+        ]
+      },
+      "console-web:plugin-plugin-update/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "plugin-update"
+        ]
+      },
+      "console-web:plugin-plugins-menu/axhub": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugins-menu"
+        ]
+      },
+      "console-web:plugin-plugins-menu/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugins-menu"
+        ]
+      },
+      "console-web:plugin-plugins-menu/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugins-menu"
+        ]
+      },
+      "console-web:plugin-plugins-menu/cloud": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugins-menu"
+        ]
+      },
+      "console-web:plugin-plugins-menu/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugins-menu"
+        ]
+      },
+      "console-web:plugin-plugins-menu/layers": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugins-menu"
+        ]
+      },
+      "console-web:plugin-plugins-menu/package": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugins-menu"
+        ]
+      },
+      "console-web:plugin-plugins-menu/pause": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plugins-menu"
+        ]
+      },
+      "console-web:plugin-project-switcher/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "console-web",
+          "project-switcher"
+        ]
+      },
+      "console-web:plugin-project-wizard/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/cloud": {
+        "kind": "icon",
+        "glyph": "cloud",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/folder": {
+        "kind": "icon",
+        "glyph": "folder",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/github": {
+        "kind": "icon",
+        "glyph": "github",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/sparkles": {
+        "kind": "icon",
+        "glyph": "sparkles",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-project-wizard/x-circle": {
+        "kind": "icon",
+        "glyph": "x-circle",
+        "tags": [
+          "console-web",
+          "project-wizard"
+        ]
+      },
+      "console-web:plugin-push-banner/alert": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/branch": {
+        "kind": "icon",
+        "glyph": "branch",
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/check-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/hammer": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/help": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/minimize": {
+        "kind": "icon",
+        "glyph": "minimize",
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/refresh": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/state-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-push-banner/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "push-banner"
+        ]
+      },
+      "console-web:plugin-session-checkin/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "session-checkin"
+        ]
+      },
+      "console-web:plugin-session-checkin/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "session-checkin"
+        ]
+      },
+      "console-web:plugin-session-checkin/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "session-checkin"
+        ]
+      },
+      "console-web:plugin-shipped-features/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "shipped-features"
+        ]
+      },
+      "console-web:plugin-shipped-features/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "shipped-features"
+        ]
+      },
+      "console-web:plugin-shipped-features/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "shipped-features"
+        ]
+      },
+      "console-web:plugin-shipped-features/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "shipped-features"
+        ]
+      },
+      "console-web:plugin-shipped-features/mic": {
+        "kind": "icon",
+        "glyph": "mic",
+        "tags": [
+          "console-web",
+          "shipped-features"
+        ]
+      },
+      "console-web:plugin-shipped-features/package": {
+        "kind": "icon",
+        "glyph": "package",
+        "tags": [
+          "console-web",
+          "shipped-features"
+        ]
+      },
+      "console-web:plugin-skin-editor/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "console-web",
+          "skin-editor"
+        ]
+      },
+      "console-web:plugin-skin-gallery/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "skin-gallery"
+        ]
+      },
+      "console-web:plugin-snapshot-manager/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "snapshot-manager"
+        ]
+      },
+      "console-web:plugin-snapshot-manager/box": {
+        "kind": "icon",
+        "glyph": "box",
+        "tags": [
+          "console-web",
+          "snapshot-manager"
+        ]
+      },
+      "console-web:plugin-snapshot-manager/save": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "snapshot-manager"
+        ]
+      },
+      "console-web:plugin-snapshot-manager/shield": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "snapshot-manager"
+        ]
+      },
+      "console-web:plugin-snapshot-manager/undo": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "snapshot-manager"
+        ]
+      },
+      "console-web:plugin-systems-check/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/check": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/code": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/done": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/failed": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/minimize": {
+        "kind": "icon",
+        "glyph": "minimize",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/minus": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/needs-you": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/plus": {
+        "kind": "icon",
+        "glyph": "plus",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/refresh": {
+        "kind": "icon",
+        "glyph": "refresh",
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/skipped": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/sparkles": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/waiting": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-systems-check/x": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "systems-check"
+        ]
+      },
+      "console-web:plugin-theme-editor/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "theme-editor"
+        ]
+      },
+      "console-web:plugin-theme-editor/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "theme-editor"
+        ]
+      },
+      "console-web:plugin-theme-editor/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "theme-editor"
+        ]
+      },
+      "console-web:plugin-theme-editor/save": {
+        "kind": "icon",
+        "glyph": "save",
+        "tags": [
+          "console-web",
+          "theme-editor"
+        ]
+      },
+      "console-web:plugin-theme-editor/upload": {
+        "kind": "icon",
+        "glyph": "upload",
+        "tags": [
+          "console-web",
+          "theme-editor"
+        ]
+      },
+      "console-web:plugin-theme-manager/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-theme-manager/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-theme-manager/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-theme-manager/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-theme-manager/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-theme-manager/save": {
+        "kind": "icon",
+        "glyph": "save",
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-theme-manager/star": {
+        "kind": "icon",
+        "glyph": "star",
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-theme-manager/upload": {
+        "kind": "icon",
+        "glyph": "upload",
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-theme-manager/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "theme-manager"
+        ]
+      },
+      "console-web:plugin-todo-manager/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "todo-manager"
+        ]
+      },
+      "console-web:plugin-todo-manager/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "todo-manager"
+        ]
+      },
+      "console-web:plugin-todo-manager/folder": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "todo-manager"
+        ]
+      },
+      "console-web:plugin-todo-manager/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "todo-manager"
+        ]
+      },
+      "console-web:plugin-todo-manager/list": {
+        "kind": "icon",
+        "glyph": "list",
+        "tags": [
+          "console-web",
+          "todo-manager"
+        ]
+      },
+      "console-web:plugin-token-control/key": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "token-control"
+        ]
+      },
+      "console-web:plugin-token-control/shield": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "token-control"
+        ]
+      },
+      "console-web:plugin-ui-review/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "ui-review"
+        ]
+      },
+      "console-web:plugin-ui-review/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "console-web",
+          "ui-review"
+        ]
+      },
+      "console-web:plugin-ui-review/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "console-web",
+          "ui-review"
+        ]
+      },
+      "console-web:plugin-ui-review/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ui-review"
+        ]
+      },
+      "console-web:plugin-ui-review/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "console-web",
+          "ui-review"
+        ]
+      },
+      "console-web:plugin-ui-review/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ui-review"
+        ]
+      },
+      "console-web:plugin-ui-review/message": {
+        "kind": "icon",
+        "glyph": "message",
+        "tags": [
+          "console-web",
+          "ui-review"
+        ]
+      },
+      "console-web:plugin-ui-review/source-info": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "ui-review"
+        ]
+      },
+      "console-web:plugin-whats-shipped/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "whats-shipped"
+        ]
+      },
+      "console-web:plugin-whats-shipped/github": {
+        "kind": "icon",
+        "glyph": "github",
+        "tags": [
+          "console-web",
+          "whats-shipped"
+        ]
+      },
+      "console-web:plugin-whats-shipped/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "console-web",
+          "whats-shipped"
+        ]
+      },
+      "console-web:plugin-whats-shipped/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "whats-shipped"
+        ]
+      },
+      "console-web:search-palette/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "console-web",
+          "search-palette"
+        ]
+      },
+      "console-web:view-boilerplates/chevron-left": {
+        "kind": "icon",
+        "glyph": "chevron-left",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-boilerplates/chevron-right": {
+        "kind": "icon",
+        "glyph": "chevron-right",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-boilerplates/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-boilerplates/layout": {
+        "kind": "icon",
+        "glyph": "layout",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-boilerplates/monitor": {
+        "kind": "icon",
+        "glyph": "monitor",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-boilerplates/play": {
+        "kind": "icon",
+        "glyph": "play",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-boilerplates/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-boilerplates/settings": {
+        "kind": "icon",
+        "glyph": "settings",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-boilerplates/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "boilerplates"
+        ]
+      },
+      "console-web:view-build-manager/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "build-manager"
+        ]
+      },
+      "console-web:view-build-manager/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "console-web",
+          "build-manager"
+        ]
+      },
+      "console-web:view-build-manager/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "build-manager"
+        ]
+      },
+      "console-web:view-build-manager/chevron-up": {
+        "kind": "icon",
+        "glyph": "chevron-up",
+        "tags": [
+          "console-web",
+          "build-manager"
+        ]
+      },
+      "console-web:view-build-manager/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "console-web",
+          "build-manager"
+        ]
+      },
+      "console-web:view-build-manager/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "build-manager"
+        ]
+      },
+      "console-web:view-build-manager/menu": {
+        "kind": "icon",
+        "glyph": "menu",
+        "tags": [
+          "console-web",
+          "build-manager"
+        ]
+      },
+      "console-web:view-build-manager/undo": {
+        "kind": "icon",
+        "glyph": "undo",
+        "tags": [
+          "console-web",
+          "build-manager"
+        ]
+      },
+      "console-web:view-demos-modules/box": {
+        "kind": "icon",
+        "glyph": "box",
+        "tags": [
+          "console-web",
+          "demos-modules"
+        ]
+      },
+      "console-web:view-demos-modules/package": {
+        "kind": "icon",
+        "glyph": "package",
+        "tags": [
+          "console-web",
+          "demos-modules"
+        ]
+      },
+      "console-web:view-explorer/box": {
+        "kind": "icon",
+        "glyph": "box",
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/flags": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/params": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/settings": {
+        "kind": "icon",
+        "glyph": "settings",
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/star": {
+        "kind": "icon",
+        "glyph": "star",
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-explorer/tokens": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "explorer"
+        ]
+      },
+      "console-web:view-library-templates/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "library-templates"
+        ]
+      },
+      "console-web:view-library-templates/plus": {
+        "kind": "icon",
+        "glyph": "plus",
+        "tags": [
+          "console-web",
+          "library-templates"
+        ]
+      },
+      "console-web:view-pending/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-pending/asc": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-pending/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-pending/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-pending/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-pending/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-pending/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-pending/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-pending/zap": {
+        "kind": "icon",
+        "glyph": "zap",
+        "tags": [
+          "console-web",
+          "pending"
+        ]
+      },
+      "console-web:view-plan/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/info": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/plus": {
+        "kind": "icon",
+        "glyph": "plus",
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/upload": {
+        "kind": "icon",
+        "glyph": "upload",
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-plan/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "plan"
+        ]
+      },
+      "console-web:view-standards/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "console-web",
+          "standards"
+        ]
+      },
+      "console-web:view-standards/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "console-web",
+          "standards"
+        ]
+      },
+      "console-web:view-standards/github": {
+        "kind": "icon",
+        "glyph": "github",
+        "tags": [
+          "console-web",
+          "standards"
+        ]
+      },
+      "console-web:view-standards/info": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "console-web",
+          "standards"
+        ]
+      },
+      "console-web:view-standards/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "console-web",
+          "standards"
+        ]
+      },
+      "console-web:view-standards/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "console-web",
+          "standards"
+        ]
+      },
+      "console-web:view-standards/x-circle": {
+        "kind": "icon",
+        "glyph": "x-circle",
+        "tags": [
+          "console-web",
+          "standards"
+        ]
+      },
+      "expenses:module-accounts/badge": {
+        "kind": "badge",
+        "dynamic": true,
+        "tags": [
+          "expenses",
+          "accounts",
+          "badge"
+        ]
+      },
+      "framework:app-menu/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "framework",
+          "app-menu"
+        ]
+      },
+      "framework:app-menu/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "framework",
+          "app-menu"
+        ]
+      },
+      "framework:app-menu/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "framework",
+          "app-menu"
+        ]
+      },
+      "framework:app-menu/chevron-left": {
+        "kind": "icon",
+        "glyph": "chevron-left",
+        "tags": [
+          "framework",
+          "app-menu"
+        ]
+      },
+      "framework:app-menu/chevron-right": {
+        "kind": "icon",
+        "glyph": "chevron-right",
+        "tags": [
+          "framework",
+          "app-menu"
+        ]
+      },
+      "framework:app-menu/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "app-menu"
+        ]
+      },
+      "framework:app-menu/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "framework",
+          "app-menu"
+        ]
+      },
+      "framework:badge/new": {
+        "kind": "badge",
+        "glyph": "sparkles",
+        "tags": [
+          "framework",
+          "badge"
+        ]
+      },
+      "framework:banner-settings/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "framework",
+          "banner-settings"
+        ]
+      },
+      "framework:banner-settings/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "framework",
+          "banner-settings"
+        ]
+      },
+      "framework:banner-settings/refresh": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "banner-settings"
+        ]
+      },
+      "framework:banner-widgets/grip": {
+        "kind": "icon",
+        "glyph": "grip",
+        "tags": [
+          "framework",
+          "banner-widgets"
+        ]
+      },
+      "framework:banner/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "banner"
+        ]
+      },
+      "framework:build-origin/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "framework",
+          "build-origin"
+        ]
+      },
+      "framework:build-origin/mic": {
+        "kind": "icon",
+        "glyph": "mic",
+        "tags": [
+          "framework",
+          "build-origin"
+        ]
+      },
+      "framework:build-origin/user": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "build-origin"
+        ]
+      },
+      "framework:chrome-context/chrome-icons": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "chrome-context"
+        ]
+      },
+      "framework:chrome/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "framework",
+          "chrome"
+        ]
+      },
+      "framework:chrome/chevron-up": {
+        "kind": "icon",
+        "glyph": "chevron-up",
+        "tags": [
+          "framework",
+          "chrome"
+        ]
+      },
+      "framework:chrome/lock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "chrome"
+        ]
+      },
+      "framework:chrome/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "framework",
+          "chrome"
+        ]
+      },
+      "framework:chrome/shield": {
+        "kind": "icon",
+        "glyph": "shield",
+        "tags": [
+          "framework",
+          "chrome"
+        ]
+      },
+      "framework:controls/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "framework",
+          "controls"
+        ]
+      },
+      "framework:controls/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "controls"
+        ]
+      },
+      "framework:controls/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "framework",
+          "controls"
+        ]
+      },
+      "framework:controls/refresh": {
+        "kind": "icon",
+        "glyph": "refresh",
+        "tags": [
+          "framework",
+          "controls"
+        ]
+      },
+      "framework:forms/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "framework",
+          "forms"
+        ]
+      },
+      "framework:forms/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "forms"
+        ]
+      },
+      "framework:forms/name": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "forms"
+        ]
+      },
+      "framework:help/help": {
+        "kind": "icon",
+        "glyph": "help",
+        "tags": [
+          "framework",
+          "help"
+        ]
+      },
+      "framework:help/play": {
+        "kind": "icon",
+        "glyph": "play",
+        "tags": [
+          "framework",
+          "help"
+        ]
+      },
+      "framework:lib-alerts/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "alerts"
+        ]
+      },
+      "framework:lib-approvals/badge": {
+        "kind": "badge",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "approvals",
+          "badge"
+        ]
+      },
+      "framework:lib-approvals/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "framework",
+          "approvals"
+        ]
+      },
+      "framework:lib-approvals/clock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "approvals"
+        ]
+      },
+      "framework:lib-approvals/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "framework",
+          "approvals"
+        ]
+      },
+      "framework:lib-approvals/shield": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "approvals"
+        ]
+      },
+      "framework:lib-approvals/source-icons": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "approvals"
+        ]
+      },
+      "framework:lib-approvals/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "framework",
+          "approvals"
+        ]
+      },
+      "framework:lib-ashes/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "ashes"
+        ]
+      },
+      "framework:lib-ashes/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "ashes"
+        ]
+      },
+      "framework:lib-ashes/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "framework",
+          "ashes"
+        ]
+      },
+      "framework:lib-ashes/package": {
+        "kind": "icon",
+        "glyph": "package",
+        "tags": [
+          "framework",
+          "ashes"
+        ]
+      },
+      "framework:lib-datagrid/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "datagrid"
+        ]
+      },
+      "framework:lib-datagrid/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "datagrid"
+        ]
+      },
+      "framework:lib-datagrid/folder": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "datagrid"
+        ]
+      },
+      "framework:lib-datagrid/more": {
+        "kind": "icon",
+        "glyph": "more",
+        "tags": [
+          "framework",
+          "datagrid"
+        ]
+      },
+      "framework:lib-dnd/file": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "dnd"
+        ]
+      },
+      "framework:lib-dnd/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "framework",
+          "dnd"
+        ]
+      },
+      "framework:lib-hub/clock": {
+        "kind": "icon",
+        "glyph": "clock",
+        "tags": [
+          "framework",
+          "hub"
+        ]
+      },
+      "framework:lib-hub/hub-source-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "hub"
+        ]
+      },
+      "framework:lib-hubstatus/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "hubstatus"
+        ]
+      },
+      "framework:lib-hubstatus/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "hubstatus"
+        ]
+      },
+      "framework:lib-mcp/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "framework",
+          "mcp"
+        ]
+      },
+      "framework:lib-settings/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/chevron-right": {
+        "kind": "icon",
+        "glyph": "chevron-right",
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/folder": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/list": {
+        "kind": "icon",
+        "glyph": "list",
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/setting": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-settings/sliders": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "settings"
+        ]
+      },
+      "framework:lib-tree/file": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "tree"
+        ]
+      },
+      "framework:lib-tree/folder": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "tree"
+        ]
+      },
+      "framework:lib-tree/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "tree"
+        ]
+      },
+      "framework:lib-tree/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "framework",
+          "tree"
+        ]
+      },
+      "framework:lib-workspace/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:lib-workspace/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:lib-workspace/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:lib-workspace/float": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:lib-workspace/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:lib-workspace/layers": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:lib-workspace/layout": {
+        "kind": "icon",
+        "glyph": "layout",
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:lib-workspace/more": {
+        "kind": "icon",
+        "glyph": "more",
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:lib-workspace/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "framework",
+          "workspace"
+        ]
+      },
+      "framework:markdown/check": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "markdown"
+        ]
+      },
+      "framework:markdown/copy": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "markdown"
+        ]
+      },
+      "framework:menu-list/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "framework",
+          "menu-list"
+        ]
+      },
+      "framework:menu-list/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "framework",
+          "menu-list"
+        ]
+      },
+      "framework:menu-list/chevron-right": {
+        "kind": "icon",
+        "glyph": "chevron-right",
+        "tags": [
+          "framework",
+          "menu-list"
+        ]
+      },
+      "framework:menu-list/chevron-up": {
+        "kind": "icon",
+        "glyph": "chevron-up",
+        "tags": [
+          "framework",
+          "menu-list"
+        ]
+      },
+      "framework:menu-list/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "menu-list"
+        ]
+      },
+      "framework:menu-list/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "framework",
+          "menu-list"
+        ]
+      },
+      "framework:nav-style-settings/box": {
+        "kind": "icon",
+        "glyph": "box",
+        "tags": [
+          "framework",
+          "nav-style-settings"
+        ]
+      },
+      "framework:nav-style-settings/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-style-settings"
+        ]
+      },
+      "framework:nav-style-settings/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-style-settings"
+        ]
+      },
+      "framework:nav-style-settings/flip": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-style-settings"
+        ]
+      },
+      "framework:nav-style-settings/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-style-settings"
+        ]
+      },
+      "framework:nav-style-settings/shield": {
+        "kind": "icon",
+        "glyph": "shield",
+        "tags": [
+          "framework",
+          "nav-style-settings"
+        ]
+      },
+      "framework:nav-style-settings/terminal": {
+        "kind": "icon",
+        "glyph": "terminal",
+        "tags": [
+          "framework",
+          "nav-style-settings"
+        ]
+      },
+      "framework:nav-tree/box": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-tree"
+        ]
+      },
+      "framework:nav-tree/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-tree"
+        ]
+      },
+      "framework:nav-tree/chevron-left": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-tree"
+        ]
+      },
+      "framework:nav-tree/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-tree"
+        ]
+      },
+      "framework:nav-tree/flip": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-tree"
+        ]
+      },
+      "framework:nav-tree/lock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "nav-tree"
+        ]
+      },
+      "framework:nav-tree/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "framework",
+          "nav-tree"
+        ]
+      },
+      "framework:overlays/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "overlays"
+        ]
+      },
+      "framework:overlays/toast-icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "overlays"
+        ]
+      },
+      "framework:overlays/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "framework",
+          "overlays"
+        ]
+      },
+      "framework:priority-tag/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "framework",
+          "priority-tag"
+        ]
+      },
+      "framework:ref-text/info": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "ref-text"
+        ]
+      },
+      "framework:search/lock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "search"
+        ]
+      },
+      "framework:search/search": {
+        "kind": "icon",
+        "glyph": "search",
+        "tags": [
+          "framework",
+          "search"
+        ]
+      },
+      "framework:search/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "framework",
+          "search"
+        ]
+      },
+      "framework:studio-account-view/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "framework",
+          "account-view"
+        ]
+      },
+      "framework:studio-account-view/check-circle": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "account-view"
+        ]
+      },
+      "framework:studio-account-view/user": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "account-view"
+        ]
+      },
+      "framework:studio-asset-preview/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "asset-preview"
+        ]
+      },
+      "framework:studio-asset-studio/check": {
+        "kind": "icon",
+        "glyph": "check",
+        "tags": [
+          "framework",
+          "asset-studio"
+        ]
+      },
+      "framework:studio-asset-studio/chevron-left": {
+        "kind": "icon",
+        "glyph": "chevron-left",
+        "tags": [
+          "framework",
+          "asset-studio"
+        ]
+      },
+      "framework:studio-asset-studio/chevron-right": {
+        "kind": "icon",
+        "glyph": "chevron-right",
+        "tags": [
+          "framework",
+          "asset-studio"
+        ]
+      },
+      "framework:studio-asset-studio/code": {
+        "kind": "icon",
+        "glyph": "code",
+        "tags": [
+          "framework",
+          "asset-studio"
+        ]
+      },
+      "framework:studio-asset-studio/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "asset-studio"
+        ]
+      },
+      "framework:studio-asset-studio/lock": {
+        "kind": "icon",
+        "glyph": "lock",
+        "tags": [
+          "framework",
+          "asset-studio"
+        ]
+      },
+      "framework:studio-inspector/asset-type-specs": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "inspector"
+        ]
+      },
+      "framework:studio-inspector/chevron-left": {
+        "kind": "icon",
+        "glyph": "chevron-left",
+        "tags": [
+          "framework",
+          "inspector"
+        ]
+      },
+      "framework:studio-inspector/chevron-right": {
+        "kind": "icon",
+        "glyph": "chevron-right",
+        "tags": [
+          "framework",
+          "inspector"
+        ]
+      },
+      "framework:studio-inspector/layers": {
+        "kind": "icon",
+        "glyph": "layers",
+        "tags": [
+          "framework",
+          "inspector"
+        ]
+      },
+      "framework:studio-inspector/shuffle": {
+        "kind": "icon",
+        "glyph": "shuffle",
+        "tags": [
+          "framework",
+          "inspector"
+        ]
+      },
+      "framework:studio-inspector/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "framework",
+          "inspector"
+        ]
+      },
+      "framework:studio-output-terminal/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "output-terminal"
+        ]
+      },
+      "framework:studio-output-terminal/copy": {
+        "kind": "icon",
+        "glyph": "copy",
+        "tags": [
+          "framework",
+          "output-terminal"
+        ]
+      },
+      "framework:studio-output-terminal/pause": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "output-terminal"
+        ]
+      },
+      "framework:studio-output-terminal/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "framework",
+          "output-terminal"
+        ]
+      },
+      "framework:tab-group/chevron-down": {
+        "kind": "icon",
+        "glyph": "chevron-down",
+        "tags": [
+          "framework",
+          "tab-group"
+        ]
+      },
+      "framework:tab-group/chevron-up": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "tab-group"
+        ]
+      },
+      "framework:tab-group/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "tab-group"
+        ]
+      },
+      "framework:tab-group/more": {
+        "kind": "icon",
+        "glyph": "more",
+        "tags": [
+          "framework",
+          "tab-group"
+        ]
+      },
+      "framework:tab-group/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "framework",
+          "tab-group"
+        ]
+      },
+      "framework:waiting/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "framework",
+          "waiting"
+        ]
+      },
+      "framework:watch-live/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "framework",
+          "watch-live"
+        ]
+      },
+      "framework:widgets/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "widgets"
+        ]
+      },
+      "framework:widgets/moon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "widgets"
+        ]
+      },
+      "framework:widgets/sun": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "widgets"
+        ]
+      },
+      "framework:windows-dock-host/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "framework",
+          "dock-host"
+        ]
+      },
+      "framework:windows-window-host/download": {
+        "kind": "icon",
+        "glyph": "download",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/external": {
+        "kind": "icon",
+        "glyph": "external",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/grid": {
+        "kind": "icon",
+        "glyph": "grid",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/grip": {
+        "kind": "icon",
+        "glyph": "grip",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/layout": {
+        "kind": "icon",
+        "glyph": "layout",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/list": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/maximize": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/minimize": {
+        "kind": "icon",
+        "glyph": "minimize",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/minus": {
+        "kind": "icon",
+        "glyph": "minus",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/restore": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/settings": {
+        "kind": "icon",
+        "glyph": "settings",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "framework:windows-window-host/x": {
+        "kind": "icon",
+        "glyph": "x",
+        "tags": [
+          "framework",
+          "window-host"
+        ]
+      },
+      "molly:app/favicon": {
+        "kind": "app-icon",
+        "glyph": "sparkles",
+        "tags": [
+          "molly",
+          "app",
+          "app-icon"
+        ]
+      },
+      "molly:plugin-toolbar-designer/box": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "molly",
+          "toolbar-designer"
+        ]
+      },
+      "molly:plugin-toolbar-designer/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "molly",
+          "toolbar-designer"
+        ]
+      },
+      "molly:plugin-toolbar-designer/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "molly",
+          "toolbar-designer"
+        ]
+      },
+      "molly:plugin-xlayout/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "molly",
+          "xlayout"
+        ]
+      },
+      "molly:plugin-xlayout/lock": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "molly",
+          "xlayout"
+        ]
+      },
+      "walkthrough-studio:badge/new": {
+        "kind": "badge",
+        "glyph": "sparkles",
+        "tags": [
+          "walkthrough-studio",
+          "badge"
+        ]
+      },
+      "walkthrough-studio:pane-capture/chevron-down": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "capture"
+        ]
+      },
+      "walkthrough-studio:pane-capture/chevron-right": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "capture"
+        ]
+      },
+      "walkthrough-studio:pane-capture/file": {
+        "kind": "icon",
+        "glyph": "file",
+        "tags": [
+          "walkthrough-studio",
+          "capture"
+        ]
+      },
+      "walkthrough-studio:pane-capture/folder": {
+        "kind": "icon",
+        "glyph": "folder",
+        "tags": [
+          "walkthrough-studio",
+          "capture"
+        ]
+      },
+      "walkthrough-studio:pane-grid/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "walkthrough-studio",
+          "grid"
+        ]
+      },
+      "walkthrough-studio:pane-grid/eye": {
+        "kind": "icon",
+        "glyph": "eye",
+        "tags": [
+          "walkthrough-studio",
+          "grid"
+        ]
+      },
+      "walkthrough-studio:pane-grid/info": {
+        "kind": "icon",
+        "glyph": "info",
+        "tags": [
+          "walkthrough-studio",
+          "grid"
+        ]
+      },
+      "walkthrough-studio:pane-grid/kind-info": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "grid"
+        ]
+      },
+      "walkthrough-studio:pane-outline/cloud": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "outline"
+        ]
+      },
+      "walkthrough-studio:pane-outline/device": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "outline"
+        ]
+      },
+      "walkthrough-studio:pane-outline/file": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "outline"
+        ]
+      },
+      "walkthrough-studio:pane-outline/folder": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "outline"
+        ]
+      },
+      "walkthrough-studio:pane-outline/icon": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "outline"
+        ]
+      },
+      "walkthrough-studio:pane-outline/smartphone": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "outline"
+        ]
+      },
+      "walkthrough-studio:pane-project/file": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "project"
+        ]
+      },
+      "walkthrough-studio:pane-project/folder": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "project"
+        ]
+      },
+      "walkthrough-studio:pane-project/piece": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "project"
+        ]
+      },
+      "walkthrough-studio:pane-project/trash": {
+        "kind": "icon",
+        "glyph": "trash",
+        "tags": [
+          "walkthrough-studio",
+          "project"
+        ]
+      },
+      "walkthrough-studio:pane-video/alert": {
+        "kind": "icon",
+        "glyph": "alert",
+        "tags": [
+          "walkthrough-studio",
+          "video"
+        ]
+      },
+      "walkthrough-studio:pane-video/file": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "video"
+        ]
+      },
+      "walkthrough-studio:pane-video/layers": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "video"
+        ]
+      },
+      "walkthrough-studio:pane-video/piece": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "video"
+        ]
+      },
+      "walkthrough-studio:pane-video/play": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "video"
+        ]
+      },
+      "walkthrough-studio:pane-video/title": {
+        "kind": "icon",
+        "dynamic": true,
+        "tags": [
+          "walkthrough-studio",
+          "video"
+        ]
+      },
+      "walkthrough-studio:pane-writing/check-circle": {
+        "kind": "icon",
+        "glyph": "check-circle",
+        "tags": [
+          "walkthrough-studio",
+          "writing"
+        ]
+      }
+    },
+    "generatedAt": "2026-11-16T00:00:00Z"
+  }
+}

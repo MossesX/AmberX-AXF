@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "icon-pack",
+  "id": "outline",
+  "name": "Outline light",
+  "version": "1.0.0",
+  "description": "The framework glyphs with a lighter 1.5 stroke and round caps (extends default: every name comes from the default pack).",
+  "author": "AmberX AXF",
+  "tags": [
+    "outline",
+    "light"
+  ],
+  "data": {
+    "style": "outline",
+    "grid": 24,
+    "stroke": 1.5,
+    "linecap": "round",
+    "fallback": "framework",
+    "extends": "default",
+    "glyphs": {
+      "x": {
+        "d": "M17 7 7 17M7 7l10 10"
+      },
+      "check": {
+        "d": "M19 7 9.5 16.5 5 12"
+      },
+      "plus": {
+        "d": "M12 6v12M6 12h12"
+      }
+    },
+    "source": {
+      "kind": "builtin"
+    },
+    "license": {
+      "id": "MIT",
+      "holder": "AmberX AXF"
+    }
+  }
+}
