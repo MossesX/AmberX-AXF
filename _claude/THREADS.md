@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:02 UTC · `auto-lander-controls-in-the-gate-plugin` → running, note (all) · foreign-write
 - 2026-11-15 12:02 UTC · `gate-rules-plugin-in-the-console` s1 done (all) · orchestrator
 - 2026-11-15 12:04 UTC · `every-grid-1-2-rows-per-item-set-skin` s1 done, → running (all) · orchestrator
 - 2026-11-15 12:04 UTC · `every-grid-1-2-rows-per-item-set-skin` branch claude/every-grid-1-2-rows-per-item-set-skin (all) · builds-live
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:37 UTC · `vps-sends-shipped-features-every-merge` s5 done (all) · orchestrator
 - 2026-11-16 13:38 UTC · `console-look-becomes-default-axhub-skin` s11 done (all) · orchestrator
 - 2026-11-16 13:39 UTC · `vps-sends-shipped-features-every-merge` s6 done (all) · orchestrator
+- 2026-11-16 13:40 UTC · `console-look-becomes-default-axhub-skin` s12 done (all) · orchestrator
 
 ## Token passes (log)
 
