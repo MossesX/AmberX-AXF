@@ -808,7 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 12:33 UTC · `shipped-features-organized-sortable` note (all) · orchestrator
 - 2026-11-15 12:33 UTC · `data-container-axf-data-holds-all` s9 done (all) · orchestrator
 - 2026-11-15 12:34 UTC · `gate-rules-plugin-in-the-console` s13 done (all) · orchestrator
 - 2026-11-15 12:34 UTC · `vps-sends-shipped-features-every-merge` branch claude/vps-sends-shipped-features-every-merge, PR #709 (all) · builds-live
@@ -1208,6 +1207,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 14:15 UTC · `console-look-becomes-default-axhub-skin` PR #717 (all) · builds-live
 - 2026-11-16 14:15 UTC · `console-look-becomes-default-axhub-skin` s20 done, → built (all) · orchestrator
 - 2026-11-16 14:16 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
+- 2026-11-16 14:16 UTC · `vps-sends-shipped-features-every-merge` s15 done (all) · orchestrator
 
 ## Token passes (log)
 
