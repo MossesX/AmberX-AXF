@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6395,
- "updatedAt": "2026-11-16T13:22:29.819Z",
+ "rev": 6396,
+ "updatedAt": "2026-11-16T13:22:50.937Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204166,7 +204166,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204174,7 +204174,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-15T01:31:24.281Z",
+   "updatedAt": "2026-11-16T13:22:49.473Z",
    "builtAt": "",
    "notes": [
     {
@@ -204292,6 +204292,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T01:31:24.281Z"
+    },
+    {
+     "text": "phase Phase 2 done, requeued for Fable: back in the Queue (requeue-stuck by build:fix-build-whose-session-finishes-phase-e; phase Phase 2 finished on 2026-11-13 19:07 with 5 step(s) left and nothing needing Brett).",
+     "at": "2026-11-16T13:22:49.473Z"
     }
    ],
    "approvals": [
@@ -204331,8 +204335,8 @@
     "lastRun": {
      "at": "2026-11-13T19:07:48.655Z",
      "exit": 0,
-     "outcome": "returned",
-     "reason": "",
+     "outcome": "requeued",
+     "reason": "phase-done",
      "stepsLeft": 13,
      "account": "mossesx-max-",
      "session": "axf-ui-manager-floating-window-to-select-any--paulie",
@@ -204346,7 +204350,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"579404e5-a10e-46f4-a7ce-8a0d0f0faa44\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "requeued after phase Phase 2: next phase Fable waits for a slot and an account",
     "route": "",
     "dispatchedAt": "2026-11-13T18:53:11.620Z",
     "planned": {
@@ -204683,7 +204687,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
