@@ -17,3 +17,9 @@ Merged main into `claude/console-axhub-retry-failed-calls` (PR #589) so auto-lan
 ## Notes
 - The PR branch is checked out in another worktree with uncommitted builds-store writes; the merge was done in a separate detached worktree so that checkout was left alone.
 - No UI or API change: merge only.
+
+## Attempt 1 (2026-11-16): stopped, PR archived
+- The merge queue kicked #589 out: CI failed on top of main (Web Dev Console (React/TS) + Python API, Build engine sweep (Node); run 43662470182).
+- Brett then closed #589 on 2026-11-16 22:53 UTC: "Archived by Brett: more than 500 commits behind main. Branch kept." The branch is now 1520 commits behind main.
+- Steps s7/s8 (retry the land, merge main again) were not run: re-merging and reopening the PR would override the archive. The branch `claude/console-axhub-retry-failed-calls` is untouched.
+- Build handed back to Pending. To revive the retry-ladder work, rebuild it fresh on main rather than merging 1520 commits into the old branch.
