@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T22:53:13.730Z",
+ "updatedAt": "2026-11-16T22:53:24.949Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110578,15 +110578,15 @@
    "title": "Console and axHub retry failed calls themselves (no Claude needed)",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-axhub-retry-failed-calls",
    "pr": "#589",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-15T00:37:51.867Z",
-   "builtAt": "2026-11-14T23:17:05.230Z",
+   "updatedAt": "2026-11-16T22:53:17.531Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -110687,6 +110687,10 @@
     {
      "text": "s3: all retry tests pass on the branch head (locked store retried to success; caller gone mid-retry still completes). PR #589 is waiting for the merge queue, which handles landing and redeploy. The live FYI goes out after it lands. UI Review shots are still missing: the headless console can't reach axHub from a localhost origin (curl reaches it), so a session with hub access must capture and submit them.",
      "at": "2026-11-14T23:15:35.277Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:17.531Z"
     }
    ],
    "approvals": [],
@@ -130702,7 +130706,7 @@
    "title": "Console app part 4: console-side safe areas and wrapper support",
    "category": "",
    "detail": "Parallel part 4 of 4 of console-android-app-thin-webview-wrapper (parent). Web console side only (apps/console-web, framework).\n- viewport-fit=cover, and every top bar, banner, toolbar, menu bar and bottom nav padded with env(safe-area-inset-*) through framework tokens, so nothing is ever drawn under the clock, camera cutout or notification shade (Brett's screenshots: the AmberX title/search/menu sat under the status bar).\n- Detects when it's running in the wrapper (window.axfNative) and uses native features when present, falling back gracefully in a browser.\n- Auto-update path so the wrapper always loads the live console.\n- Tests, including a CI check for safe-area padding on top and bottom bars. Help, Shipped features.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130710,8 +130714,8 @@
    "pr": "#640",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-15T00:37:33.873Z",
-   "builtAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-16T22:53:09.377Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -130736,6 +130740,10 @@
     {
      "text": "Reconciler: PR #640; PR #640 names s1, s2, s3, s4, s5, s6, s7 done",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:09.377Z"
     }
    ],
    "approvals": [],
@@ -132040,7 +132048,7 @@
    "title": "Demo pipelines: guided walkthrough with live behind-the-scenes output",
    "category": "",
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132048,8 +132056,8 @@
    "pr": "#646",
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
-   "updatedAt": "2026-11-15T00:41:59.675Z",
-   "builtAt": "2026-11-13T20:20:33.465Z",
+   "updatedAt": "2026-11-16T22:53:22.235Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -132070,6 +132078,10 @@
     {
      "text": "Headless run axf-demo-pipelines-guided-walkthrough-live--gina: brief only · start 11.7K tokens ($0.03) · cost $13.52 · 122 turns · 6 tools, MCP none",
      "at": "2026-11-13T20:20:33.465Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
+     "at": "2026-11-16T22:53:22.235Z"
     }
    ],
    "approvals": [],
