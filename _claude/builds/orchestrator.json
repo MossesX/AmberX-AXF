@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:01:13.660Z",
+ "updatedAt": "2026-11-16T23:01:29.771Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -164084,7 +164084,7 @@
    "title": "Toolbar widgets in any banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind; archive the old record and close its PR, branch kept). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), with snap-not-overlap. Old branch for intent only, don't merge it. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -164092,12 +164092,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:50.833Z",
-   "updatedAt": "2026-11-16T23:01:10.360Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-16T23:01:20.198Z",
+   "builtAt": "2026-11-16T23:01:20.198Z",
    "notes": [
     {
      "text": "Split by Claude into 19 steps (7 Fable).",
      "at": "2026-11-16T22:52:37.783Z"
+    },
+    {
+     "text": "Same feature as attach-widgets-to-any-toolbar-banner: built there (branch claude/attach-widgets-to-any-toolbar-banner, design note _claude/builds/reports/attach-widgets-to-any-toolbar-banner.design.md). Marked complete so it is not built twice.",
+     "at": "2026-11-16T23:01:17.147Z"
     }
    ],
    "approvals": [],
@@ -167257,12 +167261,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-16T22:49:06.642Z",
-   "updatedAt": "2026-11-16T22:58:37.445Z",
+   "updatedAt": "2026-11-16T23:01:23.402Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 16 steps (4 Fable).",
      "at": "2026-11-16T22:58:37.445Z"
+    },
+    {
+     "text": "attach-widgets-to-any-toolbar-banner (toolbar-widgets@1) reserves widgets[].shape (a shape@1 asset id per slot), toolbar.shape { icon, chip } defaults (same field as banner.shape) and data-fx-shape on toolbar widgets. The shape build resolves toolbars through the same chain; no second contract.",
+     "at": "2026-11-16T23:01:23.402Z"
     }
    ],
    "approvals": [],
