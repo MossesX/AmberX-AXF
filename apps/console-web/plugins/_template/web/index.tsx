@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Container } from '@console/axf/react';
+import { Button, Container, PluginScreenHeader } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -14,7 +14,8 @@ function ExampleView() {
   useEffect(() => { void load(); }, []);
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin</p><h1>Example</h1></div></header>
+      {/* plugin-settings@1: the header slot carries the one gear that opens Settings → Plugins → Example (tab = plugin.json settings.tab) */}
+      <PluginScreenHeader tab="example" title="Example" />
       <Container title="Server says" icon="cloud"><p style={{ marginTop: 0 }}>{answer}</p><Button icon="refresh" onClick={() => void load()}>Ask again</Button></Container>
     </div>
   );
