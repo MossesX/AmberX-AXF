@@ -808,8 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 12:30 UTC · `yo-a7qg14` PR #19, note (all) · reconciler
-- 2026-11-16 13:06 UTC · `duplicate-gate-vps-checks-shipped` added (0 steps) (all) · console
 - 2026-11-16 13:06 UTC · `duplicate-gate-vps-checks-shipped` → queued, note (all) · console
 - 2026-11-16 13:06 UTC · `duplicate-gate-vps-checks-shipped` note (all) · mcp
 - 2026-11-16 13:08 UTC · `auto-land-merge-main-land-land-mjs-clash` → archived (all) · mcp
@@ -1208,6 +1206,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 18:34 UTC · `settings-interface-gear-every-plugin` branch claude/settings-interface-gear-every-plugin (all) · pipeline
 - 2026-11-16 18:34 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
 - 2026-11-16 18:34 UTC · `themed-native-controls-plugin` → running (all) · mcp
+- 2026-11-16 18:34 UTC · `themed-native-controls-plugin` note (all) · mcp
+- 2026-11-16 18:34 UTC · `new-asset-type-animated-expanding-row` note (all) · mcp
 
 ## Token passes (log)
 

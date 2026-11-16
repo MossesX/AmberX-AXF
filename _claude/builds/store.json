@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6639,
- "updatedAt": "2026-11-16T18:34:40.593Z",
+ "rev": 6640,
+ "updatedAt": "2026-11-16T18:34:57.843Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201766,7 +201766,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-15T01:06:08.616Z",
+   "updatedAt": "2026-11-16T18:34:44.105Z",
    "builtAt": "2026-11-15T01:05:23.539Z",
    "notes": [
     {
@@ -201816,6 +201816,10 @@
     {
      "text": "Session axf-new-asset-type-animated-expanding-row--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-15T01:06:08.616Z"
+    },
+    {
+     "text": "Brett Nov 16: merged into themed-native-controls-plugin (one plugin for all browser-replacement controls + animations). Don't land separately.",
+     "at": "2026-11-16T18:34:44.105Z"
     }
    ],
    "approvals": [
@@ -202137,7 +202141,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -223012,7 +223016,7 @@
    "pr": "#690",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-16T18:34:38.665Z",
+   "updatedAt": "2026-11-16T18:34:41.632Z",
    "builtAt": "",
    "notes": [
     {
@@ -223062,6 +223066,10 @@
     {
      "text": "Reconciler: PR #690 names s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30 done",
      "at": "2026-11-15T00:42:34.863Z"
+    },
+    {
+     "text": "Brett Nov 16: name the plugin 'Browser UI Replacement' (id browser-ui-replacement). Rename the plugin, its settings tab, manifest, help and Shipped entry to match.",
+     "at": "2026-11-16T18:34:41.632Z"
     }
    ],
    "approvals": [
@@ -223914,7 +223922,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
