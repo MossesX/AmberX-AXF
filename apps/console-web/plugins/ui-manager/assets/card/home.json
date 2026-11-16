@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "ui-manager-home",
+  "name": "UI Manager",
+  "version": "1.0.0",
+  "description": "UI Manager on Home: List selectable elements.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "UI Manager",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "ui-manager",
+      "command": "elements"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}
