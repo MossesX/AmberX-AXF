@@ -213,6 +213,20 @@ function writeKeepingOwner(f, text) {
   while (!existsSync(d)) { made.unshift(d); d = dirname(d); }
   for (const m of made) mkdirSync(m);
   const fresh = !existsSync(f);
+  // Atomic: a reader that takes no lock (the orchestrator's after-tick hook, the console) sees the old file or the new
+  // one, never a torn half (~10 MB store; vps-sends-shipped-features-every-merge s2 found two ticks lost to it). The temp
+  // file takes the old file's owner and mode first; when the folder refuses a new file, fall back to writing in place.
+  if (!fresh) {
+    const tmp = `${f}.tmp-${process.pid}-${Date.now()}`;
+    try {
+      writeFileSync(tmp, text);
+      const st = statSync(f);
+      chmodSync(tmp, st.mode & 0o7777);
+      if (process.getuid?.() === 0) { try { chownSync(tmp, st.uid, st.gid); } catch { /* best effort */ } }
+      renameSync(tmp, f);
+      return;
+    } catch { try { rmSync(tmp, { force: true }); } catch { /* gone */ } }
+  }
   writeFileSync(f, text);
   if (process.getuid?.() === 0) { try { const st = statSync(d); for (const x of [...made, ...(fresh ? [f] : [])]) chownSync(x, st.uid, st.gid); if (fresh) chmodSync(f, 0o664); } catch { /* best effort */ } }
 }

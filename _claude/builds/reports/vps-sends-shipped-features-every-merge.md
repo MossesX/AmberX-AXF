@@ -65,3 +65,23 @@ screenshot of the view was not available to this session, so the exact view he c
   manifests. A regression test pins all five cases.
 - s4–s9: the merge-watch runner keyed by merge sha replaces `shipLanded` in the tick hook and is called from every landing
   path, with a cron poll as the fallback.
+
+## Fix at the root (s3)
+
+- `framework/cli/merge-watch/walk.mjs`: main's landings from git. The first-parent line plus, for every merge of main
+  on it (`(build_land)`, `Merge origin/main …`), the main line behind its second parent (`--first-parent p2 ^p1`,
+  recursively, depth 4). Each line goes through `landingsOf` on its own. A branch merging another branch is not followed.
+- `framework/cli/shipped.mjs shipLanded`: ships every landing in the window that names a build (branch, PR via the store,
+  known subject prefix), ten per tick, oldest first, with the merge-watch overlay (landedCommit = merge sha, PR,
+  branch, commits, mergedAt / landedAt). Store status no longer gates it. `sentFor` = a manifest for the build names the
+  sha or one of its commits, the PR, or a landing at or after this one (the sidecar keeps only the latest rev); an old
+  manifest with no landedCommit and no PR matches within 30 minutes. Landings that name no build (`main-<sha9>`) are left
+  to the merge-watch runner. `landed --dry` shows what would go out.
+- `framework/cli/builds-store.mjs writeKeepingOwner`: atomic write (temp file with the old owner and mode, then rename;
+  in place only when the folder refuses a new file), so an unlocked read never sees a torn store.
+- Regression test `framework/cli/merge-watch/test.mjs` (CI): a throwaway repo with a PR merge hidden behind a build_land
+  fast-forward, a phase landing of a running build, a store-less hotfix PR, a second landing (rev 2), an already
+  shipped landing that must not go out again, and a second run that sends nothing.
+
+Dry run on the VPS (Nov 16, 4 days): 20 landings due, including #687 #693 #696 #689 #324 #672, the
+console-look-becomes-default-axhub-skin phase landing and orch-build-id-40-chars. The real send is the backfill (s14).

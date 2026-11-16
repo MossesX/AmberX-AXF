@@ -876,13 +876,14 @@ export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn
 
 /**
  * shipped-manifest@1 (Brett, Nov 9 2026: "The orchestrator should send a manifest with the information on the shipped
- * feature"): after every tick, builds that landed in the last few days and have no manifest get one, gathered and sent
- * to Shipped features through the builds store (framework/cli/shipped.mjs). A few per tick; AXF_SHIPPED=off = none.
+ * feature"): after every tick, every landing on main in the last few days with no manifest gets one, gathered and sent
+ * to Shipped features through the builds store (framework/cli/shipped.mjs shipLanded). Landings come from main's
+ * history, not the store's status (vps-sends-shipped-features-every-merge s3). AXF_SHIPPED=off = none.
  */
 afterTick(({ env }) => {
   const r = shipLanded({ env });
   for (const s of r.shipped ?? []) {
-    logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+    logLine(s.error ? { event: 'ship-failed', build: s.id, sha: s.sha, pr: s.pr, error: str(s.error, 300) } : { event: 'shipped', build: s.id, sha: s.sha, pr: s.pr, manifest: s.manifest, rev: s.rev });
     if (s.error) crewSay('shipped', 'failed', `Couldn't send the shipped manifest for ${s.id}: ${str(s.error, 160)}`, { ref: s.id, dedupeMin: 360 });
     else crewSay('shipped', 'done', `${s.id} landed: shipped manifest sent to Shipped features.`, { ref: s.id });
   }

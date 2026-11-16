@@ -33,6 +33,8 @@ import * as SM from '../core/shipped-manifest.mjs';
 import * as core from '../plan/builds-store-core.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 import { listManifests, readManifest, writeManifest, REPO_ROOT, SHIPPED_REL } from './shipped-files.mjs';
+import * as MW from '../core/merge-watch.mjs';
+import { mainLandings } from './merge-watch/walk.mjs';
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const list = (v) => (Array.isArray(v) ? v : []);
@@ -305,14 +307,51 @@ export function backfill({ from, dry = false, by = 'backfill', env = process.env
   return { since: since(from), dry, found: found.length, shipped: done };
 }
 /** The orchestrator tick's step: ship builds that landed in the last `days` days and have no manifest (a few per tick). */
-export function shipLanded({ days = 3, max = 3, env = process.env } = {}) {
+/**
+ * What landed on main and has no manifest yet, shipped (the orchestrator's after-tick hook).
+ *
+ * Main decides, not the store's status (root cause, _claude/builds/reports/vps-sends-shipped-features-every-merge.md):
+ * landings come from main's history (merge-watch/walk.mjs: the first-parent line and the main line behind each
+ * build_land / merge-of-main commit), so a phase landing with open steps, a store-less hotfix branch, a second landing
+ * of a shipped build and a PR merge hidden behind a fast-forward all ship. A landing is already sent when a manifest for
+ * its build names its sha (landedCommit or commits) or its PR. Landings that name no build are left to merge-watch
+ * (unlinked manifests). `landings` / `known` are injectable for tests.
+ */
+export function shipLanded({ days = 3, max = 10, env = process.env, landings = null, now = nowIso(), dry = false } = {}) {
   if (env.AXF_SHIPPED === 'off') return { off: true, shipped: [] };
-  const from = new Date(Date.now() - days * 86400e3).toISOString();
+  const from = new Date(Date.parse(now) - days * 86400e3).toISOString();
   const store = loadStore();
-  const due = store.builds.filter((b) => !b.deleted && SM.isLanded(b) && (b.mergedAt || b.updatedAt) >= from && !b.shipped && !readManifest(b.id, env)).slice(0, max);
+  const known = new Set(store.builds.filter((b) => !b.deleted).map((b) => b.id));
+  const byPr = new Map(store.builds.filter((b) => !b.deleted && str(b.pr)).map((b) => [Number(String(b.pr).replace(/\D/g, '')), b.id]));
+  const all = landings ?? mainLandings({ since: from, ref: env.AXF_MERGE_WATCH_REF || MW.DEFAULT_REF, now });
+  const due = [];
+  for (const e of all) {
+    if (e.state === 'skipped' || e.at < from || (e.nextRetryAt && e.nextRetryAt > now)) continue;
+    const id = MW.buildIdOf(e, known, byPr);
+    if (id.startsWith('main-') || sentFor(readManifest(id, env), e)) continue;
+    due.push({ e, id });
+    if (due.length >= max) break;
+  }
   const shipped = [];
-  for (const b of due) { try { const r = ship(b.id, { source: 'orchestrator', by: 'orchestrator', env }); shipped.push({ id: b.id, manifest: r.manifest.id, rev: r.manifest.rev }); } catch (e) { shipped.push({ id: b.id, error: e.message }); } }
+  for (const { e, id } of due) {
+    try { const r = ship(id, { manifest: MW.toManifestOverlay(e, { known, byPr }), source: 'orchestrator', by: 'orchestrator', env, now, dry }); shipped.push({ id, sha: e.sha, pr: e.pr, manifest: r.manifest.id, rev: r.manifest.rev, ...(dry ? { dry: true } : {}) }); }
+    catch (e2) { shipped.push({ id, sha: e.sha, pr: e.pr, error: e2.message }); }
+  }
   return { shipped };
+}
+
+/** Does manifest `m` already cover landing `e` (its sha, one of its commits, or its PR)? */
+export function sentFor(m, e) {
+  if (!m) return false;
+  const shas = new Set([m.landedCommit, ...(m.commits ?? []).map((c) => (typeof c === 'string' ? c : c?.sha))].filter(Boolean));
+  if ([e.sha, ...(e.commits ?? [])].some((s) => shas.has(s))) return true;
+  if (e.pr && m.pr?.number === e.pr) return true;
+  // the sidecar holds the latest rev only: a landing at or before the one it names is covered by it (a later rev supersedes)
+  const last = m.landedAt || m.mergedAt || '';
+  if (m.landedCommit && last && e.at && e.at <= last) return true;
+  // a manifest from before merge-watch with no landedCommit and no PR: the same landing when it landed within 30 min
+  const at = Date.parse(m.landedAt || m.mergedAt || '');
+  return !m.landedCommit && !e.pr && Number.isFinite(at) && Math.abs(at - Date.parse(e.at)) <= 30 * 60e3;
 }
 
 // ------------------------------------------------------------------ CLI
@@ -334,7 +373,7 @@ async function main(argv) {
     return out({ ok: true, ...r, summary: SM.summaryOf(r.manifest) }, `${r.dry ? 'would ship' : 'shipped'} ${r.manifest.id} rev ${r.manifest.rev}${r.created ? ' (build created in the store)' : ''}${r.file ? ` → ${r.file}` : ''}`);
   }
   if (cmd === 'backfill' || cmd === 'landed') {
-    const r = cmd === 'backfill' ? backfill({ from: flag('since'), dry: args.includes('--dry') }) : shipLanded({ days: Number(flag('days')) || 3, max: Number(flag('max')) || 3 });
+    const r = cmd === 'backfill' ? backfill({ from: flag('since'), dry: args.includes('--dry') }) : shipLanded({ days: Number(flag('days')) || 3, max: Number(flag('max')) || 10, dry: args.includes('--dry') });
     return out({ ok: true, ...r }, r.shipped.length ? r.shipped.map((x) => `${x.ok === false || x.error ? '✗' : r.dry ? '·' : '✓'} ${x.id}${x.why ? ` (${x.why})` : ''}${x.error ? `: ${x.error}` : x.created ? ' [created]' : ''}`).join('\n') : 'nothing to ship');
   }
   if (cmd === 'show') { const m = readManifest(id); if (!m) throw Object.assign(new Error(`no manifest for "${id}" (${SHIPPED_REL})`), { code: 2 }); return out(m, JSON.stringify(m, null, 1)); }
