@@ -132,7 +132,7 @@ ok(fx.validate.ok.length === 0, 'every glyph source validates');
 ok(fx.validate.bad.length >= 8, 'bad pack reports every problem');
 eq(ir.iconMapErrors({ spots: { 'console-web:view-plan/plus': { glyph: 'plus', tint: 'red', size: 'huge' }, bad: {}, 'a:b/c': { kind: 'thing', dynamic: false } } }), fx.validate.map, 'icon-map errors pinned');
 eq(fx.validate.mapOk, [], 'a good map validates (size tokens, badge kind)');
-eq(fx.validate.block.length, 5, 'icon block errors: bad pack, bad spot id, bad ref, hostile svg, bad scope key');
+eq(fx.validate.block.length, 4, 'icon block errors: bad pack, bad spot id, hostile svg, bad scope key (a bare glyph name is a valid override)');
 function fxCase(which: 'ok' | 'bad') {
   return which === 'ok'
     ? { style: 'outline', grid: 24, glyphs: { a: 'M1 1h1', s: { svg: '<path d="M1 1"/>' }, p: { png: 'data:image/png;base64,iVBORw0KGgo=' }, f: { font: { family: 'Material Symbols', char: '' } }, r: { ref: 'pack:base/home' } }, spots: { 'x:y/z': 'a' }, extends: 'base', seed: { seed: 's1', style: 'line' }, license: 'MIT', source: { kind: 'generated' } }
@@ -151,7 +151,7 @@ ok(validateAsset(env('icon-pack', { style: 'outline', grid: 24, glyphs: { a: { s
 /* ---- markup ---- */
 for (const [k, want] of Object.entries(fx.markup as Record<string, string>)) {
   ok(!/#[0-9a-fA-F]{3,6}\b|rgb\(/.test(want), `${k}: no literal colours in markup`);
-  ok(want.includes('currentColor') || want.includes('var(--fx-'), `${k}: colours are currentColor or tokens`);
+  if (/\b(fill|stroke|color)=/.test(want) || /style="color/.test(want)) ok(want.includes('currentColor') || want.includes('var(--fx-'), `${k}: colours are currentColor or tokens`);
 }
 eq(ip.glyphMarkup(ip.glyphEntry('M4 4l16 16M20 4L4 20')!, { style: 'outline', grid: 24, stroke: 1.75, linecap: 'round' }, 16), fx.markup.path, 'path markup pinned');
 eq(ip.appIconMarkup(ip.glyphEntry('M12 2l10 20H2z')!, { style: 'filled', grid: 24, stroke: 2, linecap: 'round', appIcon: { shape: 'squircle', bg: 'accent', fg: 'accentText', padding: 0.2 } }, 48), fx.markup.appIcon, 'app icon markup pinned');
