@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T18:33:36.978Z",
+ "updatedAt": "2026-11-16T18:33:54.503Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -159898,15 +159898,15 @@
    "title": "Hotfix: orchestrator grid columns don't line up",
    "category": "",
    "detail": "Brett: in the Build Orchestrator, the Pending grid (and every other tab's grid) has columns that don't line up; it looks like trash. Likely caused by the new skin Brett built on Fable (console-look-becomes-default-axhub-skin / every-grid-1-2-rows-per-item-set-skin). Fix the grid so header and every row share the same column widths (CSS grid template or a shared column definition from the grid asset tokens), in 1-row and 2-row modes, under every skin. Check every orchestrator tab and the other grids in the console. Screenshot before and after (headless Chrome, signed in). Add a test that fails when header and row column edges differ. Land it, redeploy, and check by hand on the live console.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/hotfix-orchestrator-grid-columns-don-t",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-16T18:33:34.279Z",
+   "updatedAt": "2026-11-16T18:33:48.489Z",
    "builtAt": "",
    "notes": [
     {
@@ -159916,6 +159916,18 @@
     {
      "text": "Split by Claude into 11 steps (0 Fable).",
      "at": "2026-11-16T18:33:17.177Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-orchestrator-grid-columns-don-t--lenny.",
+     "at": "2026-11-16T18:33:43.421Z"
+    },
+    {
+     "text": "Brief only: brief is 26612 characters (~6653 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T18:33:46.772Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-orchestrator-grid-columns-don-t--lenny, shared account login)",
+     "at": "2026-11-16T18:33:48.489Z"
     }
    ],
    "approvals": [],
