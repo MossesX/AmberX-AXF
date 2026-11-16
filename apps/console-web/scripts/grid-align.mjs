@@ -181,6 +181,12 @@ try {
           const grids = await page.evaluate(measure);
           cases++;
           const label = `${vp} · ${skin} · ${rows}-row · ${tab}`;
+          // the API reads back what the screen draws: the grid's state has the row mode and the resolved column template
+          if (PIPELINE_TABS.includes(tab) && grids.some((g) => g.id === `build-orchestrator.${tab}`)) {
+            const st = await run({ verb: 'state', address: `grid:build-orchestrator.${tab}` });
+            const got = st.state ?? st.target?.state ?? st;
+            if (!st.ok || got.rowLines !== rows || typeof got.template !== 'string') failures.push(`${label}: state grid:build-orchestrator.${tab} answered ${JSON.stringify(st).slice(0, 300)}`);
+          }
           if (!grids.length) notes.push(`${label}: no grid on screen`);
           for (const g of grids) {
             pairsTotal += g.pairs;

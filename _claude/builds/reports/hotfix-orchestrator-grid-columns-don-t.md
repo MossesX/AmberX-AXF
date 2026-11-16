@@ -80,4 +80,16 @@ Before: `hotfix-orchestrator-grid-columns-don-t - before` (UI Review → Screens
 
 ## API
 
-_(s8)_
+Everything goes through console-control@1, so REST, MCP, the CLI and voice reach the same targets with the same verbs.
+
+| What | Address | Verbs |
+|---|---|---|
+| Lines per row for every grid (Settings → Plugins → Data grid) | `setting:axf.grid.rowLines` (full: `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=datagrid/setting:axf.grid.rowLines`) | `open`, `state`, `set` (`1` / `2`) |
+| Lines per row for one grid (while it is on screen) | `setting:axf.grid.rowLines.<grid id>`, e.g. `setting:axf.grid.rowLines.build-orchestrator.pending` | `state`, `set` (`1` / `2` / `null` = follow every grid) |
+| A grid: row mode, resolved column template, layout | `grid:<grid id>`, e.g. `view:build-orchestrator/tab:build-orchestrator.tabs=pending/grid:build-orchestrator.pending` | `state` → `rowLines`, `rowLinesFrom`, `template`, `tracks`, `layout`; `set {"rowLines": 2}`; `set "<row id>"` selects a row (as before); `open` / `focus` |
+
+- REST: `POST /api/console-control` `{"verb":"set","address":"setting:axf.grid.rowLines","value":2}`; `{"verb":"state","address":"grid:build-orchestrator.pending"}`.
+- MCP: `console_control {verb:"set", address:"setting:axf.grid.rowLines", value:2}`; `console_open view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=datagrid`; `console_focus grid:build-orchestrator.pending`.
+- CLI: `axf console set setting:axf.grid.rowLines --value 2`; `axf console state grid:build-orchestrator.pending`.
+- Voice (AmberX): "set lines per row to 2", "open data grid settings" (the target's label and keywords: grid, rows, lines, row mode).
+- The settings registry entry is appended to `apps/console-web/src/control/inventory.json` (control-inventory.mjs); `check-console-control` passes. `grid-align.mjs` switches row mode only through `setting:axf.grid.rowLines` and checks that `state grid:build-orchestrator.<tab>` reports the row mode and template the screen draws.

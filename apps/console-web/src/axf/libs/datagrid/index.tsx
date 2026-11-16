@@ -242,8 +242,28 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   useControlTarget({
     address: `grid:${p.id}`, kind: 'grid', label: p.label ?? p.id, keywords: ['grid', 'table', 'list'], element: () => gridRef.current,
     get: () => p.selected ?? null,
-    set: (v) => { const id = String(v ?? ''); const el = rowEl(id); if (!el) return `no row ${id} in ${p.label ?? p.id}`; if (!p.onRowClick) return `${p.label ?? p.id} has no selection`; el.click(); return undefined; },
-    state: () => ({ rows: all.length, shown: shownIds.size, selected: p.selected ?? null, expanded: p.expanded ?? [], groups: p.groups.map((g) => ({ id: g.id, title: g.title, collapsed: !!g.collapsed, rows: g.rows.length })), columns: cols.map((c) => c.id), sort: p.sort ?? null }),
+    // set: a row id selects that row; { rowLines: 1 | 2 } (or null = follow every grid's setting) sets this grid's lines per row
+    set: (v) => {
+      if (v && typeof v === 'object' && 'rowLines' in (v as object)) return setOwnRowLines((v as { rowLines: unknown }).rowLines);
+      const id = String(v ?? ''); const el = rowEl(id); if (!el) return `no row ${id} in ${p.label ?? p.id}`; if (!p.onRowClick) return `${p.label ?? p.id} has no selection`; el.click(); return undefined;
+    },
+    state: () => ({ rowLines, rowLinesFrom: p.rowLines ? 'prop' : asLines(rt.settings.get(gridRowLinesKey(p.id))) ? 'grid' : 'all', template: columnsTemplate,
+      tracks: gridRef.current ? getComputedStyle(gridRef.current).gridTemplateColumns : null,
+      layout: rowLines === 2 ? { line1: lead.map((c) => c.id), line2: rest.map((c) => ({ id: c.id, width: c.width })) } : { line1: cols.map((c) => ({ id: c.id, width: c.width })) },
+      rows: all.length, shown: shownIds.size, selected: p.selected ?? null, expanded: p.expanded ?? [], groups: p.groups.map((g) => ({ id: g.id, title: g.title, collapsed: !!g.collapsed, rows: g.rows.length })), columns: cols.map((c) => c.id), sort: p.sort ?? null }),
+  }, [p.id]);
+  // this grid's own lines per row, a setting target while the grid is on screen (`setting:axf.grid.rowLines.<grid id>`)
+  const setOwnRowLines = (v: unknown) => {
+    if (v === null || v === '' || v === 'all' || v === 'inherit') { rt.settings.set(gridRowLinesKey(p.id), null as never); return undefined; }
+    const n = asLines(v); if (!n) return 'lines per row is 1 or 2 (or null to follow every grid)';
+    rt.settings.set(gridRowLinesKey(p.id), String(n) as never); return undefined;
+  };
+  useControlTarget({
+    address: `setting:${gridRowLinesKey(p.id)}`, kind: 'setting', label: `${p.label ?? p.id}: lines per row`, detail: 'Data grid', icon: 'list',
+    keywords: ['grid', 'rows', 'lines', 'row mode', 'one line', 'two lines', p.label ?? p.id], can: ['state', 'set', 'focus'], element: () => gridRef.current,
+    get: () => asLines(rt.settings.get(gridRowLinesKey(p.id))) ?? null,
+    set: setOwnRowLines,
+    state: () => ({ type: 'choice', options: ['1', '2', null], inForce: rowLines, every: asLines(rt.settings.get(GRID_ROW_LINES_KEY)) ?? 1 }),
   }, [p.id]);
   const dragFor = (kind: 'row' | 'group', id: string, label: string, icon: string) => (drag ? {
     onPointerDown: (e: RPointerEvent) => startDrag(e, { kind: `${zone}:${kind}`, id, label, icon, trashable: !!(drag.trash && p.onTrash), onTrash: p.onTrash ? () => p.onTrash!({ kind, id, label }) : undefined }),
@@ -340,6 +360,14 @@ export const library: AxfWebLibrary = {
   label: 'Data grid',
   version: '0.1.0',
   provides: ['axf.datagrid'],
+  settingsTabs: [{ id: 'datagrid', label: 'Data grid', icon: 'grid', parent: 'plugins', order: 47, description: 'Every grid and table drawn by the data grid: how many lines each row takes.' }],
+  settings: [
+    { id: 'datagrid.rows', label: 'Rows', icon: 'list', tab: 'datagrid', order: 10, settings: [
+      { key: GRID_ROW_LINES_KEY, label: 'Lines per row', kind: 'choice', default: '1', icon: 'list',
+        description: 'One line: every column side by side. Two lines: the name across the row, the other columns under it (they still line up with the header). One grid can differ: its own setting axf.grid.rowLines.<grid id>.',
+        options: [{ value: '1', label: '1 line' }, { value: '2', label: '2 lines: name, then the rest' }] },
+    ] },
+  ],
   register(rt) {
     configureDataGrid((rt.manifest as { libraries?: Record<string, { parts?: Record<string, unknown> }> }).libraries?.datagrid);
     rt.actions.register('axf.grid.do', ([grid = '', what = '', col = '']) => {

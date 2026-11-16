@@ -6,8 +6,8 @@
     "nav": 16,
     "tabGroups": 26,
     "tabs": 78,
-    "settingsTabs": 71,
-    "settings": 89,
+    "settingsTabs": 72,
+    "settings": 90,
     "functions": 274,
     "buttons": 62,
     "plugins": 71
@@ -2197,6 +2197,13 @@
       "plugin": null
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=datagrid",
+      "id": "datagrid",
+      "label": "Data grid",
+      "parent": "plugins",
+      "plugin": null
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus",
       "id": "hubstatus",
       "label": "axHub status",
@@ -2729,6 +2736,24 @@
       ],
       "runs": "console",
       "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=datagrid/setting:axf.grid.rowLines",
+      "kind": "setting",
+      "label": "Lines per row",
+      "key": "axf.grid.rowLines",
+      "type": "choice",
+      "options": [
+        "1",
+        "2"
+      ],
+      "detail": "Settings › Plugins › Data grid",
+      "keywords": [
+        "axf.grid.rowLines",
+        "Data grid"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/datagrid/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.show",
