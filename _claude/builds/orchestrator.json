@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:30:00.177Z",
+ "updatedAt": "2026-11-16T20:32:50.719Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162773,7 +162773,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:29:12.644Z",
+   "updatedAt": "2026-11-16T20:32:48.965Z",
    "builtAt": "",
    "notes": [
     {
@@ -162803,6 +162803,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fable-rebuild-plan-studio-cleared-out--joey, shared account login)",
      "at": "2026-11-16T20:29:12.644Z"
+    },
+    {
+     "text": "Brett Nov 16: Plan Studio 2.0 must have the same views as the old Plan Studio gets in plan-studio-collapse-all-expand-all: a layout switcher on its toolbar with (1) nav menu, (2) tab group across the top, (3) IDE drag-and-drop dockable panes with tab groups inside each pane, drag tabs between panes, drop into other tab groups, split on edges; plus Collapse all / Expand all. Reuse the same layout assets.",
+     "at": "2026-11-16T20:32:48.965Z"
     }
    ],
    "approvals": [],

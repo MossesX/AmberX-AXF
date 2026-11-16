@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6872,
- "updatedAt": "2026-11-16T20:30:00.177Z",
+ "rev": 6873,
+ "updatedAt": "2026-11-16T20:32:50.719Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248750,7 +248750,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T20:29:12.644Z",
+   "updatedAt": "2026-11-16T20:32:48.965Z",
    "builtAt": "",
    "notes": [
     {
@@ -248780,6 +248780,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fable-rebuild-plan-studio-cleared-out--joey, shared account login)",
      "at": "2026-11-16T20:29:12.644Z"
+    },
+    {
+     "text": "Brett Nov 16: Plan Studio 2.0 must have the same views as the old Plan Studio gets in plan-studio-collapse-all-expand-all: a layout switcher on its toolbar with (1) nav menu, (2) tab group across the top, (3) IDE drag-and-drop dockable panes with tab groups inside each pane, drag tabs between panes, drop into other tab groups, split on edges; plus Collapse all / Expand all. Reuse the same layout assets.",
+     "at": "2026-11-16T20:32:48.965Z"
     }
    ],
    "approvals": [],
@@ -248909,7 +248913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
