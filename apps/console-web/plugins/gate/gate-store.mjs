@@ -88,7 +88,7 @@ export function createStore(opts = {}) {
     /** The rule the lander obeys today: UI Review on/off is the lander's landWaitUi. */
     mirrorRules(set) {
       if (!landerDir) return;
-      const ui = set.rules.find((r) => r.id === 'ui-review');
+      const ui = set.rules.find((r) => r.id === 'ui-review'); // the gate's rule id, axf-not-plugin:ui-review
       const cfg = store.landerConfig();
       if (ui && (cfg.landWaitUi !== false) !== ui.enabled) store.patchLanderConfig({ landWaitUi: ui.enabled });
     },
