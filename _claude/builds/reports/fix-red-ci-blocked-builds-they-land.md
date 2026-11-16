@@ -111,3 +111,37 @@ Each branch: merge `origin/main` + `origin/fix/ci-common-cause`, take main's bui
 | console-look-becomes-default-axhub-skin | merged main (768 behind) + #726: help, glossary terms and catalog status merged by entry (main reformatted the help file); baked copies re-copied from the merged framework; data from main. Own failures: `action:skin.restoreBackup` is not a valid help id (dropped; its text is on the button's entry); the two default-look buttons get `data-help` (framework help coverage back to 100%); help copies synced. validate --framework, help-coverage, shared-assets, glossary, settings-open, controls, skin checks pass; console, axhub-web, AmberX tsc clean after the CI re-bake | 079101ec3 |
 | vps-sends-shipped-features-every-merge | merged main (276 behind) + #726: gate page head takes main's description (same fix both sides; ui-review/gate lifecycle refs already fixed on main); data from main; inventory regenerated. plugin-lifecycle (gate, ui-review, push-banner, shipped-features, build-orchestrator), merge-watch, validate --framework, help, glossary, profiles, console-control, theme, controls, notify-control pass; push-banner 183, build-orchestrator 47, shipped-features 11 + server 26 (on Node 22: `node:sqlite`) pass; console tsc clean after the CI re-bake. AmberX untouched by the branch (its `@console/api` fix came with #719) | 8944c4892 |
 | shipped-features-organized-sortable | merged main (728 behind) + #726 (cause I: baked help re-bake); data from main; inventory regenerated. Own failures: help for the column picker close, Export CSV and the Help link (console help coverage back to 100%); `_claude/THREADS.md` added to the plugin's mentions (marked row was flagged stale). Build-rules ci-checks 19/19, check-build-rules, plugin-lifecycle, validate --framework, help, glossary, profiles, console-control pass; shipped-features 13 + server 32 (Node 22) pass; console tsc clean after the CI re-bake | dcb8043ef |
+
+## CI state and merge queue (s23, Nov 16 ~20:00 UTC)
+
+Common cause **J** (found at s23): `check-token-registry` fails on main itself (Web Dev Console job, "Alerts + MCP client +
+axf_server" step): the gate plugin's `tokens.uses` missed 14 tokens. Written with `token-registry.mjs manifest gate --write`
+on `fix/ci-common-cause` (f1068e307), PR #726. That step's failure on picker-dialog, orchestrator-settings and
+context-menus is this cause; they go green once #726 lands (or merge it).
+
+Every PR was added to the merge queue (`land.mjs queue add`); a red or draft PR waits and joins by itself when green.
+Heads below are the branch heads at s23 (several moved after their step: the auto-lander and other sessions push too).
+
+| Branch | PR | Head | CI on the head | State |
+|---|---|---|---|---|
+| owner-recognized-everywhere-veto | #601 | d46ec0f78 | pull_request ✓ | **merged** |
+| all-settings-interfaces-open-floating | #628 | be0b37347 | pull_request ✓ | **merged** |
+| pass-approval-hook-deep-link-amberx-notification | #681 | 4b5465ae5 | pull_request ✓ | queued |
+| land-project-duplicate-boilerplate | #684 | 9cbebab7a | pull_request ✓ | queued |
+| quick-settings-pinned-collapsible-pane | #698 | 65057fd05 | pull_request ✓ | in queue (waiting) |
+| pending-tab-one-collapsed-row-per-2 | #706 | b2dab4aac | pull_request ✓ | in queue (waiting) |
+| fix-build-whose-session-finishes-phase-e | #685 | 29c80d280 | pull_request ✓ | in queue (testing) |
+| shipped-features-open-button-views-each | #714 | f260176d2 | pull_request ✓ | queued |
+| new-asset-type-animated-expanding-row | #630 | 73a622e5e | pull_request ✓ | draft: queued, joins when marked ready |
+| projects-own-everything-per-project | #605 | c77e09ca4 | pull_request ✓ | draft: queued, joins when marked ready |
+| group-chat-audio-hear-agents-talk-while | #671 | 4480ba18b | dispatch running | queued |
+| ui-manager-floating-window-to-select-any | #634 | 4b1ce9b2b | dispatch running | draft: queued |
+| console-look-becomes-default-axhub-skin | #717 | 079101ec3 | dispatch running | queued |
+| vps-sends-shipped-features-every-merge | #709 | 856108dc1 | dispatch running | queued |
+| shipped-features-organized-sortable | #708 | dcb8043ef | none: android.yml dispatched | queued |
+| picker-dialog-plugin-replaces-all | #676 | 7249ce9b4 | dispatch ✗: token registry (J); check-agent-slots | draft: queued |
+| orchestrator-settings-collapsible-split | #636 | 3c9ced4c4 | dispatch ✗: token registry (J) | queued |
+| context-menus-plugin-one-true-source | #659 | fabf81cd6 | dispatch ✗: token registry (J); glossary ratchet | queued |
+| themed-native-controls-plugin | #690 | 582a1cbc4 | pull_request ✗: light PR checks (ci-scope) | queued |
+
+axf-data / Postgres branches not touched.
