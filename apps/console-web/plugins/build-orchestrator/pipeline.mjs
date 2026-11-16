@@ -70,6 +70,7 @@ import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
+import * as BR from '../../../../framework/core/build-rules.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
 import { isBuildId, namesOf, planAliases, uniqueBuildId } from '../../../../framework/core/build-id.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -491,16 +492,56 @@ export function landAlias(ref, { env = process.env, by = process.env.AXF_ACTOR |
     note: `land it with vps.build_land name=${alias}${branch ? ` (claude/${alias} is at ${from})` : ` (no local ${from} to point claude/${alias} at)`}` };
 }
 
-/** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief. */
-export function briefFor(b, rules, { account, model, kind = '' }) {
+// ------------------------------------------------------------------ build rules (build-rules@1, the VPS's share)
+
+/** The plugin that provides service:axf.build-rules@1 (found by capability, never by folder name): { dir, runner } or null. */
+export function buildRulesProvider(root = REPO_ROOT) {
+  const base = join(root, 'apps/console-web/plugins');
+  let dirs = []; try { dirs = readdirSync(base).sort(); } catch { return null; }
+  for (const d of dirs) {
+    const m = readJson(join(base, d, 'plugin.json'));
+    if (m && Array.isArray(m.provides) && m.provides.includes('service:axf.build-rules@1')) { const runner = join(base, d, 'build-rules-runner.mjs'); return existsSync(runner) ? { dir: join(base, d), runner } : null; }
+  }
+  return null;
+}
+
+/** The session's share of the build rules for one build (brief-blocks@1), from the store; null when it can't be read. */
+export function storeBlocks(b) {
+  try { return BR.briefBlocks(BR.load().store, { id: b.id, title: b.title, text: b.detail || '' }); } catch { return null; }
+}
+
+/**
+ * Run the VPS's build rules for one phase (before | after) without holding the dispatcher: the provider's runner in the
+ * background; its results land in the rule history and the gate's History. AXF_BUILD_RULES=off skips it, and so does a
+ * test builds store (AXF_BUILDS_STORE) unless AXF_BUILD_RULES=on.
+ */
+export function runBuildRules(id, phase, { env = process.env, by = 'dispatcher' } = {}) {
+  if (env.AXF_BUILD_RULES === 'off' || (env.AXF_BUILDS_STORE && env.AXF_BUILD_RULES !== 'on')) return { skipped: 'off' };
+  const p = buildRulesProvider();
+  if (!p) return { skipped: 'no build-rules provider' };
+  try {
+    // in the build's worktree, so a fixer's files (home card, help stub, THREADS row) are committed on its branch
+    const wt = worktreeOf(id, env);
+    const at = existsSync(wt) ? ['--root', wt, '--commit'] : [];
+    const child = spawn(process.execPath, [p.runner, 'run', '--build', id, '--phase', phase, '--by', by, ...at], { cwd: REPO_ROOT, detached: true, stdio: 'ignore', env });
+    child.unref();
+    logLine({ event: 'build-rules', build: id, phase, pid: child.pid });
+    return { started: true, pid: child.pid };
+  } catch (e) { return { skipped: str(e.message, 200) }; }
+}
+
+/** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief, then the rules. */
+export function briefFor(b, rules, { account, model, kind = '' }, { blocks = storeBlocks(b) } = {}) {
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
   return [
     `# Build: ${b.id}`, '',
     saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
-    '## What to build', orch.brief(b, rules), '',
+    '## What to build', orch.brief(b, rules, { blocks }), '',
     `## Pipeline`,
     `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
+    // the session's rules from the Build rules tab; with this block the launcher appends no second one
+    ...(blocks?.blocks?.rules ? ['', blocks.blocks.rules] : []),
   ].join('\n');
 }
 
@@ -510,6 +551,8 @@ export function launch(b, { account, model, kind = '' }, { rules, env = process.
   // the dispatch gate (build-lock@1): never a second session on a build or its worktree. Throws code 'live' (not a
   // launch failure) while a tmux session, a claude pid or a fresh lock says the build is still running.
   lock.acquire(b.id, { dir, account, by: 'dispatcher', env: lockEnv(env) });
+  // the VPS's own 'before' rules (Build rules tab): run beside the launch, results in History
+  runBuildRules(b.id, 'before', { env });
   const briefFile = join(dir, '.axf-brief.md');
   writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind })}\n`);
   // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
@@ -588,6 +631,8 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     // a run cut off by the login is not the build's fault: it does not count towards maxRuns
     setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note, ...(auth ? { runs: Math.max(0, (b.pipeline.runs || 1) - 1) } : {}) }, { status: r.status, note: r.note, action: 'pipeline:end' });
     lock.release(b.id, { dir: worktreeOf(b.id, env) });
+    // the build's end hook: the VPS's 'after' rules (home card, help stub, PR + link, THREADS, …) once a run ends
+    if (!auth) runBuildRules(b.id, 'after', { env });
     if (auth) {
       authWait(b.id, { account: b.pipeline.account, error: auth, session: b.pipeline.session });
       alert('oauth', { id: b.id, title: b.title, account: b.pipeline.account, error: auth, everyMin: settings.healthEveryMin });

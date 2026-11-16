@@ -39,7 +39,7 @@
  * (/root/archive/auto-land), AXF_LAND_GITHUB_API (https://api.github.com), AXF_LAND_WORKFLOW (android.yml).
  */
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -347,7 +347,7 @@ export function ciOf(runs) {
 
 // ------------------------------------------------------------------ one round
 
-export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGitHub(s), api = makeConsole(s), dry = false, only = '', now = () => new Date(), agentJob = defaultAgentJob(s), log = () => {} } = {}) {
+export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGitHub(s), api = makeConsole(s), dry = false, only = '', now = () => new Date(), agentJob = defaultAgentJob(s), buildRules = defaultBuildRules(s), log = () => {} } = {}) {
   const cfg = readConfig(s); const ctl = readControl(s); const prev = readState(s);
   const at = now().toISOString();
   if (!cfg.autoLand) { const st = { ...prev, $axf: core.LAND_FRAME, at, on: false, items: prev.items || [] }; if (!dry) writeJson(stateFile(s), st); return st; }
@@ -431,6 +431,13 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
             try { await gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow}/dispatches`, { ref: b.branch }); it.dispatched = it.head; } catch (e) { log(`dispatch ${b.id}: ${e.message}`); }
           } else if (old.dispatched === it.head) it.dispatched = it.head;
         }
+        // build rules at the gate (build-rules@1): once per head with green CI, in the build's worktree; the provider's
+        // runner fixes what it can and commits it on the branch (a new head, so CI runs again); what is left blocks
+        if (it.pr && facts.ci === 'success' && !dry) {
+          if (old.rules?.head === it.head) it.rules = old.rules;
+          else { const br = buildRules({ id: b.id, head: it.head, root: wts[b.branch] || '' }); if (br) it.rules = { head: it.head, ...br }; }
+          if (it.rules) facts.rules = it.rules;
+        }
         if (it.pr) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(b.branch)}&pr=${it.pr}`); facts.ui = u ? String(u.hold || '') : 'unknown'; } // UI Review through ui-review@1
         facts.deps = o.after.filter((d) => { const x = byId.get(d); return x && !x.mergedAt && x.status !== 'complete' && x.status !== 'archived'; });
       }
@@ -468,6 +475,33 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     items: only ? [...items, ...(prev.items || []).filter((x) => x.id !== only)] : items };
   if (!dry) { writeJson(stateFile(s), st); const c = readControl(s); if (c.now?.length) writeJson(controlFile(s), { ...c, now: c.now.filter((id) => !items.some((x) => x.id === id)) }); }
   return st;
+}
+
+/**
+ * The build rules check at the gate: the runner of the plugin that provides service:axf.build-rules@1 (found by
+ * capability, never by folder name), phase gate, in the build's worktree with --commit. → { ok, failing, fixed, commit }
+ * or null (no provider, AXF_LAND_BUILD_RULES=off, or the runner gave no answer: the round does not block on it).
+ */
+export function buildRulesProvider(repo) {
+  const base = join(repo, 'apps/console-web/plugins');
+  let dirs = []; try { dirs = readdirSync(base).sort(); } catch { return ''; }
+  for (const d of dirs) {
+    const m = readJson(join(base, d, 'plugin.json'), null);
+    if (m && Array.isArray(m.provides) && m.provides.includes('service:axf.build-rules@1') && existsSync(join(base, d, 'build-rules-runner.mjs'))) return join(base, d, 'build-rules-runner.mjs');
+  }
+  return '';
+}
+function defaultBuildRules(s) {
+  return ({ id, root }) => {
+    if (process.env.AXF_LAND_BUILD_RULES === 'off') return null;
+    // the phase is named 'gate' in build-rules@1 (axf-not-plugin:gate)
+    const runner = buildRulesProvider(s.repo);
+    if (!runner) return null;
+    const r = spawnSync(process.execPath, [runner, 'run', '--build', id, '--phase', 'gate', /* axf-not-plugin:gate */ '--by', 'lander', '--json', ...(root ? ['--root', root, '--commit'] : [])], { cwd: s.repo, encoding: 'utf8', timeout: 20 * 60 * 1000 });
+    let out = null; try { out = JSON.parse(r.stdout); } catch { return null; }
+    const runs = Array.isArray(out?.runs) ? out.runs : [];
+    return { ok: !!out.ok, failing: runs.filter((x) => x.result === 'fail').map((x) => x.id), fixed: runs.filter((x) => x.result === 'fixed').map((x) => x.id), ...(out.commit?.sha ? { commit: out.commit.sha } : {}) };
+  };
 }
 
 function defaultAgentJob(s) {
