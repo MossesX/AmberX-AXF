@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:15:31.537Z",
+ "updatedAt": "2026-11-16T13:15:42.295Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -152806,7 +152806,7 @@
    "title": "Phone Connect: small Android companion + console plugin; retire AmberX",
    "category": "",
    "detail": "Replace the AmberX app with Phone Connect. Two parts: (A) a console plugin 'phone-connect' for screens, settings and pairing, with full API parity; (B) a SMALL native Android companion app, not the whole console, for phone-only work. KEEP and port from apps/amberx-droid: 1) the Approvals page with alerts, including the lock screen showing only 'Approval waiting'; 2) Monitor: background WatchService foreground service, approvals watch, alerts, auto-approval rules; 3) open a page on the phone (bring Chrome to the front; keep the amberx.open_url tool working in axHub, renamed phone.open_url with an alias); 4) phone notifications (FYI and fix updates, alerts); 5) the audio output recorder: move the WHOLE thing out of the console's output-recorder plugin into Phone Connect (recorder_start/stop/status tools move too, with aliases). DROP: voice commands, notes, dictation, web tabs, AI connection, the phone AI assistant and agent manager (everything merges into the console AI Assistant), the walkthrough video and recorder, and the wake word listener. Also REMOVE the console wake-listener plugin and the always-on wake mic, because it grabs Brett's mic. Keep the hub sign-in and session security rules. Before deleting anything, list every AmberX piece and console plugin being removed, then retire apps/amberx-droid, the amberx.amberxai.com deploy, and the axHub amberx device, once Phone Connect is installed and working. CI builds the APK. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -152814,7 +152814,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-16T13:15:29.750Z",
+   "updatedAt": "2026-11-16T13:15:36.512Z",
    "builtAt": "",
    "notes": [
     {
@@ -153678,6 +153678,25 @@
      "note": "",
      "uid": "st-mwhvsdee0yp9me",
      "createdAt": "2026-11-15T13:39:21.685Z"
+    },
+    {
+     "id": "s35",
+     "text": "URGENT (Brett, Nov 16): merge origin/main into this branch and resolve the 5 clashes: .github/workflows/android.yml (keep both sides' jobs; the Phone Connect APK job must build and upload phone-connect-debug.apk), _claude/rules/RULES.md (keep both), apps/console-web/src/control/inventory.json (generated: regenerate, don't hand-merge), framework/cli/build-engine.mjs (keep both sides' changes), framework/spec/PORTING.md (keep both). Tests green, push, land with the one-at-a-time lander, and confirm the APK artifact exists.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadomf018anu",
+     "createdAt": "2026-11-16T13:15:36.513Z"
     }
    ]
   },
@@ -154703,12 +154722,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T13:13:27.564Z",
-   "updatedAt": "2026-11-16T13:14:28.360Z",
+   "updatedAt": "2026-11-16T13:15:34.793Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-16T13:13:29.836Z"
+    },
+    {
+     "text": "Split by Claude into 30 steps (4 Fable).",
+     "at": "2026-11-16T13:15:34.793Z"
     }
    ],
    "approvals": [],
@@ -154725,7 +154748,662 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Add the voice@1 asset type to framework/schemas/asset-types.json: provider, providerVoiceId, description prompt, tuning (speed, pitch, style, accent, stability), sample lines, version and history pointer, owner agent. Add a skin declaration (by: none, why: audio-only) so check-skin-coverage passes. Regenerate framework/schemas/json/ with `axf schemas`.",
+     "model": "Fable",
+     "why": "New shared asset type and schema contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h01jvjv",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s2",
+     "text": "Write the voice rules engine framework/core/engines/voice-rules.mjs: validate, normalise tuning ranges for each provider, map neutral tuning to provider params, and version/restore helpers (immutable revisions). Add fixture framework/spec/fixtures/voice.json and gen-fixtures wiring.",
+     "model": "Fable",
+     "why": "Engine internals plus golden fixture (cross-port conformance)",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/voice-rules.mjs",
+      "framework/spec/fixtures/voice.json",
+      "framework/spec/gen-fixtures.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h02zvk6",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s3",
+     "text": "Define the voice-provider@1 adapter contract and the capability axf.voice@1 (list, synth, design, clone, match, test, status) in framework/spec/VOICE.md. Record the Android twin of voice@1 and the engine as a deferred gap in framework/spec/PORTING.md.",
+     "model": "Fable",
+     "why": "Cross-plugin capability contract used by agents, group chat and AmberX voice",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/VOICE.md",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h035kw0",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s4",
+     "text": "Design the agent-to-voice binding: an optional voiceRef (asset id + pinned version) on the agent record of the agents@1 data model. Write a migration that turns any old free-text voice field, including the one in group-chat-audio s4's picker data, into voiceRef with nothing lost. Add a fixture case.",
+     "model": "Fable",
+     "why": "Data model and migration design across the agents and group chat plugins",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/agent-swarm/",
+      "framework/spec/fixtures/voice.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h041pwz",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s5",
+     "text": "Merge, don't duplicate: in the builds store, mark step s4 (voice picker) of build group-chat-audio-hear-agents-talk-while as taken over by voice-designer-plugin-built-each (builds-store write with a note). Add a note to that build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "4 min",
+     "files": [
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h054re1",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s6",
+     "text": "Scaffold plugin apps/console-web/plugins/voice-designer: plugin.json (description, builtWith, lifecycle.dataDir, settingsTab parent=plugins), install.mjs, uninstall.mjs, README, notify.json and empty server/ and web/ folders. `plugin-lifecycle.mjs check` must pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h061lkz",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s7",
+     "text": "Provider registry server/providers/__init__.py on the voice-provider@1 contract, plus the free local providers that need no key: browser speechSynthesis (client-side marker) and Piper/Kokoro on the VPS (spawned process, models in dataDir). Unit test synth for both.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/server/providers/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h07zqnk",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s8",
+     "text": "Provider adapters for OpenAI TTS and ElevenLabs. ElevenLabs covers voice design from a prompt and instant cloning from uploaded samples. Mocked HTTP tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/server/providers/openai.py",
+      "apps/console-web/plugins/voice-designer/server/providers/elevenlabs.py",
+      "apps/console-web/plugins/voice-designer/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h08hcl1",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s9",
+     "text": "Provider adapters for Google Cloud TTS, Azure Speech and Amazon Polly (SSML for pitch, rate and style). Mocked tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/server/providers/google.py",
+      "apps/console-web/plugins/voice-designer/server/providers/azure.py",
+      "apps/console-web/plugins/voice-designer/server/providers/polly.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h09obph",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s10",
+     "text": "Provider adapters for Deepgram Aura, Cartesia and PlayHT. Mocked tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/server/providers/deepgram.py",
+      "apps/console-web/plugins/voice-designer/server/providers/cartesia.py",
+      "apps/console-web/plugins/voice-designer/server/providers/playht.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0a64qa",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s11",
+     "text": "Provider manager on the server. Keys go only into the hub credential store (never the repo or dataDir). Each provider gets a test call and a status (ok, no key, bad key, down, local). Register the status as a live health@1 check in the systems check with a Fix action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/server/keys.py",
+      "apps/console-web/plugins/voice-designer/server/health.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0bpdpb",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s12",
+     "text": "Voice store on the server: save voice@1 assets in plugins/voice-designer/assets/voice/ through voice-rules. Every save is a revision, with history, restore and an audio sample cache in dataDir. Register the capability axf.voice@1 in plugin_services.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/server/store.py",
+      "apps/console-web/plugins/voice-designer/assets/voice/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0c7ng9",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s13",
+     "text": "Designer server logic. Describe → generate: provider design where it exists, otherwise an LLM picks the closest stock voice and tuning through axf.llm@1. Match: pick the closest voice across the providers that are on. Tune, then preview sample lines through synth.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/server/designer.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0d8tf4",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s14",
+     "text": "REST routes in server/routes.py: providers list/status/test/set-key/clear-key, voices list/get/save/history/restore/delete, design/match/preview/clone, agent bind/unbind/sample. Static route table for plugin-commands so MCP tools come from it. Route tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/server/routes.py",
+      "apps/console-web/plugins/voice-designer/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0eascc",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s15",
+     "text": "CLI apps/console-web/plugins/voice-designer/voice.mjs (providers, test, design, tune, preview, save, history, restore, bind <agent> <voice>). Wire the plugin into `axf` subcommands and add a CLI header description.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/voice.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0f2zbh",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s16",
+     "text": "Seed default voices as voice@1 assets. One free Piper/Kokoro voice for each existing crew agent, so every card has a working voice with no keys.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/assets/voice/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0g1n62",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s17",
+     "text": "Web Provider manager panel (Settings → Plugins → Voice Designer → Providers): a DataGrid of providers with a status badge, a key field that writes to the hub store, and a Test button. Framework controls and tokens only, toolbar with role=toolbar and a settings level toolbar.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/web/ProvidersPanel.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0hu5b1",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s18",
+     "text": "API parity for the Provider manager: control@1 / data-axf-target addresses (view:voice-designer/tab:providers, row:<provider>), a console_show deep link, a state read, and the actions test, set-key and clear-key as console actions and voice (AmberX) phrases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/web/",
+      "apps/console-web/plugins/voice-designer/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0i9pze",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s19",
+     "text": "Web Designer view, first part: a prompt box ('cat-like, raspy, fast'), a provider pick, Generate and Match buttons, and a candidate list with play. TabGroup asset for the Design / Tune / History tabs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/web/DesignerView.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0jkwyb",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s20",
+     "text": "Web Designer view, second part: Tune sliders (speed, pitch, style, accent) from the framework Slider, sample-line preview with play and stop, and Save with a name and owner agent.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/web/TuneTab.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0kbmxw",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s21",
+     "text": "Web Designer History tab: a revisions list with play and Restore (with confirm). Add a Clone tab: upload samples, ElevenLabs only, with a consent checkbox.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/web/HistoryTab.tsx",
+      "apps/console-web/plugins/voice-designer/web/CloneTab.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0lvwj6",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s22",
+     "text": "API parity for the Designer: deep links view:voice-designer/voice:<id>/tab:design|tune|history|clone, a state read (current draft), and the actions design, match, tune, preview, save, restore and clone as console actions, MCP plugin commands, CLI and AmberX voice phrases. Add console-control target registration.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/web/",
+      "apps/console-web/plugins/voice-designer/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0mh190",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s23",
+     "text": "Employee card integration in the Agent manager: a voice section on each card that shows the voice in use and has play-sample, Change voice (asset picker of voice@1) and Open in Voice Designer. It reads axf.voice@1 through plugin_services, never the folder name.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/agent-swarm/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0nyqj5",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s24",
+     "text": "API parity for the card voice section: target row:<agent>/voice, a state read in the agent API (voiceRef + label), actions agent.voice.play, agent.voice.set and agent.voice.open across REST, MCP, the CLI (`voice.mjs bind`) and AmberX voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/agent-swarm/",
+      "apps/console-web/plugins/voice-designer/server/routes.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0ogwh6",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s25",
+     "text": "Group chat audio: each agent's message is spoken with that agent's voiceRef through axf.voice@1 synth, falling back to the free local voice, and s4's old picker is replaced with the card's voice. Test that two agents get two different voices.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/group-chat/",
+      "apps/console-web/plugins/voice-designer/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0pyxa0",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s26",
+     "text": "Ship 3 UI Review options as assets (ui-choices@1) for the Designer layout and the card voice section. Write them to plugins/voice-designer/assets/<type>/ tagged with the choice set.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0qfzh3",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s27",
+     "text": "Help pages and the Shipped features entry for Voice Designer. Give the plugin, voice@1, the commands and the CLI a description so glossary-index `catalog.mjs --check` passes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/help/",
+      "apps/console-web/plugins/voice-designer/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0rasr6",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s28",
+     "text": "Run the checks and fix what they flag: check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, check-skin-coverage, check-project-fixtures, gen-fixtures diff, plugin-lifecycle check --after-uninstall, plugin test.py and the console typecheck.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/",
+      "apps/console-web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0shh7v",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s29",
+     "text": "Desktop and phone screenshots of the Provider manager, the Designer and the card section through vite preview. Submit them to UI Review with --choices (3 options) and the build group name.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/voice-designer/",
+      "_claude/builds/reports/voice-designer-plugin-built-each/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0taw2j",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    },
+    {
+     "id": "s30",
+     "text": "Write the report _claude/builds/reports/voice-designer-plugin-built-each.md: what was added, how each UI piece is reached (deep link, REST, MCP, CLI, voice), the s4 takeover, and known gaps (Android deferred). Update the THREADS row, push the branch, open the PR stating the UI Review hold, and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/voice-designer-plugin-built-each.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjadn2h0uaspw",
+     "createdAt": "2026-11-16T13:15:34.793Z"
+    }
+   ]
   }
  ]
 }
