@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6493,
- "updatedAt": "2026-11-16T16:20:39.101Z",
+ "rev": 6494,
+ "updatedAt": "2026-11-16T16:22:59.410Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -240828,6 +240828,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-16T16:19:58.360Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "get-main-green-unblock-lander-land-axf",
+   "title": "Get main green, unblock the lander, land axf-data and Postgres",
+   "category": "",
+   "detail": "TOP PRIORITY, ahead of everything. The auto-lander is ON but has landed nothing in 6 hours: about 20 builds are blocked because CI is red, nearly all failing the same checks (Web Dev Console (React/TS) + Python API, Build engine sweep (Node), plus some AmberX APK / Gradle). That points to main itself being broken, likely from the disk-full night. 1) Find and fix what's red on main (gh run list --branch main, --log-failed) until main is green. 2) Re-sync the 4 branches whose push failed because local and GitHub differ (server-gate-one-session-per-build-no, one-source-truth-console-shows-only-what, console-axhub-retry-failed-calls, demo-video-series-three-minute-browser); drop the stray merge-main-land-one-source-truth-console. 3) auto-lander-controls-in-the-gate-plugin: commit or drop its uncommitted worktree changes. 4) Then land, one at a time, data-container-axf-data-holds-all (bring the axf-data container up), then axf-data-postgres-real-tables-own, and run and verify the Postgres migration. 5) Confirm the auto-lander is landing the rest one at a time. Log each fix and send Brett FYI notifications.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T16:22:57.802Z",
+   "updatedAt": "2026-11-16T16:22:57.802Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We gotta migrate to Postgres to get this going, finish the migration for Postgres. Is the auto-lander fixed?",
+    "at": "2026-11-16T16:22:57.802Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 901
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
