@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "demonstration-designer-home",
+  "name": "Demonstration Designer",
+  "version": "1.0.0",
+  "description": "Demonstration Designer on Home: What can be pitched.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Demonstration Designer",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "demonstration-designer",
+      "command": "registry"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}
