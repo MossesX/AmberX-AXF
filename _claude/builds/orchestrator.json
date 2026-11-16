@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:09:01.571Z",
+ "updatedAt": "2026-11-16T13:09:23.740Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -138547,14 +138547,14 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-15T02:01:15.922Z",
+   "updatedAt": "2026-11-16T13:09:22.217Z",
    "builtAt": "",
    "notes": [
     {
@@ -138600,6 +138600,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-15T02:01:15.922Z"
+    },
+    {
+     "text": "Brett (Nov 16): KEEP. Also: some banner widgets are plain text only, with no icon, badge or shape. Every banner widget must have an icon + badge + shape option (text-only becomes one display choice, not the only one). Audit every widget and add the missing icon/badge/shape to each. Before landing, check none are left text-only.",
+     "at": "2026-11-16T13:09:22.217Z"
     }
    ],
    "approvals": [],
@@ -154143,15 +154147,15 @@
    "title": "Duplicate gate: VPS checks Shipped features before any build is filed or split",
    "category": "",
    "detail": "A VPS-run gate (plain code, no Claude tokens) registered as a 'before' rule in the Gate & rules Build rules store, doer VPS. Before any build is filed, queued or split, the VPS checks the ONE true feature store (Shipped features + in-progress records) AND main (plugins, files, settings). It also checks the lander/plugin's own state and log, so a feature that exists but is switched off is caught (e.g. auto-land existed on main but was off since Nov 4 and got rebuilt ~5 times). If a match is found, it BLOCKS the build and tells Brett what already exists, where it is, whether it's on or off, and what single setting or fix is actually needed. He can override with one tap/voice ('build it anyway'). Also blocks a new build that duplicates an already-queued/running/built-but-unlanded build, and points to that one instead. Fuzzy matching on titles, said text, plugin names and settings keys, with a similarity score shown. Log every block in Gate History. API parity (REST/MCP/CLI/voice). Tests: auto-land case must be caught. Land with the one-at-a-time lander.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/duplicate-gate-vps-checks-shipped",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T13:06:22.511Z",
-   "updatedAt": "2026-11-16T13:08:55.562Z",
+   "updatedAt": "2026-11-16T13:09:11.753Z",
    "builtAt": "",
    "notes": [
     {
@@ -154165,6 +154169,14 @@
     {
      "text": "Split by Claude into 20 steps (4 Fable).",
      "at": "2026-11-16T13:08:41.019Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-duplicate-gate-vps-checks-shipped--rhonda.",
+     "at": "2026-11-16T13:09:04.361Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-duplicate-gate-vps-checks-shipped--rhonda, shared account login)",
+     "at": "2026-11-16T13:09:11.753Z"
     }
    ],
    "approvals": [],

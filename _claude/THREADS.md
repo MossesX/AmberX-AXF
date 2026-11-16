@@ -808,10 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 04:30 UTC · `auto-lander-controls-in-the-gate-plugin` s1 done, → running (all) · orchestrator
-- 2026-11-15 04:30 UTC · `data-container-axf-data-holds-all` → running, note (all) · pipeline
-- 2026-11-15 04:31 UTC · `data-container-axf-data-holds-all` branch claude/data-container-axf-data-holds-all (all) · pipeline
-- 2026-11-15 04:31 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
 - 2026-11-15 04:30 UTC · `auto-lander-controls-in-the-gate-plugin` s2 done (all) · orchestrator
 - 2026-11-15 04:34 UTC · `auto-lander-controls-in-the-gate-plugin` s3 done (all) · orchestrator
 - 2026-11-15 04:34 UTC · `auto-lander-controls-in-the-gate-plugin` s5 done (all) · orchestrator
@@ -1208,6 +1204,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 13:08 UTC · `console-app-wake-word-voice-listener` → archived (all) · mcp
 - 2026-11-16 13:08 UTC · `move-amberx-web-app-console-amberx-andr` → archived (all) · mcp
 - 2026-11-16 13:08 UTC · `merge-main-land-move-amberx-web-app` → archived (all) · mcp
+- 2026-11-16 13:09 UTC · `duplicate-gate-vps-checks-shipped` → running, note (all) · pipeline
+- 2026-11-16 13:09 UTC · `duplicate-gate-vps-checks-shipped` branch claude/duplicate-gate-vps-checks-shipped (all) · pipeline
+- 2026-11-16 13:09 UTC · `duplicate-gate-vps-checks-shipped` note (all) · orchestrator
+- 2026-11-16 13:09 UTC · `banner-widget-shapes-more-than-circle` → running, note (all) · mcp
 
 ## Token passes (log)
 
