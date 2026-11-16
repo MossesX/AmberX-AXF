@@ -1702,11 +1702,6 @@
         "text": "Makes a skin (or the one in force) the axHub default skin for every app, backing up each app's look first."
       },
       {
-        "target": "action:skin.restoreBackup",
-        "title": "Restore my old look",
-        "text": "Restores this app's previous skin from its backups (newest when no id is given)."
-      },
-      {
         "target": "action:skin.snapshot",
         "title": "Save this look as a skin",
         "text": "Captures what this app draws now as a new skin on axHub (needs the Dev Console)."

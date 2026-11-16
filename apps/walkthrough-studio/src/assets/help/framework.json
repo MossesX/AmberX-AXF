@@ -1677,6 +1677,34 @@
         "title": "Find an option",
         "text": "Narrows the list to options whose name or group matches what you type.",
         "kind": "field"
+      },
+      {
+        "target": "default-look",
+        "title": "Default look",
+        "text": "The skin every app stands on unless it uses its own (the axHub default skin), and the moves that change it: make this the default, restore the previous skin.",
+        "more": "Also: the theme manager's GET skins/default-skin, skins.mjs default get, console-control state on view:settings/tab:settings.tabs=appearance/panel:default-look."
+      },
+      {
+        "target": "skin-default",
+        "title": "Make this the default look",
+        "text": "Makes the skin in force here the default look of every app. Asks first; every app's current look is backed up before it moves, and each app keeps its own edits on top.",
+        "more": "Also: action skin.default[:<skin>], POST skins/default-skin {skin, confirm: true}, skins.mjs default set <skin> --adopt, voice \"make this the default look\"."
+      },
+      {
+        "target": "skin-restore-backup",
+        "title": "Restore previous skin",
+        "text": "Puts this app back on the look it had before its last switch (its newest backup). One tap; Undo is kept once.",
+        "more": "Also: action skin.restoreBackup[:<id>], POST skins/restore/<app>, skins.mjs restore <app> --backup, voice \"restore my old look\"."
+      },
+      {
+        "target": "action:skin.default",
+        "title": "Make this the default look",
+        "text": "Makes a skin (or the one in force) the axHub default skin for every app, backing up each app's look first."
+      },
+      {
+        "target": "action:skin.snapshot",
+        "title": "Save this look as a skin",
+        "text": "Captures what this app draws now as a new skin on axHub (needs the Dev Console)."
       }
     ],
     "intros": [

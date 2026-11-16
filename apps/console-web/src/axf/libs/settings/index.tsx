@@ -735,7 +735,7 @@ function DefaultLookSection({ locked }: { locked: boolean }) {
           <span className="fx-muted axf-settings__hint">{!hub ? 'No default look yet: every app draws its own.' : onFloor ? 'This app stands on it; your picks are drawn over it.' : 'This app uses its own skin; turn Use skin off to stand on the default.'}</span>
         </div>
         <div className="axf-settings__control axf-skin__action">
-          <Button id="skin-default" size="sm" icon="palette" disabled={locked || !candidate} title={candidate ? undefined : inForce ? 'This skin is already the default look.' : 'Pick a skin first: the default look is a skin.'} confirm={`Make ${nameOf(candidate)} the default look of every app? Each app's current look is backed up first and can be restored.`} onClick={() => { void rt.makeDefaultSkin(candidate); }}>Make this the default look</Button>
+          <Button id="skin-default" data-help="skin-default" size="sm" icon="palette" disabled={locked || !candidate} title={candidate ? undefined : inForce ? 'This skin is already the default look.' : 'Pick a skin first: the default look is a skin.'} confirm={`Make ${nameOf(candidate)} the default look of every app? Each app's current look is backed up first and can be restored.`} onClick={() => { void rt.makeDefaultSkin(candidate); }}>Make this the default look</Button>
         </div>
       </div>
       <div className="axf-settings__row" data-axf-restore-backup={last?.id ?? ''}>
@@ -744,7 +744,7 @@ function DefaultLookSection({ locked }: { locked: boolean }) {
           <span className="fx-muted axf-settings__hint">{last ? `Back to the look kept ${when}${last.skin.id ? ` (${nameOf(last.skin.id)}${last.skin.use ? '' : ', skin off'})` : ''}.` : 'No earlier look is kept for this app.'}</span>
         </div>
         <div className="axf-settings__control axf-skin__action">
-          <Button id="skin-restore-backup" size="sm" tone="quiet" icon="refresh" disabled={locked || !last} onClick={() => { rt.restoreLookBackupNow(); }}>Restore previous skin</Button>
+          <Button id="skin-restore-backup" data-help="skin-restore-backup" size="sm" tone="quiet" icon="refresh" disabled={locked || !last} onClick={() => { rt.restoreLookBackupNow(); }}>Restore previous skin</Button>
         </div>
       </div>
     </div>

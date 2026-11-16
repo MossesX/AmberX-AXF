@@ -1,14 +1,14 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-16T16:51:28.004Z",
+  "generatedAt": "2026-11-16T19:39:13.797Z",
   "summary": {
     "foundations": {
-      "built": 71,
+      "built": 72,
       "partial": 3,
       "placeholder": 1,
       "planned": 0,
-      "total": 75,
+      "total": 76,
       "coverage": 95
     },
     "kernel": {
@@ -462,6 +462,17 @@
       "wave": 1,
       "module": "app-console",
       "notes": "Nov 13 2026 (build console-skin-axhub-only): console Settings → Appearance → Get my skin only from axHub (default off). On: the look is composed from the hub-wide skin over the default snapshot only (skin-rules.mjs hubOnlyLook, fixture skin.json scopes.hubOnly); own skin, overrides, colour pick, UI/plugin scopes, device tweaks and plugin overrides are kept, not drawn; the switch drives the appearance lock (reason hub) so every look control is locked with \"Following axHub\"; hub changes apply live. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin), the appearance.hubskin action and voice (\"lock the console to the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+    },
+    {
+      "id": "f.appearance.hubdefault",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Hub default skin: the Console (default) skin is the look every app stands on; Make this the default look, Restore previous skin, backups per app",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Build console-look-becomes-default-axhub-skin (Nov 2026): skin asset Console (default) (framework/assets/skin/console-default.json, the console's Nov 14 look, dark pair fresh-dark) baked into every shared-assets app; appearance@1 defaultSkin + chain root; app-look@1 backups; skins.mjs default get|set|adopt|off, backup(s), restore --backup, snapshot --from --as; theme-manager REST (MCP auto) default-skin, snapshot, backups, restore; actions skin.default / skin.restoreBackup / skin.snapshot; voice; Settings → Appearance → Default look. Live publish waits for the deploy: systems check hub-default-skin (ask-first Auto fix). Kotlin twin deferred (PORTING.md)."
     },
     {
       "id": "f.appearance.hubskinoverride",
