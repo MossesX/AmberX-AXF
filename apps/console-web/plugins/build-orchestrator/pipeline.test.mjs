@@ -599,4 +599,102 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   });
 }
 
+// ---------------- dispatcher integration: session exit → Queue → next phase (fake headless launcher, own sandbox)
+if (e2e) {
+  const tmp = mkdtempSync(join(tmpdir(), 'axf-pipeline-exit-'));
+  const storeFile = join(tmp, 'store.json');
+  const pipeDir = join(tmp, 'pipeline'); const slotsDir = join(tmp, 'slots'); const hdir = join(tmp, 'headless'); const accountsDir = join(tmp, 'accounts'); const workersDir = join(tmp, 'workers'); const wtRoot = join(tmp, 'worktrees');
+  for (const d of [pipeDir, slotsDir, hdir, accountsDir, workersDir, wtRoot]) mkdirSync(d, { recursive: true });
+  for (const name of ['console', 'w-max', 'w-pro']) { mkdirSync(join(accountsDir, name), { recursive: true }); writeFileSync(join(accountsDir, name, '.credentials.json'), '{}'); }
+  writeFileSync(join(accountsDir, '.active'), 'console\n');
+  writeFileSync(join(workersDir, 'seen.json'), JSON.stringify({ console: { email: 'c@x', plan: 'max' }, 'w-max': { email: 'max@x', plan: 'max' }, 'w-pro': { email: 'pro@x', plan: 'pro' } }));
+  writeFileSync(join(workersDir, 'workers.json'), JSON.stringify({ workers: ['w-max', 'w-pro'] }));
+  const launcher = join(tmp, 'launcher.sh');
+  writeFileSync(launcher, `#!/usr/bin/env bash
+set -e
+name=""; account=""; model=""
+while [[ $# -gt 0 ]]; do case "$1" in --name) name="$2"; shift 2;; --account) account="$2"; shift 2;; --model) model="$2"; shift 2;; --) shift;; *) shift;; esac; done
+n=$(( $(grep -c . "${tmp}/launches.log" 2>/dev/null || echo 0) + 1 ))
+echo "$name $account $model $AXF_BUILD_PHASE" >> "${tmp}/launches.log"
+echo "started axf-$name--r$n in $(pwd)"
+`); chmodSync(launcher, 0o755);
+  const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
+    AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
+    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: '/bin/false', AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0, maxRuns: 2, splitProvider: 'off' }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all',
+    AXF_PIPELINE_LOCK: join(tmp, 'pipeline.lock') };
+  mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
+  const run = (file, ...args) => { const r = spawnSync(process.execPath, [join(HERE, file), ...args], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0) throw new Error(`${file} ${args.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
+  const pipe = (...a) => run('pipeline.mjs', ...a);
+  const orch = (...a) => run('orchestrator.mjs', ...a);
+  const json = (r) => JSON.parse(r.stdout.trim().split('\n').pop());
+  const store = () => JSON.parse(readFileSync(storeFile, 'utf8'));
+  const find = (id) => store().builds.find((b) => b.id === id);
+  const launches = () => readFileSync(join(tmp, 'launches.log'), 'utf8').trim().split('\n');
+  const twoPhase = (id) => orch('act', JSON.stringify({ action: 'add', id, title: id, steps: [{ text: `${id} contract`, model: 'Fable', estimate: '10 min' }, { text: `${id} UI and tests`, model: 'Opus', estimate: '10 min' }] }));
+
+  twoPhase('two');
+  t('exit e2e: a two-phase build (Fable then Opus) launches phase 1 on the Fable account and records its phase', () => {
+    json(pipe('queue', 'two', '--json'));
+    const r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]), [['two', 'w-max', 'Fable']]);
+    const b = find('two'); assert.equal(b.status, 'running'); assert.ok(b.pipeline.phase, 'phase recorded at launch'); assert.equal(b.pipeline.session, 'axf-two--r1');
+    assert.match(launches()[0], new RegExp(`^two w-max claude-fable\\S* ${b.pipeline.phase}$`), 'the launcher gets AXF_BUILD_PHASE');
+  });
+  t('exit e2e: phase 1 done → back in the Queue (journalled), and the in-process tick starts phase 2 on an Opus account at once', () => {
+    const phase1 = find('two').pipeline.phase;
+    orch('act', 'step', 'two', 's1', 'done');
+    const r = json(pipe('exit', 'two', '--session', 'axf-two--r1', '--exit', '0', '--kind', 'phase-done', '--phase', phase1, '--json'));
+    assert.equal(r.ended.status, 'queued'); assert.equal(r.ended.reason, 'phase-done'); assert.equal(r.ended.next, 'Opus');
+    assert.deepEqual(r.tick.launched.map((l) => [l.id, l.model]), [['two', 'Opus']], 'no wait for the cron');
+    const b = find('two'); assert.equal(b.status, 'running'); assert.equal(b.pipeline.model, 'Opus'); assert.equal(b.pipeline.runs, 2); assert.equal(b.pipeline.crashes, 0, 'a phase end is not a crash');
+    assert.equal(b.pipeline.lastRun.reason, 'phase-done'); assert.equal(b.pipeline.lastRun.phase, phase1);
+    assert.ok(b.notes.some((x) => x.text.startsWith(`phase ${phase1} done, requeued for Opus`)), b.notes.map((x) => x.text).join('\n'));
+    assert.match(launches()[1], /^two w-(max|pro) claude-opus/);
+    assert.match(readFileSync(join(pipeDir, 'log.jsonl'), 'utf8'), /"reason":"phase-done"/);
+  });
+  t('exit e2e: the same exit reported twice (wrapper, then the cron reading events.jsonl) ends the run once, no double launch', () => {
+    const r = json(pipe('exit', 'two', '--session', 'axf-two--r1', '--exit', '0', '--kind', 'phase-done', '--json'));
+    assert.equal(r.ended, null); assert.equal(r.tick, null); assert.equal(launches().length, 2);
+    writeFileSync(join(hdir, 'events.jsonl'), `${JSON.stringify({ event: 'session-end', session: 'axf-two--r1', name: 'two', exit: 0, kind: 'phase-done', at: new Date().toISOString() })}\n`);
+    const tk = json(pipe('tick', '--json')); assert.equal(tk.ended.length, 0); assert.equal(tk.launched.length, 0); assert.equal(find('two').pipeline.runs, 2);
+  });
+  t('exit e2e: a crash requeues and relaunches; the crash limit (maxRuns 2 crashes) parks it in Pending (Errors tab)', () => {
+    let r = json(pipe('exit', 'two', '--session', find('two').pipeline.session, '--exit', '1', '--kind', 'crash', '--json'));
+    assert.equal(r.ended.reason, 'crash'); assert.equal(r.ended.status, 'queued'); assert.deepEqual(r.tick.launched.map((l) => l.id), ['two']);
+    assert.equal(find('two').pipeline.crashes, 1);
+    // a crash reported with exit 0 (the wrapper's kind wins) is still a crash
+    r = json(pipe('exit', 'two', '--session', find('two').pipeline.session, '--exit', '0', '--kind', 'crash', '--json'));
+    assert.equal(r.ended.reason, 'crash-limit'); assert.equal(r.ended.status, 'pending'); assert.equal(r.tick, null);
+    assert.equal(find('two').pipeline.crashes, 2); assert.equal(BP.tabOf(find('two')), 'errors');
+    assert.equal(json(pipe('requeue-stuck', '--json')).found.length, 0, 'a crash-limit build is not "stuck after a phase"');
+  });
+  t('exit e2e: a clean stop mid-phase (phase-done claimed, its steps open) goes to Pending as stopped', () => {
+    twoPhase('mid'); json(pipe('queue', 'mid', '--json')); json(pipe('tick', '--json'));
+    assert.equal(find('mid').status, 'running');
+    const r = json(pipe('exit', 'mid', '--session', find('mid').pipeline.session, '--exit', '0', '--kind', 'phase-done', '--json'));
+    assert.equal(r.ended.status, 'pending'); assert.equal(r.ended.reason, 'stopped');
+  });
+  t('requeue-stuck: dry run lists the build the old rule parked, --apply moves it to the Queue (journalled); needs-brett stays', () => {
+    twoPhase('parked'); twoPhase('asked');
+    orch('act', 'step', 'parked', 's1', 'done'); orch('act', 'step', 'asked', 's1', 'done');
+    const st = store(); const at = new Date().toISOString();
+    for (const [id, reason] of [['parked', ''], ['asked', 'needs-brett']]) {
+      const b = st.builds.find((x) => x.id === id);
+      b.status = 'pending'; b.pipeline = { ...BP.emptyPipeline(), queuedAt: '2026-11-01T00:00:00.000Z', model: 'Fable', runs: 1, lastRun: { at, exit: 0, outcome: 'returned', reason, stepsLeft: 1, account: 'w-max', session: `axf-${id}`, phase: '' } };
+    }
+    writeFileSync(storeFile, JSON.stringify(st));
+    let r = json(pipe('requeue-stuck', '--json'));
+    assert.equal(r.apply, false); assert.deepEqual(r.found.map((f) => [f.id, f.next]), [['parked', 'Opus']]); assert.deepEqual(r.moved, []);
+    assert.equal(find('parked').status, 'pending', 'the dry run writes nothing');
+    const row = json(pipe('status', '--json')).table.pending.find((x) => x.id === 'parked'); assert.equal(row.stuck.next, 'Opus');
+    r = json(pipe('requeue-stuck', '--apply', '--json'));
+    assert.deepEqual(r.moved, ['parked']);
+    const b = find('parked'); assert.equal(b.status, 'queued'); assert.equal(b.pipeline.queuedAt, '2026-11-01T00:00:00.000Z', 'keeps its place');
+    assert.equal(b.pipeline.lastRun.reason, 'phase-done'); assert.match(b.notes.at(-1).text, /^phase .* done, requeued for Opus/);
+    assert.equal(find('asked').status, 'pending', 'needs-brett stays for Brett');
+    const q = json(pipe('status', '--json')).table.queued.find((x) => x.id === 'parked'); assert.equal(q.requeue.next, 'Opus'); assert.equal(q.requeue.reason, 'phase-done');
+    assert.equal(json(pipe('requeue-stuck', '--json')).found.length, 0, 'nothing left to repair');
+  });
+}
+
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);
