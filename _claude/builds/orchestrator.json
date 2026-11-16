@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T23:02:04.447Z",
+ "updatedAt": "2026-11-16T23:02:47.223Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -167663,7 +167663,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-16T23:02:00.126Z",
+   "updatedAt": "2026-11-16T23:02:45.499Z",
    "builtAt": "",
    "notes": [
     {
@@ -167673,6 +167673,10 @@
     {
      "text": "Split by Claude into 28 steps (9 Fable).",
      "at": "2026-11-16T23:02:00.126Z"
+    },
+    {
+     "text": "Split by Claude into 31 steps (11 Fable).",
+     "at": "2026-11-16T23:02:45.499Z"
     }
    ],
    "approvals": [],
@@ -167692,17 +167696,14 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Survey: read the archived icon-map-icon-packs-every-icon-badge-app branch/report, framework/schemas/asset-types.json, framework/core/engines/skin-coverage.mjs, the existing icon-pack/icon-map assets in framework/assets and the theme-manager iconPack wiring; write the design notes (spots, pack format, scopes, reset, import sources, random generator) to _claude/memory/docs/icon-packs.md",
+     "text": "Survey current main for every icon spot: grep framework/react, framework/libs, apps/console-web/src, apps/console-web/plugins, apps/amberx-droid web, axHub web assets and Molly for Icon usages, badge icons and app icons. Write the inventory as framework/spec/ICON-MAP.md (spot id convention <app>:<area>/<slot>, kinds icon|badge|app-icon) and note what the archived icon-map-icon-packs-every-icon-badge-app left behind",
      "model": "Fable",
-     "why": "Contract and engine design that every app follows",
+     "why": "Defines the icon-spot contract every app and port follows",
      "phase": "",
      "group": "",
-     "estimate": "8 min",
+     "estimate": "10 min",
      "files": [
-      "_claude/memory/docs/icon-packs.md",
-      "framework/schemas/asset-types.json",
-      "framework/core/engines/skin-coverage.mjs",
-      "framework/assets/"
+      "framework/spec/ICON-MAP.md"
      ],
      "checks": [],
      "session": "same",
@@ -167711,14 +167712,14 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8u01qhfw",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr9801xwe0",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s2",
-     "text": "Contract: define icon-spot@1 (id, app, kind icon|badge|app-icon, default glyph, size/tone tokens, owner) and icon-pack@1 v2 (mappings by spot id or glyph name, sources, provenance, generated seed, extends) in framework/schemas/asset-types.json, with an icon-map registry type; regenerate JSON Schemas with axf.mjs schemas",
+     "text": "Design the icon-map@1 and icon-pack@1 asset types in framework/schemas/asset-types.json: icon-map = spot registry (id, kind, app, default glyph, size token, tint token, tags); icon-pack = glyph set (svg|png|font|ref sources, per-spot and per-name entries, extends, license/source per glyph, generator seed). Place them before uac-policy; set skin coverage (icon-pack: by reference via skin.iconPack; icon-map: none with why). Regenerate schemas (axf.mjs schemas)",
      "model": "Fable",
-     "why": "New shared asset types and schema design",
+     "why": "New shared asset types = schema design",
      "phase": "",
      "group": "",
      "estimate": "10 min",
@@ -167733,21 +167734,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8u02j166",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr9802zodu",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s3",
-     "text": "Migration: write framework/core/engines/icon-pack-migrate.mjs to carry old icon-pack/icon-map assets and the stale branch's data into icon-pack@1 v2 losslessly, with validator entries in framework/core/validate and a migration fixture",
+     "text": "Design icon-scope@1 resolution: hub-wide pack -> app pack -> screen (ui:<view>) -> plugin scope, child overrides parent, per-spot overrides on top, reset per spot / per app / hub-wide; storage keys in the appearance@1 / app-look@1 documents (icon.pack, icon.scopes, icon.overrides). Document it in framework/spec/APPEARANCE-SOURCE.md and ICON-MAP.md with migration from any existing iconPack field",
      "model": "Fable",
-     "why": "Schema migration design",
+     "why": "Cross-app scope + migration design",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "framework/core/engines/icon-pack-migrate.mjs",
-      "framework/core/validate/",
-      "framework/spec/fixtures/icon-pack-migrate.json"
+      "framework/spec/APPEARANCE-SOURCE.md",
+      "framework/spec/ICON-MAP.md"
      ],
      "checks": [],
      "session": "same",
@@ -167756,12 +167756,34 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8u03vp6c",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr9803n599",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s4",
-     "text": "Engine part 1: framework/core/engines/icon-map.ts resolves a spot to its glyph through scopes hub → app → screen → plugin (child wins, the resolveLookSkin model), per-spot and whole-pack swap, reset of one spot, one app, or hub-wide",
+     "text": "Reference engine framework/core/engines/icon-pack.ts: validate a pack, fold extends chains (inherit@1), resolve(spot, scopes) -> glyph + source + which scope won, list overrides, reset ops returning new documents. Pure TS, no DOM",
+     "model": "Fable",
+     "why": "Engine internals shared by every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/icon-pack.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr9804jzym",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s5",
+     "text": "Engine framework/core/engines/icon-map.ts: build the spot registry from icon-map assets plus runtime registrations (rt.registerIconSpot), dedupe, coverage report (spots with no glyph in a pack), search by tag/kind/app",
      "model": "Fable",
      "why": "Engine internals shared by every app",
      "phase": "",
@@ -167778,36 +167800,14 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8u04djat",
-     "createdAt": "2026-11-16T23:02:00.126Z"
-    },
-    {
-     "id": "s5",
-     "text": "Engine part 2: compile resolved icons into tokens (--fx-icon-* size/stroke/tone from the theme, glyph URLs / inline SVG ids), sanitise SVG (strip scripts, handlers, external refs) in framework/core/engines/icon-sanitize.ts",
-     "model": "Fable",
-     "why": "Engine internals plus a security contract for imported SVG",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/core/engines/icon-map.ts",
-      "framework/core/engines/icon-sanitize.ts"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjvbs8u05b493",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr9805ndsg",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s6",
-     "text": "Random generator engine: framework/core/engines/icon-gen.ts makes seeded, deterministic icons (geometric, monogram, blob, line-glyph styles) and whole packs from a seed + style + palette tokens, so the same seed gives the same pack on every port",
+     "text": "Deterministic icon generator engine framework/core/engines/icon-gen.ts: seeded SVG glyph builder (shape grammar: primitives, symmetry, stroke/fill from theme tokens via currentColor, no literal colours), generateIcon(seed, hints) and generatePack(seed, spots, style) with stable output so fixtures hold",
      "model": "Fable",
-     "why": "Cross-port deterministic engine",
+     "why": "Engine internals with golden fixtures, must match on every port",
      "phase": "",
      "group": "",
      "estimate": "10 min",
@@ -167821,19 +167821,19 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8u063tck",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr9806i1mo",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s7",
-     "text": "Import source contract: icon-source@1 adapter interface in framework/core/engines/icon-sources.ts (open libraries such as Lucide, Tabler, Material Symbols, Phosphor; SVG/PNG upload; URL; another pack), each returning a normalised glyph with license + provenance; open registry so new sources plug in",
+     "text": "SVG sanitizer + import normalizer engine framework/core/engines/icon-import.ts: strip scripts/handlers/external refs, normalise viewBox and size, map fills to currentColor, PNG -> data URI with size cap, record source + license metadata. Shared by upload, URL and library imports",
      "model": "Fable",
-     "why": "Cross-port contract for an open registry",
+     "why": "Engine internals + security contract for imported glyphs",
      "phase": "",
      "group": "",
-     "estimate": "9 min",
+     "estimate": "10 min",
      "files": [
-      "framework/core/engines/icon-sources.ts"
+      "framework/core/engines/icon-import.ts"
      ],
      "checks": [],
      "session": "same",
@@ -167842,23 +167842,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8u07y8og",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr9807mb24",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s8",
-     "text": "Fixtures: generate golden outputs for icon-map resolution, reset, token compile, sanitiser and seeded generator (framework/spec/gen-fixtures.mts), record the deferred Kotlin twin in framework/spec/PORTING.md, declare skin coverage for the new types",
+     "text": "Validators: add icon-map and icon-pack checks to framework/core/project-check.mjs / the asset validator so axf.mjs validate --framework covers them; mjs mirror where the rules engines hard-code spec lists",
      "model": "Fable",
-     "why": "Conformance contract for the ports",
+     "why": "Schema contract validators",
      "phase": "",
      "group": "",
      "estimate": "8 min",
      "files": [
-      "framework/spec/gen-fixtures.mts",
-      "framework/spec/fixtures/icon-map.json",
-      "framework/spec/fixtures/icon-gen.json",
-      "framework/spec/PORTING.md",
-      "framework/schemas/asset-types.json"
+      "framework/core/",
+      "framework/cli/axf.mjs"
      ],
      "checks": [],
      "session": "same",
@@ -167867,21 +167864,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8u08fjoy",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr9808iecy",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s9",
-     "text": "Framework hook: <Icon spot=\"…\"> and useIconSpot in framework/react read the resolved map, register their spot at runtime, and accept data-axf-target; AppIcon and Badge controls route through it",
+     "text": "Fixtures: add cases to framework/spec/gen-fixtures.mts for resolve/scopes/reset, coverage, generator seeds and sanitizer; generate framework/spec/fixtures/icon-pack.json, icon-gen.json, icon-import.json; record the Kotlin twin as a deferred gap in framework/spec/PORTING.md (Android on hold)",
      "model": "Fable",
-     "why": "Changes how icons render in every app",
+     "why": "Cross-port conformance contract",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "framework/react/components/Icon.tsx",
-      "framework/react/components/Badge.tsx",
-      "framework/react/iconMap.ts"
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/",
+      "framework/spec/PORTING.md"
      ],
      "checks": [],
      "session": "same",
@@ -167890,107 +167887,19 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8u09y9jc",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr9809f981",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s10",
-     "text": "Spot inventory script: framework/cli/icon-spots.mjs scans the console, Molly, AmberX web, axHub web and Expenses for icon, badge and app-icon uses and writes the icon map registry (framework/assets/icon-map/*.json); add `--check` so CI fails on an unregistered icon",
-     "model": "Opus",
-     "why": "",
+     "text": "Starter assets: framework/assets/icon-map/default.json (every spot from the inventory) and framework/assets/icon-pack/ default (current glyphs), outline, filled, and one generated pack; validate --framework; bake into shared apps (shared-assets.mjs bake) and check skin coverage (check-skin-coverage.mjs)",
+     "model": "Fable",
+     "why": "Default assets for the new shared types",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "framework/cli/icon-spots.mjs",
-      "framework/assets/icon-map/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjvbs8u0aj5kf",
-     "createdAt": "2026-11-16T23:02:00.126Z"
-    },
-    {
-     "id": "s11",
-     "text": "Migrate console icon usages to <Icon spot> (banner, nav, toolbars, plugin cards, badges) part 1",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/src/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjvbs8v0blinj",
-     "createdAt": "2026-11-16T23:02:00.126Z"
-    },
-    {
-     "id": "s12",
-     "text": "Migrate remaining console plugins and app icons to <Icon spot>, part 2; run icon-spots.mjs --check",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/",
-      "apps/console-web/src/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjvbs8v0cqfss",
-     "createdAt": "2026-11-16T23:02:00.126Z"
-    },
-    {
-     "id": "s13",
-     "text": "Migrate Molly, AmberX web, axHub web and Expenses icon spots; re-bake each app's src/axf with rebake.mjs",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/molly/",
-      "apps/amberx-droid/",
-      "apps/expenses/",
-      "framework/cli/rebake.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjvbs8v0d1anx",
-     "createdAt": "2026-11-16T23:02:00.126Z"
-    },
-    {
-     "id": "s14",
-     "text": "Starter packs: ship default, outline, filled and one generated pack as icon-pack assets in framework/assets/icon-pack/, baked through shared-assets.mjs bake",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
+      "framework/assets/icon-map/",
       "framework/assets/icon-pack/",
       "framework/schemas/shared-assets.json"
      ],
@@ -168001,12 +167910,125 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0e2z22",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980a1u5j",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s11",
+     "text": "Framework React: <AxfIcon spot=…> + useIconSpot in framework/react reading the resolved pack from the runtime (rt.icons), live hot-swap on pack/scope change, tokens only for size/tint; register spots automatically",
+     "model": "Fable",
+     "why": "Changes how icons render in every app's GUI",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/AxfIcon.tsx",
+      "framework/react/runtime/",
+      "framework/core/runtime.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980bvlfx",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s12",
+     "text": "Move the framework's own icon spots (banner, toolbars, TabGroup, menus, badges, settings, app icon slot) onto <AxfIcon spot>; check-theme.mjs and check-controls.mjs clean",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/",
+      "framework/libs/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980cvtou",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s13",
+     "text": "Move the console's icon spots (nav, views, plugin badges, home cards, app icon/favicon) onto <AxfIcon spot>; register plugin spots through plugin.json icon fields",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/",
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980dkmpj",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s14",
+     "text": "Move axHub web, AmberX web and Molly icon spots onto the framework; rebake each via rebake.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/amberx-droid/",
+      "apps/molly/",
+      "framework/cli/rebake.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980eajpx",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s15",
-     "text": "Plugin scaffold: apps/console-web/plugins/icon-packs (plugin.json with builtWith, install.mjs, uninstall.mjs, lifecycle dataDir, settings sub-tab under Settings → Plugins, notify.json)",
+     "text": "CI check framework/cli/check-icon-spots.mjs: flags raw icon glyphs/SVGs outside <AxfIcon> with a ratchet baseline framework/spec/icon-baseline.json (counts only go down); wire into CI workflow",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/check-icon-spots.mjs",
+      "framework/spec/icon-baseline.json",
+      ".github/workflows/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980fdfqe",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s16",
+     "text": "Scaffold plugin apps/console-web/plugins/icon-packs: plugin.json (builtWith, description, uiEditor: theme, settingsTab parent plugins), install.mjs/uninstall.mjs, notify.json, lifecycle dataDir, README",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -168022,12 +168044,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0f8kwd",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980g2dcr",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s16",
-     "text": "Server routes: apps/console-web/plugins/icon-packs/server (list spots, read map, get/put/delete pack, apply pack to app/hub/screen/plugin, reset, generate, import from source with fetch allow-list + size limit + sanitise)",
+     "id": "s17",
+     "text": "Plugin server routes (server/routes.py): list packs, get/save/delete pack, get icon map + coverage, apply pack at scope (hub|app|ui|plugin), override spot, reset spot/app/hub, all writing appearance@1 / app-look@1 on axHub",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -168043,42 +168065,19 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0gbby7",
-     "createdAt": "2026-11-16T23:02:00.126Z"
-    },
-    {
-     "id": "s17",
-     "text": "Import adapters on the server: open library fetchers (Lucide, Tabler, Material Symbols, Phosphor via their npm/CDN packages), PNG to data URL, URL import with SSRF guard, pack-to-pack copy; tests",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/icon-packs/server/sources/",
-      "apps/console-web/plugins/icon-packs/test.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjvbs8v0h2oli",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980hnqw6",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s18",
-     "text": "Designer UI part 1: Icon Pack Designer layout on framework controls: spot map tree (by app, screen, kind) left, pack canvas centre, icon library and sources right, TabGroup for Library / Import / Generate",
+     "text": "Server routes for generate (icon, pack, re-roll one spot with seed) and import: upload SVG/PNG, fetch URL (size/type caps, SSRF guard, sanitizer), copy from another pack",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/console-web/plugins/icon-packs/web/Designer.tsx",
-      "apps/console-web/plugins/icon-packs/web/designer.css"
+      "apps/console-web/plugins/icon-packs/server/"
      ],
      "checks": [],
      "session": "same",
@@ -168087,12 +168086,54 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0ipzpl",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980iroe0",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
      "id": "s19",
-     "text": "Designer UI part 2: drag-and-drop (mouse, touch, keyboard) from library or imports onto spots, onto whole groups, onto the pack; multi-select; undo/redo; drop-target@1 hooks",
+     "text": "Open icon library importers: adapter registry (Lucide, Tabler, Material Symbols, Phosphor, Heroicons, Iconify search) with search + fetch, license recorded per glyph, cached under the plugin dataDir",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/icon-packs/server/sources/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980jzrfj",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s20",
+     "text": "Designer UI shell: Icon Pack Designer view (three panes: icon map tree by app/area, pack canvas grid, inspector) built from framework controls, TabGroup and toolbars with role=toolbar + aria-label, tokens only",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/icon-packs/web/Designer.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980k27te",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s21",
+     "text": "Drag and drop: drag glyphs from source tray / other packs / desktop files onto spots or the pack grid, drop onto a whole area to fill it, reorder, multi-select drag, touch drags (pointer events, drop-target@1), undo/redo stack",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -168109,12 +168150,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0jtntq",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980lpcl7",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s20",
-     "text": "Designer UI part 3: live preview pane rendering real console screens (and other apps) with the pack in progress, theme-swap aware, phone and desktop sizes, before/after toggle",
+     "id": "s22",
+     "text": "Live preview pane: render real app chrome samples (banner, nav, toolbar, badges, app icon at sizes) with the draft pack through a scoped runtime; phone/desktop toggle; before/after split",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -168130,20 +168171,19 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0k5qtp",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980m1p63",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s21",
-     "text": "Designer UI part 4: Generate tab (style, seed, shuffle, lock spots, regenerate one or all, generate whole pack) and Import tab (search libraries, upload SVG/PNG, paste URL, pick from another pack)",
+     "id": "s23",
+     "text": "Source tray: tabs for Libraries (search), Upload, URL, Other packs, Generated; previews, license chips, add-to-pack",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/console-web/plugins/icon-packs/web/Generate.tsx",
-      "apps/console-web/plugins/icon-packs/web/Import.tsx"
+      "apps/console-web/plugins/icon-packs/web/SourceTray.tsx"
      ],
      "checks": [],
      "session": "same",
@@ -168152,19 +168192,41 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0l1rcu",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980ndv7o",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s22",
-     "text": "Apply and reset UI: per-app / hub-wide / screen / plugin apply with confirm, Reset spot, Reset app, Reset to default with one undo; right-click on any icon in any app → Change icon… opens the designer at that spot",
+     "id": "s24",
+     "text": "Generator panel: random icon / random whole pack with style hints (stroke, fill, rounded, geometric), seed lock, re-roll per spot, keep favourites",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/console-web/plugins/icon-packs/web/",
+      "apps/console-web/plugins/icon-packs/web/Generator.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980osgxn",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s25",
+     "text": "Apply & scope panel: apply pack hub-wide / per app / per screen / per plugin, per-spot overrides list, Reset spot / app / hub with confirm and one undo; Settings → Appearance link and chrome context menu entry 'Change icon…' on any icon",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/icon-packs/web/Apply.tsx",
+      "framework/libs/settings/",
       "framework/react/components/ChromeContext.tsx"
      ],
      "checks": [],
@@ -168174,21 +168236,42 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0m6i68",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980p6o87",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s23",
-     "text": "API parity: console-control targets (view:icon-packs, spot:<id>, pack:<id>) via data-axf-target, control@1 entries appended last, plugin-commands MCP tools, `axf icons …` CLI (list, show, apply, reset, generate, import, export), AmberX voice actions icons.apply/reset/generate/open",
+     "id": "s26",
+     "text": "Console control: register targets (view:icon-packs, tabs, pack rows, spot rows, every button/setting) via data-axf-target; append control@1 targets last; console actions icon.pack.apply|icon.spot.set|icon.reset|icon.generate|icon.import; check-console-control.mjs passes",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
+      "apps/console-web/plugins/icon-packs/",
+      "framework/core/control/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjvcr980qzath",
+     "createdAt": "2026-11-16T23:02:45.499Z"
+    },
+    {
+     "id": "s27",
+     "text": "API parity: MCP plugin commands for every route, CLI node framework/cli/icon-packs.mjs (list|show|apply|set|reset|generate|import|coverage|open), AmberX voice intents, console_show deep links; state reads for designer draft and applied scopes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/icon-packs.mjs",
       "apps/console-web/plugins/icon-packs/commands.json",
-      "framework/cli/icons.mjs",
-      "framework/schemas/control.json",
       "apps/console-web/plugins/icon-packs/voice.json"
      ],
      "checks": [],
@@ -168198,41 +168281,19 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0nujq9",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980r94wv",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s24",
-     "text": "Settings and Appearance: Settings → Appearance icon-pack picker joins the skin iconPack reference; level toolbar settings for the plugin (default pack, generator style, allowed sources)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/libs/settings/AppearancePanel.tsx",
-      "apps/console-web/plugins/icon-packs/web/Settings.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwjvbs8v0oqdvs",
-     "createdAt": "2026-11-16T23:02:00.126Z"
-    },
-    {
-     "id": "s25",
-     "text": "Glossary + help: descriptions on plugin, commands, assets, CLI header; help stub; catalog.mjs --check",
+     "id": "s28",
+     "text": "Help + glossary entries: plugin help page, descriptions on new assets, asset types and CLI; catalog.mjs --check and help ratchet clean",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "6 min",
      "files": [
-      "apps/console-web/plugins/icon-packs/",
+      "apps/console-web/plugins/icon-packs/help/",
       "apps/console-web/plugins/glossary-index/"
      ],
      "checks": [],
@@ -168242,20 +168303,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0pufuv",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980s27lj",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s26",
-     "text": "Tests: fixtures check, check-skin-coverage, check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, icon-spots --check, plugin-lifecycle --after-uninstall, plugin server tests, console typecheck + build",
+     "id": "s29",
+     "text": "Tests: npx tsx framework/spec/check-icon-pack.mts (engines vs fixtures), plugin test.py (routes, sanitizer, SSRF guard, scopes, reset), lifecycle check --after-uninstall, theme-swap, check-toolbars, check-chrome-assets",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "framework/spec/",
-      "apps/console-web/"
+      "framework/spec/check-icon-pack.mts",
+      "apps/console-web/plugins/icon-packs/test.py"
      ],
      "checks": [],
      "session": "same",
@@ -168264,20 +168325,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0q28fu",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980ttxuh",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s27",
-     "text": "UI Review: desktop + phone shots of the Designer, Generate, Import and Apply views, submitted with 3 asset options via review.mjs submit --choices (group named after the build)",
+     "id": "s30",
+     "text": "UI Review: desktop + phone shots of the designer, preview, generator and apply panel; submit with 3 choices (designer layout options as assets under plugins/icon-packs/assets/) via review.mjs submit --choices",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "8 min",
+     "estimate": "10 min",
      "files": [
-      "apps/console-web/plugins/ui-review/",
-      "apps/console-web/plugins/icon-packs/assets/"
+      "apps/console-web/plugins/icon-packs/assets/",
+      "_claude/builds/reports/icon-packs-with-drag-drop-pack-designer/shots/"
      ],
      "checks": [],
      "session": "same",
@@ -168286,17 +168347,17 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0r9vog",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980uive7",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     },
     {
-     "id": "s28",
-     "text": "Finish: write _claude/builds/reports/icon-packs-with-drag-drop-pack-designer.md (what landed, API reach per feature: deep link, state, actions, settings over REST/MCP/CLI/voice), update the THREADS row, open the PR and link it with builds-live.mjs link",
+     "id": "s31",
+     "text": "Final: run validate --framework, tracker.mjs --check, check-skin-coverage, full test sweep; write _claude/builds/reports/icon-packs-with-drag-drop-pack-designer.md (incl. how each feature is reached by deep link/REST/MCP/CLI/voice and the archived build it replaces); THREADS row; push branch and open PR, link it with builds-live.mjs link",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "8 min",
+     "estimate": "10 min",
      "files": [
       "_claude/builds/reports/icon-packs-with-drag-drop-pack-designer.md",
       "_claude/THREADS.md"
@@ -168308,8 +168369,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwjvbs8v0szi5h",
-     "createdAt": "2026-11-16T23:02:00.126Z"
+     "uid": "st-mwjvcr980vxtn0",
+     "createdAt": "2026-11-16T23:02:45.499Z"
     }
    ]
   },
