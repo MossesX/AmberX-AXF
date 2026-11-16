@@ -6378,6 +6378,18 @@
     }
    ]
   },
+  "plan-studio-collapse-all-expand-all": {
+   "said": "In the first Plan Studio, I need to collapse all.",
+   "at": "2026-11-16T20:26:44.199Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "plan-studio-receives-a-valid-shipped-feature-man": {
    "said": "Make sure it creates the plant studio, make sure it gets all the, the correct information, the fields of the manifest are sent to the plant studio. So the plant studio's gotta receive a manifest too. It has to be valid.",
    "at": "",

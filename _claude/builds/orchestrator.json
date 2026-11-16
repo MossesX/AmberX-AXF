@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T20:26:14.945Z",
+ "updatedAt": "2026-11-16T20:26:46.608Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162270,6 +162270,37 @@
    "origin": {
     "said": "Same thing for Plan Studio. I don't want anything synced with Plan Studio, I want it all cleared out, nothing in it, and rebuild the whole thing. Professional, powerful, full context menu, voice controlled, integrated with everything else.",
     "at": "2026-11-16T20:25:16.196Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "plan-studio-collapse-all-expand-all",
+   "title": "Plan Studio: Collapse all / Expand all",
+   "category": "",
+   "detail": "In the existing Plan Studio (plan-studio, not 2.0): add Collapse all and Expand all buttons to its toolbar that fold or unfold every plan, section and step at once, remembered per user. Same actions by voice, MCP, CLI and console-control. Tests, land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T20:26:44.199Z",
+   "updatedAt": "2026-11-16T20:26:44.199Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "In the first Plan Studio, I need to collapse all.",
+    "at": "2026-11-16T20:26:44.199Z",
     "source": "",
     "session": "",
     "link": "",
