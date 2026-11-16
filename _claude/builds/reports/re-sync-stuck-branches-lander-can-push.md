@@ -25,3 +25,4 @@ Out of scope, not touched: `claude/axf-data-postgres-real-tables-own`, `claude/d
 - s2 `claude/server-gate-one-session-per-build-no`: merged origin 949c25d49 into local be75e0ae8 → 8b5495bd1; builds-store files resolved by the `axf-builds` merge driver, no manual conflicts; pushed fast-forward.
 - s3 `claude/one-source-truth-console-shows-only-what`: merged origin a7febca2e into local dc873adac → eccfe754a; merge driver resolved the builds-store files; pushed fast-forward.
 - s4 `claude/console-axhub-retry-failed-calls`: merged origin ba0c8fa31 into local da3e3477b → e68f9aa05; merge driver resolved the builds-store files; pushed fast-forward.
+- s5 `claude/demo-video-series-three-minute-browser`: merged origin 6936a3fc8 into local 388338407 → 5e77e6939; merge driver resolved the builds-store files; pushed fast-forward.
