@@ -30,7 +30,7 @@ jobs:
   # is on (repo variable AXF_MERGE_QUEUE=on), and nothing again on main when the queue already ran CI on the same code.
   scope:
     name: CI scope (what changed)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest rolls to 26.04, where Playwright 1.56 has no chromium (theme-swap)
     outputs:
       mode: ${{ steps.s.outputs.mode }}
       light: ${{ steps.s.outputs.light }}
@@ -57,7 +57,7 @@ jobs:
     name: Light PR checks (full run happens once, in the merge queue)
     needs: scope
     if: ${{ needs.scope.outputs.light == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
@@ -72,7 +72,7 @@ jobs:
     name: Build engine sweep (Node)
     needs: scope
     if: ${{ needs.scope.outputs.engine == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       AXF_BUILD_PROFILE: all   # the sweep checks the base profile's data whatever profile Brett has saved
     steps:
@@ -211,7 +211,7 @@ jobs:
     name: Web Dev Console (React/TS) + Python API
     needs: scope
     if: ${{ needs.scope.outputs.console == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -442,7 +442,7 @@ jobs:
     name: AmberX — web app in the Capacitor Android shell (APK + native unit tests)
     needs: scope
     if: ${{ needs.scope.outputs.amberx == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       AXF_BUILD_NUMBER: ${{ github.run_number }}
     steps:
@@ -489,7 +489,7 @@ jobs:
           retention-days: 14
   android:
     name: Gradle — framework modules, kernel tests, console APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
     needs: [scope, amberx]
     if: ${{ !cancelled() && needs.scope.outputs.android == 'true' }}
