@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T13:42:49.910Z",
+ "updatedAt": "2026-11-16T13:43:38.953Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139570,7 +139570,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-16T13:25:01.503Z",
+   "updatedAt": "2026-11-16T13:43:37.163Z",
    "builtAt": "",
    "notes": [
     {
@@ -139708,9 +139708,24 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-video-series-three-minute-browser--joey, shared account login)",
      "at": "2026-11-16T13:25:01.503Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-16T13:43:37.163Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-16T13:43:37.163Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -140137,8 +140152,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T13:43:37.163Z",
      "note": "",
      "uid": "st-mwfvo8cj06k1fr",
      "createdAt": "2026-11-14T04:00:35.413Z"
