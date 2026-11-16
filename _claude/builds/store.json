@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6692,
- "updatedAt": "2026-11-16T19:12:52.275Z",
+ "rev": 6693,
+ "updatedAt": "2026-11-16T19:13:08.343Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -241815,7 +241815,7 @@
    "title": "Fix the red CI on the blocked builds so they land",
    "category": "",
    "detail": "Split from get-main-green-unblock-lander-land-axf. Main is NOT red (its last runs succeeded or were cancelled), so the red CI is on the branches themselves. For each build the auto-lander shows as 'CI is red' (owner-recognized-everywhere-veto, pass-approval-hook-deep-link-amberx-notification, land-project-duplicate-boilerplate, picker-dialog-plugin-replaces-all, all-settings-interfaces-open-floating, themed-native-controls-plugin, new-asset-type-animated-expanding-row, quick-settings-pinned-collapsible-pane, orchestrator-settings-collapsible-split, context-menus-plugin-one-true-source, projects-own-everything-per-project, pending-tab-one-collapsed-row-per-2, shipped-features-open-button-views-each, fix-build-whose-session-finishes-phase-e, group-chat-audio-hear-agents-talk-while, ui-manager-floating-window-to-select-any, console-look-becomes-default-axhub-skin, vps-sends-shipped-features-every-merge): merge origin/main into the branch, read the failed CI log, fix it, push, and let the auto-lander land them one at a time. Find the common cause first; most fail the same Web Dev Console + Build engine sweep checks. Also shipped-features-organized-sortable (build rules ci-checks). Do NOT touch the axf-data / Postgres branches (another build has those).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -241823,7 +241823,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:12:27.544Z",
+   "updatedAt": "2026-11-16T19:13:02.604Z",
    "builtAt": "",
    "notes": [
     {
@@ -241869,6 +241869,18 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T19:11:42.227Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-red-ci-blocked-builds-they-land--lenny.",
+     "at": "2026-11-16T19:12:53.868Z"
+    },
+    {
+     "text": "Brief only: brief is 30613 characters (~7654 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-16T19:12:58.320Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-red-ci-blocked-builds-they-land--lenny, shared account login)",
+     "at": "2026-11-16T19:13:02.604Z"
     }
    ],
    "approvals": [],
@@ -241888,12 +241900,12 @@
    "pipeline": {
     "queuedAt": "2026-11-16T19:11:41.463Z",
     "queuedBy": "brett",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-fix-red-ci-blocked-builds-they-land--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-16T19:12:50.312Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T16:31:32.976Z",
@@ -241905,7 +241917,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-16T19:12:50.312Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -241914,7 +241926,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-16T19:12:50.312Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -242514,7 +242526,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

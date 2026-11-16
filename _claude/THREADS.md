@@ -813,9 +813,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 13:31 UTC · `vps-sends-shipped-features-every-merge` s2 done, note (all) · reconciler
-- 2026-11-16 13:31 UTC · `console-look-becomes-default-axhub-skin` s9 done (all) · orchestrator
-- 2026-11-16 13:34 UTC · `duplicate-gate-vps-checks-shipped` s3 done (all) · orchestrator
 - 2026-11-16 13:35 UTC · `vps-sends-shipped-features-every-merge` s3 done (all) · orchestrator
 - 2026-11-16 13:36 UTC · `phone-connect-small-android-companion` → pending, note (all) · reconciler
 - 2026-11-16 13:36 UTC · `console-look-becomes-default-axhub-skin` s10 done (all) · orchestrator
@@ -1213,6 +1210,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` added (0 steps) (all) · console
 - 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` → queued, note (all) · console
 - 2026-11-16 19:12 UTC · `alert-every-time-build-falls-back-to` note (all) · mcp
+- 2026-11-16 19:12 UTC · `fix-red-ci-blocked-builds-they-land` → running, note (all) · pipeline
+- 2026-11-16 19:12 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
+- 2026-11-16 19:13 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
 
 ## Token passes (log)
 
