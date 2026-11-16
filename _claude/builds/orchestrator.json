@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T16:45:16.064Z",
+ "updatedAt": "2026-11-16T16:45:37.525Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120437,7 +120437,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T16:44:41.344Z",
+   "updatedAt": "2026-11-16T16:45:15.296Z",
    "builtAt": "",
    "notes": [
     {
@@ -120505,8 +120505,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:32.397Z",
      "note": "",
      "uid": "st-mwen2rfl027yzz",
      "createdAt": "2026-11-13T07:12:11.360Z"
@@ -120550,8 +120550,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:46.602Z",
      "note": "",
      "uid": "st-mwen2rfl044l9p",
      "createdAt": "2026-11-13T07:12:11.360Z"
@@ -120571,8 +120571,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:50.794Z",
      "note": "",
      "uid": "st-mwen2rfl05jd3k",
      "createdAt": "2026-11-13T07:12:11.360Z"
@@ -120597,8 +120597,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:54.264Z",
      "note": "",
      "uid": "st-mwen2rfl06ny5k",
      "createdAt": "2026-11-13T07:12:11.360Z"
@@ -120620,8 +120620,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:57.321Z",
      "note": "",
      "uid": "st-mwen2rfl07hyy9",
      "createdAt": "2026-11-13T07:12:11.360Z"
@@ -120644,8 +120644,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:44:59.952Z",
      "note": "",
      "uid": "st-mwen2rfl08ydhb",
      "createdAt": "2026-11-13T07:12:11.360Z"
@@ -120689,8 +120689,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T16:45:15.296Z",
      "note": "",
      "uid": "st-mwen2rfl0aql9m",
      "createdAt": "2026-11-13T07:12:11.360Z"

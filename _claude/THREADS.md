@@ -808,13 +808,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-15 14:56 UTC · `build-rules-tab-gate-rules-vps-owns` s8 done (all) · orchestrator
-- 2026-11-15 14:57 UTC · `data-container-axf-data-holds-all` note (all) · mcp
-- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` note (all) · orchestrator
-- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` → running, note (all) · pipeline
-- 2026-11-15 14:57 UTC · `shipped-features-open-button-views-each` branch claude/shipped-features-open-button-views-each (all) · pipeline
-- 2026-11-15 14:58 UTC · `phone-connect-small-android-companion` s4 done (all) · orchestrator
-- 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s9 done (all) · orchestrator
 - 2026-11-15 14:58 UTC · `build-rules-tab-gate-rules-vps-owns` s10 done (all) · orchestrator
 - 2026-11-15 14:59 UTC · `phone-connect-small-android-companion` s5 done (all) · orchestrator
 - 2026-11-15 14:59 UTC · `shipped-features-open-button-views-each` s1 done (all) · orchestrator
@@ -1208,6 +1201,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 16:45 UTC · `land-round-2` note (all) · foreign-write
 - 2026-11-16 16:45 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · foreign-write
 - 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s1 done, s3 done, → running (all) · foreign-write
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s4 done (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s5 done (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s6 done (all) · orchestrator
+- 2026-11-16 16:44 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s7 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s8 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s9 done (all) · orchestrator
+- 2026-11-16 16:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
