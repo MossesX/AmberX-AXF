@@ -19,6 +19,8 @@ import { KEYS, LAYOUTS, VIEWS } from './prefs';
 import { FOLDER } from './model';
 import { appMenu } from './menu';
 import { LazyLoaderPanel } from './LazyLoader';
+import { setDefaultSectionsRenderer } from '@console/settings/pluginTabs';
+import { DefaultPluginSettingsTab } from './DefaultPluginSettingsTab';
 
 const ID = 'ai.amberx.axf.console.plugin-manager';
 
@@ -33,6 +35,8 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   uiEditor: ['manager'], // = plugin.json uiEditor: the UI-editor rule (last save wins per key, fresh on focus) applies
   register(rt) {
+    // plugin-settings@1: the enable / info / logs sections at the top of every plugin's Settings → Plugins sub-tab
+    setDefaultSectionsRenderer(({ folder, sections }) => <DefaultPluginSettingsTab folder={folder} sections={sections} />);
     rt.actions.register('plugin-manager.open', ([folder]) => {
       if (folder) rt.settings.set(KEYS.selected, folder);
       rt.navigate('plugin-manager');
