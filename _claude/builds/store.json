@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7089,
- "updatedAt": "2026-11-16T23:56:06.655Z",
+ "rev": 7090,
+ "updatedAt": "2026-11-16T23:56:25.920Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -246165,7 +246165,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T23:47:06.683Z",
+   "updatedAt": "2026-11-16T23:55:38.707Z",
    "builtAt": "",
    "notes": [
     {
@@ -246215,6 +246215,10 @@
     {
      "text": "Brief only: brief is 25330 characters (~6333 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-16T23:17:30.848Z"
+    },
+    {
+     "text": "s3-s13 done and ticked; PR #763 open. s14 and s15 left open: (1) the S26 runs of amberx.open_url (console tab open / no tab / idle) and the Open pages screenshots need axHub access, and this session had no AXHUB_TOKEN and no axHub tools; the AmberX vite dev server also fails on an unrelated @console/api import (console-web/plugins/wake-listener/web/flow.ts), which blocked a local screenshot. (2) CI was still queued at 'CI scope' for 30+ min, so the new APK isn't built yet, and the AmberX FYI waits for it. Everything else in s15 is done: checks green, report, THREADS row, catalog status, PR. Next session: once PR CI builds the APK, install it through axHub, run the three device cases, record the routes in the report, take the screenshots (axf shot --group 'AmberX open_url must open the page even when Chrome is already in front'), submit the Open pages UI, send the FYI, tick s14 and s15.",
+     "at": "2026-11-16T23:55:38.707Z"
     }
    ],
    "approvals": [
@@ -246662,7 +246666,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
