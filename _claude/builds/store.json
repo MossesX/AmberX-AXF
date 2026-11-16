@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6936,
- "updatedAt": "2026-11-16T22:48:58.041Z",
+ "rev": 6937,
+ "updatedAt": "2026-11-16T22:49:09.261Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219129,15 +219129,15 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T20:46:40.391Z",
-   "builtAt": "2026-11-16T20:46:19.060Z",
+   "updatedAt": "2026-11-16T22:49:00.199Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-banner-widget-shapes-more-than-circle--joey.",
@@ -219206,6 +219206,10 @@
     {
      "text": "Headless run axf-banner-widget-shapes-more-than-circle--sully: brief only · start 18.5K tokens ($0.06) · cost $20.24 · 296 turns · 6 tools, MCP none",
      "at": "2026-11-16T20:46:40.391Z"
+    },
+    {
+     "text": "Moved to the Archive from built (cli): Brett: rebuild fresh on main.",
+     "at": "2026-11-16T22:49:00.199Z"
     }
    ],
    "approvals": [
@@ -219970,7 +219974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -251373,6 +251377,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "banner-widget-shapes-and-change-icon",
+   "title": "Banner widget shapes and Change icon",
+   "category": "",
+   "detail": "Fresh on main, replaces banner-widget-shapes-more-than-circle. Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "cli",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-16T22:49:06.642Z",
+   "updatedAt": "2026-11-16T22:49:06.642Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Rebuild.",
+    "at": "2026-11-16T22:49:06.642Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 931
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
