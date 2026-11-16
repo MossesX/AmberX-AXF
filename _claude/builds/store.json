@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6931,
- "updatedAt": "2026-11-16T22:46:33.956Z",
+ "rev": 6932,
+ "updatedAt": "2026-11-16T22:46:48.870Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -250378,6 +250378,56 @@
    ],
    "order": {
     "all": 928
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "icon-pack-studio-on-fable",
+   "title": "Icon Pack Studio on Fable",
+   "category": "",
+   "detail": "FABLE build, fresh on current main, replacing the stale icon-map-icon-packs-every-icon-badge-app (about 2,003 behind; archive the old record and close its PR, branch kept). Icon map: every icon spot in every app (icons, badges, app icons) has an address. Icon packs swap any or all of them, per app or hub-wide, with reset. Icon Pack Designer: very powerful, polished, easy drag-and-drop editor against the map with live preview. Randomly generated icon sets (whole pack or one icon in a style). Import icons from many sources (open icon libraries, SVG/PNG upload, URLs, other packs). Tokens, framework controls, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-16T22:46:44.852Z",
+   "updatedAt": "2026-11-16T22:46:46.594Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yes, use Fable too. I want a very powerful, nice, easy to use drag and drop, and also have random generated ones and import icons from different sources. Make it use Fable. Make it sick.",
+    "at": "2026-11-16T22:46:44.852Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 929
    },
    "kind": "build",
    "planRef": "",
