@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 6799,
- "updatedAt": "2026-11-16T19:53:17.510Z",
+ "rev": 6805,
+ "updatedAt": "2026-11-16T19:55:50.986Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -218459,7 +218459,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T19:47:30.043Z",
+   "updatedAt": "2026-11-16T19:54:38.836Z",
    "builtAt": "",
    "notes": [
     {
@@ -218527,7 +218527,16 @@
      "at": "2026-11-16T19:47:30.043Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-16T19:53:21.452Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -218544,12 +218553,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-banner-widget-shapes-more-than-circle--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T19:47:18.419Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T04:47:26.735Z",
@@ -218561,7 +218570,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:47:18.419Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -218570,7 +218579,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:47:18.419Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -218765,12 +218774,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:21.452Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:16:49.558Z",
-     "updatedAt": "2026-11-16T19:16:49.844Z"
+     "updatedAt": "2026-11-16T19:53:21.778Z"
     },
     {
      "id": "s8",
@@ -218789,12 +218798,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:46.828Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:53:47.164Z"
     },
     {
      "id": "s9",
@@ -218814,12 +218823,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:54:38.836Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:47:26.735Z",
-     "updatedAt": "2026-11-14T04:47:26.735Z"
+     "updatedAt": "2026-11-16T19:54:39.131Z"
     },
     {
      "id": "s10",
@@ -219278,7 +219287,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -241880,7 +241889,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:53:14.939Z",
+   "updatedAt": "2026-11-16T19:55:46.472Z",
    "builtAt": "",
    "notes": [
     {
@@ -242542,12 +242551,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:55:46.472Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T16:31:32.976Z",
-     "updatedAt": "2026-11-16T16:31:32.976Z"
+     "updatedAt": "2026-11-16T19:55:46.819Z"
     },
     {
      "id": "s24",
@@ -242583,7 +242592,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244353,7 +244362,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:51:40.092Z",
+   "updatedAt": "2026-11-16T19:53:18.339Z",
    "builtAt": "",
    "notes": [
     {
@@ -244881,12 +244890,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:18.339Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:31:29.535Z",
-     "updatedAt": "2026-11-16T18:31:29.535Z"
+     "updatedAt": "2026-11-16T19:53:18.726Z"
     },
     {
      "id": "s16",
@@ -245214,7 +245223,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247498,7 +247507,7 @@
    "branch": "claude/assets-menu-hide-any-asset-hidden-list",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T19:49:29.496Z",
+   "updatedAt": "2026-11-16T19:54:30.876Z",
    "builtAt": "",
    "notes": [
     {
@@ -247535,12 +247544,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-assets-menu-hide-any-asset-hidden-list--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-16T19:49:23.375Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-16T19:31:58.924Z",
@@ -247550,9 +247559,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"eb1972e7-c955-4c4a-942f-76345dedfc99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-16T19:49:23.375Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -247561,7 +247570,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-16T19:49:23.375Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -247582,12 +247591,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:54:30.876Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T19:31:58.924Z",
-     "updatedAt": "2026-11-16T19:31:58.924Z"
+     "updatedAt": "2026-11-16T19:54:31.201Z"
     },
     {
      "id": "s2",

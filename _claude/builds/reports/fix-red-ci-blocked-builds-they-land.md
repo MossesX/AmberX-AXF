@@ -145,3 +145,20 @@ Heads below are the branch heads at s23 (several moved after their step: the aut
 | themed-native-controls-plugin | #690 | 582a1cbc4 | pull_request ✗: light PR checks (ci-scope) | queued |
 
 axf-data / Postgres branches not touched.
+
+## Summary (s24)
+
+- **Cause**: most branches were far behind main and failed on what main had already fixed (B, C, part of D), plus
+  shared breakage on main itself: runner image and amberx `@console/api` and gate page head (A, F, G; #719, landed),
+  then the console-control inventory (H), the baked shared help copy (I) and the gate plugin's token manifest (J), all
+  three on PR #726. The rest (D) was per branch: merge conflicts with main, help / glossary ratchets, plugin manifests.
+- **Fix per branch**: see the Per branch table (s4–s22).
+- **Sweep on `fix/ci-common-cause`** (s24, CI emulation AXF_DATA_DIR=off): console-control, shared-assets,
+  token-registry, help coverage, glossary, validate --framework, profiles, theme, controls, toolbars, chrome-assets, gate
+  lifecycle, tracker and the build-rules ci-checks (19/19) all pass.
+- **Not run locally**: Gradle kernel tests (no Gradle on the VPS); CI decides for group-chat-audio's ConformanceTest.
+- **Still open**: themed-native-controls (light PR checks, ci-scope), context-menus (glossary ratchet), picker-dialog
+  (check-agent-slots on CI). Each is queued and rejoins when green.
+- **Overlap**: `get-main-green-unblock-lander-land-axf` has #724 for main; #726 holds only H, I and J and doesn't change
+  the same files.
+- No UI added, so no API surface.

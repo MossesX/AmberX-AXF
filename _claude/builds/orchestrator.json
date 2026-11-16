@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-16T19:53:17.510Z",
+ "updatedAt": "2026-11-16T19:55:50.986Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139326,7 +139326,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T19:47:30.043Z",
+   "updatedAt": "2026-11-16T19:54:38.836Z",
    "builtAt": "",
    "notes": [
     {
@@ -139394,7 +139394,16 @@
      "at": "2026-11-16T19:47:30.043Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-16T19:53:21.452Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -139575,8 +139584,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:21.452Z",
      "note": "",
      "uid": "st-mwjna7n801ed6n",
      "createdAt": "2026-11-16T19:16:49.558Z"
@@ -139596,8 +139605,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:46.828Z",
      "note": "",
      "uid": "st-mwfxch0007n8rw",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -139618,8 +139627,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:54:38.836Z",
      "note": "",
      "uid": "st-mwfxch00085o60",
      "createdAt": "2026-11-14T04:47:26.735Z"
@@ -157474,7 +157483,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T19:53:14.939Z",
+   "updatedAt": "2026-11-16T19:55:46.472Z",
    "builtAt": "",
    "notes": [
     {
@@ -158034,8 +158043,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:55:46.472Z",
      "note": "",
      "uid": "st-mwjhdnqq0nr4di",
      "createdAt": "2026-11-16T16:31:32.976Z"
@@ -159422,7 +159431,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T19:51:40.092Z",
+   "updatedAt": "2026-11-16T19:53:18.339Z",
    "builtAt": "",
    "notes": [
     {
@@ -159865,8 +159874,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:53:18.339Z",
      "note": "",
      "uid": "st-mwjlnwn30zi2h5",
      "createdAt": "2026-11-16T18:31:29.535Z"
@@ -161841,7 +161850,7 @@
    "branch": "claude/assets-menu-hide-any-asset-hidden-list",
    "pr": "",
    "createdAt": "2026-11-16T19:30:07.770Z",
-   "updatedAt": "2026-11-16T19:49:29.496Z",
+   "updatedAt": "2026-11-16T19:54:30.876Z",
    "builtAt": "",
    "notes": [
     {
@@ -161889,8 +161898,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-16T19:54:30.876Z",
      "note": "",
      "uid": "st-mwjntp3g01a9kx",
      "createdAt": "2026-11-16T19:31:58.924Z"
