@@ -814,7 +814,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 19:28 UTC · `auto-lander-grid-one-row-per-build` note (all) · mcp
 - 2026-11-16 19:29 UTC · `toolbars-moved-to-side-become-vertical` note (all) · mcp
 - 2026-11-16 19:29 UTC · `alert-every-time-build-falls-back-to` s2 done (all) · orchestrator
 - 2026-11-16 19:29 UTC · `pending-banner-list-every-pending-build` s1 done, → running (all) · orchestrator
@@ -1214,6 +1213,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-16 23:25 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → running, note (all) · pipeline
 - 2026-11-16 23:25 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` branch claude/remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the (all) · pipeline
 - 2026-11-16 23:26 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
+- 2026-11-16 23:27 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → running, branch claude/remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the, note (all) · builds-live
 
 ## Token passes (log)
 
