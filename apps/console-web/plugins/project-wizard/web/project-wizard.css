@@ -62,3 +62,10 @@
 :where([data-fx-small]) .axp-project-wizard__cards { gap: var(--fx-dens-gap-md) }
 .fx-pagehead > div:first-child:has(> .axp-project-wizard__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
 .axp-project-wizard__notice { flex-wrap: nowrap; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
+
+/* Setup steps (new-project-wizard build, Nov 12 2026): locked steps show the current project's value grayed out. */
+.axp-project-wizard__lockable { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl) }
+.axp-project-wizard__lockable.is-locked > .axp-project-wizard__fieldset { opacity: var(--fx-opacity-disabled) }
+.axp-project-wizard__pickrow { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-xl) }
+.axp-project-wizard__pickrow > .fx-field { flex: 1 1 16em; min-width: 0 }
+.axp-project-wizard__flat { margin: 0 }

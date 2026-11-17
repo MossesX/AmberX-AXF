@@ -17,7 +17,15 @@
    { "target": "switch-or-manage-projects", "title": "Switch or manage projects", "text": "Opens the project list: switch, start a new one, rename, archive or delete (archive and delete ask you to type the project id; the data stays on disk).", "kind": "button" },
    { "target": "show-the-project-on-the-banner", "title": "Project on the banner", "text": "Shows the active project as a chip on the banner. Tap the chip to switch.", "kind": "toggle" },
    { "target": "projects", "title": "Projects", "text": "Settings for the project switcher: the banner chip, reloading after a switch, and the CLI and API to do the same without the console.", "kind": "tab" },
-   { "target": "action:projects.new", "title": "New project", "text": "Opens the form for a new, empty project.", "kind": "menu-item" }
+   { "target": "action:projects.new", "title": "New project", "text": "Opens the form for a new, empty project.", "kind": "menu-item" },
+   { "target": "duplicate", "title": "Duplicate", "text": "Makes a new project from this one: its settings, build rules, skin, Claude accounts, plugin setup, manifest, rules and instructions. Lists, to-dos, notes and plans come as structure only unless you pick everything. Its builds stay with the original.", "kind": "button" },
+   { "target": "save-as-boilerplate", "title": "Save as boilerplate", "text": "Keeps this project as a named boilerplate every project can start from (shared on the hub). Pick what its lists, notes and plans carry.", "kind": "button" },
+   { "target": "lists-to-dos-notes-and-plans", "title": "Lists, to-dos, notes and plans", "text": "Structure only (the default): the lists, note folders and plan categories, no items. Everything: with their items. Leave them out: none of it.", "kind": "field" },
+   { "target": "bring-the-builds-history", "title": "Bring the builds history", "text": "Adds a read-only list of the project's past builds to the copy. Off by default; the builds themselves always stay with the original.", "kind": "toggle" },
+   { "target": "boilerplates", "title": "Boilerplates", "text": "Saved boilerplates: start a new project from one, rename it, update it from a project, or delete it (type its id; Brett can veto a delete).", "kind": "tab" },
+   { "target": "new-project-from-it", "title": "New project from it", "text": "Starts a new project from this boilerplate and switches to it. For a new repo too, use the New project wizard's Start from.", "kind": "button" },
+   { "target": "action:projects.duplicate", "title": "Duplicate project", "text": "Opens the duplicate form for the active project (voice: 'duplicate this project').", "kind": "action" },
+   { "target": "action:projects.boilerplates", "title": "Boilerplates", "text": "Opens the saved boilerplates.", "kind": "action" }
   ],
   "intros": []
  }
