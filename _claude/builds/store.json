@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7572,
- "updatedAt": "2026-11-17T18:17:01.562Z",
+ "rev": 7573,
+ "updatedAt": "2026-11-17T18:25:08.880Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -270768,6 +270768,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T18:16:52.043Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "rebuild-fresh-main-collapsible-sections",
+   "title": "Rebuild fresh on main: collapsible sections in every settings screen (was #372)",
+   "category": "",
+   "detail": "PR #372 settings-sections-everywhere was closed unmerged and its branch is gone. Rebuild on current main: every settings section (all settings screens, floating settings window, every settings asset layout) is collapsible, with collapse all / expand all, state remembered; full API parity; tests + UI Review. Reuse anything left in git history or reports for #372.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:25:05.725Z",
+   "updatedAt": "2026-11-17T18:25:05.725Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why aren't these sections in my settings collapsible?",
+    "at": "2026-11-17T18:25:05.725Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 952
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

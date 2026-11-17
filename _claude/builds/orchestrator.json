@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:17:01.562Z",
+ "updatedAt": "2026-11-17T18:25:08.880Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -177070,6 +177070,37 @@
      "createdAt": "2026-11-17T18:16:52.043Z"
     }
    ]
+  },
+  {
+   "id": "rebuild-fresh-main-collapsible-sections",
+   "title": "Rebuild fresh on main: collapsible sections in every settings screen (was #372)",
+   "category": "",
+   "detail": "PR #372 settings-sections-everywhere was closed unmerged and its branch is gone. Rebuild on current main: every settings section (all settings screens, floating settings window, every settings asset layout) is collapsible, with collapse all / expand all, state remembered; full API parity; tests + UI Review. Reuse anything left in git history or reports for #372.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:25:05.725Z",
+   "updatedAt": "2026-11-17T18:25:05.725Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why aren't these sections in my settings collapsible?",
+    "at": "2026-11-17T18:25:05.725Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

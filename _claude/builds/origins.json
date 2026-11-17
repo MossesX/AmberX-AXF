@@ -7722,6 +7722,18 @@
    "from": "",
    "addenda": []
   },
+  "rebuild-fresh-main-collapsible-sections": {
+   "said": "Why aren't these sections in my settings collapsible?",
+   "at": "2026-11-17T18:25:05.725Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "rebuild-fresh-main-hide-any-asset": {
    "said": "Why can't we hide assets yet? We're supposed to be able to hide toolbars and tab groups and all that and be able to see what's hidden. ... You have to rebuild it.",
    "at": "2026-11-17T14:50:33.375Z",
