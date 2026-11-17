@@ -248,6 +248,11 @@
       "AXF_PUSH_BANNER_DIR"
     ],
     "mentions": [
+      "deploy/auto-lander/auto-lander.mjs",
+      "deploy/auto-lander/ci-status.mjs",
+      "deploy/auto-lander/escalate.mjs",
+      "deploy/auto-lander/merge-main.mjs",
+      "framework/spec/DONE-MEANS-MERGED.md",
       "CLAUDE.md",
       "_claude/rules/RULES.md",
       "_claude/memory/STATUS.md",

@@ -129,7 +129,7 @@ test('3. three failed fixes escalate: banner item, one push, Fix starts over', a
   later(5); await tick(); later(5); await tick();
   assert.equal(alerts.length, 1, 'still one push');
   // the systems-check item (gate plugin, health@1) reads the same status
-  const py = spawnSync('python3', ['-c', 'import sys,json; sys.path.insert(0, sys.argv[1]); import auto_lander_health as h; print(json.dumps(h.check(json.loads(sys.stdin.read()), float(sys.argv[2]))))', join(HERE, '../../../apps/console-web/plugins/gate/server'), String(clock)], { input: JSON.stringify(s), encoding: 'utf8' });
+  const py = spawnSync('python3', ['-c', 'import sys,json; sys.path.insert(0, sys.argv[1]); import auto_lander_health as h; print(json.dumps(h.check(json.loads(sys.stdin.read()), float(sys.argv[2]))))', join(HERE, '../../../apps/console-web/plugins/gate/server'), String(clock)], { input: JSON.stringify(s), encoding: 'utf8' });  // axf-plugin:gate
   if (!py.error) { assert.equal(py.status, 0, py.stderr); const v = JSON.parse(py.stdout); assert.equal(v.status, 'error'); assert.match(v.summary, /gave up on stuck-b/); }
   // Fix: reset + a fix session now
   await L.retry('stuck-b', { by: 'brett', fix: true, at: now() });

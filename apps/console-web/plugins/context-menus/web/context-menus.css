@@ -1,0 +1,21 @@
+/* Context menus — layout only; controls are framework controls and every colour / size is an asset token (THEMING.md). */
+.axp-ctxm-head { align-items: center; gap: var(--fx-dens-gap-md); }
+.axp-ctxm-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--fx-dens-gap-xl); align-items: start; }
+.axp-ctxm-actions { flex-wrap: wrap; align-items: end; gap: var(--fx-dens-gap-md); }
+.axp-ctxm-actions > .fx-field { flex: 1 1 200px; min-width: 0; }
+.axp-ctxm-fine { margin: 0; font-size: var(--fx-type-scale-md); }
+.axp-ctxm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-ctxm-hist { justify-content: space-between; align-items: center; gap: var(--fx-dens-gap-md); padding-block: var(--fx-dens-gap-xs); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-ctxm-name { display: inline-flex; gap: var(--fx-dens-gap-sm); align-items: baseline; min-width: 0; }
+.axp-ctxm-id { font-size: var(--fx-type-scale-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-ctxm-detail { padding: var(--fx-dens-gap-lg) 0; }
+.axp-ctxm-preview { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: var(--fx-dens-gap-xl); align-items: start; }
+:where([data-fx-narrow]) .axp-ctxm-preview { grid-template-columns: 1fr; }
+.axp-ctxm-preview__menu { position: static; display: inline-block; min-width: 200px; max-width: 100%; max-height: 60vh; overflow: auto; }
+.axp-ctxm-preview__menu .fx-menu__sub { position: static; margin-left: var(--fx-dens-gap-xl); }
+.axp-ctxm-diff > summary { cursor: pointer; padding-block: var(--fx-dens-gap-xs); }
+.axp-ctxm-diff__add { color: var(--fx-success); }
+.axp-ctxm-diff__del { color: var(--fx-danger); }
+.axp-ctxm-zones { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--fx-dens-gap-lg); }
+.axp-ctxm-zone { padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-ctxm-zone__head { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: center; }

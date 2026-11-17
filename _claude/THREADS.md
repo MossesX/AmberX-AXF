@@ -268,6 +268,11 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Context menus plugin (`context-menus-plugin-one-true-source`, Current, Fable → Opus) — branch `claude/context-menus-plugin-one-true-source`, PR #659
+- **Asked (Brett, Nov 13 2026):** "integrated with the UI manager; stores its data in one true source on axHub accessible from any plugin; contains the context menus, which are effectively assets; lists all the context menus; uses Claude to generate a context menu at advanced, pro, amateur, beginner coder levels, mapped out more meticulously depending on level"
+- **Done (s1–s8):** plugin `context-menus` (hub store, Generate / Drafts / Menus / Zones, trailing submenu on every right-click menu, per-zone view for the UI Manager, registered actions `ctx-actions@1`, list per app / zone / page, level per app and page), rules engine + fixture + check, full API. Report `_claude/builds/reports/context-menus-plugin-one-true-source.md`. <!-- axf-plugin:context-menus -->
+- **Left:** desktop + phone shots to UI Review (Playwright package missing on the VPS checkout); usage-ranked slimming. <!-- axf-plugin:context-menus -->
+
 ### Skins cover every asset type, at any scope (`skins-asset-types`)
 
 - **Asked (in full):** Brett (voice, Nov 7 2026): "What about skins? How's skins doing? Is skins gonna um, be upgraded since we've we've made um so many more asset types?" Brief: upgrade the skins system so it styles every asset type in the registry (embeddable widget, icon pack, composite assets, data set bar, embed, text blocks / labels); skins at any scope global / app / UI / plugin with child-overrides-parent inheritance (the design / icon pack model); a skin is a design pack that may reference an icon pack; the type list comes from the registry dynamically with a CI check that fails on an uncovered type; voice + API / MCP / CLI parity; at least 3 UI options to UI Review first.
