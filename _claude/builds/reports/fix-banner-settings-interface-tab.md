@@ -77,3 +77,11 @@ set (`axf.tokens.instances`, family `grid`, keyed by the grid's id), edited thro
 `chrome.token:grid:<id>:…` action. Case `grid:demo.grid`: Set writes only that grid's entry, the grid's CSS vars
 (`instanceTokenVars`) carry it at once, another grid and a tab row of the same id keep their values, and no settings
 window key moves. A right-click Settings… for grids is a separate feature, not part of this fix.
+
+## s9 — guard
+
+`check-chrome-settings.mts` now fails when the dialog's Interface tab renders anything but `InstanceInterfaceTab`
+for the instance it was opened for, when that component touches a settings-window key (pick, patch,
+`chrome.interface:`), a raw `rt.settings.set/clear`, an action not addressed `${type}:${instance}`, or renders a
+piece that isn't instance-bound. Proved by mutation: putting `InterfacePicker` back makes it fail. CI also runs the
+DOM check `check-chrome-interface-tab.mts` (android.yml, next to the other jsdom checks).
