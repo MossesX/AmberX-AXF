@@ -39,15 +39,18 @@ export const HANDS_OFF = Object.freeze(['running', 'waiting']);
 
 /**
  * Apply verdicts in ONE store write (withStore: under the store lock, journalled, live to main through builds-live):
- *   complete → the merged PR is recorded (pr, mergedAt) and the status settles by the store's own rule (built →
- *              complete only when every step is ticked: done-means-merged; otherwise it stays and says why)
+ *   complete → the merged PR is recorded (pr, mergedAt, landed.sha = the merge commit) and the status settles by the
+ *              store's own rule, then only where done-means-merged@1 allows it (guardStatus: landed needs CI green on the
+ *              merge commit, complete the feature verify). Short of that proof a fully ticked build goes to landing
+ *              (the auto-lander checks CI on the merge commit and lands it), else its status stays; the note says why.
  *   remove   → archived, with the reason in a note
  * Every touched build gets a build note naming the watchdog and the evidence. Running / waiting builds are never
  * touched. `withStore` / `settle` override the store (tests). Returns each verdict with { applied, why, status }.
  */
-export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {}) {
+export async function apply(verdicts, { by = 'watchdog', withStore, settle, guard } = {}) {
   const ws = withStore ?? (await import('../../../../../../framework/cli/builds-store.mjs')).withStore;
   const settleStatus = settle ?? (await import('../../../../../../framework/plan/builds-merge-core.mjs')).settleStatus;
+  const guardStatus = guard ?? (await import('../../../../../../framework/core/build-pipeline.mjs')).guardStatus;
   const out = [];
   ws((s) => {
     const now = new Date().toISOString();
@@ -56,22 +59,26 @@ export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {
       if (!b) { out.push({ ...v, applied: false, why: 'build not found' }); continue; }
       if (HANDS_OFF.includes(b.status)) { out.push({ ...v, applied: false, why: `the build is ${b.status}: left to the orchestrator` }); continue; }
       if (b.status !== v.row.status) { out.push({ ...v, applied: false, why: `the build moved to ${b.status} since the read` }); continue; }
-      const before = b.status;
+      const before = b.status; let held = '';
       if (v.action === 'complete' && b.mergedAt && b.pr === `#${v.row.pr}` && !settleStatus({ ...b, steps: b.steps }, now)) {
         out.push({ ...v, applied: false, noop: true, why: `merge already recorded; status stays ${b.status} until every step is ticked` }); continue;
       }
       if (v.action === 'complete') {
         if (v.row.pr) b.pr = `#${v.row.pr}`;
         if (!b.mergedAt) b.mergedAt = v.mergedAt || now;
+        if (v.mergeCommit && !b.landed?.sha) b.landed = { ...(b.landed ?? {}), sha: String(v.mergeCommit), pr: Number(v.row.pr) || 0, mergedAt: b.mergedAt };
         settleStatus(b, now);
+        // done-means-merged@1: a status the store would refuse is not set here (it keeps its status and says why)
+        if (b.status !== before) { const g = guardStatus({ ...b, status: before }, b.status); if (!g.ok) { held = `${b.status} not yet: ${g.why}`; b.status = guardStatus({ ...b, status: before }, 'landing').ok && b.status !== 'landing' ? 'landing' : before; } }
       } else if (v.action === 'remove') {
         b.status = 'archived';
       }
       const changed = b.status !== before;
       b.notes = Array.isArray(b.notes) ? b.notes : [];
-      b.notes.push({ text: `Watchdog: ${v.line}${changed ? ` (${before} → ${b.status})` : ` (status stays ${b.status}: steps still open)`}`.slice(0, 2000), at: now });
+      const stays = held && !changed ? `merge recorded; status stays ${b.status}: ${held}` : `merge recorded; status stays ${b.status} until every step is ticked`;
+      b.notes.push({ text: `Watchdog: ${v.line}${changed ? ` (${before} → ${b.status}${held ? `; ${held}` : ''})` : held ? ` (status stays ${b.status}: ${held})` : ` (status stays ${b.status}: steps still open)`}`.slice(0, 2000), at: now });
       b.updatedAt = now;
-      out.push({ ...v, applied: true, status: b.status, why: changed ? '' : `merge recorded; status stays ${b.status} until every step is ticked` });
+      out.push({ ...v, applied: true, status: b.status, why: changed ? '' : stays });
     }
     return s;
   }, { by, action: 'stale-watchdog', note: `${verdicts.length} stale row(s)` });
