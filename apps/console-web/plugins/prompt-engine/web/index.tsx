@@ -512,6 +512,7 @@ function PromptEngineView() {
   const [opts, setOpts] = useState<Options | null>(null);
   const [hist, setHist] = useState<Audit[] | null>(null);
   const [histKind, setHistKind] = useState('');
+  const [histRule, setHistRule] = useState('');
   const [runList, setRunList] = useState<RunRecord[] | null>(null);
   const [runStatus, setRunStatus] = useState('');
   const [params, setParams] = useState('');
@@ -524,7 +525,7 @@ function PromptEngineView() {
   }, [rt]);
   useEffect(() => { void load(); const t = setInterval(() => void load(), 30000); return () => clearInterval(t); }, [load]);
   useEffect(() => { void api<Options>('options', {}).then((o) => o.ok && setOpts(o)); }, []);
-  useEffect(() => { if (tab === 'history') void api<{ items: Audit[] }>(`history?limit=200${histKind ? `&kind=${histKind}` : ''}`).then((r) => setHist(r.ok ? r.items : [])); if (tab === 'registry') void api<typeof reg & { ok: boolean }>('manifest').then((r) => r.ok && setReg(r)); }, [tab, histKind]);
+  useEffect(() => { if (tab === 'history') void api<{ items: Audit[] }>(`history?limit=200${histKind ? `&kind=${histKind}` : ''}${histRule ? `&rule=${encodeURIComponent(histRule)}` : ''}`).then((r) => setHist(r.ok ? r.items : [])); if (tab === 'registry') void api<typeof reg & { ok: boolean }>('manifest').then((r) => r.ok && setReg(r)); }, [tab, histKind, histRule]);
   useEffect(() => { if (tab === 'runs') void api<{ items: RunRecord[] }>(`runs?limit=200${runStatus ? `&status=${runStatus}` : ''}`).then((r) => setRunList(r.ok ? r.items : [])); }, [tab, runStatus, st?.counts.runs]);
   const runNow = async (kind: 'macros' | 'pipelines', id: string, title: string, dry = false) => {
     const p = parseJsonObject(params);
@@ -553,8 +554,20 @@ function PromptEngineView() {
       </div>
       <TabGroup id="prompt-engine.tabs" label="Prompt engine sections" value={tab} onChange={pick} tabs={TABS.map((t) => ({ ...t, badge: t.value === 'waiting' ? counts?.waiting : t.value === 'events' ? counts?.rules : t.value === 'runs' ? counts?.runsWaiting || undefined : undefined }))} />
       {tab === 'events' && (
+        <div className="fx-stack">
+        <Container title={`Templates (${st?.templates.length ?? 0})`} icon="copy" collapsible defaultOpen={!st?.rules.length}>
+          <ul className="axp-pe__list" data-axf-target="list:prompt-engine.templates">
+            {st?.templates.map((t) => (
+              <li key={t.id} className="axp-pe__row">
+                <div className="axp-pe__head"><span className="axp-pe__title">{t.title}</span><Chip>{t.group}</Chip>{st.rules.some((r) => r.template === t.id) && <Chip tone="success">in use</Chip>}<span className="fx-mono fx-small axp-pe__count">{t.id}</span></div>
+                <p className="fx-small fx-muted axp-pe__sum">{t.description}</p>
+                <div className="axp-pe__actions"><Button tone="neutral" size="sm" icon="plus" onClick={() => void act(`templates/${encodeURIComponent(t.id)}/use`, {}, `${t.title}: rule added.`)}>Use</Button></div>
+              </li>
+            ))}
+          </ul>
+        </Container>
         <ul className="axp-pe__list">
-          {!st?.rules.length && <Note tone="info">No rules yet. Add one from a template above, or build your own.</Note>}
+          {!st?.rules.length && <Note tone="info">No rules yet. Use a template above, or build your own.</Note>}
           {st?.rules.map((r) => (
             <li key={r.id} className={`axp-pe__row ${r.enabled ? '' : 'is-off'}`}>
               <div className="axp-pe__head">
@@ -569,11 +582,14 @@ function PromptEngineView() {
                 <Switch label="On" hideLabel text={r.enabled ? 'On' : 'Off'} checked={r.enabled} onChange={(on) => void act(`rules/${encodeURIComponent(r.id)}/${on ? 'enable' : 'disable'}`, {}, on ? `${r.title} is on.` : `${r.title} is off.`)} />
                 <Button tone="neutral" size="sm" icon="edit" onClick={() => { setEditing(r); pick('builder'); }}>Edit</Button>
                 <Button tone="neutral" size="sm" icon="play" onClick={() => void api<{ fire: boolean; reason: string; instance?: Instance }>(`rules/${encodeURIComponent(r.id)}/test`, {}).then((t) => rt.toast(!t.ok ? t.error ?? 'Test failed.' : t.fire ? `Fires.${t.instance ? ` Would ask: ${t.instance.title}` : ' Would run its actions.'} Details in History.` : `Does not fire on the sample event (${t.reason}).`, t.ok ? 'info' : 'danger', 'Dry run'))}>Test</Button>
+                <Button tone="neutral" size="sm" icon="zap" confirm={`Fire “${r.title}” for real with a sample event? It asks or runs its actions now.`} onClick={() => void api<{ fire: boolean; reason: string; instance?: Instance; run?: RunResult }>(`rules/${encodeURIComponent(r.id)}/test`, { live: true }).then((t) => { rt.toast(!t.ok ? t.error ?? 'Test-fire failed.' : !t.fire ? `Did not fire (${t.reason}).` : t.instance ? `Asked: ${t.instance.title}. Answer it under Waiting.` : t.run ? runSummary(t.run) : 'Fired.', !t.ok ? 'danger' : t.fire ? 'success' : 'warning', 'Test-fire'); void load(); })}>Test-fire</Button>
+                <Button tone="ghost" size="sm" icon="clock" onClick={() => { setHistRule(r.id); setHistKind(''); pick('history'); }}>History</Button>
                 <Button tone="danger" size="sm" icon="trash" confirm={`Delete the rule “${r.title}”?`} onClick={() => void act(`rules/${encodeURIComponent(r.id)}/delete`, { confirm: r.id }, 'Rule deleted.')}>Delete</Button>
               </div>
             </li>
           ))}
         </ul>
+        </div>
       )}
       {tab === 'builder' && (editing ? <Builder key={editing.id || 'new'} initial={editing} onSaved={() => { setEditing(null); void load(); pick('events'); }} onCancel={() => { setEditing(null); pick('events'); }} /> : <Note tone="info">Pick a rule under Events and tap Edit, or tap New rule.</Note>)}
       {tab === 'macros' && (
@@ -623,7 +639,10 @@ function PromptEngineView() {
       )}
       {tab === 'history' && (
         <div className="fx-stack">
-          <SelectField label="Show" value={histKind} empty="Everything" onChange={setHistKind} options={['fired', 'skipped', 'asked', 'answered', 'expired', 'planned', 'ran', 'failed', 'dry-run', 'keys-needed', 'rule', 'macro', 'pipeline'].map((k) => ({ value: k, label: label(k) }))} />
+          <div className="axp-pe__tools" role="toolbar" aria-label="History filters">
+            <SelectField label="Show" value={histKind} empty="Everything" onChange={setHistKind} options={['fired', 'skipped', 'asked', 'answered', 'expired', 'shelved', 'planned', 'ran', 'failed', 'dry-run', 'keys-needed', 'rule', 'macro', 'pipeline', 'toolset', 'run', 'blocked'].map((k) => ({ value: k, label: label(k) }))} />
+            <SelectField label="Event" value={histRule} empty="Every event" onChange={setHistRule} options={(st?.rules ?? []).map((r) => ({ value: r.id, label: r.title }))} />
+          </div>
           {hist === null ? <LoadingSkeleton /> : !hist.length ? <Note tone="info">No history yet.</Note> : (
             <table className="axp-pe__hist fx-small">
               <thead><tr><th>When</th><th>What</th><th>Rule</th><th>Detail</th></tr></thead>

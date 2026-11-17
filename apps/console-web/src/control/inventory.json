@@ -1593,7 +1593,7 @@
       "view": "prompt-engine",
       "plugin": "ai.amberx.axf.console.prompt-engine",
       "file": "plugins/prompt-engine/web/index.tsx",
-      "line": 554,
+      "line": 555,
       "tabs": [
         {
           "address": "view:prompt-engine/tab:prompt-engine.tabs=events",
