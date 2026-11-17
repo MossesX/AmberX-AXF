@@ -43,6 +43,7 @@ import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppear
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+import { EditUiController } from './edit-ui-owners';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -310,6 +311,8 @@ export class AxfRuntime {
   readonly settings: SettingsRegistry;
   /** Search index the toolbar's live search reads (engines/search.ts); anyone can add providers. */
   readonly search = new SearchIndex(this);
+  /** Edit UI (edit-ui@1, spec/EDIT-UI.md): the Ctrl-held gate, the owner adapters and the undo stack — see edit-ui-owners.ts. */
+  readonly editUi: EditUiController;
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
   /**
@@ -405,6 +408,7 @@ export class AxfRuntime {
     if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
+    this.editUi = new EditUiController(this);
     this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
     this.settings.onConflict = (c) => this.diagnostics.report(
       c.what === 'setting'
@@ -436,6 +440,8 @@ export class AxfRuntime {
       this.settingsBump = true;
       queueMicrotask(() => { this.settingsBump = false; this.set({}); });
     });
+    // Edit UI (edit-ui@1): the settings group, the setting → gate link, the default owners and the editui.* actions
+    this.editUi.init();
     // the skin-switch ripple starts where the last tap was (withSkinSwitchFx)
     this.trackTaps();
     // Another frame or tab of this app saved (a host's Settings tab, its banner strip, a second window): read it now.
