@@ -540,6 +540,7 @@ export async function main(argv = process.argv.slice(2)) {
     if (!r.ran) return f.json ? out(r, '') : undefined; // quiet when not due: the cron log stays readable
     return out(r, `${r.at} pass${r.asked ? ` (asked by ${r.asked.by})` : ''}: ${r.scan.builds.length} running · ${r.fixes.length} fixed${r.fixes.map((x) => ` · ${x.buildId} ${x.cause}→${x.action}`).join('')}${r.fill.launched.length ? ` · started ${r.fill.launched.join(', ')}` : ''}${r.fill.idle ? ' · idle-slots' : ''}${r.errors.length ? ` · ${r.errors.length} failed` : ''}`);
   }
+  if (cmd === 'liveness') return (await import('./liveness.mjs')).main(rest.length ? rest : ['pass']); // build-live@1's 15-second pass (liveness.mjs)
   if (cmd === 'request') { const r = requestRun({ by: typeof f.by === 'string' ? f.by : undefined, build: typeof f.build === 'string' ? f.build : '' }); return out({ ok: true, ...r }, `asked the host for a watchdog pass (${r.at}): the next cron minute runs it`); }
   if (cmd === 'install-cron') { const r = installCron({ dir: typeof f.dir === 'string' ? f.dir : undefined }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `cron not installed: ${r.skipped}` : `installed ${r.file}`) : `cron not installed: ${r.error}`); }
   if (cmd === 'remove-cron') { const r = removeCron(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.removed ? `removed ${r.file}` : `${r.file} was not there`) : `not removed: ${r.error}`); }

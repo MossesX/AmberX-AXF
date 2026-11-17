@@ -71,10 +71,14 @@ function trim(dir) {
   } catch { /* nothing to trim */ }
 }
 
+/** Listeners called after every publish with { published, changed, transitions, state } (the broke alert). */
+const afterPublish = new Set();
+export const onPublish = (fn) => { afterPublish.add(fn); return () => afterPublish.delete(fn); };
+
 /**
  * Publish events: `makers` are functions (seq) → build-live-event@1 | null, called under the lock with the next seq,
  * folded into state.json and appended to events.jsonl. `tick` (the liveness pass) is stored as state.lastTick.
- * Returns { published: events, changed: [build ids whose row changed], state }.
+ * Returns { published: events, changed: [build ids whose row changed], transitions: [{ build, from, to, state, seq }], state }.
  */
 export function publish(makers, { root = '', tick = null, everySec = 0 } = {}) {
   if (!channelOn(root)) return { published: [], changed: [], state: null, off: true };
@@ -85,20 +89,26 @@ export function publish(makers, { root = '', tick = null, everySec = 0 } = {}) {
     const doc = readState(root);
     const states = new Map(doc.builds.map((s) => [s.build, s]));
     let seq = doc.seq || 0;
-    const out = []; const changed = [];
+    const out = []; const changed = []; const transitions = [];
     for (const make of makers) {
       let ev = null; try { ev = make(seq + 1); } catch { ev = null; }
       if (!ev) continue;
-      const r = fold(states.get(ev.build) ?? emptyState(ev.build), ev);
+      const prev = states.get(ev.build) ?? emptyState(ev.build);
+      const r = fold(prev, ev);
       if (r.dropped) continue;
       seq = ev.seq; states.set(ev.build, r.state); out.push(ev);
       if (r.changed) changed.push(ev.build);
+      if (prev.state !== r.state.state) transitions.push({ build: ev.build, from: prev.state, to: r.state.state, state: r.state, seq: ev.seq });
     }
     const next = { ...snapshot(states, { at: new Date().toISOString(), seq, everySec: everySec || doc.everySec || DEFAULT_EVERY_SEC }), lastTick: tick ?? doc.lastTick ?? null };
-    if (out.length) appendFileSync(join(dir, 'events.jsonl'), out.map((e) => `${JSON.stringify(e)}\n`).join(''));
+    // the liveness pass's heartbeat summary rides on the channel too (build-live-tick@1, no seq: never replayed)
+    const lines = [...out, ...(tick ? [{ ...tick, $axf: 'build-live-tick@1', seq: 0 }] : [])];
+    if (lines.length) appendFileSync(join(dir, 'events.jsonl'), lines.map((e) => `${JSON.stringify(e)}\n`).join(''));
     writeState(dir, next);
     trim(dir);
-    return { published: out, changed, state: next };
+    const res = { published: out, changed, transitions, state: next };
+    for (const fn of afterPublish) { try { fn(res, { root }); } catch { /* a listener never fails a publish */ } }
+    return res;
   } finally { unlock(); }
 }
 

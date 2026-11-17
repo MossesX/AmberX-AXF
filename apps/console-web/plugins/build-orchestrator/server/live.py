@@ -6,7 +6,8 @@ This module tails that file and pushes each new frame to every open stream, so t
 
     GET /api/plugins/build-orchestrator/live/stream      SSE: `event: build-live-snapshot` first (or the frames since
                                                          Last-Event-ID / ?since=<seq> when the ring still has them),
-                                                         then one `event: build-live` frame per event, keepalive 20 s
+                                                         then one `event: build-live` frame per event and one
+                                                         `event: build-live-tick` per liveness pass, keepalive 20 s
     GET /api/plugins/build-orchestrator/live/events      the last frames as JSON (?since=<seq>, ?limit)
 
 The snapshot routes (GET /live, /live/<build>) and the settings / broke routes live in routes_live.py.
@@ -25,6 +26,7 @@ from fastapi.responses import StreamingResponse
 ROOT = Path(__file__).resolve().parents[5]  # server → build-orchestrator → plugins → console-web → apps → repo
 SSE_EVENT = "build-live"
 SNAPSHOT_EVENT = "build-live-snapshot"
+TICK_EVENT = "build-live-tick"  # the liveness pass's heartbeat summary (build-live-tick@1, no seq)
 POLL_SEC = 0.75
 KEEPALIVE_SEC = 20
 RING = 2000
@@ -131,7 +133,7 @@ async def stream_frames(since: int | None, is_disconnected=None) -> AsyncIterato
                 continue
             last = max(last, seq)
             sent = True
-            yield frame(ev)
+            yield frame(ev, TICK_EVENT if ev.get("$axf") == "build-live-tick@1" else SSE_EVENT)
         if sent:
             idle = 0.0
         else:
