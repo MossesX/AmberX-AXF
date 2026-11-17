@@ -45,3 +45,20 @@ export async function read({ items } = {}) {
   const rows = rowsFrom(list);
   return { table: TABLE.id, rows, wantPrs: rows.map((r) => r.pr).filter(Boolean), available: true, provider };
 }
+
+/**
+ * Apply verdicts: close each item as landed (complete) or removed (remove) through the provider's closeLanded (status
+ * kept, never approved). A `complete` whose PR is still open is skipped: an open PR's review is Brett's call.
+ * Returns each verdict with { applied, why }.
+ */
+export async function apply(verdicts, { by = 'watchdog', closeLanded } = {}) {
+  let close = closeLanded;
+  if (!close) { const r = await reviewModule(); if (!r?.mod?.closeLanded) return verdicts.map((v) => ({ ...v, applied: false, why: 'no UI Review provider with closeLanded' })); close = r.mod.closeLanded; }
+  const out = [];
+  for (const v of verdicts) {
+    if (v.action === 'complete' && v.prState === 'open') { out.push({ ...v, applied: false, why: 'its PR is still open' }); continue; }
+    const r = close([v.row.id], { how: v.action === 'complete' ? 'landed' : 'removed', pr: v.row.pr, by, why: v.line });
+    out.push({ ...v, applied: r.changed.length > 0, why: r.changed.length ? '' : 'already closed or gone' });
+  }
+  return out;
+}

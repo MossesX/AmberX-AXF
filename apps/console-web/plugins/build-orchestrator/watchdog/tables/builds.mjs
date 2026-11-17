@@ -33,3 +33,47 @@ export async function read({ store } = {}) {
   const rows = rowsFrom(s);
   return { table: TABLE.id, rows, builds: Array.isArray(s?.builds) ? s.builds : [], wantPrs: rows.map((r) => r.pr).filter(Boolean) };
 }
+
+/** Builds the watchdog never writes: a session may be on them (the orchestrator and the reconciler own those). */
+export const HANDS_OFF = Object.freeze(['running', 'waiting']);
+
+/**
+ * Apply verdicts in ONE store write (withStore: under the store lock, journalled, live to main through builds-live):
+ *   complete → the merged PR is recorded (pr, mergedAt) and the status settles by the store's own rule (built →
+ *              complete only when every step is ticked: done-means-merged; otherwise it stays and says why)
+ *   remove   → archived, with the reason in a note
+ * Every touched build gets a build note naming the watchdog and the evidence. Running / waiting builds are never
+ * touched. `withStore` / `settle` override the store (tests). Returns each verdict with { applied, why, status }.
+ */
+export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {}) {
+  const ws = withStore ?? (await import('../../../../../../framework/cli/builds-store.mjs')).withStore;
+  const settleStatus = settle ?? (await import('../../../../../../framework/plan/builds-merge-core.mjs')).settleStatus;
+  const out = [];
+  ws((s) => {
+    const now = new Date().toISOString();
+    for (const v of verdicts) {
+      const b = (s.builds ?? []).find((x) => x.id === v.row.id && !x.deleted);
+      if (!b) { out.push({ ...v, applied: false, why: 'build not found' }); continue; }
+      if (HANDS_OFF.includes(b.status)) { out.push({ ...v, applied: false, why: `the build is ${b.status}: left to the orchestrator` }); continue; }
+      if (b.status !== v.row.status) { out.push({ ...v, applied: false, why: `the build moved to ${b.status} since the read` }); continue; }
+      const before = b.status;
+      if (v.action === 'complete' && b.mergedAt && b.pr === `#${v.row.pr}` && !settleStatus({ ...b, steps: b.steps }, now)) {
+        out.push({ ...v, applied: false, noop: true, why: `merge already recorded; status stays ${b.status} until every step is ticked` }); continue;
+      }
+      if (v.action === 'complete') {
+        if (v.row.pr) b.pr = `#${v.row.pr}`;
+        if (!b.mergedAt) b.mergedAt = v.mergedAt || now;
+        settleStatus(b, now);
+      } else if (v.action === 'remove') {
+        b.status = 'archived';
+      }
+      const changed = b.status !== before;
+      b.notes = Array.isArray(b.notes) ? b.notes : [];
+      b.notes.push({ text: `Watchdog: ${v.line}${changed ? ` (${before} → ${b.status})` : ` (status stays ${b.status}: steps still open)`}`.slice(0, 2000), at: now });
+      b.updatedAt = now;
+      out.push({ ...v, applied: true, status: b.status, why: changed ? '' : `merge recorded; status stays ${b.status} until every step is ticked` });
+    }
+    return s;
+  }, { by, action: 'stale-watchdog', note: `${verdicts.length} stale row(s)` });
+  return out;
+}
