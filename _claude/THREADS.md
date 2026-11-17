@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `prompting-engine-control-panel-events` note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `ui-manager-floating-window-to-select-any` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `orchestrator-settings-collapsible-split` → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `console-app-part-2-native-floating` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → complete, note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:51 UTC · `fix-launcher-crash-duplicate-steps-brief` added (16 steps) (all) · foreign-write
 - 2026-11-17 23:51 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
 - 2026-11-17 23:51 UTC · `active-tab-stop-button-grid-alignment` added (24 steps) (all) · foreign-write
+- 2026-11-17 23:52 UTC · `move-server-side-console-parts-onto-vps` s13 done (all) · foreign-write
+- 2026-11-17 23:52 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · foreign-write
 
 ## Token passes (log)
 
