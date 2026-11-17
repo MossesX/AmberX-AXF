@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:00 UTC · `edit-ui-mode-inline-edit-anything-active` s2 done (all) · orchestrator
 - 2026-11-17 15:00 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · orchestrator
 - 2026-11-17 15:01 UTC · `auto-lander-drag-rows-to-set-merge-order` → running, note (all) · pipeline
 - 2026-11-17 15:01 UTC · `auto-lander-drag-rows-to-set-merge-order` branch claude/auto-lander-drag-rows-to-set-merge-order (all) · pipeline
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:11 UTC · `maintenance-plugin-clear-docker-cache` → fixing, note (all) · pipeline
 - 2026-11-17 19:12 UTC · `separate-settings-per-plugin-reset` → queued (all) · Brett
 - 2026-11-17 19:12 UTC · `rebuild-every-toolbar-page-specific` → queued (all) · Brett
+- 2026-11-17 19:16 UTC · `every-plugin-screen-gets-a-settings-gear` s21 done (all) · orchestrator
 
 ## Token passes (log)
 

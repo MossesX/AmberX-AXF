@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7636,
- "updatedAt": "2026-11-17T19:12:43.355Z",
+ "rev": 7637,
+ "updatedAt": "2026-11-17T19:16:52.576Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247181,7 +247181,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -247189,7 +247189,7 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:16:48.732Z",
    "builtAt": "",
    "notes": [
     {
@@ -247302,14 +247302,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "failure": {
-    "kind": "ci-red",
-    "at": "2026-11-17T19:11:35.654Z",
-    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
-    "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
-    "step": "",
-    "exit": null
    },
    "steps": [
     {
@@ -247830,12 +247822,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T19:16:48.732Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T19:09:23.177Z",
-     "updatedAt": "2026-11-17T19:09:23.556Z"
+     "updatedAt": "2026-11-17T19:16:49.410Z"
     },
     {
      "id": "s22-21",
