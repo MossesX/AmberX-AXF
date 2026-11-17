@@ -26,6 +26,8 @@ from fastapi import APIRouter, Body, HTTPException, Request
 import console_context as cx
 import plugin_services
 
+from . import feeds
+
 router = APIRouter()
 HERE = Path(__file__).resolve().parent
 CLI = HERE.parent / "engine.mjs"
@@ -244,6 +246,15 @@ class PromptEngineService:
     def register(self, manifest: dict[str, Any], by: str = "plugin") -> dict[str, Any]:
         return _run("register-manifest", json.dumps(manifest), by=by)
 
+    def emit(self, source: str, event: str, payload: dict[str, Any] | None = None, by: str = "plugin", id: str = "") -> None:
+        """Fire and don't wait (feeds.py): the producer never waits on the engine and never fails because of it."""
+        if not cx.plugin_enabled(FOLDER):
+            return
+        ev: dict[str, Any] = {"source": str(source)[:80], "event": str(event)[:80], "payload": payload if isinstance(payload, dict) else {}, "by": str(by)[:120]}
+        if id:
+            ev["id"] = str(id)[:200]
+        feeds.emit_async(lambda e, b: fire(e, b), ev, str(by)[:120])
+
 
 plugin_services.provide(CAP, PromptEngineService(), folder=FOLDER)
 
@@ -258,6 +269,10 @@ def tick_once() -> dict[str, Any]:
     res = _run("tick", by="tick")
     if res.get("ok"):
         res["delivered"] = deliver(res.get("dispatch") or [], "tick")
+        try:  # held veto calls and approvals on axHub → approval.held / approval.waiting (each once)
+            res["approvals"] = feeds.approvals(plugin_services.get, data_dir(), lambda e, b: fire(e, b))
+        except Exception as e:  # noqa: BLE001
+            res["approvals"] = {"ok": False, "why": str(e)[:200]}
     return res
 
 
@@ -578,6 +593,18 @@ async def webhook(hook: str, request: Request) -> dict[str, Any]:
     headers = {k: v for k, v in request.headers.items() if k.lower() in ("content-type", "user-agent", "x-github-event", "x-hub-signature-256", "x-event")}
     ev = {"source": "webhook", "event": "webhook.received", "payload": {"hook": _text(hook, 80), "headers": headers, "body": payload}, "by": "webhook"}
     return _with_delivery(_run("fire", json.dumps(ev), by="webhook"), "webhook")
+
+
+@router.post("/voice")
+def post_voice(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    """A phrase AmberX heard: fires voice.phrase { phrase, speaker, device } for rules with a voice trigger."""
+    b = _body(body)
+    phrase = _text(b.get("phrase") or b.get("text"), 400)
+    if not phrase:
+        raise HTTPException(400, "voice needs a phrase")
+    ev = {"source": "voice", "event": "voice.phrase", "payload": {"phrase": phrase, "speaker": _text(b.get("speaker"), 80), "device": _text(b.get("device"), 80)}, "by": _who(request)}
+    res = _run("fire", json.dumps(ev), *(["--dry"] if b.get("dry") is True else []), by=_who(request))
+    return _with_delivery(res, _who(request)) if b.get("dry") is not True else _raise(res)
 
 
 @router.post("/tick")

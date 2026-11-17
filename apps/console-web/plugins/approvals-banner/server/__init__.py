@@ -299,3 +299,54 @@ def ensure_health() -> bool:
         return False
     _health_done = True
     return True
+
+
+# ---- axf.approvals-feed@1: what axHub is waiting on, read with the console's owner sign-in (read only)
+
+def pending_feed(client: httpx.Client | None = None, owner: OwnerSession = OWNER) -> dict[str, Any]:
+    """→ {ok, items: [{id, kind: held | approval, tool, title, summary, secondsLeft, by}]} or {ok: False, code, message}.
+    Reads the hub's approvals feed; never decides anything. Used by the prompt engine to fire approval.held /
+    approval.waiting events (its tick). Without the owner sign-in it says so and the engine fires nothing."""
+    hub, cred = hub_base(), owner_credential()
+    if not hub or not cred:
+        return {"ok": False, "code": "no_owner", "message": "the console has no axHub owner sign-in (AXF_HUB_RELAY_USER / AXF_HUB_RELAY_PASSWORD)"}
+    own = client is None
+    c = client or httpx.Client(timeout=TIMEOUT_S, follow_redirects=False)
+    try:
+        for _attempt in (1, 2):
+            s = owner.get(hub, cred, c)
+            if not s["ok"]:
+                return s
+            r = c.get(f"{hub}/auth/api/approvals", headers={"Cookie": f"{COOKIE}={s['cookie']}", "Accept": "application/json"})
+            if r.status_code in (401, 403):
+                owner.drop(s["cookie"])
+                continue
+            j = _reply_json(r)
+            if r.status_code != 200:
+                return {"ok": False, "code": "hub_refused", "message": f"axHub answered {r.status_code}"}
+            items = []
+            for p in j.get("pending") or []:
+                if not isinstance(p, dict) or not ID_RE.match(str(p.get("id", ""))):
+                    continue
+                veto = p.get("veto") if isinstance(p.get("veto"), dict) else None
+                reason = p.get("reason") if isinstance(p.get("reason"), dict) else {}
+                items.append({"id": p["id"], "kind": "held" if p.get("status") == "held" or veto else "approval", "tool": str(p.get("tool") or "")[:120],
+                              "title": str(reason.get("title") or p.get("title") or "")[:200], "summary": str(reason.get("description") or p.get("summary") or "")[:600],
+                              "secondsLeft": int(veto.get("secondsLeft") or 0) if veto else 0, "by": str(p.get("source") or p.get("by") or "")[:120]})
+            return {"ok": True, "items": items}
+        return {"ok": False, "code": "no_session", "message": "axHub keeps refusing the console's sign-in session"}
+    except httpx.HTTPError as e:
+        return {"ok": False, "code": "unreachable", "message": f"axHub did not answer: {str(e)[:160]}"}
+    finally:
+        if own:
+            c.close()
+
+
+class ApprovalsFeedService:
+    """axf.approvals-feed@1 — pending() reads what axHub waits on (held veto calls and approvals). Read only."""
+
+    def pending(self) -> dict[str, Any]:
+        return pending_feed()
+
+
+plugin_services.provide("axf.approvals-feed@1", ApprovalsFeedService(), FOLDER)

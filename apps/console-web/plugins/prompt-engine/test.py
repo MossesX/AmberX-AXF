@@ -29,8 +29,9 @@ alerts: list[dict] = []
 resolved: list[str] = []
 cx.set_context(raise_alert=lambda inp: alerts.append(inp) or {}, resolve_alerts=lambda keys: resolved.extend(keys))
 
-spec = importlib.util.spec_from_file_location("prompt_engine_server", HERE / "server" / "__init__.py")
+spec = importlib.util.spec_from_file_location("prompt_engine_server", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
 srv = importlib.util.module_from_spec(spec)
+sys.modules["prompt_engine_server"] = srv
 assert spec.loader
 spec.loader.exec_module(srv)
 
@@ -199,5 +200,35 @@ r = c.post(f"{API}/rules", json={"id": "up", "title": "Up", "trigger": {"event":
 ok(r.status_code == 200, "upgrade rule added")
 r = c.post(f"{API}/fire", json={"event": "build.upgrade-requested", "payload": {"build": {"id": "b"}, "phase": 1, "to": "Fable"}})
 ok(r.json()["runs"][0]["failed"][0]["code"] == "denied", "only Brett approves an upgrade")
+
+# event feeds (s4): voice, emit, approvals on the tick, merge failures
+r = c.post(f"{API}/rules", json={"id": "gn", "title": "Good night", "trigger": {"source": "voice", "event": "voice.phrase"}, "when": {"all": [{"field": "phrase", "op": "contains", "value": "good night"}]}, "ask": {"kind": "approve", "title": "Pause the queue for the night?"}, "on": {"approve": [{"action": "log.note", "input": {"text": "paused"}}]}})
+ok(r.status_code == 200, "voice rule added")
+r = c.post(f"{API}/voice", json={"phrase": "ok amber good night"})
+ok(r.status_code == 200 and any(i["rule"] == "gn" for i in r.json().get("instances", [])), "a spoken phrase fires voice.phrase and asks")
+ok(c.post(f"{API}/voice", json={}).status_code == 400, "voice needs a phrase")
+feeds = srv.feeds
+ok(feeds.classify_failure("it has conflicts with its base") == "merge.clash" and feeds.classify_failure("CI failed on its head commit") == "merge.ci-failed" and feeds.classify_failure("GitHub error") == "", "merge failures classify")
+evs, seen = feeds.approval_events([{"id": "a" * 36, "kind": "held", "tool": "vps.run", "summary": "restart", "secondsLeft": 80}, {"id": "b" * 36, "kind": "approval", "tool": "x"}], [])
+ok([e["event"] for e in evs] == ["approval.held", "approval.waiting"] and evs[0]["payload"]["approval"]["secondsLeft"] == 80, "feed items become approval events")
+ok(feeds.approval_events([{"id": "a" * 36, "kind": "held"}], seen)[0] == [], "each approval fires once")
+
+
+class FakeFeed:
+    def pending(self) -> dict:
+        return {"ok": True, "items": [{"id": "c" * 36, "kind": "held", "tool": "vps.run", "summary": "deploy", "secondsLeft": 60}]}
+
+
+plugin_services.provide("axf.approvals-feed@1", FakeFeed(), folder="fake-feed")
+r = c.post(f"{API}/tick")
+ok(r.json()["approvals"] == {"ok": True, "fired": 1}, "the tick fires a held call from the approvals feed")
+r = c.post(f"{API}/tick")
+ok(r.json()["approvals"]["fired"] == 0, "and only once")
+plugin_services.withdraw("fake-feed")
+fired_events: list[dict] = []
+t = feeds.emit_async(lambda e, b: fired_events.append(e), {"source": "ui-review", "event": "ui-review.submitted"}, "t")
+t.join(5)
+ok(fired_events and fired_events[0]["event"] == "ui-review.submitted", "emit fires off the caller's thread")
+ok(hasattr(svc, "emit"), "the capability has emit")
 
 print(f"prompt-engine server: {checks} checks passed")
