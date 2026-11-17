@@ -7650,6 +7650,18 @@
    "from": "",
    "addenda": []
   },
+  "rebuild-fresh-main-phone-connect-small": {
+   "said": "What's up with the new phone connection? You gonna build it or what?",
+   "at": "2026-11-17T16:53:25.340Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "rebuild-gizmo-from-scratch-full-claude-style-cha": {
    "said": "You might as well just build it over again and make it sick. Make it better. It's gotta be a full-blown Claude interface where I can either talk to Claude or talk to my Ollama. The Gizmo plugin is trash, the chat is trash, it used to be way better.",
    "at": "2026-11-10T21:38:57.321Z",

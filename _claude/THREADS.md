@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` → running, note (all) · pipeline
 - 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-17 03:31 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → queued (all) · mcp
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:40 UTC · `auto-lander-drag-rows-to-set-merge-order` → pending, note (all) · reconciler
 - 2026-11-17 15:50 UTC · `settings-opened-banners-nav-menu` → pending, note (all) · reconciler
 - 2026-11-17 15:50 UTC · `live-hot-refresh-every-grid-list-re` → pending, note (all) · reconciler
+- 2026-11-17 16:53 UTC · `rebuild-fresh-main-phone-connect-small` added (0 steps) (all) · console
 
 ## Token passes (log)
 
