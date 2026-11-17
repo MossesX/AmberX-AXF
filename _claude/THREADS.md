@@ -829,13 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:50 UTC · `skins-as-packages-of-slices-every-section-its-ow` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `full-api-cli-control-of-everything-plus-an-offli` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `open-any-website-by-voice-on-the-phone-optionall` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `amberx-build-notifications-for-every-stage-start` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `build-notifications-same-notification-per-build` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `merge-review-one-by-one-every-built-but-unmerged` → archived, note (all) · watchdog
@@ -1229,6 +1222,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:24 UTC · `rebuild-fresh-main-phone-connect-small` s10 done (all) · orchestrator
 - 2026-11-17 21:24 UTC · `fix-banner-settings-interface-tab` note (all) · orchestrator
 - 2026-11-17 21:24 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:25 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:25 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` → running, note (all) · pipeline
+- 2026-11-17 21:25 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` branch claude/fix-banner-settings-interface-tab (all) · pipeline
+- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` note (all) · orchestrator
+- 2026-11-17 21:25 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
 
 ## Token passes (log)
 
