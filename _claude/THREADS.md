@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:28 UTC · `orchestrator-runs-long-builds-across` note (all) · orchestrator
 - 2026-11-16 23:28 UTC · `fable-rebuild-plan-studio-cleared-out` s3 done, → complete (all) · orchestrator
 - 2026-11-16 23:28 UTC · `amberx-open-url-must-open-page-even-when` s6 done (all) · orchestrator
 - 2026-11-16 23:28 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · pipeline
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:53 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s13 done (all) · orchestrator
 - 2026-11-17 03:53 UTC · `prompting-engine-control-panel-to-create` s8 done, → complete (all) · orchestrator
 - 2026-11-17 03:54 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
+- 2026-11-17 03:53 UTC · `orchestrator-runs-long-builds-across` s11 done (all) · orchestrator
 
 ## Token passes (log)
 
