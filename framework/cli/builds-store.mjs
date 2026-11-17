@@ -451,6 +451,10 @@ export const readStoreNow = () => readStore();
 
 /** Save a new store state. Every write is versioned: store rev + 1, changed builds rev + 1, one journal line. */
 export function saveStore(before, after, { by = 'cli', action = 'write', note = '' } = {}) {
+  // step-dedupe guard: whatever wrote a build's steps (absorb, merge, split, add-step), a step is stored once
+  { const prev = new Map((before?.builds ?? []).map((b) => [b.id, b]));
+    const touched = (after?.builds ?? []).filter((b) => JSON.stringify(b.steps) !== JSON.stringify(prev.get(b.id)?.steps)).map((b) => b.id);
+    if (touched.length) { const d = core.dedupeStoreSteps(after, { ids: touched }); for (const r of d.report) process.stderr.write(`builds-store: ${r.id} had repeated steps: ${r.before} → ${r.after}\n`); } }
   const now = new Date().toISOString();
   const changes = core.diffStores(before, after, now);
   const draftChanged = JSON.stringify(before.drafts) !== JSON.stringify(after.drafts);

@@ -234,7 +234,7 @@ async function main() {
   const outbox = join(A, `${STORE_REL}.live-outbox.jsonl`);
   const cur = mainStore().builds.find((b) => b.id === 'x');
   const stamp = new Date(Date.now() + 60000).toISOString();
-  const poisoned = { ...cur, updatedAt: stamp, steps: [{ ...cur.steps[0] }, ...cur.steps] };
+  const poisoned = { ...cur, updatedAt: stamp, steps: [{ ...cur.steps[0], text: 'a second step under the same uid' }, ...cur.steps] };
   writeFileSync(outbox, `${JSON.stringify({ rev: 900, at: stamp, by: 'check', action: 'poison', note: '', builds: [{ id: 'x', op: 'change', rev: 99, before: null, after: poisoned }] })}\n`);
   r = run(A, ORCH, ['act', 'step', 'y', 's3', 'done']); check(r.status === 0, `tick next to a poisoned line: ${r.stderr}`);
   r = run(A, LIVE, ['flush']); check(r.status === 0, `flush with a bad record: ${r.stdout}${r.stderr}`);
