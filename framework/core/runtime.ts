@@ -44,7 +44,7 @@ import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpI
 import { Diagnostics } from './diagnostics';
 import { CHROME_INSTANCE_KEY, CHROME_KIND_DEFAULTS_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
 // skin-slots@1 (build flagship-professional-skin-covering-2): motion tokens, behaviour and dialog overrides, the nav collapsed default
-import { BEHAVIOR_OVERRIDES_KEY, DIALOG_KEY, MOTION_KEY, NAV_COLLAPSED_SETTING, normalizeSkinDialog, skinMotionStyle, skinSlotStyleKeys } from './engines/skin-slots.mjs';
+import { BEHAVIOR_OVERRIDES_KEY, DIALOG_KEY, HOOKS_KEY, HOOK_KINDS, MOTION_KEY, NAV_COLLAPSED_SETTING, normalizeSkinDialog, resolveSkinHooks, skinMotionStyle, skinSlotStyleKeys, type HookRegistry, type ResolvedSkinHooks } from './engines/skin-slots.mjs';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -1079,6 +1079,39 @@ export class AxfRuntime {
   skinCovers(id: string): { type: string; by: CoverageRow['by']; covered: boolean; how: string[] }[] {
     const s = this.skinData(id);
     return s ? skinCovers(s) : [];
+  }
+
+  /* ---------------- skin-slots@1 hooks: the skin's hook refs per chrome kind, resolved against what the app knows ---------------- */
+
+  private readonly hookRegistries: HookRegistry[] = [];
+
+  /**
+   * A library or plugin tells the runtime which hook ids and drop zones it knows (lib-datagrid: grid-hook@1 row hooks;
+   * lib-dnd: its zones; a hook@1 registry when it lands). Registered actions always count as hooks.
+   */
+  registerHookRegistry(reg: HookRegistry): () => void {
+    this.hookRegistries.push(reg);
+    return () => { const i = this.hookRegistries.indexOf(reg); if (i >= 0) this.hookRegistries.splice(i, 1); };
+  }
+
+  /** Everything the app knows about hook ids and zones, as one registry (actions first, then what libraries registered). */
+  hookRegistry(): HookRegistry {
+    return {
+      hook: (id) => !!this.actions.get(id) || this.hookRegistries.some((r) => r.hook?.(id) === true),
+      zone: (id) => this.hookRegistries.some((r) => r.zone?.(id) === true),
+    };
+  }
+
+  /**
+   * The skin's hooks for one chrome kind (or every kind with no argument), read from the look in force (`axf.hooks.<kind>`,
+   * so a scoped view answers for its own skin) and resolved through the hook registry: each ref with `known`, and
+   * `unknown` = the refs the host should report. A kind the skin says nothing about gives empty lists.
+   */
+  skinHooks(kind?: string): ResolvedSkinHooks {
+    const kinds = kind ? [kind] : [...HOOK_KINDS];
+    const raw: Record<string, unknown> = {};
+    for (const k of kinds) { const v = this.settings.get(HOOKS_KEY(k)); if (v && typeof v === 'object') raw[k] = v; }
+    return resolveSkinHooks(raw, this.hookRegistry());
   }
 
   /**
