@@ -1,5 +1,6 @@
 import { installConsoleSearch } from './consoleSearch';
 import { installConsoleControl } from './control';
+import { installNative } from './native/axfNative';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
@@ -32,6 +33,7 @@ import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
 import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
 import { menuLibrary } from './menuLibrary';
+import { withDefaultSettingsTab } from './PluginDefaultSettingsTab';
 import { countingUses, loader, NewVersionNotice, useLoaderVersion } from './pluginLoader';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
@@ -75,8 +77,9 @@ function OpenSettingsTab({ tab }: { tab: string }) {
  * (Brett's rule, Oct 18 2026). Enforced here for every plugin, so a plugin can't opt out by forgetting `parent`.
  */
 function underPlugins(p: BundledPlugin): AxfWebLibrary {
-  const lib = p.library!;
   const m = p.manifest;
+  // plugin.json `settingsTab: { default: true }`: the generic sub-tab (on/off, logs, info, Install & uninstall)
+  const lib = withDefaultSettingsTab(p.folder, m, p.library!);
   // plugin@1 (Oct 23 2026): the model that built it (badges) and where its UI opens (main area by default; the
   // build engine's default rules fill `opens` in every plugin.json, its settings tab gets the "Opens in" choice).
   const out: AxfWebLibrary = {
@@ -87,7 +90,7 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
   };
   // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
   // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.
-  const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l), { id: m.id, name: m.name });
+  const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l, { name: m.name, settingsGear: m.settingsGear, defaultTab: m.settingsTab?.default === true }), { id: m.id, name: m.name });
   if (!lib.settingsTabs?.length) return themed(out);
   return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) });
 }
@@ -118,6 +121,8 @@ function usePlugins() {
   useEffect(() => installConsoleSearch(rt), [rt]);
   // console-control@1: functions, buttons, plugins and the command channel (src/control)
   useEffect(() => installConsoleControl(rt), [rt]);
+  // the Android console app (apps/console-droid): native bridge, safe area, floating toolbar, ?axf-open= deep links
+  useEffect(() => installNative(rt), [rt]);
   // Inside a host that manages plugins (embed@1 take `plugins`): tell it which plugins the console has, and run
   // only the ones it enabled for the console (Brett, Oct 22 2026). The console's own switches stay as they are for when
   // it runs on its own.

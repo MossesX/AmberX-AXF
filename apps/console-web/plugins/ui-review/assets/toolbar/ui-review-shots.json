@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "ui-review-shots",
+  "name": "Screenshots",
+  "version": "1.0.0",
+  "description": "The Screenshots toolbar (UI Review → Screenshots): send the selected pictures to review, group them, compare before and after, rename the open group.",
+  "author": "AmberX AXF",
+  "tags": ["page", "ui-review", "screenshots"],
+  "data": {
+    "scope": "view:ui-review",
+    "slot": "shots",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "shots",
+        "label": "Screenshots",
+        "items": [
+          { "id": "send", "icon": "eye", "label": "Send to review", "action": "handler:ui-review.send-to-review", "enabledWhen": "picked>0", "badge": "state:picked", "priority": 300, "overflow": "never" },
+          { "id": "group-by", "icon": "grid", "label": "Group by", "action": "handler:ui-review.shots-group-by", "badge": "state:shotGroupLabel", "priority": 250 },
+          { "id": "compare", "icon": "copy", "label": "Compare before/after", "action": "handler:ui-review.shots-compare", "checked": "state:comparing", "enabledWhen": "pairs>0", "priority": 220 },
+          { "id": "rename", "icon": "edit", "label": "Rename group", "action": "handler:ui-review.rename-group", "enabledWhen": "group", "priority": 200 }
+        ]
+      }
+    ]
+  }
+}

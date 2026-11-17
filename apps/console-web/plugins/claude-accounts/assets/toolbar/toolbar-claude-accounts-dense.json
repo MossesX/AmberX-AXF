@@ -1,0 +1,82 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-claude-accounts-dense",
+  "name": "Claude accounts: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-claude-accounts",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:claude-accounts",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "accounts",
+        "label": "Accounts",
+        "items": [
+          {
+            "id": "switch",
+            "icon": "key",
+            "label": "Switch account",
+            "action": "handler:claude-accounts.switch",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "check",
+            "icon": "check-circle",
+            "label": "Check accounts now",
+            "action": "command:build-orchestrator/pipeline-health-now",
+            "priority": 260
+          },
+          {
+            "id": "refresh",
+            "icon": "refresh",
+            "label": "Refresh",
+            "action": "handler:claude-accounts.refresh",
+            "priority": 200
+          }
+        ]
+      },
+      {
+        "id": "jobs",
+        "label": "Jobs",
+        "items": [
+          {
+            "id": "routing",
+            "icon": "shuffle",
+            "label": "Job routing",
+            "action": "handler:claude-accounts.routing",
+            "priority": 220
+          },
+          {
+            "id": "workers",
+            "icon": "user",
+            "label": "Add a worker",
+            "action": "handler:claude-accounts.workers",
+            "priority": 160
+          },
+          {
+            "id": "runs",
+            "icon": "clock",
+            "label": "Recent runs",
+            "action": "handler:claude-accounts.runs",
+            "priority": 140
+          }
+        ]
+      }
+    ]
+  }
+}

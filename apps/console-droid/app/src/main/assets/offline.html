@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Console offline</title>
+<style>
+  /* The shell's only local page. It carries no console theme (the asset system lives in the web console it can't reach),
+     so it uses the system's own colours and fonts. */
+  body { margin: 0; padding: max(24px, env(safe-area-inset-top)) 24px 24px; font: menu; font-size: 1rem; color: CanvasText; background: Canvas; }
+  h1 { font-size: 1.25rem; }
+</style>
+</head>
+<body>
+<h1>The console can't be reached</h1>
+<p>No connection to console.amberxai.com. Trying again every 10 seconds.</p>
+<p><button onclick="location.replace('https://console.amberxai.com/')">Try now</button></p>
+<script>setTimeout(function () { location.replace('https://console.amberxai.com/'); }, 10000);</script>
+</body>
+</html>

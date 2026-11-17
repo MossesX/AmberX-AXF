@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { BannerIcon, Button, Chip, Icon, Segmented, TabGroup, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { BannerIcon, Button, Chip, Icon, PageToolbar, Segmented, TabGroup, useBannerLaunchOpen, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
@@ -51,6 +51,8 @@ export function answerPrompt(a: Answer) { const r = promptResolve; promptResolve
 let snap = { ...st };
 const subs = new Set<() => void>();
 const emit = () => { snap = { ...st }; subs.forEach((f) => f()); };
+/** Mute (true) hides the systems check banner until the next check or until unmuted (the page toolbar's Mute). */
+export function muteSystemBanner(on: boolean) { st.dismissed = on; emit(); }
 /** How long a fixed item stays in the banner's drop-down showing "Fixed" before it leaves (Brett, Oct 20 2026). */
 export const FIXED_LINGER_MS = 3000;
 /** Mark a check fixed: it keeps its row (with the Fixed badge) for FIXED_LINGER_MS, then drops out of the banner. */
@@ -534,6 +536,19 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
   const [open, setOpen] = useState<Set<string>>(() => new Set(focus ? [focus] : []));
   const [filter, setFilter] = useState<'issues' | 'all'>('issues');
   useEffect(() => { if (!s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // the Systems check toolbar (page-toolbar@1, assets/toolbar/systems-check.json)
+  const openOne = open.size === 1 ? s.report?.checks.find((c) => open.has(c.id)) : undefined;
+  const sourceUrl = openOne?.owner ? `https://github.com/MossesX/AmberX-AXF/tree/main/apps/console-web/plugins/${encodeURIComponent(openOne.owner)}` : '';
+  usePublishPageState('systems-check', {
+    issues: s.report ? issues(s.report).length : 0, busy: s.loading || s.fixing, muted: s.dismissed,
+    selection: openOne ? { id: openOne.id, owner: openOne.owner ?? '', status: openOne.status } : null,
+  });
+  useToolbarHandlers('systems-check', {
+    'systems-check.run': async () => { await loadSystemCheck(true); return { counts: snap.report?.counts ?? {} }; },
+    'systems-check.fix-all': async () => { setView('grid'); setFilter('issues'); await fixAll(); return { run: snap.run }; },
+    'systems-check.mute': () => { muteSystemBanner(!s.dismissed); return { muted: !s.dismissed }; },
+    'systems-check.source': () => { if (sourceUrl) window.open(sourceUrl, '_blank', 'noopener'); return sourceUrl || null; },
+  });
   if (s.unauthorized) return <p>Set the console token (Settings → Account &amp; security) to run the systems check.</p>;
   if (!s.report) return <p className="fx-muted">{s.error || 'Running the systems check…'}</p>;
   const r = s.report;
@@ -546,6 +561,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
 
   return (
     <div className="axp-systems-check">
+      <PageToolbar view="systems-check" />
       <div className="axp-systems-check__top">
         <div className="axp-systems-check__counts">
           {(['error', 'warn', 'ok', 'unknown'] as Status[]).map((k) => <span key={k} className="axp-systems-check__count"><StatusDot s={k} /> {r.counts[k] ?? 0} {STATUS_LABEL[k].toLowerCase()}</span>)}

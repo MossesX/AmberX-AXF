@@ -95,6 +95,15 @@ def static_targets() -> list[dict[str, Any]]:
         for t in inv.get(key, []) or []:
             if isinstance(t, dict) and t.get("address"):
                 out.append({**t, "virtual": True})
+    # every plugin screen's settings gear (src/PluginSettingsGear.tsx) and the sub-tab it opens
+    known = {t["address"] for t in out}
+    for p in inv.get("plugins", []) or []:
+        if p.get("settingsGear") and p["settingsGear"] not in known:
+            out.append(_target(p["settingsGear"], "button", f"{p['label']} settings", detail=f"Settings gear · {p['label']}", keywords=["gear", "settings", p.get("folder")],
+                               opens=p.get("settingsTab"), plugin=p["id"], virtual=True))
+        if p.get("settingsTab") and p["settingsTab"] not in known:
+            known.add(p["settingsTab"])
+            out.append(_target(p["settingsTab"], "subtab", f"{p['label']} settings", detail="Settings › Plugins", keywords=["settings", p.get("folder")], plugin=p["id"], virtual=True))
     return out
 
 
@@ -470,6 +479,31 @@ def toggle_plugin(ref: str, enabled: bool, by: str = "", force: bool = False, is
               reload="the open console reloads its plugin list" if was != enabled else None, **({"by": by} if by else {}))
 
 
+
+def plugin_settings_state(ref: str, is_enabled: Any = None) -> dict[str, Any]:
+    """One plugin's settings without a browser (build every-plugin-screen-gets-a-settings-gear): its Settings → Plugins
+    sub-tab, the gear on its screen, whether it is on, and every setting in that tab (values the server can read; the
+    rest are read live with the `state` verb on their address). GET /api/console-control/plugins/<id>/settings."""
+    p = plugin_spec(ref)
+    if p is None:
+        near = [x["address"] for x in inventory().get("plugins", []) if (ref or "").lower().split(":")[-1][:4] in x["label"].lower()][:5]
+        raise ControlError("not_found", f"no plugin {ref}", nearest=near)
+    tab = p.get("settingsTab")
+    settings: list[dict[str, Any]] = []
+    for spec in inventory().get("settings", []) or []:
+        if spec.get("plugin") != p["id"] and not (tab and str(spec.get("address", "")).startswith(tab + "/")):
+            continue
+        try:
+            settings.append({"key": spec.get("key"), **setting_state(spec)})
+        except ControlError as e:  # a server setting whose plugin is off: listed, value unknown
+            settings.append({"key": spec.get("key"), "address": spec["address"], "kind": "setting", "label": spec.get("label"), "type": spec.get("type"), "unavailable": e.message})
+    return ok("state", tab or p["address"], plugin=p["id"], folder=p.get("folder"), label=p["label"], version=p.get("version"),
+              enabled=plugin_enabled(p, is_enabled),
+              tab={"address": tab, "id": p.get("settingsTabId")} if tab else None,
+              gear=p.get("settingsGear"), view=p.get("view"), settings=settings,
+              open={"action": f"plugin.settings.open:{p.get('folder')}", "address": tab} if tab else None,
+              can=["open", "state", "plugin.enable", "plugin.disable"] + (["set"] if settings else []))
+
 # ---------------------------------------------------------------------- voice (twin of core/engines/console-control-voice.mjs)
 
 VOICE_NUMBERS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13,
@@ -534,6 +568,11 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2) == "on"}
+    # page toolbars (page-toolbar@1): a button named with its toolbar, and what a toolbar holds
+    if m := re.match(r"^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)? (?:on|in|of)(?: the)? (.+?) toolbar$", p):
+        return {"verb": "press", "find": {"q": f"{_strip(m.group(2))} {_strip(m.group(1))}", "kinds": ["button"]}, "toolbar": _strip(m.group(2))}
+    if m := re.match(r"^(?:what(?:'s| is) on|what does .+ hold on|list|show(?: me)?|read(?: me)?)(?: the)? (.+?) toolbar$", p):
+        return {"verb": "list", "find": {"q": _strip(m.group(1)), "kinds": ["toolbar"]}}
     if m := re.match(r"^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)?$", p):
         return {"verb": "press", "find": {"q": _strip(m.group(1)), "kinds": ["button", "function"]}}
     if m := re.match(rf"^{_GO}(?: the)? (.+?) settings?$", p):
@@ -587,6 +626,9 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
         return f"Showing {what}."
     if v == "press":
         return f"Pressed {what}."
+    if v == "list":
+        targets = answer.get("targets") or []
+        return f"{len(targets)} item{'' if len(targets) == 1 else 's'}: {', '.join(str(t.get('label')) for t in targets[:6])}." if targets else f"Nothing on {what or 'it'}."
     if v == "set":
         val = answer.get("value", intent.get("value"))
         return f"Set {what} to {('on' if val else 'off') if isinstance(val, bool) else val}."
@@ -596,3 +638,24 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
         loses = (answer.get("effects") or {}).get("loses") or []
         return f"{what} is off." + (f" {', '.join(d['name'] for d in loses)} lose{'s' if len(loses) == 1 else ''} a feature." if loses else "")
     return "Done."
+
+
+# ---------------------------------------------------------------------- page toolbars (page-toolbar@1; build rebuild-every-toolbar-page-specific)
+
+TOOLBAR_KIND = "toolbar"
+
+
+def toolbar_address(ref: str) -> str:
+    """`gate.auto-lander` or `toolbar:gate.auto-lander` → the console-control address of that toolbar."""
+    ref = str(ref or "").strip()
+    if not ref:
+        raise ControlError("invalid", "a toolbar needs its settings id (e.g. gate.auto-lander)", field="toolbar")
+    return ref if ref.startswith("toolbar:") or "/toolbar:" in ref else f"toolbar:{ref}"
+
+
+def toolbar_button_address(ref: str, button: str) -> str:
+    """The address of one button on a toolbar: `toolbar:<id>/button:<button>`."""
+    b = str(button or "").strip()
+    if not b:
+        raise ControlError("invalid", "press needs the button id (see the toolbar's state)", field="button")
+    return f"{toolbar_address(ref)}/button:{b}"

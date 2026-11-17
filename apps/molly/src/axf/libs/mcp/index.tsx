@@ -114,7 +114,7 @@ function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; pe
           <p className="fx-muted">Connect to MCP servers over Streamable HTTP, browse what they offer and call their tools. Add or edit servers in Settings → MCP servers.</p>
         </div>
         <div className="fx-row fx-row--wrap">
-          <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${MCP_SETTINGS_TAB}`)}>Manage servers</Button>
+          <Button icon="sliders" onClick={() => rt.dispatch(`settings.open:${MCP_SETTINGS_TAB}`)}>Manage servers</Button>
         </div>
       </header>
 

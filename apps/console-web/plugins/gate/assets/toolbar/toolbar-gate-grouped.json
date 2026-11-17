@@ -1,0 +1,97 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-gate-grouped",
+  "name": "Gate: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-gate",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:gate",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "lander",
+        "label": "Lander",
+        "items": [
+          {
+            "id": "land-now",
+            "icon": "rocket",
+            "label": "Land now",
+            "action": "command:gate/lander-land-now",
+            "confirm": "Land every waiting build that passes now?",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "pause",
+            "icon": "pause",
+            "label": "Pause lander",
+            "action": "command:gate/lander-pause",
+            "priority": 260
+          },
+          {
+            "id": "resume",
+            "icon": "play",
+            "label": "Resume lander",
+            "action": "command:gate/lander-resume",
+            "priority": 250
+          },
+          {
+            "id": "auto",
+            "icon": "branch",
+            "label": "Run auto-lander",
+            "action": "command:gate/auto-lander-run",
+            "priority": 240
+          }
+        ]
+      },
+      {
+        "id": "rules",
+        "label": "Rules",
+        "items": [
+          {
+            "id": "build-rules",
+            "icon": "list",
+            "label": "Build rules",
+            "action": "handler:gate.show-build-rules",
+            "checked": "state:onBuildRules",
+            "priority": 200,
+            "overflow": "always"
+          },
+          {
+            "id": "history",
+            "icon": "clock",
+            "label": "History",
+            "action": "handler:gate.show-history",
+            "checked": "state:onHistory",
+            "priority": 180,
+            "overflow": "always"
+          },
+          {
+            "id": "reset",
+            "icon": "trash",
+            "label": "Reset rules",
+            "action": "command:gate/rules-reset",
+            "destructive": true,
+            "confirm": "Put every gate rule back to its default?",
+            "priority": 20,
+            "overflow": "always"
+          }
+        ]
+      }
+    ]
+  }
+}

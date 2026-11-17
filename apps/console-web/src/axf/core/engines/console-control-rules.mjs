@@ -12,7 +12,7 @@ export const CONSOLE_CONTROL_FRAME = 'console-control@1';
 export const CONSOLE_CONTROL_TARGETS_FRAME = 'console-control-targets@1';
 
 /** Address segment kinds, outermost first in an address. Append-only. */
-export const CONSOLE_CONTROL_KINDS = ['view', 'tab', 'subtab', 'setting', 'button', 'function', 'plugin', 'grid', 'row', 'step', 'panel', 'scroll'];
+export const CONSOLE_CONTROL_KINDS = ['view', 'tab', 'subtab', 'setting', 'button', 'function', 'plugin', 'grid', 'row', 'step', 'panel', 'scroll', 'toolbar'];
 
 /** Which kinds a segment may follow (`null` = may open an address). Order inside an address is outermost first. */
 export const CONSOLE_CONTROL_PARENTS = {
@@ -20,7 +20,7 @@ export const CONSOLE_CONTROL_PARENTS = {
   tab: [null, 'view', 'panel'],
   subtab: ['tab', 'subtab'],
   setting: [null, 'view', 'tab', 'subtab', 'panel'],
-  button: [null, 'view', 'tab', 'subtab', 'panel', 'row', 'step'],
+  button: [null, 'view', 'tab', 'subtab', 'panel', 'row', 'step', 'toolbar'],
   function: [null, 'view', 'tab', 'subtab', 'panel'],
   plugin: [null, 'view', 'tab', 'subtab'],
   grid: [null, 'view', 'tab', 'subtab', 'panel', 'row'],
@@ -28,6 +28,8 @@ export const CONSOLE_CONTROL_PARENTS = {
   step: [null, 'row', 'grid'],
   panel: [null, 'view', 'tab', 'subtab'],
   scroll: [null, 'view', 'tab', 'subtab', 'panel'],
+  // page-toolbar@1 (Nov 17 2026, build rebuild-every-toolbar-page-specific): a toolbar by its settings id; its buttons under it
+  toolbar: [null, 'view', 'tab', 'subtab', 'panel'],
 };
 
 /** Kinds whose id has the `<row>=<value>` form (a tab row, or one tab of it). */
@@ -82,6 +84,7 @@ export const CONSOLE_CONTROL_DEFAULT_CAN = {
   step: ['open', 'state', 'focus'],
   panel: ['open', 'state', 'focus', 'scroll'],
   scroll: ['state', 'scroll'],
+  toolbar: ['open', 'state', 'list', 'focus'],
 };
 
 export const isConsoleControlKind = (k) => CONSOLE_CONTROL_KINDS.includes(k);

@@ -28,6 +28,10 @@ const CONFIG_TODAY = { autoLand: false, landWaitUi: true, mergeQueue: true, queu
 const CONFIG_705 = { autoLand: false, landWaitUi: true, mergeQueue: true, queueMode: 'batch', batchSize: 8, autoLander: { enabled: true, mode: 'serial' } };
 /** UI hold switched off and the stack queue two deep, as a hand might set it. */
 const CONFIG_HAND = { landWaitUi: false, queueMode: 'stack', queueDepth: 2, autoLander: { enabled: false, mode: 'merge-queue' } };
+/** The auto-lander tuned by hand (Nov 16 2026 keys): five tries, two minutes before the second, no fix sessions. */
+const CONFIG_AUTO = { autoLander: { enabled: true, mode: 'serial', maxAttempts: 5, backoffMin: 2, fix: false } };
+/** A rule set saved before the auto-lander rule existed (the first eight defaults, rev 4). */
+const SAVED_EIGHT = (() => { const s = G.defaultRuleSet({ at: AT }); return { ...s, rev: 4, rules: s.rules.filter((r) => r.id !== 'auto-lander') }; })();
 
 const SNAPSHOTS = {
   green: { number: 701, title: 'Skins: hot-swap tokens', build: 'skins-hot-swap', branch: 'claude/skins-hot-swap', head: 'a701a701a701a701a701a701a701a701a701a701', ci: 'success', ui: '' },
@@ -72,7 +76,7 @@ const RUNS = [
   { $axf: 'auto-lander-run@1', startedAt: '2026-11-15T11:54:00Z', finishedAt: '2026-11-15T11:54:30Z', result: 'landing', mode: 'batch', reason: 'ci-waiting', reasonText: 'Waiting for CI on the PR being landed.', landing: { pr: 540, title: 'Skins: hot-swap tokens', build: 'skins-hot-swap', ci: 'running' }, merged: [], waiting: 2 },
 ];
 
-const IN = { CONFIG_TODAY, CONFIG_705, CONFIG_HAND, SNAPSHOTS, SOFT_SET, SPLIT_SET, QUEUE, CONTROL, RUNS, AT };
+const IN = { CONFIG_TODAY, CONFIG_705, CONFIG_HAND, CONFIG_AUTO, SAVED_EIGHT, SNAPSHOTS, SOFT_SET, SPLIT_SET, QUEUE, CONTROL, RUNS, AT };
 
 // ------------------------------------------------------------------ outputs
 
@@ -80,7 +84,8 @@ function run() {
   const set = G.defaultRuleSet({ at: AT });
   return {
     defaultRuleSet: set,
-    migrate: { today: G.migrate(CONFIG_TODAY, { at: AT }), after705: G.migrate(CONFIG_705, { at: AT }), byHand: G.migrate(CONFIG_HAND, { at: AT }), empty: G.migrate({}, { at: AT }) },
+    migrate: { today: G.migrate(CONFIG_TODAY, { at: AT }), after705: G.migrate(CONFIG_705, { at: AT }), byHand: G.migrate(CONFIG_HAND, { at: AT }), auto: G.migrate(CONFIG_AUTO, { at: AT }), empty: G.migrate({}, { at: AT }) },
+    joinDefaults: { savedEight: G.joinDefaults(SAVED_EIGHT, { at: AT }), complete: G.joinDefaults(set, { at: AT }) },
     landerSettings: { today: G.landerSettingsFrom(CONFIG_TODAY), after705: G.landerSettingsFrom(CONFIG_705), byHand: G.landerSettingsFrom(CONFIG_HAND), empty: G.landerSettingsFrom({}) },
     evaluate: Object.fromEntries(Object.entries(SNAPSHOTS).map(([k, s]) => [k, G.evaluate(set, s, { at: AT })])),
     evaluateSerial: G.evaluate(G.migrate(CONFIG_705, { at: AT }), SNAPSHOTS.redCiSerial, { at: AT }),
@@ -112,9 +117,11 @@ for (const k of Object.keys(fx.out)) t(`fixture replay: ${k}`, () => assert.deep
 // ------------------------------------------------------------------ the rules themselves
 
 const ids = (s) => s.rules.map((r) => r.id);
-t('the default set: eight rules in gate order, every one on, block, console, valid', () => {
-  assert.deepEqual(ids(actual.defaultRuleSet), ['merge-queue-only', 'ci-green', 'tests', 'theme', 'controls', 'toolbars', 'ui-review', 'clash']);
-  assert.ok(actual.defaultRuleSet.rules.every((r) => r.enabled && r.severity === 'block' && r.owner === 'console' && r.source));
+t('the default set: nine rules in gate order, every one on and console; every gate rule blocks, the auto-lander policy is info', () => {
+  assert.deepEqual(ids(actual.defaultRuleSet), ['merge-queue-only', 'ci-green', 'tests', 'theme', 'controls', 'toolbars', 'ui-review', 'clash', 'auto-lander']);
+  assert.ok(actual.defaultRuleSet.rules.every((r) => r.enabled && r.owner === 'console' && r.source));
+  assert.ok(actual.defaultRuleSet.rules.every((r) => r.severity === (r.id === 'auto-lander' ? 'info' : 'block')));
+  assert.deepEqual(actual.defaultRuleSet.rules.find((r) => r.id === 'auto-lander').settings, { maxAttempts: 3, backoff: { baseMin: 5, factor: 3, maxMin: 60 }, attemptTimeoutMin: 45, mergeMain: true, fixSessions: true, land: true, escalateTo: 'banner' });
   assert.deepEqual(G.ruleSetErrors(actual.defaultRuleSet), []);
   assert.deepEqual(new Set(actual.defaultRuleSet.rules.map((r) => r.kind)), new Set(G.KINDS));
 });
@@ -136,6 +143,18 @@ t('migration by hand: UI hold off becomes the ui-review rule off; the lander off
   const m = actual.migrate.byHand;
   assert.equal(m.rules.find((r) => r.id === 'ui-review').enabled, false); assert.equal(m.rules.find((r) => r.id === 'merge-queue-only').settings.mode, 'stack');
   assert.equal(m.rules.find((r) => r.id === 'merge-queue-only').enabled, true); assert.equal(actual.landerSettings.byHand.enabled, false);
+});
+t('the auto-lander rule: the lander switch is its switch, the new keys tune it, the old mode flags never turn fixing off', () => {
+  const al = (m) => m.rules.find((r) => r.id === 'auto-lander');
+  assert.equal(al(actual.migrate.today).enabled, true); assert.deepEqual(al(actual.migrate.today).settings, al(actual.defaultRuleSet).settings); // autoLand false, mergeQueue on: still fixes and lands
+  assert.equal(al(actual.migrate.byHand).enabled, false); // autoLander.enabled false
+  const a = al(actual.migrate.auto); assert.equal(a.enabled, true); assert.equal(a.settings.maxAttempts, 5); assert.equal(a.settings.backoff.baseMin, 2); assert.equal(a.settings.fixSessions, false); assert.equal(a.settings.land, true);
+  assert.deepEqual(actual.migrate.auto.migratedFrom.keys, ['autoLander.enabled', 'autoLander.mode', 'autoLander.maxAttempts', 'autoLander.backoffMin', 'autoLander.fix']);
+  assert.equal(actual.evaluate.green.results.find((r) => r.id === 'auto-lander').verdict, 'pass'); assert.equal(actual.evaluate.redCi.results.find((r) => r.id === 'auto-lander').verdict, 'pass'); // a policy, never a gate
+});
+t('a saved eight-rule set gains the auto-lander rule on read; a complete set is returned as is', () => {
+  const j = actual.joinDefaults.savedEight; assert.deepEqual(ids(j), ids(actual.defaultRuleSet)); assert.equal(j.rev, 4); assert.deepEqual(j.joinedDefaults, ['auto-lander']); assert.equal(j.rules.at(-1).updatedBy, 'defaults'); assert.deepEqual(G.ruleSetErrors(j), []);
+  assert.equal(actual.joinDefaults.complete.joinedDefaults, undefined); assert.deepEqual(ids(actual.joinDefaults.complete), ids(actual.defaultRuleSet));
 });
 t('an empty config migrates to the defaults with no keys named', () => { assert.deepEqual(actual.migrate.empty.migratedFrom.keys, []); assert.deepEqual(actual.migrate.empty.rules.map((r) => r.settings), actual.defaultRuleSet.rules.map((r) => r.settings)); });
 

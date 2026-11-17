@@ -1,0 +1,76 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-codebase-changes-grouped",
+  "name": "Codebase changes: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-codebase-changes",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:codebase-changes",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "log",
+        "label": "Log",
+        "items": [
+          {
+            "id": "live",
+            "icon": "play",
+            "label": "Filter live",
+            "action": "handler:codebase-changes.filter-live",
+            "checked": "state:live",
+            "badge": "state:running",
+            "priority": 300,
+            "overflow": "never"
+          }
+        ]
+      },
+      {
+        "id": "entry",
+        "label": "Open entry",
+        "items": [
+          {
+            "id": "resume",
+            "icon": "copy",
+            "label": "Resume",
+            "action": "handler:codebase-changes.resume",
+            "enabledWhen": "selection.id",
+            "priority": 260,
+            "overflow": "always"
+          },
+          {
+            "id": "branch",
+            "icon": "branch",
+            "label": "Open branch",
+            "action": "handler:codebase-changes.open-branch",
+            "enabledWhen": "selection.id",
+            "priority": 220,
+            "overflow": "always"
+          },
+          {
+            "id": "areas",
+            "icon": "folder",
+            "label": "Show areas",
+            "action": "handler:codebase-changes.areas",
+            "enabledWhen": "selection.id",
+            "priority": 200,
+            "overflow": "always"
+          }
+        ]
+      }
+    ]
+  }
+}
