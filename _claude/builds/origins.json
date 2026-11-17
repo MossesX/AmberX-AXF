@@ -8148,6 +8148,18 @@
    "from": "",
    "addenda": []
   },
+  "settings-opened-banners-nav-menu": {
+   "said": "When I click on like banners or whenever the settings opens from on like the navigation menu or the toolbar, it doesn't open in the floating window. It opens in the main area.",
+   "at": "2026-11-17T14:47:48.703Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "settings-placement-everywhere": {
    "said": "\"Set the settings interface for Molly to open in a dialog.\" ... \"I should be able to select in every screen where its settings pops up.\" Addendum 1: \"Every settings interface should have a setting to declare where it pops up.\"",
    "at": "2026-11-04T00:00:00.000Z",

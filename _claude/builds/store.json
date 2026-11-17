@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7441,
- "updatedAt": "2026-11-17T13:40:25.281Z",
+ "rev": 7442,
+ "updatedAt": "2026-11-17T14:47:51.107Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -263625,6 +263625,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T12:28:31.327Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "settings-opened-banners-nav-menu",
+   "title": "Settings opened from banners, nav menu and toolbars must open in the floating window",
+   "category": "",
+   "detail": "#628 (all-settings-interfaces-open-floating) landed, but settings opened from chrome (right-click/long-press Settings… on any banner, nav menu, toolbar, tab group, menu bar; the axf.chrome.settings dialogs and any plugin settings gear reached from them) still open in the main content area. Route every settings entry point through the same floating settings window #628 uses. First check the live console runs a build that includes #628; if not, redeploy. Test each entry point (banner, nav, toolbar, tab group, plugin gear) on desktop and phone. Same through REST, MCP, CLI, voice.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T14:47:48.703Z",
+   "updatedAt": "2026-11-17T14:47:48.703Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I click on like banners or whenever the settings opens from on like the navigation menu or the toolbar, it doesn't open in the floating window. It opens in the main area.",
+    "at": "2026-11-17T14:47:48.703Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 939
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
