@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:09 UTC · `banner-widget-shapes-more-than-circle` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `ui-review-filter-and-search-by-pr` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `orchestrator-stale-row-watchdog-vps` merged, note (all) · foreign-write
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:28 UTC · `guided-live-demo-test-watch-orchestrator` s11 done (all) · orchestrator
 - 2026-11-17 20:29 UTC · `live-build-status-real-time-grids-15` s9 done (all) · orchestrator
 - 2026-11-17 20:29 UTC · `guided-live-demo-test-watch-orchestrator` → pending (all) · Brett
+- 2026-11-17 20:29 UTC · `live-build-status-real-time-grids-15` → pending (all) · Brett
 
 ## Token passes (log)
 
