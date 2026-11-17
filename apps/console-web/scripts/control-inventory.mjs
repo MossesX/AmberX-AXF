@@ -9,11 +9,15 @@
  * the console can search screens that are not rendered yet.
  *
  *   node apps/console-web/scripts/control-inventory.mjs            write src/control/inventory.json
- *   node apps/console-web/scripts/control-inventory.mjs --check    exit 1 when the committed file is stale (CI)
+ *   node apps/console-web/scripts/control-inventory.mjs --check    write it when missing or stale, print the counts (CI, the lander)
  *   node apps/console-web/scripts/control-inventory.mjs --json     print it
  *
- * The file is generated: never edit it by hand. The scan is textual (literal ids only); a tab row whose id is built at
- * run time is listed with `dynamic: true` and is still addressable once rendered (the registry knows it then).
+ * The file is generated, never edited by hand and (since build axf-data-postgres-real-tables-own) never committed: builds
+ * used to clash on it. `npm run dev` / `npm run build` write it before vite runs, the console server writes it when it is
+ * missing and publishes it to axf-data as `console/control/inventory.json`, which the Postgres engine keeps as the
+ * `control_targets` table (one row per target, tabs in `control_tabs`): the API / control registry, generated from each
+ * plugin's registered targets. The scan is textual (literal ids only); a tab row whose id is built at run time is listed
+ * with `dynamic: true` and is still addressable once rendered (the registry knows it then).
  */
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
@@ -420,9 +424,10 @@ if (isMain) {
   const text = JSON.stringify(inv, null, 2) + '\n';
   if (process.argv.includes('--json')) process.stdout.write(text);
   else if (process.argv.includes('--check')) {
+    // generated and untracked: a missing or stale copy is written, never a failure (the registry is what the generator says)
     const now = existsSync(OUT) ? read(OUT) : '';
-    if (now !== text) { console.error(`${rel(OUT)} is stale: run node apps/console-web/scripts/control-inventory.mjs`); process.exit(1); }
-    console.log(`${rel(OUT)} current (${Object.entries(inv.counts).map(([k, v]) => `${v} ${k}`).join(', ')})`);
+    if (now !== text) writeFileSync(OUT, text);
+    console.log(`${rel(OUT)} ${now === text ? 'current' : now ? 'refreshed' : 'written'} (${Object.entries(inv.counts).map(([k, v]) => `${v} ${k}`).join(', ')})`);
   } else {
     writeFileSync(OUT, text);
     console.log(`wrote ${rel(OUT)} (${Object.entries(inv.counts).map(([k, v]) => `${v} ${k}`).join(', ')})`);
