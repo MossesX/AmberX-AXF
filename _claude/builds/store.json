@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7321,
- "updatedAt": "2026-11-17T03:59:56.784Z",
+ "rev": 7322,
+ "updatedAt": "2026-11-17T04:00:33.326Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -258865,7 +258865,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-17T03:59:22.628Z",
+   "updatedAt": "2026-11-17T04:00:29.686Z",
    "builtAt": "",
    "notes": [
     {
@@ -259454,6 +259454,32 @@
      "rev": 1,
      "createdAt": "2026-11-16T23:28:18.115Z",
      "updatedAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwk5znq901bunl",
+     "title": "",
+     "text": "console-control@1 grammar: append segment kind `group` (parent row; button may follow group) in framework/core/engines/console-control-rules.mjs, regenerate its fixture, record the Kotlin twin in PORTING.md, so the Groups panel targets row:<build>/group:g<n> (already rendered as data-axf-target and registered when the grammar accepts them) answer console_show / console_open",
+     "model": "Fable",
+     "why": "cross-app protocol (console-control@1 address grammar)",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/console-control-rules.mjs",
+      "framework/spec/fixtures/console-control.json",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T04:00:29.687Z",
+     "updatedAt": "2026-11-17T04:00:30.177Z"
     }
    ],
    "profiles": [
@@ -259464,7 +259490,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
