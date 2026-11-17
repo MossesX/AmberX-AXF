@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `ui-review-gate-switch-default-off` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `fix-toolbar-settings-doing-nothing` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `merge-all-ready-buttons-server-side` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `account-order-hulu-moses-x-api-account` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:25 UTC · `move-server-side-console-parts-onto-vps` s5 done (all) · orchestrator
 - 2026-11-17 23:26 UTC · `move-server-side-console-parts-onto-vps` s5 done (all) · foreign-write
 - 2026-11-17 23:26 UTC · `active-tab-stop-button-grid-alignment` note (all) · mcp
+- 2026-11-17 23:26 UTC · `active-tab-stop-button-grid-alignment` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
