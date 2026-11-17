@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7416,
- "updatedAt": "2026-11-17T12:42:04.151Z",
+ "rev": 7417,
+ "updatedAt": "2026-11-17T12:42:29.264Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262650,15 +262650,15 @@
    "title": "Maintenance plugin: Clear Docker cache button, restarts Docker if needed",
    "category": "",
    "detail": "Add a 'Clear Docker cache' action to the Maintenance plugin. It runs docker builder prune -af and shows space freed. If the cache is reported as in use (reclaimable 0 while cache size > 0), it offers/does a Docker restart (systemctl restart docker), waits for every container to come back on its restart policy, verifies them, then prunes again and reports before/after disk. Context: on Nov 17 the disk hit 100%; 87 GB of build cache showed as 'active' and prune freed nothing until Docker was restarted, which dropped disk from 96% to 78%. Confirm before restart (it drops all apps ~1-2 min). Reachable from UI, REST, MCP, CLI and voice; log to systems check. Also add to the disk systems-check item's Auto fix.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/maintenance-plugin-clear-docker-cache",
-   "pr": "",
+   "pr": "#779",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T12:41:36.636Z",
+   "updatedAt": "2026-11-17T12:42:26.545Z",
    "builtAt": "2026-11-17T12:41:36.636Z",
    "notes": [
     {
@@ -262752,7 +262752,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
