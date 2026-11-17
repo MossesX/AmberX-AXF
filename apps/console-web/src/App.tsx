@@ -87,7 +87,7 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
   };
   // Plugin theme override (Brett, Oct 28 2026): every plugin UI root carries data-axf-plugin and its settings tab gets an
   // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.
-  const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l), { id: m.id, name: m.name });
+  const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l, { name: m.name, settingsGear: m.settingsGear, defaultTab: m.settingsTab?.default === true }), { id: m.id, name: m.name });
   if (!lib.settingsTabs?.length) return themed(out);
   return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) });
 }

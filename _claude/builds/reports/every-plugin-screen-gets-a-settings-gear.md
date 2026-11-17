@@ -49,3 +49,18 @@ screen with `PluginSettingsGear` at its right end. The row is its own flex line,
 plugin's page head (attached things snap, never overlap). A plugin opts out only with plugin.json
 `"settingsGear": false` plus `"settingsGearReason"`. The four hand-made screen gears are removed (s5/s6) so each
 screen shows exactly one.
+
+## Host gear (s3–s4)
+
+- `apps/console-web/src/PluginSettingsGear.tsx`: `PluginSettingsGear` (framework `IconButton`, icon `settings`,
+  aria-label "<plugin> settings", `data-axf-plugin-gear=<folder>`) and `PluginViewHost` (a `role="toolbar"` row,
+  aria-label "<plugin> screen", gear at the right end; `display: contents` wrapper so the screen's own layout is
+  untouched). Tokens only (`pluginSettingsGear.css`).
+- Address: `view:<screen>/button:settings-gear` (relative inside the view's ControlScope). The plan said
+  `plugin:<id>/settings-gear`, but console-control@1 does not allow a button under a `plugin:` segment
+  (`CONSOLE_CONTROL_PARENTS`), and changing the grammar is a contract change (Fable). The screen-scoped button
+  address is what every other screen button uses.
+- Mounted once in `countingUses()` (`pluginLoader.tsx`), which every plugin view goes through. The tab it opens is
+  the plugin's `settingsTabs[0].id`, or the folder when plugin.json declares `settingsTab: { default: true }`.
+- Opt-out: plugin.json `"settingsGear": false` + `"settingsGearReason"`. The plugin@1 schema's root is open, so no
+  schema change was needed; documenting the two fields in `plugin.schema.json` is left for a Fable pass.
