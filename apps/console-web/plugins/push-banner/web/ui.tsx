@@ -473,25 +473,28 @@ function AutoMergeSettings() {
 }
 
 type LandItem = { id: string; title: string; branch: string; pr: number | null; state: string; since?: string; reason: { kind: string; text: string } | null };
-type LandState = { on: boolean; waitUi: boolean; at?: string; items: LandItem[]; holds: Record<string, { why: string }> };
+type LandState = { on: boolean; waitUi: boolean; showTracking?: boolean; at?: string; items: LandItem[]; holds: Record<string, { why: string }> };
 
 /** Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): finished builds land by plain scripts on the VPS; only a
  * code conflict or red CI goes to an agent. The two switches and every finished build with what it waits on. */
 function AutoLandSettings() {
   const [st, setSt] = useState<LandState | null>(null);
   const [err, setErr] = useState('');
-  const read = () => api.call<LandState>('land').then(setSt, (e: Error) => setErr(e.message));
+  const read = () => Promise.all([api.call<LandState>('land'), api.call<{ show: boolean }>('land/tracking').catch(() => ({ show: false }))])
+    .then(([l, t]) => setSt({ ...l, showTracking: t.show }), (e: Error) => setErr(e.message));
   useEffect(() => { void read(); }, []);
   if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
-  const set = (patch: { autoLand?: boolean; landWaitUi?: boolean }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
+  const set = (patch: { autoLand?: boolean; landWaitUi?: boolean; landShowTracking?: boolean }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
   const act = (cmd: 'now' | 'hold' | 'release', build: string) => { setErr(''); api.post(`land/${cmd}`, { build }).then(read, (e: Error) => setErr(e.message)); };
   return (
     <div className="fx-stack">
       <h4 className="axp-push-banner__group-title">Auto-land finished builds</h4>
       <Switch label="Auto-land finished builds" checked={st.on} onChange={(v) => set({ autoLand: v })}
-        hint="Every 3 min a plain script on the VPS takes every build whose steps are all done: commits the synced files it left, merges main in (builds files newer-wins, logs kept from both sides), opens its PR and starts CI. Auto-merge then merges them in dependency order. No model, no tokens: only a code conflict or red CI goes to a free agent." />
+        hint="Every 3 min a plain script on the VPS takes every build whose steps are all done: commits the synced files it left (tracking files are reset to main's copy, never committed), merges main in (builds files newer-wins, logs kept from both sides), opens its PR and starts CI. Auto-merge then merges them in dependency order. No model, no tokens: only a code conflict or red CI goes to a free agent." />
       <Switch label="Wait for UI Review" checked={st.waitUi} disabled={!st.on} onChange={(v) => set({ landWaitUi: v })}
         hint="On: a PR whose screenshots are waiting, have changes asked or are rejected in UI Review waits, and merges by itself the moment you approve them. Off: UI Review doesn't hold merges." />
+      <Switch label="Show tracking-file handling on the merge queue" checked={st.showTracking === true} onChange={(v) => set({ landShowTracking: v })}
+        hint="On: each merge queue row says when the lander last reset that build's tracking files (store, orchestrator, origins, journal, pending and queue exports) to main's copy instead of committing them, took main's copy in a merge, or regenerated generated files. Also: REST GET /land/tracking, MCP land-tracking, CLI land.mjs tracking." />
       {st.items.length > 0 ? (
         <ul className="axp-push-banner__list">
           {st.items.map((x) => (

@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "ui-review-home",
+  "name": "UI Review",
+  "version": "1.0.0",
+  "description": "UI Review on Home: How many options a build ships, and whether Brett is asked first.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "UI Review",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "ui-review",
+      "command": "choices-settings"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

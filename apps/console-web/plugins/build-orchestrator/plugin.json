@@ -52,6 +52,8 @@
       "apps/console-web/scripts/console-control.e2e.mjs",
       "framework/cli/project-seed.mjs",
       "framework/spec/check-build-limit.mjs",
+      "framework/spec/check-build-pipeline.mjs",
+      "framework/cli/builds-reconcile.mjs",
       "framework/spec/check-projects.mjs"
     ]
   },
@@ -251,7 +253,7 @@
         "title": "Pipeline status",
         "description": "The build pipeline: what is Pending, in the Queue and Building, every Claude account (Fable yes or no, how many run on it), the agent slots, and what the dispatcher's next tick will start or why it waits. Say 'what's in the queue' or 'is anything building'.",
         "readOnly": true,
-        "output": "{ table: { pending, queued, building }, accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
+        "output": "{ table: { pending, queued, building } (rows carry requeue: { reason, phase, next, at } when back in the Queue after a finished phase, stuck: { phase, next, why } when parked in Pending by mistake), accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
       },
       {
         "id": "pipeline-selfcheck",
@@ -273,6 +275,22 @@
           }
         },
         "output": "{ ran: false, requested, last: { at, line, fixes, problems, findings } }"
+      },
+      {
+        "id": "pipeline-requeue-stuck",
+        "route": "POST /pipeline/requeue-stuck",
+        "title": "Requeue builds parked after a phase",
+        "description": "Find Pending builds whose last session finished its phase with steps left (parked by the old exit rule, so the next phase never started) and, with apply, move them back to the Queue at their place so the dispatcher starts the next phase. Without apply it only lists them. Say 'requeue the stuck builds' or 'which builds are stuck after a phase'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "apply": {
+              "type": "boolean",
+              "description": "Move them (true) or only list them (false, the default)"
+            }
+          }
+        },
+        "output": "{ apply, found: [{ id, phase, next, why }], moved: [id] }"
       },
       {
         "id": "pipeline-tab",
