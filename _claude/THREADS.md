@@ -832,12 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:00 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-17 23:00 UTC · `rebuild-every-toolbar-page-specific` → complete, note (all) · foreign-write
-- 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` s17 done, s18 done, note (all) · foreign-write
-- 2026-11-17 23:00 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
-- 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
-- 2026-11-17 23:00 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · pipeline
 - 2026-11-17 23:00 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
 - 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` s19 done (all) · foreign-write
 - 2026-11-17 23:00 UTC · `banner-widget-shapes-plus-change-icon` s18 done (all) · orchestrator
@@ -1232,6 +1226,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:46 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
 - 2026-11-17 23:46 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · foreign-write
 - 2026-11-17 23:46 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` → landed, note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `context-menus-plugin-one-true-source` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 
