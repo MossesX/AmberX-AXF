@@ -829,9 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:47 UTC · `guided-live-demo-test-watch-orchestrator` s1 done, → running (all) · orchestrator
-- 2026-11-17 19:47 UTC · `console-app-part-2-native-floating` s7 done, → landing (all) · orchestrator
-- 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` → running, note (all) · pipeline
 - 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
 - 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
 - 2026-11-17 19:47 UTC · `rebuild-every-toolbar-page-specific` s2 done (all) · orchestrator
@@ -1229,6 +1226,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:22 UTC · `rebuild-fresh-main-phone-connect-small` s8 done (all) · foreign-write
 - 2026-11-17 21:22 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
 - 2026-11-17 21:23 UTC · `rebuild-fresh-main-phone-connect-small` s9 done (all) · orchestrator
+- 2026-11-17 21:22 UTC · `icon-picker-every-banner-settings-widget` → running, note (all) · pipeline
+- 2026-11-17 21:23 UTC · `icon-picker-every-banner-settings-widget` branch claude/icon-picker-every-banner-settings-widget (all) · pipeline
+- 2026-11-17 21:23 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 
 ## Token passes (log)
 
