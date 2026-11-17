@@ -826,29 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 18:12 UTC · `fix-pop-up-windows-don-t-close-x-only` → archived, note (all) · console
-- 2026-11-17 18:12 UTC · `fix-column-alignment-every-grid-table` → archived, note (all) · console
-- 2026-11-17 18:12 UTC · `context-menu-containers-show-hide-list` note (all) · orchestrator
-- 2026-11-17 18:14 UTC · `grids-layout-control-voice-controlled` note (all) · orchestrator
-- 2026-11-17 18:15 UTC · `change-asset-only-assets-built-screen` added (0 steps) (all) · console
-- 2026-11-17 18:16 UTC · `change-asset-only-assets-built-screen` note (all) · mcp
-- 2026-11-17 18:16 UTC · `change-asset-only-assets-built-screen` note (all) · orchestrator
-- 2026-11-17 18:25 UTC · `rebuild-fresh-main-collapsible-sections` added (0 steps) (all) · console
-- 2026-11-17 18:26 UTC · `rebuild-fresh-main-collapsible-sections` note (all) · orchestrator
-- 2026-11-17 18:28 UTC · `nothing-saved-browser-all-console` added (0 steps) (all) · console
-- 2026-11-17 18:28 UTC · `nothing-saved-browser-all-console` note (all) · mcp
-- 2026-11-17 18:29 UTC · `nothing-saved-browser-all-console` note (all) · orchestrator
-- 2026-11-17 18:29 UTC · `grids-layout-control-voice-controlled` note (all) · mcp
-- 2026-11-17 18:32 UTC · `merge-queue-view-every-build-s-fully` added (0 steps) (all) · console
-- 2026-11-17 18:33 UTC · `merge-queue-view-every-build-s-fully` note (all) · orchestrator
-- 2026-11-17 18:34 UTC · `grid-filter-plugin-one-filter-search` added (0 steps) (all) · console
-- 2026-11-17 18:34 UTC · `merge-queue-view-every-build-s-fully` → archived, note (all) · console
-- 2026-11-17 18:35 UTC · `grid-filter-plugin-one-filter-search` note (all) · orchestrator
-- 2026-11-17 18:35 UTC · `merge-queue-view-every-build-s-fully` → pending, note (all) · console
-- 2026-11-17 18:35 UTC · `grid-filter-plugin-one-filter-search` note (all) · mcp
-- 2026-11-17 18:41 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · mcp
-- 2026-11-17 18:43 UTC · `ci-run-only-what-changed-no-second-run` added (0 steps) (all) · console
-- 2026-11-17 18:43 UTC · `ci-run-only-what-changed-no-second-run` note (all) · mcp
 - 2026-11-17 18:44 UTC · `ci-run-only-what-changed-no-second-run` note (all) · mcp
 - 2026-11-17 18:44 UTC · `ci-run-only-what-changed-no-second-run` note (all) · orchestrator
 - 2026-11-17 18:47 UTC · `pending-optimizer-ai-finds-pending` added (0 steps) (all) · console
@@ -1226,6 +1203,29 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:55 UTC · `terminal-main-tab-streaming-console-s` s3 done (all) · orchestrator
 - 2026-11-17 19:55 UTC · `separate-settings-per-plugin-reset` s4 done, → running (all) · orchestrator
 - 2026-11-17 19:55 UTC · `guided-live-demo-test-watch-orchestrator` s2 done (all) · orchestrator
+- 2026-11-17 19:56 UTC · `terminal-main-tab-streaming-console-s` s3 done (all) · foreign-write
+- 2026-11-17 19:56 UTC · `collapse-auto-collapse-buttons-every-tab` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `fix-merge-conflicts-pr-557-professional` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `fix-step-splitter-claude-exit-1-input` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `focus-every-screen-console-open-console` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `github-client-plugin-see-control-every` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `merges-are-only-merged-once-github` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `new-project-wizard-name-linked-repo` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `orchestrator-checks-shipped-features` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `plugin-review-map-what-each-plugin-does` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `professional-skins-rebuild-whole-app` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `server-every-failed-merge-alerts-brett` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `show-commits-behind-main-every-build` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `tap-to-confirm-follows-label-visibility` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `vps-badge-shows-shell-commands-work` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `full-voice-api-control-type-fields-press` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `chrome-settings-actually-apply-toolbars` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `vps-builds-get-console-token-ui-review` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `decision-dialog-ui-review-other` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `land-drive-live-console-first-resolve` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `land-rename-long-builds-resolve-clash` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `land-overlay-preview-ui-review-resolve` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `full-voice-control-merge-main-and-land` → archived, note (all) · watchdog
 
 ## Token passes (log)
 

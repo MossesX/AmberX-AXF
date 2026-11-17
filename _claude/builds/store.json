@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7724,
- "updatedAt": "2026-11-17T19:56:05.510Z",
+ "rev": 7725,
+ "updatedAt": "2026-11-17T19:56:29.458Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -190083,7 +190083,7 @@
    "title": "Collapse and auto-collapse buttons on every tab group, toolbar, nav menu and app menu",
    "category": "",
    "detail": "Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -190091,7 +190091,7 @@
    "pr": "#588",
    "priority": "P1",
    "createdAt": "2026-11-12T18:40:03.355Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -190125,6 +190125,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/collapse-auto-collapse-buttons-every-tab is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build collapse-auto-collapse-buttons-every-tab → Remove: Its PR was closed without a merge (PR #588 closed; build collapse-auto-collapse-buttons-every-tab: pending; branch claude/collapse-auto-collapse-buttons-every-tab deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -190256,7 +190260,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192029,7 +192033,7 @@
    "title": "Fix merge conflicts on PR #557 (professional skins) with main, run the checks, push and land it; confirm the merge on GitHub",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -192037,7 +192041,7 @@
    "pr": "#591",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -192075,6 +192079,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/fix-merge-conflicts-pr-557-professional is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-merge-conflicts-pr-557-professional → Remove: Its PR was closed without a merge (PR #591 closed; build fix-merge-conflicts-pr-557-professional: pending; branch claude/fix-merge-conflicts-pr-557-professional deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -192193,7 +192201,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192222,7 +192230,7 @@
    "title": "Fix the step splitter: 'claude exit 1: Input must be provided'",
    "category": "",
    "detail": "When a build is added, the splitter runs claude -p without the prompt (stdin or argument missing), fails with 'Error: Input must be provided either through stdin or as a prompt argument when using --print', and falls back to one step per line, pasting Brett's raw words in as a step. Fix the invocation so the request is passed, split into real <=30 min steps, and re-split today's queued builds whose steps are the fallback. Test: adding a build yields proper steps, no fallback note.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "fix-step-splitter-claude-exit-1-input",
@@ -192230,7 +192238,7 @@
    "pr": "#592",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -192284,6 +192292,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/fix-step-splitter-claude-exit-1-input is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-step-splitter-claude-exit-1-input → Remove: Its PR was closed without a merge (PR #592 closed; build fix-step-splitter-claude-exit-1-input: pending; branch claude/fix-step-splitter-claude-exit-1-input deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -192534,7 +192546,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192796,14 +192808,14 @@
    "title": "Focus on every screen: console_open/console_show can jump to any item (UI Review, Plan Studio, all screens)",
    "category": "",
    "detail": "PR #496 added <screen>.focus only for the Build orchestrator. Opening UI Review with focus r-20261112-4ec56890 answered: opened UI Review; it has no way to focus. Every screen (UI Review, Plan Studio, Pending, All builds, settings tabs, plugins' screens) must declare a <screen>.focus action that opens the right tab, scrolls the item/row/group into view, expands and highlights it. Add a check that fails if any screen with items lacks a focus action. Also: opening a screen should close a covering dialog (settings dialog was left on top).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "focus-every-screen-console-open-console",
    "branch": "claude/focus-every-screen-console-open-console",
    "pr": "#593",
    "createdAt": "2026-11-12T10:35:49.272Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -192837,6 +192849,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/focus-every-screen-console-open-console is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build focus-every-screen-console-open-console → Remove: Its PR was closed without a merge (PR #593 closed; build focus-every-screen-console-open-console: pending; branch claude/focus-every-screen-console-open-console deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -192962,7 +192978,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192992,7 +193008,7 @@
    "title": "GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)",
    "category": "github",
    "detail": "Brett said: \"We need to build that GitHub plugin that shows all the PRs and everything, where you can completely control them, see their status, merge and pull them in, group them into one... You need a full, powerful GitHub plugin-based client.\" Console plugin, full API (REST, MCP, CLI, voice), works per project.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -193000,7 +193016,7 @@
    "pr": "#594",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -193062,6 +193078,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/github-client-plugin-see-control-every is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build github-client-plugin-see-control-every → Remove: Its PR was closed without a merge (PR #594 closed; build github-client-plugin-see-control-every: pending; branch claude/github-client-plugin-see-control-every deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [
@@ -193334,7 +193354,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -193370,7 +193390,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -193378,7 +193398,7 @@
    "pr": "#595",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -193476,6 +193496,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/merges-are-only-merged-once-github is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build merges-are-only-merged-once-github → Remove: Its PR was closed without a merge (PR #595 closed; build merges-are-only-merged-once-github: pending; branch claude/merges-are-only-merged-once-github deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [
@@ -193877,7 +193901,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194576,14 +194600,14 @@
    "title": "New project wizard: name, linked repo (required), starter code, skin, accounts, first plan",
    "category": "projects",
    "detail": "Step-by-step New project wizard (console, voice, API). Linking a repo is required (new GitHub repo, existing repo, or server folder). Builds on merged Projects (#523). Brett said: \"No, we definitely need to link a repo to it. There's no doubt about that.\"",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/new-project-wizard-name-linked-repo",
    "pr": "#597",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -194613,6 +194637,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/new-project-wizard-name-linked-repo is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build new-project-wizard-name-linked-repo → Remove: Its PR was closed without a merge (PR #597 closed; build new-project-wizard-name-linked-repo: pending; branch claude/new-project-wizard-name-linked-repo deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -194889,7 +194917,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -195160,14 +195188,14 @@
    "title": "Orchestrator checks Shipped features before splitting any job",
    "category": "",
    "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features",
    "branch": "claude/orchestrator-checks-shipped-features",
    "pr": "#599",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -195217,6 +195245,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/orchestrator-checks-shipped-features is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build orchestrator-checks-shipped-features → Remove: Its PR was closed without a merge (PR #599 closed; build orchestrator-checks-shipped-features: pending; branch claude/orchestrator-checks-shipped-features deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -195345,7 +195377,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196101,14 +196133,14 @@
    "title": "Plugin review: map what each plugin does, depends on, and breaks",
    "category": "report",
    "detail": "Brett said: \"For each plugin put a list for everything that it does, what will be broken, what it depends on, and what other plugins use it.\"\n\nREAD-ONLY analysis, change no code. For every folder in apps/console-web/plugins (68, skip _template): read plugin.json, README.md and web/ + server/ code. Find real dependencies from imports, requires, service contracts (service:xxx@1), API routes it calls (/api/plugins/<other>/...), events, settings keys and banner/slot ids it reads. Build the reverse map (used by). Then fill the existing Plan Studio plan 'Plugin review: what to disable' (planner.plans, via control_set) so each plugin's step holds four plain-English lists: What it does / What breaks if disabled (including other plugins, banners, voice commands, AmberX features) / Depends on / Used by. Mark core plugins that must never be disabled (e.g. plugin-manager, build-orchestrator, approvals-banner, hub-sync) with a warning. Also write _claude/builds/reports/plugin-review.md with the same table.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-review-map-what-each-plugin-does",
    "pr": "#603",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -196178,6 +196210,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/plugin-review-map-what-each-plugin-does is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build plugin-review-map-what-each-plugin-does → Remove: Its PR was closed without a merge (PR #603 closed; build plugin-review-map-what-each-plugin-does: pending; branch claude/plugin-review-map-what-each-plugin-does deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -196303,7 +196339,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196333,7 +196369,7 @@
    "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables,",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -196341,7 +196377,7 @@
    "pr": "#604",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -196431,6 +196467,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/professional-skins-rebuild-whole-app is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build professional-skins-rebuild-whole-app → Remove: Its PR was closed without a merge (PR #604 closed; build professional-skins-rebuild-whole-app: pending; branch claude/professional-skins-rebuild-whole-app deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -196946,7 +196986,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -198201,14 +198241,14 @@
    "title": "Server: every failed merge alerts Brett immediately and retries by itself until merged",
    "category": "merge",
    "detail": "Brett said: \"anytime you try to merge something, this needs to go on the server. Anytime you try to merge something and it fails, I need to know right away because you need to try again.\" Server-side, not left to Claude. Builds on auto-rebuild-failed-merges-r6 if present.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-every-failed-merge-alerts-brett",
    "pr": "#609",
    "createdAt": "2026-11-12T21:53:13.014Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -198262,6 +198302,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/server-every-failed-merge-alerts-brett is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build server-every-failed-merge-alerts-brett → Remove: Its PR was closed without a merge (PR #609 closed; build server-every-failed-merge-alerts-brett: pending; branch claude/server-every-failed-merge-alerts-brett deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -198393,7 +198437,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -198723,14 +198767,14 @@
    "title": "Show commits behind main on every build table and the orchestrator",
    "category": "",
    "detail": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "show-commits-behind-main-every-build",
    "branch": "claude/show-commits-behind-main-every-build",
    "pr": "#611",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -198804,6 +198848,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/show-commits-behind-main-every-build is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build show-commits-behind-main-every-build → Remove: Its PR was closed without a merge (PR #611 closed; build show-commits-behind-main-every-build: pending; branch claude/show-commits-behind-main-every-build deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -198944,7 +198992,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200730,14 +200778,14 @@
    "title": "Tap-to-confirm follows label visibility + quick-switches pane at top of every chrome settings",
    "category": "ui",
    "detail": "Follow-up to PR #524 (tap-to-confirm). Brett: \"By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on.\" and \"a collapsible pane at the top of the settings interface that has switches like override or double tap... at the top, easy to see.\"",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/tap-to-confirm-follows-label-visibility",
    "pr": "#614",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -200827,6 +200875,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/tap-to-confirm-follows-label-visibility is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build tap-to-confirm-follows-label-visibility → Remove: Its PR was closed without a merge (PR #614 closed; build tap-to-confirm-follows-label-visibility: pending; branch claude/tap-to-confirm-follows-label-visibility deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -200951,7 +201003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201216,14 +201268,14 @@
    "title": "VPS badge shows shell commands work; banner widgets for disk, CPU load and memory",
    "category": "banner",
    "detail": "Brett said: \"we need the VPS badge to show that we're able to run shell commands.\" axHub badge already covers the server being reachable (axHub runs on the VPS). Claude login status moves off the VPS badge (it lives with the Claude badge / accounts). Also add the resource widgets Brett asked about: disk, CPU load, memory.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/vps-badge-shows-shell-commands-work",
    "pr": "#616",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -201261,6 +201313,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/vps-badge-shows-shell-commands-work is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-badge-shows-shell-commands-work → Remove: Its PR was closed without a merge (PR #616 closed; build vps-badge-shows-shell-commands-work: pending; branch claude/vps-badge-shows-shell-commands-work deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -201385,7 +201441,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201415,7 +201471,7 @@
    "title": "Full voice and API control: type into fields, press buttons, approve hands-free",
    "category": "",
    "detail": "Goal: Brett controls absolutely everything in the console by voice/API (Claude via axHub MCP), never touching the phone.\n1. control@1 console.fields: list the fields of the open screen/dialog (id, label, type, value, required, options), set a field's value, and press any button/control by id or label (submit, Create, Save, Approve, tabs, toggles, menu items). Works on every screen, dialog and plugin, including the New Project wizard.\n2. Read back what is on screen (current screen, open dialog, visible fields and buttons) so the AI can narrate and verify.\n3. Approvals hands-free: veto countdowns and confirms can be approved by voice from Brett's own session (owner-recognized voice/claude.ai sign-in), no tap needed.\n4. Every action audited (by, reason).\n5. Expose on REST, MCP, CLI and voice. Tests (drive the New Project wizard end to end via API). Shipped features entry.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201423,7 +201479,7 @@
    "pr": "#627",
    "priority": "P0",
    "createdAt": "2026-11-13T17:39:25.266Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -201449,6 +201505,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/full-voice-api-control-type-fields-press is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build full-voice-api-control-type-fields-press → Remove: Its PR was closed without a merge (PR #627 closed; build full-voice-api-control-type-fields-press: pending; branch claude/full-voice-api-control-type-fields-press deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -201690,7 +201750,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201725,7 +201785,7 @@
    "title": "Chrome settings actually apply on toolbars, nav and menu bar (not just tab groups)",
    "category": "",
    "detail": "The framework chrome settings dialog (framework/react/components/ChromeContext.tsx, chrome-settings-rules.mjs, chrome.settings:<type>:<instance>) gives every tab group, toolbar, banner, nav and menu bar its own settings. Only tab groups apply the per-item settings (look, size, etc.); the main toolbar, nav and menu bar ignore most of them. Make every setting in the dialog take effect live on every chrome type and instance, persist per instance, and survive reload. Add a check that sets every value on every chrome type and verifies the render changes. Expose via REST/MCP/CLI/voice. Shipped features.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201733,7 +201793,7 @@
    "pr": "#625",
    "priority": "P1",
    "createdAt": "2026-11-13T17:44:36.515Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -201763,6 +201823,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/chrome-settings-actually-apply-toolbars is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build chrome-settings-actually-apply-toolbars → Remove: Its PR was closed without a merge (PR #625 closed; build chrome-settings-actually-apply-toolbars: pending; branch claude/chrome-settings-actually-apply-toolbars deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -201894,7 +201958,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -203757,7 +203821,7 @@
    "title": "VPS builds get the console token so UI Review works, banner alert when it fails",
    "category": "",
    "detail": "Headless builds on the VPS have no AXF_TOKEN / AXF_CONSOLE_URL, so UI Review submits are refused and screenshots stay stuck in worktrees, silently.\n1. Launcher (claude-headless.sh / dispatcher / agent-slots) passes AXF_CONSOLE_URL and a scoped build console token (vault, never logged) into every build session.\n2. Headless screenshot tool authenticates to console/axHub (fix 'Waiting for axHub' and 401).\n3. Any failed UI Review submit, missing token, or stuck shots raises a banner alert immediately (errors banner).\n4. Re-submit stuck shots found in /root/axf-builds and /root/axf-review-shots.\n5. Remove the duplicate pending item builds-get-console-token-banner-alert (filed without an id).\n6. Tests, Shipped features.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203765,7 +203829,7 @@
    "pr": "#629",
    "priority": "P0",
    "createdAt": "2026-11-13T18:13:51.274Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -203795,6 +203859,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/vps-builds-get-console-token-ui-review is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-builds-get-console-token-ui-review → Remove: Its PR was closed without a merge (PR #629 closed; build vps-builds-get-console-token-ui-review: pending; branch claude/vps-builds-get-console-token-ui-review deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -204052,7 +204120,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204088,7 +204156,7 @@
    "title": "Decision dialog: UI Review and other approvals pop up on any screen with approve/deny/pick",
    "category": "",
    "detail": "Generalise the approval popup into one 'decision dialog' type used for anything that needs Brett, starting with UI Review.\n- Whenever an item is submitted to UI Review, Brett gets a notification AND a dialog pops up on whatever console screen he is on (and on the phone overlay toolbar when built), without navigating away.\n- The dialog shows the item (title, build, screenshots/options side by side, desktop + phone), with buttons: pick option N / Approve, Reject, Request changes (with a note), Later, and 'Open in UI Review' (only navigates if tapped).\n- Same dialog type reused for other decisions: veto countdowns, confirms, model upgrade approvals, merge clashes, keys needed, passes. Each source registers its buttons; one queue so several waiting items stack with a counter.\n- Voice/MCP/API: list waiting decisions, answer one by id ('pick option 2', 'approve it').\n- Notification settings to choose which decision types pop up.\n- Tests, help entry, Shipped features.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204096,7 +204164,7 @@
    "pr": "#635",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -204158,6 +204226,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/decision-dialog-ui-review-other is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build decision-dialog-ui-review-other → Remove: Its PR was closed without a merge (PR #635 closed; build decision-dialog-ui-review-other: pending; branch claude/decision-dialog-ui-review-other deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -204430,7 +204502,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210438,7 +210510,7 @@
    "title": "Land drive-live-console-first: resolve clash in console-commands engine",
    "category": "",
    "detail": "Branch claude/drive-live-console-first clashed with main in 7 files (console-commands plugin console.mjs and server/__init__.py, console-commands engine .mjs/.d.mts in framework/core/engines and apps/console-web/src/axf/core/engines, framework/catalog/status.json). Merge origin/main into the branch and keep main's newer console-commands behaviour (reconnect delivery, wake) plus this branch's 'drive the live console first' path. Regenerate the baked engine copies from framework, run the console-commands self-checks and tests, push, then land on main.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210446,7 +210518,7 @@
    "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -210504,6 +210576,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/drive-live-console-first is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build land-drive-live-console-first-resolve → Remove: Its PR was closed without a merge (PR #620 closed; build land-drive-live-console-first-resolve: pending; branch claude/drive-live-console-first deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [
@@ -210653,7 +210729,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210683,7 +210759,7 @@
    "title": "Land rename-long-builds: resolve clash in orchestrator.mjs",
    "category": "",
    "detail": "Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210691,7 +210767,7 @@
    "pr": "#638",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -210725,6 +210801,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/land-rename-long-builds-resolve-clash is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build land-rename-long-builds-resolve-clash → Remove: Its PR was closed without a merge (PR #638 closed; build land-rename-long-builds-resolve-clash: pending; branch claude/land-rename-long-builds-resolve-clash deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -210865,7 +210945,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210895,7 +210975,7 @@
    "title": "Land overlay-preview-ui-review: resolve clash in approvals-banner",
    "category": "",
    "detail": "Branch claude/overlay-preview-ui-review clashed with main in apps/console-web/plugins/approvals-banner/help.json and web/index.tsx (merge aborted, main untouched). Merge origin/main into the branch and keep both: main's approvals-banner changes plus this branch's UI Review choice-set assets for the overlay toolbar shape. Run tests, push, then land on main.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210903,7 +210983,7 @@
    "pr": "#653",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -210929,6 +211009,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/land-overlay-preview-ui-review-resolve is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build land-overlay-preview-ui-review-resolve → Remove: Its PR was closed without a merge (PR #653 closed; build land-overlay-preview-ui-review-resolve: pending; branch claude/land-overlay-preview-ui-review-resolve deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -211060,7 +211144,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212687,7 +212771,7 @@
    "title": "Full voice control: merge main and land",
    "category": "",
    "detail": "Branch claude/full-voice-api-control-type-fields-press clashed with main only in framework/catalog/status.json (merge aborted, main untouched). Merge origin/main and keep both sides' catalog entries (additive), run tests, push, then land on main.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -212695,7 +212779,7 @@
    "pr": "#645",
    "priority": "P0",
    "createdAt": "2026-11-13T19:53:48.014Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T19:56:19.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -212725,6 +212809,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/full-voice-control-merge-main-and-land is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Watchdog: Pending build full-voice-control-merge-main-and-land → Remove: Its PR was closed without a merge (PR #645 closed; build full-voice-control-merge-main-and-land: pending; branch claude/full-voice-control-merge-main-and-land deleted) (pending → archived)",
+     "at": "2026-11-17T19:56:19.504Z"
     }
    ],
    "approvals": [],
@@ -212865,7 +212953,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279200,7 +279288,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:44:46.822Z",
-     "updatedAt": "2026-11-17T19:55:34.591Z"
+     "updatedAt": "2026-11-17T19:56:15.649Z"
     },
     {
      "id": "s4",
