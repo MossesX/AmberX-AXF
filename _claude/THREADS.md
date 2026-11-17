@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:38 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · pending
 - 2026-11-17 22:38 UTC · `one-true-source-for-every-setting` → queued, note (all) · console
 - 2026-11-17 22:39 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:39 UTC · `guided-live-demo-test-watch-orchestrator` merged, note (all) · reconciler
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:59 UTC · `api-fully-drives-every-field-type-forms` added (180 steps) (all) · foreign-write
 - 2026-11-17 22:59 UTC · `move-everything-axhub-web-console` s2 done (all) · orchestrator
 - 2026-11-17 22:59 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
+- 2026-11-17 23:00 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
 
 ## Token passes (log)
 
