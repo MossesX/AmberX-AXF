@@ -239,6 +239,9 @@ function releaseHeld(b, probe, env) {
 export function recover(b, d, probe, { env = process.env, settings = loadSettings(env), now = new Date().toISOString() } = {}) {
   if (!d || d.action === 'none') return null;
   if (d.action === 'kill-retry') killSession(probe);
+  // the session ended but its tmux still waits out its close countdown: close it now, or the dispatcher's launch gate
+  // (build-lock@1) would see it alive and adopt the dead session as running again (nothing runs claude in it; logs stay)
+  else if (probe.pid !== true && (probe.sessions ?? []).length) killSession({ sessions: probe.sessions, pids: [] });
   const freed = releaseHeld(b, probe, env);
   // a usage limit / dead login: the account is out (claude-workers markLimit, so the dispatcher skips it) and the retry is
   // planned on the next worker (claude-workers route, excluding every account this build already tried)
