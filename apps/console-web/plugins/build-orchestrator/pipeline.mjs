@@ -688,8 +688,55 @@ function tmuxHas(name) {
  * signs in again (authWaitsTick). `log` is the run's log file (for the failure reason), `vanished` = no end event at all.
  * Returns { id, outcome, status, reason, exit, phase, next, auth? }.
  */
+/**
+ * launch-retry: did this run die at launch (pipeline-core launchCrashOf)? Reads the run log's tail and whether the run's
+ * stream file got any output since the launch (the launcher truncates it as claude starts). → { why } or null.
+ */
+export function launchCrashFor(b, { exit, kind = '', log = '', env = process.env } = {}) {
+  const wt = worktreeOf(b.id, env);
+  const logFile = log ? (log.startsWith('/') ? log : join(wt, log)) : join(wt, `${b.id}.log`);
+  let streamBytes = -1;
+  try {
+    const st = statSync(join(wt, `${b.id}.jsonl`));
+    // the launcher truncates it as claude starts: written since this launch and still empty = no first output;
+    // older than this launch or missing = unknown (the run may not have reached the launcher at all)
+    streamBytes = st.mtimeMs >= Date.parse(b.pipeline?.launchedAt || 0) - 5000 ? st.size : -1;
+  } catch { streamBytes = -1; }
+  return P.launchCrashOf({ exit, kind, tail: tailOf(logFile), streamBytes });
+}
+
+/**
+ * A launch crash goes back to the Queue by itself after a backoff (1, 4, 16 min), outside the maxRuns cap, the reason
+ * on the build. After LAUNCH_RETRY_MAX in a row it stops retrying: the record says gaveUp, a banner alert says why, and
+ * the run is ended the normal way (returns null). Returns the endRun result when requeued.
+ */
+export function requeueLaunchCrash(b, why, { alert = () => {}, env = process.env, now = Date.now() } = {}) {
+  const count = (b.pipeline?.launchRetry?.count ?? 0) + 1;
+  const at = new Date(now).toISOString();
+  if (count > BP.LAUNCH_RETRY_MAX) {
+    setPipeline(b.id, { launchRetry: { count: count - 1, lastError: why, at, retryAt: '', gaveUp: true } }, { note: `Launch crashed again (${why}): ${count - 1} launch retries used, no more by itself. Retry by hand once the launcher error is fixed.`, action: 'pipeline:launch-retry' });
+    alert('launch-crash', { id: b.id, title: b.title, count: count - 1, why, account: b.pipeline?.account });
+    logLine({ event: 'launch-crash', build: b.id, count: count - 1, why, gaveUp: true });
+    return null;
+  }
+  const mins = P.launchBackoffMin(count);
+  const retryAt = new Date(now + mins * 60e3).toISOString();
+  const runs = Math.max(0, (b.pipeline?.runs ?? 1) - 1); // a launch crash is not a run: it never counts towards maxRuns
+  setPipeline(b.id, { session: '', slot: '', runs, launchRetry: { count, lastError: why, at, retryAt, gaveUp: false }, note: `launch crashed: retry ${count}/${BP.LAUNCH_RETRY_MAX} at ${retryAt}` },
+    { status: 'queued', note: `Launch crashed (${why}). Back in the Queue: retry ${count} of ${BP.LAUNCH_RETRY_MAX} in ${mins} min (not counted as a run).`, action: 'pipeline:launch-retry' });
+  lock.release(b.id, { dir: worktreeOf(b.id, env) });
+  logLine({ event: 'launch-crash', build: b.id, count, why, retryAt });
+  return { id: b.id, outcome: 'requeued', status: 'queued', reason: 'launch-crash', exit: null, phase: b.pipeline?.phase ?? '', next: BP.nextModel(b), launchRetry: { count, why, retryAt } };
+}
+
 export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = false, alert = () => {}, settings = loadSettings(), env = process.env } = {}) {
   const settled = SETTLED.includes(b.status);
+  // launch-retry: a run that died at launch is requeued with a backoff, separate from the maxRuns session cap
+  let gaveUp = null;
+  if (!settled) {
+    const lc = launchCrashFor(b, { exit, kind, log, env });
+    if (lc) { const rq = requeueLaunchCrash(b, lc.why, { alert, env }); if (rq) return rq; b = storeCore.findBuild(loadStore(), b.id) ?? b; gaveUp = b.pipeline?.launchRetry ?? null; }
+  }
   // the wrapper's kind wins over the bare code: a crash is never a clean end; phase-done / stopped are clean ends whose
   // phase the store still has to confirm (a phase-done claim with its phase's steps open lands as 'stopped' in Pending)
   const code = kind === 'crash' ? (exit || 1) : kind === 'phase-done' || kind === 'stopped' ? 0 : exit;
@@ -705,7 +752,7 @@ export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = fa
   const next = BP.nextModel(b);
   const journal = r.reason === 'phase-done' && !auth ? `phase ${r.run.phase || '?'} done, requeued for ${next || '?'}: ${r.note}` : r.note;
   // a run cut off by the login is not the build's fault: it does not count towards maxRuns
-  setPipeline(b.id, { ...r.patch, lastRun: r.run, note: r.outcome === 'finished' ? '' : r.note, ...(auth ? { runs: Math.max(0, (b.pipeline.runs || 1) - 1) } : {}) }, { status: r.status, note: journal, action: r.reason === 'phase-done' && !auth ? 'pipeline:requeue' : 'pipeline:end' });
+  setPipeline(b.id, { ...r.patch, lastRun: r.run, note: r.outcome === 'finished' ? '' : r.note, launchRetry: gaveUp, ...(auth ? { runs: Math.max(0, (b.pipeline.runs || 1) - 1) } : {}) }, { status: r.status, note: journal, action: r.reason === 'phase-done' && !auth ? 'pipeline:requeue' : 'pipeline:end' });
   lock.release(b.id, { dir: worktreeOf(b.id, env) });
   // done-means-merged@1: a retry run that got its phase (or the whole build) done closes its attempt ok and the failure;
   // a run that failed again is closed as failed by the detector in the same tick (recordFailure)

@@ -83,6 +83,16 @@ export function normRunEnd(r) {
   return { at: iso(r.at), exit, signal: /^[A-Z]{2,6}$/.test(str(r.signal, 8)) ? str(r.signal, 8) : signalOf(exit), kind: RUN_END_KINDS.includes(r.kind) ? r.kind : '', limit: RUN_END_LIMITS.includes(r.limit) ? r.limit : '', account: accountName(r.account), session: str(r.session, 120), phase: str(r.phase, 80) };
 }
 
+/**
+ * launch-retry (Nov 17 2026): a run that died at launch (before its first output, E2BIG, a launcher error) is requeued
+ * with a backoff by itself, outside the maxRuns cap. { count, lastError, at, retryAt, gaveUp } or null.
+ */
+export const LAUNCH_RETRY_MAX = 3;
+export function normLaunchRetry(r) {
+  if (!r || typeof r !== 'object' || !iso(r.at)) return null;
+  return { count: Number.isInteger(r.count) && r.count > 0 ? Math.min(r.count, 99) : 0, lastError: str(r.lastError, 300), at: iso(r.at), retryAt: iso(r.retryAt), gaveUp: r.gaveUp === true };
+}
+
 // ------------------------------------------------------------------ done-means-merged@1: statuses, kinds, records
 
 /** The statuses this contract adds to builds@1 (builds-store-core STATUSES carries the full list). */
@@ -258,6 +268,7 @@ export function normPipeline(p) {
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
     heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
     ...(normRunEnd(p.runEnd) ? { runEnd: normRunEnd(p.runEnd) } : {}), // optional: absent until a run ends (old records unchanged)
+    ...(normLaunchRetry(p.launchRetry) ? { launchRetry: normLaunchRetry(p.launchRetry) } : {}), // optional: only after a launch crash
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;

@@ -271,6 +271,23 @@ export function authFailureOf(text, { lines = 25 } = {}) {
  * "refused", "Not started", "failed", "exit"…), else the last non-empty line before the launcher's own footer. ''
  * when there is no log.
  */
+/**
+ * launch-retry: did this run die at launch? A non-zero end whose log shows E2BIG / "Argument list too long" / a launcher
+ * error, or a run that never wrote any stream output (it died before its first heartbeat). `tail` = the run log's end,
+ * `streamBytes` = the size of its stream file (-1 = unknown). Returns { why } or null. A clean end is never a launch crash.
+ */
+const LAUNCH_ERR = /argument list too long|\bE2BIG\b|claude-headless: .*(?:error|failed|missing|not found)|claude: (?:command )?not found|exec format error|cannot execute|no such file or directory.*claude/i;
+export function launchCrashOf({ exit = null, kind = '', tail = '', streamBytes = -1 } = {}) {
+  if (kind === 'phase-done' || kind === 'stopped' || exit === 0) return null;
+  const lines = str(tail, 400000).split('\n').map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean);
+  const hit = [...lines].reverse().find((l) => LAUNCH_ERR.test(l));
+  if (hit) return { why: str(hit, 300) };
+  if (streamBytes === 0) return { why: 'the session exited before its first output' };
+  return null;
+}
+/** Minutes to wait before launch retry n (1-based): 1, 4, 16 … capped at an hour. */
+export const launchBackoffMin = (n) => Math.min(60, 4 ** Math.max(0, n - 1));
+
 export function lastReasonOf(text, { lines = 40 } = {}) {
   const tail = str(text, 400000).split('\n').slice(-lines).map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean)
     .filter((l) => !/^── finished \(exit \d+\)/.test(l) && !/^#/.test(l));
@@ -361,6 +378,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
+    { const lr = b.pipeline?.launchRetry; if (lr?.retryAt && Date.parse(lr.retryAt) > (typeof now === 'number' ? now : Date.parse(now))) { waits.push({ id: b.id, why: `launch crashed (${lr.lastError || 'no reason'}): retry ${lr.count} at ${lr.retryAt}` }); continue; } }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
@@ -707,6 +725,8 @@ function alertBody(kind, d, base) {
     case 'launch-failed': return { ...base, key: `pipeline:launch:${d.id}:${Date.now()}`, severity: 'error', title: `Couldn't start: ${str(d.title || d.id, 120)}`,
       body: str([`Build ${d.id} was picked from the Queue and failed to start.`, ...list(d.reasons).map((x) => `${x.account || '?'}: ${str(x.error, 300)}`),
         d.tries && d.maxTries ? (d.tries >= d.maxTries ? `${d.tries} failed starts this hour: it waits an hour before the next try.` : `It stays in the Queue and is tried again next tick (${d.tries}/${d.maxTries} failed starts this hour).`) : ''].filter(Boolean).join('\n'), 1500) };
+    case 'launch-crash': return { ...base, key: `pipeline:launch-crash:${d.id}`, severity: 'error', title: `Keeps crashing at launch: ${str(d.title || d.id, 120)}`,
+      body: str(`${d.id} died at launch ${d.count} times in a row and stopped retrying by itself. Last error: ${d.why || 'none printed'}. Fix the launcher error, then Retry (Build orchestrator → the build → Attempts, \`orchestrator.mjs retry ${d.id}\`, or pipeline.mjs requeue-launch ${d.id}).`, 1500) };
     case 'oauth': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'error', title: `Claude login failed: ${d.account || '?'} · ${str(d.title, 100)}`,
       body: str(`${d.error || 'sign-in refused'}\n${d.id} is held in Pending. It goes back to the Queue by itself once ${d.account || 'the account'} signs in again (checked by the account health sweep${d.everyMin ? `, every ${d.everyMin} min` : ''}). To fix it now: Claude accounts → ${d.account || 'the account'} → Sign in.`, 1500) };
     case 'oauth-ok': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'success', title: `Claude login works again: ${d.account || '?'}`, body: str(`${d.id} is back in the Queue (re-queued once, automatically).`, 1500) };
