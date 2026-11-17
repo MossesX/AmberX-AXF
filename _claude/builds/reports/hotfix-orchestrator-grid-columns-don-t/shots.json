@@ -1,0 +1,1519 @@
+{
+ "$axf": "shot-manifest",
+ "build": "hotfix-orchestrator-grid-columns-don-t",
+ "group": "hotfix-orchestrator-grid-columns-don-t - before",
+ "taken": "2026-11-16T18:41:48.329Z",
+ "how": "node apps/console-web/scripts/grid-align.mjs with GRID_ALIGN_SKINS=default,windows GRID_ALIGN_SHOTS=<dir> (vite preview of dist/, /api/me mocked as admin, appearance source off, orchestrator state and GET /pipeline from this checkout)",
+ "saved": "axf shot → UI Review Screenshots (local store of this checkout: no AXF_CONSOLE_URL in the session); a shrunk subset is in shots/before/",
+ "skins": [
+  "default",
+  "windows"
+ ],
+ "rowModes": [
+  1,
+  2
+ ],
+ "viewports": [
+  "desktop",
+  "phone"
+ ],
+ "tabs": [
+  "pending",
+  "queue",
+  "active",
+  "incomplete",
+  "complete",
+  "errors",
+  "archive",
+  "deleted",
+  "builds"
+ ],
+ "result": "grid-align: 36 case(s), 6488 header/cell pairs measured, 52 failure(s)",
+ "failures": [
+  "desktop · default · 1-row · pending · grid build-orchestrator.pending: 49 misaligned cell(s) of 72,",
+  "desktop · default · 1-row · pending · grid build-orchestrator.steps: 4 misaligned cell(s) of 15,",
+  "desktop · default · 1-row · queue · grid build-orchestrator.queue: 49 misaligned cell(s) of 72,",
+  "desktop · default · 1-row · queue · grid build-orchestrator.steps: 4 misaligned cell(s) of 20,",
+  "desktop · default · 1-row · active · grid build-orchestrator.active: 49 misaligned cell(s) of 63,",
+  "desktop · default · 1-row · active · grid build-orchestrator.steps: 4 misaligned cell(s) of 25,",
+  "desktop · default · 1-row · incomplete · grid build-orchestrator.incomplete: 35 misaligned cell(s) of 63,",
+  "desktop · default · 1-row · incomplete · grid build-orchestrator.steps: 4 misaligned cell(s) of 15,",
+  "desktop · default · 1-row · complete · grid build-orchestrator.complete: 56 misaligned cell(s) of 72,",
+  "desktop · default · 1-row · complete · grid build-orchestrator.steps: 18 misaligned cell(s) of 45,",
+  "desktop · default · 1-row · errors · grid build-orchestrator.errors: 49 misaligned cell(s) of 63,",
+  "desktop · default · 1-row · errors · grid build-orchestrator.steps: 40 misaligned cell(s) of 100,",
+  "desktop · default · 1-row · archive · grid build-orchestrator.archive: 56 misaligned cell(s) of 72,",
+  "desktop · default · 1-row · archive · grid build-orchestrator.steps: 4 misaligned cell(s) of 20,",
+  "desktop · default · 1-row · deleted · grid build-orchestrator.deleted: 42 misaligned cell(s) of 63,",
+  "desktop · default · 1-row · deleted · grid build-orchestrator.steps: 2 misaligned cell(s) of 20,",
+  "desktop · default · 2-row: row mode can't be set (not_found nothing on this screen is setting:axf.grid.rows)",
+  "desktop · windows · 1-row · pending · grid build-orchestrator.pending: 49 misaligned cell(s) of 72,",
+  "desktop · windows · 1-row · queue · grid build-orchestrator.queue: 49 misaligned cell(s) of 72,",
+  "desktop · windows · 1-row · active · grid build-orchestrator.active: 49 misaligned cell(s) of 63,",
+  "desktop · windows · 1-row · incomplete · grid build-orchestrator.incomplete: 35 misaligned cell(s) of 63,",
+  "desktop · windows · 1-row · complete · grid build-orchestrator.complete: 56 misaligned cell(s) of 72,",
+  "desktop · windows · 1-row · errors · grid build-orchestrator.errors: 49 misaligned cell(s) of 63,",
+  "desktop · windows · 1-row · archive · grid build-orchestrator.archive: 56 misaligned cell(s) of 72,",
+  "desktop · windows · 1-row · deleted · grid build-orchestrator.deleted: 42 misaligned cell(s) of 63,",
+  "desktop · windows · 2-row: row mode can't be set (not_found nothing on this screen is setting:axf.grid.rows)",
+  "phone · default · 1-row · pending · grid build-orchestrator.pending: 49 misaligned cell(s) of 72,",
+  "phone · default · 1-row · pending · grid build-orchestrator.steps: 6 misaligned cell(s) of 15,",
+  "phone · default · 1-row · queue · grid build-orchestrator.queue: 56 misaligned cell(s) of 72,",
+  "phone · default · 1-row · queue · grid build-orchestrator.steps: 8 misaligned cell(s) of 20,",
+  "phone · default · 1-row · active · grid build-orchestrator.active: 63 misaligned cell(s) of 63,",
+  "phone · default · 1-row · active · grid build-orchestrator.steps: 6 misaligned cell(s) of 25,",
+  "phone · default · 1-row · incomplete · grid build-orchestrator.incomplete: 63 misaligned cell(s) of 63,",
+  "phone · default · 1-row · incomplete · grid build-orchestrator.steps: 6 misaligned cell(s) of 15,",
+  "phone · default · 1-row · complete · grid build-orchestrator.complete: 72 misaligned cell(s) of 72,",
+  "phone · default · 1-row · complete · grid build-orchestrator.steps: 18 misaligned cell(s) of 45,",
+  "phone · default · 1-row · errors · grid build-orchestrator.errors: 63 misaligned cell(s) of 63,",
+  "phone · default · 1-row · errors · grid build-orchestrator.steps: 40 misaligned cell(s) of 100,",
+  "phone · default · 1-row · archive · grid build-orchestrator.archive: 72 misaligned cell(s) of 72,",
+  "phone · default · 1-row · archive · grid build-orchestrator.steps: 6 misaligned cell(s) of 20,",
+  "phone · default · 1-row · deleted · grid build-orchestrator.deleted: 63 misaligned cell(s) of 63,",
+  "phone · default · 1-row · deleted · grid build-orchestrator.steps: 8 misaligned cell(s) of 20,",
+  "phone · default · 2-row: row mode can't be set (not_found nothing on this screen is setting:axf.grid.rows)",
+  "phone · windows · 1-row · pending · grid build-orchestrator.pending: 49 misaligned cell(s) of 72,",
+  "phone · windows · 1-row · queue · grid build-orchestrator.queue: 56 misaligned cell(s) of 72,",
+  "phone · windows · 1-row · active · grid build-orchestrator.active: 63 misaligned cell(s) of 63,",
+  "phone · windows · 1-row · incomplete · grid build-orchestrator.incomplete: 63 misaligned cell(s) of 63,",
+  "phone · windows · 1-row · complete · grid build-orchestrator.complete: 72 misaligned cell(s) of 72,",
+  "phone · windows · 1-row · errors · grid build-orchestrator.errors: 63 misaligned cell(s) of 63,",
+  "phone · windows · 1-row · archive · grid build-orchestrator.archive: 72 misaligned cell(s) of 72,",
+  "phone · windows · 1-row · deleted · grid build-orchestrator.deleted: 63 misaligned cell(s) of 63,",
+  "phone · windows · 2-row: row mode can't be set (not_found nothing on this screen is setting:axf.grid.rows)"
+ ],
+ "before": [
+  {
+   "file": "default-1row-desktop-active.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-desktop-archive.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-desktop-builds.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-desktop-complete.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-desktop-deleted.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-desktop-errors.png",
+   "committed": true
+  },
+  {
+   "file": "default-1row-desktop-incomplete.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-desktop-pending.png",
+   "committed": true
+  },
+  {
+   "file": "default-1row-desktop-queue.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-phone-active.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-phone-archive.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-phone-builds.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-phone-complete.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-phone-deleted.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-phone-errors.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-phone-incomplete.png",
+   "committed": false
+  },
+  {
+   "file": "default-1row-phone-pending.png",
+   "committed": true
+  },
+  {
+   "file": "default-1row-phone-queue.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-desktop-active.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-desktop-archive.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-desktop-builds.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-desktop-complete.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-desktop-deleted.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-desktop-errors.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-desktop-incomplete.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-desktop-pending.png",
+   "committed": true
+  },
+  {
+   "file": "windows-1row-desktop-queue.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-active.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-archive.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-builds.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-complete.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-deleted.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-errors.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-incomplete.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-pending.png",
+   "committed": false
+  },
+  {
+   "file": "windows-1row-phone-queue.png",
+   "committed": false
+  }
+ ],
+ "after": {
+  "group": "hotfix-orchestrator-grid-columns-don-t - after",
+  "taken": "2026-11-16T19:41:26.631Z",
+  "how": "node apps/console-web/scripts/grid-align.mjs with GRID_ALIGN_SHOTS=<dir> (every skin, 1 and 2 lines, desktop + phone; the skin served through a mocked axHub app-look@1 document, the row mode set through setting:axf.grid.rowLines)",
+  "skins": [
+   "default",
+   "atelier",
+   "clinic",
+   "control-room",
+   "ledger",
+   "newsroom",
+   "windows"
+  ],
+  "rowModes": [
+   1,
+   2
+  ],
+  "viewports": [
+   "desktop",
+   "phone"
+  ],
+  "saved": "axf shot: the default + windows cases (the before set, now in both row modes) → UI Review Screenshots; a subset in shots/after/",
+  "result": "grid-align: 420 case(s), 45344 header/cell pairs measured, 0 failure(s)",
+  "failures": [],
+  "files": [
+   {
+    "file": "atelier-1row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-1row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "atelier-2row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-1row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "clinic-2row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-1row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "control-room-2row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "default-1row-desktop-active.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-desktop-archive.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-desktop-builds.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-desktop-complete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-desktop-errors.png",
+    "committed": true,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-desktop-pending.png",
+    "committed": true,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-desktop-queue.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-active.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-archive.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-builds.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-complete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-deleted.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-errors.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-pending.png",
+    "committed": true,
+    "uploaded": true
+   },
+   {
+    "file": "default-1row-phone-queue.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-active.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-archive.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-builds.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-complete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-errors.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-pending.png",
+    "committed": true,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-desktop-queue.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-active.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-archive.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-builds.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-complete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-deleted.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-errors.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-pending.png",
+    "committed": true,
+    "uploaded": true
+   },
+   {
+    "file": "default-2row-phone-queue.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "ledger-1row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-desktop-pending.png",
+    "committed": true,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-1row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "ledger-2row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-1row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-desktop-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-active.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-archive.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-builds.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-complete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-deleted.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-errors.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-pending.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "newsroom-2row-phone-queue.png",
+    "committed": false,
+    "uploaded": false
+   },
+   {
+    "file": "windows-1row-desktop-active.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-desktop-archive.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-desktop-builds.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-desktop-complete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-desktop-errors.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-desktop-pending.png",
+    "committed": true,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-desktop-queue.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-active.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-archive.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-builds.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-complete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-deleted.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-errors.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-pending.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-1row-phone-queue.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-active.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-archive.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-builds.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-complete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-deleted.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-errors.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-incomplete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-pending.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-desktop-queue.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-active.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-archive.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-builds.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-complete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-deleted.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-errors.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-incomplete.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-pending.png",
+    "committed": false,
+    "uploaded": true
+   },
+   {
+    "file": "windows-2row-phone-queue.png",
+    "committed": false,
+    "uploaded": true
+   }
+  ]
+ }
+}

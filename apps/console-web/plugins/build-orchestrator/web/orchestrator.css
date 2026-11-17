@@ -25,6 +25,9 @@ button.oc-model { cursor: pointer }
 .oc-stepdetail p { margin: 0; overflow-wrap: anywhere }
 .oc-cell-title { width: 100% }
 .oc-grid .axf-grid-cell, .oc-subgrid .axf-grid-cell { white-space: nowrap }
+/* the build tabs' title cell (Nov 16 2026): one line on its shared track, cut with an ellipsis; the full title and the
+   request are in its tooltip and the expanded row */
+.pl-row-title { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 
 /* one compact toolbar (Oct 30 2026): view, category, next model, sort — dropdowns instead of chip rows */
 .oc-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
