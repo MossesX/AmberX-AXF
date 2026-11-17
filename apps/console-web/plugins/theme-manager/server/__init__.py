@@ -193,6 +193,12 @@ def skin_coverage() -> Any:
     return _skins("coverage")
 
 
+@router.get("/skins/map")
+def skin_map(find: str = "") -> Any:
+    """skin-map@1: what every skin slot controls (asset / dataset / layout, tokens, settings keys, components) and where every dataset and layout lives (hub, repo, data store). `find` filters rows by token, key or name."""
+    return _skins("map", *([find] if find else []))
+
+
 @router.get("/skins/covers/{skin}")
 def skin_covers(skin: str) -> Any:
     """What one skin (or design package) sets or styles, type by type: 'what does the Windows skin cover?'."""

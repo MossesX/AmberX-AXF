@@ -17,6 +17,8 @@ import { toolbarMigrationErrors } from '../core/engines/toolbar-migrate.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { skinSlotsErrors, skinSlotsJsonSchemas } from '../core/engines/skin-slots.mjs';
+import { skinMap, skinMapJsonSchema } from '../core/engines/skin-map.mjs';
+import { COMPONENT_TOKEN_FAMILIES } from '../core/engines/component-tokens.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
@@ -868,6 +870,26 @@ function skinSchemaProperties() {
   };
 }
 
+/**
+ * skin-map@1 inputs read from the repo (core/engines/skin-map.mjs is pure): the registries, the token registry, the
+ * data-store rules, the apps that ship the shared set (schemas/shared-assets.json + their manifests), the asset ids on
+ * disk and every framework stylesheet. `root` = the repo root (FRAMEWORK_DIR's parent).
+ */
+export function skinMapInputs(root = resolve(FRAMEWORK_DIR, '..')) {
+  const readOr = (f, d) => (existsSync(f) ? readJson(f) : d);
+  const shared = readOr(join(FRAMEWORK_DIR, 'schemas/shared-assets.json'), { apps: [] });
+  const apps = (shared.apps ?? []).map((dir) => { const m = readOr(join(root, dir, 'axf.manifest.json'), null); return { id: m?.app?.id ?? dir.split('/').pop(), dir }; });
+  const assetsRoot = join(FRAMEWORK_DIR, 'assets');
+  const assets = {};
+  for (const type of Object.keys(spec.types)) { const d = join(assetsRoot, type); if (existsSync(d)) assets[type] = readdirSync(d).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)); }
+  const sheets = {};
+  const add = (rel) => { const f = join(root, rel); if (existsSync(f)) sheets[rel] = readFileSync(f, 'utf8'); };
+  add('framework/ui/axf.css');
+  const libs = join(FRAMEWORK_DIR, 'libs');
+  if (existsSync(libs)) for (const lib of readdirSync(libs)) { const d = join(libs, lib); if (statSync(d).isDirectory()) for (const f of readdirSync(d)) if (f.endsWith('.css')) add(`framework/libs/${lib}/${f}`); }
+  return { registry: spec, customize: customizeSpec, tokens: readOr(join(FRAMEWORK_DIR, 'schemas/token-registry.json'), { tokens: [] }).tokens ?? [], componentFamilies: COMPONENT_TOKEN_FAMILIES, dataStorePaths: readOr(join(FRAMEWORK_DIR, 'schemas/data-store-paths.json'), {}), apps, assets, sheets };
+}
+
 /** Emit JSON Schema files (for editor autocompletion) from the type spec. */
 export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   mkdirSync(outDir, { recursive: true });
@@ -959,6 +981,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   const skinTree = skinConfigTree(readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json')), customizeSpec, SKIN_NEVER);
   const scf = join(outDir, 'skin-config.schema.json'); writeFileSync(scf, JSON.stringify(skinConfigSchema(skinTree), null, 2) + '\n'); written.push(scf);
   const screg = join(FRAMEWORK_DIR, 'schemas/skin-config.json'); writeFileSync(screg, JSON.stringify(skinConfigSnapshot(skinTree), null, 2) + '\n'); written.push(screg);
+  // skin-map@1: the generated, read-only map of what every skin slot controls and where every dataset and layout lives
+  const smf = join(outDir, 'skin-map.schema.json'); writeFileSync(smf, JSON.stringify(skinMapJsonSchema(), null, 2) + '\n'); written.push(smf);
+  const skinMapReg = join(FRAMEWORK_DIR, 'schemas/skin-map.json'); writeFileSync(skinMapReg, JSON.stringify(skinMap(skinMapInputs()), null, 2) + '\n'); written.push(skinMapReg);
   return written;
 }
 
