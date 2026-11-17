@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8194,
- "updatedAt": "2026-11-17T22:27:52.872Z",
+ "rev": 8195,
+ "updatedAt": "2026-11-17T22:28:08.434Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -285658,7 +285658,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:27:36.933Z"
+     "updatedAt": "2026-11-17T22:27:49.135Z"
     },
     {
      "id": "s9",
@@ -289226,12 +289226,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:27:03.346Z",
-   "updatedAt": "2026-11-17T22:27:31.549Z",
+   "updatedAt": "2026-11-17T22:27:33.253Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett: run this now on Fable, on the hulu0241 account. Top priority.",
      "at": "2026-11-17T22:27:18.963Z"
+    },
+    {
+     "text": "Brett: also, when a build comes in with a chosen model and/or account (pinned by Brett in a note, the console, MCP, CLI or voice), the dispatcher must use exactly that model and account, never override it. Even split applies only to builds with no account chosen. Make model + account settable fields on a build through every API.",
+     "at": "2026-11-17T22:27:33.253Z"
     },
     {
      "text": "Queued by console.",
