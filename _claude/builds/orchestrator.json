@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:30:58.613Z",
+ "updatedAt": "2026-11-17T21:31:12.761Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -187001,9 +187001,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:30:34.790Z",
+   "updatedAt": "2026-11-17T21:31:08.914Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: full autonomy. Don't wait to be told what's needed or where things go: decide and build it all yourself, including new toolbars, menus, widgets and layouts wherever the app needs them. Think it through first and keep design notes as you go. Bar: genuinely professional, not childish (Brett says the current look feels childish). Benchmark against real top-tier live products and sites, test against them, and meet accessibility (contrast, focus, keyboard, screen reader, reduced motion). Treat console, axHub web and AmberX as one app.",
+     "at": "2026-11-17T21:31:08.914Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

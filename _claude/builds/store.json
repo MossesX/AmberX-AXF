@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8018,
- "updatedAt": "2026-11-17T21:30:58.613Z",
+ "rev": 8019,
+ "updatedAt": "2026-11-17T21:31:12.761Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -283064,9 +283064,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:30:34.790Z",
+   "updatedAt": "2026-11-17T21:31:08.914Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: full autonomy. Don't wait to be told what's needed or where things go: decide and build it all yourself, including new toolbars, menus, widgets and layouts wherever the app needs them. Think it through first and keep design notes as you go. Bar: genuinely professional, not childish (Brett says the current look feels childish). Benchmark against real top-tier live products and sites, test against them, and meet accessibility (contrast, focus, keyboard, screen reader, reduced motion). Treat console, axHub web and AmberX as one app.",
+     "at": "2026-11-17T21:31:08.914Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -283090,7 +283095,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
