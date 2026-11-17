@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7524,
- "updatedAt": "2026-11-17T15:15:43.819Z",
+ "rev": 7525,
+ "updatedAt": "2026-11-17T15:16:14.362Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -264902,7 +264902,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T15:15:14.321Z",
+   "updatedAt": "2026-11-17T15:16:11.973Z",
    "builtAt": "",
    "notes": [
     {
@@ -264928,6 +264928,10 @@
     {
      "text": "Fable phase done (s1-s6): edit-ui@1 contract (framework/spec/EDIT-UI.md), schema + registry (framework/schemas/edit-ui.json, schemas/json/edit-ui-*.schema.json), engines (core/engines/edit-ui.ts, edit-ui-undo.ts), fixture + check-edit-ui.mts in CI, PORTING.md gap, rt.editUi with owner adapters (core/edit-ui-owners.ts) and the editui.on/off/toggle/state/set/undo/redo actions. Reach today: setting axf.editUi.enabled (setting: address, console-control set), actions through rt.actions; the hidden-assets owner is registered by rebuild-fresh-main-hide-any-asset (hide resolves owner-unavailable until it lands). Next phase (Opus): React gate (Ctrl / long-press / Esc), Editable wrappers, REST/MCP/CLI/voice transports, the look-writer path for non-chrome asset fields.",
      "at": "2026-11-17T15:15:14.321Z"
+    },
+    {
+     "text": "Headless run axf-edit-ui-mode-inline-edit-anything-active--paulie: brief only · start 18.5K tokens ($0.13) · cost $10.70 · 80 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:16:11.973Z"
     }
    ],
    "approvals": [],
@@ -265513,7 +265517,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
