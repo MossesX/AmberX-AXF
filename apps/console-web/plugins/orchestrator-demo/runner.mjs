@@ -155,6 +155,15 @@ export function view(rec, nowMs = Date.now()) {
   };
 }
 
+/** The summary written into the run record when it ends: the core's fold plus passed / failed / skipped per act. */
+export function summaryRecord(run) {
+  const results = new Map(run.results.map((r) => [r.actId, r]));
+  return {
+    ...core.summarize(run),
+    acts: run.acts.map((a) => { const r = results.get(a.id); return { actId: a.id, title: a.title, result: r?.result ?? 'not-run', observed: r?.observed ?? '', error: r?.error ?? '', evidence: (r?.evidence ?? []).map((e) => ({ kind: e.kind, text: e.text, ref: e.ref })), focus: a.focus.address }; }),
+  };
+}
+
 const pidAlive = (pid) => { if (!pid) return false; try { process.kill(pid, 0); return true; } catch { return false; } };
 
 // ── expectations ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -192,7 +201,10 @@ export async function runAct(ctx, act) {
   const within = act.expect.within || act.run.timeoutMs;
   const until = ctx.clock.nowMs() + within;
   let held = await expectationHolds(ctx, act);
-  while (!held && ctx.clock.nowMs() < until) { await ctx.sleep(ctx.clock.realMs(500)); held = await expectationHolds(ctx, act); }
+  while (!held && ctx.clock.nowMs() < until) {
+    if (ctx.isStopped?.()) return { result: 'skipped', observed: 'stopped', evidence: ev, error: '' };
+    await ctx.sleep(ctx.clock.realMs(500)); held = await expectationHolds(ctx, act);
+  }
   const what = `${act.expect.kind}${act.expect.build ? ` ${act.expect.build}` : ''}${act.expect.step ? ` ${act.expect.step}` : ''}${act.expect.status ? ` = ${act.expect.status}` : ''}${act.expect.text ? ` "${act.expect.text}"` : ''}`;
   if (held) return { result: 'pass', observed: act.expect.fails ? `failed as meant: ${observed}` : observed, evidence: ev, error: '' };
   const why = `expected ${what} within ${Math.round(within / 1000)} s; not seen`;
@@ -213,7 +225,11 @@ export async function driveOnce(ctx, files, id) {
   const fire = (type, extra = {}) => withLock(files, id, () => { const cur = loadRun(files, id); if (cur.run.state !== run.state || cur.run.cursor !== run.cursor) return cur; const n = { run: core.step(cur.run, { type, at: ctx.now(), ...extra }), driver: { ...cur.driver, beatAt: ctx.now() } }; return saveRun(files, n); });
   const log = (text) => withLock(files, id, () => { const cur = loadRun(files, id); cur.driver.log = [...cur.driver.log, `${ctx.now()} ${text}`].slice(-400); saveRun(files, cur); });
   if (core.TERMINAL_STATES.includes(run.state)) {
-    if (!driver.cleaned && ctx.cleanup) { const c = await ctx.cleanup(ctx, peek); withLock(files, id, () => { const cur = loadRun(files, id); cur.driver.cleaned = true; cur.driver.cleanup = c; cur.driver.summary = core.summarize(cur.run); saveRun(files, cur); }); }
+    if (!driver.cleaned) {
+      const c = ctx.cleanup ? await ctx.cleanup({ ...ctx, log: (t) => ctx.logBuffer.push(t) }, peek) : null;
+      for (const t of ctx.logBuffer.splice(0)) await log(t);
+      withLock(files, id, () => { const cur = loadRun(files, id); cur.driver.cleaned = true; cur.driver.cleanup = c; cur.driver.summary = summaryRecord(cur.run); saveRun(files, cur); });
+    }
     return { rec: loadRun(files, id), did: 'over', wait: 0 };
   }
   if (driver.held) return { rec: peek, did: 'held', wait: POLL_MS };
@@ -231,7 +247,7 @@ export async function driveOnce(ctx, files, id) {
       return { rec: fire('start'), did: 'started', wait: 0 };
     }
     case 'running': {
-      const live = { ...ctx, log: (t) => { ctx.logBuffer.push(t); }, logLines: () => [...loadRun(files, id).driver.log, ...ctx.logBuffer] };
+      const live = { ...ctx, log: (t) => { ctx.logBuffer.push(t); }, logLines: () => [...loadRun(files, id).driver.log, ...ctx.logBuffer], isStopped: () => loadRun(files, id)?.run.state !== 'running' };
       let res;
       if (ctx.resumed) {
         // the act was cut off by a restart: judge it by its expectation alone, never run its action twice
@@ -354,14 +370,13 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       const rec = loadRun(files, id);
       if (!rec) return out({ ok: false, code: 'no-run', error: 'no demo run' });
       const ctx = await realContext({ files, rec, env });
-      const { cleanupRun } = await import('./cleanup.mjs').catch(() => ({}));
-      ctx.cleanup = cleanupRun ?? null;
+      ctx.cleanup = (await import('./cleanup.mjs')).cleanupRun;
       const end = await drive(ctx, files, id);
       return out({ ok: true, state: view(end) });
     }
     if (cmd === 'ensure') return out({ ok: true, ...ensureDriver(files, id) });
     if (cmd === 'state') return out({ ok: true, state: view(loadRun(files, id)) });
-    if (cmd === 'summary') { const rec = loadRun(files, id); return out({ ok: !!rec, summary: rec ? core.summarize(rec.run) : null, checklist: rec ? core.checklist(rec.run) : [], cleanup: rec?.driver.cleanup ?? null, ...(rec ? {} : { code: 'no-run', error: 'no demo run' }) }); }
+    if (cmd === 'summary') { const rec = loadRun(files, id); return out({ ok: !!rec, summary: rec ? (rec.driver.summary ?? summaryRecord(rec.run)) : null, checklist: rec ? core.checklist(rec.run) : [], cleanup: rec?.driver.cleanup ?? null, ...(rec ? {} : { code: 'no-run', error: 'no demo run' }) }); }
     return out({ ok: false, code: 'usage', error: 'usage: runner.mjs new [--pause|--no-pause] | event <type> | drive | ensure | state | summary [--id <run>]' });
   } catch (e) {
     process.exitCode = 1;
