@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, runDragMove, useDraggableHostSet, useRuntime } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
@@ -324,14 +324,33 @@ function TreeLeaf({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (
 function Board({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }) {
   const rt = useRuntime();
   const [over, setOver] = useState('');
+  const setStatus = async (id: string, status: string) => {
+    const p = plans.find((x) => x.id === id);
+    if (!p || p.status === status) return;
+    const prev = p;
+    putPlan({ ...p, status: status as Plan['status'] });
+    try { await savePlan({ ...p, status: status as Plan['status'] }, { note: `Moved to ${status} on the board` }); } catch (err) { putPlan(prev); rt.toast((err as Error).message, 'danger'); throw err; }
+  };
+  // drag-move@1: each status column is a list-item host (plan-studio.<status>); moving a card to another column sets
+  // its status. Inside a column cards follow priority, so a reorder there answers failed.
+  const cols = pc.STATUSES.map((s) => `plan-studio.${s.id}`);
+  useDraggableHostSet('list-item', cols, (container) => {
+    const status = container.slice('plan-studio.'.length);
+    return {
+      list: () => ({ label: `${pc.STATUSES.find((s) => s.id === status)?.label ?? status} plans`, items: plans.filter((p) => p.status === status).map((p) => ({ id: p.id, label: p.title })), accepts: { from: cols } }),
+      apply: async (plan) => {
+        if (plan.to?.container.toLowerCase() !== container.toLowerCase()) return;
+        if (plan.from?.container.toLowerCase() === container.toLowerCase()) throw new Error('cards in a column follow priority; move a card to another column to change its status');
+        await setStatus(plan.item.id, status);
+      },
+    };
+  });
   const drop = async (e: DragEvent, status: string) => {
     e.preventDefault(); setOver('');
     const id = e.dataTransfer.getData('text/plain');
     const p = plans.find((x) => x.id === id);
     if (!p || p.status === status) return;
-    const prev = p;
-    putPlan({ ...p, status: status as Plan['status'] });
-    try { await savePlan({ ...p, status: status as Plan['status'] }, { note: `Moved to ${status} on the board` }); } catch (err) { putPlan(prev); rt.toast((err as Error).message, 'danger'); }
+    await runDragMove(rt, { kind: 'list-item', source: { container: `plan-studio.${p.status}`, id }, target: { container: `plan-studio.${status}`, zone: 'into' }, by: 'pointer' });
   };
   return (
     <div className="axp-plan-studio__board" role="list" aria-label="Board by status">

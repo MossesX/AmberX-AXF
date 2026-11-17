@@ -6,7 +6,7 @@
  * the mergequeue-list command). Theme tokens and framework controls only.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { AgentAvatar, Button, Icon, PriorityTag, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Icon, PriorityTag, runDragMove, useRuntime, useSortableListHost } from '@console/axf/react';
 import { cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { api, FOLDER } from './store';
 
@@ -82,6 +82,12 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
   const q = useQueue();
   useEffect(() => { startQueue(); }, []);
   const d = q.data;
+  // drag-move@1: the merge queue is a list-item host (merge-queue, item = the PR number); a drop and an API move both
+  // send the queue's own move command with the PR's new place.
+  useSortableListHost('merge-queue', {
+    label: 'Merge queue', enabled: !!d?.on, items: (d?.items ?? []).map((it) => ({ id: String(it.pr), label: `#${it.pr}` })),
+    onReorder: (ids, plan) => { const pr = Number(plan.item.id); const to = ids.indexOf(plan.item.id); if (pr && to >= 0) return command('move', { pr, to }, `Moved #${pr} to place ${to + 1}.`); },
+  });
   if (!d) return <p className="fx-small fx-muted">{q.error || 'Reading the merge queue…'}</p>;
   if (!d.on) return <p className="fx-small fx-muted">The merge queue is off: PRs merge one by one, each re-tested after main moves. Switch it on in Settings → Plugins → Push banner.</p>;
   const out = d.waiting.filter((w) => w.state !== 'kicked');
@@ -102,7 +108,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
       <section className="axp-push-banner__group" aria-label="In the queue">
         <h4 className="axp-push-banner__group-title">In the queue <span>{d.items.length}</span></h4>
         {d.items.length
-          ? <ul className="axp-push-banner__list">{d.items.map((it, i) => <Row key={it.pr} it={it} i={i} count={d.items.length} onDrop={(pr, to) => void command('move', { pr, to }, `Moved #${pr} to place ${to + 1}.`)} />)}</ul>
+          ? <ul className="axp-push-banner__list">{d.items.map((it, i) => <Row key={it.pr} it={it} i={i} count={d.items.length} onDrop={(pr, to) => void runDragMove(rt, { kind: 'list-item', source: { container: 'merge-queue', id: String(pr) }, target: { container: 'merge-queue', zone: 'into', index: to }, by: 'pointer' })} />)}</ul>
           : <p className="fx-small fx-muted">Nothing waiting to merge.</p>}
       </section>
       {kickedOpen.length > 0 && (

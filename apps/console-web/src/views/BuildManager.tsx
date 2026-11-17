@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Container, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
+import { Button, Chip, Container, Icon, PriorityTag, Slot, runDragMove, useRuntime, useSortableListHost } from '../axf/react';
 import * as api from '../api';
 import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
 import * as core from '../axf/plan/build-queue-core.mjs';
@@ -143,6 +143,13 @@ export function BuildManager() {
   const [busy, setBusy] = useState(false);
   useEffect(() => { loadQueue(); }, []);
   const view = useMemo(() => (loaded && state !== undefined ? core.computeQueue(features as unknown as QFeature[], state) : null), [features, loaded, state]);
+  // drag-move@1: the steps still to build are a list-item host (build-manager.queue); the drop and the arrow buttons
+  // send the same command the API does, and the host's apply writes the order.
+  useSortableListHost('build-manager.queue', {
+    label: 'Build queue', enabled: !!view, items: (view?.steps ?? []).filter((s) => s.state !== 'done' && s.state !== 'rework').map((s) => ({ id: s.id, label: s.title })),
+    // read at call time, after the render that defined `run` (the host is off while the queue loads)
+    onReorder: async (ids) => { const built = (view?.steps ?? []).filter((s) => s.state === 'done' || s.state === 'rework').map((s) => s.id); await run({ kind: 'order', order: [...built, ...ids] }); rt.openDialog('build-reprocess'); },
+  });
   // the server's real queue (agent-slots: what runs now and what waits for a slot) sits on top; the plan's order is below
   if (!view) return <div className="fx-stack fx-stack--lg"><Slot name="build.queue.top" /><div className="fx-empty">Loading the build queue…</div></div>;
 
@@ -155,19 +162,16 @@ export function BuildManager() {
   const toggle = (id: string) => setOpen((o) => { const n = new Set(o); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const drop = async (target: string) => {
     if (!drag || drag === target) return;
-    const ids = remaining.map((s) => s.id).filter((id) => id !== drag);
-    ids.splice(ids.indexOf(target), 0, drag);
+    const from = drag;
     setDrag(null); setOver(null);
-    await run({ kind: 'order', order: [...done.map((s) => s.id), ...ids] });
-    rt.openDialog('build-reprocess');
+    await runDragMove(rt, { kind: 'list-item', source: { container: 'build-manager.queue', id: from }, target: { container: 'build-manager.queue', zone: 'before', ref: target }, by: 'pointer' });
   };
   const move = async (id: string, delta: number) => {
-    const ids = remaining.map((s) => s.id);
-    const i = ids.indexOf(id), j = Math.max(0, Math.min(ids.length - 1, i + delta));
-    if (i === j) return;
-    ids.splice(j, 0, ...ids.splice(i, 1));
-    await run({ kind: 'order', order: [...done.map((s) => s.id), ...ids] });
-    rt.openDialog('build-reprocess');
+    const ids = remaining.map((s) => s.id).filter((x) => x !== id);
+    const i = remaining.findIndex((s) => s.id === id);
+    const j = Math.max(0, Math.min(ids.length, i + delta));
+    if (i < 0 || i === j) return;
+    await runDragMove(rt, { kind: 'list-item', source: { container: 'build-manager.queue', id }, target: { container: 'build-manager.queue', zone: 'into', index: j }, by: 'pointer' });
   };
   const copy = (s: StepView) => { navigator.clipboard?.writeText(brief(s)).then(() => rt.toast(`Brief for "${s.title}" copied — paste it into Claude Code (${s.modelLabel}).`, 'success'), () => rt.toast('Clipboard blocked', 'warning')); };
   const shown = (list: StepView[]) => (model ? list.filter((s) => s.model === model) : list);

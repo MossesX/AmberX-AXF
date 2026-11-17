@@ -12,7 +12,7 @@
  * passes; the last step authorises the pair (which renews it) and saves it. Framework controls and tokens only.
  */
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
-import { Button, Checkbox, Chip, IconButton, Markdown, Note, Segmented, TextField } from '@console/axf/react';
+import { Button, Checkbox, Chip, IconButton, Markdown, Note, Segmented, TextField, useSortableListHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 
 const api = pluginApi('ai-keys', 'AI keys');
@@ -122,6 +122,8 @@ function AccountList({ onAdd }: { onAdd: () => void }) {
     return next.map((r) => r.id);
   };
   const move = (id: string, to: number) => { const ids = reorder(id, to); if (ids) save(ids); };
+  // drag-move@1: the Claude Code accounts' order is a list-item host (ai-keys.accounts), the same save the handle makes
+  useSortableListHost('ai-keys.accounts', { label: 'Claude Code accounts', enabled: !!rows, items: (rows ?? []).map((r) => ({ id: r.id, label: r.label ?? r.id })), onReorder: (ids, plan) => move(plan.item.id, ids.indexOf(plan.item.id)) });
 
   // Pointer drag on the handle: the row moves as the pointer passes a neighbour's middle; the order is saved on release.
   const startDrag = (id: string) => (e: PointerEvent<HTMLElement>) => {
