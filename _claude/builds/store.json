@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8460,
- "updatedAt": "2026-11-17T23:50:43.151Z",
+ "rev": 8461,
+ "updatedAt": "2026-11-17T23:50:52.451Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115888,6 +115888,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -137652,6 +137653,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -206070,6 +206072,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -218461,6 +218464,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -275017,7 +275021,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T23:45:17.578Z",
+   "updatedAt": "2026-11-17T23:50:28.084Z",
    "builtAt": "",
    "notes": [
     {
@@ -275283,6 +275287,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: The build is complete (build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T23:45:17.578Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T23:50:28.084Z"
     }
    ],
    "approvals": [
@@ -276070,7 +276078,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 108,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -289747,9 +289755,9 @@
    "source": "mcp",
    "pendingId": "settings-fix-part-2-blank-toolbars",
    "branch": "claude/settings-fix-part-2-blank-toolbars",
-   "pr": "",
+   "pr": "#826",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-17T23:48:13.447Z",
+   "updatedAt": "2026-11-17T23:50:39.041Z",
    "builtAt": "",
    "notes": [
     {
@@ -289803,6 +289811,10 @@
     {
      "text": "Fixing: it fell back to Pending on s3 (the session stopped with steps left and nobody asked Brett anything). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T23:48:13.447Z"
+    },
+    {
+     "text": "Reconciler: PR #826; PR #826 names s1, s2 done",
+     "at": "2026-11-17T23:50:39.041Z"
     }
    ],
    "approvals": [],
@@ -290344,7 +290356,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296773,10 +296785,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "auto-lander-never-wait-missing-ui-review",
-   "branch": "",
+   "branch": "claude/auto-lander-never-wait-missing-ui-review",
    "pr": "",
    "createdAt": "2026-11-17T22:35:36.950Z",
-   "updatedAt": "2026-11-17T23:46:28.846Z",
+   "updatedAt": "2026-11-17T23:50:39.041Z",
    "builtAt": "",
    "notes": [
     {
@@ -296814,6 +296826,10 @@
     {
      "text": "Repeated steps collapsed: 544 → 17 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:28.846Z"
+    },
+    {
+     "text": "Reconciler: branch claude/auto-lander-never-wait-missing-ui-review (no PR yet)",
+     "at": "2026-11-17T23:50:39.041Z"
     }
    ],
    "approvals": [],
@@ -297250,7 +297266,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {

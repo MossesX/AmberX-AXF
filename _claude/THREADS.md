@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `auto-recover-stuck-builds` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `ui-review-gate-switch-default-off` note (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:49 UTC · `move-server-side-console-parts-onto-vps` s11 done (all) · foreign-write
 - 2026-11-17 23:50 UTC · `move-server-side-console-parts-onto-vps` s12 done (all) · orchestrator
 - 2026-11-17 23:50 UTC · `move-server-side-console-parts-onto-vps` s12 done (all) · foreign-write
+- 2026-11-17 23:50 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 23:50 UTC · `settings-fix-part-2-blank-toolbars` PR #826, note (all) · reconciler
+- 2026-11-17 23:50 UTC · `auto-lander-never-wait-missing-ui-review` branch claude/auto-lander-never-wait-missing-ui-review, note (all) · reconciler
 
 ## Token passes (log)
 
