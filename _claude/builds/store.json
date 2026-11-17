@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7780,
- "updatedAt": "2026-11-17T20:19:33.875Z",
+ "rev": 7781,
+ "updatedAt": "2026-11-17T20:20:10.346Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275000,7 +275000,7 @@
    "title": "Separate settings per plugin + reset confirm dialog",
    "category": "",
    "detail": "1) Every plugin gets its OWN settings interface showing only that plugin's settings; stop opening the console settings and jumping to the plugin's tab. The console keeps its own separate settings interface. Settings interfaces are not shared. 2) Sweep every page/plugin so each opens its correct default settings interface. 3) Clicking Reset in any settings interface opens a confirmation dialog with an 'Include assets' switch (on = also reset assets/skins to default; off = settings only) and a scrollable table listing every changed asset, same as the table in the settings panel.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275008,7 +275008,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:18:13.275Z",
+   "updatedAt": "2026-11-17T20:20:04.333Z",
    "builtAt": "",
    "notes": [
     {
@@ -275123,14 +275123,14 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-17T20:18:06.908Z",
+     "at": "2026-11-17T19:46:04.590Z",
      "exit": 0,
-     "outcome": "returned",
-     "reason": "stopped",
-     "stepsLeft": 9,
+     "outcome": "requeued",
+     "reason": "phase-done",
+     "stepsLeft": 15,
      "account": "",
      "session": "",
-     "phase": "Phase 2"
+     "phase": "Phase 1"
     },
     "split": {
      "at": "2026-11-17T18:57:54.015Z",
@@ -275140,7 +275140,7 @@
      "note": "Split by Claude into 18 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session stopped on its own with 9 steps left: back in Pending for Brett.",
+    "note": "Session finished phase Phase 1 with 15 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -275178,20 +275178,6 @@
      "attempt": 0,
      "account": "",
      "notified": "",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    },
-    {
-     "at": "2026-11-17T20:18:06.904Z",
-     "buildId": "separate-settings-per-plugin-reset",
-     "phase": "",
-     "step": "s10",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "2026-11-17T20:18:23.520Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -275448,12 +275434,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T20:20:04.333Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T18:57:54.015Z"
+     "updatedAt": "2026-11-17T20:20:05.360Z"
     },
     {
      "id": "s11",
