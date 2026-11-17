@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `new-project-wizard-name-linked-repo` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `orchestrator-checks-shipped-features` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `pending-tab-one-collapsed-row-per-build` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `plugin-review-map-what-each-plugin-does` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:48 UTC · `guided-live-demo-test-watch-orchestrator` s16 done (all) · orchestrator
 - 2026-11-17 20:48 UTC · `rebuild-every-toolbar-page-specific` s8 done (all) · orchestrator
 - 2026-11-17 20:49 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 20:50 UTC · `guided-live-demo-test-watch-orchestrator` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
