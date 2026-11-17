@@ -92,6 +92,14 @@ export class Workspace {
     if (area === 'float' && !this.s.floats[id]) this.set((s) => ({ ...s, floats: { ...s.floats, [id]: { x: 80 + Object.keys(s.floats).length * 24, y: 80, w: 420, h: 320, z: Date.now() } } }));
     this.front(id);
   }
+  /** Put a pane at `index` among the shown panes of a docked area (0 = first; past the end = last), shown. drag-move@1 apply. */
+  placePane(id: string, area: Exclude<Area, 'float'>, index: number) {
+    if (!this.pane(id)) return;
+    const ids = this.visible(area).filter((x) => x !== id);
+    ids.splice(Math.max(0, Math.min(Number.isFinite(index) ? Math.floor(index) : ids.length, ids.length)), 0, id);
+    this.patch((p) => { const out = { ...p }; ids.forEach((k, i) => { out[k] = { ...(p[k] ?? { area, order: 0 }), area, order: i * 10, hidden: false }; }); return out; });
+    this.front(id);
+  }
   front(id: string) { const a = this.layout().panes[id]?.area; if (!a) return; this.set((s) => ({ ...s, front: { ...s.front, [a]: id }, floats: s.floats[id] ? { ...s.floats, [id]: { ...s.floats[id]!, z: Date.now() } } : s.floats })); }
   setSize(which: 'left' | 'right' | 'bottom', px: number) {
     const lay = this.layout();

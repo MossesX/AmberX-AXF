@@ -72,6 +72,8 @@ export interface WorkspaceHostProps {
   dragLayer?: boolean;
 }
 
+/** The drag-move@1 container id of a workspace area's pane strip (kind `tab`). */
+export const wsAreaContainer = (ws: Workspace, area: Area) => `workspace.${ws.id}.${area}`;
 /** The drag-move@1 container id of a workspace toolbar (workspace ids and toolbar ids are only unique together). */
 export const wsToolbarContainer = (ws: Workspace, toolbarId: string) => `${ws.id}.${toolbarId}`;
 /** The item id (uniqueItemIds) of the entry at `index` on a workspace toolbar, or null. */
@@ -99,7 +101,7 @@ export function WorkspaceHost({ ws, renderPane, describe, emptyHint, dragLayer =
 
   useEffect(() => {
     const offs = [
-      registerZone(`${zone}:area`, { accepts: (p) => p.kind === `${zone}:pane`, positions: () => ['inside'], drop: (p, area) => ws.movePane(p.id, area as Area) }),
+      registerZone(`${zone}:area`, { accepts: (p) => p.kind === `${zone}:pane`, positions: () => ['inside'], drop: (p, area) => { const from = ws.layout().panes[p.id]?.area; if (area === 'float' || !from || from === 'float') ws.movePane(p.id, area as Area); else void runDragMove(rt, { kind: 'tab', source: { container: wsAreaContainer(ws, from), id: p.id }, target: { container: wsAreaContainer(ws, area as Area), zone: 'into' }, by: 'pointer' }); } }),
       // every toolbar-item drop is a drag-move@1 command (the same one the API sends; wsToolbarDrag)
       registerZone(`${zone}:item`, {
         axis: 'x', accepts: (p) => p.kind === `${zone}:item` || p.kind === `${zone}:command`, positions: () => ['before', 'after'],
@@ -119,6 +121,18 @@ export function WorkspaceHost({ ws, renderPane, describe, emptyHint, dragLayer =
     list: () => { const t = ws.toolbar(container.slice(ws.id.length + 1)); const ids = uniqueItemIds(t?.items ?? []); return { label: t ? `${t.name} toolbar` : container, items: ids.map((id) => ({ id, label: entryOfItemId(id) === '|' ? 'Separator' : entryOfItemId(id) })), accepts: { add: true, remove: true, from: '*' } }; },
     apply: (plan) => { const order = plan.order[container]; if (Array.isArray(order)) ws.patchToolbar(container.slice(ws.id.length + 1), { items: order.map(entryOfItemId) }); },
   }));
+
+  // drag-move@1: each docked area's pane strip (data-axf-tab-group workspace.<id>) is a `tab` host, container
+  // `workspace.<id>.<area>`: reorder inside an area, or move a pane to another area of the same workspace.
+  const areaIds = AREAS.map((a) => wsAreaContainer(ws, a));
+  useDraggableHostSet('tab', areaIds, (container) => {
+    const area = container.slice(`workspace.${ws.id}.`.length) as Exclude<Area, 'float'>;
+    return {
+      list: () => ({ label: `${area} panes`, items: ws.visible(area).map((id) => ({ id, label: ws.pane(id)?.title ?? id })), accepts: { from: areaIds } }),
+      // the target area places the pane (a cross-area move leaves the source with nothing to do)
+      apply: (plan) => { if (plan.to && plan.to.container.toLowerCase() === container.toLowerCase()) ws.placePane(plan.item.id, area, plan.to.index); },
+    };
+  });
 
   useEffect(() => { const el = rootRef.current; if (!el) return; const report = () => { ws.area = { x: 0, y: 0, width: el.clientWidth, height: el.clientHeight }; }; report(); const ro = new ResizeObserver(report); ro.observe(el); return () => ro.disconnect(); }, [ws]);
   const by = Object.fromEntries(AREAS.map((a) => [a, ws.visible(a)])) as Record<(typeof AREAS)[number], string[]>;

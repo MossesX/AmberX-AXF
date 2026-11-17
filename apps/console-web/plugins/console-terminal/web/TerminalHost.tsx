@@ -20,7 +20,7 @@
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, Icon, WindowGrip, useRuntime, useTabPress, useWindowFrame, useWindowManager } from '@console/axf/react';
+import { AgentAvatar, Icon, WindowGrip, runDragMove, useDraggableHost, useRuntime, useTabPress, useWindowFrame, useWindowManager } from '@console/axf/react';
 import { reorderIndex, type TabSpec } from '@console/axf/core';
 import { call, getSettings, post, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target, type TmuxSession } from './api';
 import { applyProfile, useProfiles } from './profiles';
@@ -62,6 +62,9 @@ export async function killSession(s: HostSession) {
   else if (t) await post('tmux/kill', t).catch(() => undefined);
   tabSessions.delete(s.id); removeSession(s.id);
 }
+
+/** The drag-move@1 container of a Terminal window's session strip. */
+export const termContainer = (hostId: string) => `terminal.${hostId}`;
 
 export function TerminalHost({ tab }: { tab: TabSpec }) {
   const rt = useRuntime();
@@ -127,10 +130,22 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         if (phase === 'move' && el) { const r = el.getBoundingClientRect(); const edge = r.width / 8; if (x < r.left + edge) el.scrollLeft -= 12; else if (x > r.right - edge) el.scrollLeft += 12; }
         const to = reorderIndex(tabRects(), i, x);
         if (phase === 'move') setReorder({ from: i, to });
-        else { setReorder(null); if (phase === 'end') move(tab.id, i, to); }
+        else { setReorder(null); if (phase === 'end' && to !== i) void runDragMove(rt, { kind: 'tab', source: { container: termContainer(tab.id), id: sid }, target: { container: termContainer(tab.id), zone: 'into', index: to }, by: 'pointer' }); }
       },
     });
   };
+  // drag-move@1: the hand-drawn session strip is a `tab` host (container terminal.<window tab>): reorder, or move a
+  // session to another Terminal window's strip. The pointer reorder above runs the same command.
+  useDraggableHost('tab', termContainer(tab.id), {
+    list: () => ({ label: 'Terminal tabs', items: host(tab.id).sessions.map((s) => ({ id: s.id, label: s.title })), accepts: { from: hostIds().map(termContainer) } }),
+    apply: (plan) => {
+      if (!plan.to || plan.to.container.toLowerCase() !== termContainer(tab.id).toLowerCase()) return; // the target strip places it
+      const here = host(tab.id).sessions.findIndex((s) => s.id === plan.item.id);
+      if (here >= 0) { move(tab.id, here, plan.to.index); return; }
+      const s = removeSession(plan.item.id);
+      if (s) addSession(tab.id, s, plan.to.index);
+    },
+  });
   useEffect(() => { void getSettings().then(setSettings, () => undefined); return onSettings(setSettings); }, []);
   const root = useRef<HTMLDivElement>(null);
   const [drawer, setDrawer] = useState(false); // phone: the sessions nav as a drawer
