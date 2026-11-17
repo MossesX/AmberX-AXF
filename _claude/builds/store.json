@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7689,
- "updatedAt": "2026-11-17T19:40:54.818Z",
+ "rev": 7690,
+ "updatedAt": "2026-11-17T19:41:11.803Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276522,7 +276522,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T19:40:59.409Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -277099,7 +277105,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277184,7 +277190,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T19:40:59.409Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -277795,7 +277807,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277864,7 +277876,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T19:40:59.409Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -278257,7 +278275,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
