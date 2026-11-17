@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:04:44.809Z",
+ "updatedAt": "2026-11-17T23:05:03.161Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -190974,7 +190974,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:03:11.868Z",
+   "updatedAt": "2026-11-17T23:04:17.505Z",
    "builtAt": "",
    "notes": [
     {
@@ -191050,16 +191050,16 @@
      "at": "2026-11-17T22:54:16.354Z"
     },
     {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s19): session on hulu0241 failed (exit 129): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T23:00:26.720Z"
+    },
+    {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T22:56:21.741Z"
     },
     {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T22:59:22.796Z"
-    },
-    {
-     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s19): session on hulu0241 failed (exit 129): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
-     "at": "2026-11-17T23:00:26.720Z"
     },
     {
      "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3).",
@@ -191075,7 +191075,7 @@
      "phase": 1,
      "from": "Fable",
      "to": "Opus",
-     "at": "2026-11-17T22:47:43.903Z",
+     "at": "2026-11-17T23:02:04.238Z",
      "by": "auto",
      "kind": "downgrade"
     }
@@ -191560,8 +191560,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:04:17.505Z",
      "note": "",
      "uid": "st-mwl7mosm0lh4ci",
      "createdAt": "2026-11-17T21:34:10.438Z"
