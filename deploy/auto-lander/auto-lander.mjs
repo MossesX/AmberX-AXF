@@ -212,15 +212,15 @@ export async function stepBuild(b, d, ctx, { policy, dry = false, at = nowIso(),
 
   let reason = act.reason; let state = act.state;
   if (act.action === 'merge-main') {
-    const r = await d.mergeMain({ build: b.id, branch: b.branch, pr: rec.pr });
+    const r = await d.mergeMain({ build: b.id, branch: b.branch, pr: rec.pr, now: () => at });
     if (r.status === 'merged' || r.status === 'up-to-date') { state = 'ci-running'; reason = r.status === 'merged' ? `Merged main in (${r.sha.slice(0, 9)}); CI runs on the new head.` : 'Already has main; waiting for GitHub to see it.'; }
     else if (r.status === 'needs-fix') {
-      const f = await d.launchFix({ id: b.id, head: snap.head, summary: `Merging main into ${b.branch} clashes in hand-written files:\n${r.conflicts.map((c) => `- ${c}`).join('\n')}\nMerge origin/main into the branch and resolve them by hand.` });
+      const f = await d.launchFix({ id: b.id, head: snap.head, now: () => at, summary: `Merging main into ${b.branch} clashes in hand-written files:\n${r.conflicts.map((c) => `- ${c}`).join('\n')}\nMerge origin/main into the branch and resolve them by hand.` });
       state = f.status === 'launched' || f.status === 'running' || f.status === 'queued' ? 'fixing' : 'waiting';
       reason = `Main clashes in ${r.conflicts.slice(0, 3).join(', ')}: ${f.status === 'launched' ? `fix session on ${f.account}` : f.why || f.status}.`;
     } else { state = 'waiting'; reason = `Merging main failed: ${String(r.error || r.log || '').split('\n').pop()}`; }
   } else if (act.action === 'fix-session') {
-    const f = await d.launchFix({ id: b.id, head: snap.head, summary: snap.summary || `CI is red on ${snap.head.slice(0, 9)}${snap.failing.length ? `: ${snap.failing.join(', ')}` : ''}.`, n: act.attempt });
+    const f = await d.launchFix({ id: b.id, head: snap.head, now: () => at, summary: snap.summary || `CI is red on ${snap.head.slice(0, 9)}${snap.failing.length ? `: ${snap.failing.join(', ')}` : ''}.`, n: act.attempt });
     state = ['launched', 'running', 'queued'].includes(f.status) ? 'fixing' : 'waiting';
     reason = f.status === 'launched' ? `CI is red: fix attempt ${act.attempt} runs on ${f.account} (${f.session || 'starting'}).` : f.status === 'queued' ? `CI is red: fix attempt ${act.attempt} is Queued (${f.why}).` : f.status === 'running' ? `A fix session already runs: ${f.why}` : `Couldn't start a fix session: ${f.why}`;
   } else if (act.action === 'land') {
@@ -235,6 +235,7 @@ export async function stepBuild(b, d, ctx, { policy, dry = false, at = nowIso(),
   } else if (act.action === 'none' && act.state === 'landed' && prev.state !== 'landed') {
     const open = rec.attempts.filter((x) => x.kind === 'land' && x.result === 'started').slice(-1)[0];
     if (open) attempts.end(open, 'ok', { log: `PR #${snap.number} merged.`, at });
+    else attempts.record(b.id, 'land', 'ok', { pr: snap.number, head: snap.head, branch: b.branch, account: 'merge-queue', at, log: `PR #${snap.number} merged.` });
     if (prev.state === 'escalated' || prev.escalation) await d.resolveEscalation?.({ build: b.id });
   }
   const next = AL.apply({ ...rec, attempts: [] }, { ...act, action: AL.ACTION_KIND[act.action] ? 'wait' : act.action, state, reason }, { at });
@@ -244,7 +245,8 @@ export async function stepBuild(b, d, ctx, { policy, dry = false, at = nowIso(),
 // ------------------------------------------------------------------ one tick
 
 /** One tick. Returns the state document written (plus { skipped } when another tick holds the lock). */
-export async function tick({ deps = null, dry = false, only = '', log = () => {}, at = nowIso(), reconcile = null } = {}) {
+export async function tick({ deps = null, dry = false, only = '', log = () => {}, now = nowIso, reconcile = null } = {}) {
+  const at = now();
   const lk = takeLock();
   if (!lk.ok) return { skipped: `another tick runs (pid ${lk.holder?.pid || '?'})` };
   try {
@@ -260,16 +262,16 @@ export async function tick({ deps = null, dry = false, only = '', log = () => {}
     const list = candidates(d.builds(), state, { only });
     const queue = list.map((b) => b.id);
     for (const b of list) {
-      if (!dry) writeState({ ...state, at: nowIso(), current: b.id, queue });
+      if (!dry) writeState({ ...state, at: now(), current: b.id, queue });
       try {
-        const nb = await stepBuild(b, d, ctx, { policy, dry, at: nowIso(), log });
-        state = putBuild(state, nb, nowIso());
+        const nb = await stepBuild(b, d, ctx, { policy, dry, at: now(), log });
+        state = putBuild(state, nb, now());
       } catch (e) { log(`${b.id}: ${e.message}`); }
     }
     if (!dry) { try { await d.flushEscalations?.(); } catch (e) { log(`escalation push: ${e.message}`); } }
     if (ctx.fixed.length && !dry) { const c = readControl(); writeControl({ ...c, fixNow: c.fixNow.filter((x) => !ctx.fixed.includes(x)) }); }
     d.gh?.save?.();
-    state = { ...state, at: nowIso(), current: '', queue, paused: false };
+    state = { ...state, at: now(), current: '', queue, paused: false };
     if (!dry) writeState(state);
     return { ...state, service: svc };
   } finally { lk.release(); }
