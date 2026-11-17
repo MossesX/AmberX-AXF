@@ -140,5 +140,96 @@
         }
       ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "pending"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "ended": {
+            "const": ""
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "claimed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "ended": {
+            "const": "claimed"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "expired"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "ended": {
+            "const": "expired"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "cancelled"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "ended": {
+            "const": "cancelled"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "claimed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "claimedBy": {
+            "type": "object"
+          },
+          "deviceId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,64}$"
+          },
+          "claimedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+          }
+        }
+      }
+    }
+  ]
 }

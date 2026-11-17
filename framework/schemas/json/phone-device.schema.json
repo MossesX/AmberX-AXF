@@ -257,5 +257,23 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "paired"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "owner": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  ]
 }
