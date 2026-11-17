@@ -832,19 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:28 UTC · `land-drive-live-console-first-resolve` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `land-rename-long-builds-resolve-clash` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `land-overlay-preview-ui-review-resolve` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `full-voice-control-merge-main-and-land` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `context-menus-plugin-one-true-source` s9 done, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `picker-dialog-plugin-replaces-all` → landing (all) · foreign-write
-- 2026-11-17 22:28 UTC · `console-look-becomes-default-axhub-skin` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `merge-main-land-server-gate-one-session` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `merge-main-land-console-app-part-2` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `pending-tab-one-collapsed-row-per-2` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `shipped-features-organized-sortable` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `vps-sends-shipped-features-every-merge` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `phone-connect-small-android-companion` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `shipped-features-open-button-views-each` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `fix-console-deep-links-open-page-lands` → complete, note (all) · foreign-write
@@ -1232,6 +1219,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:57 UTC · `rebuild-fresh-main-phone-connect-small` → complete, note (all) · foreign-write
 - 2026-11-17 22:57 UTC · `flagship-professional-skin-covering-2` s18 done (all) · orchestrator
 - 2026-11-17 22:58 UTC · `flagship-professional-skin-covering-2` s18 done (all) · foreign-write
+- 2026-11-17 22:58 UTC · `console-app-part-2-native-floating` → complete, note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `banner-widget-shapes-plus-change-icon` s17 done (all) · foreign-write
+- 2026-11-17 22:58 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `icon-picker-every-banner-settings-widget` s10 done (all) · foreign-write
+- 2026-11-17 22:58 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `flagship-professional-skin-covering-2` s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `move-everything-axhub-web-console` s1 done, note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-17 22:58 UTC · `vps-sets-every-build-status-manifest` added (120 steps) (all) · foreign-write
+- 2026-11-17 22:58 UTC · `api-fully-drives-every-field-type-forms` added (72 steps) (all) · foreign-write
 
 ## Token passes (log)
 
