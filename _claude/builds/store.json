@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7241,
- "updatedAt": "2026-11-17T00:57:50.294Z",
+ "rev": 7242,
+ "updatedAt": "2026-11-17T00:58:57.719Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -186370,7 +186370,7 @@
    "title": "axHub: raise per-project memory file cap from 500 to 750",
    "category": "axhub",
    "detail": "Brett said: \"We'll keep that at 750. Yeah, 750.\" In MossesX/axHub packages/core/src/memory-files.ts, MEMORY_LIMITS.filesPerRepo 500 -> 750 (keep it a safety limit). Update any tests that assert 500. Run tests, merge to main, redeploy axHub on the VPS (Coolify) so the live hub uses it. Note amberx-axf _claude already holds 662 files, so writes are blocked until this is live. Then append two rules to amberx-axf rules/RULES.md: (1) whenever you mention a build to Brett, say in one plain sentence what it does; (2) framework work is web + Android only for now, Python and other stacks get placeholders only.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -186378,8 +186378,8 @@
    "branch": "claude/axhub-raise-per-project-memory-file-cap-from-500-to-750",
    "pr": "",
    "createdAt": "2026-11-13T16:58:18.760Z",
-   "updatedAt": "2026-11-17T00:56:48.640Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T00:58:55.234Z",
+   "builtAt": "2026-11-17T00:58:55.234Z",
    "notes": [
     {
      "text": "Queued by brett.",
@@ -186498,12 +186498,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:58:55.234Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T16:58:18.761Z",
-     "updatedAt": "2026-11-13T16:58:18.761Z"
+     "updatedAt": "2026-11-17T00:58:55.518Z"
     }
    ],
    "profiles": [
@@ -186514,7 +186514,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
