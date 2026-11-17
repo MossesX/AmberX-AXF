@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:55:39.175Z",
+ "updatedAt": "2026-11-17T19:55:50.930Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -180472,7 +180472,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T19:47:39.857Z",
+   "updatedAt": "2026-11-17T19:55:37.271Z",
    "builtAt": "",
    "notes": [
     {
@@ -180516,7 +180516,16 @@
      "at": "2026-11-17T19:47:39.857Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T19:55:37.271Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Each plugin needs its own settings interface, not the console's. Reset asks in a confirm dialog with a switch to include assets and a scrollable table of changed assets. Make sure every page has the correct default settings interface.",
@@ -180617,8 +180626,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T19:55:37.271Z",
      "note": "",
      "uid": "st-mwl21pwf04zc8r",
      "createdAt": "2026-11-17T18:57:54.015Z"
