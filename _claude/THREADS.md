@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `blueprint-notes-tasks` → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `skins-as-packages-of-slices-every-section-its-ow` → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `pass-approval-hook-deep-link-amberx-notification` s10 done, → landing, note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:20 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 23:20 UTC · `flagship-professional-skin-covering-2` s24 done (all) · foreign-write
 - 2026-11-17 23:20 UTC · `flagship-professional-skin-covering-2` s24 done (all) · orchestrator
+- 2026-11-17 23:20 UTC · `flagship-professional-skin-covering-2` s22 done, s23 done (all) · foreign-write
 
 ## Token passes (log)
 
