@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:07:34.000Z",
+ "updatedAt": "2026-11-17T19:07:41.938Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -130673,7 +130673,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T19:07:07.625Z",
+   "updatedAt": "2026-11-17T19:07:14.340Z",
    "builtAt": "",
    "notes": [
     {
@@ -130751,6 +130751,10 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-settings-collapsible-split--joey.",
      "at": "2026-11-17T19:07:07.625Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--joey, shared account login)",
+     "at": "2026-11-17T19:07:14.340Z"
     }
    ],
    "approvals": [
@@ -160460,7 +160464,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -160468,8 +160472,8 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T15:09:19.867Z",
-   "builtAt": "2026-11-17T00:57:48.057Z",
+   "updatedAt": "2026-11-17T19:07:24.887Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -160506,6 +160510,14 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:19.867Z"
+    },
+    {
+     "text": "Auto-lander: fix attempt 1 (s21) added. CI is red on 7cb2122c7 (claude/every-plugin-screen-gets-a-settings-gear):",
+     "at": "2026-11-17T19:07:22.660Z"
+    },
+    {
+     "text": "Queued by auto-lander for fix attempt 1.",
+     "at": "2026-11-17T19:07:24.887Z"
     }
    ],
    "approvals": [],
@@ -160965,6 +160977,25 @@
      "note": "",
      "uid": "st-mwjllivx0kp8oj",
      "createdAt": "2026-11-16T18:29:38.397Z"
+    },
+    {
+     "id": "s21",
+     "text": "Auto-lander fix, attempt 1: make CI green on claude/every-plugin-screen-gets-a-settings-gear so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 7cb2122c7 (claude/every-plugin-screen-gets-a-settings-gear):\n- Light PR checks (full run happens once, in the merge queue) › Run node framework/cli/ci-scope.mjs light --run\nBrett said (verbatim): \"Every one has a gear icon to open its settings, right? Yeah, check and fix.\"",
+     "model": "Opus",
+     "why": "auto-lander red-ci",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2du5306wa84",
+     "createdAt": "2026-11-17T19:07:18.889Z"
     }
    ]
   },
