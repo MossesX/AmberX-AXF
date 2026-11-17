@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:53:38.050Z",
+ "updatedAt": "2026-11-17T14:54:11.788Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171975,12 +171975,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T14:52:58.974Z",
+   "updatedAt": "2026-11-17T14:54:09.749Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T14:52:58.974Z"
+    },
+    {
+     "text": "Split by Claude into 19 steps (6 Fable).",
+     "at": "2026-11-17T14:54:09.749Z"
     }
    ],
    "approvals": [],
@@ -171997,7 +172001,428 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the edit-ui@1 contract: framework/spec/EDIT-UI.md defines the Edit UI toggle (setting key axf.editUi.enabled), the Ctrl-held / long-press gate, edit targets (text label, grid cell, column header, asset property: size, colour, icon, order, hide), the owner each edit saves through (asset system vs data API), the undo record shape, and how hide/unhide shares the hide-any-asset contract from rebuild-fresh-main-hide-any-asset",
+     "model": "Fable",
+     "why": "Cross-app contract that changes how GUIs behave in console, axHub web and AmberX",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/EDIT-UI.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt01tvb8",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add the edit-ui schema: edit target, edit op and undo entry definitions in framework/schemas (edit-ui.json), plus an editUi block on the settings registry; regenerate JSON Schemas with axf.mjs schemas",
+     "model": "Fable",
+     "why": "Schema design used by every port and every API surface",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/schemas/edit-ui.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt02wzas",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s3",
+     "text": "Reference engine framework/core/engines/edit-ui.ts: pure state machine (off / armed / held / editing), gate rules (Edit UI off = Ctrl does nothing; Ctrl release ends editing and cancels an open edit), resolve the owner for a target (asset token, asset property, data-source write, read-only = refuse with a reason)",
+     "model": "Fable",
+     "why": "Engine internals shared by every app on the framework",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/edit-ui.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt03p266",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s4",
+     "text": "Undo stack in the engine: framework/core/engines/edit-ui-undo.ts records each committed edit (target, owner, before, after), undo / redo re-apply through the same owner; Esc cancel never records",
+     "model": "Fable",
+     "why": "Engine internals: undo semantics across owners",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/core/engines/edit-ui-undo.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt04y6qw",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s5",
+     "text": "Golden fixtures framework/spec/fixtures/edit-ui.json (gate transitions, owner resolution, undo/redo) via gen-fixtures.mts; record the deferred Kotlin twin in framework/spec/PORTING.md (Android on hold)",
+     "model": "Fable",
+     "why": "Cross-port conformance contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/fixtures/edit-ui.json",
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt05luhf",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s6",
+     "text": "Runtime wiring: framework/core runtime exposes rt.editUi (state, setEnabled, beginEdit, commit, cancel, undo, redo, subscribe) and the owner adapters registry (asset owner via runtime.swap / token save, data owner via registered data-source writers)",
+     "model": "Fable",
+     "why": "Runtime seam every app and plugin plugs into",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/runtime.ts",
+      "framework/core/edit-ui-owners.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt06rp3u",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s7",
+     "text": "React hook framework/react/editUi.ts: global keydown/keyup Ctrl tracking (blur / visibility change releases), touch long-press equivalent, installed by AxfProvider; writes data-axf-edit-ui on the root",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/editUi.ts",
+      "framework/react/AxfProvider.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt07lfqk",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s8",
+     "text": "Hover outline overlay framework/react/components/EditUiOverlay.tsx: while held, find the nearest editable element (data-axf-target / data-axf-edit), draw an outline from theme tokens only (accent + --fx-border-w), show the target name chip",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/EditUiOverlay.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt082gb5",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s9",
+     "text": "Inline text editor: click on a label / text target opens an in-place framework TextField, Enter / blur commits through rt.editUi, Esc cancels; labels save to the owning asset (menu, toolbar, tab-group, settings label)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/EditUiInline.tsx",
+      "framework/react/editUi.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt09ga6i",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s10",
+     "text": "Grid cells and column headers: DataGrid marks cells editable only when its data source registers a writer; cell edit commits through the data owner, header rename through the grid's asset; read-only cells show the refuse reason",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/core/edit-ui-owners.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt0ah6vs",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s11",
+     "text": "Asset property popover for chrome (toolbar, tab group, banner, widgets): size, colour, icon, order, hide/unhide; colour/size write asset tokens, order writes the asset's item order, hide/unhide calls the hide-any-asset API (coordinate with rebuild-fresh-main-hide-any-asset, reuse its hidden list)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/EditUiProps.tsx",
+      "framework/react/components/ChromeContext.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt0bdtol",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s12",
+     "text": "Undo/redo UI: Ctrl+Z / Ctrl+Shift+Z while Edit UI is on, a small toast with Undo after each commit; tests for the React layer",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/editUi.ts",
+      "framework/react/components/EditUiOverlay.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt0csiy6",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s13",
+     "text": "Edit UI toggle: setting axf.editUi.enabled in the settings registry (lib-settings, level Basic) and a toolbar/banner button (role=toolbar member, tap-confirm aware, settings id) showing on/off state",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/libs/settings/",
+      "framework/react/components/EditUiToggle.tsx",
+      "framework/assets/toolbar/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qt0do92l",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s14",
+     "text": "Console API: server routes GET/PUT /api/edit-ui (state, enabled), POST /api/edit-ui/edit (target, value), POST undo / redo, GET history; console-control addresses (view/setting/button targets) registered and pass check-console-control.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/",
+      "framework/schemas/control"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qu0exsg5",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s15",
+     "text": "MCP + CLI + voice parity: console MCP tools edit_ui_get/set/edit/undo/redo, `axf edit-ui on|off|status|edit|undo|redo`, console actions editUi.toggle / editUi.edit / editUi.undo for AmberX voice; console_show deep link to the toggle",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py",
+      "framework/cli/axf.mjs",
+      "framework/cli/edit-ui.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qu0f6xq2",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s16",
+     "text": "Re-bake framework into the console and wire the toggle into the console banner; verify Ctrl-hold edit of a label, a grid cell and a toolbar colour end to end",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qu0gm7ut",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s17",
+     "text": "Ship to axHub web and AmberX: re-bake their src/axf (shared-assets bake), add the toggle to their banners, register their data-source writers where writes are allowed",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/shared-assets.json",
+      "apps/amberx-droid/",
+      "framework/cli/shared-assets.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qu0hddv3",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s18",
+     "text": "UI Review: shoot desktop + phone (toggle off, Ctrl-held outline, inline text edit, property popover) with 3 option assets for the outline/popover look, submit via review.mjs submit --choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "framework/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qu0inxrn",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s19",
+     "text": "Tests and close-out: check-edit-ui fixture test, check-theme, check-controls, check-toolbars, check-console-control, tracker.mjs, validate --framework; write _claude/builds/reports/edit-ui-mode-inline-edit-anything-active.md (API reach per feature: REST, MCP, CLI, voice, deep link), THREADS row, open PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-edit-ui.mts",
+      "_claude/builds/reports/edit-ui-mode-inline-edit-anything-active.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktc9qu0jjp4p",
+     "createdAt": "2026-11-17T14:54:09.749Z"
+    }
+   ]
   }
  ]
 }
