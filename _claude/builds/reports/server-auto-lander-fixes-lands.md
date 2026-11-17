@@ -63,4 +63,23 @@ each; assets in `apps/console-web/plugins/gate/assets/settings/`. Non-blocking f
 ## Left / follow-ups
 - The timer is installed by `install-console.sh` on the next console install / nightly deploy; until then the systems
   check item `gate-auto-lander` is red ("hasn't ticked"), which is the reminder.
-- s24 / s25 (from get-main-green): Postgres migration check and lander status, recorded below when done.
+
+## Postgres migration (s24, from get-main-green-unblock-lander-land-axf)
+Checked on the VPS on Nov 17 2026 at about 04:40 UTC. Read-only: another actor started the staged move minutes before
+(namespaces entered shadow from 04:30 UTC), so I didn't race it with a cut-over.
+- `axf-data` runs with `AXF_DATA_ENGINE=shadow` against `axf-data-db` (postgres:16). Postgres holds **15992 keys
+  in 48 namespaces**. The service's own SQLite file is empty: everything went straight to Postgres, and
+  `migrate_pg.py --verify` therefore reports a mismatch against an empty SQLite file. That is expected, not a data problem.
+- Source (the console's local files, `data-migrate.mjs` dry run) compared with Postgres per namespace: **44 of
+  47 equal**. The ones that differ are still in `local` mode, so they aren't mirrored yet and drift is expected:
+  - `sessions`: source 5710, Postgres 5705
+  - `plugins/activity`: source 31, Postgres 78
+  - `builds`: source 1699, Postgres 1700
+- Console data modes: `changes`, `notes`, `planner` and several plugins are in `shadow`, waiting out the 30-min quiet
+  window; `builds`, `console`, `sessions` and others are still `local` (next: `data-migrate apply <ns>`, then shadow).
+  The console reads its local files in both modes, so nothing reads the empty SQLite side.
+- Spot check: Postgres table `builds` has 985 rows, matching the builds store (`builds-store verify`: 985 records).
+  `GET /api/plugins/data-store/tables` answers from the Postgres engine.
+- Systems check: `axf-data` is green ("axf-data is up; last backup 1.2 h ago, verified").
+- What's left: the move goes namespace by namespace (`data-mode.mjs shadow|cutover <ns>`, quiet window 30 min). Build
+  `axf-data-postgres-real-tables-own` owns it and its s3 is still open.
