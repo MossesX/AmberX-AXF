@@ -68,7 +68,10 @@
       },
       "collapse": {
         "toolbar": true
-      }
+      },
+      "hover": "tint",
+      "press": "shrink",
+      "focusRing": "auto"
     },
     "parts": {
       "banner": {
@@ -221,6 +224,145 @@
       "nav-menu": "chrome-nav-menu",
       "app-menu": "chrome-app-menu",
       "context-menu": "chrome-context-menu"
+    },
+    "motion": {
+      "speed": {
+        "fast": 90,
+        "normal": 150,
+        "slow": 240
+      },
+      "easing": {
+        "standard": "standard",
+        "emphasized": "cubic-bezier(0.2, 0, 0, 1.05)",
+        "exit": "cubic-bezier(0.3, 0, 1, 1)"
+      },
+      "reduced": "system",
+      "chrome": {
+        "context-menu": {
+          "enter": "scale",
+          "exit": "fade",
+          "duration": "fast",
+          "stagger": 0
+        },
+        "app-menu": {
+          "enter": "rise",
+          "exit": "fade",
+          "duration": "fast",
+          "stagger": 12
+        },
+        "nav-menu": {
+          "enter": "slide",
+          "exit": "fade",
+          "duration": "normal",
+          "stagger": 16
+        },
+        "tab-group": {
+          "enter": "fade",
+          "exit": "fade",
+          "duration": "fast"
+        },
+        "toolbar": {
+          "enter": "fade",
+          "exit": "fade",
+          "duration": "fast"
+        },
+        "banner": {
+          "enter": "fade",
+          "exit": "none",
+          "duration": "normal"
+        },
+        "dialog": {
+          "enter": "scale",
+          "exit": "fade",
+          "duration": "normal"
+        },
+        "popup": {
+          "enter": "rise",
+          "exit": "fade",
+          "duration": "normal"
+        },
+        "grid": {
+          "enter": "fade",
+          "exit": "none",
+          "duration": "fast",
+          "stagger": 8
+        },
+        "page": {
+          "enter": "rise",
+          "exit": "fade",
+          "duration": "normal"
+        }
+      }
+    },
+    "hooks": {
+      "tab-group": {
+        "hooks": [
+          "chrome.tab-group.settings",
+          "chrome.tab-group.change",
+          "chrome.tab-group.move"
+        ],
+        "drop": [
+          "axf.chrome.tab-group"
+        ]
+      },
+      "toolbar": {
+        "hooks": [
+          "chrome.toolbar.settings",
+          "chrome.toolbar.change",
+          "chrome.toolbar.move"
+        ],
+        "drop": [
+          "axf.chrome.toolbar"
+        ]
+      },
+      "banner": {
+        "hooks": [
+          "chrome.banner.settings",
+          "chrome.banner.change",
+          "chrome.banner.move"
+        ],
+        "drop": [
+          "axf.chrome.banner"
+        ]
+      },
+      "nav-menu": {
+        "hooks": [
+          "chrome.nav-menu.settings",
+          "chrome.nav-menu.change",
+          "chrome.nav-menu.move"
+        ],
+        "drop": [
+          "axf.chrome.nav-menu"
+        ]
+      },
+      "app-menu": {
+        "hooks": [
+          "chrome.app-menu.settings",
+          "chrome.app-menu.change",
+          "chrome.app-menu.move"
+        ],
+        "drop": [
+          "axf.chrome.app-menu"
+        ]
+      },
+      "context-menu": {
+        "hooks": [
+          "chrome.context-menu.settings",
+          "chrome.context-menu.change",
+          "chrome.context-menu.move"
+        ],
+        "drop": [
+          "axf.chrome.context-menu"
+        ]
+      },
+      "grid-row": {
+        "hooks": [
+          "feature-matrix"
+        ],
+        "drop": [
+          "axf.grid.row"
+        ]
+      }
     }
   }
 }
