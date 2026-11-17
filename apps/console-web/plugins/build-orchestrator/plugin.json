@@ -928,6 +928,134 @@
           }
         },
         "output": "{ ok, settings }"
+      },
+      {
+        "id": "recovery-watchdog-status",
+        "route": "GET /recovery-watchdog/status",
+        "title": "Build watchdog status",
+        "description": "The build watchdog: on or off, its cron, the last pass and how long ago (stale after 3 min), what the VPS saw for every build marked running (pid, tmux, heartbeat, exit), recent fixes (cause → action, attempt, told the phone) and builds it gave up on. Say 'watchdog status'.",
+        "readOnly": true,
+        "output": "watchdog-status@1 { settings, cron, lastPass, ageMin, stale, lastScan, recent, gaveUp }"
+      },
+      {
+        "id": "recovery-watchdog-scan",
+        "route": "GET /recovery-watchdog/scan",
+        "title": "Watchdog dry run",
+        "description": "Every build marked running with what the probe saw, why it is stuck (killed 143, failed 1, OOM 137, usage limit, dead login, tmux or claude gone, stale heartbeat) and what the watchdog would do. Changes nothing.",
+        "readOnly": true,
+        "output": "{ source, at, builds: [{ id, probe, cause, stuck, action, attempt, note }], stuck }"
+      },
+      {
+        "id": "recovery-watchdog-run",
+        "route": "POST /recovery-watchdog/run",
+        "title": "Run the watchdog now",
+        "description": "One watchdog pass now: stuck builds reset, requeued or retried (another account on a usage limit), slots released and refilled, a phone FYI per fix. From the console the VPS runs it within a minute. Say 'run the watchdog'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (optional: only this build)"
+            }
+          }
+        },
+        "output": "{ requested, fixes: [watchdog-recovery@1], skipped, fill }"
+      },
+      {
+        "id": "recovery-watchdog-requeue",
+        "route": "POST /recovery-watchdog/requeue",
+        "title": "Requeue builds the watchdog gave up on",
+        "description": "Fix (requeue): builds the watchdog gave up on (past Max retries, or every account tried) go back to the Queue with a fresh retry count. No builds = all of them.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "builds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Build ids (optional)"
+            }
+          }
+        },
+        "output": "{ requeued, failed, notGaveUp }"
+      },
+      {
+        "id": "recovery-watchdog-settings",
+        "route": "GET /recovery-watchdog/settings",
+        "title": "Watchdog settings",
+        "description": "The Watchdog settings: enabled, intervalMin, staleMin, graceMin, maxRetries, retryOtherAccount, fyi (batch | each), cooldownMin.",
+        "readOnly": true,
+        "output": "{ settings, keys, defaults }"
+      },
+      {
+        "id": "recovery-watchdog-settings-set",
+        "route": "PUT /recovery-watchdog/settings",
+        "title": "Change the watchdog settings",
+        "description": "Change any Watchdog setting: switch it on or off, the interval, stale heartbeat minutes, max retries, retry on another account, one phone FYI per fix or batched. Say 'set watchdog max retries to 5'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "intervalMin": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60
+            },
+            "staleMin": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 240
+            },
+            "graceMin": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 60
+            },
+            "maxRetries": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10
+            },
+            "retryOtherAccount": {
+              "type": "boolean"
+            },
+            "fyi": {
+              "enum": [
+                "batch",
+                "each"
+              ]
+            },
+            "cooldownMin": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 120
+            }
+          }
+        },
+        "output": "{ settings }"
+      },
+      {
+        "id": "build-recoveries",
+        "route": "GET /builds/{build_id}/recoveries",
+        "title": "A build's recoveries",
+        "description": "Every time the watchdog reset, requeued or retried a build: when, the cause, the action, the attempt, whether the phone was told.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build_id"
+          ]
+        },
+        "output": "{ build, status, retries, recoveries: [watchdog-recovery@1] }"
       }
     ]
   },
@@ -935,5 +1063,8 @@
     "model": "opus",
     "builtAt": "2026-10-27"
   },
-  "opens": "main"
+  "opens": "main",
+  "cli": {
+    "recovery-watchdog": "recovery-watchdog.mjs"
+  }
 }
