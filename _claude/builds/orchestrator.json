@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:58:47.008Z",
+ "updatedAt": "2026-11-17T21:58:52.814Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175276,7 +175276,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175284,7 +175284,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:58:12.354Z",
+   "updatedAt": "2026-11-17T21:58:43.542Z",
    "builtAt": "",
    "notes": [
     {
@@ -175518,6 +175518,10 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:50:24.569Z"
+    },
+    {
+     "text": "s24: AmberX retired in policy (decision, push rule, notify channel). The code removal (apps/amberx-droid, CI job, shared-assets, notify routes, docs) is staged as build remove-amberx-app-code-once-phone, gated on Phone Connect being paired on Brett's phone, so approvals and pushes never go dark in between.",
+     "at": "2026-11-17T21:58:40.124Z"
     },
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
@@ -176080,8 +176084,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:58:43.542Z",
      "note": "",
      "uid": "st-mwkxnkav0o553i",
      "createdAt": "2026-11-17T16:54:55.110Z"
