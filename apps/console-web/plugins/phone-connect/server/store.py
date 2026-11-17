@@ -118,11 +118,15 @@ def drop_command(cid: str) -> bool:
 
 # ---- settings + log
 
+LAYOUTS = ("tabs", "stacked", "split")  # the settings tab's layout (UI Review choice phone-connect-settings)
+
+
 def settings() -> dict[str, Any]:
     s = _pd().read_json("settings.json", {})
     s = s if isinstance(s, dict) else {}
     feats = s.get("features") if isinstance(s.get("features"), dict) else {}
-    return {"features": {k: feats.get(k) is not False for k in FEATURES}}
+    layout = s.get("layout") if s.get("layout") in LAYOUTS else LAYOUTS[0]
+    return {"features": {k: feats.get(k) is not False for k in FEATURES}, "layout": layout}
 
 
 def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
@@ -132,6 +136,8 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         for k, v in feats.items():
             if k in FEATURES and isinstance(v, bool):
                 cur["features"][k] = v
+        if patch.get("layout") in LAYOUTS:
+            cur["layout"] = patch["layout"]
         _pd().write_json("settings.json", cur)
     return cur
 

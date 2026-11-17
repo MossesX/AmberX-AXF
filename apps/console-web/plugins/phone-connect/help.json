@@ -64,6 +64,12 @@
         "title": "Save sites",
         "text": "Saves the site list for this phone's url policy.",
         "kind": "button"
+      },
+      {
+        "target": "layout-of-this-tab",
+        "title": "Layout of this tab",
+        "text": "How this tab is laid out: four tabs, one page with every section, or the paired phone on top with Features and Activity as tabs below.",
+        "kind": "field"
       }
     ],
     "intros": []

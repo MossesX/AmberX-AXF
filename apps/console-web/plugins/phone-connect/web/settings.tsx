@@ -6,7 +6,7 @@
  * switches `setting:phone-connect.feature.<name>`; buttons register themselves through the framework Button.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Chip, Container, Note, SelectField, Switch, TabGroup, TextField } from '@console/axf/react';
+import { Button, Chip, Container, Note, Section, SelectField, Switch, TabGroup, TextField } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, phone, type Device, type Feature, type Status } from './client';
 import './phone-connect.css';
@@ -123,9 +123,12 @@ function PhonesPane({ reload }: { reload: () => Promise<void> }) {
   return <div>{list.map((d) => <DeviceRow key={d.deviceId} d={d} reload={load} />)}</div>;
 }
 
+type FeatureSettings = { features: Record<string, boolean>; catalog: Record<string, Feature>; layout?: string };
+const layoutOf = (s: FeatureSettings) => s.layout ?? 'tabs';
+
 function FeaturesPane() {
-  const [s, setS] = useState<{ features: Record<string, boolean>; catalog: Record<string, Feature> } | null>(null);
-  const load = useCallback(async () => { const r = await phone<{ features: Record<string, boolean>; catalog: Record<string, Feature> }>('settings'); if (!r.error) setS(r); }, []);
+  const [s, setS] = useState<FeatureSettings | null>(null);
+  const load = useCallback(async () => { const r = await phone<FeatureSettings>('settings'); if (!r.error) setS(r); }, []);
   useEffect(() => { void load(); }, [load]);
   if (!s) return <p className={`${P}__muted`}>Loading…</p>;
   return (
@@ -136,6 +139,10 @@ function FeaturesPane() {
             onChange={async (on) => { await phone('settings', { features: { [k]: on } }); await load(); }} />
         </div>
       ))}
+      <div data-axf-target="setting:phone-connect.layout">
+        <SelectField label="Layout of this tab" value={layoutOf(s)} options={[{ value: 'tabs', label: 'Tabs' }, { value: 'stacked', label: 'One page' }, { value: 'split', label: 'Phone on top, the rest in tabs' }]}
+          onChange={async (layout) => { await phone('settings', { layout }); await load(); }} />
+      </div>
       <p className={`${P}__muted`}>Approve and Deny are never commands: an approval on the phone is decided only by your tap there.</p>
     </div>
   );
@@ -171,8 +178,13 @@ export function showInPanel(tab: Tab, device?: string): void {
   globalThis.dispatchEvent(new CustomEvent(SHOW_EVENT));
 }
 
+type Layout = 'tabs' | 'stacked' | 'split';
+const PANES: Record<Tab, string> = { pair: 'Pair a phone', phones: 'Phones', features: 'Features', activity: 'Activity' };
+
 export function PhoneConnectPanel() {
   const { st, err, reload } = useStatus();
+  const [layout, setLayout] = useState<Layout>('tabs');
+  useEffect(() => { void phone<{ layout?: Layout }>('settings').then((r) => { if (r.layout) setLayout(r.layout); }); }, []);
   const [tab, setTab] = useState<Tab>(pending?.tab ?? 'pair');
   const [focus, setFocus] = useState(pending?.device ?? '');
   useEffect(() => {
@@ -181,6 +193,7 @@ export function PhoneConnectPanel() {
     globalThis.addEventListener(SHOW_EVENT, take);
     return () => globalThis.removeEventListener(SHOW_EVENT, take);
   }, []);
+  const pane = (t: Tab) => (t === 'pair' ? <PairPane st={st} reload={reload} /> : t === 'phones' ? <PhonesPane reload={reload} /> : t === 'features' ? <FeaturesPane /> : <ActivityPane />);
   useEffect(() => {
     if (!focus) return;
     const t = setTimeout(() => document.querySelector(`[data-axf-target="row:device/${CSS.escape(focus)}"]`)?.scrollIntoView({ block: 'center' }), 300);
@@ -193,14 +206,23 @@ export function PhoneConnectPanel() {
         <Chip tone={st?.online ? 'success' : st?.paired ? 'warning' : undefined}>{st?.presence ?? '…'}</Chip>
       </div>
       {err && <Note tone="warning">{err}</Note>}
-      <TabGroup<Tab> id="phone-connect.tabs" label="Phone Connect" value={tab} onChange={setTab}
-        tabs={[{ value: 'pair', label: 'Pair', icon: 'smartphone' }, { value: 'phones', label: 'Phones', icon: 'list', badge: st?.devices ?? 0 },
-          { value: 'features', label: 'Features', icon: 'sliders' }, { value: 'activity', label: 'Activity', icon: 'activity' }]}>
-        {tab === 'pair' && <PairPane st={st} reload={reload} />}
-        {tab === 'phones' && <PhonesPane reload={reload} />}
-        {tab === 'features' && <FeaturesPane />}
-        {tab === 'activity' && <ActivityPane />}
-      </TabGroup>
+      {layout === 'stacked' ? (
+        TABS.map((t) => <Section key={t} title={PANES[t]}>{pane(t)}</Section>)
+      ) : layout === 'split' ? (
+        <>
+          <Section title={st?.paired ? PANES.phones : PANES.pair}>{pane(st?.paired ? 'phones' : 'pair')}</Section>
+          <TabGroup<Tab> id="phone-connect.tabs" label="Phone Connect" value={tab === 'activity' ? 'activity' : 'features'} onChange={setTab}
+            tabs={[{ value: 'features', label: 'Features', icon: 'sliders' }, { value: 'activity', label: 'Activity', icon: 'activity' }]}>
+            {pane(tab === 'activity' ? 'activity' : 'features')}
+          </TabGroup>
+        </>
+      ) : (
+        <TabGroup<Tab> id="phone-connect.tabs" label="Phone Connect" value={tab} onChange={setTab}
+          tabs={[{ value: 'pair', label: 'Pair', icon: 'smartphone' }, { value: 'phones', label: 'Phones', icon: 'list', badge: st?.devices ?? 0 },
+            { value: 'features', label: 'Features', icon: 'sliders' }, { value: 'activity', label: 'Activity', icon: 'activity' }]}>
+          {pane(tab)}
+        </TabGroup>
+      )}
     </div>
   );
 }
