@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7212,
- "updatedAt": "2026-11-17T00:42:53.781Z",
+ "rev": 7213,
+ "updatedAt": "2026-11-17T00:43:06.788Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210052,14 +210052,14 @@
    "title": "Land per-instance settings picker: resolve clash in Overlays.tsx",
    "category": "",
    "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-17T00:41:41.895Z",
+   "updatedAt": "2026-11-17T00:43:04.403Z",
    "builtAt": "",
    "notes": [
     {
@@ -210073,6 +210073,10 @@
     {
      "text": "Launch failed on hulu0241: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
      "at": "2026-11-17T00:41:41.895Z"
+    },
+    {
+     "text": "Dispatch gate: land-per-instance-settings-picker still has axf-land-per-instance-settings-picker--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-17T00:43:04.403Z"
     }
    ],
    "approvals": [],
@@ -210093,7 +210097,7 @@
     "queuedAt": "2026-11-16T23:20:45.373Z",
     "queuedBy": "brett",
     "account": "",
-    "session": "",
+    "session": "axf-land-per-instance-settings-picker--sully",
     "slot": "",
     "model": "",
     "phase": "",
@@ -210204,7 +210208,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {

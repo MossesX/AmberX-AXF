@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:42:53.781Z",
+ "updatedAt": "2026-11-17T00:43:06.788Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133072,14 +133072,14 @@
    "title": "Land per-instance settings picker: resolve clash in Overlays.tsx",
    "category": "",
    "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-17T00:41:41.895Z",
+   "updatedAt": "2026-11-17T00:43:04.403Z",
    "builtAt": "",
    "notes": [
     {
@@ -133093,6 +133093,10 @@
     {
      "text": "Launch failed on hulu0241: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
      "at": "2026-11-17T00:41:41.895Z"
+    },
+    {
+     "text": "Dispatch gate: land-per-instance-settings-picker still has axf-land-per-instance-settings-picker--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-17T00:43:04.403Z"
     }
    ],
    "approvals": [],
