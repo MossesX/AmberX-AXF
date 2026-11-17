@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8441,
- "updatedAt": "2026-11-17T23:46:38.961Z",
+ "rev": 8442,
+ "updatedAt": "2026-11-17T23:46:48.574Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -289496,9 +289496,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-17T21:58:19.849Z",
+   "updatedAt": "2026-11-17T23:46:16.984Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Repeated steps collapsed: 224 → 7 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:46:16.984Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -289707,7 +289712,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {

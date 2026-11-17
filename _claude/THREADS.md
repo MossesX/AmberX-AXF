@@ -832,16 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `banner-widget-shapes-plus-change-icon` s18 done, s19 done, → complete, note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `flagship-professional-skin-covering-2` s19 done, note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
-- 2026-11-17 23:04 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · pipeline
-- 2026-11-17 23:04 UTC · `banner-widget-shapes-plus-change-icon` s19 done, → complete, note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `flagship-professional-skin-covering-2` s20 undone, note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `flagship-professional-skin-covering-2` s21 done (all) · orchestrator
-- 2026-11-17 23:04 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
-- 2026-11-17 23:04 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
-- 2026-11-17 23:05 UTC · `flagship-professional-skin-covering-2` s21 done (all) · foreign-write
 - 2026-11-17 23:05 UTC · `banner-widget-shapes-plus-change-icon` s18 done, s19 done, → complete, note (all) · foreign-write
 - 2026-11-17 23:05 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-17 23:05 UTC · `flagship-professional-skin-covering-2` s19 done, s21 done, note (all) · foreign-write
@@ -1232,6 +1222,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:46 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
 - 2026-11-17 23:46 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
 - 2026-11-17 23:46 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-17 23:45 UTC · `context-menus-plugin-one-true-source` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `move-server-side-console-parts-onto-vps` s9 done (all) · foreign-write
+- 2026-11-17 23:46 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `stop-auto-lander-committing-tracking` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `server-rule-done-means-merged-working` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `terminal-main-tab-streaming-console-s` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `auto-lander-settings-log-placeholder` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `remove-amberx-app-code-once-phone` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `settings-fix-part-2-blank-toolbars` note (all) · dedupe-steps
 
 ## Token passes (log)
 
