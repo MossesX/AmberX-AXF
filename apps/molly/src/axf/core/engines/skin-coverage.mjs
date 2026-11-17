@@ -25,7 +25,8 @@
  *
  * Scopes (same model as icon maps, `engines/iconmap-rules.mjs`): a skin applies to the whole hub (`global`), one app
  * (`app`), one UI / screen (`ui:<id>`) or one plugin (`plugin:<id>`); the chain from the most specific place to the root
- * is [plugin, ui, app, global] and the child overrides the parent.
+ * is [plugin, ui, app, global, default] and the child overrides the parent. `default` is the hub default skin (Nov 14
+ * 2026): the floor every app stands on without opting in.
  *
  * Plain JS shared by the TS engine (skin.ts), the build engine, the CLI and the console server. Pure.
  */
@@ -38,9 +39,15 @@ export const PART_ELEMENTS = ['box', 'text', 'icon', 'items'];
 
 /* ---------------------------------------------------------------- scopes */
 
-export const SKIN_SCOPE_KINDS = ['global', 'app', 'ui', 'plugin'];
+export const SKIN_SCOPE_KINDS = ['default', 'global', 'app', 'ui', 'plugin'];
 export const SKIN_SCOPE_GLOBAL = 'global';
 export const SKIN_SCOPE_APP = 'app';
+/**
+ * The root of the chain (build console-look-becomes-default-axhub-skin, Nov 14 2026): the hub default skin, the
+ * `defaultSkin` pointer on the shared appearance@1 document. Every app stands on it without opting in; `global` (the
+ * hub-wide skin) still needs the app's Follow switch. Resolve order: default → app's own edits → ui → plugin.
+ */
+export const SKIN_SCOPE_DEFAULT = 'default';
 const SCOPE_ID = /^[a-z0-9][a-z0-9._-]{0,119}$/;
 const str = (v, n) => (typeof v === 'string' ? v.slice(0, n) : '');
 
@@ -61,6 +68,7 @@ export function skinScopeKey(scope) {
 
 /** Which kind of level a key is. */
 export function skinScopeKind(key) {
+  if (key === SKIN_SCOPE_DEFAULT) return 'default';
   if (key === SKIN_SCOPE_GLOBAL) return 'global';
   if (typeof key === 'string' && key.startsWith('plugin:')) return 'plugin';
   if (typeof key === 'string' && key.startsWith('ui:')) return 'ui';
@@ -72,13 +80,13 @@ export function isSubScopeKey(key) {
   return typeof key === 'string' && /^(ui|plugin):[a-z0-9][a-z0-9._-]{0,119}$/.test(key);
 }
 
-/** The chain of keys from the most specific level to the root for one place: [plugin:x, ui:y, app, global]. */
+/** The chain of keys from the most specific level to the root for one place: [plugin:x, ui:y, app, global, default]. */
 export function skinScopeChain(scope) {
   const s = normalizeSkinScope(scope);
   const out = [];
   if (s.plugin) out.push(`plugin:${s.plugin}`);
   if (s.ui) out.push(`ui:${s.ui}`);
-  out.push(SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL);
+  out.push(SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_DEFAULT);
   return out;
 }
 

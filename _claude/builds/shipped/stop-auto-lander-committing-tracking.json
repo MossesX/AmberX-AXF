@@ -1,0 +1,443 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-stop-auto-lander-committing-tracking",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "gate",
+ "shippedAt": "2026-11-17T13:32:18Z",
+ "build": {
+  "id": "stop-auto-lander-committing-tracking",
+  "title": "Stop the auto-lander committing tracking files into builds",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Put that up into multiple slots.",
+  "verbatim": true,
+  "at": "2026-11-17T00:04:33.299Z",
+  "source": "",
+  "by": "stop-auto-lander-committing-tracking",
+  "addenda": []
+ },
+ "brief": "# Build: stop-auto-lander-committing-tracking\n\n## Brett said (verbatim)\nAt: 2026-11-17T00:04:33.299Z\n> Put that up into multiple slots.\n\n## What to build\nContinue build \"Stop the auto-lander committing tracking files into builds\" (stop-auto-lander-committing-tracking) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 00:04):\n\"Put that up into multiple slots.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/stop-auto-lander-committing-tracking · PR #765\nSteps in this phase (1 left, ~30 min):\n[ ] s15 (~30m) Merge origin/main into this branch (PR #765). Real conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres with data-files/DataStoreError/StoreConflict; this branch moved the journal home and worktree store home), apps/console-web/plugins/push-banner/land/land-core.mjs + land.test.mjs, framework/spec/PORTING.md, .github/workflows/android.yml. Keep BOTH: main's axf-data store path wins where they overlap; keep this branch's 'never stage tracking files' behaviour on top. If main's Postgres store already keeps tracking files out of build branches, drop the now-redundant parts and say so. Tests green, push, then merge the PR directly (merge queue is off).\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step stop-auto-lander-committing-tracking <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step stop-auto-lander-committing-tracking <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note stop-auto-lander-committing-tracking \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+ "models": [
+  "Opus",
+  "Fable"
+ ],
+ "accounts": [
+  "hulu0241"
+ ],
+ "runs": [
+  {
+   "session": "axf-stop-auto-lander-committing-tracking--gina",
+   "account": "hulu0241",
+   "model": "Fable",
+   "startedAt": "2026-11-17T00:07:51.509Z",
+   "endedAt": "2026-11-17T00:17:07.834Z",
+   "exit": 0,
+   "costUsd": 3.3632
+  },
+  {
+   "session": "axf-stop-auto-lander-committing-tracking--lenny",
+   "account": "hulu0241",
+   "model": "Opus",
+   "startedAt": "2026-11-17T00:19:47.592Z",
+   "endedAt": "2026-11-17T13:32:13.481Z",
+   "exit": 0,
+   "costUsd": 11.0482
+  }
+ ],
+ "steps": [
+  {
+   "id": "s15",
+   "text": "Merge origin/main into this branch (PR #765). Real conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres with data-files/DataStoreError/StoreConflict; this branch moved the journal home and worktree store home), apps/console-web/plugins/push-banner/land/land-core.mjs + land.test.mjs, framework/spec/PORTING.md, .github/workflows/android.yml. Keep BOTH: main's axf-data store path wins where they overlap; keep this branch's 'never stage tracking files' behaviour on top. If main's Postgres store already keeps tracking files out of build branches, drop the now-redundant parts and say so. Tests green, push, then merge the PR directly (merge queue is off).",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-17T00:48:43.806Z",
+   "doneAt": "2026-11-17T12:50:05.006Z",
+   "actualMin": 721,
+   "done": true
+  },
+  {
+   "id": "s1",
+   "text": "Design the move of the builds journal out of git: journal lives only on the hub data store (/projects/amberx-axf/_data/builds/journal), repo keeps a pointer + checksum; write the migration contract (what builds-store.mjs verify/history/restore read, fallback when /projects is not mounted) in _claude/builds/README.md and framework/spec/ notes",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:07:51.509Z",
+   "doneAt": "2026-11-17T00:16:25.472Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Find every place the auto-lander commits 'synced files left in the worktree (auto-land)' and list the tracking paths it stages; add a single tracking-paths list (store.json, orchestrator.json, origins.json, journal/*.jsonl, pending/build-queue exports) in one shared module",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T00:16:25.472Z",
+   "doneAt": "2026-11-17T00:22:36.644Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Stop the auto-lander from committing tracking files: before landing, reset those paths in the build worktree to the branch's merge-base copy (git checkout/restore) instead of committing them; drop the auto-land commit path",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:22:36.644Z",
+   "doneAt": "2026-11-17T00:24:57.136Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Make builds-live/builds-store writes in a build worktree go to the hub data store only (never staged on the build branch); keep the status-only main publish unchanged",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:24:57.136Z",
+   "doneAt": "2026-11-17T00:26:56.317Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Add a worktree guard: deploy/claude-headless.sh and the worktree setup mark tracking files skip-worktree / add them to .git/info/exclude where untracked, so a headless session's commits never include them",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T00:26:56.317Z",
+   "doneAt": "2026-11-17T00:27:50.989Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Lander merge of main into a build: on conflicts in tracking files take main's copy (git checkout --theirs/--ours as applicable) and continue instead of stopping",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:27:50.989Z",
+   "doneAt": "2026-11-17T00:29:12.092Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Lander merge: on conflicts in generated files, take main's copy then regenerate (node apps/console-web/scripts/control-inventory.mjs, node framework/cli/tracker.mjs) and commit the regenerated result; anything else still stops on conflict",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:29:12.092Z",
+   "doneAt": "2026-11-17T00:30:19.696Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Move the journal out of git per the s1 design: builds-store journal writer/reader use the hub path (with repo fallback read for old parts), history/restore read the hub copy; add journal/ to .gitignore",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:30:19.696Z",
+   "doneAt": "2026-11-17T00:33:05.761Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Migration step: copy existing _claude/builds/journal/*.jsonl to the hub data store, verify checksums, then git rm --cached the journal parts; builds-store.mjs verify must still pass",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:33:05.761Z",
+   "doneAt": "2026-11-17T00:37:30.263Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Update CI checks that read the journal (check-builds-store.mjs and the live-store test) to use a fixture journal or the hub path when present, so CI no longer needs the 70 MB files",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:37:30.263Z",
+   "doneAt": "2026-11-17T00:39:12.680Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Add a CI guard: a PR branch that changes tracking files (store/orchestrator/origins/journal) outside builds-live status commits fails with a plain message naming the file",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-17T00:39:12.680Z",
+   "doneAt": "2026-11-17T00:40:24.148Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "API parity: expose the lander's tracking-file handling (state: last reset/regenerate per build, setting to show it) via the push-banner REST route, MCP plugin command, CLI land.mjs subcommand and an AmberX voice action; console_show target for the merge-queue row",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:40:24.148Z",
+   "doneAt": "2026-11-17T00:43:26.493Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Tests: lander unit tests for reset-before-land, tracking-conflict take-main, generated-file regenerate, other-conflict still stops; journal relocation read/write test",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:43:26.493Z",
+   "doneAt": "2026-11-17T00:46:34.294Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Run the full checks (builds-store verify, check-builds-store, check-landing-line, check-gate-rules, tracker --check, validate --framework), write _claude/builds/reports/stop-auto-lander-committing-tracking.md (before/after: #733 green→red cause, what changed, journal size moved), THREADS row, open PR with the API reach list, link it with builds-live.mjs link",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-17T00:46:34.294Z",
+   "doneAt": "2026-11-17T00:48:43.806Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/stop-auto-lander-committing-tracking",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 765,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/765"
+ },
+ "landedCommit": "6ad1b3a91de880c3352390f5e8551baa67f6f617",
+ "commits": [
+  "659ec7ed2ffc4e901029dde864d57c382ba82d5f",
+  "f7bbfa87d58cafc0259b685e140e11f9a64617b8",
+  "9d1a5cd0f6416f41179d23fbd315a4ee65fa923a",
+  "42690f8270e2ecf9b8fdbf9054bc292448fea8a6",
+  "534d010275f625ecd44db7bb63bca3fa6cd58dff",
+  "79967120fcbead0ba0c64e925513bbf7fbf9d5d0",
+  "1420793167ed33dd9b4c261a912e309f54505ba6",
+  "17a7fb161494e5813cbdb392aa3dadc0056b0086",
+  "5fbb33a6ccd1bc1415166197229187a638bf8890",
+  "57664c8f23f68fa608018330e9c6abd3de259a90",
+  "9d4338ebd8c170f6824cc3f12ef89184cbf0af88",
+  "93aa4f1c056d065563364348dfdb6233ae70cc20",
+  "cb133ce6ec6cd89a3c1e30f4d6a4e347341eebf3",
+  "6bd4bda9d2886bfa1c8ca440b9774d441cbc49d8",
+  "238d450de7e58f287b408939c364a9404fe3acab"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-17T12:49:44Z",
+ "files": [
+  ".github/workflows/android.yml",
+  ".gitignore",
+  "_claude/THREADS.md",
+  "_claude/builds/README.md",
+  "_claude/builds/journal.json",
+  "_claude/builds/journal/2026-10.jsonl",
+  "_claude/builds/journal/2026-11-p10.jsonl",
+  "_claude/builds/journal/2026-11-p11.jsonl",
+  "_claude/builds/journal/2026-11-p12.jsonl",
+  "_claude/builds/journal/2026-11-p2.jsonl",
+  "_claude/builds/journal/2026-11-p3.jsonl",
+  "_claude/builds/journal/2026-11-p4.jsonl",
+  "_claude/builds/journal/2026-11-p5.jsonl",
+  "_claude/builds/journal/2026-11-p6.jsonl",
+  "_claude/builds/journal/2026-11-p7.jsonl",
+  "_claude/builds/journal/2026-11-p8.jsonl",
+  "_claude/builds/journal/2026-11-p9.jsonl",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/reports/stop-auto-lander-committing-tracking.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/tracking-paths.mjs",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/tracking-paths.mjs",
+  "apps/console-web/plugins/push-banner/land/land-core.mjs",
+  "apps/console-web/plugins/push-banner/land/land.mjs",
+  "apps/console-web/plugins/push-banner/land/land.test.mjs",
+  "apps/console-web/plugins/push-banner/land/tracking.test.mjs",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/web/queue.tsx",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/core/tracking-paths.mjs",
+  "deploy/claude-headless.sh",
+  "framework/cli/build-hooks.mjs",
+  "framework/cli/builds-live.mjs",
+  "framework/cli/builds-store.mjs",
+  "framework/cli/check-tracking-files.mjs",
+  "framework/cli/ci-scope.mjs",
+  "framework/cli/land-resolve.py",
+  "framework/cli/persist.mjs",
+  "framework/cli/worktree-setup.mjs",
+  "framework/core/tracking-paths.mjs",
+  "framework/spec/BUILDS.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-hook.mjs",
+  "framework/spec/check-builds-store.mjs",
+  "framework/spec/fixtures-journal/2026-11.jsonl",
+  "framework/spec/fixtures-journal/README.md",
+  "framework/spec/generated-files.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/journal.json",
+    "_claude/builds/journal/2026-10.jsonl",
+    "_claude/builds/journal/2026-11-p10.jsonl",
+    "_claude/builds/journal/2026-11-p11.jsonl",
+    "_claude/builds/journal/2026-11-p12.jsonl",
+    "_claude/builds/journal/2026-11-p2.jsonl",
+    "_claude/builds/journal/2026-11-p3.jsonl",
+    "_claude/builds/journal/2026-11-p4.jsonl",
+    "_claude/builds/journal/2026-11-p5.jsonl",
+    "_claude/builds/journal/2026-11-p6.jsonl",
+    "_claude/builds/journal/2026-11-p7.jsonl",
+    "_claude/builds/journal/2026-11-p8.jsonl",
+    "_claude/builds/journal/2026-11-p9.jsonl",
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/reports/stop-auto-lander-committing-tracking.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/land/land-core.mjs",
+    "apps/console-web/plugins/push-banner/land/land.mjs",
+    "apps/console-web/plugins/push-banner/land/land.test.mjs",
+    "apps/console-web/plugins/push-banner/land/tracking.test.mjs",
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/web/queue.tsx",
+    "apps/console-web/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-hooks.mjs",
+    "framework/cli/builds-live.mjs",
+    "framework/cli/builds-store.mjs",
+    "framework/cli/check-tracking-files.mjs",
+    "framework/cli/ci-scope.mjs",
+    "framework/cli/land-resolve.py",
+    "framework/cli/persist.mjs",
+    "framework/cli/worktree-setup.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/BUILDS.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-hook.mjs",
+    "framework/spec/check-builds-store.mjs",
+    "framework/spec/fixtures-journal/2026-11.jsonl",
+    "framework/spec/fixtures-journal/README.md",
+    "framework/spec/generated-files.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/tracking-paths.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/tracking-paths.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/core/tracking-paths.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/tracking-paths.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".gitignore",
+   "files": [
+    ".gitignore"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 14.4114,
+  "estimated": false,
+  "tokens": {
+   "input": 912,
+   "output": 2525,
+   "cacheRead": 24400747,
+   "cacheWrite": 392134
+  }
+ },
+ "report": "_claude/builds/reports/stop-auto-lander-committing-tracking.md",
+ "open": [
+  "After this PR lands, run `node framework/cli/builds-store.mjs journal migrate --apply` once more on the VPS: lines the main checkout's old code wrote to its repo journal between this migration and the landing get unioned onto the hub (it only adds lines; the main checkout's journal files go when the pull removes them).",
+  "The live publisher does not refresh `journal.json` yet (verify uses the open part's floor, so it stays valid as the hub grows); the `axf-builds` merge driver does not merge the pointer per part yet.",
+  "Spool mode (no hub mounted: CI, cloud sessions) keeps journal lines local; draining them through the build-orchestrator plugin API (`POST /journal/append`) is the design's next step.",
+  "Git history still carries the 916 MiB (Pending item `shrink-git-history-drop-old-builds`).",
+  "The stale claude-sync copy at `/projects/amberx-axf/_claude/builds/journal/` (325 MB) can go (axHub veto delete).",
+  "Disk on the VPS is at 98% (11 GB free); the systems check's disk item covers it."
+ ]
+}

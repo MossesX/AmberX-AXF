@@ -3,7 +3,7 @@
  * land.mjs (the host runner) and the push banner's server read the same rules from here.
  *
  * A finished build (builds@1 status `built`, or every step done, with a branch) is landed by plain scripts:
- *   clean its worktree (synced files committed on its own branch, scratch files skipped, untracked duplicates of hub
+ *   clean its worktree (tracking files reset to the merge-base copy, never committed; other synced files committed on its branch; scratch files skipped, untracked duplicates of hub
  *   files backed up) → merge origin/main in (builds files newer-wins, union files unioned, generated files taken from
  *   main and regenerated) → push → its PR is opened / linked → the push banner merges it once CI is green on that head
  *   and UI Review doesn't hold it, in dependency order, one per round.
@@ -13,6 +13,7 @@
  * The one import is the generated-files manifest (generated-files@1): which files a merge resolves by itself and how.
  */
 import manifest from '../../../../../framework/spec/generated-files.json' with { type: 'json' };
+import { isTracking, TRACKING_PATHS } from '../../../../../framework/core/tracking-paths.mjs';
 
 export const LAND_FRAME = 'auto-land@1';
 export const CONTROL_FRAME = 'auto-land-control@1';
@@ -27,11 +28,16 @@ export const STATUS_PATHS = /^_claude\//;
 
 /** Files that are scratch in a build's worktree: never committed, never block a landing. */
 const SCRATCH = [/^\.brief\.md$/, /^[^/]+\.log$/, /^[^/]+\.jsonl$/, /^\.axf-[^/]*$/, /^\.claude-sync-hold$/, /(^|\/)node_modules(\/|$)/, /^\.shots-harness\//];
-/** Synced data (claude-sync, persist.mjs): changes here are committed on the build's own branch. */
+/** Synced data (claude-sync, persist.mjs): changes here are committed on the build's own branch, tracking files excepted. */
 const SYNCED = [/^_claude\//, /^changes\//, /^sessions\//, /^apps\/[^/]+\/_claude\//, /^framework\/plan\//, /^framework\/catalog\/status\.json$/, /^tracker\.json$/, /^project\.manifest\.json$/, /^apps\/[^/]+\/project\.manifest\.json$/];
 
-/** Builds files: merged per build and step, newer wins (builds-live.mjs merge driver). */
-const BUILDS = [/^_claude\/builds\/store\.json$/, /^_claude\/builds\/orchestrator\.json$/, /^_claude\/builds\/profiles\/[^/]+\/orchestrator\.json$/, /^_claude\/builds\/journal\/[^/]+\.jsonl$/];
+/**
+ * Builds files: merged per build and step, newer wins (builds-live.mjs merge driver). The builds-kind entries of the
+ * one tracking-paths list (framework/core/tracking-paths.mjs, tracking-paths@1); a build branch never commits them.
+ */
+const BUILDS = TRACKING_PATHS.filter((t) => t.kind === 'builds').map((t) => t.re);
+/** Every tracking file (builds store exports, journal, pending list and build queue exports). */
+export const trackingPath = (p) => isTracking(p);
 /** Line files: both sides' lines kept (union). */
 const UNION = [/^_claude\/THREADS\.md$/, /^_claude\/memory\/STATUS\.md$/, /^_claude\/memory\/decisions\.md$/, /\.log$/, /\.jsonl$/];
 /**
@@ -80,20 +86,35 @@ export function regenFor(path) {
   return g ? g.run : null;
 }
 
-/** The generators a set of regenerated files needs, each once, in manifest order. */
+/**
+ * The generators a set of resolved files needs, each once, in manifest order: a regen file's own generator, and the
+ * `then` generator of a file merged by union (catalog status → tracker, so tracker.json never lags a unioned status).
+ */
 export function regenPlan(paths) {
   const out = new Map();
-  for (const p of paths || []) { const g = generatorFor(p); if (g && !out.has(g.id)) out.set(g.id, g); }
+  for (const p of paths || []) {
+    const g = generatorFor(p); if (g && !out.has(g.id)) out.set(g.id, g);
+    const r = rule(str(p, 400).replace(/^\.\//, ''));
+    const then = r?.then && GENERATORS[r.then];
+    if (then && !out.has(r.then)) out.set(r.then, { id: r.then, run: [...(then.run || [])], check: then.check ? [...then.check] : null, outputs: [...(then.outputs || [])], timeoutMs: then.timeoutMs || 120000, optional: then.optional === true });
+  }
   return [...out.values()];
 }
 
 /** The quick tests the manifest asks for after generated or additive files were resolved. */
 export const landTests = () => (MANIFEST.tests || []).map((t) => [...t]);
 
-/** Split a merge's conflicted files: auto-resolvable by kind, and the code ones a person (or an agent) must look at. */
+/**
+ * Split a merge's conflicted files: auto-resolvable by kind, and the code ones a person (or an agent) must look at.
+ * `tracking` (tracking-paths@1: store, orchestrator, origins, journal, pending and build-queue exports) always takes
+ * main's copy (s6): a build branch never carries them, so main's is the live one.
+ */
 export function planConflicts(paths) {
-  const out = { builds: [], union: [], unionJson: [], generated: [], code: [] };
-  for (const p of paths || []) { const k = classifyPath(p); out[k === 'union-json' ? 'unionJson' : k].push(p); }
+  const out = { tracking: [], builds: [], union: [], unionJson: [], generated: [], code: [] };
+  for (const p of paths || []) {
+    if (isTracking(p)) { out.tracking.push(String(p).replace(/^\.\//, '')); continue; }
+    const k = classifyPath(p); out[k === 'union-json' ? 'unionJson' : k].push(p);
+  }
   return out;
 }
 
@@ -142,8 +163,11 @@ export function mergeJson3(b, o, t, prefer = 'theirs') {
 }
 
 /**
- * What to do with each line of `git status --porcelain` in a finished build's worktree.
- *   commit   synced data changed here (claude-sync / persist wrote it): committed on the build's own branch
+ * What to do with each line of `git status --porcelain` in a finished build's worktree. A tracking file is never
+ * committed for the build (the auto-land commit of them dragged store/journal churn into build branches, PR 733).
+ *   reset    a tracking file (tracking-paths@1) changed here: backed up, then put back to the branch's merge-base copy
+ *            with main (main and the hub keep the live copy; the build branch never carries it)
+ *   commit   other synced data the build wrote (a report, memory, catalog status): committed on its own branch
  *   skip     scratch (.brief.md, logs, jsonl, .axf-* files): left alone, never committed
  *   archive  untracked file that is a copy of a hub file (claude-sync dropped it): moved to /root/archive/<build>/
  *   restore  tracked synced file whose content is the hub's copy (a sync drop, not the build's work): backed up the
@@ -153,7 +177,7 @@ export function mergeJson3(b, o, t, prefer = 'theirs') {
  * `hubHas(path)` says whether the hub (/projects/<name>/_claude …) has a file at that repo path.
  */
 export function strayPlan(porcelain, hubHas = () => false) {
-  const plan = { commit: [], skip: [], archive: [], restore: [], code: [], keep: [] };
+  const plan = { commit: [], reset: [], skip: [], archive: [], restore: [], code: [], keep: [] };
   for (const raw of String(porcelain || '').split('\n')) {
     if (!raw.trim()) continue;
     const xy = raw.slice(0, 2); let p = raw.slice(3).trim();
@@ -161,6 +185,8 @@ export function strayPlan(porcelain, hubHas = () => false) {
     p = p.replace(/^"|"$/g, '');
     if (any(SCRATCH, p)) { plan.skip.push(p); continue; }
     const untracked = xy === '??'; const deleted = xy.includes('D');
+    // an untracked tracking file (a new journal part, an export the branch never had) is the hub's: left alone
+    if (isTracking(p)) { (untracked ? plan.skip : plan.reset).push(p); continue; }
     if (!deleted && hubHas(p)) { (untracked ? plan.archive : plan.restore).push(p); continue; }
     if (untracked) { (any(SYNCED, p) ? plan.commit : plan.keep).push(p); continue; }
     (any(SYNCED, p) ? plan.commit : plan.code).push(p);
@@ -243,6 +269,7 @@ export function blockReason(id, s = {}) {
   if (s.prError) return r('pr', `its pull request couldn't be opened (${str(s.prError, 160)}).`);
   if (s.deps?.length) return r('dependency', `waits for ${s.deps.join(', ')} to land first.`);
   if (s.ci === 'failure') return r('ci', `CI is red${s.failing?.length ? ` (${s.failing.slice(0, 3).join(', ')})` : ''}. Needs a code fix.`, { checks: (s.failing || []).slice(0, 10) });
+  if (s.rules?.failing?.length) return r('rules', `build rules fail (${s.rules.failing.slice(0, 4).join(', ')}${s.rules.failing.length > 4 ? ', …' : ''}). The VPS fixed what it could; the rest needs a fix (Builds → Gate & rules → Build rules).`, { rules: s.rules.failing.slice(0, 20) });
   if (s.waitUi !== false && s.ui && s.ui !== '') {
     const words = { waiting: 'its screenshots are waiting in UI Review. Approve them and it merges by itself.', changes: 'UI Review asked for changes.', rejected: 'UI Review rejected it.', unknown: "UI Review couldn't be read, so it waits." };
     return r('ui', words[s.ui] || `UI Review holds it (${str(s.ui, 40)}).`);
@@ -284,6 +311,8 @@ export const LAND_COMMANDS = Object.freeze([
   { id: 'land-now', method: 'POST', path: '/land/now', cli: 'now', title: 'Auto-land: land a build now', description: 'Land one finished build at the next round (within 3 minutes), ahead of the rest; a hold on it is released.', effect: 'write', input: { build: 'build id' } },
   { id: 'land-hold', method: 'POST', path: '/land/hold', cli: 'hold', title: 'Auto-land: hold a build', description: 'Keep a finished build from landing until it is released.', effect: 'write', input: { build: 'build id', why: 'optional reason' } },
   { id: 'land-release', method: 'POST', path: '/land/release', cli: 'release', title: 'Auto-land: release a held build', description: 'Let a held build land again.', effect: 'write', input: { build: 'build id' } },
+  { id: 'land-tracking', method: 'GET', path: '/land/tracking', cli: 'tracking', title: 'Auto-land: tracking files per build', description: "What the lander did with each build's tracking files (store, orchestrator, origins, journal, pending and queue exports): when it last reset them to main's base copy, took main's copy in a merge, or regenerated generated files.", effect: 'read', input: { build: 'optional build id' } },
+  { id: 'land-tracking-show', method: 'POST', path: '/land/tracking/show', cli: 'tracking-show', title: 'Auto-land: show tracking-file handling on the queue', description: 'Show or hide, on each merge queue row, the last tracking-file reset, take-main and regenerate.', effect: 'write', input: { show: 'true | false' } },
 ]);
 
 /** Apply one control command to the control document (holds, now, after). Returns the new document. */
