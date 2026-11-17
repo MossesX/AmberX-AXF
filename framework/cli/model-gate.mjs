@@ -22,6 +22,7 @@ import { MODEL_LABELS, modelKey, modelRank } from '../core/model-policy.mjs';
 import { phaseApproved, stepPhases, upgradeLine, upgradeNeedsApproval } from '../core/model-switch.mjs';
 import { loadUpgradePolicy } from './upgrade-policy.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
+import { groupsOf } from '../core/build-pipeline.mjs';
 
 const label = (m) => MODEL_LABELS[modelKey(m)] ?? m;
 const open = (s) => !s.done && !s.skip;
@@ -91,7 +92,11 @@ async function main(argv) {
   if (cmd === 'launch') {
     loadUpgradePolicy();
     const briefFile = opt('brief'); const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
-    const b = findBuild(loadStore(), { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief });
+    const group = opt('group') || process.env.AXF_BUILD_GROUP || '';
+    const found = findBuild(loadStore(), { build: opt('build') || process.env.AXF_BUILD_ID || '', name: group ? opt('name').replace(new RegExp(`--${group}$`), '') : opt('name'), brief });
+    // a step group's run (step-groups@1) is judged on that group's steps alone
+    const g = found && group ? groupsOf(found).find((x) => x.id === group) : null;
+    const b = g ? { ...found, steps: g.steps.map((id) => found.steps.find((x) => x.id === id)).filter(Boolean) } : found;
     const r = launchCheck(b, opt('model') || process.env.AXF_MODEL || '');
     console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why}`);
     if (!r.ok) process.exitCode = 3;

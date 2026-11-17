@@ -3,7 +3,7 @@
 # "whenever the console or axHub runs a headless session on the VPS, use the built-in terminal in the console and
 # bring the floating window to focus and front").
 #
-#   bash deploy/claude-headless.sh --name <slug> --brief <file> --log <file> -- <claude args…>
+#   bash deploy/claude-headless.sh --name <slug> --brief <file> --log <file> [--group <gid> --worktree <dir>] -- <claude args…>
 #
 # Runs `claude -p <args> --output-format stream-json --verbose "$(cat <brief>)"` inside a detached tmux session named
 # `axf-<slug>` in the current folder. The console's Terminal plugin lists `axf-*` tmux sessions on the VPS and opens
@@ -94,7 +94,7 @@ ORIG_ARGS=("$@")
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
 
 inner_skip_still="${AXF_STILL_CHECK_OFF:-}"
-name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT_NAME:-${AXF_AGENT:-}}" agent_line="" account="${AXF_CLAUDE_ACCOUNT:-}" login_line=""
+name="" brief="" log=".axf-headless.log" group="" worktree="" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT_NAME:-${AXF_AGENT:-}}" agent_line="" account="${AXF_CLAUDE_ACCOUNT:-}" login_line=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --name) name="$2"; shift 2 ;;
@@ -107,10 +107,23 @@ while [[ $# -gt 0 ]]; do
     --priority) priority="$2"; shift 2 ;;
     --agent) agent="$2"; shift 2 ;;
     --account) account="$2"; shift 2 ;;
+    --group) group="$2"; shift 2 ;;
+    --worktree) worktree="$2"; shift 2 ;;
     --) shift; break ;;
     *) echo "claude-headless: unknown option $1" >&2; exit 2 ;;
   esac
 done
+# Step groups (step-groups@1): one group of a split build runs in its own worktree on its sub-branch (--worktree, made by
+# the dispatcher) with its own name <build>--<group>; AXF_BUILD_GROUP tells the gates, the build lock and the exit call
+# which group this is, so groups of one build run beside each other and their step ticks land on the one build record.
+if [[ -n "${worktree:-}" ]]; then
+  [[ -d "$worktree" ]] || { echo "claude-headless: --worktree $worktree is not a folder" >&2; exit 2; }
+  cd "$worktree" || exit 2
+fi
+if [[ -n "${group:-}" ]]; then
+  [[ "$group" =~ ^[a-z0-9][a-z0-9-]{0,39}$ ]] || { echo "claude-headless: --group is a group id (g1, g2 …)" >&2; exit 2; }
+  export AXF_BUILD_GROUP="$group"
+fi
 [[ -n "$brief" && -f "$brief" ]] || { echo "claude-headless: --brief <file> is required" >&2; exit 2; }
 [[ "$log" =~ ^[A-Za-z0-9._-]{1,200}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
 [[ -z "$account" || "$account" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] || { echo "claude-headless: --account is a saved account name (or active / live)" >&2; exit 2; }
@@ -464,7 +477,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     pexit_env=(PATH="$PATH" HOME="$HOME")
     for v in AXF_PIPELINE_LOCK AXF_HEADLESS_DIR AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_WORKERS AXF_SLOTS_DIR AXF_BUILD_PROFILE; do [[ -n "${!v:-}" ]] && pexit_env+=("$v=${!v}"); done
     pexit_log="${AXF_PIPELINE_EXIT_LOG:-/var/log/axf-pipeline.log}"; [[ -w "$(dirname "$pexit_log")" ]] || pexit_log="$HDIR/pipeline-exit.log"
-    ( cd "$HERE/.." && setsid env -i "${pexit_env[@]}" node "$PIPE_JS" exit "$AXF_BUILD_ID" --session "$end_session" --exit "$st" --kind "$exit_kind" ${AXF_BUILD_PHASE:+--phase "$AXF_BUILD_PHASE"} --by headless >> "$pexit_log" 2>&1 < /dev/null & )
+    ( cd "$HERE/.." && setsid env -i "${pexit_env[@]}" node "$PIPE_JS" exit "$AXF_BUILD_ID" --session "$end_session" --exit "$st" --kind "$exit_kind" ${AXF_BUILD_PHASE:+--phase "$AXF_BUILD_PHASE"} ${AXF_BUILD_GROUP:+--group "$AXF_BUILD_GROUP"} --by headless >> "$pexit_log" 2>&1 < /dev/null & )
   fi
   if (( close > 0 )); then
     if (( clients > 0 )); then read -r -t "$close" -p "Enter closes it (waits up to ${close}s). " _ || true
@@ -539,7 +552,8 @@ fi
 # session beside a live one (axf-<build>*, or a claude pid in this worktree); other runs keep the -HHMMSS rename.
 LOCK_CLI="$HERE/../framework/cli/build-lock.mjs"
 if [[ -n "${AXF_BUILD_ID:-}" ]] && command -v node >/dev/null && [[ -f "$LOCK_CLI" ]]; then
-  lverdict="$(node "$LOCK_CLI" check "$AXF_BUILD_ID" --dir "$(pwd)" --no-lock 2>&1)"; l_st=$?
+  # a step group is checked on its own key (<build>--<group>): its sibling groups' sessions are not a second session
+  lverdict="$(node "$LOCK_CLI" check "${AXF_BUILD_ID}${AXF_BUILD_GROUP:+--$AXF_BUILD_GROUP}" --dir "$(pwd)" --no-lock 2>&1)"; l_st=$?
   if (( l_st == 3 )); then echo "claude-headless: $lverdict" >&2; echo "$lverdict"; [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit 3 >/dev/null 2>&1; exit 3; fi
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
@@ -548,6 +562,7 @@ for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUIL
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 envs+=(-e "AXF_BUILD_ID=${AXF_BUILD_ID:-}")   # always set: never the tmux server's stale value from an older launch
+envs+=(-e "AXF_BUILD_GROUP=${AXF_BUILD_GROUP:-}")   # the same for the step group (empty = the whole build)
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
 # never passed before, so pushes from a headless build failed) and the axHub token (env, else the console's env file).
 secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"

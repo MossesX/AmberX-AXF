@@ -613,13 +613,16 @@ export function runBuildRules(id, phase, { env = process.env, by = 'dispatcher' 
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief, then the rules. */
-export function briefFor(b, rules, { account, model, kind = '' }, { blocks = storeBlocks(b) } = {}) {
+export function briefFor(b, rules, { account, model, kind = '', group = null, branch = '' }, { blocks = storeBlocks(b) } = {}) {
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
+  // a step group's session (step-groups@1) sees only its group's steps and its own sub-branch; Brett's words stay whole
+  const view = group ? { ...P.groupView(b, group), branch: branch || SG.groupBranch(SG.buildBranchOf(b), group.id), pr: '' } : b;
   return [
-    `# Build: ${b.id}`, '',
+    `# Build: ${b.id}${group ? ` · step group ${group.id}` : ''}`, '',
     saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
-    '## What to build', orch.brief(b, rules, { blocks }), '',
+    '## What to build', orch.brief(view, rules, { blocks }), '',
+    ...(group ? [groupBlock(b, group, view.branch), ''] : []),
     `## Pipeline`,
     `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
     // the session's rules from the Build rules tab; with this block the launcher appends no second one
@@ -662,6 +665,20 @@ export function launchGroup(b, gid, { account, model, kind = '', phase = '' }, {
   }
   lock.beat(key, { dir, session });
   return { dir, branch, session, slot, queuedInSlots: /queued at position/.test(text), out: text.trim().slice(-600) };
+}
+
+/** The brief block of one step group's session: what it owns, where it commits, what it never does. */
+export function groupBlock(b, g, branch) {
+  const all = BP.groupsOf(b);
+  const others = all.filter((x) => x.id !== g.id).map((x) => `${x.id} (${x.steps.join(', ')}, ${BP.GROUP_STATE_LABEL[x.state] ?? x.state})`);
+  return [
+    `## Step group ${g.id} of ${all.length}`,
+    `This build is split into step groups that run at the same time in separate sessions (step-groups@1, Brett Nov 16 2026: "Any build that's over 30 minutes, split the steps up for multiple slots."). This session owns group ${g.id} only: steps ${g.steps.join(', ')}.`,
+    `Work on branch ${branch} in this worktree. Commit each step there, push ${branch}, then tick the step on the shared build record (orchestrator.mjs act step ${b.id} <stepId> done): the tick goes through the builds store lock, so the other groups' ticks are never lost.`,
+    `Touch only your steps' files. Never merge or rebase onto ${SG.buildBranchOf(b)}, never open a PR for ${branch}, never tick another group's steps: when your steps are done, stop; the orchestrator merges the groups back onto the build branch in merge order and opens the one PR.`,
+    others.length ? `Other groups (not yours): ${others.join('; ')}.` : '',
+    g.dependsOn.length ? `Your group started after ${g.dependsOn.join(', ')} merged: their work is on your branch already.` : '',
+  ].filter(Boolean).join('\n');
 }
 
 /** Start one headless session for a queued build on an account. */

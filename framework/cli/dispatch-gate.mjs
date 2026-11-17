@@ -113,12 +113,18 @@ export function verdict({ b = null, name = '', rec = null, token = '', now = Dat
   return { ok: true, build: id, why: `${id}: dispatched by the orchestrator${rec.account ? ` on ${rec.account}` : ''}${rec.model ? ` (${rec.model})` : ''}` };
 }
 
-/** The launcher's check. */
-export function check({ build = '', name = '', brief = '', token = '', env = process.env, store = null, now = Date.now() } = {}) {
+/** The token key of a launch: the build id, or `<build>--<group>` for one step group of a split build (step-groups@1). */
+export const tokenKey = (id, group = '') => (group && /^[a-z0-9][a-z0-9-]{0,39}$/.test(group) ? `${id}--${group}` : id);
+
+/** The launcher's check. `group` (AXF_BUILD_GROUP) = the step group the launch runs: its own token, never the build's. */
+export function check({ build = '', name = '', brief = '', token = '', group = '', env = process.env, store = null, now = Date.now() } = {}) {
   let s = store; if (!s) { try { s = loadStore(); } catch { s = { builds: [] }; } }
-  const b = findBuild(s, { build, name, brief });
-  const rec = b ? load(env).tokens[b.id] ?? null : null;
-  return verdict({ b, name, rec, token, now });
+  // a group run's name is <build>--<group>: the build is found by id (AXF_BUILD_ID) or by the name without the group
+  const g = group || /--(g\d+)$/.exec(String(name).replace(/^axf-/, ''))?.[1] || '';
+  const b = findBuild(s, { build, name: g ? String(name).replace(new RegExp(`--${g}$`), '') : name, brief });
+  const key = b ? tokenKey(b.id, g) : '';
+  const rec = b ? load(env).tokens[key] ?? null : null;
+  return { ...verdict({ b, name, rec, token, now }), ...(g ? { group: g, key } : {}) };
 }
 
 /** The session really starts: the token is spent. */
@@ -127,7 +133,8 @@ export function consume(opts = {}) {
   const v = check(opts);
   if (!v.ok || !v.build) return v;
   const doc = load(env);
-  if (doc.tokens[v.build]) { doc.tokens[v.build].used = new Date(opts.now ?? Date.now()).toISOString(); save(doc, env); }
+  const key = v.key || v.build;
+  if (doc.tokens[key]) { doc.tokens[key].used = new Date(opts.now ?? Date.now()).toISOString(); save(doc, env); }
   return { ...v, consumed: true };
 }
 
@@ -137,7 +144,7 @@ async function main(argv) {
   const [cmd, first] = args;
   const briefFile = opt('brief');
   const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
-  const common = { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief, token: process.env.AXF_DISPATCH_TOKEN || '' };
+  const common = { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief, token: process.env.AXF_DISPATCH_TOKEN || '', group: opt('group') || process.env.AXF_BUILD_GROUP || '' };
   if (cmd === 'check' || cmd === 'consume') {
     const r = cmd === 'check' ? check(common) : consume(common);
     console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why.replace(/^refused: /, '')}`);
