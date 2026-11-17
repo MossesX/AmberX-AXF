@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7857,
- "updatedAt": "2026-11-17T20:44:33.352Z",
+ "rev": 7858,
+ "updatedAt": "2026-11-17T20:44:43.593Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207268,7 +207268,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T20:40:46.802Z",
+   "updatedAt": "2026-11-17T20:44:32Z",
    "builtAt": "2026-11-17T19:47:21.446Z",
    "notes": [
     {
@@ -207326,6 +207326,10 @@
     {
      "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T20:40:46.803Z"
+    },
+    {
+     "text": "Shipped manifest sm-console-app-part-2-native-floating rev 1 sent to Shipped features (orchestrator): PR #813, 25 file(s), 3 test line(s), 2 open.",
+     "at": "2026-11-17T20:44:32Z"
     }
    ],
    "approvals": [
@@ -207396,6 +207400,12 @@
      "session": "axf-console-app-part-2-native-floating--rhonda",
      "phase": "Phase 2"
     }
+   },
+   "shipped": {
+    "id": "sm-console-app-part-2-native-floating",
+    "rev": 1,
+    "at": "2026-11-17T20:44:32Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -207564,7 +207574,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
