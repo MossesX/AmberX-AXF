@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7396,
- "updatedAt": "2026-11-17T12:30:32.323Z",
+ "rev": 7397,
+ "updatedAt": "2026-11-17T12:32:26.092Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262676,7 +262676,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T12:30:21.498Z",
+   "updatedAt": "2026-11-17T12:32:23.126Z",
    "builtAt": "",
    "notes": [
     {
@@ -262722,7 +262722,7 @@
     "queuedAt": "2026-11-17T12:26:43.338Z",
     "queuedBy": "console",
     "account": "",
-    "session": "axf-move-server-side-console-parts-onto-vps--sully",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
@@ -262774,12 +262774,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:32:23.126Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T12:28:31.327Z"
+     "updatedAt": "2026-11-17T12:32:23.467Z"
     },
     {
      "id": "s2",
