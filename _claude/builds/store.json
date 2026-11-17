@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7761,
- "updatedAt": "2026-11-17T20:14:10.192Z",
+ "rev": 7762,
+ "updatedAt": "2026-11-17T20:14:16.981Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -121058,6 +121058,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -142796,6 +142797,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -209954,6 +209956,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -222223,6 +222226,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -277698,15 +277702,15 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/guided-live-demo-test-watch-orchestrator",
-   "pr": "",
+   "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:14:07.888Z",
+   "updatedAt": "2026-11-17T20:14:14.048Z",
    "builtAt": "",
    "notes": [
     {
@@ -277742,12 +277746,12 @@
      "at": "2026-11-17T19:46:13.066Z"
     },
     {
-     "text": "Headless run axf-guided-live-demo-test-watch-orchestrator--joey: brief only · start 18.2K tokens ($0.13) · cost $14.98 · 128 turns · 6 tools, MCP none",
-     "at": "2026-11-17T20:13:06.028Z"
-    },
-    {
      "text": "Phase 1 (Fable, s1-s3) done on claude/guided-live-demo-test-watch-orchestrator (main merged in, all checks green). demo-run@1 / demo-act@1 / act-result@1: spec framework/spec/LIVE-DEMO.md, schema framework/schemas/live-demo.json (axf schemas), pure core framework/core/live-demo.mjs (step / advance / replay, pause on = wait for Next then >= 30 s, pause off = >= 30 s, gap never below 30 s, error codes invalid-transition / too-early / no-act / bad-result / bad-time / not-demo-build, summarize + checklist), fixture framework/spec/fixtures/live-demo.json (11 runs, 15 refused, 6 norm), CI check framework/spec/check-live-demo.mjs (419). demo-build@1 (framework/core/demo-build.mjs): demo: true tag derived from the demo- id on read (no migration), validateStore agreement, marks in orchestrator / Pending / queue projections, dispatcher plan (launch.demo, waits.demo, plan.demo), auto-lander build record + schema, alerts (meta.demo, [demo] title), builds-live commit lines, console + board rows; guard: withStore meta demo: true refuses the whole write on any non-demo build (DemoGuardError not-demo-build), CLI builds-store.mjs demo <build> and set-status --demo, verify counts demo builds. Also fixed check-ci-scope.mjs (merge queue switch off since today made it red). No UI in this phase: deep link view:build-orchestrator/demo:<id>, REST / MCP / CLI / voice events (begin, continue, toggle-pause, focused, start, finish, next, skip, stop, tick) are specified in LIVE-DEMO.md for the driver phase. Pre-existing, unrelated: shipped-features/test.mjs needs node:sqlite (Node 22, CI has it); check-shipped-manifest.mjs is not in CI and trips on the done-means-merged guard.",
      "at": "2026-11-17T20:12:43.401Z"
+    },
+    {
+     "text": "Headless run axf-guided-live-demo-test-watch-orchestrator--joey: brief only · start 18.2K tokens ($0.13) · cost $14.98 · 128 turns · 6 tools, MCP none",
+     "at": "2026-11-17T20:13:06.028Z"
     },
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
@@ -277779,16 +277783,7 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-17T20:14:07.124Z",
-     "exit": 0,
-     "outcome": "requeued",
-     "reason": "phase-done",
-     "stepsLeft": 21,
-     "account": "",
-     "session": "",
-     "phase": "Phase 1"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-17T19:39:27.698Z",
      "by": "orchestrator",
@@ -277797,7 +277792,7 @@
      "note": "Split by Claude into 24 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -277805,17 +277800,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T20:12:57.832Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
