@@ -832,14 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:37 UTC · `fix-banner-settings-interface-tab` note (all) · builds-live
-- 2026-11-17 21:37 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` s15 done (all) · orchestrator
-- 2026-11-17 21:38 UTC · `rebuild-every-toolbar-page-specific` merged, note (all) · reconciler
-- 2026-11-17 21:38 UTC · `icon-picker-every-banner-settings-widget` s2 done (all) · orchestrator
-- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 21:38 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` s15 undone, → queued, note (all) · foreign-write
 - 2026-11-17 21:38 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
 - 2026-11-17 21:38 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · orchestrator
@@ -1232,6 +1224,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:36 UTC · `banner-widget-shapes-plus-change-icon` s16 done (all) · orchestrator
 - 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
 - 2026-11-17 22:37 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `banner-widget-shapes-plus-change-icon` s12 done, s13 done, s14 done, s15 done, s16 done (all) · foreign-write
+- 2026-11-17 22:38 UTC · `rebuild-fresh-main-phone-connect-small` s15 done, s27 done, → complete, note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
+- 2026-11-17 22:38 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `move-everything-axhub-web-console` added (93 steps) (all) · foreign-write
+- 2026-11-17 22:38 UTC · `auto-lander-never-wait-missing-ui-review` added (17 steps) (all) · foreign-write
 
 ## Token passes (log)
 
