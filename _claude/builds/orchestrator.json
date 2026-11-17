@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:01:21.270Z",
+ "updatedAt": "2026-11-17T15:01:31.108Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172479,7 +172479,7 @@
    "title": "Auto-lander: drag rows to set merge order, lander follows it",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: drag-and-drop rows (and Move to top / Move up / Move down / Move to bottom in each row's menu, multi-select) to set the order PRs get merged in. The order is stored server-side on the VPS and the lander (server-auto-lander) always lands strictly in that order, one at a time, merging main in before each. New PRs join at the bottom; default order is closest-to-main first until Brett reorders. Show a position number column. Same reorder via REST, MCP, CLI, voice ('land #774 next'). Coordinate with auto-lander-grid-one-row-per-build and server-auto-lander-fixes-lands.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -172487,7 +172487,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T15:01:15.413Z",
+   "updatedAt": "2026-11-17T15:01:21.829Z",
    "builtAt": "",
    "notes": [
     {
@@ -172497,6 +172497,10 @@
     {
      "text": "Split by Claude into 15 steps (3 Fable).",
      "at": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-auto-lander-drag-rows-to-set-merge-order--sully, shared account login)",
+     "at": "2026-11-17T15:01:21.829Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-auto-lander-drag-rows-to-set-merge-order--sully.",
