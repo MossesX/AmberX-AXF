@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T13:18:57.395Z",
+ "updatedAt": "2026-11-17T13:19:16.658Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -159226,7 +159226,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-17T13:18:55.298Z",
+   "updatedAt": "2026-11-17T13:19:14.210Z",
    "builtAt": "2026-11-17T13:18:55.298Z",
    "notes": [
     {
@@ -159272,6 +159272,10 @@
     {
      "text": "Claude account: hulu0241 (axf-fix-console-deep-links-open-page-lands--gina, shared account login)",
      "at": "2026-11-17T12:28:51.223Z"
+    },
+    {
+     "text": "Headless run axf-fix-console-deep-links-open-page-lands--gina: brief only · start 16.0K tokens ($0.05) · cost $4.01 · 92 turns · 6 tools, MCP none",
+     "at": "2026-11-17T13:19:14.210Z"
     }
    ],
    "approvals": [],
