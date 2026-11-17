@@ -298,7 +298,10 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   const f = storeFile(); mkdirSync(dirname(f), { recursive: true });
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(after)); renameSync(tmp, f);
   foldOrigins(after);
-  journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
+  // step-groups@1: a change to a build's groups is marked on its journal line (`groups`: id + state after), so group
+  // writes can be found without diffing the before / after records
+  const groupsLine = (c) => (JSON.stringify(c.before?.groups ?? []) !== JSON.stringify(c.after?.groups ?? []) ? { groups: (c.after?.groups ?? []).map((g) => ({ id: g.id, state: g.state, mergeOrder: g.mergeOrder })) } : {});
+  journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, ...groupsLine(c), before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
   // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
   if (changes.length) emitChanges(changes, { at: now, by });
   return { store: after, changes, rev: after.rev };

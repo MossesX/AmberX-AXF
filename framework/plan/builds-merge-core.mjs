@@ -74,6 +74,8 @@ export function mergeBuild(a, b) {
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
   for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority', 'alias']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
+  // step-groups@1: the groups of a split build are never blanked by a copy that has none (a session on older code)
+  if (!out.groups?.length && lose.groups?.length) { out.groups = clone(lose.groups); combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
   const key = (n) => `${n.at}|${n.text}`;
@@ -168,6 +170,7 @@ export function changeLines(entry) {
       if (str(a.pr) !== str(b.pr) && a.pr) what.push(`PR ${a.pr}`);
       if (str(a.mergedAt) !== str(b.mergedAt) && a.mergedAt) what.push('merged');
       if ((a.notes?.length ?? 0) > (b.notes?.length ?? 0)) what.push('note');
+      if (JSON.stringify(a.groups ?? []) !== JSON.stringify(b.groups ?? [])) what.push(a.groups?.length ? `groups ${a.groups.map((g) => `${g.id} ${g.state}`).join(', ')}` : 'groups cleared');
       if (a.deleted && !b.deleted) what.push('removed');
     }
     if (!what.length) continue;

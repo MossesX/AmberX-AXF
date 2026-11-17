@@ -6,6 +6,8 @@ import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as c from '../plan/builds-store-core.mjs';
+import * as merge from '../plan/builds-merge-core.mjs';
+import * as BP from '../core/build-pipeline.mjs';
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const at = '2026-10-31T10:00:00.000Z';
@@ -174,6 +176,57 @@ t('progress per build and per profile', () => {
   const p = c.profileProgress(M, P); assert.equal(p.builds, 2); assert.equal(p.total, 3); assert.equal(p.pct, 33);
 });
 
+// ------------------------------------------------------------------ step-groups@1 (Nov 16 2026: one build over several slots)
+const grouped = () => c.normBuild({ id: 'long', title: 'Long build', status: 'queued', steps: [step('s1', 'schema', { files: ['a.mjs'] }), step('s2', 'engine', { files: ['a.mjs', 'b.mjs'], dependsOn: ['s1', 's1', 's9', 7] }), step('s3', 'docs', { files: ['c.md'] })],
+  groups: [{ id: 'g2', steps: ['s3'], state: 'running', slot: 'slot-2', account: 'w-max', mergeOrder: 1 }, { id: 'g1', steps: ['s1', 's2'], state: 'merged', mergedAt: at, mergeOrder: 0, slot: 'stale' }] });
+t('normBuild keeps groups (in merge order, in shape) and a step\'s dependsOn (unique, strings only)', () => {
+  const b = grouped();
+  assert.deepEqual(b.groups.map((g) => [g.id, g.state, g.mergeOrder, g.slot, g.account]), [['g1', 'merged', 0, '', ''], ['g2', 'running', 1, 'slot-2', 'w-max']]);
+  assert.equal(b.groups[0].mergedAt, at);
+  assert.deepEqual(b.steps[1].dependsOn, ['s1', 's9']); assert.equal('dependsOn' in b.steps[0], false, 'no dependsOn = no field');
+  assert.deepEqual(c.normalizeStore({ ...c.emptyStore(at), builds: [b] }).builds[0].groups, b.groups, 'a store round-trip keeps them');
+});
+t('unset = one implicit group: nothing on the record, groupsOf answers every step in order, so old builds read the same', () => {
+  const b = M.builds.find((x) => x.id === 'shared');
+  assert.equal('groups' in b, false); assert.equal(BP.isSplit(b), false);
+  const g = BP.groupsOf(b); assert.equal(g.length, 1); assert.equal(g[0].id, BP.IMPLICIT_GROUP); assert.deepEqual(g[0].steps, b.steps.map((s) => s.id)); assert.equal(g[0].state, 'running');
+  assert.equal(BP.groupsOf(c.normBuild({ id: 'e', title: 'E' }))[0].steps.length, 0);
+  assert.ok(M.builds.every((x) => !('groups' in x)), 'the migration writes no group to any build');
+  assert.equal(BP.isSplit(grouped()), true);
+});
+t('validateStore names a group that points at a missing step, a step in two groups, a bad state, a dependsOn on a stranger', () => {
+  const s = c.normalizeStore({ ...c.emptyStore(at), builds: [grouped()] });
+  assert.deepEqual(c.validateStore(s).errors.filter((e) => !/dependsOn/.test(e.path)), [], 'the record itself is valid');
+  assert.ok(c.validateStore(s).errors.some((e) => /dependsOn/.test(e.path) && /"s9"/.test(e.message)), 'a dependsOn on a step the build lacks is named');
+  const bad = JSON.parse(JSON.stringify(s)); const b = bad.builds[0];
+  b.groups[0].steps.push('nope'); b.groups[1].steps.push('s1'); b.groups[1].state = 'bogus'; b.groups[1].dependsOn = ['g9'];
+  const paths = c.validateStore(bad).errors.map((e) => `${e.path} ${e.message}`).join('\n');
+  for (const re of [/groups\[0\]\.steps names "nope"/, /groups\[1\]\.steps "s1" is also in group g1/, /groups\[1\]\.state "bogus"/, /groups\[1\]\.dependsOn names "g9"/]) assert.match(paths, re, paths);
+});
+t('the orchestrator projection carries groups and dependsOn both ways (an orchestrator write never drops them)', () => {
+  const s = c.normalizeStore({ ...c.emptyStore(at), builds: [grouped()] });
+  const o = c.projectOrchestrator(s, 'all');
+  assert.equal(o.builds[0].groups.length, 2); assert.deepEqual(o.builds[0].steps[1].dependsOn, ['s1', 's9']);
+  const back = c.absorbOrchestrator(s, 'all', o, { now: at });
+  assert.deepEqual(c.diffStores(s, back, at), [], 'round-trip is a no-op');
+  o.builds[0].groups[1].state = 'ready-to-merge'; o.builds[0].steps[2].dependsOn = ['s2'];
+  const b2 = c.absorbOrchestrator(s, 'all', o, { now: at }).builds[0];
+  assert.equal(b2.groups[1].state, 'ready-to-merge'); assert.deepEqual(b2.steps[2].dependsOn, ['s2']);
+  assert.equal(JSON.stringify(c.projectOrchestrator(M, 'all')).includes('"groups"'), false, 'a build without groups exports none (byte-stable)');
+});
+t('dividing a step keeps its dependsOn on the first part and chains the others', () => {
+  const s = c.normalizeStore({ ...c.emptyStore(at), builds: [grouped()] });
+  const uid = s.builds[0].steps[1].uid;
+  const a = c.applyDraft(c.addDraftOp(s, 'all', { op: 'divide-step', build: 'long', uid, parts: [{ text: 'engine a' }, { text: 'engine b' }] }), 'all').store.builds[0];
+  assert.deepEqual(a.steps.map((x) => x.dependsOn ?? null), [null, ['s1', 's9'], ['s2'], null]);
+});
+t('a live merge never blanks a split build\'s groups, and the change line names the group write', () => {
+  const b = grouped(); const older = { ...JSON.parse(JSON.stringify(b)), updatedAt: '2026-10-01T00:00:00.000Z' }; const newer = { ...JSON.parse(JSON.stringify(b)), updatedAt: '2026-11-01T00:00:00.000Z' }; delete newer.groups;
+  assert.equal(merge.mergeBuild(newer, older).groups.length, 2);
+  const line = merge.changeLines({ at, by: 'test', builds: [{ id: 'long', before: { ...b, groups: [] }, after: b }] });
+  assert.match(line.join('\n'), /groups g1 merged, g2 running/);
+});
+
 // ------------------------------------------------------------------ one profile (Nov 7 2026: every profile merged into `all`)
 t('a record naming a retired profile reads as `all`, keeps where it came from, urgency becomes its priority', () => {
   const b = c.normBuild({ id: 'old', title: 'Old', profiles: ['urgent'], order: { urgent: 4 } });
@@ -252,5 +305,17 @@ t('every write is versioned in the journal and can be restored', () => {
 io.withStore((s) => c.addDraftOp(s, 'all', { op: 'rename-build', id: 'shared', title: 'Draft name' }), { by: 'test', action: 'draft' });
 t('draft survives a reload, Apply writes it', () => { assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 1); io.applyDraftNow('all', 'test'); assert.equal(io.loadStore().builds.find((x) => x.id === 'shared').title, 'Draft name'); assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 0); });
 t('the store on disk leaves out an unchanged default breakdown', () => { const raw = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.ok(raw.builds.some((b) => !('defaultSteps' in b))); });
+t('a group write lands in the store and the journal marks it (step-groups@1)', () => {
+  orchAdd({ id: 'split-me', title: 'Split me', status: 'queued', steps: [{ id: 's1', text: 'one', model: 'Opus', estimate: '10 min', files: ['x.mjs'] }, { id: 's2', text: 'two', model: 'Opus', estimate: '10 min', files: ['y.mjs'], dependsOn: ['s1'] }] });
+  assert.equal('groups' in io.loadStore().builds.find((x) => x.id === 'split-me'), false, 'no groups until the engine writes them');
+  io.withStore((s) => { const b = s.builds.find((x) => x.id === 'split-me'); b.groups = BP.normGroups([{ id: 'g1', steps: ['s1'], state: 'ready' }, { id: 'g2', steps: ['s2'], state: 'planned', dependsOn: ['g1'] }]); return s; }, { by: 'test', action: 'groups:plan' });
+  const b = io.loadStore().builds.find((x) => x.id === 'split-me');
+  assert.deepEqual(b.groups.map((g) => [g.id, g.state, g.dependsOn]), [['g1', 'ready', []], ['g2', 'planned', ['g1']]]); assert.deepEqual(b.steps[1].dependsOn, ['s1']);
+  assert.deepEqual(c.validateStore(io.loadStore()).errors, []);
+  const lines = readdirSync(io.journalDir()).filter((f) => f.endsWith('.jsonl')).flatMap((f) => readFileSync(join(io.journalDir(), f), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)));
+  const marked = lines.flatMap((e) => e.builds ?? []).filter((x) => x.id === 'split-me' && x.groups);
+  assert.equal(marked.length, 1); assert.deepEqual(marked[0].groups, [{ id: 'g1', state: 'ready', mergeOrder: 0 }, { id: 'g2', state: 'planned', mergeOrder: 1 }]);
+  assert.equal(c.projectOrchestrator(io.loadStore(), 'all').builds.find((x) => x.id === 'split-me').groups.length, 2, 'the orchestrator export shows them');
+});
 
 console.log(`builds-store: ${n} checks passed`);

@@ -36,9 +36,13 @@
  *     origin                       build-origin@1 (framework/core/build-origin.mjs): Brett's verbatim words that started it,
  *                                  when / where / who launched it, the brief, later addenda; merged, never overwritten
  *
+ *     groups                       step-groups@1 (framework/core/build-pipeline.mjs): the step groups a long build runs
+ *                                  as, in merge order; absent = one implicit sequential group (groupsOf), nothing written
+ *
  *   StepRecord = orchestrator@1 step fields (id, text, model, why, phase, group, estimate, files, checks, session,
  *     agent, skip, done, doneAt, note) plus uid (never changes, also across a harvest), title (rename; shown instead
- *     of the text when set), rev, createdAt, updatedAt, origin ({ build, step } it was harvested or divided from).
+ *     of the text when set), rev, createdAt, updatedAt, origin ({ build, step } it was harvested or divided from),
+ *     dependsOn (step-groups@1: step ids that must be done first; absent when none).
  *
  * Ids never change: renaming changes title only, so links, PRs and history keep pointing at the same record.
  */
@@ -47,7 +51,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
-import { normPipeline } from '../core/build-pipeline.mjs';
+import { GROUP_STATES, normDependsOn, normGroups, normPipeline } from '../core/build-pipeline.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 
 export const SCHEMA = 'builds@1';
@@ -84,8 +88,8 @@ const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
 /** A new build's id from a title (build-id@1: at most 40 characters). `slug` stays for profile names and old lookups. */
 export const newBuildId = (t) => shortBuildId(str(t, 300));
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
-const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'groups', 'steps'];
+const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'dependsOn', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
 
@@ -110,6 +114,7 @@ export function normStep(s, i = 0, ctx = {}) {
     why: str(o.why, 300),
     phase: str(o.phase, 80),
     group: str(o.group, 80),
+    ...(normDependsOn(o.dependsOn).length ? { dependsOn: normDependsOn(o.dependsOn) } : {}), // step-groups@1: steps this one waits for
     estimate: str(o.estimate, 20),
     files: Array.isArray(o.files) ? o.files.map((f) => str(f, 300)).filter(Boolean).slice(0, 30) : [],
     checks: Array.isArray(o.checks) ? o.checks.map((f) => str(f, 300)).filter(Boolean).slice(0, 20) : [],
@@ -168,6 +173,7 @@ export function normBuild(b, ctx = {}) {
     ...(origin ? { origin } : {}),
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
+    ...(normGroups(o.groups).length ? { groups: normGroups(o.groups) } : {}), // step-groups@1: the groups a long build runs as; absent = one implicit group (groupsOf)
     steps,
     profiles,
     order,
@@ -316,7 +322,26 @@ export function validateStore(store) {
       if (!MODELS.includes(s.model)) err(`${sa}.model`, `"${s.model}" is not one of ${MODELS.join(', ')} (model policy: Opus or Fable, never Sonnet)`);
       if (typeof s.text !== 'string' || !s.text.trim()) err(`${sa}.text`, 'is missing');
       if (!Number.isInteger(s.rev) || s.rev < 1) err(`${sa}.rev`, 'must be a whole number from 1');
+      if (s.dependsOn !== undefined && (!Array.isArray(s.dependsOn) || s.dependsOn.some((d) => typeof d !== 'string' || d === s.id))) err(`${sa}.dependsOn`, 'must be a list of other step ids');
+      else for (const d of s.dependsOn ?? []) if (!b.steps.some((x) => x?.id === d)) err(`${sa}.dependsOn`, `names "${d}", which is not a step of the build`);
     });
+    // step-groups@1: when set, the groups name real steps, each step at most once, and depend only on other groups
+    if (b.groups !== undefined) {
+      if (!Array.isArray(b.groups)) err(`${at}.groups`, 'must be a list of step groups');
+      else {
+        const gids = new Set(); const placed = new Map();
+        b.groups.forEach((g, j) => {
+          const ga = `${at}.groups[${j}]`;
+          if (!g || typeof g !== 'object') return err(ga, 'must be an object');
+          if (typeof g.id !== 'string' || !g.id) err(`${ga}.id`, 'is missing'); else if (gids.has(g.id)) err(`${ga}.id`, `"${g.id}" appears twice in the build`); else gids.add(g.id);
+          if (!Array.isArray(g.steps) || !g.steps.length) err(`${ga}.steps`, 'needs at least one step id');
+          else for (const sid of g.steps) { if (!sids.has(sid)) err(`${ga}.steps`, `names "${sid}", which is not a step of the build`); else if (placed.has(sid)) err(`${ga}.steps`, `"${sid}" is also in group ${placed.get(sid)} (a step runs in one group)`); else placed.set(sid, g.id); }
+          if (!GROUP_STATES.includes(g.state)) err(`${ga}.state`, `"${g.state}" is not one of ${GROUP_STATES.join(', ')}`);
+          if (!Number.isInteger(g.mergeOrder) || g.mergeOrder < 0) err(`${ga}.mergeOrder`, 'must be a whole number from 0');
+        });
+        b.groups.forEach((g, j) => { for (const d of (Array.isArray(g?.dependsOn) ? g.dependsOn : [])) if (d === g.id || !gids.has(d)) err(`${at}.groups[${j}].dependsOn`, `names "${d}", which is not another group of the build`); });
+      }
+    }
   });
   return { ok: !errors.length, errors };
 }
@@ -963,7 +988,8 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       case 'divide-step': {
         const b = get(op.build); const k = b.steps.findIndex((x) => x.uid === op.uid); if (k < 0) throw new Error(`no step ${op.uid} in ${b.id}`);
         const st = b.steps[k];
-        const parts = op.parts.map((p, i) => normStep({ id: i === 0 ? st.id : stepIdIn({ steps: [...b.steps, ...op.parts.slice(0, i).map((_, j) => ({ id: j === 0 ? st.id : `${st.id}.${j + 1}` }))] }, `${st.id}.${i + 1}`), text: str(p.text, 2000).trim(), estimate: str(p.estimate, 20), model: MODELS.includes(p.model) ? p.model : st.model, phase: st.phase, group: st.group, files: st.files, checks: st.checks, session: st.session, agent: st.agent, origin: { build: b.id, step: st.uid, how: 'divided' }, createdAt: now }, i, { now }));
+        const parts = []; // each part after the first waits for the one before it (step-groups@1), so a divided step stays one sequence
+        op.parts.forEach((p, i) => { parts.push(normStep({ id: i === 0 ? st.id : stepIdIn({ steps: [...b.steps, ...parts] }, `${st.id}.${i + 1}`), text: str(p.text, 2000).trim(), estimate: str(p.estimate, 20), model: MODELS.includes(p.model) ? p.model : st.model, phase: st.phase, group: st.group, dependsOn: i === 0 ? st.dependsOn : [parts[i - 1].id], files: st.files, checks: st.checks, session: st.session, agent: st.agent, origin: { build: b.id, step: st.uid, how: 'divided' }, createdAt: now }, i, { now })); });
         b.steps.splice(k, 1, ...parts);
         b.removedSteps.push({ step: st, at: now, why: `divided into ${parts.length}`, by });
         b.rearranged = true; touched.add(b.id);
