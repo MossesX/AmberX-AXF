@@ -64,3 +64,17 @@ screen shows exactly one.
   the plugin's `settingsTabs[0].id`, or the folder when plugin.json declares `settingsTab: { default: true }`.
 - Opt-out: plugin.json `"settingsGear": false` + `"settingsGearReason"`. The plugin@1 schema's root is open, so no
   schema change was needed; documenting the two fields in `plugin.schema.json` is left for a Fable pass.
+
+## One gear per screen (s5–s6)
+
+- Removed the hand-made screen gears: session-checkin (page head), voice-notes (page head). project-wizard's was a
+  "fix it" button inside a GitHub/VPS notice; it is now a labelled "Fix in settings" button (arrow icon), so the
+  screen still has exactly one gear. framework/libs/mcp's "Manage servers" button (mcp-client) keeps its text and
+  now uses the sliders icon; synced into the console, AmberX and axHub web baked copies (one line each; a full
+  rebake of the console is blocked: rebake.mjs reports its baked copy as edited).
+- Visual check: `apps/console-web/scripts/plugin-gear.e2e.mjs` opens every plugin screen in the control inventory
+  on desktop (1400×900) and phone (390×844) against `vite preview`, and counts buttons drawing the gear glyph.
+  Result: 48 screens × 2 viewports, every rendered screen has exactly one gear, in a labelled role="toolbar",
+  not overlapping the page head; pressing it on desktop opens Settings. Skipped: audio-extract (off by default),
+  agent-manager / agent-swarm / sessions (not registered with the API offline), theme-manager (crashes offline
+  without the axHub look: `rt.asset(type).data` on a type with no active asset; pre-existing, not gear-related).
