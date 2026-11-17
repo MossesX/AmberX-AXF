@@ -823,6 +823,7 @@
       "table.font",
       "pageHead.descriptionFont",
       "pageHead.descriptionLines",
+      "widget.textMax",
       "chip.radius",
       "card.radius"
     ],

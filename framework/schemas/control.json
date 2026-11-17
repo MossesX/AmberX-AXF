@@ -2052,6 +2052,15 @@
           "max": 6
         },
         {
+          "id": "widget.textMax",
+          "token": "--fx-size-widget-text-max",
+          "kind": "number",
+          "unit": "int",
+          "default": 24,
+          "min": 6,
+          "max": 80
+        },
+        {
           "id": "chip.radius",
           "kind": "enum",
           "options": [
@@ -4164,6 +4173,7 @@
           "table.font",
           "pageHead.descriptionFont",
           "pageHead.descriptionLines",
+          "widget.textMax",
           "chip.radius",
           "card.radius"
         ]

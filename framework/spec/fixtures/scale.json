@@ -122,6 +122,9 @@
       "pageHead": {
         "descriptionFont": 0.88,
         "descriptionLines": 2
+      },
+      "widget": {
+        "textMax": 24
       }
     }
   },
@@ -204,6 +207,7 @@
     "--fx-size-table-font": "0.86em",
     "--fx-size-page-head-description-font": "0.88em",
     "--fx-size-page-head-description-lines": "2",
+    "--fx-size-widget-text-max": "24",
     "--fx-size-chip-radius": "var(--fx-radius-sm)",
     "--fx-size-card-radius": "var(--fx-radius-md)"
   },
@@ -858,6 +862,9 @@
         "pageHead": {
           "descriptionFont": 1,
           "descriptionLines": 6
+        },
+        "widget": {
+          "textMax": 24
         }
       },
       "vars": {
@@ -891,6 +898,7 @@
         "--fx-size-table-font": "0.9em",
         "--fx-size-page-head-description-font": "1em",
         "--fx-size-page-head-description-lines": "6",
+        "--fx-size-widget-text-max": "24",
         "--fx-size-chip-radius": "999px",
         "--fx-size-card-radius": "var(--fx-radius-lg)"
       }
@@ -950,6 +958,9 @@
         "pageHead": {
           "descriptionFont": 0.88,
           "descriptionLines": 2
+        },
+        "widget": {
+          "textMax": 24
         }
       },
       "vars": {
@@ -983,6 +994,7 @@
         "--fx-size-table-font": "0.86em",
         "--fx-size-page-head-description-font": "0.88em",
         "--fx-size-page-head-description-lines": "2",
+        "--fx-size-widget-text-max": "24",
         "--fx-size-chip-radius": "var(--fx-radius-sm)",
         "--fx-size-card-radius": "var(--fx-radius-md)"
       }
@@ -1042,6 +1054,9 @@
         "pageHead": {
           "descriptionFont": 0.92,
           "descriptionLines": 2
+        },
+        "widget": {
+          "textMax": 24
         }
       },
       "vars": {
@@ -1075,6 +1090,7 @@
         "--fx-size-table-font": "0.9em",
         "--fx-size-page-head-description-font": "0.92em",
         "--fx-size-page-head-description-lines": "2",
+        "--fx-size-widget-text-max": "24",
         "--fx-size-chip-radius": "var(--fx-radius-sm)",
         "--fx-size-card-radius": "var(--fx-radius-md)"
       }
@@ -1134,6 +1150,9 @@
         "pageHead": {
           "descriptionFont": 0.95,
           "descriptionLines": 3
+        },
+        "widget": {
+          "textMax": 24
         }
       },
       "vars": {
@@ -1167,6 +1186,7 @@
         "--fx-size-table-font": "0.95em",
         "--fx-size-page-head-description-font": "0.95em",
         "--fx-size-page-head-description-lines": "3",
+        "--fx-size-widget-text-max": "24",
         "--fx-size-chip-radius": "999px",
         "--fx-size-card-radius": "var(--fx-radius-lg)"
       }
@@ -1290,6 +1310,9 @@
       "pageHead": {
         "descriptionFont": 0.88,
         "descriptionLines": 4
+      },
+      "widget": {
+        "textMax": 24
       }
     },
     "sizing:not-an-object": {
@@ -1346,6 +1369,9 @@
       "pageHead": {
         "descriptionFont": 0.88,
         "descriptionLines": 2
+      },
+      "widget": {
+        "textMax": 24
       }
     }
   },
