@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, GROUP_LIVE_STATES, groupsOf, isHeld, isSplit, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { DEFAULT_MAX_RUNS, GROUP_LIVE_STATES, GROUP_STATE_LABEL, groupsOf, isHeld, isSplit, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { planGroups } from '../../../../framework/core/build-groups.mjs';
@@ -407,6 +407,57 @@ export function groupView(b, g) {
 }
 /** The model a group's next session runs on: the pin of its first open step (never higher than a step is pinned to). */
 export const groupModel = (b, g) => nextModel(groupView(b, g));
+
+/**
+ * A group's run ended (pure): its next state and a note. `run` = { exit, kind: phase-done | crash | stopped | '' ,
+ * crashes (before this run) }. Every step done = ready-to-merge. A crash (or a non-zero exit) goes back to the queue
+ * (`ready`) until the crash limit (settings.maxRuns, 3, as builds do), then `failed`. A clean end with steps left (its
+ * phase is done, the next step is on another model) = `ready`: the next tick starts its next phase. Stopped by hand =
+ * `failed` until Brett re-runs it. Returns { state, crashes, outcome, note }.
+ */
+export function groupEndOutcome(b, g, { exit = 0, kind = '', crashes = 0 } = {}, settings = normSettings()) {
+  const left = groupOpenSteps(b, g).length;
+  const max = normSettings(settings).maxRuns;
+  if (!left) return { state: 'ready-to-merge', crashes, outcome: 'finished', note: `every step of ${g.id} done: waiting for its turn to merge` };
+  const crash = kind === 'crash' || (kind !== 'phase-done' && kind !== 'stopped' && exit !== 0);
+  if (crash) {
+    const n = crashes + 1;
+    return n >= max ? { state: 'failed', crashes: n, outcome: 'failed', note: `${g.id} crashed ${n} times (limit ${max}) with ${left} step${left === 1 ? '' : 's'} left: Re-run it when the cause is fixed` }
+      : { state: 'ready', crashes: n, outcome: 'crashed', note: `${g.id} crashed (exit ${exit}), back in the queue: crash ${n} of ${max}` };
+  }
+  if (kind === 'stopped') return { state: 'failed', crashes, outcome: 'stopped', note: `${g.id} was stopped with ${left} step${left === 1 ? '' : 's'} left: Re-run it to go on` };
+  return { state: 'ready', crashes, outcome: 'phase-done', note: `${g.id}: phase done, ${left} step${left === 1 ? '' : 's'} left on ${nextModel(groupView(b, g)) || '?'}: next phase starts on a free slot` };
+}
+
+/** What a group waits on: its dependsOn groups that are not merged yet ([] = nothing). */
+export function groupWaitsOn(b, g) {
+  const merged = new Set(groupsOf(b).filter((x) => x.state === 'merged').map((x) => x.id));
+  return list(g?.dependsOn).filter((d) => !merged.has(d));
+}
+
+/**
+ * One group as every surface shows it (Groups panel, REST, MCP, CLI, voice): its state, plus `waiting` when it is
+ * planned or ready and waits on another group's merge (`waitingOn` names them); steps done / total; its run (slot,
+ * account, session), branch, worktree and place in the merge order.
+ */
+export function groupRow(b, g) {
+  const byId = new Map(list(b?.steps).map((s) => [s.id, s]));
+  const steps = list(g.steps).map((id) => byId.get(id)).filter(Boolean);
+  const live = steps.filter((s) => !s.skip);
+  const waitingOn = ['planned', 'ready'].includes(g.state) ? groupWaitsOn(b, g) : [];
+  const shown = waitingOn.length ? 'waiting' : g.state;
+  return { id: g.id, state: g.state, shown, label: waitingOn.length ? `Waiting on ${waitingOn.join(', ')}` : GROUP_STATE_LABEL[g.state] ?? g.state, waitingOn,
+    steps: { done: live.filter((s) => s.done).length, total: live.length, ids: list(g.steps) }, nextModel: nextModel(groupView(b, g)),
+    slot: g.slot, account: g.account, session: g.session, branch: g.branch, worktree: g.worktree, mergeOrder: g.mergeOrder, dependsOn: list(g.dependsOn),
+    startedAt: g.startedAt, endedAt: g.endedAt, mergedAt: g.mergedAt, note: g.note };
+}
+/** Every group of a build as rows, in merge order, and one line for voice / the CLI. */
+export function groupRows(b) {
+  const rows = groupsOf(b).map((g) => groupRow(b, g));
+  const by = (st) => rows.filter((r) => r.shown === st).length;
+  const parts = ['running', 'waiting', 'ready', 'planned', 'ready-to-merge', 'merging', 'merged', 'conflict', 'failed'].map((st) => [st, by(st)]).filter(([, n]) => n).map(([st, n]) => `${n} ${st}`);
+  return { split: isSplit(b), groups: rows, line: `${b?.id}: ${rows.length} group${rows.length === 1 ? '' : 's'}${parts.length ? ` (${parts.join(', ')})` : ''}` };
+}
 
 /**
  * Which groups of split builds start this tick (pure). `builds` = live builds; a split build takes part while Queued

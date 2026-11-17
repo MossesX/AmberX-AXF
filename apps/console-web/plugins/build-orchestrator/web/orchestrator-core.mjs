@@ -227,6 +227,10 @@ export function derivedStatus(build, rules) {
   if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
   if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.pr && !build.mergedAt ? 'built' : 'complete'; // built without ticking its steps
   const n = nextUp(build, rules);
+  // a build split into step groups (step-groups@1) is built only once every group is merged back onto its branch, and
+  // one group's upgrade waits on that group alone (the dispatcher holds it): the build itself stays running
+  const split = (build.groups ?? []).length > 1;
+  if (split && build.status !== 'pending' && build.status !== 'queued' && (n.done ? !build.groups.every((g) => g.state === 'merged') : n.needsApproval)) return 'running';
   if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
   if (n.needsApproval) return 'waiting';
   if (build.status === 'queued') return build.steps.some((s) => s.done) ? 'running' : 'queued'; // the Queue holds until a session ticks a step

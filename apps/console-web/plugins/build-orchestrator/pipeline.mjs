@@ -833,6 +833,82 @@ export function onExit(id, { session = '', exit = 0, kind = '', phase = '', env 
   return { ok: true, id, ended, tick: t };
 }
 
+// ------------------------------------------------------------------ step groups: run ends (step-groups@1)
+
+/**
+ * One group's run ended: its next state (pipeline-core groupEndOutcome: ready-to-merge, back to the queue as ready,
+ * failed past the crash limit or when stopped), written on the group under the store lock; the crash count lives in
+ * the dispatcher state (state.groupRuns[<build>--<gid>]). `state` = the tick's state object (changed in place, the
+ * tick saves it); without it the state file is read and written here. Returns { id, group, outcome, state, note }.
+ */
+export function endGroupRun(b, gid, { exit = 0, kind = '', state = null, alert = () => {}, settings = loadSettings(), env = process.env } = {}) {
+  const st = state ?? loadState(); st.groupRuns = st.groupRuns && typeof st.groupRuns === 'object' ? st.groupRuns : {};
+  const key = groupKey(b.id, gid); const g = BP.groupsOf(b).find((x) => x.id === gid);
+  if (!g) throw Object.assign(new Error(`${b.id} has no group ${gid}`), { code: 2 });
+  const run = st.groupRuns[key] ?? {};
+  const r = P.groupEndOutcome(b, g, { exit, kind, crashes: run.crashes ?? 0 }, settings);
+  const now = nowIso(); const account = g.account;
+  SG.updateGroup(b.id, gid, {}, { action: 'pipeline:group-end', note: `${b.id}/${gid} ${r.outcome} → ${r.state}`, fn: (x) => Object.assign(x, { state: r.state, endedAt: now, note: r.note, session: '', slot: '', account: '' }) });
+  st.groupRuns[key] = { ...run, crashes: r.crashes, lastExit: exit, lastKind: kind, outcome: r.outcome, endedAt: now };
+  if (!state) saveState({ ...loadState(), groupRuns: st.groupRuns });
+  lock.release(key, { dir: g.worktree || SG.groupWorktree(b.id, gid, env) });
+  setPipeline(b.id, {}, { note: `Group ${gid} ${r.outcome === 'finished' ? 'finished' : r.outcome}${account ? ` on ${account}` : ''}: ${r.note}.`, action: 'pipeline:group-end' });
+  alert(r.outcome === 'failed' || r.outcome === 'stopped' ? 'failed' : 'ended', { id: b.id, title: `${b.title} (group ${gid})`, outcome: r.outcome, note: r.note, account });
+  logLine({ event: 'group-ended', build: b.id, group: gid, outcome: r.outcome, state: r.state, exit, kind, crashes: r.crashes, account });
+  crewSay('dispatcher', r.outcome === 'failed' || r.outcome === 'stopped' ? 'failed' : 'done', `${b.id} ${r.note}.`, { ref: b.id });
+  return { id: b.id, group: gid, outcome: r.outcome, state: r.state, note: r.note };
+}
+
+/**
+ * Every tick: running groups whose session ended (a session-end event, or tmux gone past the grace period with nothing
+ * alive on the group's key = a crash) are ended; a planned or ready group whose steps are all done (ticked by hand)
+ * goes to ready-to-merge. Returns the ends.
+ */
+export function checkGroupEnds({ alert = () => {}, env = process.env, state = loadState() } = {}) {
+  const events = readEvents(env); const settings = loadSettings(); const out = [];
+  for (const b of live(loadStore()).filter((x) => BP.isSplit(x))) {
+    for (const g of BP.groupsOf(b)) {
+      const key = groupKey(b.id, g.id);
+      if (['planned', 'ready'].includes(g.state) && !P.groupOpenSteps(b, g).length && g.steps.length) {
+        SG.updateGroup(b.id, g.id, { state: 'ready-to-merge', note: `every step of ${g.id} done: waiting for its turn to merge` }, { action: 'pipeline:group-done' });
+        out.push({ id: b.id, group: g.id, outcome: 'finished', state: 'ready-to-merge' }); continue;
+      }
+      if (g.state !== 'running' || !g.session) continue;
+      const since = Date.parse(state.groupRuns?.[key]?.launchedAt || g.startedAt || 0) - 5000;
+      const end = events.filter((e) => e.event === 'session-end' && e.session === g.session && Date.parse(e.at || 0) >= since).pop();
+      let exit = null; let kind = '';
+      if (end) { exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0; kind = end.kind || ''; }
+      else {
+        const alive = tmuxHas(g.session);
+        if (alive !== false || Date.now() - since < GONE_GRACE_MS) { if (alive) lock.beat(key, { dir: g.worktree || SG.groupWorktree(b.id, g.id, env), session: g.session }); continue; }
+        const l = lock.liveness(key, { dir: g.worktree || SG.groupWorktree(b.id, g.id, env), useLock: false, env: lockEnv(env) });
+        if (l.live) continue;
+        exit = 1; kind = 'crash';
+      }
+      out.push(endGroupRun(storeCore.findBuild(loadStore(), b.id), g.id, { exit, kind, state, alert, settings, env }));
+    }
+  }
+  return out;
+}
+
+/**
+ * A group's session ended (claude-headless.sh → pipeline.mjs exit <build> --group <gid>): end its run at once and run
+ * one tick in-process, so a finished group merges and the groups waiting on it start without waiting for the cron.
+ */
+export function onGroupExit(id, gid, { session = '', exit = 0, kind = '', env = process.env, runTick = true } = {}) {
+  if (kind && !EXIT_KINDS.includes(kind)) throw Object.assign(new Error(`kind is one of ${EXIT_KINDS.join(', ')}`), { code: 2 });
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const g = BP.groupsOf(b).find((x) => x.id === gid); if (!g) throw Object.assign(new Error(`${b.id} has no group ${gid}`), { code: 2 });
+  if (g.state !== 'running' || (session && g.session && g.session !== session)) return { ok: true, id: b.id, group: gid, ended: null, tick: null, why: 'this run was already ended (or another session holds the group)' };
+  const ended = endGroupRun(b, gid, { exit: Number.isInteger(exit) ? exit : Number(exit) || 0, kind, settings: loadSettings(env), env });
+  let t = null;
+  if (runTick) {
+    try { const r = tick({ env }); t = { at: r.at, launched: r.launched.map((l) => ({ id: l.id, group: l.group || '', account: l.account, model: l.model })) }; }
+    catch (e) { logLine({ event: 'exit-tick-failed', build: id, group: gid, error: str(e.message, 300) }); t = { error: str(e.message, 300) }; }
+  }
+  return { ok: true, id: b.id, group: gid, ended, tick: t };
+}
+
 /** The last 64 KB of a run's log ('' when it is gone). */
 function tailOf(file) {
   if (!file) return '';
@@ -986,6 +1062,8 @@ export function tick({ env = process.env } = {}) {
   const inta = intake({ alert });
   try { assignAliases({ by: 'pipeline' }); } catch (e) { logLine({ event: 'alias-failed', error: str(e.message, 300) }); }
   const ended = checkEnds({ alert, env });
+  state.groupRuns = state.groupRuns && typeof state.groupRuns === 'object' ? state.groupRuns : {};
+  try { ended.push(...checkGroupEnds({ alert, env, state })); } catch (e) { logLine({ event: 'group-ends-failed', error: str(e.message, 300) }); }
   let authRequeued = [];
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
@@ -1355,6 +1433,10 @@ async function main(argv) {
       try { mkdirSync(dirname(lock), { recursive: true }); } catch { /* flock reports it */ }
       const r = spawnSync('flock', ['-w', flag('wait', '120'), lock, process.execPath, fileURLToPath(import.meta.url), ...argv], { stdio: 'inherit', env: { ...process.env, AXF_PIPELINE_LOCKED: '1' } });
       process.exitCode = r.status ?? 1; return undefined;
+    }
+    if (flag('group')) {
+      const r = onGroupExit(rest[0], flag('group'), { session: flag('session'), exit: Number(flag('exit', '0')), kind: flag('kind') });
+      return out(r, r.ended ? `${r.id}/${r.group}: ${r.ended.outcome} → ${r.ended.state}: ${r.ended.note}` : `${r.id}/${r.group}: ${r.why}`);
     }
     const r = onExit(rest[0], { session: flag('session'), exit: Number(flag('exit', '0')), kind: flag('kind'), phase: flag('phase') });
     const e = r.ended;
