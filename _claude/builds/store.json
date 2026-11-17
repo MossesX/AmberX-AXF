@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8099,
- "updatedAt": "2026-11-17T21:53:54.489Z",
+ "rev": 8100,
+ "updatedAt": "2026-11-17T21:54:12.611Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -278341,7 +278341,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -278349,7 +278349,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T21:52:22.475Z",
+   "updatedAt": "2026-11-17T21:54:09.760Z",
    "builtAt": "",
    "notes": [
     {
@@ -278567,6 +278567,10 @@
     {
      "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
      "at": "2026-11-17T21:52:13.867Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T21:54:09.760Z"
     }
    ],
    "approvals": [
@@ -278596,15 +278600,15 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 5,
+    "crashes": 6,
     "lastRun": {
-     "at": "2026-11-17T21:27:22.258Z",
+     "at": "2026-11-17T21:54:08.152Z",
      "exit": 143,
      "outcome": "requeued",
      "reason": "crash",
@@ -278637,6 +278641,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T21:54:08.152Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s23",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
+     "note": "session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3)."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -279202,10 +279222,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T21:27:33.860Z",
-     "rev": 5,
+     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T21:54:09.760Z",
+     "rev": 6,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T21:27:33.861Z"
+     "updatedAt": "2026-11-17T21:54:09.761Z"
     },
     {
      "id": "s24",
@@ -279241,7 +279261,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
