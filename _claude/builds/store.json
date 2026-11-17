@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8197,
- "updatedAt": "2026-11-17T22:28:42.279Z",
+ "rev": 8198,
+ "updatedAt": "2026-11-17T22:29:07.879Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -261942,7 +261942,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -261950,7 +261950,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T22:26:06.400Z",
+   "updatedAt": "2026-11-17T22:28:48.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -262010,10 +262010,6 @@
      "at": "2026-11-17T22:05:57.394Z"
     },
     {
-     "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
-     "at": "2026-11-17T22:09:09.958Z"
-    },
-    {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-banner-widget-shapes-plus-change-icon--paulie.",
      "at": "2026-11-17T22:10:54.314Z"
     },
@@ -262032,18 +262028,13 @@
     {
      "text": "Reconciler: PR #821 names s1, s2, s3, s4, s5, s6, s7, s8 done",
      "at": "2026-11-17T22:20:39.518Z"
-    }
-   ],
-   "approvals": [
+    },
     {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-17T22:15:54.050Z",
-     "by": "auto",
-     "kind": "downgrade"
+     "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T22:09:09.958Z"
     }
    ],
+   "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "Rebuild.",
@@ -262060,24 +262051,15 @@
    "pipeline": {
     "queuedAt": "2026-11-16T22:59:53.814Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-banner-widget-shapes-plus-change-icon--paulie",
-    "slot": "",
-    "model": "Opus",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-17T22:10:38.850Z",
-    "runs": 1,
-    "crashes": 2,
-    "lastRun": {
-     "at": "2026-11-17T22:09:09.103Z",
-     "exit": null,
-     "outcome": "requeued",
-     "reason": "crash",
-     "stepsLeft": 15,
-     "account": "",
-     "session": "",
-     "phase": ""
-    },
+    "account": "",
+    "session": "",
+    "slot": "[object Object]",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
     "split": {
      "at": "2026-11-16T23:03:57.915Z",
      "by": "orchestrator",
@@ -262088,7 +262070,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T22:10:38.850Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -262097,27 +262079,11 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T22:10:38.850Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T22:09:09.103Z",
-     "buildId": "banner-widget-shapes-plus-change-icon",
-     "phase": "",
-     "step": "s5",
-     "cause": "tmux-missing",
-     "exit": null,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "2026-11-17T22:09:23.059Z",
-     "session": "",
-     "note": "its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -262415,12 +262381,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:28:48.884Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-16T23:03:57.915Z"
+     "updatedAt": "2026-11-17T22:28:56.491Z"
     },
     {
      "id": "s13",

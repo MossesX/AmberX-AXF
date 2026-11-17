@@ -831,7 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:26 UTC · `rebuild-fresh-main-phone-connect-small` s11 done (all) · orchestrator
 - 2026-11-17 21:26 UTC · `fix-banner-settings-interface-tab` → running, note (all) · pipeline
 - 2026-11-17 21:26 UTC · `land-pr-730-reset-all-button-far-right` added (0 steps) (all) · console
 - 2026-11-17 21:26 UTC · `land-pr-730-reset-all-button-far-right` → queued, note (all) · console
@@ -1231,6 +1230,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:28 UTC · `remove-amberx-app-code-once-phone` added (7 steps) (all) · foreign-write
 - 2026-11-17 22:28 UTC · `settings-fix-part-2-blank-toolbars` added (21 steps) (all) · foreign-write
 - 2026-11-17 22:28 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `banner-widget-shapes-plus-change-icon` s12 done (all) · foreign-write
 
 ## Token passes (log)
 

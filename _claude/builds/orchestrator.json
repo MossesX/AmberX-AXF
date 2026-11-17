@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:28:42.279Z",
+ "updatedAt": "2026-11-17T22:29:07.879Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168137,7 +168137,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -168145,7 +168145,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T22:26:06.400Z",
+   "updatedAt": "2026-11-17T22:28:48.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -168205,10 +168205,6 @@
      "at": "2026-11-17T22:05:57.394Z"
     },
     {
-     "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
-     "at": "2026-11-17T22:09:09.958Z"
-    },
-    {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-banner-widget-shapes-plus-change-icon--paulie.",
      "at": "2026-11-17T22:10:54.314Z"
     },
@@ -168227,18 +168223,13 @@
     {
      "text": "Reconciler: PR #821 names s1, s2, s3, s4, s5, s6, s7, s8 done",
      "at": "2026-11-17T22:20:39.518Z"
-    }
-   ],
-   "approvals": [
+    },
     {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-17T22:15:54.050Z",
-     "by": "auto",
-     "kind": "downgrade"
+     "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T22:09:09.958Z"
     }
    ],
+   "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "Rebuild.",
@@ -168514,8 +168505,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:28:48.884Z",
      "note": "",
      "uid": "st-mwjveb4r17krqg",
      "createdAt": "2026-11-16T23:03:57.915Z"
