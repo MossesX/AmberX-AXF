@@ -140,6 +140,12 @@ so the transports that already carry console actions (console.actions run, conso
 AmberX) move things today; the follow-up phase adds the dedicated `console_drag_move` MCP tool, the REST verb and the
 CLI `axf console move`.
 
+Hosts registered today (this build's s4): every `TabGroup` with an `onReorder` (kind `tab`, container = the row id,
+`accepts.from: []` so a tab never lands in another row unless that row says so), and the banner and the app toolbar
+through `useArrange` (kinds `banner-widget` / `toolbar-item`, container `banner` / `toolbar`, `accepts.add / remove:
+false` until the widgets phase wires add and remove). Their pointer drops run the same command through `runDragMove`.
+Dock panes, grids, lists and layout slots register in the follow-up phases.
+
 ## Fixture
 
 `framework/spec/fixtures/drag-move.json`: the registry (kinds, ops, zones, codes), the JSON Schema, and cases for a

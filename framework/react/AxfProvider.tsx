@@ -3,6 +3,7 @@ import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
 import { installControlRegistry } from './controlTargets';
+import { installDragHosts } from './dragHost';
 import { installScrollControl } from './scrollControl';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
@@ -109,6 +110,8 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   useEffect(() => installControlRegistry(runtime), [runtime]);
   // … and the scroll contract (scrollControl.ts): scroll up / down / page / top / bottom / to on the active or a named pane.
   useEffect(() => installScrollControl(runtime), [runtime]);
+  // drag-move@1 (dragHost.ts): every draggable list registers as a host; the `drag-move:<json>` action moves without a pointer.
+  useEffect(() => installDragHosts(runtime), [runtime]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

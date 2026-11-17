@@ -25,6 +25,7 @@ import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
+import { runDragMove, useDraggableHost } from '../dragHost';
 import { Icon } from './Icon';
 
 export interface TabDef<T extends string = string> {
@@ -103,6 +104,12 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   const [visible, setVisible] = useState<number>(Infinity);
   const widths = useRef<number[]>([]);
   const [drag, setDrag] = useState<{ from: number; over: number | null; after: boolean } | null>(null);
+  // drag-move@1 (dragHost.ts): a row the host lets reorder is a live `tab` host, so the API moves its tabs without a pointer.
+  useDraggableHost('tab', id, {
+    enabled: !!onReorder,
+    list: () => ({ label, items: tabs.map((t) => ({ id: String(t.value), label: t.label, ...(t.disabled ? { locked: true } : {}) })), accepts: { from: [] } }),
+    apply: (plan) => { const next = plan.order[id]; if (Array.isArray(next)) onReorder?.(next as T[]); },
+  });
 
   // remember the last tab (per device): reopen on it, keep it as it changes
   const lastKey = TAB_GROUP_LAST_KEY(id);
@@ -198,13 +205,10 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     onDrop: (e: DragEvent) => {
       e.preventDefault();
       if (!drag) return;
-      const order = tabs.map((t) => t.value);
-      const [moved] = order.splice(drag.from, 1);
-      let at = i + (drag.after ? 1 : 0);
-      if (drag.from < at) at--;
-      order.splice(at, 0, moved!);
       setDrag(null);
-      if (order.some((v, k) => v !== tabs[k]!.value)) onReorder!(order);
+      if (drag.from === i) return;
+      // the same drag-move@1 command the API sends; the registry's apply calls onReorder (a drop in place is `no_change`)
+      void runDragMove(rt, { kind: 'tab', source: { container: id, id: String(tabs[drag.from]!.value) }, target: { container: id, zone: drag.after ? 'after' : 'before', ref: String(tabs[i]!.value) }, by: 'pointer' });
     },
     onDragEnd: () => setDrag(null),
   });

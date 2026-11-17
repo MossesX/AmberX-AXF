@@ -16,6 +16,7 @@ import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normali
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
+import { DragHostRegistry } from './engines/drag-move';
 import { normalizeDockLayout } from './engines/dock';
 import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, type ChromeToolbarItem } from './engines/chrome';
 /** The embed@1 functions whose chrome a host may take over and draw merged (chrome@1). */
@@ -297,6 +298,8 @@ export class AxfRuntime {
   readonly actions = new ActionBus();
   /** Window / tab-group / docking engine (floating windows, splits, minimize) — see engines/windows.ts. */
   readonly windows = new WindowManager();
+  /** Live drag hosts (drag-move@1, engines/drag-move.ts): every draggable list on the page registers here, so a move runs without a pointer. */
+  readonly drag = { hosts: new DragHostRegistry() };
   /** The output terminal every install / import / hot swap / kit fallback writes to. */
   readonly terminal = new OutputTerminal();
   /** Extra context-menu items apps contribute per target (e.g. `tab-group`, `window-title`); `{payload}` in actions is substituted.
