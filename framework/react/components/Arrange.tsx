@@ -8,7 +8,7 @@
 import { useCallback, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from 'react';
 import { hostSpec, snapIndex, type PlacedAttachment } from '../../core/engines/widgets';
 import { useAxfState, useRuntime } from '../AxfProvider';
-import { dragKindOfHost, runDragMove, useDraggableHost } from '../dragHost';
+import { dragKindOfHost, runDragMove, useDraggableHost, widgetHostAdapter } from '../dragHost';
 import { Button } from './Controls';
 
 interface Drag { key: string; startX: number; startY: number; dx: number; dy: number; side: string; index: number; moved: boolean }
@@ -27,20 +27,22 @@ export interface ArrangeApi {
   marker: (side: string, index: number) => ReactNode;
 }
 
-export function useArrange(host: string, placed: Record<string, PlacedAttachment[]>): ArrangeApi {
+export function useArrange(host: string, placed: Record<string, PlacedAttachment[]>, opts?: { preview?: boolean }): ArrangeApi {
   const rt = useRuntime();
   useAxfState();
   const on = rt.arranging(host);
   const [drag, setDrag] = useState<Drag | null>(null);
   const dragRef = useRef<Drag | null>(null);
   const sides = hostSpec(host)?.sides ?? [];
-  // drag-move@1: this host's widgets are movable by API too (kind banner-widget / toolbar-item); add / remove come with the widgets phase.
+  // drag-move@1: this host's widgets are movable by API too (kind banner-widget / toolbar-item). The banner also adds and
+  // removes widgets through the banner widget engine (show / hide); a preview copy never registers (it would shadow the live host).
   const dragKind = dragKindOfHost(host);
-  useDraggableHost(dragKind ?? host, host, {
-    enabled: !!dragKind,
-    list: () => ({ label: host, sides: [...sides], items: sides.flatMap((s) => (placed[s] ?? []).map((p) => ({ id: p.key, side: s, type: p.type }))), accepts: { add: false, remove: false } }),
-    apply: (plan) => { if (plan.to && !rt.moveHostItem(host, plan.item.id, plan.to.side ?? sides[0]!, plan.to.index)) throw new Error(`${host}: ${plan.item.id} could not move`); },
-  });
+  useDraggableHost(dragKind ?? host, host, { enabled: !!dragKind && !opts?.preview, ...widgetHostAdapter(rt, host, () => placed) });
+  /** Every move (pointer, keyboard, API) is one drag-move@1 command; a host without a drag kind moves directly. */
+  const move = (key: string, side: string, index: number, by: string) => {
+    if (dragKind) return void runDragMove(rt, { kind: dragKind, source: { container: host, id: key }, target: { container: host, zone: 'side', side, index }, by });
+    rt.moveHostItem(host, key, side, index);
+  };
 
   const update = (d: Drag | null) => { dragRef.current = d; setDrag(d); };
 
@@ -80,9 +82,7 @@ export function useArrange(host: string, placed: Record<string, PlacedAttachment
     const d = dragRef.current;
     update(null);
     if (!d?.moved) return;
-    // the pointer runs the same command the API sends (a host without a drag kind moves directly)
-    if (dragKind) void runDragMove(rt, { kind: dragKind, source: { container: host, id: d.key }, target: { container: host, zone: 'side', side: d.side, index: d.index }, by: 'pointer' });
-    else rt.moveHostItem(host, d.key, d.side, d.index);
+    move(d.key, d.side, d.index, 'pointer');
   };
 
   // Keyboard: ← / → one place; past the first / last item of a side it moves to the next side.
@@ -94,11 +94,11 @@ export function useArrange(host: string, placed: Record<string, PlacedAttachment
     const si = sides.indexOf(side);
     const count = (placed[side] ?? []).length;
     if (e.key === 'ArrowLeft') {
-      if (index > 0) rt.moveHostItem(host, p.key, side, index - 1);
-      else if (si > 0) rt.moveHostItem(host, p.key, sides[si - 1]!, (placed[sides[si - 1]!] ?? []).length);
+      if (index > 0) move(p.key, side, index - 1, 'keyboard');
+      else if (si > 0) move(p.key, sides[si - 1]!, (placed[sides[si - 1]!] ?? []).length, 'keyboard');
     } else {
-      if (index < count - 1) rt.moveHostItem(host, p.key, side, index + 1);
-      else if (si < sides.length - 1) rt.moveHostItem(host, p.key, sides[si + 1]!, 0);
+      if (index < count - 1) move(p.key, side, index + 1, 'keyboard');
+      else if (si < sides.length - 1) move(p.key, sides[si + 1]!, 0, 'keyboard');
     }
     // keep focus on the moved widget after the redraw
     requestAnimationFrame(() => (document.querySelector(`[data-axf-arrange-host="${host}"] [data-axf-arrange-item="${p.key}"]`) as HTMLElement | null)?.focus());

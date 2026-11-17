@@ -106,7 +106,7 @@ export function Banner({ preview = false }: { preview?: boolean }) {
   const rt = useRuntime();
   useAxfState();
   const { data, placed } = rt.banner();
-  const arrange = useArrange('banner', placed);
+  const arrange = useArrange('banner', placed, { preview });
   const root = useRef<HTMLDivElement>(null);
   const all = BANNER_SIDES.flatMap((s) => placed[s]);
   const overflow = useBannerOverflow(root, all, !preview && !arrange.on);

@@ -15,6 +15,7 @@
 import { useEffect, useRef } from 'react';
 import type { AxfRuntime } from '../core';
 import { DRAG_MOVE_ACTION, DRAG_MOVE_CONTRACT, dragMoveFailure, isDragKind, pointerDrop, type DragHostSnapshot, type DragMoveCommand, type DragMoveResult, type DragPlan, type DropRect, type DropZone } from '../core/engines/drag-move';
+import { hostSpec, type PlacedAttachment } from '../core/engines/widgets';
 import { useRuntime } from './AxfProvider';
 
 /** What a host hands the hook: the snapshot without `kind` / `container` (the hook fills them) and the apply. */
@@ -67,6 +68,65 @@ export function runPointerDrop(rt: AxfRuntime, kind: string, container: string, 
 export function dragKindOfHost(host: string): string | null {
   const kind = ({ banner: 'banner-widget', toolbar: 'toolbar-item' } as Record<string, string>)[host] ?? `${host}-item`;
   return isDragKind(kind) ? kind : null;
+}
+
+/**
+ * Where `key` lands in the host's *full* side list (hidden widgets included, what rt.moveHostItem counts) given the new
+ * order of the side as drawn: right before the next drawn item, else right after the previous one, else last. Pure.
+ */
+export function fullSideIndex(all: readonly string[], drawn: readonly string[], key: string): number {
+  const rest = all.filter((k) => k !== key);
+  const i = drawn.indexOf(key);
+  const next = i >= 0 ? drawn.slice(i + 1).find((k) => rest.includes(k)) : undefined;
+  if (next !== undefined) return rest.indexOf(next);
+  const prev = i > 0 ? [...drawn.slice(0, i)].reverse().find((k) => rest.includes(k)) : undefined;
+  return prev !== undefined ? rest.indexOf(prev) + 1 : rest.length;
+}
+
+/**
+ * The list / apply pair of a widget host (widgets engine: banner, toolbar, any host a library registers). Items are the
+ * attachments as drawn, per side. A move goes through rt.moveHostItem (the arrangement setting), the same write the
+ * pointer and the arrow keys make. The banner also adds and removes: add shows a widget the banner knows (the banner
+ * widget engine's `hidden` choice) and places it, remove hides it; a widget is never deleted, so add brings it back.
+ */
+export function widgetHostAdapter(rt: AxfRuntime, host: string, placed: () => Record<string, PlacedAttachment[]>): Pick<DraggableHostOptions, 'list' | 'apply'> {
+  const isBanner = host === 'banner';
+  const sides = () => hostSpec(host)?.sides ?? [];
+  const place = (key: string, plan: DragPlan) => {
+    const to = plan.to!;
+    const side = to.side ?? sides()[0]!;
+    const order = plan.order[host];
+    const drawn = (order && !Array.isArray(order) ? order[side] ?? [] : []).map((k) => (k.toLowerCase() === key.toLowerCase() ? key : k));
+    const all = (rt.hostPlaced(host)[side] ?? []).map((p) => p.key);
+    if (!rt.moveHostItem(host, key, side, fullSideIndex(all, drawn, key))) throw new Error(`${host}: ${key} could not move (no arrange permission, or it is not attached)`);
+  };
+  return {
+    list: () => {
+      const p = placed();
+      const ss = sides();
+      return {
+        label: isBanner ? 'Banner' : host === 'toolbar' ? 'Toolbar' : host, sides: [...ss],
+        items: ss.flatMap((s) => (p[s] ?? []).map((a) => ({ id: a.key, side: s, type: a.type, ...(isBanner ? { label: rt.bannerWidgets().find((w) => w.key === a.key)?.label ?? a.id } : {}) }))),
+        accepts: { add: isBanner, remove: isBanner },
+      };
+    },
+    apply: (plan) => {
+      const key = plan.item.id;
+      if (plan.op === 'remove') {
+        if (!isBanner || !rt.setBannerWidget(key, { hidden: true })) throw new Error(`${host}: ${key} could not be removed`);
+        return;
+      }
+      if (plan.op === 'add') {
+        const w = isBanner ? rt.bannerWidgets().find((x) => x.key.toLowerCase() === key.toLowerCase()) : undefined;
+        if (!w) throw new Error(`${host}: no widget "${key}" to add (${rt.bannerWidgets().filter((x) => !x.shown).map((x) => x.key).join(', ') || 'every widget is on the banner'})`);
+        if (!w.attached) throw new Error(`${host}: ${w.key} is not attached right now (its plugin is off)`);
+        if (!rt.setBannerWidget(w.key, { hidden: false })) throw new Error(`${host}: ${w.key} could not be shown`);
+        place(w.key, plan);
+        return;
+      }
+      place(key, plan);
+    },
+  };
 }
 
 /** AxfProvider: the `drag-move:<json>` action, so console.actions / console_action / the CLI / voice move things. */
