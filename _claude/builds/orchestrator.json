@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:11:57.654Z",
+ "updatedAt": "2026-11-17T18:12:06.958Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -174374,7 +174374,7 @@
    "title": "Every grid: select/highlight all rows matching a keyword, then act on them (move to top etc.)",
    "category": "",
    "detail": "Framework DataGrid gains a match-select command available on every grid now and in the future (built into DataGrid, not per screen): select and highlight the WHOLE row (not just one cell) for every row whose title/name contains a keyword (case-insensitive), adding to the multi-selection instead of replacing it; clear selection; then bulk actions on the selection, including move to top/bottom. Reachable by voice, console-control (grid:<id>/select-match?q=), REST, MCP and CLI. Fix console_control_focus select:true so it adds to the multi-selection rather than replacing it. Tests + UI Review.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -174382,7 +174382,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:04:26.928Z",
-   "updatedAt": "2026-11-17T18:05:56.685Z",
+   "updatedAt": "2026-11-17T18:12:00.094Z",
    "builtAt": "",
    "notes": [
     {
@@ -174396,6 +174396,10 @@
     {
      "text": "Split by Claude into 15 steps (3 Fable).",
      "at": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console): Merged into one combined grids & layout build.",
+     "at": "2026-11-17T18:12:00.094Z"
     }
    ],
    "approvals": [],
@@ -174752,7 +174756,7 @@
    "title": "Build grids: full column set (date/time, model, account, steps done/total, row #) with header Columns menu",
    "category": "",
    "detail": "Every grid that shows builds or build info (Build orchestrator tabs, Auto-lander/Gate, landing line, notes, tests, anywhere build data is listed) gets the same full column set: date and time, model used, account used, steps done out of total, plus every other useful build field. Columns visible today stay the default view; all new columns start hidden. Number column: every row numbered 1, 2, 3 down the list; a row keeps its number when moved. Moving rows (e.g. highlighted rows to the top) is session-only: it shows until the console closes, then the saved order comes back. Header right-click menu gets a Columns submenu with two lists, Visible (check mark next to each) and Hidden (red no-entry cross next to each); clicking one toggles it between the lists. Full API parity (voice, REST, MCP, CLI, console-control). Tests + UI Review.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -174760,12 +174764,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:08:39.671Z",
-   "updatedAt": "2026-11-17T18:10:10.178Z",
+   "updatedAt": "2026-11-17T18:12:03.169Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 18 steps (4 Fable).",
      "at": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console): Merged into one combined grids & layout build.",
+     "at": "2026-11-17T18:12:03.169Z"
     }
    ],
    "approvals": [],
@@ -175197,7 +175205,7 @@
    "title": "Context menu: Containers show/hide list + IDE layout mode (drag containers into tab groups)",
    "category": "",
    "detail": "1) Context menu item 'Containers' with Visible (check mark) and Hidden (red no-entry cross) lists of every container/pane on the screen (dataset bar, panels, every pane); click toggles show/hide; persisted per screen. 2) Global context-menu item 'IDE layout' on every full-screen main UI (plugin main screens), placed right above Settings in the same top group: converts the screen to an IDE-style layout where every container is a tab group; drag a container into another to drop it in as a tab; drag to split/dock; Reset layout on every container and floating window. Powerful, asset-driven (layout saved as assets), tokens only. Full API parity (voice, REST, MCP, CLI, console-control). Tests + UI Review.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175205,9 +175213,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:10:12.979Z",
-   "updatedAt": "2026-11-17T18:10:14.959Z",
+   "updatedAt": "2026-11-17T18:12:05.265Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console): Merged into one combined grids & layout build.",
+     "at": "2026-11-17T18:12:05.265Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -175304,8 +175317,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T18:11:55.610Z",
-   "updatedAt": "2026-11-17T18:11:55.610Z",
+   "updatedAt": "2026-11-17T18:11:57.327Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
