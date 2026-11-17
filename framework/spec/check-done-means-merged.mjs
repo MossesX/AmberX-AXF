@@ -118,6 +118,42 @@ if (RL && fixture.ladder) {
     if (WRITE) { fixture.walks = fixture.walks ?? {}; fixture.walks[kind] = rungs; } else eq(rungs, fixture.walks?.[kind], `walk ${kind} matches the fixture`);
   }
   eq(RL.walk('crash', { maxAttempts: 2 }, { at: AT }).length, 3, 'a configurable max: two tries then escalate');
+
+  // escalation only comes after N different attempts: for every kind and every maxAttempts N, a walk with rungs to
+  // spare escalates exactly after min(N, rungs available) failures, each on a different rung, and never earlier
+  const roomy = { at: AT, pinnedModel: 'Fable', model: 'Fable', account: 'a1', accounts: ['a1', 'a2', 'a3'] };
+  for (const kind of BP.FAILURE_KINDS) {
+    const full = RL.walk(kind, { maxAttempts: 10, maxTotal: 30 }, roomy).length - 1;
+    for (let N = 1; N <= 6; N++) {
+      const w = RL.walk(kind, { maxAttempts: N, maxTotal: 30 }, roomy);
+      const tries = w.slice(0, -1);
+      eq(tries.length, Math.min(N, full), `escalate ${kind} at maxAttempts ${N}: after ${Math.min(N, full)} different attempts`);
+      ok(tries.every((d) => !d.escalate) && w[w.length - 1].escalate, `escalate ${kind} at maxAttempts ${N}: escalate only last`);
+      ok(new Set(tries.map((d) => RL.rungOf(d))).size === tries.length, `escalate ${kind} at maxAttempts ${N}: each attempt a different strategy`);
+      const esc = RL.escalationOf(tries.map((d) => ({ kind, strategy: d.strategy, fixStrategy: d.fixStrategy, model: d.model, account: d.account, startedAt: AT, endedAt: AT, result: 'failed' })), { kind }, { at: AT, policy: { maxAttempts: N, maxTotal: 30 } });
+      eq(esc.attempts, tries.length, `escalation record of ${kind} at maxAttempts ${N} counts every attempt`);
+    }
+  }
+  // maxTotal across kinds: a different kind each time still escalates once the total is reached
+  {
+    const mixed = BP.FAILURE_KINDS.slice(0, 3).map((kind) => ({ kind, strategy: 'retry', startedAt: AT, endedAt: AT, result: 'failed' }));
+    ok(RL.nextStrategy(mixed, { kind: 'stalled' }, { maxTotal: 3 }, { at: AT }).escalate, 'maxTotal: three failures of three kinds escalate at maxTotal 3');
+    ok(!RL.nextStrategy(mixed, { kind: 'stalled' }, { maxTotal: 4 }, { at: AT }).escalate, 'maxTotal: three failures do not escalate at maxTotal 4');
+  }
+  // a skipped attempt (a hand's reset) never counts: the ladder starts over
+  {
+    const reset = RL.walk('crash', {}, roomy).slice(0, -1).map((d) => ({ kind: 'crash', strategy: d.strategy, model: d.model, account: d.account, startedAt: AT, endedAt: AT, result: 'skipped' }));
+    eq(RL.nextStrategy(reset, { kind: 'crash' }, {}, roomy).strategy, 'retry', 'after a reset (all skipped) the ladder starts over at its first rung');
+  }
+}
+
+// ---------------- the store write path refuses what the guard refuses (builds-store-core setStatus, when present)
+if (typeof core.guardedStatus === 'function') {
+  const r = core.guardedStatus({ id: 'g', status: 'landing', pr: '#1', steps: [{ done: true }] }, 'complete', { at: AT, by: 'check' });
+  ok(!r.ok && r.build.status === 'landing', 'store: complete without proof is refused, the status stays');
+  ok((r.build.notes ?? []).some((x) => /refused/i.test(x.text ?? '')), 'store: the refusal is recorded as a note');
+  const okr = core.guardedStatus({ id: 'g', status: 'landing', pr: '#1', steps: [] }, 'fixing', { at: AT, by: 'check' });
+  ok(okr.ok && okr.build.status === 'fixing', 'store: fixing needs no proof');
 }
 
 if (WRITE) { writeFileSync(FIXTURE, `${JSON.stringify(fixture, null, 1)}\n`); console.log(`done-means-merged: fixture written (${fixture.records.length} records, ${fixture.guard.length} guard, ${fixture.migrate.length} migrate${fixture.ladder ? `, ${fixture.ladder.length} ladder` : ''} cases)`); }
