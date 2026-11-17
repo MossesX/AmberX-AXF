@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7247,
- "updatedAt": "2026-11-17T01:01:01.237Z",
+ "rev": 7248,
+ "updatedAt": "2026-11-17T01:01:21.852Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177263,8 +177263,8 @@
    "branch": "claude/rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou",
    "pr": "",
    "createdAt": "2026-11-12T23:25:43.887Z",
-   "updatedAt": "2026-11-17T01:00:58.234Z",
-   "builtAt": "2026-11-17T01:00:58.234Z",
+   "updatedAt": "2026-11-17T01:01:11.971Z",
+   "builtAt": "2026-11-17T01:01:11.971Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -177281,6 +177281,10 @@
     {
      "text": "Claude account: hulu0241 (axf-rename-every-crew-agent-agent-swarm-agent-manage--rhonda, shared account login)",
      "at": "2026-11-17T00:48:30.775Z"
+    },
+    {
+     "text": "Headless run axf-rename-every-crew-agent-agent-swarm-agent-manage--rhonda: brief only · start 12.9K tokens ($0.03) · cost $3.98 · 113 turns · 6 tools, MCP none",
+     "at": "2026-11-17T01:01:11.971Z"
     }
    ],
    "approvals": [],
