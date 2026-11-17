@@ -16,8 +16,12 @@ export interface QueueMerged { pr: number; title: string; at: string; agent?: st
 export interface QueueBatch { prs: number[]; sha: string; ci: string; runUrl?: string; builtAt?: string; bisect?: boolean; why?: string }
 export interface QueueState { mode?: 'batch' | 'stack'; batchSize?: number; batch?: QueueBatch | null; split?: number[]; on: boolean; depth: number; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
 
+/** What the lander did with a build's tracking files (GET /land/tracking, auto-land-tracking@1). */
+interface TrackingMark { at: string; files?: string[]; generators?: string[]; commit?: string; sha?: string }
+export interface TrackingState { show: boolean; items: { build: string; pr: number | null; tracking: { reset?: TrackingMark; takeMain?: TrackingMark; regenerate?: TrackingMark } }[] }
+
 const POLL_MS = 60_000;
-let qstate: { data: QueueState | null; error: string; busy: number; note: string } = { data: null, error: '', busy: 0, note: '' };
+let qstate: { data: QueueState | null; tracking: TrackingState | null; error: string; busy: number; note: string } = { data: null, tracking: null, error: '', busy: 0, note: '' };
 const subs = new Set<() => void>();
 const set = (p: Partial<typeof qstate>) => { qstate = { ...qstate, ...p }; subs.forEach((f) => f()); };
 export const useQueue = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => qstate);
@@ -25,6 +29,7 @@ export const useQueue = () => useSyncExternalStore((f) => { subs.add(f); return 
 export async function loadQueue(): Promise<void> {
   try { set({ data: await api.call<QueueState>('queue'), error: '' }); }
   catch (e) { set({ error: e instanceof Error ? e.message : String(e) }); }
+  try { set({ tracking: await api.call<TrackingState>('land/tracking') }); } catch { /* older server: no tracking line */ }
 }
 let timer: ReturnType<typeof setInterval> | null = null;
 export function startQueue(): void { if (timer) return; void loadQueue(); timer = setInterval(() => void loadQueue(), POLL_MS); }
@@ -38,6 +43,19 @@ async function command(cmd: 'add' | 'remove' | 'move', body: { pr: number; to?: 
 
 const STATE_WORD: Record<QueueItem['state'], string> = { waiting: 'Waiting', testing: 'Testing', passed: 'Passed', merging: 'Merging', kicked: 'Kicked out', held: 'Not in the queue' };
 const STATE_ICON: Record<QueueItem['state'], string> = { waiting: 'clock', testing: 'refresh', passed: 'check-circle', merging: 'branch', kicked: 'x-circle', held: 'pause' };
+const when = (m?: TrackingMark) => (m?.at ? m.at.slice(0, 16).replace('T', ' ') : '');
+/** One plain line: when the lander last reset this build's tracking files, took main's copy, or regenerated. */
+function trackingLine(t: TrackingState | null, it: QueueItem): string {
+  if (!t?.show) return '';
+  const x = t.items.find((r) => (it.build && r.build === it.build) || r.pr === it.pr)?.tracking;
+  if (!x) return '';
+  const parts = [
+    x.reset && `tracking files reset to main's copy ${when(x.reset)} (${x.reset.files?.length ?? 0})`,
+    x.takeMain && `main's copy taken in a merge ${when(x.takeMain)} (${x.takeMain.files?.length ?? 0})`,
+    x.regenerate && `regenerated ${x.regenerate.generators?.join(', ') ?? ''} ${when(x.regenerate)}`,
+  ].filter(Boolean);
+  return parts.join(' · ');
+}
 const eta = (m?: number) => (m == null ? '' : m < 60 ? `~${m} min` : `~${Math.round(m / 6) / 10} h`);
 
 function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number; onDrop: (pr: number, to: number) => void }) {
@@ -45,7 +63,7 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
   const [sure, setSure] = useState(false);
   const busy = q.busy === it.pr;
   return (
-    <li className={`axp-push-banner__item axp-mq__row is-${it.state}`} draggable onDragStart={(e) => { e.dataTransfer.setData('text/x-axf-queue-pr', String(it.pr)); e.dataTransfer.effectAllowed = 'move'; }}
+    <li className={`axp-push-banner__item axp-mq__row is-${it.state}`} data-axf-row={it.build || `pr-${it.pr}`} draggable onDragStart={(e) => { e.dataTransfer.setData('text/x-axf-queue-pr', String(it.pr)); e.dataTransfer.effectAllowed = 'move'; }}
       onDragOver={(e) => { if (e.dataTransfer.types.includes('text/x-axf-queue-pr')) e.preventDefault(); }}
       onDrop={(e) => { const pr = Number(e.dataTransfer.getData('text/x-axf-queue-pr')); if (pr && pr !== it.pr) onDrop(pr, i); }}>
       <span className="axp-mq__pos" aria-label={`Place ${i + 1}`}>{i + 1}</span>
@@ -63,6 +81,7 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
           {it.runUrl ? <> · <a className="axp-push-banner__ci" href={it.runUrl} target="_blank" rel="noreferrer">run</a></> : null}
         </span>
         {it.why && <span className="axp-push-banner__sub axp-mq__why">{it.why}</span>}
+        {trackingLine(q.tracking, it) && <span className="axp-push-banner__sub axp-mq__tracking">{trackingLine(q.tracking, it)}</span>}
       </span>
       <div className="axp-push-banner__acts" role="toolbar" aria-label={`Merge queue #${it.pr}`}>
         <Button size="sm" tone="quiet" icon="chevron-up" disabled={busy || i === 0} title="Move up one place" onClick={() => void command('move', { pr: it.pr, to: Math.max(0, i - 1) }, `Moved #${it.pr} up.`)}>Up</Button>

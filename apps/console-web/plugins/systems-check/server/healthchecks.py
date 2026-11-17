@@ -2,7 +2,7 @@
 
 Keys: Claude sign-in (Claude Code token), OpenAI and ElevenLabs keys when set, ntfy, the push path to AmberX, git push
 credentials on the VPS checkout. System: CI on main, stuck builds, veto calls denied or expired, containers restarting,
-disk over 85%. The GitHub, Anthropic, Hostinger, Coolify and axHub keys stay built-in checks (checks.py) and are tested
+disk over 85%, axf-data backups (axf_data.py). The GitHub, Anthropic, Hostinger, Coolify and axHub keys stay built-in checks (checks.py) and are tested
 live on every banner load; the monitor gives them `since`, `breaks` and the push too.
 
 Auto-fixes (Oct 30 2026, "fix it yourself"): a dead console GitHub token → GitHub goes through axHub (github@1, the
@@ -283,6 +283,10 @@ def register_builtins(reg: Registry, *, root: Path, repo: str, hub_jobs: Callabl
 
     # Ask first by default: marking stalled closes change-log entries, and closing one is Brett's call (repo rule).
     reg.add_autofix("builds-stuck", {"label": "Mark the stuck builds stalled", "mode": "ask", "run": lambda: {"state": "done", "message": fix_builds_stuck()}}, OWNER)
+
+    # axf-data: reachable, last backup age, verify result; auto fix = backup now or restart (veto calls)
+    from . import axf_data
+    axf_data.register(reg, (lambda cmd: veto_fix(cmd, vps_call)) if vps_call else None, OWNER)
 
     if github_svc is not None:
         register_github(reg, github_svc)

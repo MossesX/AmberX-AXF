@@ -51,9 +51,10 @@ export function readQueueConfig(s) {
   return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
 }
 export function queueControl(s, cmd, pr, opts = {}) {
-  const cur = (readQueue(s).items || []).map((x) => x.pr);
-  const head = opts.head ?? ((readQueue(s).items || []).find((x) => x.pr === Number(pr))?.head || (readQueue(s).waiting || []).find((x) => x.pr === Number(pr))?.head || '');
-  const d = q.applyQueueControl(readQueueControl(s), cmd, pr, { ...opts, head, current: cur });
+  const queue = readQueue(s);
+  const cur = (queue.items || []).map((x) => x.pr);
+  const head = opts.head ?? ((queue.items || []).find((x) => x.pr === Number(pr))?.head || (queue.waiting || []).find((x) => x.pr === Number(pr))?.head || '');
+  const d = q.applyQueueControl(readQueueControl(s), cmd, pr, { ...opts, head, current: cur, currentAt: queue.at || '' });
   writeJson(queueControlFile(s), d);
   return d;
 }
@@ -515,7 +516,13 @@ export async function main(argv) {
   }
   if (['add', 'remove', 'move'].includes(cmd)) {
     const pr = rest[0]; if (!pr) throw new Error(`${cmd} <pr>${cmd === 'move' ? ' <index>' : ''}`);
-    const d = queueControl(s, cmd, pr, { why: opt('why'), to: cmd === 'move' ? Number(rest[1] ?? 0) : 0 });
+    // a removal holds until the PR gets a new commit: pin it to the head GitHub has now (--head <sha> overrides), not the
+    // queue's last state, which may be older (then the removal would lapse at once)
+    let head = typeof opt('head') === 'string' ? opt('head') : undefined;
+    if (cmd === 'remove' && !head) {
+      try { const gh = makeGitHub(s); head = (await gh('GET', `/repos/${s.slug}/pulls/${String(pr).replace(/^#/, '')}`))?.head?.sha || undefined; gh.save(); } catch { /* offline: the queue's last state */ }
+    }
+    const d = queueControl(s, cmd, pr, { why: opt('why'), to: cmd === 'move' ? Number(rest[1] ?? 0) : 0, ...(head ? { head } : {}) });
     return print({ ok: true, control: d }, `${cmd}: #${String(pr).replace(/^#/, '')}${cmd === 'move' ? ` to ${rest[1] ?? 0}` : ''} (takes effect at the next round, within 3 minutes)`);
   }
   if (cmd === 'settings') {
