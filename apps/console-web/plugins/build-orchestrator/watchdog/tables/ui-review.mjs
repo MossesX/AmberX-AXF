@@ -1,7 +1,7 @@
 /**
  * Watchdog table: UI Review items (stale-row@1 kind ui-review), from the plugin that provides service:ui-review@1
  * (its review.mjs: `review.mjs list`). Every open review item (not approved, not already closed as landed) that names a
- * PR, branch or build is one row { kind: 'ui-review', id: <item id>, build, pr, branch, status }. Design-pack decisions
+ * PR, branch or build is one row { kind: <the UI Review row kind>, id: <item id>, build, pr, branch, status }. Design-pack decisions
  * (pack:*) and items that name nothing to check are no rows.
  *
  * read() → { table, rows, wantPrs, available }.
@@ -9,7 +9,7 @@
 import { pathToFileURL } from 'node:url';
 import { entryOf, providerOf } from '../providers.mjs';
 
-export const TABLE = Object.freeze({ id: 'ui-review', label: 'UI Review', kinds: ['ui-review'], capability: 'ui-review@1' });
+export const TABLE = Object.freeze({ id: 'ui-review', label: 'UI Review', kinds: ['ui-review'], capability: 'ui-review@1' });  // axf-not-plugin:ui-review (the stale-row@1 row kind)
 export const ENTRY = ['review.mjs'];
 const OPEN = (s) => s !== 'approved';
 
@@ -20,7 +20,7 @@ export function rowOf(it) {
   const pr = Number(String(it.pr ?? '').replace(/^#/, '')) || 0;
   const branch = String(it.branch ?? ''); const build = String(it.build ?? '');
   if (!pr && !branch && !build) return null;
-  return { kind: 'ui-review', id: String(it.id), build, pr, branch, status: String(it.status ?? ''), title: String(it.name ?? it.title ?? '') };
+  return { kind: 'ui-review', id: String(it.id), build, pr, branch, status: String(it.status ?? ''), title: String(it.name ?? it.title ?? '') };  // axf-not-plugin:ui-review (the stale-row@1 row kind)
 }
 export const rowsFrom = (items) => (Array.isArray(items) ? items : []).map(rowOf).filter(Boolean);
 

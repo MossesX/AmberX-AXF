@@ -32,7 +32,7 @@ ROOT = HERE.parents[2]
 HEALTH_CAP = "axf.health@1"
 HEALTH_ID = "orchestrator-watchdog"
 SETTINGS_SCHEMA = json.loads((HERE / "watchdog" / "settings.json").read_text())["settings"]
-LOG_KINDS = {"pending", "queued", "building", "merge-queue", "ui-review"}
+LOG_KINDS = {"pending", "queued", "building", "merge-queue", "ui-review"}  # axf-not-plugin:ui-review (the stale-row@1 row kind)
 LOG_ACTIONS = {"keep", "complete", "remove"}
 FIX_COMMAND = ("cd /opt/axf && node apps/console-web/plugins/build-orchestrator/watchdog.mjs cron install --force"
                " && node apps/console-web/plugins/build-orchestrator/watchdog.mjs run --force --by autofix")

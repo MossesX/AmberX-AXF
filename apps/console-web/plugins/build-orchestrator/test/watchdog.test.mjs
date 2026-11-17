@@ -26,11 +26,11 @@ let n = 0; const t = async (name, fn) => { try { await fn(); n += 1; } catch (e)
 const step = (id, done) => ({ id, uid: `u-${id}`, text: id, model: 'Opus', done, doneAt: done ? '2026-11-16T00:00:00Z' : '' });
 const b = (id, status, pr, steps) => ({ id, title: id, status, pr, branch: `claude/${id}`, steps, notes: [] });
 const store = core.normalizeStore({ ...core.emptyStore(), builds: [
-  b('q-merged', 'queued', '#101', [step('s1', true)]),           // queued, PR merged → complete
-  b('q-open', 'queued', '#102', [step('s1', false)]),            // PR still open → keeps
-  b('r-merged', 'running', '#103', [step('s1', true)]),          // running: never touched
-  b('p-closed', 'pending', '#104', [step('s1', false)]),         // PR closed → archived
-  b('done', 'complete', '#100', [step('s1', true)]),             // finished: no row
+  b('q-merged', 'queued', 'PR 101', [step('s1', true)]),           // queued, PR merged → complete
+  b('q-open', 'queued', 'PR 102', [step('s1', false)]),            // PR still open → keeps
+  b('r-merged', 'running', 'PR 103', [step('s1', true)]),          // running: never touched
+  b('p-closed', 'pending', 'PR 104', [step('s1', false)]),         // PR closed → archived
+  b('done', 'complete', 'PR 100', [step('s1', true)]),             // finished: no row
 ] });
 writeFileSync(process.env.AXF_BUILDS_STORE, `${JSON.stringify(store)}\n`);
 const queue = { $axf: 'merge-queue@1', items: [{ pr: 105, branch: 'claude/x', head: 'h105', state: 'queued' }], waiting: [{ pr: 106, branch: 'claude/q-open', head: 'h106', build: 'q-open', state: 'held' }, { pr: 105, head: 'h105' }] };
@@ -51,7 +51,7 @@ const factsFor = () => ({
   prs: { 101: pr(101, 'merged'), 102: pr(102, 'open'), 103: pr(103, 'merged'), 104: pr(104, 'closed'), 105: pr(105, 'merged'), 106: pr(106, 'open') },
   main: null, branches: null, builds: buildFacts(JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')).builds, new Set()), github: { requests: 0, notModified: 0 }, errors: [],
 });
-const opts = () => ({ facts: factsFor(), read: { 'merge-queue': { state: queue, control }, 'ui-review': { items } }, applyCtx: { control: ctl, closeLanded }, post: (m, p, a) => { posts.push(a); return { ok: true }; } });
+const opts = () => ({ facts: factsFor(), read: { 'merge-queue': { state: queue, control }, 'ui-review': { items } }, applyCtx: { control: ctl, closeLanded }, post: (m, p, a) => { posts.push(a); return { ok: true }; } });  // axf-not-plugin:ui-review (the stale-row@1 row kind)
 const posts = [];
 
 // ---------------------------------------------------------------- table readers
@@ -112,7 +112,7 @@ await t('running builds are never touched (even with a merged PR)', () => {
 await t('an open PR is never completed in a list (build-complete with PR open is skipped)', async () => {
   const out = await mq.apply([{ table: 'merge-queue', row: { kind: 'merge-queue', id: '7', pr: 7 }, action: 'complete', reason: 'build-complete', prState: 'open', line: 'x' }], { control: () => assert.fail('must not remove') });
   assert.equal(out[0].applied, false); assert.match(out[0].why, /still open/);
-  const o2 = await ur.apply([{ table: 'ui-review', row: { kind: 'ui-review', id: 'r2', pr: 102 }, action: 'complete', reason: 'build-complete', prState: 'open', line: 'x' }], { closeLanded: () => assert.fail('must not close') });
+  const o2 = await ur.apply([{ table: 'ui-review', row: { kind: 'ui-review', id: 'r2', pr: 102 }, action: 'complete', reason: 'build-complete', prState: 'open', line: 'x' }], { closeLanded: () => assert.fail('must not close') });  // axf-not-plugin:ui-review (the stale-row@1 row kind)
   assert.equal(o2[0].applied, false);
 });
 await t('cleanup log: one stale-row-log@1 record per applied row; build notes; one FYI', async () => {
@@ -140,7 +140,7 @@ await t('settings: checked, stored, off skips the run, a table switched off is n
   W.writeSettings({ enabled: 'off', 'tables.ui-review': false });
   assert.equal((await W.run(opts())).skipped, 'the watchdog is off');
   const r = await W.run({ ...opts(), force: true, dry: true });
-  assert.equal(r.tables.find((x) => x.id === 'ui-review').on, false);
+  assert.equal(r.tables.find((x) => x.id === 'ui-review').on, false);  // axf-not-plugin:ui-review (the stale-row@1 row kind)
   W.writeSettings({ enabled: true, 'tables.ui-review': true });
 });
 await t('one run at a time: a held lock skips', async () => {
