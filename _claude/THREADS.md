@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `auto-recover-stuck-builds` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `ui-review-gate-switch-default-off` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `fix-toolbar-settings-doing-nothing` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:42 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · orchestrator
 - 2026-11-17 20:42 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · builds-live
 - 2026-11-17 20:43 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · orchestrator
+- 2026-11-17 20:43 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · builds-live
 
 ## Token passes (log)
 
