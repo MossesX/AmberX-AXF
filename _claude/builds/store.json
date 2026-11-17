@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7695,
- "updatedAt": "2026-11-17T19:42:41.240Z",
+ "rev": 7696,
+ "updatedAt": "2026-11-17T19:43:14.644Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207059,7 +207059,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T19:36:05.815Z",
+   "updatedAt": "2026-11-17T19:43:11.283Z",
    "builtAt": "",
    "notes": [
     {
@@ -207270,12 +207270,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T19:43:11.283Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:44:41.589Z",
-     "updatedAt": "2026-11-13T18:44:41.589Z"
+     "updatedAt": "2026-11-17T19:43:11.724Z"
     },
     {
      "id": "s6",
@@ -207333,7 +207333,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222871,7 +222871,7 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -223010,14 +223010,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "failure": {
-    "kind": "push-fail",
-    "at": "2026-11-17T19:40:33.705Z",
-    "why": "pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).",
-    "head": "cdd9c788c14026ffce32b1e5780a11ca539e4a73",
-    "step": "",
-    "exit": null
    },
    "steps": [
     {
