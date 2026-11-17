@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7183,
- "updatedAt": "2026-11-17T00:33:17.232Z",
+ "rev": 7184,
+ "updatedAt": "2026-11-17T00:33:36.374Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -251371,7 +251371,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:33:14.156Z",
+   "updatedAt": "2026-11-17T00:33:18.736Z",
    "builtAt": "2026-11-17T00:32:45.876Z",
    "notes": [
     {
@@ -251441,6 +251441,10 @@
     {
      "text": "Headless run axf-own-look-per-grid-and-tab-group--lenny: brief only · start 17.5K tokens ($0.06) · cost $13.97 · 229 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:33:14.156Z"
+    },
+    {
+     "text": "Session axf-own-look-per-grid-and-tab-group--lenny on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-17T00:33:18.736Z"
     }
    ],
    "approvals": [
@@ -251470,7 +251474,7 @@
     "queuedAt": "2026-11-16T22:44:25.286Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-own-look-per-grid-and-tab-group--lenny",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "",
@@ -251478,14 +251482,14 @@
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-16T23:19:03.085Z",
+     "at": "2026-11-17T00:33:17.569Z",
      "exit": 0,
-     "outcome": "requeued",
-     "reason": "",
-     "stepsLeft": 11,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-own-look-per-grid-and-tab-group--sully",
-     "phase": ""
+     "session": "axf-own-look-per-grid-and-tab-group--lenny",
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-16T22:48:13.206Z",
@@ -251495,7 +251499,7 @@
      "note": "Split by Claude into 16 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-16T22:49:42.023Z",
     "planned": {
@@ -251930,7 +251934,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
