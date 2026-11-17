@@ -237,6 +237,20 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 [data-fx-run-reduced] [data-fx-run-state], [data-fx-run-reduced] [data-fx-run-state] .fx-run-icon > *, [data-fx-motion='reduced'] [data-fx-run-state], [data-fx-motion='reduced'] [data-fx-run-state] .fx-run-icon > * { animation: none; }
 [data-fx-run-reduced='off'] [data-fx-run-state] { background: none; }
 @media (prefers-reduced-motion: reduce) { [data-fx-run-state], [data-fx-run-state] .fx-run-icon > * { animation: none; } }
+/* row states on grids (lib-datagrid rows and .fx-table rows; data-axf-run mirrors data-fx-run-state for selectors and tests):
+   the run tone beats the zebra and hover backgrounds, a selected row keeps its selection; broke and stale never animate
+   unless the asset's brokeAnimation says so; a broke row carries a steady edge in the broke tone */
+.axf-grid-row[data-fx-run-state]:not(.is-active), .fx-table tr[data-fx-run-state]:not(.is-active) { background: var(--fx-run-bg); }
+.axf-grid-row[data-fx-run-state='broke'], .fx-table tr[data-fx-run-state='broke'] { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-run-broke); }
+.axf-grid-row[data-fx-run-state='broke'] .axf-grid-cell, .fx-table tr[data-fx-run-state='broke'] > td { color: var(--fx-run-broke); }
+[data-fx-run-state='stale'], [data-fx-run-state='done'], [data-fx-run-state='broke'] .fx-run-icon > *, [data-fx-run-state='stale'] .fx-run-icon > * { animation: none; }
+[data-fx-run-state='stale'] .fx-run-icon { opacity: var(--fx-opacity-muted); }
+/* the indicator on its own (<RunIndicator>, react/components/RunIndicator.tsx): an icon + an optional short label */
+.fx-run-indicator { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-sm); font-weight: var(--fx-type-weights-strong); color: var(--fx-run-tone); background: none; }
+.fx-run-indicator__label { white-space: nowrap; }
+.fx-run-indicator[data-fx-run-state='broke'] .fx-run-indicator__label { text-transform: uppercase; }
+/* the live channel: data-fx-live on a grid host says the stream is connected, resyncing or silent (3 × everySec) */
+[data-fx-live='stale'] [data-fx-run-state='running'] .fx-run-icon > * { animation: none; opacity: var(--fx-opacity-muted); }
 /* Banner settings dialog */
 .fx-banner-settings { display: grid; gap: var(--fx-dens-gap-xl); }
 .fx-banner-settings__indent { margin-inline-start: var(--fx-dens-gap-3xl); }
