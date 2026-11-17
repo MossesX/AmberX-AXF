@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:01:44.324Z",
+ "updatedAt": "2026-11-17T15:05:49.601Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123839,7 +123839,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -123847,8 +123847,8 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T04:28:58.424Z",
-   "builtAt": "2026-11-17T04:28:58.424Z",
+   "updatedAt": "2026-11-17T15:05:01.182Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
@@ -169312,7 +169312,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -169320,8 +169320,8 @@
    "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T04:16:42.077Z",
-   "builtAt": "2026-11-17T04:16:42.077Z",
+   "updatedAt": "2026-11-17T15:04:56.908Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -169388,6 +169388,25 @@
     "addenda": []
    },
    "steps": [
+    {
+     "id": "s17",
+     "text": "Merge origin/main into this branch (PR #771). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres: data-files, DataStoreError, StoreConflict; keep main's store path and put this build's done-means-merged rules on top) and apps/console-web/src/control/inventory.json (take main's, regenerate). Tests green, push, merge the PR directly (merge queue is off). Brett: VPS/auto-lander PRs land first.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktpvmt01j9r7",
+     "createdAt": "2026-11-17T15:04:44.374Z"
+    },
     {
      "id": "s1",
      "text": "Read the server-auto-lander-fixes-lands attempt log and escalation code, then write the done-means-merged@1 contract in framework/spec/DONE-MEANS-MERGED.md: the real status ladder (building, fixing, landing, landed, plus escalated), when built and complete are allowed (merged to main, CI green on the merge commit, feature verify passed), the failure kinds (crash, ci-red, clash, push-fail, stalled, fell-to-pending), and how it reuses the auto-lander's attempt@1 and escalation records",
@@ -171236,7 +171255,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T14:53:22.043Z",
+   "updatedAt": "2026-11-17T15:03:09.520Z",
    "builtAt": "",
    "notes": [
     {
@@ -171316,8 +171335,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:03:09.520Z",
      "note": "",
      "uid": "st-mwkt5lq402ake3",
      "createdAt": "2026-11-17T14:48:58.684Z"
@@ -171559,7 +171578,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T15:01:41.246Z",
+   "updatedAt": "2026-11-17T15:04:37.972Z",
    "builtAt": "",
    "notes": [
     {
@@ -171679,8 +171698,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:04:37.972Z",
      "note": "",
      "uid": "st-mwkt9486046sj8",
      "createdAt": "2026-11-17T14:51:42.630Z"
@@ -171975,7 +171994,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T15:00:52.986Z",
+   "updatedAt": "2026-11-17T15:05:13.887Z",
    "builtAt": "",
    "notes": [
     {
@@ -172072,8 +172091,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:04:27.441Z",
      "note": "",
      "uid": "st-mwktc9qt03p266",
      "createdAt": "2026-11-17T14:54:09.749Z"
@@ -172093,8 +172112,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:05:13.887Z",
      "note": "",
      "uid": "st-mwktc9qt04y6qw",
      "createdAt": "2026-11-17T14:54:09.749Z"
@@ -172479,7 +172498,7 @@
    "title": "Auto-lander: drag rows to set merge order, lander follows it",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: drag-and-drop rows (and Move to top / Move up / Move down / Move to bottom in each row's menu, multi-select) to set the order PRs get merged in. The order is stored server-side on the VPS and the lander (server-auto-lander) always lands strictly in that order, one at a time, merging main in before each. New PRs join at the bottom; default order is closest-to-main first until Brett reorders. Show a position number column. Same reorder via REST, MCP, CLI, voice ('land #774 next'). Coordinate with auto-lander-grid-one-row-per-build and server-auto-lander-fixes-lands.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -172487,7 +172506,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T15:01:21.829Z",
+   "updatedAt": "2026-11-17T15:05:22.381Z",
    "builtAt": "",
    "notes": [
     {
@@ -172505,6 +172524,10 @@
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-auto-lander-drag-rows-to-set-merge-order--sully.",
      "at": "2026-11-17T15:01:15.413Z"
+    },
+    {
+     "text": "Dispatch gate: auto-lander-drag-rows-to-set-merge-order still has axf-auto-lander-drag-rows-to-set-merge-order--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-17T15:02:06.901Z"
     }
    ],
    "approvals": [],
@@ -172539,8 +172562,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:05:22.381Z",
      "note": "",
      "uid": "st-mwktkyt801quhm",
      "createdAt": "2026-11-17T15:00:55.483Z"
@@ -172853,6 +172876,37 @@
      "createdAt": "2026-11-17T15:00:55.483Z"
     }
    ]
+  },
+  {
+   "id": "live-hot-refresh-every-grid-list-re",
+   "title": "Live hot refresh: every grid and list re-renders instantly when its data changes",
+   "category": "",
+   "detail": "Every grid, list and table in the console (Auto-lander, orchestrator tabs, Pending, Plan Studio, UI Review, etc.) updates live without a reload whenever its data changes: server pushes change events (SSE/WebSocket from the data store / axf-data change feed), the framework DataGrid subscribes and re-renders only changed rows, keeping scroll, selection, sort, filters and open dialogs. Local actions (drag and drop, reorder, edit, archive) re-render instantly (optimistic) and reconcile with the server. Changes made from REST/MCP/CLI/voice or by the VPS lander show up live too. Reconnects automatically. Add a live indicator. Framework-level so every app gets it.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T15:05:47.233Z",
+   "updatedAt": "2026-11-17T15:05:47.233Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why don't I get a hot refresh every time shit changes in the grid? Anytime something changes, like a drag and drop or something, it has to hot render.",
+    "at": "2026-11-17T15:05:47.233Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

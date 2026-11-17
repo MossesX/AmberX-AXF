@@ -4728,6 +4728,18 @@
    "from": "",
    "addenda": []
   },
+  "live-hot-refresh-every-grid-list-re": {
+   "said": "Why don't I get a hot refresh every time shit changes in the grid? Anytime something changes, like a drag and drop or something, it has to hot render.",
+   "at": "2026-11-17T15:05:47.233Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "live-key-checks": {
    "said": "the console's GITHUB_TOKEN went dead (401) and nothing told him. 'You need to make sure things like that go into one of the banners. I need to see that kind of shit.' Live checks (GitHub /user + scopes + expiry, axHub MCP, Anthropic/Claude, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push creds), red banner items with what broke / what it breaks / since when / Fix, amber a week before expiry, health@1 registry, stuck builds, veto denied/expired, CI on main, restarting containers, disk >85%, one push per new red item. Profile: Angel. Web/Python only.",
    "at": "2026-10-30",
