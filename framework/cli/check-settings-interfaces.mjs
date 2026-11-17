@@ -1,0 +1,157 @@
+#!/usr/bin/env node
+/**
+ * check-settings-interfaces — every page has its correct default settings interface (plugin-settings@1,
+ * framework/spec/PLUGIN-SETTINGS.md; Brett, Nov 17 2026: "Each plugin needs its own settings interface, not the
+ * console's. … Make sure every page has the correct default settings interface.").
+ *
+ * Lists every console plugin (apps/console-web/plugins/<folder>/plugin.json), every console page (the control
+ * inventory's views) and every app in framework/schemas/shared-assets.json, and flags:
+ *
+ *   no-interface      a plugin with settings and no own interface: plugin.json `settingsInterface` must name
+ *                     `settings/plugin-<slug>` and that asset must exist in the plugin's assets/settings/ with
+ *                     scope plugin and owner = the plugin id
+ *   wrong-interface   the named asset exists but is not the plugin's (scope, owner or id off)
+ *   opens-console     a plugin's web code opens the console's Settings (`settings.open:plugins`, `app.settings`,
+ *                     navigate('settings')) instead of its own window
+ *   page-interface    a console page that belongs to a plugin opens another owner's settings, or an app page that
+ *                     names a plugin interface as its own (the page's plugin, otherwise the app's)
+ *   app-interface     an app in shared-assets.json whose settings pick is not an app interface (scope app)
+ *
+ *   node framework/cli/check-settings-interfaces.mjs                 the findings, one line each (exit 1 over the baseline)
+ *   node framework/cli/check-settings-interfaces.mjs --list          every plugin and page with its interface, then the findings
+ *   node framework/cli/check-settings-interfaces.mjs --json          the same as JSON
+ *   node framework/cli/check-settings-interfaces.mjs --write-baseline   record the current count (it only comes down)
+ *
+ * Ratchet: framework/spec/settings-interfaces-baseline.json (`max` findings; 0 once the sweep is done).
+ */
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const PLUGINS = join(ROOT, 'apps/console-web/plugins');
+const INVENTORY = join(ROOT, 'apps/console-web/src/control/inventory.json');
+const SHARED = join(ROOT, 'framework/schemas/shared-assets.json');
+const BASELINE = join(ROOT, 'framework/spec/settings-interfaces-baseline.json');
+const args = new Set(process.argv.slice(2));
+
+const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
+/** Same slug as core/engines/plugin-settings.ts pluginSlug. */
+export const pluginSlug = (id) => (String(id ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'plugin');
+export const pluginSettingsId = (id) => `plugin-${pluginSlug(id)}`;
+
+function inventory() {
+  if (!existsSync(INVENTORY)) {
+    try { execFileSync(process.execPath, ['scripts/control-inventory.mjs'], { cwd: join(ROOT, 'apps/console-web'), stdio: 'ignore' }); } catch { /* read below */ }
+  }
+  return readJson(INVENTORY) ?? { plugins: [], views: [], settings: [], settingsTabs: [] };
+}
+
+function walk(dir, out = []) {
+  if (!existsSync(dir)) return out;
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    if (e.name === 'node_modules' || e.name.startsWith('.')) continue;
+    const p = join(dir, e.name);
+    if (e.isDirectory()) walk(p, out);
+    else if (/\.(tsx?|mjs)$/.test(e.name) && !/\.test\.|\.e2e\./.test(e.name)) out.push(p);
+  }
+  return out;
+}
+
+/** Calls in a plugin's web code that open the console's Settings rather than the plugin's own window. */
+const OPENS_CONSOLE = [/['"`]settings\.open:plugins['"`]/, /dispatch\(\s*['"`]app\.settings['"`]/, /navigate\(\s*['"`]settings['"`]\s*\)/];
+
+/** Every plugin: its interface and whether it has settings at all. */
+export function pluginRows(inv = inventory()) {
+  const byFolder = new Map((inv.plugins ?? []).map((p) => [p.folder, p]));
+  const rows = [];
+  for (const folder of readdirSync(PLUGINS).sort()) {
+    const pj = join(PLUGINS, folder, 'plugin.json');
+    if (folder.startsWith('_') || !existsSync(pj)) continue;
+    const m = readJson(pj) ?? {};
+    const id = String(m.id ?? '');
+    const ip = byFolder.get(folder) ?? {};
+    const keys = (inv.settings ?? []).filter((s) => s.plugin === id).map((s) => s.key).filter(Boolean);
+    const hasSettings = !!ip.settingsTabId || keys.length > 0 || m.settingsTab?.default === true;
+    const want = pluginSettingsId(id);
+    const named = typeof m.settingsInterface === 'string' ? m.settingsInterface.replace(/^settings\//, '') : null;
+    const file = join(PLUGINS, folder, 'assets', 'settings', `${want}.json`);
+    const asset = existsSync(file) ? readJson(file) : null;
+    const web = walk(join(PLUGINS, folder, 'web'));
+    const opens = web.flatMap((f) => { const src = readFileSync(f, 'utf8'); return OPENS_CONSOLE.filter((re) => re.test(src)).map((re) => `${relative(ROOT, f)} (${re.source.replace(/\\/g, '')})`); });
+    rows.push({ folder, id, name: m.name ?? folder, hasSettings, tab: ip.settingsTabId ?? null, keys, want, named, asset: asset ? { id: asset.id, scope: asset.data?.scope ?? null, owner: asset.data?.owner ?? null } : null, opens, view: (inv.views ?? []).filter((v) => v.plugin === id).map((v) => v.id) });
+  }
+  return rows;
+}
+
+/** Every console page and the interface it opens: its plugin's, otherwise the console's. */
+export function pageRows(inv = inventory(), plugins = pluginRows(inv)) {
+  const byId = new Map(plugins.map((p) => [p.id, p]));
+  return (inv.views ?? []).map((v) => {
+    const p = v.plugin ? byId.get(v.plugin) : null;
+    return { view: v.id, label: v.label, source: v.source, owner: p ? `plugin:${p.id}` : 'console', interface: p ? (p.hasSettings ? `settings/${p.want}` : 'settings/console (the plugin has no settings)') : 'settings/console' };
+  });
+}
+
+/** Apps in shared-assets.json: their settings pick must be an app interface. */
+export function appRows() {
+  const shared = readJson(SHARED) ?? {};
+  const apps = (Array.isArray(shared.apps) ? shared.apps : []).map((a) => (typeof a === 'string' ? { id: a.split('/').pop(), dir: a } : a));
+  return apps.map((a) => {
+    const dir = join(ROOT, a.dir ?? a.path ?? `apps/${a.id}`);
+    const manifest = readJson(join(dir, 'axf.manifest.json')) ?? readJson(join(dir, 'src', 'axf.manifest.json')) ?? {};
+    const pick = manifest.defaults?.settings ?? null;
+    let scope = null;
+    for (const base of ['src/assets/settings', 'src/axf/assets/settings', 'src/assets-overrides/settings']) {
+      const f = join(dir, base, `${pick}.json`);
+      if (pick && existsSync(f)) { const d = readJson(f)?.data ?? {}; scope = d.scope ?? (d.for ? 'chrome' : 'app'); break; }
+    }
+    return { app: a.id ?? a.name, dir: relative(ROOT, dir), pick, scope };
+  });
+}
+
+export function findings({ plugins, pages, apps }) {
+  const out = [];
+  for (const p of plugins) {
+    if (p.hasSettings && (!p.named || !p.asset)) out.push({ kind: 'no-interface', what: `plugin ${p.folder}`, why: `no own settings interface: plugin.json settingsInterface = settings/${p.want} and plugins/${p.folder}/assets/settings/${p.want}.json (scope plugin, owner ${p.id})` });
+    else if (p.hasSettings && (p.named !== p.want || p.asset.id !== p.want || p.asset.scope !== 'plugin' || p.asset.owner !== p.id)) out.push({ kind: 'wrong-interface', what: `plugin ${p.folder}`, why: `settings/${p.named} is not its own (want ${p.want}, scope plugin, owner ${p.id}; has id ${p.asset?.id}, scope ${p.asset?.scope}, owner ${p.asset?.owner})` });
+    for (const o of p.opens) out.push({ kind: 'opens-console', what: `plugin ${p.folder}`, why: `opens the console's Settings: ${o}` });
+  }
+  for (const g of pages) if (g.owner !== 'console' && /plugin has no settings/.test(g.interface) === false && !g.interface.startsWith('settings/plugin-')) out.push({ kind: 'page-interface', what: `page ${g.view}`, why: `opens ${g.interface}, not its plugin's own` });
+  for (const a of apps) if (a.pick && a.scope && a.scope !== 'app') out.push({ kind: 'app-interface', what: `app ${a.app}`, why: `its settings pick settings/${a.pick} is scope ${a.scope}, not an app interface` });
+  return out;
+}
+
+export function run() {
+  const inv = inventory();
+  const plugins = pluginRows(inv);
+  const pages = pageRows(inv, plugins);
+  const apps = appRows();
+  return { plugins, pages, apps, findings: findings({ plugins, pages, apps }) };
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const r = run();
+  if (args.has('--json')) { console.log(JSON.stringify(r, null, 2)); process.exit(0); }
+  if (args.has('--list')) {
+    console.log('Plugins:');
+    for (const p of r.plugins) console.log(`  ${p.folder.padEnd(24)} ${p.hasSettings ? (p.named ? `settings/${p.named}` : '(none)') : '(no settings)'}${p.view.length ? `  pages: ${p.view.join(', ')}` : ''}`);
+    console.log('Pages:');
+    for (const g of r.pages) console.log(`  ${g.view.padEnd(24)} ${g.owner.padEnd(44)} ${g.interface}`);
+    console.log('Apps:');
+    for (const a of r.apps) console.log(`  ${String(a.app).padEnd(24)} settings/${a.pick ?? '(none)'} (${a.scope ?? 'not found'})`);
+    console.log('');
+  }
+  for (const f of r.findings) console.log(`- [${f.kind}] ${f.what}: ${f.why}`);
+  const base = readJson(BASELINE)?.max ?? null;
+  if (args.has('--write-baseline')) {
+    if (base !== null && r.findings.length > base) { console.error(`✗ ${r.findings.length} findings is over the baseline ${base}; the baseline only comes down`); process.exit(1); }
+    writeFileSync(BASELINE, JSON.stringify({ $axf: 'settings-interfaces-baseline@1', max: r.findings.length, note: 'check-settings-interfaces.mjs ratchet: only comes down' }, null, 2) + '\n');
+    console.log(`baseline written: ${r.findings.length}`);
+    process.exit(0);
+  }
+  const summary = `${r.plugins.length} plugins (${r.plugins.filter((p) => p.hasSettings).length} with settings), ${r.pages.length} pages, ${r.apps.length} apps: ${r.findings.length} finding(s)`;
+  if (base !== null && r.findings.length > base) { console.error(`✗ settings interfaces — ${summary}, over the baseline ${base}`); process.exit(1); }
+  console.log(`${r.findings.length ? '•' : '✓'} settings interfaces — ${summary}${base !== null ? ` (baseline ${base})` : ''}`);
+}
