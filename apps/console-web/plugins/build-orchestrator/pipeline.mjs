@@ -77,6 +77,7 @@ import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
+import * as RL from '../../../../framework/core/retry-ladder.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
 import { isBuildId, namesOf, planAliases, uniqueBuildId } from '../../../../framework/core/build-id.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -706,6 +707,65 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   return out;
 }
 
+// ------------------------------------------------------------------ failure detector (done-means-merged@1, s7)
+
+/** The retry policy: the done-means-merged build rule's settings when it has them, else the defaults (retry-policy@1). */
+export function retryPolicy() {
+  try { const r = BR.load().store.rules.find((x) => x.id === 'done-means-merged'); return RL.normPolicy(r?.settings ?? {}); } catch { return RL.normPolicy({}); }
+}
+/** The auto-lander's land.json items by build id (the merge-queue provider's data; found by capability, never by folder). */
+export function landItems(env = process.env) {
+  let dir = env.AXF_PUSH_BANNER_DIR || '';
+  if (!dir) {
+    const plugins = join(REPO_ROOT, 'apps/console-web/plugins');
+    try {
+      for (const d of readdirSync(plugins).sort()) {
+        const m = readJson(join(plugins, d, 'plugin.json'));
+        if (m && Array.isArray(m.provides) && m.provides.includes('service:axf.merge-queue@1') && m.lifecycle?.dataDir) { dir = join(env.AXF_CONSOLE_ROOT || REPO_ROOT, m.lifecycle.dataDir); break; }
+      }
+    } catch { /* no plugins folder: no lander */ }
+  }
+  const items = dir ? readJson(join(dir, 'land.json'), {})?.items : [];
+  return new Map((Array.isArray(items) ? items : []).filter((x) => x?.id).map((x) => [x.id, x]));
+}
+/**
+ * The newest sign of life of a build's run: a store write, its launch, its run log / stream file. Not the build lock's
+ * heartbeat: checkEnds beats it whenever the tmux session exists, so a hung session would look alive for ever.
+ */
+export function beatOf(b, env = process.env) {
+  const ts = [b.updatedAt, b.pipeline?.launchedAt];
+  const wt = worktreeOf(b.id, env);
+  for (const f of [join(wt, `${b.id}.log`), join(wt, `${b.id}.jsonl`)]) { try { ts.push(statSync(f).mtime.toISOString()); } catch { /* none */ } }
+  return ts.filter((t) => t && Number.isFinite(Date.parse(t))).sort().pop() || '';
+}
+
+/**
+ * Classify every build the server still owes work on (pipeline-core classifyFailure): a crash, red CI, a clash, a push
+ * that failed, a stalled run, a build that fell back to Pending. Each one found is written on the build in one journalled
+ * store write (failure, status fixing, the open attempt closed, a note) and logged. → [{ id, failure }]
+ */
+export function detectFailures({ ended = [], env = process.env, now = Date.now(), policy = retryPolicy(), land = landItems(env) } = {}) {
+  const store = loadStore();
+  const endedBy = new Map(ended.map((e) => [e.id, e]));
+  const found = [];
+  for (const b of store.builds) {
+    if (b.deleted) continue;
+    const f = P.classifyFailure(b, { ended: endedBy.get(b.id) ?? null, land: land.get(b.id) ?? null, beatAt: beatOf(b, env), now, stalledAfterMin: policy.stalledAfterMin });
+    if (f) found.push({ id: b.id, failure: f });
+  }
+  if (!found.length) return [];
+  const at = new Date(now).toISOString();
+  withStore((s) => {
+    for (const { id, failure } of found) { const b = storeCore.findBuild(s, id); if (b) { P.recordFailure(b, failure, { at }); b.updatedAt = at; } }
+    return s;
+  }, { by: 'pipeline', action: 'pipeline:failure', note: found.map((x) => `${x.id}:${x.failure.kind}`).join(' ') });
+  for (const { id, failure } of found) {
+    logLine({ event: 'failure', build: id, kind: failure.kind, why: failure.why, step: failure.step, head: failure.head });
+    crewSay('dispatcher', 'blocked', `${id}: ${failure.kind} (${str(failure.why, 160)}). Fixing it.`, { ref: id });
+  }
+  return found;
+}
+
 /** The kinds of session end the headless wrapper reports (claude-headless.sh → pipeline.mjs exit --kind). */
 export const EXIT_KINDS = ['phase-done', 'crash', 'stopped'];
 /** The dispatcher's lock: the cron tick holds it (deploy/install-console.sh: flock -n /run/axf-pipeline.lock). */
@@ -887,6 +947,9 @@ export function tick({ env = process.env } = {}) {
   const inta = intake({ alert });
   try { assignAliases({ by: 'pipeline' }); } catch (e) { logLine({ event: 'alias-failed', error: str(e.message, 300) }); }
   const ended = checkEnds({ alert, env });
+  // done-means-merged@1: every failure is classified and recorded (status fixing); the retry runner answers it below
+  let failures = [];
+  try { failures = detectFailures({ ended, env }); } catch (e) { logLine({ event: 'detect-failed', error: str(e.message, 300) }); }
   let authRequeued = [];
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
@@ -978,7 +1041,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, intake: inta, ended, failures, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
 }
 
 const MAX_PICK_TRIES = 4;

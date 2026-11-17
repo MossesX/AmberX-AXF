@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, normAttempts, normFailure, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
@@ -512,6 +512,72 @@ export function needsSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
 }
 
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
+
+// ------------------------------------------------------------------ failure detector (done-means-merged@1)
+
+/** Statuses the detector looks at: anything the server still owes work on. */
+export const WATCHED = Object.freeze(['queued', 'running', 'waiting', 'fixing', 'landing', 'built']);
+/** Exit reasons that are a failure the ladder answers (the others wait for Brett or a login: not retried). */
+const END_KIND = Object.freeze({ crash: 'crash', 'crash-limit': 'fell-to-pending', stopped: 'fell-to-pending' });
+/** The auto-lander's block kinds (land.json reason.kind) → failure kinds. */
+const LAND_KIND = Object.freeze({ conflict: 'clash', ci: 'ci-red', push: 'push-fail', pr: 'push-fail' });
+const allDone = (b) => list(b?.steps).length > 0 && list(b.steps).every((x) => x?.done || x?.skip);
+const firstOpen = (b) => list(b?.steps).find((x) => !x?.done && !x?.skip)?.id ?? '';
+const minsSince = (t, now) => { const v = Date.parse(t || ''); return Number.isFinite(v) ? (now - v) / 60000 : Infinity; };
+
+/**
+ * Classify one build's failure this tick, pure → failure ({ kind, at, why, head, step, exit }) or null.
+ *   b        the build (builds@1)
+ *   ctx      { ended: endRun result for this build this tick ({ reason, exit, outcome, auth }) or null,
+ *              land: its land.json item ({ state, head, reason: { kind, text } }) or null,
+ *              beatAt: the newest sign of life (store write, launch, the run's log / stream file), ISO,
+ *              head: the branch head when known, now: ms, stalledAfterMin, pushGraceMin }
+ * Order: a run that just ended (crash, fell to Pending) → the PR side the lander reported (clash, red CI, push / PR
+ * refused) → a landing build with no PR (push-fail) → a running build with no sign of life (stalled).
+ * The same failure already open (same kind, same head) is not raised again.
+ */
+export function classifyFailure(b, { ended = null, land = null, beatAt = '', head = '', now = Date.now(), stalledAfterMin = 20, pushGraceMin = 15 } = {}) {
+  if (!b || b.deleted || !WATCHED.includes(b.status) && !(ended && b.status === 'pending')) return null;
+  const at = new Date(now).toISOString();
+  const open = normFailure(b.failure);
+  const mk = (kind, why, extra = {}) => {
+    const f = normFailure({ kind, at, why, head: extra.head ?? head, step: extra.step ?? firstOpen(b), exit: extra.exit ?? null });
+    return open && b.status === 'fixing' && open.kind === f.kind && open.head === f.head ? null : f;
+  };
+  if (ended && !ended.auth && END_KIND[ended.reason]) {
+    const kind = END_KIND[ended.reason];
+    const why = ended.reason === 'crash' ? `the session exited ${ended.exit ?? 'without an end event'}` : ended.reason === 'crash-limit' ? `it crashed ${ended.crashes ?? 'too many'} times and fell back to Pending` : 'the session stopped with steps left and nobody asked Brett anything';
+    return normFailure({ kind, at, why, head, step: firstOpen(b), exit: Number.isInteger(ended.exit) ? ended.exit : null });
+  }
+  if (land && land.reason && LAND_KIND[land.reason.kind]) {
+    return mk(LAND_KIND[land.reason.kind], str(land.reason.text, 300).replace(/^[^:]{1,120}: /, ''), { head: str(land.head, 64) || head, step: '' });
+  }
+  if ((b.status === 'landing' || b.status === 'built') && allDone(b) && !b.pr && minsSince(b.builtAt || b.updatedAt, now) >= pushGraceMin) {
+    return mk('push-fail', `every step is done but no PR reached GitHub after ${pushGraceMin} min`, { step: '' });
+  }
+  if ((b.status === 'running' || b.status === 'fixing') && b.pipeline?.session && minsSince(beatAt || b.updatedAt || b.pipeline?.launchedAt, now) >= stalledAfterMin) {
+    return mk('stalled', `no sign of life from ${b.pipeline.session} for ${Math.round(minsSince(beatAt || b.updatedAt || b.pipeline?.launchedAt, now))} min`);
+  }
+  return null;
+}
+
+/**
+ * Record a classified failure on a build, pure (mutates and returns `b`): the open failure, status fixing, the open
+ * attempt (if one is running) closed as failed, and a note. The ladder's answer (the next attempt) is appended by the
+ * retry runner in the same tick.
+ */
+export function recordFailure(b, f, { at = new Date().toISOString() } = {}) {
+  const attempts = normAttempts(b.attempts);
+  const open = attempts.find((a) => a.result === 'started');
+  if (open) { open.result = 'failed'; open.endedAt = at; open.note = str(`${open.note ? `${open.note} ` : ''}Failed: ${f.why}`, 600); }
+  b.attempts = attempts;
+  b.failure = f;
+  b.status = 'fixing';
+  b.builtAt = '';
+  b.notes = [...list(b.notes), { text: `Fixing: ${KIND_WORDS[f.kind] ?? f.kind}${f.step ? ` on ${f.step}` : ''} (${f.why}). The server retries on its ladder; nothing stops here.`, at }];
+  return b;
+}
+const KIND_WORDS = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'it clashes with main', 'push-fail': 'the push failed', stalled: 'it stalled', 'fell-to-pending': 'it fell back to Pending' });
 
 export const ALERT_SOURCE = 'pipeline';
 export const ALERT_LINK = '#/build-orchestrator';
