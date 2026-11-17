@@ -1,0 +1,302 @@
+{
+  "$axf": "widget-icons@1",
+  "_doc": "Golden fixture of spec/WIDGET-ICONS.md (engine core/engines/widget-icons.ts). ids: parse cases; keys: the two setting keys per widget; refs: icon ref grammar; threshold: --fx-size-widget-text-max values → the number; long: the long-text detector; kindIcons: the default icon per kind; map: the icon world every case resolves against; cases: resolveWidgetIcon(widget, settings, map) → want. Replayed by spec/check-widget-icons.mts.",
+  "hosts": ["banner", "toolbar", "settings"],
+  "modes": ["icon", "icon+text", "text"],
+  "own": "own",
+  "token": "--fx-size-widget-text-max",
+  "textMax": { "default": 24, "min": 6, "max": 80 },
+  "prefix": "axf.widget.",
+  "ids": [
+    { "id": "banner:status:usage", "parts": { "host": "banner", "kind": "status", "id": "usage" } },
+    { "id": "banner:badge:claude", "parts": { "host": "banner", "kind": "badge", "id": "claude" } },
+    { "id": "toolbar:action-button:build", "parts": { "host": "toolbar", "kind": "action-button", "id": "build" } },
+    { "id": "settings:tab:appearance", "parts": { "host": "settings", "kind": "tab", "id": "appearance" } },
+    { "id": "settings:setting:axf.display.fontScale", "parts": { "host": "settings", "kind": "setting", "id": "axf.display.fontScale" } },
+    { "id": "status:usage", "parts": null },
+    { "id": "Banner:status:usage", "parts": null },
+    { "id": "banner:status:", "parts": null },
+    { "id": "banner:status:a b", "parts": null },
+    { "id": "banner:status:usage:extra", "parts": null },
+    { "id": "nav:status:usage", "parts": null },
+    { "id": "", "parts": null }
+  ],
+  "keys": {
+    "banner:status:usage": { "icon": "axf.widget.banner:status:usage.icon", "mode": "axf.widget.banner:status:usage.mode" },
+    "settings:setting:axf.display.fontScale": { "icon": "axf.widget.settings:setting:axf.display.fontScale.icon", "mode": "axf.widget.settings:setting:axf.display.fontScale.mode" }
+  },
+  "refs": [
+    { "ref": "zap", "parsed": { "pack": null, "glyph": "zap" } },
+    { "ref": "check-circle", "parsed": { "pack": null, "glyph": "check-circle" } },
+    { "ref": "phosphor/zap", "parsed": { "pack": "phosphor", "glyph": "zap" } },
+    { "ref": "pack:phosphor/zap", "parsed": { "pack": "phosphor", "glyph": "zap" } },
+    { "ref": "own", "parsed": { "pack": null, "glyph": "own" } },
+    { "ref": "  zap ", "parsed": { "pack": null, "glyph": "zap" } },
+    { "ref": "Zap", "parsed": null },
+    { "ref": "a/b/c", "parsed": null },
+    { "ref": "/zap", "parsed": null },
+    { "ref": "phosphor/", "parsed": null },
+    { "ref": "p/zap", "parsed": null },
+    { "ref": "", "parsed": null },
+    { "ref": 7, "parsed": null }
+  ],
+  "threshold": [
+    { "value": 24, "max": 24 },
+    { "value": "24", "max": 24 },
+    { "value": "30ch", "max": 30 },
+    { "value": " 18 ", "max": 18 },
+    { "value": 12.7, "max": 13 },
+    { "value": 3, "max": 6 },
+    { "value": 1000, "max": 80 },
+    { "value": "x", "max": 24 },
+    { "value": null, "max": 24 },
+    { "value": "", "max": 24 }
+  ],
+  "long": [
+    { "text": "Usage", "max": 24, "long": false },
+    { "text": "Branches not on main: 3 ahead, 1 behind", "max": 24, "long": true },
+    { "text": "abcdefghijklmnopqrstuvwx", "max": 24, "long": false },
+    { "text": "abcdefghijklmnopqrstuvwxy", "max": 24, "long": true },
+    { "text": "   ", "max": 24, "long": false },
+    { "text": "  Hi   there  ", "max": 8, "long": false },
+    { "text": "🚀 go", "max": 6, "long": false },
+    { "text": 42, "max": 24, "long": false }
+  ],
+  "kindIcons": {
+    "status": "info",
+    "counter": "chart",
+    "progress": "chart",
+    "action-button": "zap",
+    "link": "external",
+    "label": "type",
+    "badge": "bell",
+    "logo": "star",
+    "avatar": "user",
+    "clock": "clock",
+    "search-bar": "search",
+    "theme-switch": "sun",
+    "tab": "folder",
+    "group": "list",
+    "setting": "sliders"
+  },
+  "map": {
+    "glyphs": ["zap", "bell", "chart", "info", "clock", "settings", "box", "sliders", "folder", "list", "star", "user", "search", "sun", "type", "external", "shield", "layers", "check-circle"],
+    "packs": {
+      "phosphor": ["zap", "bell", "gear", "rocket"],
+      "twemoji": ["rocket", "sparkles"]
+    },
+    "pack": "phosphor",
+    "slots": {
+      "console.systems-check.banner.shield": "shield",
+      "console.usage.widget.status": "phosphor/gear",
+      "console.broken.widget.status": "nopack/zap"
+    },
+    "fallback": "box"
+  },
+  "cases": [
+    {
+      "name": "the pick wins over everything",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart", "iconOverride": { "pack": "twemoji", "id": "sparkles" }, "slot": "console.usage.widget.status" },
+      "settings": { "icon": "phosphor/rocket" },
+      "want": { "icon": "phosphor/rocket", "via": "pick", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "a pick with the icon-map prefix",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "pack:twemoji/rocket" },
+      "want": { "icon": "twemoji/rocket", "via": "pick", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "a bare pick the pack in force has",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "gear" },
+      "want": { "icon": "gear", "via": "pick", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "a bare pick only the framework has",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "shield" },
+      "want": { "icon": "shield", "via": "pick", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "a pick nobody has falls to the widget's own icon",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "nope" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["icon \"nope\" is not a glyph of the icon pack in force or the framework"] }
+    },
+    {
+      "name": "a pick in a pack that is not registered",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "nopack/zap" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["icon pack \"nopack\" is not registered"] }
+    },
+    {
+      "name": "a pick of a glyph the pack lacks",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "twemoji/zap" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["icon \"twemoji/zap\" is not a glyph of that pack"] }
+    },
+    {
+      "name": "a pick that is not a ref at all",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "Not A Ref" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["icon \"Not A Ref\" is not an icon ref"] }
+    },
+    {
+      "name": "own clears a pick",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "own" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "widget-shape@1 iconOverride is the override source",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart", "iconOverride": { "pack": "twemoji", "id": "sparkles" } },
+      "settings": {},
+      "want": { "icon": "twemoji/sparkles", "via": "override", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "an override whose glyph is missing falls to the slot pin",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart", "iconOverride": { "pack": "twemoji", "id": "zap" }, "slot": "console.usage.widget.status" },
+      "settings": {},
+      "want": { "icon": "phosphor/gear", "via": "slot", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["icon \"twemoji/zap\" is not a glyph of that pack"] }
+    },
+    {
+      "name": "a malformed override is refused",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart", "iconOverride": { "pack": "Twemoji", "id": "zap" } },
+      "settings": {},
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["the icon override needs an icon pack id and a glyph name"] }
+    },
+    {
+      "name": "a slot pin with a bare glyph",
+      "widget": { "id": "banner:badge:systems-check", "kind": "badge", "text": "", "icon": "bell", "slot": "console.systems-check.banner.shield" },
+      "settings": {},
+      "want": { "icon": "shield", "via": "slot", "mode": "icon", "label": "", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "a broken slot pin falls to the widget's own icon",
+      "widget": { "id": "banner:status:broken", "kind": "status", "text": "Broken", "icon": "bell", "slot": "console.broken.widget.status" },
+      "settings": {},
+      "want": { "icon": "bell", "via": "own", "mode": "icon+text", "label": "Broken", "tooltip": "", "fell": ["icon pack \"nopack\" is not registered"] }
+    },
+    {
+      "name": "the widget's own icon",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "bell" },
+      "settings": {},
+      "want": { "icon": "bell", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "an own icon nobody knows falls to the kind default",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "whatever" },
+      "settings": {},
+      "want": { "icon": "info", "via": "kind", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["icon \"whatever\" is not a glyph of the icon pack in force or the framework"] }
+    },
+    {
+      "name": "no icon at all: the kind default",
+      "widget": { "id": "banner:label:release", "kind": "label", "text": "v2.4" },
+      "settings": {},
+      "want": { "icon": "type", "via": "kind", "mode": "icon+text", "label": "v2.4", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "an unknown kind: the fallback glyph",
+      "widget": { "id": "banner:mystery:x", "kind": "mystery", "text": "?" },
+      "settings": {},
+      "want": { "icon": "box", "via": "fallback", "mode": "icon+text", "label": "?", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "long text in auto becomes the icon with the text as the tooltip",
+      "widget": { "id": "banner:status:push", "kind": "status", "text": "Branches not on main: 3 ahead, 1 behind", "icon": "chart" },
+      "settings": {},
+      "want": { "icon": "chart", "via": "own", "mode": "icon", "label": "", "tooltip": "Branches not on main: 3 ahead, 1 behind", "fell": [] }
+    },
+    {
+      "name": "long text with no icon still gets one",
+      "widget": { "id": "banner:label:note", "kind": "label", "text": "Nightly console deploy finished at 03:12 with 0 errors" },
+      "settings": {},
+      "want": { "icon": "type", "via": "kind", "mode": "icon", "label": "", "tooltip": "Nightly console deploy finished at 03:12 with 0 errors", "fell": [] }
+    },
+    {
+      "name": "text picked keeps long text and tooltips it",
+      "widget": { "id": "banner:status:push", "kind": "status", "text": "Branches not on main: 3 ahead, 1 behind", "icon": "chart" },
+      "settings": { "mode": "text" },
+      "want": { "icon": "chart", "via": "own", "mode": "text", "label": "Branches not on main: 3 ahead, 1 behind", "tooltip": "Branches not on main: 3 ahead, 1 behind", "fell": [] }
+    },
+    {
+      "name": "icon+text picked with long text",
+      "widget": { "id": "banner:status:push", "kind": "status", "text": "Branches not on main: 3 ahead, 1 behind", "icon": "chart" },
+      "settings": { "mode": "icon+text" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Branches not on main: 3 ahead, 1 behind", "tooltip": "Branches not on main: 3 ahead, 1 behind", "fell": [] }
+    },
+    {
+      "name": "icon picked with short text: the text is the tooltip",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "mode": "icon" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon", "label": "", "tooltip": "Usage", "fell": [] }
+    },
+    {
+      "name": "icon picked with no text: the widget's own tooltip",
+      "widget": { "id": "banner:badge:claude", "kind": "badge", "text": "", "icon": "sparkles", "tooltip": "Claude is following" },
+      "settings": { "mode": "icon" },
+      "want": { "icon": "bell", "via": "kind", "mode": "icon", "label": "", "tooltip": "Claude is following", "fell": ["icon \"sparkles\" is not a glyph of the icon pack in force or the framework"] }
+    },
+    {
+      "name": "empty text in auto",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "", "icon": "chart" },
+      "settings": {},
+      "want": { "icon": "chart", "via": "own", "mode": "icon", "label": "", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "the host's own display setting applies when nothing is picked",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart", "defaultMode": "text" },
+      "settings": {},
+      "want": { "icon": "chart", "via": "own", "mode": "text", "label": "Usage", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "a picked mode beats the host's display setting",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart", "defaultMode": "text" },
+      "settings": { "mode": "icon" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon", "label": "", "tooltip": "Usage", "fell": [] }
+    },
+    {
+      "name": "the threshold comes from the token value",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Hello world", "icon": "chart" },
+      "settings": { "textMax": "8" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon", "label": "", "tooltip": "Hello world", "fell": [] }
+    },
+    {
+      "name": "a mode that is not one of the three is dropped",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "mode": "huge" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["mode \"huge\" is not one of icon, icon+text, text"] }
+    },
+    {
+      "name": "whitespace in the text is collapsed",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "  Hi   there  ", "icon": "chart" },
+      "settings": {},
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Hi there", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "the widget's own tooltip stays while its text is drawn",
+      "widget": { "id": "banner:status:usage", "kind": "status", "text": "Usage", "icon": "chart", "tooltip": "Open the usage meter" },
+      "settings": {},
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "Open the usage meter", "fell": [] }
+    },
+    {
+      "name": "a settings row with a long label becomes its kind's icon",
+      "widget": { "id": "settings:setting:axf.display.fontScale", "kind": "setting", "text": "Font scale for every screen in the console" },
+      "settings": {},
+      "want": { "icon": "sliders", "via": "kind", "mode": "icon", "label": "", "tooltip": "Font scale for every screen in the console", "fell": [] }
+    },
+    {
+      "name": "a settings tab with a picked icon",
+      "widget": { "id": "settings:tab:appearance", "kind": "tab", "text": "Appearance", "icon": "palette" },
+      "settings": { "icon": "twemoji/sparkles" },
+      "want": { "icon": "twemoji/sparkles", "via": "pick", "mode": "icon+text", "label": "Appearance", "tooltip": "", "fell": [] }
+    },
+    {
+      "name": "a widget id that is not one still resolves, with the pick ignored",
+      "widget": { "id": "status:usage", "kind": "status", "text": "Usage", "icon": "chart" },
+      "settings": { "icon": "phosphor/rocket" },
+      "want": { "icon": "chart", "via": "own", "mode": "icon+text", "label": "Usage", "tooltip": "", "fell": ["\"status:usage\" is not a widget id (<host>:<kind>:<id>)"] }
+    }
+  ]
+}
