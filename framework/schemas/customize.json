@@ -328,7 +328,21 @@
         "hexagon"
       ],
       "types": [
-        "banner"
+        "banner",
+        "toolbar",
+        "clock",
+        "search-bar",
+        "action-button",
+        "logo",
+        "label",
+        "status",
+        "counter",
+        "progress",
+        "avatar",
+        "link",
+        "theme-switch",
+        "spacer",
+        "divider"
       ]
     },
     {
@@ -572,7 +586,8 @@
     },
     "toolbar": {
       "root": ".fx-toolbar",
-      "item": ".fx-toolbtn"
+      "item": ".fx-toolbtn",
+      "widget": ".fx-toolbar__widget"
     },
     "nav-menu": {
       "root": ".fx-nav",

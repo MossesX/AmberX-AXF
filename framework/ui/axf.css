@@ -121,6 +121,11 @@
   --fx-tab-chips-active-bg: var(--fx-accent-soft);
   --fx-tab-chips-active-border: var(--fx-accent);
   --fx-tab-opacity: 1;
+  /* Widget shape (--fx-widget-*): The outlines a banner / toolbar widget can take (widget-shape@1): circle, rounded and pill radii; square is 0, hexagon and custom clip instead. */
+  --fx-widget-shape-circle: 50%;
+  --fx-widget-shape-rounded: var(--fx-radius-md);
+  --fx-widget-shape-pill: 999px;
+  --fx-widget-shape-square: 0;
   /* component-tokens@1 end */
 }
 

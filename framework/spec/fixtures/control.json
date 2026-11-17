@@ -729,7 +729,11 @@
       "tabs.chipsBorder",
       "tabs.chipsActiveBg",
       "tabs.chipsActiveBorder",
-      "tabs.opacity"
+      "tabs.opacity",
+      "widget.shapeCircle",
+      "widget.shapeRounded",
+      "widget.shapePill",
+      "widget.shapeSquare"
     ],
     "tokens.layout": [
       "navWidth",

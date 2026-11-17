@@ -217,8 +217,12 @@ export function bannerWidgetView(type: string, hint: BannerWidgetHint | null | u
 
 /* ---- widget-shape@1: a shape and an icon override compiled to tokens ---- */
 
-/** Corner radius per shape (hexagon and custom clip instead). Circle is 50%: the same as today's 999px on the square bodies it applies to. */
-export const WIDGET_SHAPE_RADIUS: Record<Exclude<BannerWidgetShape, 'hexagon' | 'custom'>, string> = { circle: '50%', square: '0', rounded: 'var(--fx-radius-md)', pill: '999px' };
+/**
+ * Corner radius per shape (hexagon and custom clip instead): the widget family of component-tokens@1, so a style theme
+ * (`data.widget.shapeCircle` …) or one widget's instance overrides retune a shape. Defaults (axf.css :root): circle 50%
+ * (the same as today's 999px on the square bodies it applies to), rounded the theme's medium radius, pill 999px, square 0.
+ */
+export const WIDGET_SHAPE_RADIUS: Record<Exclude<BannerWidgetShape, 'hexagon' | 'custom'>, string> = { circle: 'var(--fx-widget-shape-circle)', square: 'var(--fx-widget-shape-square)', rounded: 'var(--fx-widget-shape-rounded)', pill: 'var(--fx-widget-shape-pill)' };
 /** A regular hexagon, points left and right, as a percentage polygon (scales with the body). */
 export const WIDGET_SHAPE_HEXAGON_CLIP = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
 /** The icon token's value when the widget draws its own icon. */

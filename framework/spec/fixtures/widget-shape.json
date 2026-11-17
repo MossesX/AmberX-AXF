@@ -15,10 +15,10 @@
     "icon": "--fx-widget-icon"
   },
   "radius": {
-    "circle": "50%",
-    "square": "0",
-    "rounded": "var(--fx-radius-md)",
-    "pill": "999px"
+    "circle": "var(--fx-widget-shape-circle)",
+    "square": "var(--fx-widget-shape-square)",
+    "rounded": "var(--fx-widget-shape-rounded)",
+    "pill": "var(--fx-widget-shape-pill)"
   },
   "hexagonClip": "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
   "iconOwn": "own",
@@ -46,14 +46,14 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -66,14 +66,14 @@
       },
       "resolved": {
         "shape": "square",
-        "radius": "0",
+        "radius": "var(--fx-widget-shape-square)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "0",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-square)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -86,14 +86,14 @@
       },
       "resolved": {
         "shape": "rounded",
-        "radius": "var(--fx-radius-md)",
+        "radius": "var(--fx-widget-shape-rounded)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "var(--fx-radius-md)",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-rounded)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -106,14 +106,14 @@
       },
       "resolved": {
         "shape": "pill",
-        "radius": "999px",
+        "radius": "var(--fx-widget-shape-pill)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "999px",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-pill)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -516,7 +516,7 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "own",
         "fell": [
@@ -525,7 +525,7 @@
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -538,7 +538,7 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "own",
         "fell": [
@@ -547,7 +547,7 @@
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -581,14 +581,14 @@
       },
       "resolved": {
         "shape": "square",
-        "radius": "0",
+        "radius": "var(--fx-widget-shape-square)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "0",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-square)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -603,14 +603,14 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": false
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -623,21 +623,21 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": false
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
     },
     "unknown-shape-resolved-directly": {
       "shape": "circle",
-      "radius": "50%",
+      "radius": "var(--fx-widget-shape-circle)",
       "clip": "none",
       "icon": "own",
       "fell": [
@@ -647,7 +647,7 @@
     },
     "override-malformed": {
       "shape": "circle",
-      "radius": "50%",
+      "radius": "var(--fx-widget-shape-circle)",
       "clip": "none",
       "icon": "own",
       "fell": [
@@ -668,14 +668,14 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "pack-021/bell",
         "fell": [],
         "explicit": false
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "pack-021/bell"
       }
@@ -691,7 +691,7 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "own",
         "fell": [
@@ -700,7 +700,7 @@
         "explicit": false
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -716,7 +716,7 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "own",
         "fell": [
@@ -725,7 +725,7 @@
         "explicit": false
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -741,14 +741,14 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "amberx-outline/home",
         "fell": [],
         "explicit": false
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "amberx-outline/home"
       }
@@ -764,14 +764,14 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "pack-021/star",
         "fell": [],
         "explicit": false
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "pack-021/star"
       }
@@ -802,19 +802,19 @@
   },
   "host": {
     "circle": {
-      "--fx-widget-shape-radius": "50%",
+      "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
       "--fx-widget-shape-clip": "none"
     },
     "square": {
-      "--fx-widget-shape-radius": "0",
+      "--fx-widget-shape-radius": "var(--fx-widget-shape-square)",
       "--fx-widget-shape-clip": "none"
     },
     "rounded": {
-      "--fx-widget-shape-radius": "var(--fx-radius-md)",
+      "--fx-widget-shape-radius": "var(--fx-widget-shape-rounded)",
       "--fx-widget-shape-clip": "none"
     },
     "pill": {
-      "--fx-widget-shape-radius": "999px",
+      "--fx-widget-shape-radius": "var(--fx-widget-shape-pill)",
       "--fx-widget-shape-clip": "none"
     },
     "hexagon": {
@@ -822,15 +822,15 @@
       "--fx-widget-shape-clip": "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)"
     },
     "custom": {
-      "--fx-widget-shape-radius": "50%",
+      "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
       "--fx-widget-shape-clip": "none"
     },
     "blob": {
-      "--fx-widget-shape-radius": "50%",
+      "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
       "--fx-widget-shape-clip": "none"
     },
     "empty": {
-      "--fx-widget-shape-radius": "50%",
+      "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
       "--fx-widget-shape-clip": "none"
     }
   },
@@ -843,14 +843,14 @@
       },
       "resolved": {
         "shape": "circle",
-        "radius": "50%",
+        "radius": "var(--fx-widget-shape-circle)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": false
       },
       "tokens": {
-        "--fx-widget-shape-radius": "50%",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-circle)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -863,14 +863,14 @@
       },
       "resolved": {
         "shape": "pill",
-        "radius": "999px",
+        "radius": "var(--fx-widget-shape-pill)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "999px",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-pill)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -883,14 +883,14 @@
       },
       "resolved": {
         "shape": "rounded",
-        "radius": "var(--fx-radius-md)",
+        "radius": "var(--fx-widget-shape-rounded)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "var(--fx-radius-md)",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-rounded)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
@@ -903,14 +903,14 @@
       },
       "resolved": {
         "shape": "pill",
-        "radius": "999px",
+        "radius": "var(--fx-widget-shape-pill)",
         "clip": "none",
         "icon": "own",
         "fell": [],
         "explicit": true
       },
       "tokens": {
-        "--fx-widget-shape-radius": "999px",
+        "--fx-widget-shape-radius": "var(--fx-widget-shape-pill)",
         "--fx-widget-shape-clip": "none",
         "--fx-widget-icon": "own"
       }
