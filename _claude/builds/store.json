@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7242,
- "updatedAt": "2026-11-17T00:58:57.719Z",
+ "rev": 7243,
+ "updatedAt": "2026-11-17T00:59:15.433Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -186378,8 +186378,8 @@
    "branch": "claude/axhub-raise-per-project-memory-file-cap-from-500-to-750",
    "pr": "",
    "createdAt": "2026-11-13T16:58:18.760Z",
-   "updatedAt": "2026-11-17T00:58:55.234Z",
-   "builtAt": "2026-11-17T00:58:55.234Z",
+   "updatedAt": "2026-11-17T00:59:13.057Z",
+   "builtAt": "2026-11-17T00:59:13.057Z",
    "notes": [
     {
      "text": "Queued by brett.",
@@ -186392,6 +186392,10 @@
     {
      "text": "Claude account: hulu0241 (axf-axhub-raise-per-project-memory-file-cap-from-500--earl, shared account login)",
      "at": "2026-11-17T00:44:31.954Z"
+    },
+    {
+     "text": "Headless run axf-axhub-raise-per-project-memory-file-cap-from-500--earl: brief only · start 13.1K tokens ($0.04) · cost $1.17 · 49 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:59:13.057Z"
     }
    ],
    "approvals": [],
