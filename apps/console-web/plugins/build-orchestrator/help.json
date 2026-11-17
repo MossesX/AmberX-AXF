@@ -358,6 +358,30 @@
         "title": "Max retries",
         "text": "How many times a crashed or killed build is retried since it last ticked a step. Past it the build goes back to Pending with a banner item and an alert. Account stops (usage limit, login) never count.",
         "kind": "field"
+      },
+      {
+        "target": "dry-run-only",
+        "title": "Dry run only",
+        "text": "On: the watchdog decides which rows it would take off the builds lists and records the plan, but changes nothing.",
+        "kind": "toggle"
+      },
+      {
+        "target": "tell-amberx-what-was-cleaned",
+        "title": "Tell AmberX what was cleaned",
+        "text": "On: each watchdog run that cleaned something sends one FYI to AmberX (Notifications panel: Watchdog cleaned stale rows).",
+        "kind": "toggle"
+      },
+      {
+        "target": "run-every-minutes",
+        "title": "Run every (minutes)",
+        "text": "How often the watchdog runs, 1 to 120 minutes. Cron fires every 5 minutes; a longer interval skips the ticks in between.",
+        "kind": "field"
+      },
+      {
+        "target": "fresh-session",
+        "title": "Fresh session",
+        "text": "Retries this build's failure now in a fresh session instead of waiting for the next rung of the ladder. The attempts so far stay in the log.",
+        "kind": "button"
       }
     ],
     "intros": []
