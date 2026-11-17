@@ -821,8 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:31 UTC · `orchestrator-runs-long-builds-across` → queued (all) · foreign-write
-- 2026-11-17 03:31 UTC · `server-rule-done-means-merged-working` → queued (all) · foreign-write
 - 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` → running, note (all) · pipeline
 - 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
@@ -1221,6 +1219,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:40 UTC · `rebuild-fresh-main-hide-any-asset` → pending, note (all) · reconciler
 - 2026-11-17 15:40 UTC · `edit-ui-mode-inline-edit-anything-active` → pending, note (all) · reconciler
 - 2026-11-17 15:40 UTC · `auto-lander-drag-rows-to-set-merge-order` → pending, note (all) · reconciler
+- 2026-11-17 15:50 UTC · `settings-opened-banners-nav-menu` → pending, note (all) · reconciler
+- 2026-11-17 15:50 UTC · `live-hot-refresh-every-grid-list-re` → pending, note (all) · reconciler
 
 ## Token passes (log)
 

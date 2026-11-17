@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:41:09.809Z",
+ "updatedAt": "2026-11-17T15:50:20.813Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171543,7 +171543,7 @@
    "title": "Settings opened from banners, nav menu and toolbars must open in the floating window",
    "category": "",
    "detail": "#628 (all-settings-interfaces-open-floating) landed, but settings opened from chrome (right-click/long-press Settings… on any banner, nav menu, toolbar, tab group, menu bar; the axf.chrome.settings dialogs and any plugin settings gear reached from them) still open in the main content area. Route every settings entry point through the same floating settings window #628 uses. First check the live console runs a build that includes #628; if not, redeploy. Test each entry point (banner, nav, toolbar, tab group, plugin gear) on desktop and phone. Same through REST, MCP, CLI, voice.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -171551,7 +171551,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T15:26:55.284Z",
+   "updatedAt": "2026-11-17T15:50:18.946Z",
    "builtAt": "",
    "notes": [
     {
@@ -171577,6 +171577,10 @@
     {
      "text": "Headless run axf-settings-opened-banners-nav-menu--joey: brief only · start 19.3K tokens ($0.18) · cost $19.74 · 160 turns · 6 tools, MCP none",
      "at": "2026-11-17T15:26:55.284Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:50:18.946Z"
     }
    ],
    "approvals": [],
@@ -173210,7 +173214,7 @@
    "title": "Live hot refresh: every grid and list re-renders instantly when its data changes",
    "category": "",
    "detail": "Every grid, list and table in the console (Auto-lander, orchestrator tabs, Pending, Plan Studio, UI Review, etc.) updates live without a reload whenever its data changes: server pushes change events (SSE/WebSocket from the data store / axf-data change feed), the framework DataGrid subscribes and re-renders only changed rows, keeping scroll, selection, sort, filters and open dialogs. Local actions (drag and drop, reorder, edit, archive) re-render instantly (optimistic) and reconcile with the server. Changes made from REST/MCP/CLI/voice or by the VPS lander show up live too. Reconnects automatically. Add a live indicator. Framework-level so every app gets it.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -173218,7 +173222,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T15:05:47.233Z",
-   "updatedAt": "2026-11-17T15:21:25.351Z",
+   "updatedAt": "2026-11-17T15:50:18.946Z",
    "builtAt": "",
    "notes": [
     {
@@ -173240,6 +173244,10 @@
     {
      "text": "Headless run axf-live-hot-refresh-every-grid-list-re--earl: brief only · start 18.1K tokens ($0.13) · cost $7.17 · 68 turns · 6 tools, MCP none",
      "at": "2026-11-17T15:21:25.351Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:50:18.946Z"
     }
    ],
    "approvals": [],
