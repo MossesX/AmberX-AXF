@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8350,
- "updatedAt": "2026-11-17T23:14:35.382Z",
+ "rev": 8351,
+ "updatedAt": "2026-11-17T23:14:43.683Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268445,7 +268445,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:04:46.840Z",
+   "updatedAt": "2026-11-17T23:14:19.219Z",
    "builtAt": "",
    "notes": [
     {
@@ -268507,9 +268507,24 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-move-server-side-console-parts-onto-vps--lenny, shared account login)",
      "at": "2026-11-17T23:04:46.840Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-17T23:14:19.219Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-17T23:14:19.219Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "So shouldn't we move everything to the VPS except for the UI itself for the console? ... All right, do it.",
@@ -268640,12 +268655,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:14:19.219Z",
      "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T22:42:10.277Z",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T22:42:10.280Z"
+     "updatedAt": "2026-11-17T23:14:19.907Z"
     },
     {
      "id": "s4",
@@ -269240,7 +269255,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
