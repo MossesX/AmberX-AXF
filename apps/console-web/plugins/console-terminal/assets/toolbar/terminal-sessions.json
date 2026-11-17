@@ -27,7 +27,7 @@
         "id": "session",
         "label": "Session",
         "items": [
-          { "id": "jump", "icon": "arrow-right", "label": "Jump in", "action": "action:terminal.jump", "args": { "name": "$front.tmux", "where": "$front.where" }, "enabledWhen": "front.tmux", "priority": 260 },
+          { "id": "jump", "icon": "arrow-right", "label": "Jump into session", "action": "action:terminal.jump", "args": { "name": "$front.tmux", "where": "$front.where" }, "enabledWhen": "front.tmux", "priority": 260 },
           { "id": "mirror", "icon": "eye", "label": "Mirror session", "action": "action:terminal.mirror", "args": { "name": "$front.tmux", "where": "$front.where" }, "enabledWhen": "front.tmux", "priority": 200 }
         ]
       },
