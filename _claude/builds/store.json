@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8228,
- "updatedAt": "2026-11-17T22:38:22.556Z",
+ "rev": 8229,
+ "updatedAt": "2026-11-17T22:39:10.697Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -121058,6 +121058,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -142822,6 +142823,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -166316,7 +166318,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -166953,7 +166955,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167107,7 +167109,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167182,7 +167184,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167257,7 +167259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167332,7 +167334,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167486,7 +167488,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167561,7 +167563,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167636,7 +167638,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167711,7 +167713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167786,7 +167788,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167861,7 +167863,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167936,7 +167938,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168011,7 +168013,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168086,7 +168088,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168240,7 +168242,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168473,7 +168475,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168548,7 +168550,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168623,7 +168625,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168777,7 +168779,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169168,7 +169170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169243,7 +169245,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169476,7 +169478,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169551,7 +169553,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169626,7 +169628,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169701,7 +169703,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169776,7 +169778,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169851,7 +169853,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169926,7 +169928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170001,7 +170003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170076,7 +170078,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170151,7 +170153,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170226,7 +170228,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170301,7 +170303,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170376,7 +170378,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170451,7 +170453,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170526,7 +170528,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170601,7 +170603,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170755,7 +170757,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170909,7 +170911,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170984,7 +170986,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171059,7 +171061,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171134,7 +171136,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171209,7 +171211,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171284,7 +171286,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171359,7 +171361,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171434,7 +171436,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171509,7 +171511,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171584,7 +171586,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171738,7 +171740,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171813,7 +171815,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171888,7 +171890,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171963,7 +171965,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172038,7 +172040,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172113,7 +172115,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172188,7 +172190,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172263,7 +172265,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172338,7 +172340,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172413,7 +172415,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172488,7 +172490,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172642,7 +172644,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172717,7 +172719,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172792,7 +172794,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172946,7 +172948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173021,7 +173023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173096,7 +173098,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173171,7 +173173,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173246,7 +173248,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173558,7 +173560,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179354,7 +179356,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -180172,7 +180174,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -197106,7 +197108,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204231,7 +204233,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211185,10 +211187,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T03:35:20.230Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.864Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -211275,7 +211277,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211307,6 +211309,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -213578,10 +213581,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.864Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -213778,7 +213781,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -215210,10 +215213,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T03:35:20.230Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.864Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -215300,7 +215303,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -223703,6 +223706,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -225838,10 +225842,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.864Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -226431,7 +226435,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -243773,10 +243777,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.864Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -243863,7 +243867,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245467,7 +245471,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245542,7 +245546,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245617,7 +245621,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245692,7 +245696,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245767,7 +245771,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245842,7 +245846,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245917,7 +245921,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -246071,7 +246075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -246146,7 +246150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -257735,10 +257739,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T00:03:06.259Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.864Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -258235,7 +258239,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -261577,10 +261581,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T03:35:20.232Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -262369,7 +262373,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265366,10 +265370,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T00:13:53.396Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -265717,7 +265721,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265836,10 +265840,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T03:35:20.232Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -266304,7 +266308,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -266466,10 +266470,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T15:31:06.207Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -266908,7 +266912,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267007,10 +267011,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T00:19:35.275Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -267397,7 +267401,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267514,10 +267518,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T12:40:12.153Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -267907,7 +267911,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -268190,10 +268194,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T13:01:07.076Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -268873,7 +268877,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269005,10 +269009,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T15:51:06.747Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -269331,7 +269335,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270056,10 +270060,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T15:41:07.355Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [
      "hulu0241"
@@ -270600,7 +270604,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270727,10 +270731,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T15:41:07.355Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -271123,7 +271127,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271240,10 +271244,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T15:51:06.747Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -271771,7 +271775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274984,10 +274988,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T18:14:04.364Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -275825,7 +275829,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275944,10 +275948,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T18:16:53.787Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -276473,7 +276477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -276575,10 +276579,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T18:26:57.633Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -277032,7 +277036,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -277135,10 +277139,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T18:29:45.335Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -277619,7 +277623,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -277727,10 +277731,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T18:33:47.782Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -278121,7 +278125,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278222,10 +278226,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T18:35:24.910Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -278269,7 +278273,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278360,10 +278364,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T18:44:40.532Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -278733,7 +278737,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278845,10 +278849,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T18:49:06.785Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -279371,7 +279375,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281264,10 +281268,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T19:27:09.111Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -281533,7 +281537,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281625,10 +281629,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T19:27:09.111Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -281715,7 +281719,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281878,10 +281882,10 @@
     "dispatchedAt": "2026-11-17T20:16:29.639Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T20:13:07.233Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-17T20:16:29.639Z",
@@ -282459,7 +282463,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282817,10 +282821,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T20:17:09.997Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -283448,7 +283452,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -283554,10 +283558,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T19:40:59.409Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -283951,7 +283955,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284047,10 +284051,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T19:45:42.962Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -284418,7 +284422,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285888,10 +285892,10 @@
     "dispatchedAt": "2026-11-17T20:55:33.562Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T20:40:58.309Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-17T20:55:33.562Z",
@@ -286014,7 +286018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286099,10 +286103,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T20:44:26.895Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -286224,7 +286228,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286310,10 +286314,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T20:44:26.895Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -286439,7 +286443,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286525,10 +286529,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T20:44:26.895Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -286654,7 +286658,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286740,10 +286744,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T20:46:31.929Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -286868,7 +286872,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286954,10 +286958,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T20:46:31.929Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -287083,7 +287087,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287489,7 +287493,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:38:17.755Z"
+     "updatedAt": "2026-11-17T22:38:23.902Z"
     },
     {
      "id": "s10",
@@ -288581,10 +288585,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T21:32:08.954Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -289291,7 +289295,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -301405,7 +301409,7 @@
    "title": "Auto-lander: never wait on a missing UI Review, and test the real lander",
    "category": "",
    "detail": "Bug: PR #816 (guided-live-demo-test-watch-orchestrator) was finished, CI green, but never merged on its own: the auto-lander held it for a UI Review pick whose review item was never posted to the console, so it would wait forever. Brett had to land it by hand. Fix: 1) The lander never holds a PR for a UI Review item that doesn't exist in the console; a missing or unposted review never blocks landing (land when CI is green, flag the review separately). 2) Any held PR older than a set time shows in the systems check banner with the reason and a Land now button. 3) Builds that ship UI Review items must post them to the live console (fail the build step if they can't). 4) The orchestrator demo must run its landing act against the real lander path (self-test before demo), not only a dry run. Tests. Land when green.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "auto-lander-never-wait-missing-ui-review",
@@ -301441,6 +301445,42 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-17T22:36:20.866Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-17T22:37:06.589Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 17,
+     "note": "Split by Claude into 17 steps (3 Fable)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-17T22:38:20.865Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -301816,6 +301856,444 @@
      "rev": 1,
      "createdAt": "2026-11-17T22:37:49.370Z",
      "updatedAt": "2026-11-17T22:37:49.706Z"
+    },
+    {
+     "id": "s18-17",
+     "uid": "st-mwl9vmhq01djrg",
+     "title": "",
+     "text": "gate-rules@1 verdict contract: a UI Review hold applies only when the review item exists in the console. A missing or unposted review gives the verdict 'land, review flagged' (new verdict reason ui-review-missing) instead of 'hold'. Update the spec and the default rule set.",
+     "model": "Fable",
+     "why": "Changes the shared gate-rules@1 verdict contract that every lander and gate view reads",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/BUILD-RULES.md",
+      "framework/core/gate-rules.mjs",
+      "framework/schemas/gate-rules.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s19-18",
+     "uid": "st-mwl9vmhq02uvei",
+     "title": "",
+     "text": "lander-state@1 schema: add heldSince, holdReason and reviewFlag (missing|unposted|waiting) to each PR record. Migration: existing held records get heldSince = their last-seen time. Regenerate the fixture with check-gate-rules.mjs --write.",
+     "model": "Fable",
+     "why": "Schema and migration design for lander-state@1, read by the console and the systems check",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/gate-rules.mjs",
+      "framework/schemas/lander-state.json",
+      "framework/spec/fixtures/gate-rules.json",
+      "framework/spec/check-gate-rules.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s20-19",
+     "uid": "st-mwl9vmhq03i4fj",
+     "title": "",
+     "text": "Add check-gate-rules cases: review item missing → land; review unposted → land with a flag; review waiting or changes asked → hold; review rejected → hold; the held-age field is filled in.",
+     "model": "Fable",
+     "why": "Conformance cases for the changed verdict contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-gate-rules.mjs",
+      "framework/spec/fixtures/gate-rules.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s21-20",
+     "uid": "st-mwl9vmhq042h9d",
+     "title": "",
+     "text": "Lander: before holding a PR on UI Review, look the item up in the live console (review.mjs state --pr N --console / GET ui-review state). Not found → land when CI is green and record reviewFlag. Never treat a failed lookup as a hold.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/land.mjs",
+      "apps/console-web/plugins/ui-review/review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s22-21",
+     "uid": "st-mwl9vmhq05mt78",
+     "title": "",
+     "text": "Merge queue / landing line: use the new verdict, so a stack entry whose review is missing goes ahead and is not parked. Write heldSince and holdReason to lander-state when an entry is truly held.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/land.mjs",
+      "framework/core/landing-line.mjs",
+      "apps/console-web/plugins/push-banner/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s23-22",
+     "uid": "st-mwl9vmhq068yf9",
+     "title": "",
+     "text": "Flagged reviews: when a PR lands with a missing or unposted review, file a UI Review notice (Screenshots group '<build id> - missing review') and add a build note, so the review is flagged separately and nothing blocks.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/land.mjs",
+      "framework/cli/shot.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s24-23",
+     "uid": "st-mwl9vmhq07szq4",
+     "title": "",
+     "text": "Gate plugin setting 'Held PR alert after' (minutes, default 60) in Settings → Plugins → Gate, saved through the gate settings store. Add the API: REST setting route, MCP plugin command, `axf gate settings set heldAlertMin`, and a voice action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/plugin.json",
+      "apps/console-web/plugins/gate/server/",
+      "apps/console-web/plugins/gate/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s25-24",
+     "uid": "st-mwl9vmhq08ph2e",
+     "title": "",
+     "text": "Systems check health@1 check 'held-prs': lists every lander-held PR older than the setting, with the PR, its build, the reason and how long it has been held. It turns red past the limit and is pushed once to the AmberX app.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/systems-check/server/",
+      "apps/console-web/plugins/gate/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s26-25",
+     "uid": "st-mwl9vmhq094y67",
+     "title": "",
+     "text": "'Land now' fix on the held-prs banner item: puts the PR into the merge queue at the front with an override note (never a direct merge). It is a destructive press, so it needs confirm. API: REST POST /api/plugins/gate/land-now, an MCP command, `axf gate land-now <pr>`, a voice action, and a console_show deep link to the item (row:held-prs/pr:<n>).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/server/",
+      "apps/console-web/plugins/systems-check/web/",
+      "framework/cli/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s27-26",
+     "uid": "st-mwl9vmhq0av2uw",
+     "title": "",
+     "text": "Register the banner item and the Land now button as console-control targets (data-axf-target). Add the state read (GET held PRs with reasons). Pass check-console-control.mjs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/systems-check/web/",
+      "apps/console-web/plugins/gate/server/",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s28-27",
+     "uid": "st-mwl9vmhq0b50z4",
+     "title": "",
+     "text": "Builds that ship UI Review items must post them to the live console. review.mjs submit --console exits non-zero when the console doesn't confirm the item id, and the build step that submits fails instead of carrying on.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "framework/cli/rebuild-shots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s29-28",
+     "uid": "st-mwl9vmhq0cl6vq",
+     "title": "",
+     "text": "Build rule 'ui-review-posted' in the build-rules store: when a build records UI Review choices, the VPS checks that each item exists in the console before the step is ticked, and otherwise marks the step failed with the reason.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/",
+      "framework/spec/BUILD-RULES.md",
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s30-29",
+     "uid": "st-mwl9vmhq0dfd1r",
+     "title": "",
+     "text": "Orchestrator demo self-test: before the demo runs its landing act, run the real lander path on a throwaway PR state through the real gate verdict, the real review lookup and the queue add in check mode. If the self-test fails, the demo stops and files a systems check item instead of recording.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/",
+      "apps/console-web/plugins/demo-pipelines/",
+      "framework/cli/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s31-30",
+     "uid": "st-mwl9vmhq0e65x7",
+     "title": "",
+     "text": "Demo landing act runs for real (not only a dry run): it confirms the demo PR reaches the merge queue and merges. If it doesn't merge, the demo is marked failed. Add the API: REST demo self-test route, an MCP command, `axf demo selftest`, and a voice action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/demo-pipelines/",
+      "apps/console-web/plugins/build-orchestrator/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s32-31",
+     "uid": "st-mwl9vmhq0fyknr",
+     "title": "",
+     "text": "Regression test that replays PR #816: CI green, review item absent from the console → the lander lands it. Also: held > limit → the held-prs check is red with Land now; a submit that can't post → the step fails.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/test.py",
+      "framework/spec/check-landing-line.mjs",
+      "apps/console-web/plugins/systems-check/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s33-32",
+     "uid": "st-mwl9vmhq0gfy07",
+     "title": "",
+     "text": "Help and docs: gate plugin README, ui-review README (must post, fails otherwise), systems-check README (held-prs) and the decisions.md line, with the API paths for each feature.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/gate/README.md",
+      "apps/console-web/plugins/ui-review/README.md",
+      "apps/console-web/plugins/systems-check/README.md",
+      "_claude/memory/decisions.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
+    },
+    {
+     "id": "s34-33",
+     "uid": "st-mwl9vmhq0humzd",
+     "title": "",
+     "text": "Run the checks: check-gate-rules, check-landing-line, check-console-control, check-theme, check-controls, check-toolbars, and the plugin tests. Write the report _claude/builds/reports/auto-lander-never-wait-missing-ui-review.md (before/after, the #816 replay, and how each feature is reached by REST/MCP/CLI/voice). Add the THREADS row, open the PR and add it to the merge queue so it lands when green.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/auto-lander-never-wait-missing-ui-review.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:37:06.589Z",
+     "updatedAt": "2026-11-17T22:37:06.589Z"
     }
    ],
    "profiles": [
@@ -301826,11 +302304,11 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Fable",
+    "model": "Opus",
     "status": "pending",
     "estimate": "",
     "source": "mcp",
@@ -301839,27 +302317,115 @@
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {
-     "st-mwl9wjre01s2yk": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre02z8re": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre030kfi": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre046e3y": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre055syd": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre06d78p": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre07lm7p": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre08t925": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre09qk7f": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre0amkbb": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre0b0de0": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre0cji6m": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre0dm5t8": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre0eqag4": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre0fqsfi": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre0gywxm": "2026-11-17T22:37:06.589Z",
-     "st-mwl9wjre0hht0q": "2026-11-17T22:37:06.589Z"
+     "st-mwl9vmhq01djrg": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq02uvei": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq03i4fj": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq042h9d": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq05mt78": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq068yf9": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq07szq4": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq08ph2e": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq094y67": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq0av2uw": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq0b50z4": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq0cl6vq": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq0dfd1r": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq0e65x7": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq0fyknr": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq0gfy07": "2026-11-17T22:37:06.589Z",
+     "st-mwl9vmhq0humzd": "2026-11-17T22:37:06.589Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-17T22:37:49.370Z",
+   "defaultAt": "2026-11-17T22:37:06.589Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "one-true-source-for-every-setting",
+   "title": "One true source for every setting",
+   "category": "",
+   "detail": "Rule from Brett: every setting has exactly one true source. Audit the console, plugins, orchestrator, axHub and framework for any setting stored or editable in more than one place (example found: Claude account on/off lived in both claude-accounts workers.json and the orchestrator's pipeline accounts.json, so Moses X looked on but never got builds). For each duplicate: pick the one source, migrate values, make every other place read from it (no copies), remove duplicate controls/APIs. Add a CI check that fails when a setting key is defined or written in two stores. Write the rule into the shared build rules so every future build follows it. Report listing each duplicate found and fixed.",
+   "status": "queued",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "one-true-source-for-every-setting",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T22:38:13.587Z",
+   "updatedAt": "2026-11-17T22:38:47.776Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:38:47.776Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "All settings need one true fucking source.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-17T22:38:43.893Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 985
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-17T22:38:13.587Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

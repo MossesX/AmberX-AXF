@@ -832,20 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:38 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · orchestrator
-- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` s16 done (all) · orchestrator
-- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
-- 2026-11-17 21:39 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
-- 2026-11-17 21:39 UTC · `fix-banner-settings-interface-tab` s10 done (all) · orchestrator
-- 2026-11-17 21:39 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
-- 2026-11-17 21:40 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:40 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:40 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:40 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:40 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:41 UTC · `rebuild-fresh-main-phone-connect-small` s17 done (all) · orchestrator
-- 2026-11-17 21:41 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
 - 2026-11-17 21:40 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 - 2026-11-17 21:40 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
 - 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
@@ -1232,6 +1218,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:38 UTC · `auto-lander-never-wait-missing-ui-review` added (17 steps) (all) · foreign-write
 - 2026-11-17 22:38 UTC · `icon-picker-every-banner-settings-widget` s9 done (all) · foreign-write
 - 2026-11-17 22:38 UTC · `icon-picker-every-banner-settings-widget` s9 done (all) · orchestrator
+- 2026-11-17 22:32 UTC · `banner-widget-shapes-plus-change-icon` s14 done (all) · foreign-write
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 22:34 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 22:35 UTC · `auto-lander-never-wait-missing-ui-review` added (0 steps) (all) · pending
+- 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · pending
+- 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` → queued, note (all) · console
+- 2026-11-17 22:37 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · orchestrator
+- 2026-11-17 22:38 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · pending
+- 2026-11-17 22:38 UTC · `one-true-source-for-every-setting` → queued, note (all) · console
 
 ## Token passes (log)
 
