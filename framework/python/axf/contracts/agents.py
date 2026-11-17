@@ -127,9 +127,24 @@ def to_lines(v: Any, max_items: int = LIMITS["listItems"], max_len: int = LIMITS
     return [x.strip()[:max_len] for x in (y.strip() for y in raw) if x][:max_items]
 
 
-def _voice(v: Any) -> dict[str, str]:
+VOICE_RANGES = {"rate": (0.5, 2.0), "pitch": (0.0, 2.0)}
+
+
+def _voice(v: Any) -> dict[str, Any]:
+    """The voice slot; rate (0.5-2) and pitch (0-2) are optional and only kept when set."""
     o = v if _is_obj(v) else {}
-    return {k: _str(o.get(k), LIMITS["voice"]) for k in ("provider", "voiceId", "hint")}
+    out: dict[str, Any] = {k: _str(o.get(k), LIMITS["voice"]) for k in ("provider", "voiceId", "hint")}
+    for k, (lo, hi) in VOICE_RANGES.items():
+        raw = o.get(k)
+        if isinstance(raw, bool) or raw is None or raw == "":
+            continue
+        try:
+            n = float(raw)
+        except (TypeError, ValueError):
+            continue
+        if n == n and n not in (float("inf"), float("-inf")):
+            out[k] = round(min(hi, max(lo, n)), 2)
+    return out
 
 
 def _tags(v: Any) -> list[str] | None:

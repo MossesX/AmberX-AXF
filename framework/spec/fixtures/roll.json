@@ -48,6 +48,7 @@
     "sizing": true,
     "agent-card": false,
     "job-type": false,
+    "voice": false,
     "card": false,
     "help": false,
     "demonstration": false,

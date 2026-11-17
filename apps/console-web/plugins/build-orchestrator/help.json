@@ -358,6 +358,34 @@
         "title": "Max retries",
         "text": "How many times a crashed or killed build is retried since it last ticked a step. Past it the build goes back to Pending with a banner item and an alert. Account stops (usage limit, login) never count.",
         "kind": "field"
+      },
+      {
+        "target": "dry-run-only",
+        "title": "Dry run only",
+        "text": "Turns “Dry run only” on or off. It takes effect straight away and is remembered. Part of Build orchestrator.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "tell-amberx-what-was-cleaned",
+        "title": "Tell AmberX what was cleaned",
+        "text": "Turns “Tell AmberX what was cleaned” on or off. It takes effect straight away and is remembered. Part of Build orchestrator.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "run-every-minutes",
+        "title": "Run every (minutes)",
+        "text": "Where you set “Run every (minutes)”. Change it and the app uses the new value. Part of Build orchestrator.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "fresh-session",
+        "title": "Fresh session",
+        "text": "Shows “Fresh session”. Part of Build orchestrator.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

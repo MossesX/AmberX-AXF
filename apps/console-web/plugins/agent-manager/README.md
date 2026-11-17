@@ -58,7 +58,20 @@ marked dangerous; container tools always are. Add-on items are listed and editab
   `container_redeploy` (only *propose*: staged into the assistant turn's change batch, approved on a card, snapshot first).
 - Settings → Plugins → Agent manager → **Safety**: only ticked agents get dangerous tools (default: `coder`). Personas
   and skills can't change it. Container tools appear only with `axf.containers@1`; proposal tools also need `axf.snapshots@1`.
-- Agents have a **voice slot** (`voice: {provider, voiceId, hint}`), empty until a voice plugin provides voices.
+- Agents have a **voice slot** (`voice: {provider, voiceId, hint, rate?, pitch?}`; personas `voiceSlot`, which agents
+  inherit while theirs is empty). **Voices** tab (and the picker in each agent / persona form): provider (device voice,
+  OpenAI, ElevenLabs through Agent voice's key), the voice list, speed and pitch, Preview, and **Match from hint**
+  (`server/voices.py`: "cat-like" → a bright playful voice, higher pitch; "calm" → a calm voice, a little slower; gender
+  and accent words count). Group chat audio (agent-swarm) speaks each crew member with the Agent manager voice of the
+  agent with the same id or name: cast < Agent manager voice < the room's own per-agent override.
+  - REST: `GET voices` (providers, OpenAI voices, every employee's slot), `POST voices/catalogue {provider, voices?}`,
+    `POST voices/match {hint, provider, voices?}`, `PUT voice/{agents|personas}/{id} {provider?, voiceId?, hint?, rate?,
+    pitch?, match?, voices?, clear?}`. MCP / CLI: the same as plugin commands (`agent-manager_voices`,
+    `agent-manager_voices-match`, `agent-manager_voice-by-coll-by-iid`; `axf agent-manager voices-match --hint calm`).
+  - Console actions (deep link + MCP console actions): `agent-manager.voices`, `agent-manager.tab:<section>`,
+    `agent-manager.voice.match:<agent|persona>:<id>`, `.voice.match-all`, `.voice.set:<kind>:<id>:<provider>:<voiceId>`,
+    `.voice.tune:<kind>:<id>:<speed%>:<pitch%>`, `.voice.preview:<kind>:<id>`, `.voice.say:<id>`.
+  - AmberX voice: "open agent voices", "match all voices", "how does <name> sound", "match <name>'s voice".
 
 ## Integration (capability services, never folder names)
 - Provides **`axf.agents@1`**: `list_agents()` (+ `dangerous`), `get_agent(id)` (+ `voice`, `writeMode`), `run_tool(id, name, args, ctx)` (ctx `stage` collects proposals), `memory_context(id, query)`, `record_turn(id, user, reply, meta)`.

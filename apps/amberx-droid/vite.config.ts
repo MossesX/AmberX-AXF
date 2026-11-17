@@ -20,7 +20,7 @@ const consoleAxf = join(consoleSrc, 'axf') + sep;
 const consoleAliases = [
   { find: /^@console\/axf\//, replacement: `${src}/axf/` },
   { find: /^@console\/plugins$/, replacement: `${src}/console/plugins.ts` },
-  { find: /^@console\/api$/, replacement: `${src}/console/api.ts` }, // token store only: the page holds no console token
+  { find: /^@console\/api$/, replacement: `${src}/console/api.ts` }, // token store (the page holds no console token) + device-local view state (readLocal / writeLocal)
   { find: /^@console\/pluginLifecycle$/, replacement: `${src}/console/pluginLifecycle.tsx` },
   { find: /^@console\/watchLive$/, replacement: `${src}/console/watchLive.tsx` }, // Watch live previews need the console token: none here
   { find: /^@console\/changeBatch$/, replacement: join(consoleSrc, 'changeBatch.tsx') },

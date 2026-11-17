@@ -7,11 +7,13 @@ import { MemoryDefaultsPanel, ModelPanel, SafetyPanel, TrainingPanel, WizardsPan
 import './agent-manager.css';
 import { appMenu } from './menu';
 import { VinnyCommandsDialog, VinnyPanel } from './vinny';
+import { registerVoiceActions, registerVoicePhrases } from './voice-actions';
 
 /*
  * Agent manager plugin (web part) — see server/__init__.py for the model.
  *  - view "agent-manager" (nav → Plugins → Agent manager)
  *  - dialog "agent-manager.vinny" — Vinny's commands and triggers (runs without Claude, through axHub)
+ *  - Voices tab: a voice for every agent and persona (voice-picker.tsx, actions in voice-actions.ts)
  *  - dialog "agent-manager.wizard" { kind: builder | agent | skill | tool | training, agentId? } — open it from anywhere
  *  - Settings → Plugins → Agent manager: wizards, add-ons, model, training & Firecrawl, memory defaults, install & uninstall
  * The AI assistant chats as these agents through the server's axf.agents@1 service; nothing here names that plugin.
@@ -25,6 +27,8 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('agent-manager.vinny', () => rt.openDialog('agent-manager.vinny'), { label: "Vinny's commands and triggers" });
     rt.actions.register('agent-manager.wizard', ([kind]) => rt.openDialog('agent-manager.wizard', { kind: kind && WIZARDS[kind] ? kind : 'builder' }), { label: 'Open an agent manager wizard' });
+    registerVoiceActions(rt);
+    void registerVoicePhrases(ID);
   },
   views: { 'agent-manager': { title: 'Agent manager', icon: 'layers', render: () => <AgentManagerView /> } },
   dialogs: {
