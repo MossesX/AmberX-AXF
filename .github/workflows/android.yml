@@ -409,6 +409,7 @@ jobs:
             python apps/console-web/server/test_readcache.py         # shared read cache (single-flight, stale-while-revalidate, file-change) + node spawn cap
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/server/test_widget_icons.py      # widget-icons@1: /api/widget-icons list / set / reset against a look document
+            node framework/spec/check-widget-icons-parity.mjs        # widget-icons@1: REST, MCP, CLI, console actions, control@1 and voice all there; CLI = server on one look document
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm, liveness, failover to the next live console, wake, late acks, build focus  # axf-plugin:console-commands
             python apps/console-web/plugins/output-recorder/test_transcripts.py  # axf-plugin:output-recorder
             python apps/console-web/plugins/claude-session/test.py  # axf-plugin:claude-session
