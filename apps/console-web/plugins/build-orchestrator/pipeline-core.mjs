@@ -730,6 +730,9 @@ export function alertFor(kind, d = {}) {
     case 'oauth': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'error', title: `Claude login failed: ${d.account || '?'} · ${str(d.title, 100)}`,
       body: str(`${d.error || 'sign-in refused'}\n${d.id} is held in Pending. It goes back to the Queue by itself once ${d.account || 'the account'} signs in again (checked by the account health sweep${d.everyMin ? `, every ${d.everyMin} min` : ''}). To fix it now: Claude accounts → ${d.account || 'the account'} → Sign in.`, 1500) };
     case 'oauth-ok': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'success', title: `Claude login works again: ${d.account || '?'}`, body: str(`${d.id} is back in the Queue (re-queued once, automatically).`, 1500) };
+    case 'group-conflict': return { ...base, key: `pipeline:group-conflict:${d.id}:${d.group}`, severity: 'error', title: `Merge conflict: ${str(d.title, 100)} · group ${d.group}`,
+      body: str([`Step group ${d.group} of ${d.id} finished but could not merge onto the build branch${list(d.files).length ? ` (${list(d.files).slice(0, 8).join(', ')})` : ''}.`, 'The build branch is unchanged; the groups after it wait. Fix with Claude (the banner item, the Groups panel, or `pipeline.mjs groups fix ' + d.id + ' ' + d.group + '`) merges the build branch into the group branch, resolves it and merges again.'].join('\n'), 1500),
+      actions: [{ id: 'fix', label: 'Fix with Claude', method: 'POST', path: `/api/plugins/build-orchestrator/step-groups/${d.id}/${d.group}/fix` }] };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }

@@ -385,10 +385,48 @@ def ensure_health() -> bool:
                       "run": lambda: sees_probe(), "interval": 300,
                       "breaks": "Overview, Build queue and Plan (console and MCP) show 0 builds, so nobody sees what is running.",
                       "instructions": ["`node framework/cli/builds-store.mjs verify` on the VPS.", "`node framework/cli/builds-live.mjs sync` in /opt/axf brings main's store in."]}, FOLDER)
+        reg.register({"id": GROUPS_HEALTH_ID, "label": "Step groups merge back", "service": "console", "order": 57, "severity": "error",
+                      "run": lambda: groups_conflict_probe(), "interval": 120,
+                      "breaks": "A split build can't land: one of its step groups hit a merge conflict, so the groups after it wait and no PR opens.",
+                      "instructions": ["Fix with Claude: a session merges the build branch into the group branch, resolves it and the next tick merges again.",
+                                       "`node apps/console-web/plugins/build-orchestrator/pipeline.mjs groups conflicts` lists them; `groups fix <build> <group>` starts the fix."],
+                      "autoFix": {"label": "Fix with Claude", "run": lambda: groups_conflict_fix(), "mode": "ask"}}, FOLDER)
     except Exception:  # noqa: BLE001 — the orchestrator works without its health item
         return False
     _health_done = True
     return True
+
+
+GROUPS_HEALTH_ID = "build-groups-merge"
+
+
+def groups_conflict_probe(conflicts: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Red while any step group of a split build sits in merge conflict (step-groups@1), with what broke and the fix."""
+    if conflicts is None:
+        try:
+            conflicts = _pipeline("groups", "conflicts").get("conflicts") or []
+        except HTTPException as e:
+            return {"status": "warn", "summary": f"Can't read the step groups: {e.detail}", "unreachable": True}
+    if not conflicts:
+        return {"status": "ok", "summary": "No step group is stuck on a merge conflict."}
+    c = conflicts[0]
+    more = f" (+{len(conflicts) - 1} more)" if len(conflicts) > 1 else ""
+    fixing = " Fix with Claude is running." if c.get("fixing") else ""
+    return {"status": "error", "summary": f"{c['id']} group {c['group']} can't merge back: {c.get('note', '')[:200]}{more}.{fixing}",
+            "details": [f"{x['id']}/{x['group']}: {x.get('note', '')}" for x in conflicts[:8]],
+            "link": f"#/build-orchestrator?build={c['id']}&group={c['group']}"}
+
+
+def groups_conflict_fix() -> dict[str, Any]:
+    """Auto fix: start Fix with Claude on the first conflict that has no fix running."""
+    try:
+        todo = [c for c in (_pipeline("groups", "conflicts").get("conflicts") or []) if not c.get("fixing")]
+        if not todo:
+            return {"state": "done", "message": "Every conflict has a fix running already."}
+        r = _pipeline("groups", "fix", todo[0]["id"], todo[0]["group"])
+        return {"state": "started", "message": f"Fix with Claude started on {r.get('account', '?')} for {todo[0]['id']}/{todo[0]['group']}.", "waitS": 900}
+    except HTTPException as e:
+        return {"state": "failed", "message": str(e.detail)[:300]}
 
 
 ensure_health()

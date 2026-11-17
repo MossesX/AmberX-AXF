@@ -613,7 +613,7 @@ export function runBuildRules(id, phase, { env = process.env, by = 'dispatcher' 
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief, then the rules. */
-export function briefFor(b, rules, { account, model, kind = '', group = null, branch = '' }, { blocks = storeBlocks(b) } = {}) {
+export function briefFor(b, rules, { account, model, kind = '', group = null, branch = '', fix = false }, { blocks = storeBlocks(b) } = {}) {
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
   // a step group's session (step-groups@1) sees only its group's steps and its own sub-branch; Brett's words stay whole
@@ -623,6 +623,7 @@ export function briefFor(b, rules, { account, model, kind = '', group = null, br
     saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
     '## What to build', orch.brief(view, rules, { blocks }), '',
     ...(group ? [groupBlock(b, group, view.branch), ''] : []),
+    ...(group && fix ? [[`## Merge conflict: fix it`, `Group ${group.id} could not merge onto ${SG.buildBranchOf(b)}: ${group.note || 'merge conflict'}. Its steps are done; your only job: in this worktree run \`git merge ${SG.buildBranchOf(b)}\` (merge, never rebase), resolve every conflict keeping both sides' intent, run the checks of the files you touched, commit, push ${view.branch}, then stop. Do not tick or change steps. The orchestrator merges the group again when you end.`].join('\n'), ''] : []),
     `## Pipeline`,
     `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
     // the session's rules from the Build rules tab; with this block the launcher appends no second one
@@ -639,7 +640,7 @@ export const groupKey = (id, gid) => `${id}--${gid}`;
  * dispatch token for `<build>--<gid>` and the launcher with --group / --worktree. The build lock is taken on the group
  * key in the group's worktree, so groups of one build run beside each other but never twice.
  */
-export function launchGroup(b, gid, { account, model, kind = '', phase = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+export function launchGroup(b, gid, { account, model, kind = '', phase = '', fix = false }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const g = BP.groupsOf(b).find((x) => x.id === gid);
   if (!g) throw Object.assign(new Error(`${b.id} has no group ${gid}`), { code: 2 });
   ensureWorktree(b.id, env);
@@ -647,7 +648,7 @@ export function launchGroup(b, gid, { account, model, kind = '', phase = '' }, {
   const { dir, branch } = SG.ensureGroupWorktree(b.id, gid, { env });
   const key = groupKey(b.id, gid);
   lock.acquire(key, { dir, account, by: 'dispatcher', env: lockEnv(env) });
-  writeFileSync(join(dir, '.axf-brief.md'), `${briefFor(b, rules, { account, model, kind, group: g, branch })}\n`);
+  writeFileSync(join(dir, '.axf-brief.md'), `${briefFor(b, rules, { account, model, kind, group: g, branch, fix })}\n`);
   const token = issueDispatch(key, { account, model, env });
   const mk = modelKey(model) || 'opus';
   const args = ['--name', key, '--group', gid, '--worktree', dir, '--account', account, '--brief', '.axf-brief.md', '--log', `${key}.log`, '--', '--model', MODEL_IDS[mk], ...CLAUDE_ARGS];
@@ -873,7 +874,7 @@ export function checkGroupEnds({ alert = () => {}, env = process.env, state = lo
         SG.updateGroup(b.id, g.id, { state: 'ready-to-merge', note: `every step of ${g.id} done: waiting for its turn to merge` }, { action: 'pipeline:group-done' });
         out.push({ id: b.id, group: g.id, outcome: 'finished', state: 'ready-to-merge' }); continue;
       }
-      if (g.state !== 'running' || !g.session) continue;
+      if (!['running', 'conflict'].includes(g.state) || !g.session) continue;
       const since = Date.parse(state.groupRuns?.[key]?.launchedAt || g.startedAt || 0) - 5000;
       const end = events.filter((e) => e.event === 'session-end' && e.session === g.session && Date.parse(e.at || 0) >= since).pop();
       let exit = null; let kind = '';
@@ -892,6 +893,85 @@ export function checkGroupEnds({ alert = () => {}, env = process.env, state = lo
 }
 
 /**
+ * Every tick: merge the groups whose turn it is onto their build branch (step-groups.mjs mergeReady: merge order,
+ * merge never rebase, the store and THREADS drivers). A conflict marks the group `conflict` and raises the alert the
+ * banner and the phone show (Fix with Claude); once every group is merged the build is built and lands as one PR.
+ */
+export function mergeTick({ alert = () => {}, env = process.env } = {}) {
+  const out = [];
+  for (const b of live(loadStore()).filter((x) => BP.isSplit(x) && !['built', 'complete', 'archived'].includes(x.status))) {
+    if (!SG.mergeQueue(b).length) continue;
+    const r = SG.mergeReady(b.id, { env });
+    out.push(r);
+    for (const gid of r.merged) { logLine({ event: 'group-merged', build: b.id, group: gid }); crewSay('dispatcher', 'done', `${b.id}: group ${gid} merged onto ${SG.buildBranchOf(b)}.`, { ref: b.id }); }
+    if (r.conflict) {
+      setPipeline(b.id, {}, { note: `Group ${r.conflict.group}: ${r.conflict.note}.`, action: 'pipeline:group-conflict' });
+      alert('group-conflict', { id: b.id, title: b.title, group: r.conflict.group, files: r.conflict.files, note: r.conflict.note });
+      logLine({ event: 'group-conflict', build: b.id, group: r.conflict.group, files: r.conflict.files });
+      crewSay('dispatcher', 'blocked', `${b.id}: group ${r.conflict.group} hit a merge conflict (${r.conflict.files.slice(0, 3).join(', ') || 'see the build'}). Fix with Claude is on the banner.`, { ref: b.id });
+    }
+    if (r.allMerged) landSplitBuild(b.id, { alert, env });
+  }
+  return out;
+}
+
+/** Every group merged: the build is built (its PR comes from the build branch, step s11's landing). */
+export function landSplitBuild(id, { alert = () => {}, env = process.env } = {}) {
+  const b = setPipeline(id, { note: '' }, { status: 'built', note: 'Every step group is merged onto the build branch: built.', action: 'pipeline:groups-merged' });
+  alert('ended', { id, title: b.title, outcome: 'finished', note: `Every step group of ${id} is merged onto ${SG.buildBranchOf(b)}.` });
+  logLine({ event: 'groups-merged', build: id });
+  return { id, status: b.status };
+}
+
+/**
+ * Fix with Claude on a group that hit a merge conflict: a session on the group's sub-branch (an account that runs
+ * Opus, picked like any launch) merges the build branch into it (merge, never rebase), resolves the conflicts, commits
+ * and pushes, and stops; its end makes the group ready-to-merge again and the next tick merges it cleanly.
+ */
+export function fixGroupConflict(id, gid, { env = process.env, by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const store = loadStore(); const b = storeCore.findBuild(store, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const g = BP.groupsOf(b).find((x) => x.id === gid); if (!g) throw Object.assign(new Error(`${b.id} has no group ${gid}`), { code: 2 });
+  if (g.state !== 'conflict') throw Object.assign(new Error(`${b.id}/${gid} is ${BP.GROUP_STATE_LABEL[g.state] ?? g.state}: nothing to fix`), { code: 2 });
+  if (g.session) throw Object.assign(new Error(`${b.id}/${gid}: a fix is running already (${g.session})`), { code: 2 });
+  const settings = loadSettings(); const accounts = accountsNow(store, settings);
+  const options = P.routeOptions(b, accounts, 'Opus', settings);
+  if (!options.length) throw Object.assign(new Error(`no account can take the fix now: ${P.routeFor(b, accounts, 'Opus', settings).why}`), { code: 2 });
+  let lastErr = null;
+  for (const o of options.slice(0, MAX_PICK_TRIES)) {
+    try {
+      const r = launchGroup(b, gid, { account: o.account, model: 'Opus', kind: o.kind, fix: true }, { rules: rulesOf(store), env });
+      SG.updateGroup(b.id, gid, {}, { by, action: 'pipeline:group-fix', fn: (x) => Object.assign(x, { account: o.account, session: r.session, slot: r.slot, note: `Fix with Claude on ${o.account}: merging ${SG.buildBranchOf(b)} into ${x.branch || 'the group branch'}` }) });
+      const st = loadState(); st.groupRuns = { ...(st.groupRuns ?? {}), [groupKey(b.id, gid)]: { ...(st.groupRuns?.[groupKey(b.id, gid)] ?? {}), launchedAt: nowIso(), fix: true, account: o.account, session: r.session } }; saveState(st);
+      logLine({ event: 'group-fix', build: b.id, group: gid, account: o.account, session: r.session, by });
+      return { id: b.id, group: gid, account: o.account, session: r.session };
+    } catch (e) { lastErr = e; if (e.code === 'live') break; }
+  }
+  throw Object.assign(new Error(`Fix with Claude did not start: ${str(lastErr?.message, 300)}`), { code: 1 });
+}
+
+/** Split builds with a group in merge conflict: [{ id, title, group, note }] (the banner item and its Fix with Claude). */
+export function groupConflicts() {
+  return live(loadStore()).filter((b) => BP.isSplit(b)).flatMap((b) => BP.groupsOf(b).filter((g) => g.state === 'conflict').map((g) => ({ id: b.id, title: b.title, group: g.id, note: g.note, fixing: !!g.session })));
+}
+
+/** One build's step groups as every surface shows them (pipeline-core groupRows) plus its settings' view of a split. */
+export function groupsOfBuild(id) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  return { id: b.id, title: b.title, status: b.status, branch: SG.buildBranchOf(b), ...P.groupRows(b), mergeQueue: SG.mergeQueue(b) };
+}
+
+/** `pipeline.mjs groups …`: the step groups of a build (step-groups@1). */
+function groupsCli(rest, { out }) {
+  const [sub = 'list', id, gid] = rest;
+  const need = (x, what) => { if (!x) throw Object.assign(new Error(`say which ${what}: pipeline.mjs groups ${sub} <build>${what === 'group' ? ' <group>' : ''}`), { code: 2 }); return x; };
+  if (sub === 'conflicts') { const c = groupConflicts(); return out({ ok: true, conflicts: c }, c.map((x) => `${x.id}/${x.group}: ${x.note}`).join('\n') || 'no group in merge conflict'); }
+  if (sub === 'list') { const r = groupsOfBuild(need(id, 'build')); return out({ ok: true, ...r }, [r.line, ...r.groups.map((g) => `  ${g.id.padEnd(4)} ${g.label.padEnd(18)} ${g.steps.done}/${g.steps.total} · merge #${g.mergeOrder + 1}${g.account ? ` · ${g.account}` : ''}${g.branch ? ` · ${g.branch}` : ''}`)].join('\n')); }
+  if (sub === 'merge') { const r = gid ? SG.mergeGroup(need(id, 'build'), gid, { force: true }) : SG.mergeReady(need(id, 'build')); if (!gid && r.allMerged) landSplitBuild(r.id); return out({ ok: true, ...r }, gid ? r.note : `${r.id}: merged ${r.merged.join(', ') || 'nothing'}${r.conflict ? ` · conflict in ${r.conflict.group}: ${r.conflict.note}` : ''}`); }
+  if (sub === 'fix') { const r = fixGroupConflict(need(id, 'build'), need(gid, 'group')); return out({ ok: true, ...r }, `${r.id}/${r.group}: Fix with Claude started on ${r.account} (${r.session || 'queued'})`); }
+  throw Object.assign(new Error(`groups ${sub}: list | conflicts | merge | fix`), { code: 2 });
+}
+
+/**
  * A group's session ended (claude-headless.sh → pipeline.mjs exit <build> --group <gid>): end its run at once and run
  * one tick in-process, so a finished group merges and the groups waiting on it start without waiting for the cron.
  */
@@ -899,7 +979,7 @@ export function onGroupExit(id, gid, { session = '', exit = 0, kind = '', env = 
   if (kind && !EXIT_KINDS.includes(kind)) throw Object.assign(new Error(`kind is one of ${EXIT_KINDS.join(', ')}`), { code: 2 });
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   const g = BP.groupsOf(b).find((x) => x.id === gid); if (!g) throw Object.assign(new Error(`${b.id} has no group ${gid}`), { code: 2 });
-  if (g.state !== 'running' || (session && g.session && g.session !== session)) return { ok: true, id: b.id, group: gid, ended: null, tick: null, why: 'this run was already ended (or another session holds the group)' };
+  if (!['running', 'conflict'].includes(g.state) || !g.session || (session && g.session !== session)) return { ok: true, id: b.id, group: gid, ended: null, tick: null, why: 'this run was already ended (or another session holds the group)' };
   const ended = endGroupRun(b, gid, { exit: Number.isInteger(exit) ? exit : Number(exit) || 0, kind, settings: loadSettings(env), env });
   let t = null;
   if (runTick) {
@@ -1064,6 +1144,8 @@ export function tick({ env = process.env } = {}) {
   const ended = checkEnds({ alert, env });
   state.groupRuns = state.groupRuns && typeof state.groupRuns === 'object' ? state.groupRuns : {};
   try { ended.push(...checkGroupEnds({ alert, env, state })); } catch (e) { logLine({ event: 'group-ends-failed', error: str(e.message, 300) }); }
+  let merges = [];
+  try { merges = mergeTick({ alert, env }); } catch (e) { logLine({ event: 'group-merge-failed', error: str(e.message, 300) }); }
   let authRequeued = [];
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
@@ -1157,7 +1239,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, intake: inta, ended, merges, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
 }
 
 const MAX_PICK_TRIES = 4;
@@ -1426,6 +1508,7 @@ async function main(argv) {
     const r = requeueStuck({ apply: has('apply'), by });
     return out({ ok: true, ...r }, r.found.length ? [...r.found.map((f) => `${r.apply ? (r.moved.includes(f.id) ? 'requeued' : 'left') : 'would requeue'} ${f.id}: ${f.why}, next ${f.next || '?'}`), r.apply ? '' : '(dry run: --apply moves them)'].filter(Boolean).join('\n') : 'no Pending build is parked after a finished phase');
   }
+  if (cmd === 'groups') return groupsCli(rest, { flag, has, out, by });
   if (cmd === 'exit') {
     // the dispatcher's lock first: re-exec under flock (the cron tick's lock) unless already inside it or no flock here
     const lock = pipelineLock();

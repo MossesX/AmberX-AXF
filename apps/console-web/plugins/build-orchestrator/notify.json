@@ -105,6 +105,21 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "pipeline.group-conflict",
+      "label": "Step group merge conflict",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A step group of a split build finished but could not merge onto the build branch (step-groups@1). The build branch is unchanged and the groups after it wait. Fix with Claude merges the build branch into the group branch, resolves the conflict and merges again.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:group-conflict"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
     }
   ]
 }

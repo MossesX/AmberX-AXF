@@ -16,7 +16,7 @@
  * (tests: folders, no git).
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, rmSync, symlinkSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, symlinkSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
@@ -119,6 +119,93 @@ export function removeGroupWorktree(id, gid, { env = process.env, by = 'dispatch
   return { dir, branch, ...done };
 }
 
+// ------------------------------------------------------------------ merge back (in merge order)
+
+/** The builds store's merge driver for this merge only (.gitattributes names it; a fresh clone may not have it registered). */
+export const MERGE_DRIVER = ['-c', `merge.axf-builds.driver=node "${join(REPO_ROOT, 'framework/cli/builds-live.mjs')}" merge-driver %O %A %B %P`, '-c', 'merge.axf-builds.name=AXF builds store (builds-live.mjs)'];
+/** A test worktree (AXF_PIPELINE_WORKTREE_MODE=mkdir) holding this file stands for a merge that conflicts; its lines are the files. */
+export const FAKE_CONFLICT_FILE = '.axf-merge-conflict';
+
+/**
+ * The groups that merge next, in merge order (pure): every ready-to-merge group after the merged ones, up to the first
+ * group that is not ready. Merge order is strict: a group that finished early waits for the ones before it.
+ */
+export function mergeQueue(b) {
+  const out = [];
+  for (const g of BP.groupsOf(b)) {
+    if (g.state === 'merged') continue;
+    if (g.state !== 'ready-to-merge') break;
+    out.push(g.id);
+  }
+  return out;
+}
+
+/** The build's own worktree on its branch (the merges land there), made when missing. */
+function buildWorktree(b, env) {
+  const dir = join(worktreesRoot(env), b.id);
+  if (existsSync(dir) || (env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') { mkdirSync(dir, { recursive: true }); return dir; }
+  const r = git(REPO_ROOT, 'worktree', 'add', dir, buildBranchOf(b));
+  if (r.status !== 0) throw err(`worktree for ${b.id}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`, 1);
+  linkModules(dir);
+  return dir;
+}
+
+/**
+ * Merge one finished group's sub-branch onto the build branch: `git merge --no-ff` (merge, never rebase) in the build
+ * worktree with the builds store's merge driver (THREADS and the memory files merge by union through .gitattributes),
+ * then push the build branch. Clean = `merged` (mergedAt), its worktree and sub-branch removed. A conflict is aborted
+ * (the build branch stays as it was) and marks the group `conflict` with the files in its note. `force` (Merge now)
+ * merges a ready group out of its turn. Returns { id, group, merged, conflict: [files], note, pushed }.
+ */
+export function mergeGroup(id, gid, { env = process.env, by = process.env.AXF_ACTOR || 'orchestrator', force = false } = {}) {
+  const { b, g, groups } = findGroup(id, gid);
+  if (!(b.groups ?? []).length) throw err(`${b.id} is not split into groups: it lands as one branch`);
+  if (g.state === 'merged') return { id: b.id, group: gid, merged: true, conflict: [], note: `${gid} is merged already`, pushed: false };
+  if (g.state !== 'ready-to-merge') throw err(`${b.id}/${gid} is ${BP.GROUP_STATE_LABEL[g.state] ?? g.state}: only a group with every step done merges`);
+  const before = groups.filter((x) => x.mergeOrder < g.mergeOrder && x.state !== 'merged').map((x) => x.id);
+  if (before.length && !force) throw err(`${b.id}/${gid} merges after ${before.join(', ')} (merge order); Merge now merges it first`);
+  const branch = g.branch || groupBranch(buildBranchOf(b), gid);
+  updateGroup(b.id, gid, { state: 'merging', note: `merging onto ${buildBranchOf(b)}` }, { by, action: 'pipeline:group-merging' });
+  const dir = buildWorktree(b, env);
+  let conflict = []; let pushed = false; let error = '';
+  if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') {
+    const f = join(g.worktree || groupWorktree(b.id, gid, env), FAKE_CONFLICT_FILE);
+    if (existsSync(f)) conflict = readFileSync(f, 'utf8').split('\n').map((x) => x.trim()).filter(Boolean);
+  } else {
+    const m = git(dir, ...MERGE_DRIVER, 'merge', '--no-ff', '--no-edit', '-m', `Merge step group ${gid} (${g.steps.join(', ')}) into ${buildBranchOf(b)}`, branch);
+    if (m.status !== 0) {
+      conflict = git(dir, 'diff', '--name-only', '--diff-filter=U').stdout.split('\n').filter(Boolean);
+      git(dir, 'merge', '--abort');
+      if (!conflict.length) error = (m.stderr || m.stdout).trim().slice(-300) || 'git merge failed';
+    } else pushed = git(dir, 'push', '-q', 'origin', `HEAD:${buildBranchOf(b)}`).status === 0;
+  }
+  if (conflict.length || error) {
+    const note = conflict.length ? `merge conflict in ${conflict.slice(0, 6).join(', ')}${conflict.length > 6 ? ` +${conflict.length - 6}` : ''}: Fix with Claude merges ${buildBranchOf(b)} into ${branch} and resolves it` : `merge failed: ${error}`;
+    updateGroup(b.id, gid, { state: 'conflict', note }, { by, action: 'pipeline:group-conflict', note: `${b.id}/${gid}: ${note.slice(0, 200)}` });
+    return { id: b.id, group: gid, merged: false, conflict, note, pushed: false };
+  }
+  const now = nowIso();
+  updateGroup(b.id, gid, { state: 'merged', mergedAt: now, note: `merged onto ${buildBranchOf(b)}${pushed ? ' and pushed' : ''}` }, { by, action: 'pipeline:group-merged', note: `${b.id}/${gid} merged` });
+  try { removeGroupWorktree(b.id, gid, { env, by }); } catch { /* cleaned up on the next merge or by hand */ }
+  return { id: b.id, group: gid, merged: true, conflict: [], note: `${gid} merged onto ${buildBranchOf(b)}`, pushed };
+}
+
+/**
+ * Merge every group whose turn it is (mergeQueue), stopping at the first conflict. Returns { id, merged: [gid…],
+ * conflict: { group, files, note } | null, allMerged }.
+ */
+export function mergeReady(id, { env = process.env, by = 'orchestrator' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw err(`no build "${id}"`);
+  const merged = []; let conflict = null;
+  for (const gid of mergeQueue(b)) {
+    const r = mergeGroup(b.id, gid, { env, by });
+    if (!r.merged) { conflict = { group: gid, files: r.conflict, note: r.note }; break; }
+    merged.push(gid);
+  }
+  const after = storeCore.findBuild(loadStore(), b.id);
+  return { id: b.id, merged, conflict, allMerged: BP.groupsOf(after).every((g) => g.state === 'merged') };
+}
+
 // ------------------------------------------------------------------ CLI
 
 async function main(argv) {
@@ -126,8 +213,9 @@ async function main(argv) {
   const [cmd = 'help', id, gid] = argv.filter((a) => !a.startsWith('--'));
   const out = (o, text) => console.log(json ? JSON.stringify({ ok: true, ...o }) : text);
   if (cmd === 'worktree') { const r = ensureGroupWorktree(id, gid); return out(r, `${id}/${gid}: ${r.dir} on ${r.branch}${r.made ? ' (made)' : ''}`); }
+  if (cmd === 'merge') { const r = gid ? mergeGroup(id, gid, { force: argv.includes('--force') }) : mergeReady(id); return out(r, JSON.stringify(r)); }
   if (cmd === 'cleanup') { const r = removeGroupWorktree(id, gid); return out(r, `${id}/${gid}: worktree ${r.dir} ${r.dir ? 'removed' : 'gone'}, branch ${r.branch}`); }
-  throw err('usage: step-groups.mjs worktree|cleanup <build> <group> [--json]');
+  throw err('usage: step-groups.mjs worktree|cleanup <build> <group> | merge <build> [<group> [--force]] [--json]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
