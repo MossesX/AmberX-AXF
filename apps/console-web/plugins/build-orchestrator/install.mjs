@@ -4,7 +4,7 @@
  * (/etc/cron.d/axf-watchdog, every minute under flock; skipped where there is no cron.d, e.g. the console container).
  */
 import { main } from '../../../../framework/cli/plugin-lifecycle.mjs';
-import { installCron } from './watchdog.mjs';
+import { installCron } from './recovery-watchdog.mjs';
 
 await main(['install', ...process.argv.slice(2)], 'build-orchestrator');
 if (!process.argv.includes('--dry-run')) {

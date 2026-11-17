@@ -394,7 +394,7 @@ def ensure_health() -> bool:
 ensure_health()
 
 # The build watchdog (build-watchdog@1): its systems check items ('Build watchdog', 'Builds the watchdog gave up on')
-from . import watchdog as watchdog_mod  # noqa: E402
+from . import recovery_watchdog as watchdog_mod  # noqa: E402
 
 watchdog_mod.ensure_health()
 

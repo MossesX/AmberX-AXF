@@ -24,7 +24,7 @@ Object.assign(process.env, {
   AXF_WATCHDOG_NOTIFY_LOG: notifyLog, AXF_WATCHDOG_ACCOUNTS: 'w-max,w-pro', AXF_WATCHDOG_CRON: join(tmp, 'cron.d', 'axf-watchdog'),
 });
 delete process.env.AXF_WATCHDOG_SETTINGS;
-const W = await import('./watchdog.mjs');
+const W = await import('./recovery-watchdog.mjs');
 
 let n = 0;
 const t = async (name, fn) => { try { await fn(); } catch (e) { console.error(`✗ ${name}`); throw e; } n += 1; console.log(`  ✓ ${name}`); };

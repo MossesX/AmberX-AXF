@@ -892,6 +892,6 @@
   },
   "opens": "main",
   "cli": {
-    "watchdog": "watchdog.mjs"
+    "recovery-watchdog": "recovery-watchdog.mjs"
   }
 }
