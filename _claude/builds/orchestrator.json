@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:08:20.664Z",
+ "updatedAt": "2026-11-17T20:08:26.236Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -180652,7 +180652,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:08:10.610Z",
+   "updatedAt": "2026-11-17T20:08:14.698Z",
    "builtAt": "",
    "notes": [
     {
@@ -180718,6 +180718,10 @@
     {
      "text": "Session stopped on its own with 10 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:08:10.610Z"
+    },
+    {
+     "text": "Watchdog fixed Separate settings per plugin + reset confirm dialog (step s9): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:08:14.698Z"
     }
    ],
    "approvals": [
@@ -182187,7 +182191,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T20:08:03.071Z",
+   "updatedAt": "2026-11-17T20:08:19.009Z",
    "builtAt": "",
    "notes": [
     {

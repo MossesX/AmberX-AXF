@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:02 UTC · `settings-interface-gear-every-plugin` note (all) · cli
 - 2026-11-17 19:02 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · cli
 - 2026-11-17 19:02 UTC · `reset-all-button-every-asset-override` note (all) · cli
 - 2026-11-17 19:02 UTC · `own-look-per-grid-and-tab-group` note (all) · cli
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:08 UTC · `live-build-status-real-time-grids-15` note (all) · orchestrator
 - 2026-11-17 20:08 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 - 2026-11-17 20:08 UTC · `terminal-main-tab-streaming-console-s` s7 done (all) · orchestrator
+- 2026-11-17 20:08 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 
 ## Token passes (log)
 
