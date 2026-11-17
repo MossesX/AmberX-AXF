@@ -24,6 +24,9 @@
  * (claude-workers route, every tried account excluded: pipeline.tried / planned). Past the cap, or every account tried:
  * the build goes to Pending with the reason as its note, in the Errors tab, with a banner item and an alert.
  *
+ *   … status [--json]              on/off, cron installed, last pass and its age (stale after 3 min), the last scan the host
+ *                                  saw, recent fixes, builds it gave up on
+ *   … requeue [<id>…]              Fix (requeue): builds it gave up on back to the Queue with a fresh retry count
  *   … cron                         what the axf-watchdog cron runs every minute: a pass when the watchdog is on and
  *                                  intervalMin has gone by since the last one, or when the console asked for one (request)
  *   … request [--by who]           ask the host for a pass now (the console container can't see tmux: the next cron pass runs it)
@@ -34,7 +37,7 @@
  * Every slot filled (Brett: "keep every slot filled"): after the recoveries, every pass runs the dispatcher tick
  * (pipeline.mjs tick, under its lock) while agent slots are free and Queue work waits, at most FILL_ROUNDS rounds. Slots
  * still idle with the Queue non-empty after that are a pass-level recovery with cause 'idle-slots' (action 'tick'; the
- * next tick runs the dispatcher's self-check), kept in watchdog.json and sent with the pass's FYI.
+ * next tick runs the dispatcher's self-check), kept in build-watchdog.json and sent with the pass's FYI.
  *
  * Phone FYI (Brett: "send an FYI to the phone for each fix"): every fix goes to the console's alerts API as source
  * `watchdog` (notify.json types: watchdog.fix, an FYI pushed to AmberX at normal priority, since low never leaves the
@@ -42,7 +45,7 @@
  * app with build, cause, action and attempt. fyi 'batch' (default): one push per pass for all its fixes; 'each': one per
  * fix. A give-up is always its own alert. Each sent fix gets `notified` (ISO) on its recovery record.
  *
- * Files: <pipeline dir>/watchdog.json (watchdog-state@1: last pass, recent fixes), next to the dispatcher's state.
+ * Files: <pipeline dir>/build-watchdog.json (watchdog-state@1: last pass, recent fixes), next to the dispatcher's state.
  * Environment for tests: AXF_WATCHDOG_SETTINGS (a JSON patch over the settings), AXF_WATCHDOG_ACCOUNTS (comma list of usable
  * accounts instead of deploy/claude-workers.mjs status), AXF_WATCHDOG_PROBE (a JSON map build → probe instead of the host).
  */
@@ -55,7 +58,7 @@ import { loadStore } from '../../../../framework/cli/builds-store.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import * as buildLock from '../../../../framework/cli/build-lock.mjs';
 import { hitOf, markLimit, release as workersRelease, route as workersRoute, status as workersStatus } from '../../../../deploy/claude-workers.mjs';
-import { endRun, makeConsole, pipeDir, pipelineLock, requestSelfCheck, setPipeline, slotsNow, tick, worktreeOf } from './pipeline.mjs';
+import { endRun, makeConsole, pipeDir, pipelineLock, queue as pipelineQueue, requestSelfCheck, setPipeline, slotsNow, tick, worktreeOf } from './pipeline.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { withStore } from '../../../../framework/cli/builds-store.mjs';
 
@@ -66,7 +69,7 @@ const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == nu
 const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 const headlessDir = (env = process.env) => env.AXF_HEADLESS_DIR || '/var/tmp/axf-headless';
 
-export const stateFile = (env = process.env) => join(pipeDir(env), 'watchdog.json');
+export const stateFile = (env = process.env) => join(pipeDir(env), 'build-watchdog.json');
 export const loadState = (env = process.env) => ({ $axf: SCHEMA_STATE, lastPass: '', lastFix: '', passes: 0, recent: [], ...(readJson(stateFile(env), {}) ?? {}) });
 function saveState(s, env = process.env) {
   const f = stateFile(env); mkdirSync(dirname(f), { recursive: true });
@@ -88,7 +91,7 @@ export function normSettings(raw = {}) {
   const bool = (v, d) => (v === true || v === 'true' || v === 'on' ? true : v === false || v === 'false' || v === 'off' ? false : d);
   return { ...W.normSettings({ ...o, enabled: bool(o.enabled, true) }), intervalMin: num('intervalMin'), cooldownMin: num('cooldownMin'), retryOtherAccount: bool(o.retryOtherAccount, true), fyi: o.fyi === 'each' ? 'each' : 'batch' };
 }
-export const settingsFile = (env = process.env) => join(pipeDir(env), 'watchdog-settings.json');
+export const settingsFile = (env = process.env) => join(pipeDir(env), 'build-watchdog-settings.json');
 /** The watchdog settings: defaults, then the saved settings, then AXF_WATCHDOG_SETTINGS (tests). */
 export function loadSettings(env = process.env) {
   let patch = {};
@@ -137,6 +140,29 @@ export function probeBuild(b, env = process.env) {
 }
 
 /**
+ * The build as the table counts its retries: a give-up hands the build to Brett, and his requeue starts a fresh count,
+ * so only the recoveries after its newest give-up count (the records themselves stay on the build).
+ */
+export function sinceGiveUp(b) {
+  const r = b.recoveries ?? []; const i = r.map((x) => x.action).lastIndexOf('give-up');
+  return i < 0 ? b : { ...b, recoveries: r.slice(i + 1) };
+}
+
+/** Builds the watchdog gave up on that still wait in Pending (the banner item, Fix = requeue). */
+export function gaveUp(store = loadStore()) {
+  return store.builds.filter((b) => !b.deleted && b.status === 'pending' && (b.recoveries ?? []).at(-1)?.action === 'give-up')
+    .map((b) => { const r = b.recoveries.at(-1); return { id: b.id, title: str(b.title, 120), at: r.at, cause: r.cause, exit: r.exit, attempt: r.attempt, step: r.step, note: r.note }; });
+}
+
+/** Fix (requeue): a gave-up build back to the Queue (pipeline.mjs queue), with a fresh retry count. */
+export function requeueGaveUp(ids = [], { by = process.env.AXF_ACTOR || 'watchdog-fix' } = {}) {
+  const want = gaveUp(); const pick = ids.length ? want.filter((g) => ids.includes(g.id)) : want;
+  const done = []; const failed = [];
+  for (const g of pick) { try { pipelineQueue(g.id, { by }); done.push(g.id); } catch (e) { failed.push({ id: g.id, error: str(e.message, 200) }); } }
+  return { requeued: done, failed, notGaveUp: ids.filter((i) => !want.some((g) => g.id === i)) };
+}
+
+/**
  * The dry run: every build marked Building, probed and decided. Returns { at, settings, builds: [{ id, title, status,
  * probe, decision }], stuck: [...the stuck ones] }. Nothing changes.
  */
@@ -149,7 +175,7 @@ export function scan({ env = process.env, store = loadStore(), settings = loadSe
     if (!W.isMarkedRunning(b)) continue;
     let probe;
     try { probe = probeBuild(b, env); } catch (e) { probe = { ...W.normProbe({}, at), error: str(e.message, 200) }; }
-    const decision = W.decide(b, probe, settings, { accounts: usable, now: probe.at || at });
+    const decision = W.decide(sinceGiveUp(b), probe, settings, { accounts: usable, now: probe.at || at });
     builds.push({ id: b.id, title: str(b.title, 120), status: b.status, account: b.pipeline?.account ?? '', session: b.pipeline?.session ?? '', launchedAt: b.pipeline?.launchedAt ?? '', probe, decision });
   }
   return { $axf: 'watchdog-scan@1', at, settings, accounts: usable, builds, stuck: builds.filter((x) => x.decision.stuck) };
@@ -159,7 +185,7 @@ export function scan({ env = process.env, store = loadStore(), settings = loadSe
 
 /** A per-build lock (mkdir, stale after 5 min): two passes never recover the same build at once. */
 function lockBuild(id, env) {
-  const d = join(pipeDir(env), 'watchdog-locks'); mkdirSync(d, { recursive: true });
+  const d = join(pipeDir(env), 'build-watchdog-locks'); mkdirSync(d, { recursive: true });
   const f = join(d, `${id}.lock`);
   try { mkdirSync(f); } catch {
     let age = 0; try { age = Date.now() - statSync(f).mtimeMs; } catch { /* gone */ }
@@ -286,7 +312,7 @@ export function fillSlots({ env = process.env, slotsOf = slotsNow, storeOf = loa
 }
 
 /**
- * One watchdog pass: scan, then recover every stuck build (per-build lock, cooldown). Writes watchdog.json (last pass,
+ * One watchdog pass: scan, then recover every stuck build (per-build lock, cooldown). Writes build-watchdog.json (last pass,
  * recent fixes). Returns { at, fixes: [record…], skipped: [{ id, why }], scan }.
  */
 export function run({ env = process.env, only = '', settings = loadSettings(env) } = {}) {
@@ -318,11 +344,32 @@ export function run({ env = process.env, only = '', settings = loadSettings(env)
   const st = loadState(env);
   saveState({ ...st, lastPass: at, passes: (st.passes ?? 0) + 1, ...(fixes.length ? { lastFix: at } : {}), lastStuck: sc.stuck.length, lastRunning: sc.builds.length,
     recent: [...(st.recent ?? []), ...fixes.map((f) => ({ at: f.at, buildId: f.buildId, title: f.title, step: f.step, cause: f.cause, exit: f.exit, action: f.action, attempt: f.attempt, account: f.account, notified: f.notified, note: f.note })), ...(fill.idle ? [fill.idle] : [])].slice(-KEEP_RECENT),
-    lastFill: { at, rounds: fill.rounds, launched: fill.launched, idle: !!fill.idle }, errors }, env);
+    lastFill: { at, rounds: fill.rounds, launched: fill.launched, idle: !!fill.idle }, errors,
+    // what the host saw (the console container can't probe tmux or pids: it shows this)
+    lastScan: { at: sc.at, builds: sc.builds.map((x) => ({ id: x.id, title: x.title, status: x.status, account: x.account, session: x.session, launchedAt: x.launchedAt,
+      probe: { pid: x.probe.pid, tmux: x.probe.tmux, lastSeenAt: x.probe.lastSeenAt, exit: x.probe.exit, exitKind: x.probe.exitKind, limit: x.probe.limit },
+      cause: x.decision.cause, stuck: x.decision.stuck, action: x.decision.action, attempt: x.decision.attempt, note: x.decision.note })) } }, env);
   return { $axf: 'watchdog-pass@1', at, fixes, skipped, errors, fill, scan: sc };
 }
 
 const line = (x) => `${x.id}: ${x.decision.cause}${x.decision.exit != null ? ` (exit ${x.decision.exit})` : ''} → ${x.decision.action}${x.decision.attempt ? ` · attempt ${x.decision.attempt}` : ''} · ${x.decision.note}`;
+
+// ------------------------------------------------------------------ status (health, REST, MCP, CLI, voice)
+
+export const STALE_PASS_MIN = 3;
+/**
+ * What the watchdog is doing: { settings, cron, lastPass, ageMin, stale, passes, lastFix, lastScan, recent, gaveUp,
+ * pending request }. `stale` = on and no pass for STALE_PASS_MIN minutes (the systems check's red).
+ */
+export function status({ env = process.env, now = Date.now() } = {}) {
+  const st = loadState(env); const settings = loadSettings(env);
+  const last = st.lastPass ? Date.parse(st.lastPass) : NaN;
+  const ageMin = Number.isFinite(last) && last > 0 ? Math.round((now - last) / 6e3) / 10 : null;
+  let gave = []; try { gave = gaveUp(); } catch { /* no store */ }
+  return { $axf: 'watchdog-status@1', ok: true, at: new Date(now).toISOString(), settings, cron: { file: cronFile(env), installed: cronInstalled(env) },
+    lastPass: st.lastPass || '', ageMin, stale: settings.enabled && (ageMin == null || ageMin > STALE_PASS_MIN), passes: st.passes ?? 0, lastFix: st.lastFix || '',
+    lastScan: st.lastScan ?? null, lastFill: st.lastFill ?? null, recent: (st.recent ?? []).slice(-20).reverse(), gaveUp: gave, request: readJson(requestFile(env)), errors: st.errors ?? [] };
+}
 
 // ------------------------------------------------------------------ phone FYI (axf.notify@1)
 
@@ -375,7 +422,7 @@ export function notifyFixes(fixes, { env = process.env, settings = loadSettings(
 
 export const CRON_NAME = 'axf-watchdog';
 export const cronFile = (env = process.env) => env.AXF_WATCHDOG_CRON || `/etc/cron.d/${CRON_NAME}`;
-export const requestFile = (env = process.env) => join(pipeDir(env), 'watchdog-request.json');
+export const requestFile = (env = process.env) => join(pipeDir(env), 'build-watchdog-request.json');
 export const CRON_LOG = '/var/log/axf-watchdog.log';
 
 /** The cron file: every minute, one pass at a time (flock), removes itself when the plugin is gone. */
@@ -445,6 +492,13 @@ export async function main(argv = process.argv.slice(2)) {
       ...(r.fill.launched.length ? [`  filled slots: started ${r.fill.launched.join(', ')}`] : []), ...(r.fill.idle ? [`  idle-slots: ${r.fill.idle.note}`] : []),
       ...r.fixes.map((x) => `  fixed ${x.buildId}: ${x.cause} → ${x.action}${x.attempt ? ` (attempt ${x.attempt})` : ''}`), ...r.skipped.map((x) => `  left ${x.id}: ${x.why}`), ...r.errors.map((x) => `  failed ${x.id}: ${x.error}`)].join('\n'));
   }
+  if (cmd === 'status') {
+    const r = status();
+    return out(r, [`watchdog ${r.settings.enabled ? 'on' : 'off'} · cron ${r.cron.installed ? 'installed' : 'missing'} · last pass ${r.lastPass || 'never'}${r.ageMin != null ? ` (${r.ageMin} min ago)` : ''}${r.stale ? ' · STALE' : ''} · ${r.passes} passes`,
+      ...(r.lastScan ? [`last scan: ${r.lastScan.builds.length} running, ${r.lastScan.builds.filter((b) => b.stuck).length} stuck`] : []),
+      ...r.gaveUp.map((g) => `  gave up: ${g.id} (${g.cause}, attempt ${g.attempt})`), ...r.recent.slice(0, 10).map((x) => `  ${x.at} ${x.buildId || 'slots'}: ${x.cause} → ${x.action}${x.attempt ? ` #${x.attempt}` : ''}${x.notified ? ' · told the phone' : ''}`)].join('\n'));
+  }
+  if (cmd === 'requeue') { const r = requeueGaveUp(f._); if (r.failed.length) process.exitCode = 1; return out({ ok: !r.failed.length, ...r }, `requeued ${r.requeued.join(', ') || 'nothing'}${r.failed.length ? ` · failed ${r.failed.map((x) => `${x.id}: ${x.error}`).join('; ')}` : ''}`); }
   if (cmd === 'cron') {
     const r = cronPass();
     if (!r.ran) return f.json ? out(r, '') : undefined; // quiet when not due: the cron log stays readable
@@ -453,7 +507,7 @@ export async function main(argv = process.argv.slice(2)) {
   if (cmd === 'request') { const r = requestRun({ by: typeof f.by === 'string' ? f.by : undefined, build: typeof f.build === 'string' ? f.build : '' }); return out({ ok: true, ...r }, `asked the host for a watchdog pass (${r.at}): the next cron minute runs it`); }
   if (cmd === 'install-cron') { const r = installCron({ dir: typeof f.dir === 'string' ? f.dir : undefined }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `cron not installed: ${r.skipped}` : `installed ${r.file}`) : `cron not installed: ${r.error}`); }
   if (cmd === 'remove-cron') { const r = removeCron(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.removed ? `removed ${r.file}` : `${r.file} was not there`) : `not removed: ${r.error}`); }
-  throw Object.assign(new Error(`unknown command ${cmd} (scan, run, cron, request, install-cron, remove-cron)`), { code: 2 });
+  throw Object.assign(new Error(`unknown command ${cmd} (status, scan, run, requeue, cron, request, install-cron, remove-cron)`), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === SELF) {

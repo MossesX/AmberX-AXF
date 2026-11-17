@@ -393,6 +393,11 @@ def ensure_health() -> bool:
 
 ensure_health()
 
+# The build watchdog (build-watchdog@1): its systems check items ('Build watchdog', 'Builds the watchdog gave up on')
+from . import watchdog as watchdog_mod  # noqa: E402
+
+watchdog_mod.ensure_health()
+
 
 
 # ---- the build pipeline (Brett, Nov 8 2026): Pending → Queue → Building, run by pipeline.mjs on the VPS host
