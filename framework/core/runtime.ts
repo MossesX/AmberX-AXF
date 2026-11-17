@@ -1479,6 +1479,8 @@ export class AxfRuntime {
   /** Everything that ever attached itself to the banner while this page ran. */
   /** The widget under the last right-click or long-press on the banner (`type:id`), set by the context menu host. */
   contextBannerWidget: string | null = null;
+  /** widget-icons@1: the widget id (`data-axf-widget-icon-id`) under the pointer when the context menu opened. */
+  contextWidgetIcon: string | null = null;
   private readonly bannerSeen = new Map<string, { type: string; id: string; origin: string; at: string; order: number; hint?: BannerWidgetHint }>();
 
   /** The setting holding the widget choices: one per app and form factor. A look setting, so it syncs through axHub. */

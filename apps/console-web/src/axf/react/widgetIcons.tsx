@@ -129,8 +129,13 @@ export function installWidgetIcons(rt: AxfRuntime, module: string): void {
   });
   // Right-click a banner widget: Choose icon… and Show as, after Widget settings
   rt.contextExtras.set('*:widget-icons', (target) => {
-    if (target !== 'banner' || !rt.contextBannerWidget) return [];
-    const hit = rt.bannerWidgets().find((w) => w.key === rt.contextBannerWidget);
-    return hit ? widgetIconMenu(rt, `banner:${hit.key}`, hit.label) : [];
+    if (target === 'banner' && rt.contextBannerWidget) {
+      const hit = rt.bannerWidgets().find((w) => w.key === rt.contextBannerWidget);
+      return hit ? widgetIconMenu(rt, `banner:${hit.key}`, hit.label) : [];
+    }
+    // any other host that marks an element with data-axf-widget-icon-id (settings tabs, sub-tabs, nav rows, setting rows)
+    const id = rt.contextWidgetIcon;
+    if (!id || !parseWidgetIconId(id)) return [];
+    return widgetIconMenu(rt, id, seenOf(rt).get(id)?.label ?? id.split(':').slice(2).join(':'));
   });
 }

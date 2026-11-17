@@ -35,6 +35,10 @@ export interface TabDef<T extends string = string> {
   badge?: number | string;
   /** tooltip; icons-only rows use the label */
   title?: string;
+  /** widget-icons@1: draw the icon alone (the label stays the accessible name and the tooltip) */
+  iconOnly?: boolean;
+  /** widget-icons@1: the widget id whose icon the person can pick here (right-click → Choose icon…) */
+  widgetIcon?: string;
   disabled?: boolean;
   /** false keeps the close button off this tab even when the row is closable */
   closable?: boolean;
@@ -217,9 +221,9 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     return (
       <button key={t.value} type="button" role="tab" aria-selected={active} aria-controls={undefined} disabled={t.disabled}
         className={`fx-tab${active ? ' is-active' : ''}${drag?.from === i ? ' is-dragging' : ''}${dropCls}`}
-        title={t.title ?? (data.display === 'icons' ? t.label : undefined)} data-axf-tab={t.value} onClick={() => pick(t.value)} {...dragProps(i)}>
+        title={t.title ?? (data.display === 'icons' || t.iconOnly ? t.label : undefined)} aria-label={t.iconOnly ? t.label : undefined} data-axf-tab={t.value} {...(t.widgetIcon ? { 'data-axf-widget-icon-id': t.widgetIcon } : {})} onClick={() => pick(t.value)} {...dragProps(i)}>
         {t.icon && <Icon name={t.icon} size={size === 'sm' ? 12 : 14} />}
-        <span className="fx-tab__text">{t.label}</span>
+        {!(t.iconOnly && t.icon) && <span className="fx-tab__text">{t.label}</span>}
         {badge}
         {closable && t.closable !== false && (
           <span role="button" tabIndex={0} className="fx-tab__close" aria-label={`Close ${t.label}`} onClick={(e) => { e.stopPropagation(); onClose!(t.value); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); onClose!(t.value); } }}>
