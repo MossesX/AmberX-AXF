@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:12 UTC · `settings-interface-gear-every-plugin` s24 done (all) · orchestrator
 - 2026-11-16 20:14 UTC · `banner-widget-shapes-more-than-circle` s18 done (all) · orchestrator
 - 2026-11-16 20:14 UTC · `settings-interface-gear-every-plugin` s25 done (all) · orchestrator
 - 2026-11-16 20:15 UTC · `banner-widget-shapes-more-than-circle` s19 done (all) · orchestrator
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:03 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
 - 2026-11-17 00:03 UTC · `server-auto-lander-fixes-lands` s2 done (all) · orchestrator
 - 2026-11-17 00:02 UTC · `every-plugin-screen-gets-a-settings-gear` s3 done (all) · orchestrator
+- 2026-11-17 00:04 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
