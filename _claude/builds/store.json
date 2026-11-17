@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7713,
- "updatedAt": "2026-11-17T19:49:35.764Z",
+ "rev": 7714,
+ "updatedAt": "2026-11-17T19:49:52.729Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -278823,7 +278823,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -278831,7 +278831,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-17T19:49:33.016Z",
+   "updatedAt": "2026-11-17T19:49:48.960Z",
    "builtAt": "",
    "notes": [
     {
@@ -278841,6 +278841,14 @@
     {
      "text": "Split by Claude into 14 steps (0 Fable).",
      "at": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-terminal-main-tab-streaming-console-s--sully.",
+     "at": "2026-11-17T19:49:44.799Z"
+    },
+    {
+     "text": "Brief only: brief is 30827 characters (~7707 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T19:49:48.960Z"
     }
    ],
    "approvals": [],
@@ -278860,13 +278868,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T19:35:17.196Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-terminal-main-tab-streaming-console-s--sully",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T19:49:42.413Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -278879,7 +278887,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T19:49:42.413Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -278888,7 +278896,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T19:49:42.413Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -279259,7 +279267,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
