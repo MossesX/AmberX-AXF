@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:04:41.393Z",
+ "updatedAt": "2026-11-17T15:04:50.715Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -169312,7 +169312,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "built",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -169320,8 +169320,8 @@
    "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T04:16:42.077Z",
-   "builtAt": "2026-11-17T04:16:42.077Z",
+   "updatedAt": "2026-11-17T15:04:44.373Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -169388,6 +169388,25 @@
     "addenda": []
    },
    "steps": [
+    {
+     "id": "s17",
+     "text": "Merge origin/main into this branch (PR #771). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres: data-files, DataStoreError, StoreConflict; keep main's store path and put this build's done-means-merged rules on top) and apps/console-web/src/control/inventory.json (take main's, regenerate). Tests green, push, merge the PR directly (merge queue is off). Brett: VPS/auto-lander PRs land first.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktpvmt01j9r7",
+     "createdAt": "2026-11-17T15:04:44.374Z"
+    },
     {
      "id": "s1",
      "text": "Read the server-auto-lander-fixes-lands attempt log and escalation code, then write the done-means-merged@1 contract in framework/spec/DONE-MEANS-MERGED.md: the real status ladder (building, fixing, landing, landed, plus escalated), when built and complete are allowed (merged to main, CI green on the merge commit, feature verify passed), the failure kinds (crash, ci-red, clash, push-fail, stalled, fell-to-pending), and how it reuses the auto-lander's attempt@1 and escalation records",
