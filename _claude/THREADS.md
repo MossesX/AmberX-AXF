@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:28 UTC · `fix-toolbar-settings-doing-nothing` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `merge-all-ready-buttons-server-side` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `account-order-hulu-moses-x-api-account` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `assets-menu-hide-any-asset-visible` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `badge-shape-picker-banners-screen-pill` → complete, note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:53 UTC · `flagship-professional-skin-covering-2` s16 done (all) · foreign-write
 - 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
 - 2026-11-17 22:54 UTC · `api-fully-drives-every-field-type-forms` → queued (all) · builds-live
+- 2026-11-17 22:54 UTC · `flagship-professional-skin-covering-2` s16 done (all) · foreign-write
+- 2026-11-17 22:54 UTC · `api-fully-drives-every-field-type-forms` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
