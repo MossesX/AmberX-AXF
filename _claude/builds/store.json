@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7942,
- "updatedAt": "2026-11-17T21:10:25.975Z",
+ "rev": 7943,
+ "updatedAt": "2026-11-17T21:10:36.003Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265894,7 +265894,7 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -265902,7 +265902,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T15:40:17.557Z",
+   "updatedAt": "2026-11-17T21:10:27.836Z",
    "builtAt": "",
    "notes": [
     {
@@ -265928,6 +265928,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:40:17.557Z"
+    },
+    {
+     "text": "Brett: CUT IT DOWN and land fast. Do only s6 (useHidden/Hideable), s7 (right-click Hide), s8 (Hidden list with Unhide), then s16 (re-bake the CONSOLE only, tests, PR, land). Console only. Skipped s9-s15 (Assets menu, REST/MCP/CLI/voice, multi-app rebake, help, UI Review) go to a follow-up build later.",
+     "at": "2026-11-17T21:10:27.836Z"
     }
    ],
    "approvals": [],
@@ -266404,7 +266408,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
