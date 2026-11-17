@@ -13,6 +13,7 @@ import { openHeadless, openUnseen, watchHeadless } from './headless';
 import { openByName } from './nav';
 import './terminal.css';
 import { appMenu } from './menu';
+import { registerClaudeLink } from './claude-link-actions';
 
 /*
  * Terminal plugin (web part):
@@ -59,6 +60,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('terminal.mirror', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), false), { label: 'Mirror a session (read-only)', params: true });
     rt.actions.register('terminal.jump', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), true), { label: 'Jump into a session', params: true });
     rt.actions.register('terminal.sessions', () => { if (!findHost(rt)) openFromContext(rt); else rt.toast('The sessions list is on the left of the terminal window', 'info'); }, { label: 'Terminal sessions' });
+    registerClaudeLink(rt); // the pinned Claude link tab: claude-link.* actions, control@1 view:terminal/tab:claude-link, ?view=terminal&tab=claude-link
     watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
     watchHeadless(rt); // headless Claude Code sessions on the VPS get a tab here, quietly by default (settings showHeadless, newSession)
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);

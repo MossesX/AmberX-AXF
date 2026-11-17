@@ -8,6 +8,7 @@
   POST claude-link/clear                            moves the view marker; the log is kept
   POST claude-link/ingest {event | events: [...]}   events from outside the console (framework/cli/claude-link-emit.mjs)
   GET/PUT claude-link/view {paused, kinds, q}       the tab's live view state (pause, filters), shared by UI, API and voice
+  POST claude-link/pause | resume | filter {kinds, q}   the same view changes as single commands (MCP, CLI, voice)
 """
 from __future__ import annotations
 
@@ -70,6 +71,19 @@ def build(bus: Callable[[], claude_link.Bus], view: dict[str, Any] | None = None
         for fn in list(watchers):
             fn(dict(v))
         return dict(v)
+
+    @r.post("/claude-link/pause")
+    def pause() -> dict[str, Any]:
+        return put_view({"paused": True})
+
+    @r.post("/claude-link/resume")
+    def resume() -> dict[str, Any]:
+        return put_view({"paused": False})
+
+    @r.post("/claude-link/filter")
+    def set_filter(body: dict[str, Any]) -> dict[str, Any]:
+        kinds = body.get("kinds")
+        return put_view({"kinds": [] if kinds in (None, "", "all") else kinds, **({"q": body["q"]} if "q" in body else {})})
 
     @r.post("/claude-link/ingest")
     def ingest(body: dict[str, Any]) -> dict[str, Any]:

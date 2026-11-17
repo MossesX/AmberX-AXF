@@ -209,6 +209,11 @@ class Routes(unittest.TestCase):
         self.assertEqual((v["paused"], v["kinds"], v["q"]), (True, ["mcp"], "vps"))
         self.assertEqual(self.c.put(self.base + "/view", json={"kinds": ["nope"]}).status_code, 400)
         self.assertTrue(self.c.get(self.base + "/state").json()["view"]["paused"])
+        self.assertFalse(self.c.post(self.base + "/resume").json()["paused"])
+        self.assertTrue(self.c.post(self.base + "/pause").json()["paused"])
+        f = self.c.post(self.base + "/filter", json={"kinds": "mcp,error", "q": "x"}).json()
+        self.assertEqual((f["kinds"], f["q"]), (["mcp", "error"], "x"))
+        self.assertEqual(self.c.post(self.base + "/filter", json={"kinds": "all"}).json()["kinds"], [])
 
     def test_stream_backlog_and_resume(self) -> None:
         for k in ("launch", "mcp", "exit"):
