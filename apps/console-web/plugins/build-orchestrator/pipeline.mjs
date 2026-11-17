@@ -399,7 +399,7 @@ export function askSplitter(prompt, settings, env = process.env) {
 export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const b = storeCore.findBuild(store, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
-  if (['built', 'complete', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to split`), { code: 2 });
+  if (['built', 'landing', 'landed', 'complete', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to split`), { code: 2 });
   let steps = []; let used = 'rules'; let note = ''; let error = '';
   if (provider !== 'rules') {
     const a = askSplitter(P.splitPrompt(b, rules), settings);
@@ -611,6 +611,8 @@ export function launch(b, { account, model, kind = '', phase = '' }, { rules, en
 
 // ------------------------------------------------------------------ session ends
 
+/** Statuses a build already holds when its last step was ticked before the session ended (done-means-merged@1: landing / landed; built / complete legacy). */
+const SETTLED = ['built', 'landing', 'landed', 'complete'];
 const headlessDir = (env = process.env) => env.AXF_HEADLESS_DIR || '/var/tmp/axf-headless';
 function readEvents(env = process.env) {
   let t = ''; try { t = readFileSync(join(headlessDir(env), 'events.jsonl'), 'utf8'); } catch { return []; }
@@ -632,7 +634,7 @@ function tmuxHas(name) {
  * Returns { id, outcome, status, reason, exit, phase, next, auth? }.
  */
 export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = false, alert = () => {}, settings = loadSettings(), env = process.env } = {}) {
-  const settled = b.status === 'built' || b.status === 'complete';
+  const settled = SETTLED.includes(b.status);
   // the wrapper's kind wins over the bare code: a crash is never a clean end; phase-done / stopped are clean ends whose
   // phase the store still has to confirm (a phase-done claim with its phase's steps open lands as 'stopped' in Pending)
   const code = kind === 'crash' ? (exit || 1) : kind === 'phase-done' || kind === 'stopped' ? 0 : exit;
@@ -680,8 +682,8 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   const events = readEvents(env);
   const out = [];
   for (const b of live(store)) {
-    // a build whose last step was ticked is already built / complete when its session ends: close the run record, keep the status
-    const settled = b.status === 'built' || b.status === 'complete';
+    // a build whose last step was ticked is already landing / landed when its session ends: close the run record, keep the status
+    const settled = SETTLED.includes(b.status);
     if (!b.pipeline?.session || !(b.status === 'running' || b.status === 'waiting' || settled)) continue;
     const since = Date.parse(b.pipeline.launchedAt || 0) - 5000;
     const end = events.filter((e) => e.event === 'session-end' && e.session === b.pipeline.session && Date.parse(e.at || 0) >= since).pop();
@@ -721,7 +723,7 @@ export function onExit(id, { session = '', exit = 0, kind = '', phase = '', env 
   const b = storeCore.findBuild(loadStore(), id);
   if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   const p = b.pipeline ?? {};
-  const open = p.session && (b.status === 'running' || b.status === 'waiting' || b.status === 'built' || b.status === 'complete');
+  const open = p.session && (b.status === 'running' || b.status === 'waiting' || SETTLED.includes(b.status));
   if (!open || (session && p.session !== session)) return { ok: true, id, ended: null, tick: null, why: 'this run was already ended (or another session holds the build)' };
   const ended = endRun(b, { exit: Number.isInteger(exit) ? exit : Number(exit) || 0, kind, phase, settings: loadSettings(env), env });
   let t = null;

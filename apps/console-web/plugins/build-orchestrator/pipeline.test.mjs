@@ -128,8 +128,10 @@ t('plan: an unapproved upgrade phase waits for Brett', () => {
 // ---------------- session end
 t('endOutcome: finished → built with a PR, complete without; crash requeues; clean stop returns to Pending; failed after maxRuns', () => {
   const done = build('d', 'running', [step('s1', 'Opus', true)], { pipeline: { runs: 1, account: 'w-pro', session: 'axf-d' } });
-  assert.equal(P.endOutcome(done, { exit: 0 }).status, 'complete');
-  assert.equal(P.endOutcome({ ...done, pr: '12' }, { exit: 0 }).status, 'built');
+  // done-means-merged@1: every step done = landing (with or without a PR), landed once merged; never built or complete here
+  assert.equal(P.endOutcome(done, { exit: 0 }).status, 'landing');
+  assert.equal(P.endOutcome({ ...done, pr: '12' }, { exit: 0 }).status, 'landing');
+  assert.equal(P.endOutcome({ ...done, pr: '12', mergedAt: '2026-11-17T00:00:00.000Z' }, { exit: 0 }).status, 'landed');
   const crashed = P.endOutcome(build('c', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, account: 'w-pro' } }), { exit: 1 });
   assert.equal(crashed.status, 'queued'); assert.match(crashed.note, /back in the Queue/);
   const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus' } }), { exit: 0 });
@@ -348,8 +350,8 @@ t('actions: Queue → back to Pending / hold / archive / delete; live builds are
   assert.deepEqual(BP.actionsFor(build('r', 'running', [])), []); assert.deepEqual(BP.actionsFor(build('w', 'waiting', [])), []);
   assert.deepEqual(BP.actionsFor(build('a', 'archived', [])), ['unarchive', 'delete']);
   assert.deepEqual(BP.actionsFor(build('d', 'pending', [], { deleted: true })), ['restore']);
-  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)])), 'built');
-  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)], { mergedAt: now })), 'complete');
+  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)])), 'landing');
+  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)], { mergedAt: now })), 'landed');
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus')])), 'pending');
 });
 t('one build account: only it takes builds, whatever its role; every other one (API too) is off, overflow included', () => {
@@ -538,7 +540,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     orch('act', 'step', 'beta', 's1', 'done');
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');
     r = json(pipe('tick', '--json'));
-    assert.ok(['complete', 'built'].includes(find('beta').status), find('beta').status);
+    assert.ok(['complete', 'built', 'landing', 'landed'].includes(find('beta').status), find('beta').status);
     assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
   });
   t('e2e session end: a clean stop with steps left goes back to Pending for Brett', () => {

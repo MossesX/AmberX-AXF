@@ -410,7 +410,7 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
   const r = nextStatusOnExit({ exit, stepsLeft, runs, crashes: Number.isInteger(b.pipeline?.crashes) ? b.pipeline.crashes : undefined, phaseDone, upgradeBlocked, needsBrett: asked }, settings.maxRuns);
   const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome: r.outcome, reason: r.reason, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '', phase: launched?.name ?? b.pipeline?.phase ?? '' };
   let status = r.status;
-  if (r.outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
+  if (r.outcome === 'finished') status = b.mergedAt ? 'landed' : 'landing'; // done-means-merged@1: never built; complete only once verified
   const note = outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run);
   // the patch never touches queuedAt: a requeued build keeps its place in the Queue
   const patch = { lastRun: run, crashes: r.crashes, session: '', slot: '', note: r.outcome === 'finished' ? '' : note };

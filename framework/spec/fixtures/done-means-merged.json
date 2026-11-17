@@ -1,0 +1,837 @@
+{
+ "$axf": "done-means-merged@1",
+ "note": "Golden cases for done-means-merged@1 (framework/spec/DONE-MEANS-MERGED.md). `records` replays normAttempts / normFailure / normLanded / normEscalation; `guard` replays guardStatus; `migrate` replays migrateDone on one record and `store` migrateDoneStore on all of them; `ladder` and `escalations` replay retry-ladder.mjs (nextStrategy, escalationOf), `walks` the full ladder per kind. Regenerate the `out` blocks with: node framework/spec/check-done-means-merged.mjs --write",
+ "at": "2026-11-17T01:00:00.000Z",
+ "records": [
+  {
+   "name": "two attempts, an open failure, no evidence",
+   "in": {
+    "attempts": [
+     {
+      "n": 1,
+      "kind": "crash",
+      "strategy": "retry",
+      "model": "Opus",
+      "account": "w-max",
+      "session": "axf-b--earl",
+      "step": "s3",
+      "head": "aaaa",
+      "pr": "#12",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "result": "failed",
+      "log": "/var/tmp/axf-headless/logs/b-1.log",
+      "note": "exit 137 on s3",
+      "source": "pipeline"
+     },
+     {
+      "n": 7,
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "model": "Opus",
+      "account": "w-max",
+      "startedAt": "2026-11-17T00:30:00.000Z",
+      "result": "started"
+     }
+    ],
+    "failure": {
+     "kind": "crash",
+     "at": "2026-11-17T00:20:00.000Z",
+     "why": "exit 137 on s3",
+     "head": "aaaa",
+     "step": "s3",
+     "exit": 137
+    },
+    "landed": null,
+    "escalation": null
+   },
+   "out": {
+    "attempts": [
+     {
+      "n": 1,
+      "kind": "crash",
+      "strategy": "retry",
+      "fixStrategy": "",
+      "model": "Opus",
+      "account": "w-max",
+      "session": "axf-b--earl",
+      "step": "s3",
+      "head": "aaaa",
+      "pr": 12,
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:20:00.000Z",
+      "result": "failed",
+      "log": "/var/tmp/axf-headless/logs/b-1.log",
+      "note": "exit 137 on s3",
+      "source": "pipeline"
+     },
+     {
+      "n": 2,
+      "kind": "crash",
+      "strategy": "fresh-session",
+      "fixStrategy": "",
+      "model": "Opus",
+      "account": "w-max",
+      "session": "",
+      "step": "",
+      "head": "",
+      "pr": 0,
+      "startedAt": "2026-11-17T00:30:00.000Z",
+      "endedAt": "",
+      "result": "started",
+      "log": "",
+      "note": "",
+      "source": "pipeline"
+     }
+    ],
+    "failure": {
+     "kind": "crash",
+     "at": "2026-11-17T00:20:00.000Z",
+     "why": "exit 137 on s3",
+     "head": "aaaa",
+     "step": "s3",
+     "exit": 137
+    },
+    "landed": null,
+    "escalation": null
+   }
+  },
+  {
+   "name": "a fix attempt keeps its fix strategy; a non-fix drops it; bad values fall safe",
+   "in": {
+    "attempts": [
+     {
+      "kind": "ci-red",
+      "strategy": "fix",
+      "fixStrategy": "regenerate",
+      "model": "Sonnet",
+      "result": "ok",
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:15:00.000Z",
+      "pr": "https://github.com/o/r/pull/44"
+     },
+     {
+      "kind": "ci-red",
+      "strategy": "retry",
+      "fixStrategy": "regenerate",
+      "result": "nope",
+      "startedAt": "bad date"
+     }
+    ],
+    "failure": {
+     "kind": "nope"
+    },
+    "landed": {
+     "ci": "none"
+    },
+    "escalation": {
+     "kind": "ci-red",
+     "why": "x"
+    }
+   },
+   "out": {
+    "attempts": [
+     {
+      "n": 1,
+      "kind": "ci-red",
+      "strategy": "fix",
+      "fixStrategy": "regenerate",
+      "model": "",
+      "account": "",
+      "session": "",
+      "step": "",
+      "head": "",
+      "pr": 44,
+      "startedAt": "2026-11-17T00:10:00.000Z",
+      "endedAt": "2026-11-17T00:15:00.000Z",
+      "result": "ok",
+      "log": "",
+      "note": "",
+      "source": "pipeline"
+     },
+     {
+      "n": 2,
+      "kind": "ci-red",
+      "strategy": "retry",
+      "fixStrategy": "",
+      "model": "",
+      "account": "",
+      "session": "",
+      "step": "",
+      "head": "",
+      "pr": 0,
+      "startedAt": "",
+      "endedAt": "",
+      "result": "failed",
+      "log": "",
+      "note": "",
+      "source": "pipeline"
+     }
+    ],
+    "failure": null,
+    "landed": null,
+    "escalation": {
+     "at": "",
+     "kind": "ci-red",
+     "attempts": 0,
+     "why": "x",
+     "head": "",
+     "tried": [],
+     "bannerId": "",
+     "pushedAt": ""
+    }
+   }
+  },
+  {
+   "name": "landed evidence and an escalation with rungs tried",
+   "in": {
+    "attempts": [],
+    "failure": null,
+    "landed": {
+     "pr": 12,
+     "sha": "deadbeef",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "ci": "success",
+     "ciAt": "2026-11-17T00:50:00.000Z",
+     "ciRun": "https://github.com/o/r/actions/runs/1",
+     "verifiedAt": "2026-11-17T00:55:00.000Z",
+     "verifyHow": "check",
+     "verifyLog": "ok"
+    },
+    "escalation": {
+     "at": "2026-11-17T00:59:00.000Z",
+     "kind": "ci-red",
+     "attempts": 5,
+     "why": "CI red five times",
+     "head": "aaaa",
+     "tried": [
+      "fix:targeted",
+      "fix:regenerate",
+      "fresh-session",
+      "switch-model:Opus",
+      "switch-account:w-two"
+     ],
+     "bannerId": "build-escalated:b",
+     "pushedAt": "2026-11-17T00:59:30.000Z"
+    }
+   },
+   "out": {
+    "attempts": [],
+    "failure": null,
+    "landed": {
+     "pr": 12,
+     "sha": "deadbeef",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "ci": "success",
+     "ciAt": "2026-11-17T00:50:00.000Z",
+     "ciRun": "https://github.com/o/r/actions/runs/1",
+     "verifiedAt": "2026-11-17T00:55:00.000Z",
+     "verifyHow": "check",
+     "verifyLog": "ok"
+    },
+    "escalation": {
+     "at": "2026-11-17T00:59:00.000Z",
+     "kind": "ci-red",
+     "attempts": 5,
+     "why": "CI red five times",
+     "head": "aaaa",
+     "tried": [
+      "fix:targeted",
+      "fix:regenerate",
+      "fresh-session",
+      "switch-model:Opus",
+      "switch-account:w-two"
+     ],
+     "bannerId": "build-escalated:b",
+     "pushedAt": "2026-11-17T00:59:30.000Z"
+    }
+   }
+  }
+ ],
+ "guard": [
+  {
+   "name": "landing: every step done, a branch, a PR",
+   "in": {
+    "build": {
+     "status": "running",
+     "branch": "claude/b",
+     "pr": "#12",
+     "steps": [
+      {
+       "done": true
+      },
+      {
+       "skip": true
+      }
+     ]
+    },
+    "to": "landing"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  },
+  {
+   "name": "landing refused with a step open",
+   "in": {
+    "build": {
+     "status": "running",
+     "branch": "claude/b",
+     "pr": "#12",
+     "steps": [
+      {
+       "done": true
+      },
+      {
+       "done": false
+      }
+     ]
+    },
+    "to": "landing"
+   },
+   "out": {
+    "ok": false,
+    "why": "1 step still open: a build lands when every step is done"
+   }
+  },
+  {
+   "name": "landing refused without a PR (push-fail instead)",
+   "in": {
+    "build": {
+     "status": "running",
+     "branch": "claude/b",
+     "steps": [
+      {
+       "done": true
+      }
+     ]
+    },
+    "to": "landing"
+   },
+   "out": {
+    "ok": false,
+    "why": "no PR yet: that is a push-fail failure (fixing), not landing"
+   }
+  },
+  {
+   "name": "landed refused: PR open, not merged",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": false,
+    "why": "landed needs the PR merged to main: mergedAt is empty"
+   }
+  },
+  {
+   "name": "landed refused: merged, no merge commit recorded",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": false,
+    "why": "landed needs the merge commit (landed.sha)"
+   }
+  },
+  {
+   "name": "landed refused: merged, CI running on the merge commit",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "running"
+     },
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": false,
+    "why": "landed needs CI green on the merge commit: landed.ci is running"
+   }
+  },
+  {
+   "name": "landed refused: merged, CI red on the merge commit",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "failure"
+     },
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": false,
+    "why": "landed needs CI green on the merge commit: landed.ci is failure"
+   }
+  },
+  {
+   "name": "landed allowed: merged, CI green on the merge commit",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "success",
+      "ciAt": "2026-11-17T00:50:00.000Z"
+     },
+     "steps": []
+    },
+    "to": "landed"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  },
+  {
+   "name": "built (legacy) needs the same proof as landed",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "steps": []
+    },
+    "to": "built"
+   },
+   "out": {
+    "ok": false,
+    "why": "built needs the PR merged to main: mergedAt is empty"
+   }
+  },
+  {
+   "name": "complete refused: landed but not verified",
+   "in": {
+    "build": {
+     "status": "landed",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "success"
+     },
+     "steps": []
+    },
+    "to": "complete"
+   },
+   "out": {
+    "ok": false,
+    "why": "complete needs the feature verify passed (landed.verifiedAt, landed.verifyHow)"
+   }
+  },
+  {
+   "name": "complete allowed: landed and verified",
+   "in": {
+    "build": {
+     "status": "landed",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "success",
+      "verifiedAt": "2026-11-17T00:55:00.000Z",
+      "verifyHow": "check"
+     },
+     "steps": []
+    },
+    "to": "complete"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  },
+  {
+   "name": "complete refused straight from landing even when merged and green: not verified",
+   "in": {
+    "build": {
+     "status": "landing",
+     "pr": "#12",
+     "mergedAt": "2026-11-17T00:40:00.000Z",
+     "landed": {
+      "sha": "deadbeef",
+      "ci": "success"
+     },
+     "steps": []
+    },
+    "to": "complete"
+   },
+   "out": {
+    "ok": false,
+    "why": "complete needs the feature verify passed (landed.verifiedAt, landed.verifyHow)"
+   }
+  },
+  {
+   "name": "a record at rest is never judged (same status)",
+   "in": {
+    "build": {
+     "status": "complete",
+     "steps": []
+    },
+    "to": "complete"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  },
+  {
+   "name": "fixing needs no proof",
+   "in": {
+    "build": {
+     "status": "running",
+     "steps": []
+    },
+    "to": "fixing"
+   },
+   "out": {
+    "ok": true,
+    "why": ""
+   }
+  }
+ ],
+ "migrate": [
+  {
+   "name": "built, PR open, not merged → landing",
+   "in": {
+    "id": "m-built-pr",
+    "title": "x",
+    "status": "built",
+    "branch": "claude/x",
+    "pr": "#301",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landing",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "built",
+     "to": "landing",
+     "why": "every step done, PR not merged: the auto-lander lands it"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "built, a branch and no PR → landing (the lander opens the PR)",
+   "in": {
+    "id": "m-built-branch",
+    "title": "x",
+    "status": "built",
+    "branch": "claude/x",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landing",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "built",
+     "to": "landing",
+     "why": "every step done, PR not merged: the auto-lander lands it"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "built, no branch, no PR → fixing with a push-fail failure",
+   "in": {
+    "id": "m-built-nothing",
+    "title": "x",
+    "status": "built",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "fixing",
+    "failure": {
+     "kind": "push-fail",
+     "at": "2026-11-17T01:00:00.000Z",
+     "why": "built with no branch and no PR: nothing ever reached GitHub",
+     "head": "",
+     "step": "",
+     "exit": null
+    },
+    "landed": null,
+    "change": {
+     "from": "built",
+     "to": "fixing",
+     "why": "built with no branch and no PR: nothing ever reached GitHub"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "built with a merged PR → landed, CI unknown (legacy)",
+   "in": {
+    "id": "m-built-merged",
+    "title": "x",
+    "status": "built",
+    "branch": "claude/x",
+    "pr": "#302",
+    "mergedAt": "2026-11-10T00:00:00.000Z",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landed",
+    "failure": null,
+    "landed": {
+     "pr": 302,
+     "sha": "",
+     "mergedAt": "2026-11-10T00:00:00.000Z",
+     "ci": "unknown",
+     "ciAt": "",
+     "ciRun": "",
+     "verifiedAt": "",
+     "verifyHow": "",
+     "verifyLog": ""
+    },
+    "change": {
+     "from": "built",
+     "to": "landed",
+     "why": "merged, CI unknown"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "complete with a merged PR → untouched",
+   "in": {
+    "id": "m-complete-merged",
+    "title": "x",
+    "status": "complete",
+    "branch": "claude/x",
+    "pr": "#303",
+    "mergedAt": "2026-11-10T00:00:00.000Z",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "complete",
+    "failure": null,
+    "landed": null,
+    "change": null,
+    "noted": false
+   }
+  },
+  {
+   "name": "complete, PR but no merge recorded → landing",
+   "in": {
+    "id": "m-complete-pr",
+    "title": "x",
+    "status": "complete",
+    "branch": "claude/x",
+    "pr": "#304",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landing",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "complete",
+     "to": "landing",
+     "why": "complete was never proven (no merge recorded): the lander checks and lands it"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "complete, a branch and no PR → landing",
+   "in": {
+    "id": "m-complete-branch",
+    "title": "x",
+    "status": "complete",
+    "branch": "claude/x",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": true
+     }
+    ]
+   },
+   "out": {
+    "status": "landing",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "complete",
+     "to": "landing",
+     "why": "complete was never proven (no merge recorded): the lander checks and lands it"
+    },
+    "noted": true
+   }
+  },
+  {
+   "name": "complete, nothing to check → untouched, unprovable",
+   "in": {
+    "id": "m-complete-nothing",
+    "title": "x",
+    "status": "complete",
+    "notes": [
+     {
+      "text": "old",
+      "at": "2026-10-20T00:00:00.000Z"
+     }
+    ],
+    "steps": []
+   },
+   "out": {
+    "status": "complete",
+    "failure": null,
+    "landed": null,
+    "change": {
+     "from": "complete",
+     "to": "complete",
+     "why": "unprovable: no PR, no branch, no merge recorded (pre-pipeline record)"
+    },
+    "noted": false
+   }
+  },
+  {
+   "name": "deleted built → untouched",
+   "in": {
+    "id": "m-deleted",
+    "title": "x",
+    "status": "built",
+    "pr": "#305",
+    "deleted": true,
+    "deletedAt": "2026-11-11T00:00:00.000Z",
+    "notes": [],
+    "steps": []
+   },
+   "out": {
+    "status": "built",
+    "failure": null,
+    "landed": null,
+    "change": null,
+    "noted": false
+   }
+  },
+  {
+   "name": "an open build → untouched",
+   "in": {
+    "id": "m-running",
+    "title": "x",
+    "status": "running",
+    "branch": "claude/x",
+    "notes": [],
+    "steps": [
+     {
+      "id": "s1",
+      "text": "a",
+      "done": false
+     }
+    ]
+   },
+   "out": {
+    "status": "running",
+    "failure": null,
+    "landed": null,
+    "change": null,
+    "noted": false
+   }
+  },
+  {
+   "name": "archived → untouched",
+   "in": {
+    "id": "m-archived",
+    "title": "x",
+    "status": "archived",
+    "pr": "#306",
+    "notes": [],
+    "steps": []
+   },
+   "out": {
+    "status": "archived",
+    "failure": null,
+    "landed": null,
+    "change": null,
+    "noted": false
+   }
+  }
+ ],
+ "store": {
+  "moved": [
+   "m-built-pr:built>landing",
+   "m-built-branch:built>landing",
+   "m-built-nothing:built>fixing",
+   "m-built-merged:built>landed",
+   "m-complete-pr:complete>landing",
+   "m-complete-branch:complete>landing"
+  ],
+  "unprovable": [
+   "m-complete-nothing"
+  ],
+  "meta": {
+   "at": "2026-11-17T01:00:00.000Z",
+   "moved": 6,
+   "unprovable": 1
+  }
+ }
+}

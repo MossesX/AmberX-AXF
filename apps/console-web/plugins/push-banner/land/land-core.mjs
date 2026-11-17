@@ -170,12 +170,12 @@ export function strayPlan(porcelain, hubHas = () => false) {
 
 const ALL_DONE = (b) => Array.isArray(b.steps) && b.steps.length > 0 && b.steps.every((s) => s.done);
 
-/** A build the pipeline should land: finished (built, or every step done), with a branch, not merged, not archived. */
+/** A build the pipeline should land: finished (landing / built, or every step done), with a branch, not merged, not archived, not escalated. */
 export function isCandidate(b) {
   if (!b || b.deleted || b.hidden) return false;
   if (!str(b.branch) || b.branch === 'main') return false;
-  if (b.mergedAt || ['complete', 'archived', 'failed', 'broken', 'cancelled'].includes(b.status)) return false;
-  return b.status === 'built' || ALL_DONE(b);
+  if (b.mergedAt || ['complete', 'landed', 'archived', 'failed', 'escalated', 'broken', 'cancelled'].includes(b.status)) return false;
+  return b.status === 'built' || b.status === 'landing' || ALL_DONE(b);
 }
 
 /** One landing per branch: builds that share a branch (a build and its "-done" follow-up) land as one, the first. */

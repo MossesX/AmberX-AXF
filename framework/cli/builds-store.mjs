@@ -12,6 +12,8 @@
  *   … migrate --apply                                       build the store from every older data set (once)
  *   … verify                                                every build, step, status and note of the old files is in the store
  *   … export                                                regenerate the old files (read-only exports of the store)
+ *   … done-means-merged [--apply] [--report <file>]         done-means-merged@1: built / complete records with no merged PR
+ *                                                            back to landing / fixing, once (dry run without --apply)
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
@@ -31,6 +33,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
+import { migrateDoneStore } from '../core/build-pipeline.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
@@ -238,6 +241,21 @@ export function mergeRetiredNow({ by = 'profiles-merge' } = {}) {
   } finally { unlock(); flushLiveSoon(); }
 }
 
+/**
+ * done-means-merged@1 migration (framework/core/build-pipeline.mjs migrateDoneStore), once: built / complete records with
+ * no merged PR go back to landing / fixing with a note each; `meta.doneMeansMerged` records the run so a second call is
+ * a no-op ({ already }). Dry: nothing written, the report only.
+ */
+export function migrateDoneNow({ dry = true, by = 'done-means-merged', at = new Date().toISOString() } = {}) {
+  if (dry) { const s = loadStore(); const r = migrateDoneStore(s, { at }); return { report: r.report, already: s.meta?.doneMeansMerged ?? null }; }
+  let report = null; let already = null;
+  const r = withStore((s) => {
+    if (s.meta?.doneMeansMerged) { already = s.meta.doneMeansMerged; report = { $axf: 'done-means-merged@1', at, moved: [], unprovable: [] }; return s; }
+    const m = migrateDoneStore(s, { at }); report = m.report; return m.store;
+  }, { by, action: 'done-means-merged', note: 'built / complete without a merged PR → landing / fixing (done-means-merged@1)' });
+  return { report, already, rev: r.rev, changes: r.changes.length };
+}
+
 /** Write every export now (after the migration, or by hand: `builds-store.mjs export`). */
 export function exportNow() { const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
 
@@ -437,6 +455,16 @@ async function main(argv) {
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
+  if (cmd === 'done-means-merged') {
+    // done-means-merged@1 (framework/spec/DONE-MEANS-MERGED.md): built / complete records that cannot prove a merge go back
+    // to landing / fixing, once. --dry reports, --apply writes (journalled, live to main like every write); --report <file> writes the list.
+    const apply = rest.includes('--apply');
+    const r = migrateDoneNow({ dry: !apply });
+    const i = rest.indexOf('--report');
+    if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${JSON.stringify(r.report, null, 1)}\n`); }
+    const lines = r.report.moved.map((m) => `${m.id}: ${m.from} → ${m.to} (${m.why})`);
+    return out({ ok: true, dry: !apply, already: r.already ?? null, report: r.report }, r.already ? `already migrated at ${r.already.at} (${r.already.moved} moved, ${r.already.unprovable} unprovable); nothing written` : `${apply ? 'migrated' : 'dry run'}: ${r.report.moved.length} moved, ${r.report.unprovable.length} unprovable (kept complete, no PR / branch / merge to check)\n${lines.join('\n')}`);
+  }
   if (cmd === 'verify') {
     // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
     const store = loadStore();
