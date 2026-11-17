@@ -24,7 +24,20 @@ export const BUILD_FRAME = 'auto-lander-build@1';
 export const POLICY_FRAME = 'auto-lander-policy@1';
 export const ACTION_FRAME = 'auto-lander-action@1';
 export const STATE_FRAME = 'auto-lander-state@1';
+export const VIEW_FRAME = 'auto-lander-view@1';
+export const COMMAND_FRAME = 'auto-lander-command@1';
 export const VERSION = 1;
+
+/** What the console, CLI, MCP and voice may tell the lander (POST …/auto-lander/<command>). */
+export const COMMANDS = Object.freeze(['run', 'retry', 'pause', 'resume', 'settings']);
+/** Commands that take a build; `run`, `pause` and `resume` without one address the whole lander. */
+export const COMMAND_BUILD = Object.freeze({ run: 'optional', retry: 'required', pause: 'optional', resume: 'optional', settings: 'none' });
+/** Who runs the lander: the push banner's cron lander today, axf-molly later; '' while unknown. */
+export const RUNNERS = Object.freeze(['cron-lander', 'axf-molly', '']);
+/** How the queue is ordered: the in-flight build first, then CI running, then waiting by `since`; terminal builds are not in it. */
+export const QUEUE_ORDER = Object.freeze(['merging-main', 'fixing', 'landing', 'ci-running', 'waiting']);
+/** `behind` on a row when the runner has not counted the commits behind main. */
+export const BEHIND_UNKNOWN = -1;
 
 /** What a try is for. */
 export const KINDS = Object.freeze(['clash', 'red-ci', 'land']);
@@ -251,8 +264,9 @@ const A = (build, action, extra = {}, at) => ({
  *   policy    auto-lander-policy@1 (the auto-lander rule's settings)
  * merge-main on a clash, fix-session on red CI, wait while CI runs, land when green, escalate once a kind's failures
  * reach maxAttempts. Every head counts; a reset by hand starts the count again.
+ *   now       true for a `run` command by hand: the backoff after a failure is not waited for (nothing else changes)
  */
-export function decide(build, prState, attempts, policy, { at = new Date().toISOString() } = {}) {
+export function decide(build, prState, attempts, policy, { at = new Date().toISOString(), now = false } = {}) {
   const b = normBuild(build, at); const p = normPolicy(policy); const s = normSnapshot(prState);
   const list = Array.isArray(attempts) ? attempts.map(normAttempt) : b.attempts;
   const merged = obj(prState).merged === true || obj(prState).state === 'merged';
@@ -288,7 +302,7 @@ export function decide(build, prState, attempts, policy, { at = new Date().toISO
   if (!allowed) return A(b, 'escalate', { state: 'escalated', kind, reason: `${detail[0].toUpperCase()}${detail.slice(1)} and ${KIND_WORD[kind]} by the server is off.` }, at);
   if (n >= p.maxAttempts) return A(b, 'escalate', { state: 'escalated', kind, attempt: n, reason: `${detail[0].toUpperCase()}${detail.slice(1)}; ${KIND_WORD[kind]} failed ${n} time${n === 1 ? '' : 's'} (the limit is ${p.maxAttempts}). Needs a hand.` }, at);
   const last = failures[n - 1];
-  if (last) {
+  if (last && !now) {
     const since = last.endedAt || (timedOut(last, p, at) ? plusMin(last.at, p.attemptTimeoutMin) : last.at);
     const notBefore = plusMin(since, backoffMinutes(n, p));
     if (Date.parse(at) < Date.parse(notBefore)) return A(b, 'wait', { waitReason: 'backoff', state: 'waiting', kind, attempt: n + 1, notBefore, reason: `${detail[0].toUpperCase()}${detail.slice(1)}; attempt ${n} of ${KIND_WORD[kind]} failed. Attempt ${n + 1} starts at ${notBefore}.` }, at);
@@ -349,14 +363,117 @@ export function fromLanderState(landerState, { policy = {}, at = new Date().toIS
   return normState({ $axf: STATE_FRAME, at, policy, builds, migratedFrom: { frame: 'lander-state@1', at } }, at);
 }
 
+// ------------------------------------------------------------------ the view (what GET …/auto-lander answers)
+
+/** The latest ended attempt of a build (ok, failed, timeout or skipped), or null: the grid's "last result" column. */
+export function lastResultOf(attempts) {
+  const ended = (Array.isArray(attempts) ? attempts : []).map(normAttempt).filter((a) => a.result !== 'started');
+  if (!ended.length) return null;
+  const a = ended.reduce((x, y) => (Date.parse(y.endedAt || y.at) >= Date.parse(x.endedAt || x.at) ? y : x));
+  return { kind: a.kind, n: a.n, result: a.result, at: a.endedAt || a.at, head: a.head, log: a.log };
+}
+
+/** The lander's queue: ids of every build it still works on, in the order it works on them (QUEUE_ORDER, then `since`). */
+export function queueOf(builds) {
+  const rank = (b) => { const i = QUEUE_ORDER.indexOf(b.state); return i < 0 ? QUEUE_ORDER.length : i; };
+  return (Array.isArray(builds) ? builds : []).map((b) => normBuild(b)).filter((b) => !TERMINAL.includes(b.state))
+    .sort((x, y) => rank(x) - rank(y) || Date.parse(x.since) - Date.parse(y.since) || x.build.localeCompare(y.build)).map((b) => b.build);
+}
+
+/**
+ * One grid row: the build record plus what the runner knows around it.
+ *   behind   commits the branch is behind main (BEHIND_UNKNOWN while uncounted)
+ *   hold     the gate's hold by hand on its PR ('' when none): a paused build is a held one
+ *   title    the build's title from builds@1 ('' when the joiner has none)
+ */
+export function rowOf(build, { behind = BEHIND_UNKNOWN, hold = '', title = '', at = new Date().toISOString() } = {}) {
+  const b = normBuild(build, at);
+  return { ...b, title: str(title, 200), behind: Number.isInteger(behind) && behind >= 0 ? behind : BEHIND_UNKNOWN, paused: !!str(hold), hold: str(hold, TEXT_MAX), lastResult: lastResultOf(b.attempts) };
+}
+
+/**
+ * auto-lander-view@1: the state document as every surface reads it.
+ *   service  { up, runner, since, lastTick } from the runner's heartbeat (up = false when the heartbeat is older than attemptTimeoutMin)
+ *   behind   { [build]: commits behind main }       holds  { [build]: why it is held by hand }       titles  { [build]: title }
+ * `current` is the first build in the queue that is in flight or on CI; `queue` is queueOf; `builds` carries every row,
+ * queue first and then the terminal ones, newest `at` first.
+ */
+export function viewOf(state, { service = {}, behind = {}, holds = {}, titles = {}, at = new Date().toISOString() } = {}) {
+  const s = normState(state, at); const sv = obj(service); const bh = obj(behind); const hd = obj(holds); const tt = obj(titles);
+  const rows = s.builds.map((b) => rowOf(b, { behind: bh[b.build], hold: hd[b.build], title: tt[b.build], at }));
+  const queue = queueOf(rows); const pos = new Map(queue.map((id, i) => [id, i]));
+  const byId = new Map(rows.map((r) => [r.build, r]));
+  const live = queue.map((id) => byId.get(id)); const done = rows.filter((r) => !pos.has(r.build)).sort((x, y) => Date.parse(y.at) - Date.parse(x.at));
+  const current = live.find((r) => IN_FLIGHT.includes(r.state) || r.state === 'ci-running') || null;
+  const lastTick = iso(sv.lastTick) || iso(sv.at) || '';
+  const up = typeof sv.up === 'boolean' ? sv.up : !!lastTick && minutes(Date.parse(at) - Date.parse(lastTick)) < s.policy.attemptTimeoutMin;
+  const count = (st) => rows.filter((r) => r.state === st).length;
+  return {
+    $axf: VIEW_FRAME, at,
+    service: { up, runner: oneOf(RUNNERS, sv.runner, ''), since: iso(sv.since), lastTick, paused: !s.policy.enabled, policy: s.policy,
+      counts: { builds: rows.length, queue: queue.length, inFlight: rows.filter((r) => IN_FLIGHT.includes(r.state)).length, ciRunning: count('ci-running'), waiting: count('waiting'), landed: count('landed'), escalated: count('escalated'), paused: rows.filter((r) => r.paused).length } },
+    current, queue, builds: [...live, ...done],
+  };
+}
+
+/** Errors in a view (empty = valid): the shape every surface relies on. */
+export function viewErrors(v) {
+  const out = []; const x = obj(v); const sv = obj(x.service);
+  if (x.$axf !== VIEW_FRAME) out.push(`$axf is ${VIEW_FRAME}`);
+  if (!iso(x.at)) out.push('at is an ISO date-time');
+  if (typeof sv.up !== 'boolean') out.push('service.up is true or false');
+  if (!RUNNERS.includes(sv.runner)) out.push(`service.runner is one of ${RUNNERS.filter(Boolean).join(', ')} or empty`);
+  out.push(...policyErrors(sv.policy, 'service.policy'));
+  if (!Array.isArray(x.queue) || x.queue.some((id) => typeof id !== 'string' || !id)) out.push('queue is a list of build ids');
+  if (!Array.isArray(x.builds)) { out.push('builds is a list'); return out; }
+  const ids = new Set(x.builds.map((r) => obj(r).build));
+  x.builds.forEach((r, i) => { out.push(...buildErrors(r, `builds[${i}]`)); const row = obj(r); if (!(Number.isInteger(row.behind) && row.behind >= BEHIND_UNKNOWN)) out.push(`builds[${i}].behind is a count or ${BEHIND_UNKNOWN}`); if (typeof row.paused !== 'boolean') out.push(`builds[${i}].paused is true or false`); if (row.lastResult !== null && !ATTEMPT_RESULTS.includes(obj(row.lastResult).result)) out.push(`builds[${i}].lastResult is null or an ended attempt`); });
+  if (Array.isArray(x.queue)) x.queue.forEach((id, i) => { if (!ids.has(id)) out.push(`queue[${i}] ${id} is not in builds`); });
+  if (x.current !== null && !ids.has(obj(x.current).build)) out.push('current is null or one of builds');
+  return out;
+}
+
+// ------------------------------------------------------------------ commands (what POST …/auto-lander/<command> takes)
+
+/**
+ * auto-lander-command@1, normalised. What each does, in terms of the records above:
+ *   run       decide + carry out now for the build (every queued build when none); a backoff is not waited for (decide now: true)
+ *   retry     resetEscalation on the build, then run it (a build that is not escalated is simply run)
+ *   pause     with a build: the gate's hold by hand on its PR (decide answers wait / held); without: the auto-lander rule off
+ *   resume    with a build: the hold released; without: the rule on
+ *   settings  the policy patched with `settings` (auto-lander-policy@1 fields), validated by policyErrors
+ * Every command carries `by` and `reason: { title, description }`, and lands in gate.history.
+ */
+export function normCommand(c) {
+  const x = obj(c); const r = obj(x.reason);
+  return {
+    $axf: COMMAND_FRAME, command: oneOf(COMMANDS, x.command, 'run'), build: str(x.build, 120), by: str(x.by, 80), at: iso(x.at),
+    reason: { title: str(r.title, 200), description: str(r.description, TEXT_MAX) }, ...(x.settings !== undefined ? { settings: obj(x.settings) } : {}),
+  };
+}
+
+/** Errors in a command (empty = valid). */
+export function commandErrors(c, path = 'command') {
+  const out = []; const x = obj(c);
+  if (x.$axf !== undefined && x.$axf !== COMMAND_FRAME) out.push(`${path}.$axf is ${COMMAND_FRAME}`);
+  if (!COMMANDS.includes(x.command)) { out.push(`${path}.command is one of ${COMMANDS.join(', ')}`); return out; }
+  const need = COMMAND_BUILD[x.command];
+  if (need === 'required' && !str(x.build)) out.push(`${path}.build names the build to ${x.command}`);
+  if (need === 'none' && str(x.build)) out.push(`${path}.build is empty for ${x.command}`);
+  if (x.command === 'settings') { if (!x.settings || typeof x.settings !== 'object' || Array.isArray(x.settings) || !Object.keys(x.settings).length) out.push(`${path}.settings carries the policy fields to change`); else out.push(...policyErrors(x.settings, `${path}.settings`)); }
+  if (!str(obj(x.reason).title)) out.push(`${path}.reason.title says what is about to happen`);
+  return out;
+}
+
 // ------------------------------------------------------------------ registry + JSON Schemas
 
 /** The snapshot framework/schemas/auto-lander.json carries, for Python readers and ports. */
 export const REGISTRY = Object.freeze({
-  schema: SCHEMA, version: VERSION, attempt: ATTEMPT_FRAME, build: BUILD_FRAME, policy: POLICY_FRAME, action: ACTION_FRAME, state: STATE_FRAME,
+  schema: SCHEMA, version: VERSION, attempt: ATTEMPT_FRAME, build: BUILD_FRAME, policy: POLICY_FRAME, action: ACTION_FRAME, state: STATE_FRAME, view: VIEW_FRAME, command: COMMAND_FRAME,
   kinds: KINDS, states: STATES, inFlight: IN_FLIGHT, terminal: TERMINAL, attemptResults: ATTEMPT_RESULTS, failures: FAILURES, actions: ACTIONS,
   actionKind: ACTION_KIND, actionState: ACTION_STATE, waitReasons: WAIT_REASONS, escalateTo: ESCALATE_TO, policyDefaults: POLICY_DEFAULTS,
   maxAttemptsRange: MAX_ATTEMPTS_RANGE, attemptsMax: ATTEMPTS_MAX, buildsMax: BUILDS_MAX, logMax: LOG_MAX, textMax: TEXT_MAX, ruleId: RULE_ID, migratesFrom: ['lander-state@1'],
+  commands: COMMANDS, commandBuild: COMMAND_BUILD, runners: RUNNERS, queueOrder: QUEUE_ORDER, behindUnknown: BEHIND_UNKNOWN,
 });
 
 const $schema = 'https://json-schema.org/draft/2020-12/schema';
@@ -408,5 +525,35 @@ export function jsonSchemas() {
       migratedFrom: { type: 'object', properties: { frame: { type: 'string' }, at: dateTime }, description: 'set once by fromLanderState' },
     },
   };
-  return { 'auto-lander-attempt.schema.json': attempt, 'auto-lander-policy.schema.json': policy, 'auto-lander-build.schema.json': build, 'auto-lander-action.schema.json': action, 'auto-lander-state.schema.json': state };
+  const row = {
+    ...build, $schema: undefined, $id: undefined, title: 'one grid row: auto-lander-build@1 plus what the runner knows around it', additionalProperties: false, required: [...build.required, 'behind', 'paused', 'lastResult'],
+    properties: {
+      ...build.properties, title: { type: 'string', maxLength: 200, description: "the build's title from builds@1" }, behind: { type: 'integer', minimum: BEHIND_UNKNOWN, description: `commits behind main; ${BEHIND_UNKNOWN} while uncounted` },
+      paused: { type: 'boolean', description: "held by hand on the gate (the lander's pause)" }, hold: { type: 'string', maxLength: TEXT_MAX, description: 'why it is held, or empty' },
+      lastResult: { type: ['object', 'null'], required: ['kind', 'n', 'result', 'at'], properties: { kind: { enum: KINDS }, n: { type: 'integer', minimum: 1 }, result: { enum: ATTEMPT_RESULTS.filter((x) => x !== 'started') }, at: dateTime, head: { type: 'string', maxLength: 64 }, log: { type: 'string', maxLength: LOG_MAX } }, description: 'the latest ended attempt' },
+    },
+  };
+  const view = {
+    $schema, $id: $id('auto-lander-view.schema.json'), title: `${VIEW_FRAME} (${SCHEMA})`, description: 'What GET …/auto-lander answers and every surface (console tab, CLI, MCP, voice) reads.', type: 'object', additionalProperties: false, required: ['$axf', 'at', 'service', 'current', 'queue', 'builds'],
+    properties: {
+      $axf: { const: VIEW_FRAME }, at: dateTime,
+      service: { type: 'object', required: ['up', 'runner', 'paused', 'policy', 'counts'], properties: {
+        up: { type: 'boolean', description: 'the runner has ticked within attemptTimeoutMin' }, runner: { enum: RUNNERS }, since: dateOrEmpty, lastTick: dateOrEmpty, paused: { type: 'boolean', description: 'the auto-lander rule is off' }, policy: { ...policy, $schema: undefined, $id: undefined },
+        counts: { type: 'object', properties: Object.fromEntries(['builds', 'queue', 'inFlight', 'ciRunning', 'waiting', 'landed', 'escalated', 'paused'].map((k) => [k, { type: 'integer', minimum: 0 }])) },
+      } },
+      current: { oneOf: [{ type: 'null' }, row], description: 'the build being worked on (in flight or on CI), or null' },
+      queue: { type: 'array', items: { type: 'string' }, description: `build ids still to land, in the order worked: ${QUEUE_ORDER.join(', ')}, then since` },
+      builds: { type: 'array', maxItems: BUILDS_MAX, items: row, description: 'every tracked build: the queue first, then landed and escalated, newest first' },
+    },
+  };
+  const command = {
+    $schema, $id: $id('auto-lander-command.schema.json'), title: `${COMMAND_FRAME} (${SCHEMA})`, description: 'What POST …/auto-lander/<command> takes; the same on MCP, the CLI and voice.', type: 'object', additionalProperties: false, required: ['command', 'reason'],
+    properties: {
+      $axf: { const: COMMAND_FRAME }, command: { enum: COMMANDS, description: 'run = decide and act now, skipping a backoff; retry = reset an escalation then run; pause / resume = hold or release a build (the gate hold), or the rule off / on without a build; settings = patch the policy' },
+      build: { type: 'string', maxLength: 120, description: `required for retry, optional for run / pause / resume (the whole lander when empty), empty for settings` }, by: { type: 'string', maxLength: 80 }, at: dateOrEmpty,
+      reason: { type: 'object', required: ['title'], properties: { title: { type: 'string', minLength: 1, maxLength: 200 }, description: { type: 'string', maxLength: TEXT_MAX } } },
+      settings: { ...policy, $schema: undefined, $id: undefined, description: 'for settings: the auto-lander-policy@1 fields to change' },
+    },
+  };
+  return { 'auto-lander-attempt.schema.json': attempt, 'auto-lander-policy.schema.json': policy, 'auto-lander-build.schema.json': build, 'auto-lander-action.schema.json': action, 'auto-lander-state.schema.json': state, 'auto-lander-view.schema.json': view, 'auto-lander-command.schema.json': command };
 }

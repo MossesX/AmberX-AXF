@@ -637,6 +637,134 @@
    "lastRuns": [],
    "waiting": [],
    "landedRecently": []
+  },
+  "SERVICE": {
+   "fresh": {
+    "runner": "cron-lander",
+    "since": "2026-11-15T09:00:00Z",
+    "lastTick": "2026-11-16T11:58:00.000Z"
+   },
+   "stale": {
+    "runner": "cron-lander",
+    "since": "2026-11-15T09:00:00Z",
+    "lastTick": "2026-11-16T10:30:00.000Z"
+   },
+   "said": {
+    "up": true,
+    "runner": "axf-molly"
+   },
+   "none": {}
+  },
+  "BEHIND": {
+   "skins-hot-swap": 0,
+   "notes-nested-lists": 12,
+   "push-quiet-hours": 3,
+   "voice-wake-word": 7
+  },
+  "HOLDS": {
+   "console-dock-sizes": "taken out of the queue by hand (waiting for the skins build)",
+   "ui-review-phone-shots": ""
+  },
+  "TITLES": {
+   "skins-hot-swap": "Skins: hot-swap tokens",
+   "notes-nested-lists": "Notes: nested lists"
+  },
+  "COMMANDS": {
+   "runAll": {
+    "command": "run",
+    "reason": {
+     "title": "Run the auto-lander now"
+    }
+   },
+   "runOne": {
+    "command": "run",
+    "build": "help-coverage-gate",
+    "by": "brett",
+    "reason": {
+     "title": "Retry the auto-lander on help-coverage-gate",
+     "description": "Resets the escalation and runs the lander now."
+    }
+   },
+   "retry": {
+    "command": "retry",
+    "build": "help-coverage-gate",
+    "by": "brett",
+    "reason": {
+     "title": "Retry the auto-lander on help-coverage-gate",
+     "description": "Resets the escalation and runs the lander now."
+    }
+   },
+   "retryNoBuild": {
+    "command": "retry",
+    "reason": {
+     "title": "Retry the auto-lander on help-coverage-gate",
+     "description": "Resets the escalation and runs the lander now."
+    }
+   },
+   "pauseOne": {
+    "command": "pause",
+    "build": "help-coverage-gate",
+    "by": "brett",
+    "reason": {
+     "title": "Pause help-coverage-gate",
+     "description": "Holds it until the skins build lands."
+    }
+   },
+   "pauseAll": {
+    "command": "pause",
+    "by": "brett",
+    "reason": {
+     "title": "Pause the auto-lander"
+    }
+   },
+   "resumeOne": {
+    "command": "resume",
+    "build": "help-coverage-gate",
+    "reason": {
+     "title": "Resume help-coverage-gate"
+    }
+   },
+   "settings": {
+    "command": "settings",
+    "by": "brett",
+    "reason": {
+     "title": "Auto-lander: five tries"
+    },
+    "settings": {
+     "maxAttempts": 5,
+     "fixSessions": false
+    }
+   },
+   "settingsEmpty": {
+    "command": "settings",
+    "reason": {
+     "title": "x"
+    },
+    "settings": {}
+   },
+   "settingsBad": {
+    "command": "settings",
+    "build": "x",
+    "reason": {
+     "title": "x"
+    },
+    "settings": {
+     "maxAttempts": 0,
+     "escalateTo": "mail"
+    }
+   },
+   "noReason": {
+    "command": "run",
+    "build": "help-coverage-gate"
+   },
+   "unknown": {
+    "command": "kick",
+    "build": "help-coverage-gate",
+    "reason": {
+     "title": "Retry the auto-lander on help-coverage-gate",
+     "description": "Resets the escalation and runs the lander now."
+    }
+   }
   }
  },
  "out": {
@@ -1928,6 +2056,808 @@
     "attempts": [],
     "reason": "",
     "escalation": null
+   }
+  },
+  "view": {
+   "running": {
+    "$axf": "auto-lander-view@1",
+    "at": "2026-11-16T12:00:00Z",
+    "service": {
+     "up": true,
+     "runner": "cron-lander",
+     "since": "2026-11-15T09:00:00Z",
+     "lastTick": "2026-11-16T11:58:00.000Z",
+     "paused": false,
+     "policy": {
+      "$axf": "auto-lander-policy@1",
+      "enabled": true,
+      "maxAttempts": 3,
+      "backoff": {
+       "baseMin": 5,
+       "factor": 3,
+       "maxMin": 60
+      },
+      "attemptTimeoutMin": 45,
+      "mergeMain": true,
+      "fixSessions": true,
+      "land": true,
+      "escalateTo": "banner"
+     },
+     "counts": {
+      "builds": 11,
+      "queue": 8,
+      "inFlight": 0,
+      "ciRunning": 2,
+      "waiting": 6,
+      "landed": 2,
+      "escalated": 1,
+      "paused": 1
+     }
+    },
+    "current": {
+     "$axf": "auto-lander-build@1",
+     "build": "skins-hot-swap",
+     "pr": 540,
+     "branch": "claude/skins-hot-swap",
+     "head": "",
+     "state": "ci-running",
+     "since": "2026-11-15T11:50:00Z",
+     "at": "2026-11-16T12:00:00Z",
+     "attempts": [],
+     "reason": "CI is running on its head.",
+     "escalation": null,
+     "title": "Skins: hot-swap tokens",
+     "behind": 0,
+     "paused": false,
+     "hold": "",
+     "lastResult": null
+    },
+    "queue": [
+     "skins-hot-swap",
+     "notes-ci-running",
+     "console-dock-sizes",
+     "notes-nested-lists",
+     "pr-545",
+     "push-quiet-hours",
+     "ui-review-phone-shots",
+     "voice-wake-word"
+    ],
+    "builds": [
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "skins-hot-swap",
+      "pr": 540,
+      "branch": "claude/skins-hot-swap",
+      "head": "",
+      "state": "ci-running",
+      "since": "2026-11-15T11:50:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "CI is running on its head.",
+      "escalation": null,
+      "title": "Skins: hot-swap tokens",
+      "behind": 0,
+      "paused": false,
+      "hold": "",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "notes-ci-running",
+      "pr": 546,
+      "branch": "claude/notes-ci",
+      "head": "f546f546f546f546f546f546f546f546f546f546",
+      "state": "ci-running",
+      "since": "2026-11-15T11:55:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "its PR checks are still running",
+      "escalation": null,
+      "title": "",
+      "behind": -1,
+      "paused": false,
+      "hold": "",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "console-dock-sizes",
+      "pr": 535,
+      "branch": "",
+      "head": "f535f535f535f535f535f535f535f535f535f535",
+      "state": "waiting",
+      "since": "2026-11-16T12:00:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "taken out of the queue by hand (waiting for the skins build)",
+      "escalation": null,
+      "title": "",
+      "behind": -1,
+      "paused": true,
+      "hold": "taken out of the queue by hand (waiting for the skins build)",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "notes-nested-lists",
+      "pr": 543,
+      "branch": "claude/notes-nested",
+      "head": "c543c543c543c543c543c543c543c543c543c543",
+      "state": "waiting",
+      "since": "2026-11-16T12:00:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "conflicts in code with #540; goes in the next batch",
+      "escalation": null,
+      "title": "Notes: nested lists",
+      "behind": 12,
+      "paused": false,
+      "hold": "",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "pr-545",
+      "pr": 545,
+      "branch": "",
+      "head": "b545b545b545b545b545b545b545b545b545b545",
+      "state": "waiting",
+      "since": "2026-11-16T12:00:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "it is a draft",
+      "escalation": null,
+      "title": "",
+      "behind": -1,
+      "paused": false,
+      "hold": "",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "push-quiet-hours",
+      "pr": 539,
+      "branch": "claude/quiet-hours",
+      "head": "d539d539d539d539d539d539d539d539d539d539",
+      "state": "waiting",
+      "since": "2026-11-16T12:00:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "waits its turn in the line.",
+      "escalation": null,
+      "title": "",
+      "behind": 3,
+      "paused": false,
+      "hold": "",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "ui-review-phone-shots",
+      "pr": 544,
+      "branch": "claude/phone-shots",
+      "head": "a544a544a544a544a544a544a544a544a544a544",
+      "state": "waiting",
+      "since": "2026-11-16T12:00:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "its screenshots wait for Brett in UI Review",
+      "escalation": null,
+      "title": "",
+      "behind": -1,
+      "paused": false,
+      "hold": "",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "voice-wake-word",
+      "pr": 537,
+      "branch": "claude/wake-word",
+      "head": "e537e537e537e537e537e537e537e537e537e537",
+      "state": "waiting",
+      "since": "2026-11-16T12:00:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [
+       {
+        "$axf": "auto-lander-attempt@1",
+        "build": "voice-wake-word",
+        "kind": "red-ci",
+        "n": 1,
+        "account": "",
+        "session": "",
+        "branch": "claude/wake-word",
+        "head": "e537e537e537e537e537e537e537e537e537e537",
+        "pr": 537,
+        "result": "failed",
+        "log": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
+        "at": "2026-11-16T12:00:00Z",
+        "endedAt": "2026-11-16T12:00:00Z"
+       }
+      ],
+      "reason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
+      "escalation": null,
+      "title": "",
+      "behind": 7,
+      "paused": false,
+      "hold": "",
+      "lastResult": {
+       "kind": "red-ci",
+       "n": 1,
+       "result": "failed",
+       "at": "2026-11-16T12:00:00Z",
+       "head": "e537e537e537e537e537e537e537e537e537e537",
+       "log": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself."
+      }
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "pr-538",
+      "pr": 538,
+      "branch": "",
+      "head": "",
+      "state": "landed",
+      "since": "2026-11-15T12:00:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "Landed.",
+      "escalation": null,
+      "title": "",
+      "behind": -1,
+      "paused": false,
+      "hold": "",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "pr-536",
+      "pr": 536,
+      "branch": "",
+      "head": "",
+      "state": "landed",
+      "since": "2026-11-15T12:00:00Z",
+      "at": "2026-11-16T12:00:00Z",
+      "attempts": [],
+      "reason": "Landed.",
+      "escalation": null,
+      "title": "",
+      "behind": -1,
+      "paused": false,
+      "hold": "",
+      "lastResult": null
+     },
+     {
+      "$axf": "auto-lander-build@1",
+      "build": "help-coverage-gate",
+      "pr": 710,
+      "branch": "claude/help-coverage-gate",
+      "head": "a710a710a710a710a710a710a710a710a710a710",
+      "state": "escalated",
+      "since": "2026-11-16T12:00:00Z",
+      "at": "2026-11-16T11:59:00.000Z",
+      "attempts": [
+       {
+        "$axf": "auto-lander-attempt@1",
+        "build": "help-coverage-gate",
+        "kind": "red-ci",
+        "n": 1,
+        "account": "hulu0241",
+        "session": "s-red-ci-1",
+        "branch": "claude/help-coverage-gate",
+        "head": "a710a710a710a710a710a710a710a710a710a710",
+        "pr": 710,
+        "result": "failed",
+        "log": "",
+        "at": "2026-11-16T07:00:00.000Z",
+        "endedAt": "2026-11-16T07:10:00.000Z"
+       },
+       {
+        "$axf": "auto-lander-attempt@1",
+        "build": "help-coverage-gate",
+        "kind": "red-ci",
+        "n": 2,
+        "account": "hulu0241",
+        "session": "s-red-ci-2",
+        "branch": "claude/help-coverage-gate",
+        "head": "a710a710a710a710a710a710a710a710a710a710",
+        "pr": 710,
+        "result": "failed",
+        "log": "",
+        "at": "2026-11-16T08:40:00.000Z",
+        "endedAt": "2026-11-16T08:50:00.000Z"
+       },
+       {
+        "$axf": "auto-lander-attempt@1",
+        "build": "help-coverage-gate",
+        "kind": "red-ci",
+        "n": 3,
+        "account": "hulu0241",
+        "session": "s-red-ci-3",
+        "branch": "claude/help-coverage-gate",
+        "head": "a710a710a710a710a710a710a710a710a710a710",
+        "pr": 710,
+        "result": "timeout",
+        "log": "",
+        "at": "2026-11-16T10:00:00.000Z",
+        "endedAt": "2026-11-16T10:45:00.000Z"
+       }
+      ],
+      "reason": "CI is red (android / check-theme, android / conformance tests); fixing red CI failed 3 times (the limit is 3). Needs a hand.",
+      "escalation": {
+       "at": "2026-11-16T12:00:00Z",
+       "kind": "red-ci",
+       "attempts": 3,
+       "why": "CI is red (android / check-theme, android / conformance tests); fixing red CI failed 3 times (the limit is 3). Needs a hand.",
+       "head": "a710a710a710a710a710a710a710a710a710a710"
+      },
+      "title": "",
+      "behind": -1,
+      "paused": false,
+      "hold": "",
+      "lastResult": {
+       "kind": "red-ci",
+       "n": 3,
+       "result": "timeout",
+       "at": "2026-11-16T10:45:00.000Z",
+       "head": "a710a710a710a710a710a710a710a710a710a710",
+       "log": ""
+      }
+     }
+    ]
+   },
+   "stale": {
+    "up": false,
+    "runner": "cron-lander",
+    "since": "2026-11-15T09:00:00Z",
+    "lastTick": "2026-11-16T10:30:00.000Z",
+    "paused": false,
+    "policy": {
+     "$axf": "auto-lander-policy@1",
+     "enabled": true,
+     "maxAttempts": 3,
+     "backoff": {
+      "baseMin": 5,
+      "factor": 3,
+      "maxMin": 60
+     },
+     "attemptTimeoutMin": 45,
+     "mergeMain": true,
+     "fixSessions": true,
+     "land": true,
+     "escalateTo": "banner"
+    },
+    "counts": {
+     "builds": 10,
+     "queue": 8,
+     "inFlight": 0,
+     "ciRunning": 2,
+     "waiting": 6,
+     "landed": 2,
+     "escalated": 0,
+     "paused": 0
+    }
+   },
+   "said": {
+    "up": true,
+    "runner": "axf-molly",
+    "since": "",
+    "lastTick": "",
+    "paused": false,
+    "policy": {
+     "$axf": "auto-lander-policy@1",
+     "enabled": true,
+     "maxAttempts": 3,
+     "backoff": {
+      "baseMin": 5,
+      "factor": 3,
+      "maxMin": 60
+     },
+     "attemptTimeoutMin": 45,
+     "mergeMain": true,
+     "fixSessions": true,
+     "land": true,
+     "escalateTo": "banner"
+    },
+    "counts": {
+     "builds": 10,
+     "queue": 8,
+     "inFlight": 0,
+     "ciRunning": 2,
+     "waiting": 6,
+     "landed": 2,
+     "escalated": 0,
+     "paused": 0
+    }
+   },
+   "none": {
+    "$axf": "auto-lander-view@1",
+    "at": "2026-11-16T12:00:00Z",
+    "service": {
+     "up": false,
+     "runner": "",
+     "since": "",
+     "lastTick": "",
+     "paused": true,
+     "policy": {
+      "$axf": "auto-lander-policy@1",
+      "enabled": false,
+      "maxAttempts": 3,
+      "backoff": {
+       "baseMin": 5,
+       "factor": 3,
+       "maxMin": 60
+      },
+      "attemptTimeoutMin": 45,
+      "mergeMain": true,
+      "fixSessions": true,
+      "land": true,
+      "escalateTo": "banner"
+     },
+     "counts": {
+      "builds": 0,
+      "queue": 0,
+      "inFlight": 0,
+      "ciRunning": 0,
+      "waiting": 0,
+      "landed": 0,
+      "escalated": 0,
+      "paused": 0
+     }
+    },
+    "current": null,
+    "queue": [],
+    "builds": []
+   },
+   "lastResult": {
+    "none": null,
+    "open": null,
+    "mixed": {
+     "kind": "land",
+     "n": 1,
+     "result": "failed",
+     "at": "2026-11-16T10:21:00.000Z",
+     "head": "a710a710a710a710a710a710a710a710a710a710",
+     "log": "merge refused: base branch was modified"
+    },
+    "skipped": {
+     "kind": "clash",
+     "n": 3,
+     "result": "failed",
+     "at": "2026-11-16T10:01:00.000Z",
+     "head": "a710a710a710a710a710a710a710a710a710a710",
+     "log": ""
+    }
+   },
+   "row": {
+    "$axf": "auto-lander-build@1",
+    "build": "help-coverage-gate",
+    "pr": 710,
+    "branch": "claude/help-coverage-gate",
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "state": "waiting",
+    "since": "2026-11-16T11:30:00.000Z",
+    "at": "2026-11-16T11:30:00.000Z",
+    "attempts": [
+     {
+      "$axf": "auto-lander-attempt@1",
+      "build": "help-coverage-gate",
+      "kind": "clash",
+      "n": 1,
+      "account": "hulu0241",
+      "session": "s-clash-1",
+      "branch": "claude/help-coverage-gate",
+      "head": "a710a710a710a710a710a710a710a710a710a710",
+      "pr": 710,
+      "result": "ok",
+      "log": "",
+      "at": "2026-11-16T05:20:00.000Z",
+      "endedAt": "2026-11-16T05:21:00.000Z"
+     },
+     {
+      "$axf": "auto-lander-attempt@1",
+      "build": "help-coverage-gate",
+      "kind": "red-ci",
+      "n": 1,
+      "account": "hulu0241",
+      "session": "s-red-ci-1",
+      "branch": "claude/help-coverage-gate",
+      "head": "a710a710a710a710a710a710a710a710a710a710",
+      "pr": 710,
+      "result": "failed",
+      "log": "",
+      "at": "2026-11-16T07:00:00.000Z",
+      "endedAt": "2026-11-16T07:10:00.000Z"
+     },
+     {
+      "$axf": "auto-lander-attempt@1",
+      "build": "help-coverage-gate",
+      "kind": "red-ci",
+      "n": 2,
+      "account": "hulu0241",
+      "session": "s-red-ci-2",
+      "branch": "claude/help-coverage-gate",
+      "head": "a710a710a710a710a710a710a710a710a710a710",
+      "pr": 710,
+      "result": "ok",
+      "log": "",
+      "at": "2026-11-16T08:40:00.000Z",
+      "endedAt": "2026-11-16T09:30:00.000Z"
+     },
+     {
+      "$axf": "auto-lander-attempt@1",
+      "build": "help-coverage-gate",
+      "kind": "land",
+      "n": 1,
+      "account": "hulu0241",
+      "session": "s-land-1",
+      "branch": "claude/help-coverage-gate",
+      "head": "a710a710a710a710a710a710a710a710a710a710",
+      "pr": 710,
+      "result": "failed",
+      "log": "merge refused: base branch was modified",
+      "at": "2026-11-16T10:20:00.000Z",
+      "endedAt": "2026-11-16T10:21:00.000Z"
+     }
+    ],
+    "reason": "",
+    "escalation": null,
+    "title": "Help coverage gate",
+    "behind": 4,
+    "paused": true,
+    "hold": "paused by brett",
+    "lastResult": {
+     "kind": "land",
+     "n": 1,
+     "result": "failed",
+     "at": "2026-11-16T10:21:00.000Z",
+     "head": "a710a710a710a710a710a710a710a710a710a710",
+     "log": "merge refused: base branch was modified"
+    }
+   },
+   "errors": {
+    "good": [],
+    "bad": [
+     "$axf is auto-lander-view@1",
+     "at is an ISO date-time",
+     "service.up is true or false",
+     "service.runner is one of cron-lander, axf-molly or empty",
+     "service.policy.maxAttempts is 1..10",
+     "queue is a list of build ids",
+     "builds[0].behind is a count or -1",
+     "builds[0].paused is true or false",
+     "queue[0] ghost is not in builds",
+     "queue[1] 7 is not in builds",
+     "current is null or one of builds"
+    ]
+   }
+  },
+  "commands": {
+   "norm": {
+    "runAll": {
+     "$axf": "auto-lander-command@1",
+     "command": "run",
+     "build": "",
+     "by": "",
+     "at": "",
+     "reason": {
+      "title": "Run the auto-lander now",
+      "description": ""
+     }
+    },
+    "runOne": {
+     "$axf": "auto-lander-command@1",
+     "command": "run",
+     "build": "help-coverage-gate",
+     "by": "brett",
+     "at": "",
+     "reason": {
+      "title": "Retry the auto-lander on help-coverage-gate",
+      "description": "Resets the escalation and runs the lander now."
+     }
+    },
+    "retry": {
+     "$axf": "auto-lander-command@1",
+     "command": "retry",
+     "build": "help-coverage-gate",
+     "by": "brett",
+     "at": "",
+     "reason": {
+      "title": "Retry the auto-lander on help-coverage-gate",
+      "description": "Resets the escalation and runs the lander now."
+     }
+    },
+    "retryNoBuild": {
+     "$axf": "auto-lander-command@1",
+     "command": "retry",
+     "build": "",
+     "by": "",
+     "at": "",
+     "reason": {
+      "title": "Retry the auto-lander on help-coverage-gate",
+      "description": "Resets the escalation and runs the lander now."
+     }
+    },
+    "pauseOne": {
+     "$axf": "auto-lander-command@1",
+     "command": "pause",
+     "build": "help-coverage-gate",
+     "by": "brett",
+     "at": "",
+     "reason": {
+      "title": "Pause help-coverage-gate",
+      "description": "Holds it until the skins build lands."
+     }
+    },
+    "pauseAll": {
+     "$axf": "auto-lander-command@1",
+     "command": "pause",
+     "build": "",
+     "by": "brett",
+     "at": "",
+     "reason": {
+      "title": "Pause the auto-lander",
+      "description": ""
+     }
+    },
+    "resumeOne": {
+     "$axf": "auto-lander-command@1",
+     "command": "resume",
+     "build": "help-coverage-gate",
+     "by": "",
+     "at": "",
+     "reason": {
+      "title": "Resume help-coverage-gate",
+      "description": ""
+     }
+    },
+    "settings": {
+     "$axf": "auto-lander-command@1",
+     "command": "settings",
+     "build": "",
+     "by": "brett",
+     "at": "",
+     "reason": {
+      "title": "Auto-lander: five tries",
+      "description": ""
+     },
+     "settings": {
+      "maxAttempts": 5,
+      "fixSessions": false
+     }
+    },
+    "settingsEmpty": {
+     "$axf": "auto-lander-command@1",
+     "command": "settings",
+     "build": "",
+     "by": "",
+     "at": "",
+     "reason": {
+      "title": "x",
+      "description": ""
+     },
+     "settings": {}
+    },
+    "settingsBad": {
+     "$axf": "auto-lander-command@1",
+     "command": "settings",
+     "build": "x",
+     "by": "",
+     "at": "",
+     "reason": {
+      "title": "x",
+      "description": ""
+     },
+     "settings": {
+      "maxAttempts": 0,
+      "escalateTo": "mail"
+     }
+    },
+    "noReason": {
+     "$axf": "auto-lander-command@1",
+     "command": "run",
+     "build": "help-coverage-gate",
+     "by": "",
+     "at": "",
+     "reason": {
+      "title": "",
+      "description": ""
+     }
+    },
+    "unknown": {
+     "$axf": "auto-lander-command@1",
+     "command": "run",
+     "build": "help-coverage-gate",
+     "by": "",
+     "at": "",
+     "reason": {
+      "title": "Retry the auto-lander on help-coverage-gate",
+      "description": "Resets the escalation and runs the lander now."
+     }
+    }
+   },
+   "errors": {
+    "runAll": [],
+    "runOne": [],
+    "retry": [],
+    "retryNoBuild": [
+     "command.build names the build to retry"
+    ],
+    "pauseOne": [],
+    "pauseAll": [],
+    "resumeOne": [],
+    "settings": [],
+    "settingsEmpty": [
+     "command.settings carries the policy fields to change"
+    ],
+    "settingsBad": [
+     "command.build is empty for settings",
+     "command.settings.maxAttempts is 1..10",
+     "command.settings.escalateTo is one of banner, note, none"
+    ],
+    "noReason": [
+     "command.reason.title says what is about to happen"
+    ],
+    "unknown": [
+     "command.command is one of run, retry, pause, resume, settings"
+    ]
+   },
+   "runNow": {
+    "inBackoff": {
+     "$axf": "auto-lander-action@1",
+     "at": "2026-11-16T12:00:00Z",
+     "build": "help-coverage-gate",
+     "pr": 710,
+     "head": "a710a710a710a710a710a710a710a710a710a710",
+     "action": "wait",
+     "state": "waiting",
+     "kind": "red-ci",
+     "attempt": 2,
+     "notBefore": "2026-11-16T12:03:00.000Z",
+     "waitReason": "backoff",
+     "reason": "CI is red (android / check-theme, android / conformance tests); attempt 1 of fixing red CI failed. Attempt 2 starts at 2026-11-16T12:03:00.000Z."
+    },
+    "now": {
+     "$axf": "auto-lander-action@1",
+     "at": "2026-11-16T12:00:00Z",
+     "build": "help-coverage-gate",
+     "pr": 710,
+     "head": "a710a710a710a710a710a710a710a710a710a710",
+     "action": "fix-session",
+     "state": "fixing",
+     "kind": "red-ci",
+     "attempt": 2,
+     "notBefore": "",
+     "waitReason": "",
+     "reason": "CI is red (android / check-theme, android / conformance tests): fixing red CI (attempt 2 of 3)."
+    },
+    "nowAtMax": {
+     "$axf": "auto-lander-action@1",
+     "at": "2026-11-16T12:00:00Z",
+     "build": "help-coverage-gate",
+     "pr": 710,
+     "head": "a710a710a710a710a710a710a710a710a710a710",
+     "action": "escalate",
+     "state": "escalated",
+     "kind": "red-ci",
+     "attempt": 3,
+     "notBefore": "",
+     "waitReason": "",
+     "reason": "CI is red (android / check-theme, android / conformance tests); fixing red CI failed 3 times (the limit is 3). Needs a hand."
+    },
+    "nowInFlight": {
+     "$axf": "auto-lander-action@1",
+     "at": "2026-11-16T12:00:00Z",
+     "build": "help-coverage-gate",
+     "pr": 710,
+     "head": "a710a710a710a710a710a710a710a710a710a710",
+     "action": "wait",
+     "state": "fixing",
+     "kind": "red-ci",
+     "attempt": 1,
+     "notBefore": "",
+     "waitReason": "in-flight",
+     "reason": "Attempt 1 of fixing red CI is still running (since 2026-11-16T11:30:00.000Z)."
+    }
    }
   }
  }

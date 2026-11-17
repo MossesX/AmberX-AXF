@@ -6,6 +6,8 @@
   "policy": "auto-lander-policy@1",
   "action": "auto-lander-action@1",
   "state": "auto-lander-state@1",
+  "view": "auto-lander-view@1",
+  "command": "auto-lander-command@1",
   "kinds": [
     "clash",
     "red-ci",
@@ -101,5 +103,32 @@
   "ruleId": "auto-lander",
   "migratesFrom": [
     "lander-state@1"
-  ]
+  ],
+  "commands": [
+    "run",
+    "retry",
+    "pause",
+    "resume",
+    "settings"
+  ],
+  "commandBuild": {
+    "run": "optional",
+    "retry": "required",
+    "pause": "optional",
+    "resume": "optional",
+    "settings": "none"
+  },
+  "runners": [
+    "cron-lander",
+    "axf-molly",
+    ""
+  ],
+  "queueOrder": [
+    "merging-main",
+    "fixing",
+    "landing",
+    "ci-running",
+    "waiting"
+  ],
+  "behindUnknown": -1
 }

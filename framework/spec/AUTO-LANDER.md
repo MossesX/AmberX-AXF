@@ -5,9 +5,10 @@ the auto lander to bang shit out on its own. It needs to automatically fix it. W
 server do it automatically without the console."
 
 Reference engine: `framework/core/auto-lander.mjs` (pure: `decide`, `apply`, `startAttempt`, `endAttempt`,
-`fromLanderState`, `policyFromRules`, validators). Registry: `framework/schemas/auto-lander.json`; JSON Schemas:
+`fromLanderState`, `policyFromRules`, `viewOf`, `normCommand`, validators). Registry: `framework/schemas/auto-lander.json`; JSON Schemas:
 `schemas/json/auto-lander-attempt.schema.json`, `auto-lander-build.schema.json`, `auto-lander-policy.schema.json`,
-`auto-lander-action.schema.json`, `auto-lander-state.schema.json`. Fixture: `framework/spec/fixtures/auto-lander.json`
+`auto-lander-action.schema.json`, `auto-lander-state.schema.json`, `auto-lander-view.schema.json`,
+`auto-lander-command.schema.json`. Fixture: `framework/spec/fixtures/auto-lander.json`
 (`spec/check-auto-lander.mjs`). Server rule: `auto-lander` in the default `gate-rule-set@1` (GATE.md). Kotlin twin
 deferred (PORTING.md).
 
@@ -113,6 +114,39 @@ policy's `enabled`. Without the rule the engine uses the defaults, so an old rul
 `{ $axf, at, policy: auto-lander-policy@1, builds: [auto-lander-build@1], migratedFrom? }`. One document on the VPS
 (the lander's data dir), written by the runner only; the console, CLI, MCP and voice read it.
 
+### auto-lander-view@1 — what every surface reads
+
+`viewOf(state, { service, behind, holds, titles, at })` turns the state document plus what the runner knows around it
+into the one shape `GET …/auto-lander` answers (build `gate-auto-lander-tab-and-controls`, Nov 17 2026):
+
+| Field | Meaning |
+| --- | --- |
+| `service` | `up` (the runner ticked within `attemptTimeoutMin`, or what the runner says), `runner` (`cron-lander`, `axf-molly`, empty), `since`, `lastTick`, `paused` (the rule is off), `policy`, `counts` (builds, queue, inFlight, ciRunning, waiting, landed, escalated, paused) |
+| `current` | the row being worked on: the first in the queue that is in flight or on CI; `null` when none |
+| `queue` | build ids still to land, in work order: in flight, then `ci-running`, then `waiting`, each by `since` (`queueOf`) |
+| `builds` | every row: the queue first, then the landed and escalated ones, newest `at` first |
+
+A row (`rowOf`) is the `auto-lander-build@1` record plus `title` (from builds@1), `behind` (commits behind main, `-1`
+while the runner has not counted), `paused` + `hold` (the gate's hold by hand on its PR: a paused build is a held one)
+and `lastResult` (the latest ended attempt: `kind`, `n`, `result`, `at`, `head`, `log`; `null` with no history). The
+gate plugin keeps every column its grid shows today and adds these.
+
+### auto-lander-command@1 — what every surface may tell it
+
+`{ command, build?, by, reason: { title, description }, settings?, at }`, validated by `commandErrors`:
+
+| Command | Build | What it does |
+| --- | --- | --- |
+| `run` | optional | `decide` and carry the action out now for the build (every queued build when none); a backoff is not waited for (`decide(…, { now: true })`); a limit or an open attempt still holds |
+| `retry` | required | `resetEscalation` on the build, then `run` it (a build that is not escalated is simply run) |
+| `pause` | optional | with a build: the gate's hold by hand on its PR (`decide` answers wait / `held`); without: the `auto-lander` rule off |
+| `resume` | optional | with a build: the hold released; without: the rule on |
+| `settings` | none | the policy patched with `settings` (`auto-lander-policy@1` fields), validated by `policyErrors` |
+
+Pause and resume add no record: a per-build pause is the gate hold the lander already respects, a lander-wide pause is
+the rule's own switch, so the server, the console and the old `lander.*` tools all see one truth. Every command carries
+`by` and a `reason` title and lands in `gate.history`.
+
 ## decide(build, prState, attempts, policy, { at })
 
 `prState` is the gate's `pr-snapshot@1` (`gate-rules.normSnapshot`), so the lander and the gate see one PR the same way.
@@ -150,17 +184,20 @@ No record is dropped; `migratedFrom: { frame: 'lander-state@1', at }` says it wa
 
 ## One surface, four transports
 
-The lander has no screen of its own in this build; it is enforced server-side. Where it is read and driven:
+The lander is enforced server-side (build `server-auto-lander-fixes-lands`); its screen is the Gate → Auto-lander tab
+(build `gate-auto-lander-tab-and-controls`). Where it is read and driven, the same on every transport:
 
 | Transport | Where |
 | --- | --- |
-| Deep link | `view:gate`, `tab:gate.tabs=rules`, `row:auto-lander` (the rule), `tab:gate.tabs=auto-lander` (the state) |
-| REST | `/api/plugins/gate/rules/auto-lander` (`GET`, `PUT`, `POST …/toggle`), `GET /api/plugins/gate/lander` (state) |
-| MCP | `gate_rules_get { id: 'auto-lander' }`, `gate_rules_set`, `gate_rules_toggle`, `lander_status`, `lander_waiting` |
-| CLI | `axf gate rules get auto-lander`, `axf gate rules set auto-lander maxAttempts 5`, `axf gate rules on\|off auto-lander`, `axf gate lander status` |
-| Voice (AmberX) | `gate.rule` ("turn off the auto-lander rule", "set the auto-lander to five tries"), `lander.status` ("what's the lander doing") |
+| Deep link | `view:gate`, `tab:gate.tabs=auto-lander` (the view), `row:<build>` in it; `tab:gate.tabs=rules`, `row:auto-lander` (the rule); settings `tab:settings.tabs=plugins` → Gate |
+| REST | `GET /api/plugins/gate/auto-lander` → `auto-lander-view@1`; `POST /api/plugins/gate/auto-lander/{run,retry,pause,resume,settings}` with an `auto-lander-command@1` body; the rule itself still at `/api/plugins/gate/rules/auto-lander` (`GET`, `PUT`, `POST …/toggle`) |
+| MCP | `gate_auto_lander` (the view), `gate_auto_lander_run / retry / pause / resume / settings`; `gate_rules_get { id: 'auto-lander' }`, `gate_rules_set`, `gate_rules_toggle` |
+| CLI | `axf gate auto-lander` (the view), `axf gate auto-lander run [build]`, `retry <build>`, `pause [build]`, `resume [build]`, `settings maxAttempts 5`; `axf gate rules get\|set\|on\|off auto-lander` |
+| Voice (AmberX) | `lander.status` ("what's the lander doing"), `lander.command` ("retry the lander on help coverage", "pause the auto-lander"), `gate.rule` ("set the auto-lander to five tries") |
 
-Every write carries `by` and `reason: { title, description }` and lands in `gate.history`.
+`GET /api/plugins/gate/lander` (`lander-state@1`) and the `lander_status` / `lander_waiting` tools stay for the old
+Lander tab until it is folded into the Auto-lander tab. Every write carries `by` and `reason: { title, description }`
+and lands in `gate.history`.
 
 ## Related contracts
 

@@ -928,7 +928,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // gate-rules@1: the gate a PR passes before it lands (gate-rule@1, gate-rule-set@1) and the lander's state (lander-state@1) + the registry snapshot
   for (const [n, schema] of Object.entries(gateRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const greg = join(FRAMEWORK_DIR, 'schemas/gate-rules.json'); writeFileSync(greg, JSON.stringify(GATE_RULES_REGISTRY, null, 2) + '\n'); written.push(greg);
-  // auto-lander@1: the server fixes and lands every build on its own (attempt, build, policy, action, state) + the registry snapshot
+  // auto-lander@1: the server fixes and lands every build on its own (attempt, build, policy, action, state, view, command) + the registry snapshot
   for (const [n, schema] of Object.entries(autoLanderJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const alreg = join(FRAMEWORK_DIR, 'schemas/auto-lander.json'); writeFileSync(alreg, JSON.stringify(AUTO_LANDER_REGISTRY, null, 2) + '\n'); written.push(alreg);
   // build-rules@1: every builder rule as one store the VPS owns (build-rule@1, build-rules-store@1, build-rule-history@1) + the registry snapshot

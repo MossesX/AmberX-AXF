@@ -1,0 +1,664 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/auto-lander-view.schema.json",
+  "title": "auto-lander-view@1 (auto-lander@1)",
+  "description": "What GET …/auto-lander answers and every surface (console tab, CLI, MCP, voice) reads.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$axf",
+    "at",
+    "service",
+    "current",
+    "queue",
+    "builds"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "auto-lander-view@1"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "service": {
+      "type": "object",
+      "required": [
+        "up",
+        "runner",
+        "paused",
+        "policy",
+        "counts"
+      ],
+      "properties": {
+        "up": {
+          "type": "boolean",
+          "description": "the runner has ticked within attemptTimeoutMin"
+        },
+        "runner": {
+          "enum": [
+            "cron-lander",
+            "axf-molly",
+            ""
+          ]
+        },
+        "since": {
+          "type": "string",
+          "description": "an ISO date-time, or empty"
+        },
+        "lastTick": {
+          "type": "string",
+          "description": "an ISO date-time, or empty"
+        },
+        "paused": {
+          "type": "boolean",
+          "description": "the auto-lander rule is off"
+        },
+        "policy": {
+          "title": "auto-lander-policy@1 (auto-lander@1)",
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "$axf": {
+              "const": "auto-lander-policy@1"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "maxAttempts": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "failures of one kind on one build before it escalates"
+            },
+            "backoff": {
+              "type": "object",
+              "properties": {
+                "baseMin": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "factor": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxMin": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "description": "wait after the n-th failure: min(maxMin, baseMin × factor^(n−1)) minutes"
+            },
+            "attemptTimeoutMin": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "mergeMain": {
+              "type": "boolean"
+            },
+            "fixSessions": {
+              "type": "boolean"
+            },
+            "land": {
+              "type": "boolean"
+            },
+            "escalateTo": {
+              "enum": [
+                "banner",
+                "note",
+                "none"
+              ]
+            }
+          }
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "builds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "queue": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inFlight": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ciRunning": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "waiting": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "landed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "escalated": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "paused": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "current": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "title": "one grid row: auto-lander-build@1 plus what the runner knows around it",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "build",
+            "state",
+            "since",
+            "attempts",
+            "behind",
+            "paused",
+            "lastResult"
+          ],
+          "properties": {
+            "$axf": {
+              "const": "auto-lander-build@1"
+            },
+            "build": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "pr": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "branch": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "head": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "state": {
+              "enum": [
+                "waiting",
+                "merging-main",
+                "fixing",
+                "ci-running",
+                "landing",
+                "landed",
+                "escalated"
+              ]
+            },
+            "since": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "attempts": {
+              "type": "array",
+              "maxItems": 60,
+              "items": {
+                "title": "auto-lander-attempt@1 (auto-lander@1)",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "build",
+                  "kind",
+                  "n",
+                  "result",
+                  "at"
+                ],
+                "properties": {
+                  "$axf": {
+                    "const": "auto-lander-attempt@1"
+                  },
+                  "build": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "kind": {
+                    "enum": [
+                      "clash",
+                      "red-ci",
+                      "land"
+                    ],
+                    "description": "clash = merge main in; red-ci = a fix session; land = merge the PR"
+                  },
+                  "n": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "the attempt number for this build and kind, 1-based, dense"
+                  },
+                  "account": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "description": "the Claude account or API key that did it"
+                  },
+                  "session": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "branch": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "head": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "pr": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "result": {
+                    "enum": [
+                      "started",
+                      "ok",
+                      "failed",
+                      "timeout",
+                      "skipped"
+                    ],
+                    "description": "timeout = started and older than attemptTimeoutMin; skipped never counts as a failure"
+                  },
+                  "log": {
+                    "type": "string",
+                    "maxLength": 2000,
+                    "description": "an excerpt of the output"
+                  },
+                  "at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endedAt": {
+                    "type": "string",
+                    "description": "an ISO date-time, or empty"
+                  }
+                }
+              },
+              "description": "oldest first; at most one started"
+            },
+            "reason": {
+              "type": "string",
+              "maxLength": 600,
+              "description": "why it is in this state, in plain words"
+            },
+            "escalation": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "at",
+                "kind",
+                "why"
+              ],
+              "properties": {
+                "at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "kind": {
+                  "enum": [
+                    "clash",
+                    "red-ci",
+                    "land"
+                  ]
+                },
+                "attempts": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "why": {
+                  "type": "string",
+                  "maxLength": 600
+                },
+                "head": {
+                  "type": "string",
+                  "maxLength": 64
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "maxLength": 200,
+              "description": "the build's title from builds@1"
+            },
+            "behind": {
+              "type": "integer",
+              "minimum": -1,
+              "description": "commits behind main; -1 while uncounted"
+            },
+            "paused": {
+              "type": "boolean",
+              "description": "held by hand on the gate (the lander's pause)"
+            },
+            "hold": {
+              "type": "string",
+              "maxLength": 600,
+              "description": "why it is held, or empty"
+            },
+            "lastResult": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "kind",
+                "n",
+                "result",
+                "at"
+              ],
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "clash",
+                    "red-ci",
+                    "land"
+                  ]
+                },
+                "n": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "result": {
+                  "enum": [
+                    "ok",
+                    "failed",
+                    "timeout",
+                    "skipped"
+                  ]
+                },
+                "at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "head": {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                "log": {
+                  "type": "string",
+                  "maxLength": 2000
+                }
+              },
+              "description": "the latest ended attempt"
+            }
+          }
+        }
+      ],
+      "description": "the build being worked on (in flight or on CI), or null"
+    },
+    "queue": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "build ids still to land, in the order worked: merging-main, fixing, landing, ci-running, waiting, then since"
+    },
+    "builds": {
+      "type": "array",
+      "maxItems": 400,
+      "items": {
+        "title": "one grid row: auto-lander-build@1 plus what the runner knows around it",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "build",
+          "state",
+          "since",
+          "attempts",
+          "behind",
+          "paused",
+          "lastResult"
+        ],
+        "properties": {
+          "$axf": {
+            "const": "auto-lander-build@1"
+          },
+          "build": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "pr": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "branch": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "head": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "state": {
+            "enum": [
+              "waiting",
+              "merging-main",
+              "fixing",
+              "ci-running",
+              "landing",
+              "landed",
+              "escalated"
+            ]
+          },
+          "since": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "attempts": {
+            "type": "array",
+            "maxItems": 60,
+            "items": {
+              "title": "auto-lander-attempt@1 (auto-lander@1)",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "build",
+                "kind",
+                "n",
+                "result",
+                "at"
+              ],
+              "properties": {
+                "$axf": {
+                  "const": "auto-lander-attempt@1"
+                },
+                "build": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "kind": {
+                  "enum": [
+                    "clash",
+                    "red-ci",
+                    "land"
+                  ],
+                  "description": "clash = merge main in; red-ci = a fix session; land = merge the PR"
+                },
+                "n": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "the attempt number for this build and kind, 1-based, dense"
+                },
+                "account": {
+                  "type": "string",
+                  "maxLength": 80,
+                  "description": "the Claude account or API key that did it"
+                },
+                "session": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "branch": {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "head": {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                "pr": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "result": {
+                  "enum": [
+                    "started",
+                    "ok",
+                    "failed",
+                    "timeout",
+                    "skipped"
+                  ],
+                  "description": "timeout = started and older than attemptTimeoutMin; skipped never counts as a failure"
+                },
+                "log": {
+                  "type": "string",
+                  "maxLength": 2000,
+                  "description": "an excerpt of the output"
+                },
+                "at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "endedAt": {
+                  "type": "string",
+                  "description": "an ISO date-time, or empty"
+                }
+              }
+            },
+            "description": "oldest first; at most one started"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 600,
+            "description": "why it is in this state, in plain words"
+          },
+          "escalation": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "at",
+              "kind",
+              "why"
+            ],
+            "properties": {
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "kind": {
+                "enum": [
+                  "clash",
+                  "red-ci",
+                  "land"
+                ]
+              },
+              "attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "why": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "head": {
+                "type": "string",
+                "maxLength": 64
+              }
+            }
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "the build's title from builds@1"
+          },
+          "behind": {
+            "type": "integer",
+            "minimum": -1,
+            "description": "commits behind main; -1 while uncounted"
+          },
+          "paused": {
+            "type": "boolean",
+            "description": "held by hand on the gate (the lander's pause)"
+          },
+          "hold": {
+            "type": "string",
+            "maxLength": 600,
+            "description": "why it is held, or empty"
+          },
+          "lastResult": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "kind",
+              "n",
+              "result",
+              "at"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "clash",
+                  "red-ci",
+                  "land"
+                ]
+              },
+              "n": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "result": {
+                "enum": [
+                  "ok",
+                  "failed",
+                  "timeout",
+                  "skipped"
+                ]
+              },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "head": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "log": {
+                "type": "string",
+                "maxLength": 2000
+              }
+            },
+            "description": "the latest ended attempt"
+          }
+        }
+      },
+      "description": "every tracked build: the queue first, then landed and escalated, newest first"
+    }
+  }
+}

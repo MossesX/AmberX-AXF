@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/auto-lander-command.schema.json",
+  "title": "auto-lander-command@1 (auto-lander@1)",
+  "description": "What POST …/auto-lander/<command> takes; the same on MCP, the CLI and voice.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "command",
+    "reason"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "auto-lander-command@1"
+    },
+    "command": {
+      "enum": [
+        "run",
+        "retry",
+        "pause",
+        "resume",
+        "settings"
+      ],
+      "description": "run = decide and act now, skipping a backoff; retry = reset an escalation then run; pause / resume = hold or release a build (the gate hold), or the rule off / on without a build; settings = patch the policy"
+    },
+    "build": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "required for retry, optional for run / pause / resume (the whole lander when empty), empty for settings"
+    },
+    "by": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "at": {
+      "type": "string",
+      "description": "an ISO date-time, or empty"
+    },
+    "reason": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 600
+        }
+      }
+    },
+    "settings": {
+      "title": "auto-lander-policy@1 (auto-lander@1)",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "$axf": {
+          "const": "auto-lander-policy@1"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "maxAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "failures of one kind on one build before it escalates"
+        },
+        "backoff": {
+          "type": "object",
+          "properties": {
+            "baseMin": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "factor": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "maxMin": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "description": "wait after the n-th failure: min(maxMin, baseMin × factor^(n−1)) minutes"
+        },
+        "attemptTimeoutMin": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "mergeMain": {
+          "type": "boolean"
+        },
+        "fixSessions": {
+          "type": "boolean"
+        },
+        "land": {
+          "type": "boolean"
+        },
+        "escalateTo": {
+          "enum": [
+            "banner",
+            "note",
+            "none"
+          ]
+        }
+      },
+      "description": "for settings: the auto-lander-policy@1 fields to change"
+    }
+  }
+}

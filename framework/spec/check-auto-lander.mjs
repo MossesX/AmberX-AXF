@@ -3,7 +3,8 @@
  * auto-lander@1 conformance: decide() on a clash, red CI, CI running, green, a mid-flight attempt (open, then timed
  * out), the backoff between tries, escalation at maxAttempts, the per-kind switches, the holds the server never
  * touches (draft, fork, by hand, no PR, UI Review), apply / endAttempt / resetEscalation round trips, the policy from
- * the gate rule set, the lander-state@1 migration, validation, and the schema snapshots.
+ * the gate rule set, the lander-state@1 migration, the view every surface reads (service, current, queue, rows with
+ * behind / paused / lastResult), the five commands (run, retry, pause, resume, settings), validation, and the schema snapshots.
  *   node framework/spec/check-auto-lander.mjs           check
  *   node framework/spec/check-auto-lander.mjs --write   regenerate fixtures/auto-lander.json's expected outputs
  */
@@ -96,7 +97,24 @@ const LANDER_STATE = {
 };
 const LANDER_STATE_LANDING = { ...LANDER_STATE, landing: { ...LANDER_STATE.landing, ci: 'success' }, waiting: [], landedRecently: [] };
 
-const IN = { AT, HEAD, HEAD2, BUILD, POLICIES, SNAPSHOTS, ATTEMPTS, RULE_SETS, LANDER_STATE, LANDER_STATE_LANDING };
+/** What the runner knows around the migrated state: its heartbeat, commits behind main, holds by hand, titles. */
+const SERVICE = { fresh: { runner: 'cron-lander', since: '2026-11-15T09:00:00Z', lastTick: T(-2) }, stale: { runner: 'cron-lander', since: '2026-11-15T09:00:00Z', lastTick: T(-90) }, said: { up: true, runner: 'axf-molly' }, none: {} };
+const BEHIND = { 'skins-hot-swap': 0, 'notes-nested-lists': 12, 'push-quiet-hours': 3, 'voice-wake-word': 7 };
+const HOLDS = { 'console-dock-sizes': 'taken out of the queue by hand (waiting for the skins build)', 'ui-review-phone-shots': '' };
+const TITLES = { 'skins-hot-swap': 'Skins: hot-swap tokens', 'notes-nested-lists': 'Notes: nested lists' };
+/** Commands as the console, CLI, MCP and voice send them (auto-lander-command@1). */
+const REASON = { title: 'Retry the auto-lander on help-coverage-gate', description: 'Resets the escalation and runs the lander now.' };
+const COMMANDS = {
+  runAll: { command: 'run', reason: { title: 'Run the auto-lander now' } }, runOne: { command: 'run', build: BUILD.build, by: 'brett', reason: REASON },
+  retry: { command: 'retry', build: BUILD.build, by: 'brett', reason: REASON }, retryNoBuild: { command: 'retry', reason: REASON },
+  pauseOne: { command: 'pause', build: BUILD.build, by: 'brett', reason: { title: 'Pause help-coverage-gate', description: 'Holds it until the skins build lands.' } }, pauseAll: { command: 'pause', by: 'brett', reason: { title: 'Pause the auto-lander' } },
+  resumeOne: { command: 'resume', build: BUILD.build, reason: { title: 'Resume help-coverage-gate' } },
+  settings: { command: 'settings', by: 'brett', reason: { title: 'Auto-lander: five tries' }, settings: { maxAttempts: 5, fixSessions: false } },
+  settingsEmpty: { command: 'settings', reason: { title: 'x' }, settings: {} }, settingsBad: { command: 'settings', build: 'x', reason: { title: 'x' }, settings: { maxAttempts: 0, escalateTo: 'mail' } },
+  noReason: { command: 'run', build: BUILD.build }, unknown: { command: 'kick', build: BUILD.build, reason: REASON },
+};
+
+const IN = { AT, HEAD, HEAD2, BUILD, POLICIES, SNAPSHOTS, ATTEMPTS, RULE_SETS, LANDER_STATE, LANDER_STATE_LANDING, SERVICE, BEHIND, HOLDS, TITLES, COMMANDS };
 
 // ------------------------------------------------------------------ outputs
 
@@ -154,6 +172,22 @@ function run() {
       badState: L.stateErrors({ $axf: 'nope', at: '', policy: { maxAttempts: 99 }, builds: [{ build: 'x', state: 'waiting', since: AT, attempts: [] }, { build: 'x', state: 'waiting', since: AT, attempts: [] }] }),
     },
     norm: { policy: L.normPolicy({ maxAttempts: 99, backoff: { baseMin: 0 }, escalateTo: 'mail' }), attempt: L.normAttempt({ kind: 'x', n: -1, result: 'meh', log: 'x'.repeat(2100) }).log.length, build: L.normBuild({ build: 'x', state: 'escalated' }, AT) },
+    view: (() => {
+      const migrated = L.fromLanderState(LANDER_STATE, { at: AT });
+      const withEsc = L.putBuild(migrated, { ...esc, at: T(-1) }, AT);
+      return {
+        running: L.viewOf(withEsc, { service: SERVICE.fresh, behind: BEHIND, holds: HOLDS, titles: TITLES, at: AT }),
+        stale: L.viewOf(migrated, { service: SERVICE.stale, at: AT }).service, said: L.viewOf(migrated, { service: SERVICE.said, at: AT }).service, none: L.viewOf(L.emptyState(AT, POLICIES.off), { service: SERVICE.none, at: AT }),
+        lastResult: { none: L.lastResultOf(ATTEMPTS.none), open: L.lastResultOf(ATTEMPTS.landOpenFresh), mixed: L.lastResultOf(ATTEMPTS.mixed), skipped: L.lastResultOf(ATTEMPTS.twoClashFailedOneSkipped) },
+        row: L.rowOf({ ...BUILD, attempts: ATTEMPTS.mixed }, { behind: 4, hold: 'paused by brett', title: 'Help coverage gate', at: AT }),
+        errors: { good: L.viewErrors(L.viewOf(withEsc, { service: SERVICE.fresh, behind: BEHIND, holds: HOLDS, at: AT })), bad: L.viewErrors({ $axf: 'x', at: '', service: { up: 'yes', runner: 'me', policy: { maxAttempts: 0 } }, current: { build: 'ghost' }, queue: ['ghost', 7], builds: [{ build: 'x', state: 'waiting', since: AT, attempts: [], behind: -2, paused: 'no', lastResult: { result: 'started' } }] }) },
+      };
+    })(),
+    commands: {
+      norm: Object.fromEntries(Object.entries(COMMANDS).map(([k, c]) => [k, L.normCommand(c)])),
+      errors: Object.fromEntries(Object.entries(COMMANDS).map(([k, c]) => [k, L.commandErrors(c)])),
+      runNow: { inBackoff: D('red', 'oneRedFailedJustNow'), now: L.decide(BUILD, SNAPSHOTS.red, ATTEMPTS.oneRedFailedJustNow, POLICIES.defaults, { at: AT, now: true }), nowAtMax: L.decide(BUILD, SNAPSHOTS.red, ATTEMPTS.threeRedFailed, POLICIES.defaults, { at: AT, now: true }), nowInFlight: L.decide(inFlight('fixing', 'fixOpenFresh'), SNAPSHOTS.red, ATTEMPTS.fixOpenFresh, POLICIES.defaults, { at: AT, now: true }) },
+    },
   };
 }
 const actual = run();
@@ -234,6 +268,41 @@ t('lander-state@1 migrates with nothing dropped: landing → ci-running, a kick 
   assert.equal(m.builds[4].attempts[0].result, 'failed'); assert.match(m.builds[4].attempts[0].log, /broke CI/); assert.deepEqual(m.migratedFrom, { frame: 'lander-state@1', at: AT }); assert.deepEqual(L.stateErrors(m), []);
   assert.equal(actual.migrate.landing.builds[0].state, 'landing'); assert.equal(actual.migrate.landing.builds[0].attempts[0].result, 'started'); assert.equal(actual.migrate.landing.policy.maxAttempts, 2);
   assert.deepEqual(actual.migrate.empty.builds, []); assert.deepEqual(L.stateErrors(actual.migrate.empty), []);
+});
+
+// ------------------------------------------------------------------ the view (GET …/auto-lander) and the commands (POST …/auto-lander/<command>)
+
+const v = actual.view;
+t('the view: service from the heartbeat, current = the build in flight or on CI, queue in work order, every row with behind / paused / lastResult', () => {
+  assert.equal(v.running.$axf, L.VIEW_FRAME); assert.deepEqual(L.viewErrors(v.running), []);
+  assert.deepEqual([v.running.service.up, v.running.service.runner, v.running.service.paused, v.running.service.lastTick], [true, 'cron-lander', false, T(-2)]);
+  assert.equal(v.running.current.build, 'skins-hot-swap'); assert.equal(v.running.current.title, 'Skins: hot-swap tokens'); assert.equal(v.running.current.state, 'ci-running');
+  assert.deepEqual(v.running.queue, ['skins-hot-swap', 'notes-ci-running', 'console-dock-sizes', 'notes-nested-lists', 'pr-545', 'push-quiet-hours', 'ui-review-phone-shots', 'voice-wake-word']); // CI running first, then waiting by since (migrated rows without a since share AT and sort by id)
+  assert.deepEqual(v.running.builds.slice(-3).map((r) => [r.build, r.state]), [['pr-538', 'landed'], ['pr-536', 'landed'], ['help-coverage-gate', 'escalated']]); // terminal rows after the queue, newest at first (the escalation was written a minute earlier)
+  const byId = Object.fromEntries(v.running.builds.map((r) => [r.build, r]));
+  assert.deepEqual([byId['notes-nested-lists'].behind, byId['pr-545'].behind, byId['console-dock-sizes'].paused, byId['console-dock-sizes'].hold, byId['ui-review-phone-shots'].paused], [12, L.BEHIND_UNKNOWN, true, HOLDS['console-dock-sizes'], false]);
+  assert.deepEqual(byId['voice-wake-word'].lastResult.result, 'failed'); assert.equal(byId['skins-hot-swap'].lastResult, null); assert.equal(byId['help-coverage-gate'].lastResult.kind, 'red-ci');
+  assert.deepEqual(v.running.service.counts, { builds: 11, queue: 8, inFlight: 0, ciRunning: 2, waiting: 6, landed: 2, escalated: 1, paused: 1 });
+});
+t('a stale heartbeat is down; a runner that says up is up; an empty state on a rule that is off is paused with nothing current', () => {
+  assert.equal(v.stale.up, false); assert.equal(v.said.up, true); assert.equal(v.said.runner, 'axf-molly');
+  assert.deepEqual([v.none.service.up, v.none.service.paused, v.none.current, v.none.queue, v.none.builds], [false, true, null, [], []]); assert.deepEqual(L.viewErrors(v.none), []);
+});
+t('lastResult is the latest ended attempt; an open one does not count; a row carries behind, title and the hold', () => {
+  assert.equal(v.lastResult.none, null); assert.equal(v.lastResult.open, null); assert.deepEqual([v.lastResult.mixed.kind, v.lastResult.mixed.result, v.lastResult.mixed.at], ['land', 'failed', T(-99)]); assert.equal(v.lastResult.skipped.result, 'failed');
+  assert.deepEqual([v.row.behind, v.row.paused, v.row.hold, v.row.title, v.row.lastResult.log], [4, true, 'paused by brett', 'Help coverage gate', 'merge refused: base branch was modified']);
+  assert.deepEqual(v.errors.good, []); assert.ok(v.errors.bad.length >= 8); assert.ok(v.errors.bad.some((x) => /queue\[0\] ghost/.test(x))); assert.ok(v.errors.bad.some((x) => /current is null or one of builds/.test(x)));
+});
+const c = actual.commands;
+t('commands: run / pause / resume take an optional build, retry needs one, settings takes none and a non-empty policy patch; every one carries a reason title', () => {
+  for (const k of ['runAll', 'runOne', 'retry', 'pauseOne', 'pauseAll', 'resumeOne', 'settings']) assert.deepEqual(c.errors[k], [], k);
+  assert.match(c.errors.retryNoBuild[0], /build names the build to retry/); assert.match(c.errors.settingsEmpty[0], /policy fields/); assert.ok(c.errors.settingsBad.some((x) => /build is empty for settings/.test(x))); assert.ok(c.errors.settingsBad.some((x) => /maxAttempts is 1\.\.10/.test(x)));
+  assert.match(c.errors.noReason[0], /reason\.title/); assert.match(c.errors.unknown[0], /command is one of run, retry, pause, resume, settings/);
+  assert.equal(c.norm.settings.$axf, L.COMMAND_FRAME); assert.deepEqual(c.norm.settings.settings, { maxAttempts: 5, fixSessions: false }); assert.equal(c.norm.runAll.settings, undefined); assert.equal(c.norm.unknown.command, 'run');
+});
+t('run by hand skips the backoff but never a limit or an open attempt', () => {
+  assert.deepEqual(act(c.runNow.inBackoff), ['wait', 'waiting', 'red-ci', 2, 'backoff']); assert.deepEqual(act(c.runNow.now), ['fix-session', 'fixing', 'red-ci', 2, '']);
+  assert.deepEqual(act(c.runNow.nowAtMax), ['escalate', 'escalated', 'red-ci', 3, '']); assert.deepEqual(act(c.runNow.nowInFlight), ['wait', 'fixing', 'red-ci', 1, 'in-flight']);
 });
 
 // ------------------------------------------------------------------ validation + snapshots
