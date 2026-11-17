@@ -39,8 +39,9 @@ export const HANDS_OFF = Object.freeze(['running', 'waiting']);
 
 /**
  * Apply verdicts in ONE store write (withStore: under the store lock, journalled, live to main through builds-live):
- *   complete → the merged PR is recorded (pr, mergedAt) and the status settles by the store's own rule (built →
- *              complete only when every step is ticked: done-means-merged; otherwise it stays and says why)
+ *   complete → the merged PR is recorded (pr, mergedAt) and the status settles by the store's own rule; landed /
+ *              complete need the merge commit and CI green on it (done-means-merged@1), so a merged PR with every
+ *              step ticked goes to landing for the auto-lander to confirm; otherwise the status stays and says why
  *   remove   → archived, with the reason in a note
  * Every touched build gets a build note naming the watchdog and the evidence. Running / waiting builds are never
  * touched. `withStore` / `settle` override the store (tests). Returns each verdict with { applied, why, status }.
@@ -48,6 +49,7 @@ export const HANDS_OFF = Object.freeze(['running', 'waiting']);
 export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {}) {
   const ws = withStore ?? (await import('../../../../../../framework/cli/builds-store.mjs')).withStore;
   const settleStatus = settle ?? (await import('../../../../../../framework/plan/builds-merge-core.mjs')).settleStatus;
+  const { guardStatus } = await import('../../../../../../framework/core/build-pipeline.mjs');
   const out = [];
   ws((s) => {
     const now = new Date().toISOString();
@@ -64,6 +66,11 @@ export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {
         if (v.row.pr) b.pr = `#${v.row.pr}`;
         if (!b.mergedAt) b.mergedAt = v.mergedAt || now;
         settleStatus(b, now);
+        // done-means-merged@1: landed / complete need the merge commit and CI green on it, which only the auto-lander
+        // records; a merged PR alone puts the build in landing (the lander confirms it), else the status stays
+        if (b.status !== before && !guardStatus({ ...b, status: before }, b.status).ok) {
+          b.status = guardStatus({ ...b, status: before }, 'landing').ok ? 'landing' : before;
+        }
       } else if (v.action === 'remove') {
         b.status = 'archived';
       }

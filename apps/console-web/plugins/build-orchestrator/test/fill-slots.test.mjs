@@ -151,7 +151,9 @@ echo "started $ses in $(pwd)"
   mkdirSync(join(t2, 'claude-home'), { recursive: true }); writeFileSync(join(t2, 'claude.json'), '{}');
   const S = (m) => spawnSync(process.execPath, [join(ROOT, 'framework/cli/agent-slots.mjs'), 'set', `maxAgents=${m}`], { env, encoding: 'utf8' });
   S(4);
-  const node = (file, ...a) => { const r = spawnSync(process.execPath, [file, ...a], { cwd: ROOT, env, encoding: 'utf8', timeout: 180000 }); if (r.status !== 0) throw new Error(`${file} ${a.join(' ')}: ${r.stdout}\n${r.stderr}`); return r; };
+  // a failed or timed-out run says why: the spawn error (ETIMEDOUT) and the dispatcher's last log lines
+  const logTail = () => { try { return readFileSync(join(t2, 'pipeline', 'log.jsonl'), 'utf8').trim().split('\n').slice(-15).join('\n'); } catch { return '(no dispatcher log)'; } };
+  const node = (file, ...a) => { const r = spawnSync(process.execPath, [file, ...a], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000, killSignal: 'SIGKILL' }); if (r.status !== 0) throw new Error(`${file} ${a.join(' ')}: ${r.error ? `${r.error.code || r.error.message} ` : ''}status ${r.status} signal ${r.signal}\n${r.stdout}\n${r.stderr}\n--- dispatcher log\n${logTail()}`); return r; };
   const orch = (...a) => node(join(PLUGIN, 'orchestrator.mjs'), ...a);
   const tick = () => JSON.parse(node(join(PLUGIN, 'pipeline.mjs'), 'tick', '--json').stdout.trim().split('\n').pop());
   const st = (o) => ({ model: 'Opus', estimate: '5 min', ...o });
