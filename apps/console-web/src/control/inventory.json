@@ -4,11 +4,11 @@
   "counts": {
     "views": 65,
     "nav": 16,
-    "tabGroups": 27,
+    "tabGroups": 28,
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 275,
+    "functions": 281,
     "buttons": 62,
     "plugins": 71
   },
@@ -1352,6 +1352,16 @@
           "label": "Timeline"
         }
       ]
+    },
+    {
+      "address": "view:build-orchestrator/tab:build-orchestrator.watchdog.tabs",
+      "id": "build-orchestrator.watchdog.tabs",
+      "dynamic": false,
+      "view": "build-orchestrator",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/WatchdogPanel.tsx",
+      "line": 93,
+      "tabs": []
     },
     {
       "address": "view:build-orchestrator/tab:build-orchestrator.tabs",
@@ -4517,6 +4527,106 @@
       "params": true,
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:orchestrator.watchdog.open",
+      "kind": "function",
+      "id": "orchestrator.watchdog.open",
+      "label": "Open the stale-row watchdog (settings, last runs, cleanups log)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "orchestrator.watchdog.open",
+        "orchestrator",
+        "watchdog",
+        "open"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/watchdogActions.ts"
+    },
+    {
+      "address": "function:orchestrator.watchdog.log",
+      "kind": "function",
+      "id": "orchestrator.watchdog.log",
+      "label": "Open the watchdog Cleanups log",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "orchestrator.watchdog.log",
+        "orchestrator",
+        "watchdog",
+        "log"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/watchdogActions.ts"
+    },
+    {
+      "address": "function:orchestrator.watchdog.status",
+      "kind": "function",
+      "id": "orchestrator.watchdog.status",
+      "label": "When did the watchdog last run and what did it clean",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "orchestrator.watchdog.status",
+        "orchestrator",
+        "watchdog",
+        "status"
+      ],
+      "effect": "read",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/watchdogActions.ts"
+    },
+    {
+      "address": "function:orchestrator.watchdog.run",
+      "kind": "function",
+      "id": "orchestrator.watchdog.run",
+      "label": "Run the stale-row watchdog now",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "orchestrator.watchdog.run",
+        "orchestrator",
+        "watchdog",
+        "run"
+      ],
+      "effect": "destructive",
+      "destructive": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/watchdogActions.ts"
+    },
+    {
+      "address": "function:orchestrator.watchdog.dry-run",
+      "kind": "function",
+      "id": "orchestrator.watchdog.dry-run",
+      "label": "What would the watchdog clean (dry run)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "orchestrator.watchdog.dry-run",
+        "orchestrator",
+        "watchdog",
+        "dry",
+        "run"
+      ],
+      "effect": "read",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/watchdogActions.ts"
+    },
+    {
+      "address": "function:orchestrator.watchdog.set",
+      "kind": "function",
+      "id": "orchestrator.watchdog.set",
+      "label": "Change a watchdog setting",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "orchestrator.watchdog.set",
+        "orchestrator",
+        "watchdog",
+        "set"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/watchdogActions.ts"
     },
     {
       "address": "function:build-profiles.open",

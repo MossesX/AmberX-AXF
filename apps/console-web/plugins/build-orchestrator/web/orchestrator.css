@@ -60,3 +60,16 @@ button.oc-model { cursor: pointer }
 .og-dot.is-success::before { background: var(--fx-success) }
 .og-dot.is-warning::before { background: var(--fx-warning) }
 .og-dot.is-danger::before { background: var(--fx-danger) }
+
+/* Stale-row watchdog card (WatchdogPanel.tsx): layout only, every control is a framework control */
+.axp-build-orchestrator__wd { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-build-orchestrator__wd-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-build-orchestrator__wd-fields, .axp-build-orchestrator__wd-list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding-top: var(--fx-dens-gap-lg) }
+.axp-build-orchestrator__wd-inline { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.axp-build-orchestrator__wd-muted { color: var(--fx-muted); font-size: var(--fx-type-root-sm) }
+.axp-build-orchestrator__wd-err { color: var(--fx-danger); font-size: var(--fx-type-root-sm) }
+.axp-build-orchestrator__wd-rows { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); margin: 0; padding: 0; list-style: none; font-size: var(--fx-type-root-sm); overflow-wrap: anywhere }
+.axp-build-orchestrator__wd-rows > li { padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-left: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-orchestrator__wd-rows > li.is-done, .axp-build-orchestrator__wd-rows > li.is-complete { border-left-color: var(--fx-success) }
+.axp-build-orchestrator__wd-rows > li.is-remove { border-left-color: var(--fx-warning) }
+.axp-build-orchestrator__wd-rows > li.is-skipped { color: var(--fx-muted) }
