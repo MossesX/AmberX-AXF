@@ -5184,6 +5184,18 @@
    "from": "",
    "addenda": []
   },
+  "merge-queue-view-every-build-s-fully": {
+   "said": "I think we should still have the merge queue, but it doesn't have anything to do with merging it. That is still controlled by the orchestrator. A merge queue showing anything that is ready to be merged. Completely built, ready for merging, but not yet.",
+   "at": "2026-11-17T18:32:41.029Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "merge-review-one-by-one-every-built-but-unmerged": {
    "said": "I gotta make sure nothing that's built or that I've written gets overwritten or broken from one of those old branches. Go one by one and I'll tell you to merge it or not.",
    "at": "2026-11-11T00:06:50.193Z",

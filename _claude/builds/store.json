@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7581,
- "updatedAt": "2026-11-17T18:30:04.099Z",
+ "rev": 7582,
+ "updatedAt": "2026-11-17T18:32:43.120Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271859,6 +271859,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T18:29:43.448Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "merge-queue-view-every-build-s-fully",
+   "title": "Merge queue view: every build that's fully built and ready to merge but not merged yet (display only)",
+   "category": "",
+   "detail": "Bring back a Merge queue tab, display only: it lists every build/PR that is completely built and ready to merge but not merged yet, in the order the orchestrator will land them, with CI state, commits behind main, and why it's waiting. It does NOT merge anything: landing stays with the orchestrator/lander. Rows use the shared grid (row numbers, columns menu). Full API parity (deep link, state read, MCP, CLI, voice). Tests + UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:32:41.029Z",
+   "updatedAt": "2026-11-17T18:32:41.029Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I think we should still have the merge queue, but it doesn't have anything to do with merging it. That is still controlled by the orchestrator. A merge queue showing anything that is ready to be merged. Completely built, ready for merging, but not yet.",
+    "at": "2026-11-17T18:32:41.029Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 954
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
