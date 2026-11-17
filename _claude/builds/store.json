@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8381,
- "updatedAt": "2026-11-17T23:27:19.782Z",
+ "rev": 8382,
+ "updatedAt": "2026-11-17T23:27:33.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268445,7 +268445,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:27:13.513Z",
+   "updatedAt": "2026-11-17T23:27:21.169Z",
    "builtAt": "",
    "notes": [
     {
@@ -268511,6 +268511,10 @@
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-17T23:14:19.219Z"
+    },
+    {
+     "text": "Headless run axf-move-server-side-console-parts-onto-vps--lenny: brief only · start 20.2K tokens ($0.15) · cost $8.20 · 57 turns · 6 tools, MCP none",
+     "at": "2026-11-17T23:27:21.169Z"
     }
    ],
    "approvals": [
@@ -269265,7 +269269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
