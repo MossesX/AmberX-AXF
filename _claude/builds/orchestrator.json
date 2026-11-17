@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:38:50.110Z",
+ "updatedAt": "2026-11-17T19:39:30.000Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -182266,7 +182266,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T19:34:39.334Z",
+   "updatedAt": "2026-11-17T19:39:27.698Z",
    "builtAt": "",
    "notes": [
     {
@@ -182284,6 +182284,10 @@
     {
      "text": "Brett: make it a full, fully integrated test suite in Maintenance that tests every pipeline and verifies everything (not just a few tests). Also add an Errors section in Maintenance to view and manage all VPS errors (watchdog, dispatcher, lander, cron, containers, failed runs) in one place.",
      "at": "2026-11-17T19:34:39.334Z"
+    },
+    {
+     "text": "Split by Claude into 24 steps (3 Fable).",
+     "at": "2026-11-17T19:39:27.698Z"
     }
    ],
    "approvals": [],
@@ -182300,7 +182304,530 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the demo-run@1 record and its state machine (idle → overlay → focusing → captioned → running → waiting-next → cooldown → done / stopped), pause flag, min-gap (≥30 s, never lower), per-act result (pass/fail/skipped + evidence), and the demo-act@1 entry shape (id, title, caption, focus target, run, expect, cleanup). Write the spec and the JSON schema.",
+     "model": "Fable",
+     "why": "New schema plus a state-machine contract that the console, REST, MCP, CLI and voice all drive",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/LIVE-DEMO.md",
+      "framework/schemas/live-demo.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61e0ntehz",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s2",
+     "text": "Write the pure reference core for demo-run@1: transitions, timing rules (pause on = wait for Next, then ≥30 s; pause off = ≥30 s), invalid-transition errors, and the summary fold. No I/O. Add a fixture with golden transitions.",
+     "model": "Fable",
+     "why": "Engine internals that every driver shares; the fixture is the contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/live-demo.mjs",
+      "framework/spec/fixtures/live-demo.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0odcid",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add the test-build sandbox rule to the builds store: a `demo: true` tag on throwaway builds (id prefix `demo-`). Projections, dispatcher, lander, alerts and builds-live mark them as demo-only, and a guard refuses any demo action on a build without the tag. Add a migration note.",
+     "model": "Fable",
+     "why": "Changes the builds@1 schema and how every store projection treats records",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/core/build-pipeline.mjs",
+      "_claude/builds/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0pkle3",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s4",
+     "text": "Scaffold the plugin `orchestrator-demo`: plugin.json (builtWith, description, settingsTab parent=plugins, lifecycle dataDir plugins/orchestrator-demo), install.mjs, uninstall.mjs, README with lifecycle markers.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/plugin.json",
+      "apps/console-web/plugins/orchestrator-demo/install.mjs",
+      "apps/console-web/plugins/orchestrator-demo/uninstall.mjs",
+      "apps/console-web/plugins/orchestrator-demo/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0qmate",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add the demo-build fixtures: create and remove throwaway `demo-*` builds with 3–4 tiny steps each, stored through data-store@1 under plugins/orchestrator-demo, so cleanup never touches real builds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/sandbox.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0rubk9",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s6",
+     "text": "Write the act catalog part 1 as demo-act@1 entries: queue a demo build, launch it, tick steps one at a time (crossed out in the grid), and the running animation. Each entry has a caption, a focus target (row:<build>/step:sN, view:builds/tab:pipeline) and an expect check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/acts/queue-launch-steps.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0s1hf2",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s7",
+     "text": "Write the act catalog part 2: a deliberate crash (kill the fake session), the watchdog catching it, and a retry back to the Queue. Use a fake headless runner so no Claude account is spent.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/acts/crash-watchdog-retry.mjs",
+      "apps/console-web/plugins/orchestrator-demo/fake-runner.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0tzlr5",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s8",
+     "text": "Write the act catalog part 3: simulated red CI on a demo branch, auto-fix filed, merge-main, and landing through a dry-run landing line (never the real merge queue).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/acts/ci-fix-land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0uitm9",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s9",
+     "text": "Write the act catalog part 4: a build dies for good and shows what failed (red row plus the break alert dialog), stale-row cleanup, and a phone notification through axf.notify@1 tagged as demo. Declare it in notify.json.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/acts/die-cleanup-notify.mjs",
+      "apps/console-web/plugins/orchestrator-demo/notify.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0vx2vs",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s10",
+     "text": "Build the runner on the core: drives acts in order, focuses the console before each act (console_open / focus with highlight), shows the caption, runs the act, records the result, and keeps the waits. Persists demo-run@1 so a console restart picks the run back up.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/runner.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0wv94y",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s11",
+     "text": "Add the runner's stop and cleanup path: Stop stops the run at once, removes every demo-* build, branch and alert, and the summary (passed/failed/skipped per act) is written to the run record.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/runner.mjs",
+      "apps/console-web/plugins/orchestrator-demo/sandbox.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0x6824",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s12",
+     "text": "Add the server routes: GET state, POST start {pause}, pause, resume, next, stop, set pause-between-steps, GET summary. Register them with plugin-commands so the MCP tools come from them.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/server/routes.py",
+      "apps/console-web/plugins/orchestrator-demo/server/__init__.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0ysm04",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s13",
+     "text": "Build the start overlay UI: a framework Dialog with what the demo will do, Continue and Pause buttons, a 'Pause between steps' Switch, and a toolbar (role=toolbar, aria-label). Tokens only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/web/StartOverlay.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f0zn05q",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s14",
+     "text": "Build the live caption bar UI: a floating caption above the focused target showing what is about to happen, the act number (n/N), a countdown to the next act, and Next / Pause / Stop on a toolbar.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/web/CaptionBar.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f10jlod",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s15",
+     "text": "Build the summary dialog at the end: a DataGrid of acts with pass/fail, evidence links (row, alert, PR) and a Run again button.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/web/SummaryDialog.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f11dtfz",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s16",
+     "text": "Wire the web library: register the overlay, caption bar and summary; console-control targets (view:orchestrator-demo, dialog ids, buttons via data-axf-target); a deep link `?axf-open=orchestrator-demo` and console_show target; and a settings sub-tab under Plugins (min gap shown, can't go below 30 s, default pause).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/web/index.ts",
+      "apps/console-web/plugins/orchestrator-demo/web/Settings.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f120ols",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s17",
+     "text": "Add console actions + voice: demo.start, demo.pause, demo.resume, demo.next, demo.stop, demo.state, with AmberX voice phrases ('start the orchestrator demo', 'next', 'pause the demo', 'stop the demo').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/actions.json",
+      "apps/console-web/plugins/orchestrator-demo/voice.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f13eb5z",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s18",
+     "text": "Add the CLI: `axf demo orchestrator start [--pause] | pause | resume | next | stop | state | summary`, calling the same REST routes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/demo.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f14xqmc",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s19",
+     "text": "Add the dependency check: refuse to start (with a plain reason) when the live build status build's real-time grids and break alerts aren't there; list what's missing in the overlay.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/runner.mjs",
+      "apps/console-web/plugins/orchestrator-demo/web/StartOverlay.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f15hdo2",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s20",
+     "text": "Write unit tests: core vs fixture, ≥30 s gap in both modes, Next then 30 s, the sandbox guard refuses real builds, and stop cleans up everything. Write a Python route test.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/test.mjs",
+      "apps/console-web/plugins/orchestrator-demo/server/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f16k0om",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s21",
+     "text": "Run a dry run end to end with a shortened gap override (test-only env), the fake runner and the dry-run lander; check every act passes and no non-demo build changed (builds-store verify).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/test-e2e.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f17adb5",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s22",
+     "text": "Run the CI checks: check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, plugin-lifecycle check --after-uninstall, the help ratchet and the glossary catalog --check; fix any findings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f18ugwy",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s23",
+     "text": "Take desktop and phone shots of the overlay, caption bar and summary, with 3 option assets for the overlay (ui-choices@1), and submit to UI Review with --choices.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator-demo/assets/dialog/",
+      "_claude/builds/reports/guided-live-demo-test-watch-orchestrator/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f19mo1o",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    },
+    {
+     "id": "s24",
+     "text": "Finish: run all tests, write the report _claude/builds/reports/guided-live-demo-test-watch-orchestrator.md (acts, how each is reached by deep link / REST / MCP / CLI / voice, results), add the THREADS row, push the branch, open the PR stating the UI Review hold and the API paths, and link it with builds-live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/guided-live-demo-test-watch-orchestrator.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3j61f1ai68z",
+     "createdAt": "2026-11-17T19:39:27.698Z"
+    }
+   ]
   },
   {
    "id": "right-click-running-build-open-headless",
