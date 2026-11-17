@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:20:29.479Z",
+ "updatedAt": "2026-11-17T00:20:46.411Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -163778,7 +163778,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:17:32.384Z",
+   "updatedAt": "2026-11-17T00:20:14.178Z",
    "builtAt": "",
    "notes": [
     {
@@ -163836,6 +163836,10 @@
     {
      "text": "Self-check: own-look-per-grid-and-tab-group had no session on record but axf-own-look-per-grid-and-tab-group--lenny is alive: kept running and tracking it.",
      "at": "2026-11-17T00:16:13.741Z"
+    },
+    {
+     "text": "Self-check: own-look-per-grid-and-tab-group had no session on record but axf-own-look-per-grid-and-tab-group--lenny is alive: kept running and tracking it.",
+     "at": "2026-11-17T00:20:14.178Z"
     }
    ],
    "approvals": [
@@ -167474,7 +167478,7 @@
    "pr": "#765",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:19:50.282Z",
+   "updatedAt": "2026-11-17T00:20:18.774Z",
    "builtAt": "",
    "notes": [
     {
@@ -167500,6 +167504,14 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 13 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T00:19:32.856Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-stop-auto-lander-committing-tracking--lenny, shared account login)",
+     "at": "2026-11-17T00:19:55.543Z"
+    },
+    {
+     "text": "Self-check: stop-auto-lander-committing-tracking had no session on record but axf-stop-auto-lander-committing-tracking--lenny is alive: kept running and tracking it.",
+     "at": "2026-11-17T00:20:18.774Z"
     },
     {
      "text": "Started run 2 on hulu0241 (Opus, Phase 2): axf-stop-auto-lander-committing-tracking--lenny.",
