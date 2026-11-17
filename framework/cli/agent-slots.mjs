@@ -568,6 +568,9 @@ function flags(argv) {
 
 const ago = (iso) => { const s = Math.round((Date.now() - Date.parse(iso)) / 1000); return s < 90 ? `${s}s` : s < 5400 ? `${Math.round(s / 60)}m` : `${Math.round(s / 3600)}h`; };
 
+/** One line to the console's Claude link (claude-link-emit.mjs, URL from env); CLI only, so library callers stay offline. */
+const linkEvent = (e) => import('./claude-link-emit.mjs').then((m) => m.emit({ source: 'agent-slots', ...e }, { timeoutMs: 1500 })).catch(() => undefined);
+
 async function cli(argv) {
   const [cmd = 'status', ...rest] = argv;
   const f = flags(rest);
@@ -584,11 +587,13 @@ async function cli(argv) {
     }
     case 'enqueue': {
       const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
+      await linkEvent({ kind: 'launch', level: r.started ? 'info' : 'warn', session: f.name, summary: r.started ? `slot taken: ${f.name || r.id}` : `slot queued: ${f.name || r.id} at position ${r.position}${r.reason === 'memory' ? ' (waiting for memory)' : ''}`, detail: { slot: r.started ? 'take' : 'queue', id: r.id, position: r.position, priority: f.priority, build: f.build } });
       if (f.sh) return console.log(`slot_id=${r.id} slot_started=${r.started ? 1 : 0} slot_pos=${r.position} slot_reason=${r.reason || 'none'}`);
       return f.json ? json(r) : console.log(r.started ? `started ${r.id}` : `queued at position ${r.position} (${r.id}${r.reason === 'memory' ? ', waiting for memory' : ''})`);
     }
     case 'claim': {
       const r = claim(f._[0], { pid: f.pid });
+      if (r.started) await linkEvent({ kind: 'launch', summary: `slot taken: ${f._[0]}`, detail: { slot: 'take', id: f._[0] } });
       if (f.json) json(r); else console.log(r.started ? 'started' : r.gone ? 'gone' : `queued at position ${r.position}`);
       process.exitCode = r.started ? 0 : r.gone ? 4 : 3; return;
     }
@@ -599,7 +604,11 @@ async function cli(argv) {
     }
     case 'bind': return void (bind(f._[0], { pid: f.pid, session: f.session }) || (process.exitCode = 4));
     case 'finish': return void (finish(f._[0], f.exit) || (process.exitCode = 4));
-    case 'release': return void (release(f._[0], f.exit) || (process.exitCode = 4));
+    case 'release': {
+      const done = release(f._[0], f.exit);
+      if (done) await linkEvent({ kind: 'exit', level: f.exit && Number(f.exit) !== 0 ? 'warn' : 'info', summary: `slot released: ${f._[0]}${f.exit !== undefined ? ` (exit ${f.exit})` : ''}`, detail: { slot: 'release', id: f._[0], exit: f.exit } });
+      return void (done || (process.exitCode = 4));
+    }
     case 'run-end': return json(writeRunStatus(f._[0] ?? '', { build: f.build, exit: f.exit, signal: f.signal, kind: f.kind, limit: f.limit, account: f.account, session: f.session, pid: f.pid }));
     case 'alive': {
       if (!f._[0]) throw new Error('alive <build> [--dir worktree] [--since iso]');

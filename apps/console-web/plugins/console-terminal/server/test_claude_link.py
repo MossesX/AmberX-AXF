@@ -321,6 +321,32 @@ class HubWatchTests(unittest.TestCase):
         self.assertEqual(self.kinds(), ["connect", "disconnect", "error"])
 
 
+class McpServerCalls(unittest.TestCase):
+    """The console's own /mcp server: every tool call reaches axf.claude-link@1 (session, tool, ok / error)."""
+
+    def test_feed_recorder(self) -> None:
+        srv = HERE.parents[2] / "server"
+        sys.path.insert(0, str(srv))
+        sys.path.insert(0, str(HERE.parents[4] / "framework" / "python"))
+        try:
+            import mcp_server
+            import plugin_services
+        except Exception as e:  # noqa: BLE001 — the MCP SDK isn't installed here
+            self.skipTest(f"mcp_server not importable: {e}")
+        b, _ = bus()
+        plugin_services.provide("axf.claude-link@1", cl.ClaudeLinkService(b), "console-terminal")
+        try:
+            rec = mcp_server.feed_recorder()
+            rec("chat:abc", "console_show", {"target": "x", "token": "t"}, True, "", 12)
+            rec("chat:abc", "builds_get", {}, False, "no such build", 3)
+        finally:
+            plugin_services.withdraw("console-terminal")
+        items = b.snapshot()["items"]
+        self.assertEqual([(e["kind"], e["session"], e["level"]) for e in items], [("mcp", "chat:abc", "info"), ("mcp", "chat:abc", "error")])
+        self.assertEqual(items[0]["detail"]["tool"], "console_show")
+        self.assertIn("no such build", items[1]["summary"])
+
+
 if __name__ == "__main__":
     os.environ.pop("AXF_CLAUDE_LINK_SPOOL", None)
     unittest.main(verbosity=1)

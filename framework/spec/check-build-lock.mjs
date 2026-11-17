@@ -9,6 +9,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from '../cli/build-lock.mjs';
+process.env.AXF_CLAUDE_LINK ??= 'off'; // Claude link events (claude-link-emit.mjs) stay out of the real console
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const CLI = join(ROOT, 'framework/cli/build-lock.mjs');

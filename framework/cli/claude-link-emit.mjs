@@ -16,6 +16,7 @@
  *   AXF_CLAUDE_LINK_SPOOL  where the line is appended when the console can't be reached (default
  *                          <repo>/.axf-console/claude-link-spool.jsonl); the console drains it on its next read
  *   AXF_CLAUDE_LINK=off    send nothing
+ * Without AXF_TOKEN nothing is sent over the network (the console would refuse it): the line goes to the spool.
  * Never throws and never exits non-zero: reporting must not break the run that reports.
  */
 import { appendFileSync, mkdirSync, readFileSync } from 'node:fs';
@@ -56,6 +57,7 @@ export async function emit(events, { env = process.env, fetchImpl = globalThis.f
   if (env.AXF_CLAUDE_LINK === 'off') return { ok: true, sent: 0, spooled: 0, off: true };
   const list = (Array.isArray(events) ? events : [events]).map(shape).filter(Boolean);
   if (!list.length) return { ok: false, sent: 0, spooled: 0, why: 'no valid event' };
+  if (!env.AXF_TOKEN && !env.AXF_CLAUDE_LINK_URL) return { ok: spool(list, env), sent: 0, spooled: list.length, why: 'no AXF_TOKEN' };
   try {
     const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), timeoutMs);
     const r = await fetchImpl(target(env), { method: 'POST', signal: ctl.signal, headers: { 'content-type': 'application/json', ...(env.AXF_TOKEN ? { authorization: `Bearer ${env.AXF_TOKEN}` } : {}) },
