@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:40 UTC · `to-do-manager-fully-voice-mcp-controlled` → built, PR #733 (all) · builds-live
 - 2026-11-16 20:40 UTC · `settings-interface-gear-every-plugin` s27 done (all) · orchestrator
 - 2026-11-16 20:40 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · pipeline
 - 2026-11-16 20:41 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · pipeline
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:16 UTC · `own-look-per-grid-and-tab-group` s11 done (all) · orchestrator
 - 2026-11-17 00:17 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
 - 2026-11-17 00:17 UTC · `own-look-per-grid-and-tab-group` s12 done (all) · orchestrator
+- 2026-11-17 00:18 UTC · `stop-auto-lander-committing-tracking` note (all) · builds-live
 
 ## Token passes (log)
 
