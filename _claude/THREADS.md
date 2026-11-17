@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `vps-builds-get-console-token-ui-review` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `decision-dialog-ui-review-other` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `prompting-engine-control-panel-to-create` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:53 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-17 20:53 UTC · `rebuild-every-toolbar-page-specific` s9 done, → running (all) · foreign-write
 - 2026-11-17 20:54 UTC · `rebuild-every-toolbar-page-specific` s10 done (all) · orchestrator
+- 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 
 ## Token passes (log)
 

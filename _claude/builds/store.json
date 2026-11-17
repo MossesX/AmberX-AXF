@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7883,
- "updatedAt": "2026-11-17T20:54:07.005Z",
+ "rev": 7884,
+ "updatedAt": "2026-11-17T20:54:16.726Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -215516,7 +215516,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-17T20:53:47.143Z",
+   "updatedAt": "2026-11-17T20:54:10.375Z",
    "builtAt": "",
    "notes": [
     {
@@ -215614,6 +215614,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T20:27:06.607Z"
+    },
+    {
+     "text": "Headless run axf-context-menus-plugin-one-true-source--sully: brief only · start 20.5K tokens ($0.07) · cost $6.89 · 189 turns · 6 tools, MCP none",
+     "at": "2026-11-17T20:54:10.375Z"
     }
    ],
    "approvals": [
@@ -215917,7 +215921,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {

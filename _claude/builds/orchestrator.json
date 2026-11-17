@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:54:07.005Z",
+ "updatedAt": "2026-11-17T20:54:16.726Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137112,7 +137112,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-17T20:53:47.143Z",
+   "updatedAt": "2026-11-17T20:54:10.375Z",
    "builtAt": "",
    "notes": [
     {
@@ -137210,6 +137210,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T20:27:06.607Z"
+    },
+    {
+     "text": "Headless run axf-context-menus-plugin-one-true-source--sully: brief only · start 20.5K tokens ($0.07) · cost $6.89 · 189 turns · 6 tools, MCP none",
+     "at": "2026-11-17T20:54:10.375Z"
     }
    ],
    "approvals": [
