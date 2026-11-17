@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T01:00:14.887Z",
+ "updatedAt": "2026-11-17T01:01:01.237Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116602,15 +116602,15 @@
    "title": "Rename every crew agent (Agent Swarm, Agent Manager, agent cards, sessions, group chat) to a cat name from Brett's list of 200 cat names, keeping the existing cat names (Amber, Marco, Patches, Polo, Gizmo, Brownie, Ashes, Jennifer). Update everything that shows an agent name, everywhere. Android twi",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou",
    "pr": "",
    "createdAt": "2026-11-12T23:25:43.887Z",
-   "updatedAt": "2026-11-17T00:59:43.575Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T01:00:58.234Z",
+   "builtAt": "2026-11-17T01:00:58.234Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -116698,8 +116698,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T01:00:58.234Z",
      "note": "",
      "uid": "st-mwe6g65p07tyg3",
      "createdAt": "2026-11-12T23:26:43.501Z"
