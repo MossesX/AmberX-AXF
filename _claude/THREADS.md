@@ -815,8 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 22:53 UTC · `full-voice-control-resolve-inventory` → archived, note (all) · cli
-- 2026-11-16 22:53 UTC · `home-cards-follow-plugin-off-home-always` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `hotfix-get-main-ci-green-theme-swap` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `hotfix-toolbar-settings-still-change` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `icon-map-icon-packs-every-icon-badge-app` → archived, note (all) · cli
@@ -1215,6 +1213,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:41 UTC · `orchestrator-stale-row-watchdog-vps` s1 done, → running (all) · orchestrator
 - 2026-11-17 00:41 UTC · `server-rule-done-means-merged-working` s2 done (all) · orchestrator
 - 2026-11-17 00:41 UTC · `prompting-engine-control-panel-to-create` s3 done (all) · orchestrator
+- 2026-11-17 00:41 UTC · `land-per-instance-settings-picker` → running, note (all) · pipeline
+- 2026-11-17 00:41 UTC · `land-per-instance-settings-picker` note (all) · pipeline
 
 ## Token passes (log)
 
