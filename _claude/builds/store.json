@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7608,
- "updatedAt": "2026-11-17T18:59:08.626Z",
+ "rev": 7609,
+ "updatedAt": "2026-11-17T19:00:44.776Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182989,7 +182989,7 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T18:41:09.042Z",
+   "updatedAt": "2026-11-17T19:00:42.112Z",
    "builtAt": "2026-11-17T15:06:54.532Z",
    "notes": [
     {
@@ -183031,6 +183031,10 @@
     {
      "text": "Brett: the VPS monitors every build in real time. If a build drops, stops, gets kicked back or fails, it goes straight back to the Queue at the top: right below whatever is running, ahead of everything waiting. Never back to Pending.",
      "at": "2026-11-17T18:41:09.042Z"
+    },
+    {
+     "text": "PR #772 clashes with main after #780 (stale-row watchdog) landed: add/add conflicts in build-orchestrator watchdog.py, watchdog.mjs, server/__init__.py, plugin.json, web/index.tsx, orchestrator.css. Rebuild on Fable on top of current main, keeping all 21 done steps; fold this watchdog into #780's watchdog files instead of duplicating them, then land.",
+     "at": "2026-11-17T19:00:42.112Z"
     }
    ],
    "approvals": [
@@ -183628,7 +183632,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
