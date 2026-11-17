@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:40:25.078Z",
+ "updatedAt": "2026-11-17T19:40:39.223Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -182842,9 +182842,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:32:52.965Z",
-   "updatedAt": "2026-11-17T19:33:07.917Z",
+   "updatedAt": "2026-11-17T19:40:28.677Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 15 steps (0 Fable).",
+     "at": "2026-11-17T19:40:28.677Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -182859,7 +182864,339 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find where each build's headless session is recorded: read deploy/claude-headless.sh, build-orchestrator pipeline.mjs and the builds store to see how the tmux session name, account and phase are kept. Write the findings in a short notes section of _claude/builds/reports/right-click-running-build-open-headless.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "framework/cli/builds-store.mjs",
+      "_claude/builds/reports/right-click-running-build-open-headless.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391b7zcf",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s2",
+     "text": "Make claude-headless.sh save the live session on the build record when it launches and clear it when the session exits: {tmux, account, phase, model, startedAt, host}. Write it through builds-store.mjs as runtime.session so builds-live publishes it",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "framework/cli/builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391ch873",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add framework/cli/build-session.mjs, the resolver: for a build id or a fuzzy name, return the live tmux session with its account and phase, or {live:false, reason} (not running, session ended, wrong host, no record). It checks `tmux has-session` so a stale record isn't trusted. Add unit tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/build-session.mjs",
+      "framework/spec/check-build-session.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391dhd7b",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s4",
+     "text": "Console terminal back end: add a 'watch' attach mode to the console-terminal plugin server. Read-only by default (tmux attach -r, input dropped on the server), and a take-over toggle that drops -r only on Brett's own session (personOnly), with an audit line each time",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391ey53h",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s5",
+     "text": "REST routes on the build-orchestrator plugin: GET /builds/<id>/session (state: live, tmux, account, phase, reason) and POST /builds/<id>/watch {takeover?:bool}, which opens a terminal tab attached in watch mode and returns its tab id and deep link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391f56u4",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s6",
+     "text": "Terminal tab UI for watch mode: a header strip showing the build, account, phase and a 'Read-only' chip, plus a Take over / Give back button (framework Button, tokens only, in a role=toolbar with aria-label). Input is disabled until take-over. Register the control@1 targets for the strip and button",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/web/",
+      "apps/console-web/src/axf/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391gtvn8",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s7",
+     "text": "Context menu item: add 'Watch session' to the dynamic build section of the rebuilt context menus, so every build grid gets it (Build manager, Pipeline, orchestrator, pending, agent grids). It is enabled only for running builds with a live session and is disabled with the resolver's reason otherwise. It is added through rt.addContextItems, never by editing an asset",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/",
+      "framework/react/components/ChromeContext.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391h68fg",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s8",
+     "text": "Show the account and phase in the menu item's subtitle, and add a second item 'Watch and take over' behind a confirm. Make sure the right-click / long-press path works on phone (tap-confirm on touch)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391i6uer",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s9",
+     "text": "Deep link and console control: register the console_show / console_open target build:<id>/session and the console-control address row:<build>/action:watch, so Follow Amber and Ctrl+K reach it. Run check-console-control.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src/consoleControl/",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391jmlbh",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s10",
+     "text": "MCP + CLI: plugin commands build_session_get and build_watch (takeover is person-only, so a session can only open read-only), and `axf build watch <id|name> [--takeover]` / `axf build session <id>` in the CLI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/commands.json",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391ki4d5",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s11",
+     "text": "Voice: an AmberX console action 'watch the <name> session' that resolves the name fuzzily through build-session.mjs, opens the watch tab and says the account and phase, or the reason it can't",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/actions.json",
+      "apps/console-web/plugins/build-orchestrator/web/voice.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391l6zs1",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s12",
+     "text": "Server tests: read-only attach drops input, takeover is refused for the console token and for sessions, the disabled reasons, and a stale tmux record. Plus a web test that the menu item is enabled/disabled in a grid",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test.py",
+      "apps/console-web/plugins/console-terminal/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391mgcw3",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s13",
+     "text": "Help and docs: a help entry, README section, glossary description, and a lifecycle marker on every outside doc line",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/README.md",
+      "apps/console-web/plugins/console-terminal/README.md",
+      "_claude/memory/docs/console-control.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391nwcrh",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s14",
+     "text": "Shots: desktop + phone captures of the context menu (enabled and disabled) and the watch tab, with 3 header-strip options as assets, submitted with review.mjs submit --choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/assets/",
+      "_claude/builds/reports/right-click-running-build-open-headless/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391ocm2n",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "id": "s15",
+     "text": "Run the checks (check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, plugin tests, tracker --check). Finish the report _claude/builds/reports/right-click-running-build-open-headless.md, add the THREADS row and open the PR, saying how each part is reached through REST, MCP, CLI, voice and the deep link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/right-click-running-build-open-headless.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3kh391p5hth",
+     "createdAt": "2026-11-17T19:40:28.677Z"
+    }
+   ]
   },
   {
    "id": "right-click-running-build-pop-open",
