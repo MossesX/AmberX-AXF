@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7406,
- "updatedAt": "2026-11-17T12:36:36.898Z",
+ "rev": 7407,
+ "updatedAt": "2026-11-17T12:37:15.579Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248799,6 +248799,14 @@
     {
      "text": "Claude account: hulu0241 (axf-auto-lander-grid-one-row-per-build--paulie, shared account login)",
      "at": "2026-11-17T12:28:59.901Z"
+    },
+    {
+     "text": "Headless run axf-auto-lander-grid-one-row-per-build--paulie: brief only · start 15.9K tokens ($0.05) · cost $0.77 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-17T12:35:21.813Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-17T12:35:32.703Z"
     }
    ],
    "approvals": [],
