@@ -5,8 +5,8 @@
  * For each toolbar asset (`apps/<app>/plugins/<folder>/assets/toolbar/*.json`, or the files given):
  *   - the asset passes the contract (toolbarErrors) and is scoped to a page (view:<id> or plugin:<id>), never `app`;
  *   - every button is bound to an action ref, and the ref exists: a `command:` ref is a command of the plugin-commands
- *     registry, a `handler:` ref is registered by the plugin's page (useToolbarHandlers in its web sources), a
- *     `control:` ref is a valid console-control address; every icon is a framework icon;
+ *     registry, a `handler:` ref is registered by the plugin's page (useToolbarHandlers in its web sources), an
+ *     `action:` ref is a console action the plugin registers, a `control:` ref is a valid console-control address; every icon is a framework icon;
  *   - the page draws it: a web source of the plugin renders `<PageToolbar … slot="<slot>">` for that view;
  *   - resolved through the engine with every ref wired and a state that meets its `when` terms, every button is
  *     enabled and has an invocation;
@@ -93,6 +93,7 @@ export async function checkToolbarAsset(file: string): Promise<ToolbarCheck> {
   const commands = await knownCommands();
   const items = ((data.groups ?? []) as { id: string; items?: { id: string; label?: string; icon?: string; action?: string }[] }[]).flatMap((g) => (g.items ?? []).map((i) => ({ ...i, group: g.id })));
   const handlers: string[] = [];
+  const actions: string[] = [];
   for (const it of items) {
     const where = `button ${it.group}/${it.id}`;
     if (it.icon && !ICONS.has(it.icon)) errors.push(`${where}: icon "${it.icon}" is not a framework icon`);
@@ -104,12 +105,18 @@ export async function checkToolbarAsset(file: string): Promise<ToolbarCheck> {
       else handlers.push(ref.id);
     }
     if (ref.kind === 'control') { try { parseAddress(ref.id); } catch (e) { errors.push(`${where}: control address: ${(e as Error).message}`); } }
-    if (ref.kind === 'action') errors.push(`${where}: bare console action "${ref.id}"; a page button names a command:, handler: or control: ref`);
+    if (ref.kind === 'action') {
+      // a console action the plugin registers (rt.actions.register('<id>', …) in its web sources, or `action:<id>` in plugin.json provides)
+      const id = ref.id.split(':')[0] ?? ref.id;
+      const provides = read(join(pluginDir, 'plugin.json'));
+      if (!src.includes(`register('${id}'`) && !src.includes(`register("${id}"`) && !provides.includes(`"action:${id}"`)) errors.push(`${where}: action "${id}" is not registered by plugins/${folder}`);
+      else actions.push(id);
+    }
   }
 
   // the engine, fully wired, in a state that meets every term
   const page = { view, plugin: scope?.kind === 'plugin' ? scope.id : null, slot };
-  const t = resolvePageToolbar(asset, page, satisfyingState(data), { get: () => undefined, handlers, commands: [...commands] });
+  const t = resolvePageToolbar(asset, page, satisfyingState(data), { get: () => undefined, handlers, actions, commands: [...commands] });
   const buttons = t.groups.flatMap((g) => g.buttons);
   for (const b of buttons) {
     if (!b.visible || !b.enabled) errors.push(`button ${b.key}: ${b.reason ?? 'not enabled'} with every term met`);
