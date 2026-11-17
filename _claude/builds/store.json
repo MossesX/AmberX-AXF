@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7438,
- "updatedAt": "2026-11-17T13:32:24.624Z",
+ "rev": 7439,
+ "updatedAt": "2026-11-17T13:32:32.236Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259762,6 +259762,10 @@
     {
      "text": "Headless run axf-stop-auto-lander-committing-tracking--lenny: brief only · start 13.5K tokens ($0.04) · cost $11.05 · 199 turns · 6 tools, MCP none",
      "at": "2026-11-17T13:32:15.873Z"
+    },
+    {
+     "text": "Session axf-stop-auto-lander-committing-tracking--lenny on hulu0241 ended (exit 0); the build was already complete.",
+     "at": "2026-11-17T13:32:17.694Z"
     }
    ],
    "approvals": [
@@ -260221,7 +260225,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

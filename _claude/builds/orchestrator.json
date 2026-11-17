@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T13:32:24.624Z",
+ "updatedAt": "2026-11-17T13:32:32.236Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168147,6 +168147,10 @@
     {
      "text": "Headless run axf-stop-auto-lander-committing-tracking--lenny: brief only · start 13.5K tokens ($0.04) · cost $11.05 · 199 turns · 6 tools, MCP none",
      "at": "2026-11-17T13:32:15.873Z"
+    },
+    {
+     "text": "Session axf-stop-auto-lander-committing-tracking--lenny on hulu0241 ended (exit 0); the build was already complete.",
+     "at": "2026-11-17T13:32:17.694Z"
     }
    ],
    "approvals": [
