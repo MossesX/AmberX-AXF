@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:31 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · foreign-write
-- 2026-11-17 22:31 UTC · `flagship-professional-skin-covering-2` s7 done (all) · orchestrator
-- 2026-11-17 22:41 UTC · `banner-widget-shapes-plus-change-icon` s14 done, s15 done, s16 done (all) · foreign-write
-- 2026-11-17 22:41 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-17 22:41 UTC · `rebuild-fresh-main-phone-connect-small` s15 done, → complete, note (all) · foreign-write
 - 2026-11-17 22:41 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-17 22:41 UTC · `icon-picker-every-banner-settings-widget` s9 done (all) · foreign-write
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` s19 done (all) · foreign-write
 - 2026-11-17 23:00 UTC · `banner-widget-shapes-plus-change-icon` s18 done (all) · orchestrator
 - 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` s19 done (all) · orchestrator
+- 2026-11-17 23:01 UTC · `banner-widget-shapes-plus-change-icon` s18 done (all) · foreign-write
+- 2026-11-17 23:01 UTC · `banner-widget-shapes-plus-change-icon` s18 done (all) · foreign-write
+- 2026-11-17 23:01 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · pipeline
+- 2026-11-17 23:01 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 
