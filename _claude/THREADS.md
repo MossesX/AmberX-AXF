@@ -829,8 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `notify-phone-when-queue-starts-building` note (all) · orchestrator
-- 2026-11-17 19:11 UTC · `plan-blueprints` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `blueprint-notes-tasks` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `skins-as-packages-of-slices-every-section-its-ow` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `full-api-cli-control-of-everything-plus-an-offli` → fixing, note (all) · pipeline
@@ -1229,6 +1227,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:38 UTC · `guided-live-demo-test-watch-orchestrator` s14 done (all) · orchestrator
 - 2026-11-17 20:39 UTC · `guided-live-demo-test-watch-orchestrator` s15 done (all) · orchestrator
 - 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 
 ## Token passes (log)
 
