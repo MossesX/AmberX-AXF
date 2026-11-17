@@ -18,6 +18,7 @@ import type { AxfRuntime, MenuEntry } from '../../core';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { WS_TOOLBAR_FOLD_KEY, wsToolbarAttrs, wsToolbarLook } from './look';
 import { DragLayer, registerZone, startDrag } from '../dnd';
+import { entryOfItemId, runDragMove, uniqueItemIds, useDraggableHostSet } from '../../react/dragHost';
 import { AREAS, FLOAT_DEFAULT, Workspace, useWorkspace, type Area, type Dock, type FloatRect, type ToolbarDef, type WorkspaceOptions } from './store';
 import spec from './library.json';
 import './workspace.css';
@@ -71,6 +72,22 @@ export interface WorkspaceHostProps {
   dragLayer?: boolean;
 }
 
+/** The drag-move@1 container id of a workspace toolbar (workspace ids and toolbar ids are only unique together). */
+export const wsToolbarContainer = (ws: Workspace, toolbarId: string) => `${ws.id}.${toolbarId}`;
+/** The item id (uniqueItemIds) of the entry at `index` on a workspace toolbar, or null. */
+function wsItemId(ws: Workspace, toolbarId: string, index: number): string | null { return uniqueItemIds(ws.toolbar(toolbarId)?.items ?? [])[index] ?? null; }
+/** The id a command gets when added: its spec, or `spec~n` when the toolbar holds it already (a second separator). */
+function wsNewItemId(ws: Workspace, toolbarId: string, spec: string): string { const n = (ws.toolbar(toolbarId)?.items ?? []).filter((x) => x === spec).length; return n ? `${spec}~${n + 1}` : spec; }
+/** A lib-dnd payload (an item `toolbar#index`, or a command spec from the list) dropped on a toolbar: one drag-move@1 command. */
+function wsToolbarDrag(rt: AxfRuntime, ws: Workspace, p: { kind: string; id: string }, toolbarId: string, target: { zone: 'before' | 'after' | 'into'; ref?: string }) {
+  const to = { container: wsToolbarContainer(ws, toolbarId), ...target };
+  if (p.kind.endsWith(':command')) return runDragMove(rt, { op: 'add', kind: 'toolbar-item', source: { container: 'commands', id: wsNewItemId(ws, toolbarId, p.id) }, target: to, by: 'pointer' });
+  const [sid, si] = p.id.split('#');
+  const id = wsItemId(ws, sid!, Number(si));
+  if (!id) return Promise.resolve(null);
+  return runDragMove(rt, { op: 'move', kind: 'toolbar-item', source: { container: wsToolbarContainer(ws, sid!), id }, target: to, by: 'pointer' });
+}
+
 export function WorkspaceHost({ ws, renderPane, describe, emptyHint, dragLayer = true }: WorkspaceHostProps) {
   const rt = useRuntime();
   useAxfState();
@@ -83,17 +100,25 @@ export function WorkspaceHost({ ws, renderPane, describe, emptyHint, dragLayer =
   useEffect(() => {
     const offs = [
       registerZone(`${zone}:area`, { accepts: (p) => p.kind === `${zone}:pane`, positions: () => ['inside'], drop: (p, area) => ws.movePane(p.id, area as Area) }),
+      // every toolbar-item drop is a drag-move@1 command (the same one the API sends; wsToolbarDrag)
       registerZone(`${zone}:item`, {
         axis: 'x', accepts: (p) => p.kind === `${zone}:item` || p.kind === `${zone}:command`, positions: () => ['before', 'after'],
-        drop: (p, target, pos) => { const [tid, ti] = target.split('#'); const at = Number(ti) + (pos === 'after' ? 1 : 0); if (p.kind.endsWith(':command')) ws.placeItem({ spec: p.id }, tid!, at); else { const [sid, si] = p.id.split('#'); ws.placeItem({ toolbar: sid!, index: Number(si) }, tid!, at); } },
+        drop: (p, target, pos) => { const [tid, ti] = target.split('#'); const ref = wsItemId(ws, tid!, Number(ti)); if (ref) void wsToolbarDrag(rt, ws, p, tid!, { zone: pos === 'after' ? 'after' : 'before', ref }); },
       }),
       registerZone(`${zone}:end`, {
         accepts: (p) => p.kind === `${zone}:item` || p.kind === `${zone}:command`, positions: () => ['inside'],
-        drop: (p, tid) => { const n = ws.toolbar(tid)?.items.length ?? 0; if (p.kind.endsWith(':command')) ws.placeItem({ spec: p.id }, tid, n); else { const [sid, si] = p.id.split('#'); ws.placeItem({ toolbar: sid!, index: Number(si) }, tid, n + 1); } },
+        drop: (p, tid) => { void wsToolbarDrag(rt, ws, p, tid, { zone: 'into' }); },
       }),
     ];
     return () => offs.forEach((f) => f());
   }, [ws, zone]);
+
+  // drag-move@1: every workspace toolbar is a `toolbar-item` host (container `<workspace>.<toolbar>`): reorder, move to
+  // another toolbar, add a command (its spec is the item id) and remove one, by pointer or by API alike.
+  useDraggableHostSet('toolbar-item', config.toolbars ? s.toolbars.map((t) => wsToolbarContainer(ws, t.id)) : [], (container) => ({
+    list: () => { const t = ws.toolbar(container.slice(ws.id.length + 1)); const ids = uniqueItemIds(t?.items ?? []); return { label: t ? `${t.name} toolbar` : container, items: ids.map((id) => ({ id, label: entryOfItemId(id) === '|' ? 'Separator' : entryOfItemId(id) })), accepts: { add: true, remove: true, from: '*' } }; },
+    apply: (plan) => { const order = plan.order[container]; if (Array.isArray(order)) ws.patchToolbar(container.slice(ws.id.length + 1), { items: order.map(entryOfItemId) }); },
+  }));
 
   useEffect(() => { const el = rootRef.current; if (!el) return; const report = () => { ws.area = { x: 0, y: 0, width: el.clientWidth, height: el.clientHeight }; }; report(); const ro = new ResizeObserver(report); ro.observe(el); return () => ro.disconnect(); }, [ws]);
   const by = Object.fromEntries(AREAS.map((a) => [a, ws.visible(a)])) as Record<(typeof AREAS)[number], string[]>;
@@ -323,7 +348,11 @@ export function ToolbarCustomizer({ ws, catalog, describe, initial, close }: { w
 
   const cats = [...new Set(all.map((x) => x.path.join(' › ')))].sort();
   const filtered = all.filter((x) => (!cat || x.path.join(' › ').startsWith(cat)) && (!q || `${x.label} ${x.spec} ${x.path.join(' ')}`.toLowerCase().includes(q.toLowerCase())));
-  const add = (s: string) => tb && ws.placeItem({ spec: s }, tb.id, tb.items.length);
+  const rt = useRuntime();
+  // the buttons run the same drag-move@1 command as a drop or an API call
+  const add = (s: string) => tb && void runDragMove(rt, { op: 'add', kind: 'toolbar-item', source: { container: 'commands', id: wsNewItemId(ws, tb.id, s) }, target: { container: wsToolbarContainer(ws, tb.id), zone: 'into' }, by: 'pointer' });
+  const step = (i: number, d: -1 | 1) => { if (!tb) return; const ids = uniqueItemIds(tb.items); const ref = ids[i + d]; if (ref) void runDragMove(rt, { kind: 'toolbar-item', source: { container: wsToolbarContainer(ws, tb.id), id: ids[i]! }, target: { container: wsToolbarContainer(ws, tb.id), zone: d < 0 ? 'before' : 'after', ref }, by: 'pointer' }); };
+  const drop = (i: number) => { if (!tb) return; const id = uniqueItemIds(tb.items)[i]; if (id) void runDragMove(rt, { op: 'remove', kind: 'toolbar-item', source: { container: wsToolbarContainer(ws, tb.id), id }, by: 'pointer' }); };
   const row = (it: SpecInfo, showPath = false) => (
     <li key={it.spec}>
       <div className="axf-ws-cmd" onPointerDown={(e) => startDrag(e, { kind: `${zone}:cmd`, id: it.spec, label: it.label, icon: it.icon })} onDoubleClick={() => add(it.spec)}>
@@ -382,9 +411,9 @@ export function ToolbarCustomizer({ ws, catalog, describe, initial, close }: { w
             return (
               <li key={`${s}-${i}`} className="axf-ws-cmd" data-axf-drop={zone} data-axf-drop-id={String(i)} onPointerDown={(e) => startDrag(e, { kind: `${zone}:item`, id: String(i), label: d.label, icon: d.icon })}>
                 <span className="axf-dnd-grip"><Icon name={d.icon} size={14} /></span><span className="axf-ws-ellipsis fx-grow">{d.label}</span>
-                <IconButton icon="chevron-up" label="Earlier" onClick={() => i > 0 && ws.placeItem({ toolbar: tb.id, index: i }, tb.id, i - 1)} />
-                <IconButton icon="chevron-down" label="Later" onClick={() => i < tb.items.length - 1 && ws.placeItem({ toolbar: tb.id, index: i }, tb.id, i + 2)} />
-                <IconButton icon="x" label="Remove" onClick={() => ws.removeItem(tb.id, i)} />
+                <IconButton icon="chevron-up" label="Earlier" onClick={() => step(i, -1)} />
+                <IconButton icon="chevron-down" label="Later" onClick={() => step(i, 1)} />
+                <IconButton icon="x" label="Remove" onClick={() => drop(i)} />
               </li>
             );
           })}

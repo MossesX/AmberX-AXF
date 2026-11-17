@@ -45,6 +45,35 @@ export function useDraggableHost(kind: string, container: string, opts: Draggabl
   }, [rt, kind, container, enabled]);
 }
 
+/**
+ * Register a varying set of hosts of one kind (a workspace's toolbars, every column header of several grids): one host
+ * per container id, re-registered when the set of ids changes. `make(container)` is read through a ref like the hook's.
+ */
+export function useDraggableHostSet(kind: string, containers: readonly string[], make: (container: string) => DraggableHostOptions): void {
+  const rt = useRuntime();
+  const ref = useRef(make);
+  ref.current = make;
+  const ids = containers.join('\u0000');
+  useEffect(() => {
+    const offs = (ids ? ids.split('\u0000') : []).filter(Boolean).map((container) => rt.drag.hosts.register({
+      kind, container,
+      list: () => ({ ...ref.current(container).list(), kind, container }),
+      apply: (plan) => ref.current(container).apply(plan),
+    }));
+    return () => offs.forEach((off) => off());
+  }, [rt, kind, ids]);
+}
+
+/**
+ * Item ids for a list whose entries may repeat (a toolbar's separators, the same command twice): the entry itself, the
+ * second and later copies `entry~2`, `entry~3`. `entryOfItemId` strips the suffix back off.
+ */
+export function uniqueItemIds(entries: readonly string[]): string[] {
+  const seen = new Map<string, number>();
+  return entries.map((e) => { const n = (seen.get(e) ?? 0) + 1; seen.set(e, n); return n === 1 ? e : `${e}~${n}`; });
+}
+export function entryOfItemId(id: string): string { return id.replace(/~\d+$/, ''); }
+
 /** The command a pointer drop builds: `source` leaves `container`, lands `zone` of `ref` (or at `index` on `side`). */
 export function dragCommand(kind: string, container: string, sourceId: string, target: { container?: string; zone?: DropZone; ref?: string; side?: string; index?: number }, by = 'pointer'): DragMoveCommand {
   const t: DragMoveCommand['target'] = { container: target.container ?? container, zone: target.zone ?? (target.ref !== undefined ? 'after' : target.side !== undefined ? 'side' : 'into') };
