@@ -11,6 +11,7 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { normDependsOn, normGroups } from '../../../../../framework/core/build-pipeline.mjs';
 import { isBuildId, namesOf, shortBuildId, slugWords, uniqueBuildId } from '../../../../../framework/core/build-id.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
@@ -100,6 +101,7 @@ function normStep(s, i) {
     why: str(o.why, 300),
     phase: str(o.phase, 80),
     group: str(o.group, 80),
+    ...(normDependsOn(o.dependsOn).length ? { dependsOn: normDependsOn(o.dependsOn) } : {}), // step-groups@1: steps this one waits for
     estimate: str(o.estimate, 20),
     files: Array.isArray(o.files) ? o.files.map((f) => str(f, 300)).filter(Boolean).slice(0, 30) : [],
     checks: Array.isArray(o.checks) ? o.checks.map((f) => str(f, 300)).filter(Boolean).slice(0, 20) : [],
@@ -138,6 +140,7 @@ function normBuild(b) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval),
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(normOrigin(o.origin) ? { origin: normOrigin(o.origin) } : {}), // build-origin@1: what Brett said
+    ...(normGroups(o.groups).length ? { groups: normGroups(o.groups) } : {}), // step-groups@1: the build's step groups
     steps,
   };
 }

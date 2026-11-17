@@ -31,7 +31,7 @@ Step fields on a builds@1 step, all optional:
 | `state` | `planned` → `ready` → `running` → `ready-to-merge` → `merging` → `merged`; `conflict` and `failed` on the side (`GROUP_STATES`) |
 | `dependsOn` | group ids that must be merged before this one starts |
 | `slot`, `account`, `session` | its run; blank unless the group is live (`running`, `merging`, `conflict`) |
-| `branch`, `worktree` | its sub-branch `<build branch>/<group id>` and the worktree on it |
+| `branch`, `worktree` | its sub-branch `<build branch>--<group id>` (a ref beside the build branch: `<build branch>/<id>` can't exist next to it) and the worktree `<worktrees>/<build id>--<group id>` on it (`step-groups.mjs`) |
 | `mergeOrder` | its place when the groups land, 0-based; `normGroups` sorts by it and renumbers |
 | `startedAt`, `endedAt`, `mergedAt`, `note` | timestamps of its life and one plain line |
 

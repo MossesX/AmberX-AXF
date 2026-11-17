@@ -220,7 +220,7 @@ export function nextStatusOnExit(run, maxRuns = DEFAULT_MAX_RUNS) {
  *   id          g1, g2 … (GROUP_ID)                       steps      step ids in run order (every step in exactly one group)
  *   state       one of GROUP_STATES (below)               dependsOn  group ids that must be merged / done before it starts
  *   slot        agent-slots entry of its run ('' idle)    account    the Claude account the run is on ('' idle)
- *   session     its tmux session                          branch     its sub-branch (<build branch>/<group id>)
+ *   session     its tmux session                          branch     its sub-branch (<build branch>--<group id>)
  *   worktree    the worktree path of that branch          mergeOrder its place when the groups land (0-based)
  *   startedAt   ISO: first launch                         endedAt    ISO: its last session ended
  *   mergedAt    ISO: merged onto the build branch         note       one plain line (why it waits, what happened)
