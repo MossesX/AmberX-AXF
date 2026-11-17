@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7678,
- "updatedAt": "2026-11-17T19:36:09.549Z",
+ "rev": 7679,
+ "updatedAt": "2026-11-17T19:36:46.069Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275145,7 +275145,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T19:33:30.563Z",
+   "updatedAt": "2026-11-17T19:36:42.128Z",
    "builtAt": "",
    "notes": [
     {
@@ -275155,6 +275155,10 @@
     {
      "text": "Claude account: hulu0241 (axf-rebuild-every-toolbar-page-specific--lenny, shared account login)",
      "at": "2026-11-17T19:28:00.126Z"
+    },
+    {
+     "text": "Dispatch gate: rebuild-every-toolbar-page-specific still has axf-rebuild-every-toolbar-page-specific--lenny alive: not launched again, tracking that session.",
+     "at": "2026-11-17T19:36:42.128Z"
     }
    ],
    "approvals": [],
@@ -275175,7 +275179,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "",
+    "session": "axf-rebuild-every-toolbar-page-specific--lenny",
     "slot": "",
     "model": "",
     "phase": "",
@@ -275924,7 +275928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

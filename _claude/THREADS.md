@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:09 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:35 UTC · `terminal-main-tab-streaming-console-s` → queued, note (all) · console
 - 2026-11-17 19:35 UTC · `separate-settings-per-plugin-reset` s1 done, → running (all) · orchestrator
 - 2026-11-17 19:36 UTC · `console-app-part-2-native-floating` s4 done (all) · orchestrator
+- 2026-11-17 19:36 UTC · `rebuild-every-toolbar-page-specific` note (all) · pipeline
 
 ## Token passes (log)
 
