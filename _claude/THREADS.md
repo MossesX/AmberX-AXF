@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:29 UTC · `live-build-status-real-time-grids-15` s9 done (all) · orchestrator
 - 2026-11-17 20:29 UTC · `guided-live-demo-test-watch-orchestrator` → pending (all) · Brett
 - 2026-11-17 20:29 UTC · `live-build-status-real-time-grids-15` → pending (all) · Brett
 - 2026-11-17 20:29 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · Brett
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:03 UTC · `flagship-professional-skin-covering-2` s1 done (all) · orchestrator
 - 2026-11-17 22:03 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
 - 2026-11-17 22:03 UTC · `rebuild-fresh-main-hide-any-asset` s15 done (all) · orchestrator
+- 2026-11-17 22:03 UTC · `fix-banner-settings-interface-tab` s12 done (all) · orchestrator
 
 ## Token passes (log)
 
