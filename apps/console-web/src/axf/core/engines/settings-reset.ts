@@ -72,7 +72,7 @@ export interface ResetState {
 /** Setting keys that hold look / asset state rather than a setting: never in the settings rows, cleared only with the switch. */
 export const LOOK_KEY_PATTERNS: readonly RegExp[] = [
   /^axf\.hide\./, /^axf\.roll\.slot\./, /^axf\.widgets\.arrange\./, /^axf\.chrome\./, /^axf\.tokens\./,
-  /^axf\.appearance\./, /^axf\.lock\.hubskin/, /^axf\.plugin\.[^.]+\.look$/,
+  /^axf\.appearance\./, /^axf\.lock\.hubskin/, /^axf\.plugin\..+\.look$/,
 ];
 /** The app-look@1 document itself: never cleared, restored through `applyResetToLook`. */
 export const APP_LOOK_SETTING_KEY = 'axf.skin.look';

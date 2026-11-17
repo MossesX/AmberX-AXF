@@ -104,7 +104,7 @@ name lookup for asset ids.
 look key `axf.plugin.<id>.look`, or a key under the plugin's own prefix `<id>.` belongs to that plugin; everything else
 is the console's. `isLookKey(key)` marks the keys that hold look or asset state rather than a setting (`axf.hide.*`,
 `axf.roll.slot.*`, `axf.widgets.arrange.*`, `axf.chrome.*`, `axf.tokens.*`, `axf.appearance.*`, `axf.lock.hubskin*`,
-`axf.plugin.<id>.look`, and the document key `axf.skin.look`): those are never settings rows and are cleared only with
+`axf.plugin.<id>.look` (the id may hold dots), and the document key `axf.skin.look`): those are never settings rows and are cleared only with
 the switch. The app-look document itself is never cleared; it is restored (below).
 
 ### The rows

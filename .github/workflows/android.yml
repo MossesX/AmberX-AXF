@@ -330,6 +330,7 @@ jobs:
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-plugin-settings.mts        # plugin-settings@1: one settings interface per owner (app / plugin / chrome); a plugin page never renders through the console's; fixtures/plugin-settings.json
             npx -y tsx framework/spec/check-settings-reset.mts         # settings-reset@1: the reset plan (scope console / plugin + includeAssets → keys to clear + changed-asset rows), scope isolation, applied look; fixtures/settings-reset.json
+            npx -y tsx framework/spec/plugin-settings-reset.test.mts   # plugin-settings@1 + settings-reset@1 behaviour: own interface or generated, never the app's; a plugin tab opens its own window; reset scopes, switch, undo record
             npx -y tsx framework/spec/check-settings-open.mts          # every settings interface opens in a floating glass dialog by default; fails on code that navigates to the Settings page instead
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
@@ -411,6 +412,7 @@ jobs:
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
+            python apps/console-web/server/tests/test_settings_api.py  # settings interfaces + reset REST (live / offline, dryRun, confirm token, 428, errors) and MCP settings_interface_get / settings_reset
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths

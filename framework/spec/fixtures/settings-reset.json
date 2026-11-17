@@ -14,7 +14,7 @@
     "/^axf\\.tokens\\./",
     "/^axf\\.appearance\\./",
     "/^axf\\.lock\\.hubskin/",
-    "/^axf\\.plugin\\.[^.]+\\.look$/"
+    "/^axf\\.plugin\\..+\\.look$/"
   ],
   "appLookKey": "axf.skin.look",
   "scopes": [
