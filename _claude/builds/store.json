@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8130,
- "updatedAt": "2026-11-17T22:04:49.304Z",
+ "rev": 8131,
+ "updatedAt": "2026-11-17T22:05:04.600Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -278363,7 +278363,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T22:04:46.630Z",
+   "updatedAt": "2026-11-17T22:04:49.879Z",
    "builtAt": "",
    "notes": [
     {
@@ -278589,6 +278589,10 @@
     {
      "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
      "at": "2026-11-17T21:57:10.326Z"
+    },
+    {
+     "text": "Opus phase done, PR #816. Dry run 21/21 in auto and pause mode on a copy of the real store. Open: (1) UI Review item r-20261117-qxltg01 is saved in the build worktree only (no console token in this session); it needs posting with --console using _claude/builds/reports/guided-live-demo-test-watch-orchestrator/choices.json. (2) Start refuses until live-build-status-real-time-grids-15 lands (dependency check). (3) Fable follow-up: demo-build@1 treats any demo-* id as demo; 4 real builds have such ids, so the contract should require the tag.",
+     "at": "2026-11-17T22:04:49.879Z"
     },
     {
      "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 2 of 3).",
@@ -279307,7 +279311,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
