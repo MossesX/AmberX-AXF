@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7895,
- "updatedAt": "2026-11-17T20:56:52.940Z",
+ "rev": 7896,
+ "updatedAt": "2026-11-17T20:57:09.576Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -280505,7 +280505,7 @@
    "title": "Toolbars 1/5: Build orchestrator (incl. merge queue), Gate & rules, Terminal",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Build orchestrator pages (Pipeline/Pending/Queue, with merge-queue buttons folded in), Gate & rules, Terminal/sessions. API targets + one test. No Molly/AmberX/axHub web/Expenses. Land when done.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -280513,7 +280513,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:56:46.904Z",
+   "updatedAt": "2026-11-17T20:56:58.377Z",
    "builtAt": "",
    "notes": [
     {
@@ -280543,6 +280543,10 @@
     {
      "text": "Blocked on the foundation: s1 needs the page-toolbar host from rebuild-every-toolbar-page-specific, which has not landed (Pending, 10/28 steps, PR #817 open, not merged; no page-toolbar host on main as of 50e8d6b21). Per s1 (stop if it hasn't landed) and Brett's 'Land the foundation first', no toolbar work was started. Relaunch this build once #817 is merged; nothing to redo on this branch.",
      "at": "2026-11-17T20:56:40.800Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 4 steps left: back in Pending for Brett.",
+     "at": "2026-11-17T20:56:58.377Z"
     }
    ],
    "approvals": [],
@@ -280563,14 +280567,23 @@
     "queuedAt": "2026-11-17T20:41:43.770Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-toolbars-1-5-build-orchestrator-incl--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T20:55:33.562Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T20:56:53.730Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 4,
+     "account": "hulu0241",
+     "session": "axf-toolbars-1-5-build-orchestrator-incl--sully",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-17T20:40:52.564Z",
      "by": "orchestrator",
@@ -280579,7 +280592,7 @@
      "note": "Split by Claude into 4 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on hulu0241 stopped on its own with 4 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-17T20:55:33.562Z",
     "planned": {
@@ -280720,7 +280733,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
