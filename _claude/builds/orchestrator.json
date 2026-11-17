@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:29:48.982Z",
+ "updatedAt": "2026-11-17T22:30:06.681Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -189995,7 +189995,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-17T22:29:09.211Z",
+   "updatedAt": "2026-11-17T22:29:14.233Z",
    "builtAt": "",
    "notes": [
     {
@@ -190009,6 +190009,10 @@
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-settings-fix-part-2-blank-toolbars--gina.",
      "at": "2026-11-17T22:29:09.211Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-settings-fix-part-2-blank-toolbars--gina, shared account login)",
+     "at": "2026-11-17T22:29:14.233Z"
     }
    ],
    "approvals": [],
@@ -190042,8 +190046,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctl01po6g",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce701keot",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s2",
@@ -190061,8 +190065,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctl02opta",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce702hfvb",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s3",
@@ -190080,8 +190084,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctl03dlb2",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70375xi",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s4",
@@ -190099,8 +190103,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctl04s2iw",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce7040fa4",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s5",
@@ -190118,8 +190122,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctl051cjn",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce705vp96",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s6",
@@ -190137,8 +190141,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctl0638kq",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce706zmiy",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s7",
@@ -190156,8 +190160,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm076nl2",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce707hyuq",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s8",
@@ -190175,8 +190179,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm08pubm",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce708957h",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s9",
@@ -190194,8 +190198,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm09b8va",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce709g0z3",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s10",
@@ -190213,8 +190217,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0a10on",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70abeu0",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s11",
@@ -190232,8 +190236,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0bto19",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70bsv8t",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s12",
@@ -190251,8 +190255,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0ci93p",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70c3l4k",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s13",
@@ -190270,8 +190274,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0d773v",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70dmmyg",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s14",
@@ -190289,8 +190293,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0e5rf4",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70eb6bt",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s15",
@@ -190308,8 +190312,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0fdwdb",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70f1z76",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s16",
@@ -190327,8 +190331,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0g7mbc",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70ga7sn",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s17",
@@ -190346,8 +190350,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0hsswi",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70hce7a",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s18",
@@ -190365,8 +190369,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0in7c6",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70i8gq0",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s19",
@@ -190384,8 +190388,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0jpo56",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70jkp9e",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s20",
@@ -190403,8 +190407,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0kt0vb",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70kvmz5",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     },
     {
      "id": "s21",
@@ -190422,8 +190426,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwl9lctm0lhmf8",
-     "createdAt": "2026-11-17T22:29:06.966Z"
+     "uid": "st-mwl9mce70l4lwt",
+     "createdAt": "2026-11-17T22:29:53.326Z"
     }
    ]
   },
