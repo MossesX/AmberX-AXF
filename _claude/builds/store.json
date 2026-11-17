@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8394,
- "updatedAt": "2026-11-17T23:31:20.906Z",
+ "rev": 8395,
+ "updatedAt": "2026-11-17T23:32:02.046Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -292601,7 +292601,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -292609,8 +292609,8 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T23:29:24.518Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T23:31:47.269Z",
+   "builtAt": "2026-11-17T23:31:47.269Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -293051,12 +293051,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:31:47.269Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T21:21:51.104Z"
+     "updatedAt": "2026-11-17T23:31:48.080Z"
     }
    ],
    "profiles": [
@@ -293067,7 +293067,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
