@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:59 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
 - 2026-11-17 23:00 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
 - 2026-11-17 22:55 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-17 22:55 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:45 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · dedupe-steps
 - 2026-11-17 23:45 UTC · `headless-session-efficiency-shared-chain-control` note (all) · dedupe-steps
 - 2026-11-17 23:45 UTC · `amberx-open-any-url-apk` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `move-server-side-console-parts-onto-vps` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
