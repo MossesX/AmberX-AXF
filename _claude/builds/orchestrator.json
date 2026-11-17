@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:58:09.947Z",
+ "updatedAt": "2026-11-17T14:59:06.155Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171975,7 +171975,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T14:55:25.758Z",
+   "updatedAt": "2026-11-17T14:59:03.315Z",
    "builtAt": "",
    "notes": [
     {
@@ -172029,8 +172029,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T14:59:03.315Z",
      "note": "",
      "uid": "st-mwktc9qt01tvb8",
      "createdAt": "2026-11-17T14:54:09.749Z"
@@ -172275,6 +172275,25 @@
      "note": "",
      "uid": "st-mwktc9qt0csiy6",
      "createdAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s21",
+     "text": "Edit history panel: every Edit UI change ever made (stored server-side, survives reloads and sessions) listed with what changed, before/after, where, which app, when, who. Undo any single edit, undo everything back to a point, redo, filter by app/screen/asset, and Undo all. Undo works for every kind of edit (text, data, asset property, hide/unhide). Opens in the floating window; reachable via REST, MCP, CLI, voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktdp7e01ewan",
+     "createdAt": "2026-11-17T14:55:16.149Z"
     },
     {
      "id": "s13",

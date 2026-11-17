@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7468,
- "updatedAt": "2026-11-17T14:58:09.947Z",
+ "rev": 7469,
+ "updatedAt": "2026-11-17T14:59:06.155Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -264574,7 +264574,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T14:55:25.758Z",
+   "updatedAt": "2026-11-17T14:59:03.315Z",
    "builtAt": "",
    "notes": [
     {
@@ -264615,13 +264615,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T14:52:58.461Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-edit-ui-mode-inline-edit-anything-active--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T14:55:20.207Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -264632,9 +264632,9 @@
      "note": "Split by Claude into 19 steps (6 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 3: claude-headless: refused: edit-ui-mode-inline-edit-anything-active: phase 1 is pinned to Opus 5.5. If it needs Fable 5.1, set its steps to Fable 5.1 in the Build orchestrator first (no approval needed right now: Fable upgrades need my approval is off), then launch.",
     "route": "",
-    "dispatchedAt": "2026-11-17T14:55:20.207Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -264642,8 +264642,10 @@
      "at": "2026-11-17T14:54:12.007Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-17T14:55:20.207Z",
+    "tried": [
+     "hulu0241"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -264666,12 +264668,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T14:59:03.315Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:54:09.749Z",
-     "updatedAt": "2026-11-17T14:54:09.749Z"
+     "updatedAt": "2026-11-17T14:59:03.610Z"
     },
     {
      "id": "s2",
@@ -264946,6 +264948,28 @@
      "rev": 1,
      "createdAt": "2026-11-17T14:54:09.749Z",
      "updatedAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwktdp7e01ewan",
+     "title": "",
+     "text": "Edit history panel: every Edit UI change ever made (stored server-side, survives reloads and sessions) listed with what changed, before/after, where, which app, when, who. Undo any single edit, undo everything back to a point, redo, filter by app/screen/asset, and Undo all. Undo works for every kind of edit (text, data, asset property, hide/unhide). Opens in the floating window; reachable via REST, MCP, CLI, voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T14:55:16.149Z",
+     "updatedAt": "2026-11-17T14:55:16.442Z"
     },
     {
      "id": "s13",
