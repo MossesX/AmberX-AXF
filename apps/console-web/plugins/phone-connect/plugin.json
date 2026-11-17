@@ -12,7 +12,7 @@
   ],
   "provides": [
     "settings-tab:phone-connect",
-    "capability:axf.phone@1",
+    "service:axf.phone@1",
     "action:phone.pair",
     "action:phone.devices",
     "action:phone.open",

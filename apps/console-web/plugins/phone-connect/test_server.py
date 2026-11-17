@@ -77,3 +77,57 @@ check("a session cannot change a phone's settings", r.status_code, 403)
 r = cl.post(f"{P}/devices/phone-0123456789abcdef/settings", json={"urlPolicy": {"mode": "allowlist", "allowlist": ["github.com"]}}, headers=PERSON)
 check("the owner sets the url policy", r.json()["device"]["urlPolicy"], {"mode": "allowlist", "allowlist": ["github.com"]})
 _passed = 0
+
+# ---- s8 queue + delivery
+
+DEVH = {"authorization": f"Bearer {TOKEN}", "x-axpp": "axpp@1"}
+check("no X-AXPP header", cl.post(f"{P}/device/hello", json={}, headers={"authorization": f"Bearer {TOKEN}"}).json()["error"]["code"], "invalid")
+check("bad token", cl.post(f"{P}/device/hello", json={}, headers={**DEVH, "authorization": "Bearer tok_" + "z" * 32}).json()["error"]["code"], "denied")
+h = cl.post(f"{P}/device/hello", json={"device": {"capabilityState": {"recorder@1": {"running": False}}}}, headers=DEVH).json()
+ok("hello answers the watch, url policy and features", h["ok"] and h["features"]["open_url"] is True and h["hub"]["pollWaitSeconds"] == 25)
+check("nothing queued: next is 204", cl.get(f"{P}/device/next", headers=DEVH).status_code, 204)
+r = cl.post(f"{P}/open", json={"url": "https://console.test/x"}, headers=SESSION).json()
+check("url outside the allowlist policy is denied", r["error"]["code"], "denied")
+r = cl.post(f"{P}/open", json={"url": "intent://x"}, headers=SESSION).json()
+check("intent: never opens", r["error"]["code"], "denied")
+r = cl.post(f"{P}/open", json={"url": "https://github.com/MossesX"}, headers=SESSION).json()
+ok("open_url inside the policy is queued", r["ok"] and r["command"]["status"] == "queued" and r["command"]["from"]["via"] == "mcp")
+cid = r["id"]
+w = cl.get(f"{P}/device/next", headers=DEVH).json()
+check("the phone gets the AXPP call", (w["protocol"], w["kind"], w["id"], w["payload"]["tool"]), ("axpp@1", "call", cid, "browser.open"))
+check("sent once", cl.get(f"{P}/device/next", headers=DEVH).status_code, 204)
+check("ack", cl.post(f"{P}/device/ack", json={"protocol": "axpp@1", "correlationId": cid, "status": "shown"}, headers=DEVH).json()["status"], "acked")
+check("result", cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": cid, "payload": {"opened": True}}, headers=DEVH).json()["status"], "done")
+c = cl.get(f"{P}/commands/{cid}").json()["command"]
+ok("command carries ack and result", c["ack"]["status"] == "shown" and c["result"]["ok"] and c["result"]["data"] == {"opened": True})
+r = cl.post(f"{P}/command", json={"command": "amberx.open_url", "arguments": {"url": "https://github.com/"}}, headers=SESSION).json()
+ok("the AmberX alias still works and says it is deprecated", r["ok"] and "deprecated" in r["deprecated"])
+r = cl.post(f"{P}/recorder/start", json={"session": "Build review"}, headers=SESSION).json()
+check("recorder.start without a confirm", r["error"]["code"], "confirmation_required")
+r = cl.post(f"{P}/command", json={"command": "approval", "arguments": {"approvalId": "7a1b2c3d-4e5f-4a6b-8c7d-0e1f2a3b4c5d", "kind": "approval", "decision": "approve"}}, headers=SESSION).json()
+check("a command can never carry a decision", r["error"]["code"], "validation")
+r = cl.post(f"{P}/recorder/start", json={"session": "x", "approvalId": "7a1b2c3d-4e5f-4a6b-8c7d-0e1f2a3b4c5d", "mic": True}, headers=SESSION).json()
+ok("mic is not an argument the route passes on", r["ok"] and "mic" not in r["command"]["arguments"])
+cl.post(f"{P}/settings", json={"features": {"voice": False}}, headers=PERSON)
+check("a feature switched off refuses its command", cl.post(f"{P}/voice", json={"mode": "say", "text": "hi"}, headers=SESSION).json()["error"]["code"], "denied")
+cl.post(f"{P}/settings", json={"features": {"voice": True}}, headers=PERSON)
+r = cl.post(f"{P}/notify", json={"title": "Build landed"}, headers=SESSION).json()
+check("notify defaults to fyi with the direct notify id", (r["command"]["arguments"]["kind"], r["command"]["arguments"]["notifyId"]), ("fyi", "phone-connect.direct"))
+st = cl.get(f"{P}/status").json()
+ok("status reads presence and the recorder", st["paired"] and st["presence"] == "online" and st["recorder"] == {"running": False})
+import importlib  # noqa: E402
+import plugin_services  # noqa: E402
+cap = plugin_services.get("axf.phone@1")
+ok("axf.phone@1 is provided", cap is not None and cap.available())
+ok("the capability has no way to decide", not any(hasattr(cap, n) for n in ("decide", "approve", "deny", "shelve")))
+# timeouts
+old = svc.send("recorder.stop", {}, {"kind": "session", "who": "t", "via": "cli"}, at=E.now_iso())
+svc.sweep(E.iso(E.ms(E.now_iso()) + 3600_000))
+check("an uncollected command times out", S.command(old["id"])["status"], "failed")
+# websocket: the same loop over one socket
+r = cl.post(f"{P}/open", json={"url": "https://github.com/ws"}, headers=SESSION).json()
+with cl.websocket_connect(f"{P}/device/ws", headers={"authorization": f"Bearer {TOKEN}"}) as ws:
+    call = ws.receive_json()
+    check("ws delivers the call", (call["id"], call["payload"]["tool"]), (r["id"], "browser.open"))
+    ws.send_json({"protocol": "axpp@1", "kind": "result", "correlationId": r["id"], "payload": {}})
+    check("ws takes the result", ws.receive_json()["status"], "done")

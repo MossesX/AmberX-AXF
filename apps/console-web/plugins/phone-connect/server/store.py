@@ -111,6 +111,11 @@ def save_command(c: dict) -> dict:
     return c
 
 
+def drop_command(cid: str) -> bool:
+    with LOCK:
+        return data_store.remove(_pd().path(f"commands/{cid}.json"))
+
+
 # ---- settings + log
 
 def settings() -> dict[str, Any]:

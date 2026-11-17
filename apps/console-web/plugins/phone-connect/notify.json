@@ -2,6 +2,16 @@
   "$axf": "notify-types@1",
   "types": [
     {
+      "id": "phone-connect.direct",
+      "label": "Direct notification to the phone",
+      "group": "phone",
+      "app": "console",
+      "source": "Phone Connect",
+      "description": "A notification a session, the CLI, MCP or a voice command sent straight to the phone (phone.notify).",
+      "enforced": "device",
+      "only": ["amberx"]
+    },
+    {
       "id": "phone-connect.paired",
       "label": "Phone paired or revoked",
       "group": "phone",
