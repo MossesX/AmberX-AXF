@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:54 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
-- 2026-11-17 22:54 UTC · `api-fully-drives-every-field-type-forms` note (all) · Brett
-- 2026-11-17 22:54 UTC · `flagship-professional-skin-covering-2` s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, note (all) · foreign-write
-- 2026-11-17 22:54 UTC · `move-everything-axhub-web-console` s1 done (all) · foreign-write
 - 2026-11-17 22:55 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 22:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 22:55 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:08 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · pipeline
 - 2026-11-17 23:08 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
 - 2026-11-17 23:08 UTC · `group-chat-audio-hear-agents-talk-while` → fixing, note (all) · pipeline
+- 2026-11-17 23:08 UTC · `banner-widget-shapes-plus-change-icon` s19 done, → complete, note (all) · foreign-write
+- 2026-11-17 23:08 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 23:08 UTC · `flagship-professional-skin-covering-2` s21 done, note (all) · foreign-write
+- 2026-11-17 23:08 UTC · `move-everything-axhub-web-console` s3 done (all) · foreign-write
 
 ## Token passes (log)
 
