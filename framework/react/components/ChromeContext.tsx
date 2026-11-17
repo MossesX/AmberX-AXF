@@ -351,7 +351,56 @@ export function ChromeAssetPicker({ type, instance }: { type: ChromeType; instan
   );
 }
 
-/** Interface tab: which settings interface this kind's dialog uses (the shared default first), + reset the custom copy. */
+/**
+ * The Interface tab of one instance's dialog (build fix-banner-settings-interface-tab, Nov 17 2026; Brett: "why does the
+ * settings interface tab of the banner change just the interface of the settings itself? what's the point of that"):
+ * the whole interface of THE chrome it was opened for, in one place: every field of the kind (look + behaviour) and the
+ * asset it uses. Every control writes that instance's override (`axf.chrome.<type>.<instance>`) or its asset pick
+ * (`….asset`, tab groups; the app's slot for the kinds the app shows once) and nothing else, so the chrome restyles live
+ * (the runtime re-reads the override and recompiles its tokens) and the settings window stays as it is. The settings
+ * window's own layout lives in "This settings window" above the tabs (SettingsWindowPicker).
+ * Same keys by API: chrome.set / chrome.unset / chrome.swap / chrome.reset (console actions, REST, MCP, CLI, voice).
+ */
+export function InstanceInterfaceTab({ type, instance, show = () => true, descriptions = true }: { type: ChromeType; instance: string; show?: (f: ChromeField) => boolean; descriptions?: boolean }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsTick(rt, [CHROME_INSTANCE_KEY(type, instance), CHROME_INSTANCE_ASSET_KEY(type, instance)]);
+  const label = chromeLabel(type).toLowerCase();
+  const list = rt.registry.list(type as AssetType);
+  const own = type === 'tab-group' ? (rt.settings.get(CHROME_INSTANCE_ASSET_KEY(type, instance)) as string) || '' : '';
+  const asset = type === 'tab-group' ? own || 'default' : rt.getState().active[type as AssetType] ?? '';
+  const assetOptions = [
+    ...(type === 'tab-group' ? [{ value: 'default', label: `The app's tab style (${rt.getState().active['tab-group'] ?? 'none'})` }] : []),
+    ...list.map((a) => ({ value: a.id, label: a.name })),
+  ];
+  const n = Object.keys(normalizeInstanceOverride(type, rt.settings.get(CHROME_INSTANCE_KEY(type, instance)))).length;
+  const group = (g: 'look' | 'behaviour') => CHROME_FIELDS[type].filter((f) => f.group === g && show(f));
+  return (
+    <div className="fx-stack" data-axf-interface-for={`${type}:${instance}`}>
+      <Note tone="info">Changes this {label}{instance !== CHROME_APP_INSTANCE ? ` (${instance})` : ''} right away. The settings window keeps its own look.</Note>
+      {assetOptions.length > 0 && <SelectField label={`${chromeLabel(type)} asset`} hint={type === 'tab-group' ? 'Only this tab row uses it.' : `The app's ${label}: every ${label} in this app uses it.`} value={asset} options={assetOptions} onChange={(id) => rt.dispatch(`chrome.swap:${type}:${instance}:${id}`)} />}
+      {(['look', 'behaviour'] as const).map((g) => { const fs = group(g); return fs.length ? <Section key={g} title={g === 'look' ? 'Look' : 'Behaviour'}>{fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={descriptions} />)}</Section> : null; })}
+      {n > 0 && <div className="fx-row"><Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`chrome.reset:${type}:${instance}`)}>Reset this {label} ({n})</Button></div>}
+    </div>
+  );
+}
+
+/**
+ * "This settings window": which settings interface every dialog of this kind uses (the shared default first) and the
+ * app copy's layout. It styles the settings window, never the chrome, so it sits above the tabs beside "Settings
+ * interface for this one", folded until opened, and is named for what it changes.
+ */
+export function SettingsWindowPicker({ type }: { type: ChromeType }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="fx-stack fx-stack--xs" data-axf-settings-window={type}>
+      <div><Button size="sm" tone="neutral" icon={open ? 'chevron-up' : 'chevron-down'} aria-expanded={open} onClick={() => setOpen((o) => !o)}>This settings window (every {chromeLabel(type).toLowerCase()})…</Button></div>
+      {open && <InterfacePicker type={type} />}
+    </div>
+  );
+}
+
+/** Which settings interface this kind's dialog uses (the shared default first), + reset the custom copy. Styles the settings window only. */
 function InterfacePicker({ type }: { type: ChromeType }) {
   const rt = useRuntime();
   useAxfState();
@@ -379,7 +428,7 @@ function InterfacePicker({ type }: { type: ChromeType }) {
           <TextField label="Hidden ids (comma-separated: a tab, group or field key)" value={ui.hide.join(', ')} onChange={(v) => setPatch('hide', v.split(',').map((s) => s.trim()).filter(Boolean))} />
         </Section>
       )}
-      <Note tone="info">This is the interface every {chromeLabel(type).toLowerCase()} uses. One of them can pick its own with "Settings interface for this one" at the top of its dialog.</Note>
+      <Note tone="info">This is the settings window every {chromeLabel(type).toLowerCase()} opens. One of them can pick its own with "Settings interface for this one" above.</Note>
       {!editing && <Note tone="info">The shared default is in use. Pick this app's copy to edit it; the default stays what every app starts from.</Note>}
     </div>
   );
@@ -471,7 +520,7 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
       );
     }
     if (id === 'asset') return <ChromeAssetPicker type={type} instance={instance} />;
-    if (id === 'interface') return <InterfacePicker type={type} />;
+    if (id === 'interface') return <InstanceInterfaceTab type={type} instance={instance} descriptions={ui.descriptions} show={(f) => !ui.hide.includes(f.key) && levelOk(f.key, f.level) && (!q || f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q))} />;
     return <div className="fx-stack">{ui.groups.filter((g) => g.tab === id).map((g) => <ExtraGroup key={g.id} group={g} />)}</div>;
   };
   const header = ui.header === 'none' ? null : (
@@ -483,7 +532,7 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
       </div>
     </div>
   );
-  const picker = <InstanceInterfacePicker type={type} instance={instance} />;
+  const picker = <><InstanceInterfacePicker type={type} instance={instance} /><SettingsWindowPicker type={type} /></>;
   const search = ui.search ? <TextField label="Find a setting" value={query} onChange={setQuery} placeholder="style, position, badges…" /> : null;
   if (!res) return <div className="fx-stack">{header}<Note tone="warning">This app ships no settings interface for {chromeLabel(type).toLowerCase()}s (chrome-settings@1: settings/{chromeSettingsDefaultId(type)}); showing the built-in layout.</Note>{picker}{search}<TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow}>{body(shownTab)}</TabGroup></div>;
   if (ui.layout === 'list') return <div className="fx-stack fx-stack--lg">{header}{picker}{search}{tabs.map((t) => <Section key={t.id} title={t.label}>{body(t.id)}</Section>)}</div>;
