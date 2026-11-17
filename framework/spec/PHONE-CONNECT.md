@@ -199,7 +199,7 @@ revoke, command, ack, result, error). The plugin's data folder maps there (`data
 
 ## API (everything comes with an API)
 
-The plugin phase exposes each feature four ways, the same command underneath: REST `/api/plugins/phone-connect/…`
+The plugin phase exposes each feature four ways, the same command underneath: REST `/api/plugins/phone-connect/…` <!-- axf-plugin:phone-connect -->
 (`status`, `devices`, `devices/{id}`, `pair`, `pair/cancel`, `devices/{id}/revoke`, `…/rotate`, `…/forget`, `open`,
 `notify`, `recorder/start|stop|status`, `voice`, `commands`, `commands/{id}`), MCP `phone_*` (plugin commands), CLI
 `axf phone …`, voice ("open the console on my phone", "start recording Build review"). Deep link: `console_open` target
