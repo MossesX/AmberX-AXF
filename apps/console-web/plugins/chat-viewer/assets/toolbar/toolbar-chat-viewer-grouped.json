@@ -1,0 +1,59 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-chat-viewer-grouped",
+  "name": "Chats: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-chat-viewer",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:chat-viewer",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "chats",
+        "label": "Chats",
+        "items": [
+          {
+            "id": "sync",
+            "icon": "refresh",
+            "label": "Sync chats",
+            "action": "handler:chat-viewer.sync",
+            "badge": "state:unseen",
+            "enabledWhen": "!syncing",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "search",
+            "icon": "search",
+            "label": "Search",
+            "action": "handler:chat-viewer.search",
+            "checked": "state:searching",
+            "priority": 260
+          },
+          {
+            "id": "export",
+            "icon": "download",
+            "label": "Export",
+            "action": "handler:chat-viewer.export",
+            "enabledWhen": "open.id",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

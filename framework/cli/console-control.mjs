@@ -26,7 +26,7 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'chrome']);
+export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome']);
 /** The chrome kinds with a settings dialog (chrome-settings@1 CHROME_TYPES). */
 const CHROME_KINDS = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 'context-menu'];
 /** One chrome instance setting's address: the same key its Settings → Interface tab writes. */
@@ -121,6 +121,14 @@ export function toRequest(argv) {
         ? { method: 'POST', path: '/do', body: { verb: 'set', address: chromeSettingAddress(type, id, key), value: 'reset', ...extra } }
         : { method: 'POST', path: '/do', body: { verb: 'press', address: 'function:chrome.reset', value: `${type}:${id}`, ...(flags.confirm ? { confirm: true } : {}), ...extra } };
       return { method: 'POST', path: '/do', body: { verb: 'press', address: 'function:chrome.settings', value: `${type}:${id}:${key || 'interface'}`, ...extra } };
+    }
+    case 'toolbar': {
+      // page toolbars (page-toolbar@1): list the toolbars on screen, read one, press one of its buttons
+      const [op, id, button] = args;
+      if (op === 'list') return { method: 'GET', path: `/toolbars${flags.view ? `?view=${encodeURIComponent(String(flags.view))}` : ''}` };
+      if (op === 'get' && id) return { method: 'GET', path: `/toolbars/${encodeURIComponent(id)}` };
+      if (op === 'press' && id && button) return { method: 'POST', path: `/toolbars/${encodeURIComponent(id)}/press`, body: { button, ...(flags.value !== undefined ? { value: flags.value } : {}), ...(flags.confirm ? { confirm: true } : {}) } };
+      throw new Error('usage: axf console toolbar list [--view <view>] | get <toolbar id> | press <toolbar id> <button> [--value v] [--confirm]');
     }
     case 'voice': {
       const text = args.join(' ').trim();

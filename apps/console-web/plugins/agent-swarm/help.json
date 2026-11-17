@@ -38,6 +38,13 @@
         "text": "Previews brief. Part of Agent swarm.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "view:agent-swarm",
+        "title": "Agent swarm",
+        "text": "Headless specialist agents for the Build orchestrator.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

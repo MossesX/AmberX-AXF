@@ -11,6 +11,7 @@
  *   "show step 3 of <build>" · "step three of <build>"
  *   "disable plugin <y>" · "turn off the <y> plugin" · "turn the <y> plugin off" · "enable <y> plugin"
  *   "press <button>" · "click <button>" · "tap <button>"
+ *   "press <button> on the <x> toolbar" · "what's on the <x> toolbar" · "list the <x> toolbar" (page-toolbar@1)
  *   "set <setting> to <value>" · "turn <setting> on|off"
  *   "lock the console to the axHub skin" · "unlock the console from the axHub skin" (Settings → Appearance →
  *   Get my skin only from axHub)
@@ -90,6 +91,10 @@ export function voiceIntent(text) {
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
   if ((m = /^(?:turn|switch) (?:the )?(.+?) (on|off)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2] === 'on' };
 
+  // page toolbars (page-toolbar@1): a button named with its toolbar, and what a toolbar holds
+  if ((m = /^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)? (?:on|in|of)(?: the)? (.+?) toolbar$/.exec(p))) return { verb: 'press', find: { q: `${strip(m[2])} ${strip(m[1])}`, kinds: ['button'] }, toolbar: strip(m[2]) };
+  if ((m = /^(?:what(?:'s| is) on|what does .+ hold on|list|show(?: me)?|read(?: me)?)(?: the)? (.+?) toolbar$/.exec(p))) return { verb: 'list', find: { q: strip(m[1]), kinds: ['toolbar'] } };
+
   // buttons and actions
   if ((m = /^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)?$/.exec(p))) return { verb: 'press', find: { q: strip(m[1]), kinds: ['button', 'function'] } };
 
@@ -136,6 +141,7 @@ export function voiceReply(intent, answer, label = '') {
     case 'open': return `Opened ${what}.`;
     case 'focus': return `Showing ${what}.`;
     case 'press': return `Pressed ${what}.`;
+    case 'list': { const n = answer.targets?.length ?? 0; return n ? `${n} item${n === 1 ? '' : 's'}: ${answer.targets.slice(0, 6).map((t) => t.label).join(', ')}.` : `Nothing on ${what || 'it'}.`; }
     case 'set': return `Set ${what} to ${typeof answer.value === 'boolean' ? (answer.value ? 'on' : 'off') : String(answer.value ?? intent.value)}.`;
     case 'plugin.enable': return `${what} is on.`;
     case 'plugin.disable': return `${what} is off.${answer.effects?.loses?.length ? ` ${answer.effects.loses.map((d) => d.name).join(', ')} lose${answer.effects.loses.length === 1 ? 's' : ''} a feature.` : ''}`;

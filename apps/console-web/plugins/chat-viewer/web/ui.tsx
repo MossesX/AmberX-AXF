@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, controlSlug } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, PageToolbar, Segmented, SelectField, Switch, TextField, controlSlug, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -65,7 +65,15 @@ export function ChatViewer() {
     } catch (e) { setError((e as Error).message); } finally { setImporting(''); if (fileRef.current) fileRef.current.value = ''; }
   };
 
-  if (open) return <SessionView id={open.id} seq={open.seq} onBack={() => { setOpen(null); void load(); }} />;
+  // the Chats toolbar (page-toolbar@1, assets/toolbar/chat-viewer.json)
+  const openRow = open ? (rows ?? []).find((r) => r.id === open.id) : undefined;
+  usePublishPageState('chat-viewer', { unseen: (rows ?? []).filter((r) => !r.seen).length, syncing: checking, searching: !!q.trim(), open: open ? { id: open.id, title: openRow?.title ?? '' } : null });
+  useToolbarHandlers('chat-viewer', {
+    'chat-viewer.sync': async () => { await check(); return { sessions: rows?.length ?? 0 }; },
+    'chat-viewer.search': () => { const el = document.querySelector<HTMLInputElement>('.axp-chat-viewer-search'); el?.focus(); el?.select(); return { q }; },
+    'chat-viewer.export': async () => { if (!open) return null; await api.download(`sessions/${enc(open.id)}/export?format=md`, `${(openRow?.title ?? open.id).slice(0, 60)}.md`); return { exported: open.id }; },
+  });
+  if (open) return <><PageToolbar view="chat-viewer" /><SessionView id={open.id} seq={open.seq} onBack={() => { setOpen(null); void load(); }} /></>;
 
   const shown = (rows ?? []).filter((r) => (only === 'all' || r.source === only || (only === 'updated' && !r.seen)) && core.matches(r, hits ? '' : q));
   const cols: GridColumn<Row>[] = [
@@ -93,6 +101,7 @@ export function ChatViewer() {
       </header>
       <UpdateNote report={report} checking={checking} importing={importing} status={status} />
       {error && <Note tone="danger" icon="alert">{error}</Note>}
+      <PageToolbar view="chat-viewer" />
       <div className="fx-row axp-chat-viewer-bar">
         <input className="fx-input axp-chat-viewer-search" type="search" aria-label="Search every session" placeholder="Search every message" value={q} onChange={(e) => setQ(e.target.value)} />
         {unseen > 0 && <Button size="sm" icon="check" onClick={() => void api.post('seen-all', {}).then(load)}>Mark all read</Button>}
