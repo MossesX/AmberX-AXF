@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `settings-interface-gear-every-plugin` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `hotfix-orchestrator-grid-columns-don-t` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `reset-all-button-every-asset-override` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:57 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
 - 2026-11-17 20:58 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
 - 2026-11-17 20:58 UTC · `rebuild-fresh-main-phone-connect-small` s4 done (all) · orchestrator
+- 2026-11-17 20:58 UTC · `terminal-main-tab-streaming-console-s` s12 done (all) · orchestrator
 
 ## Token passes (log)
 
