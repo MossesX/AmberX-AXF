@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8012,
- "updatedAt": "2026-11-17T21:29:48.811Z",
+ "rev": 8013,
+ "updatedAt": "2026-11-17T21:29:57.268Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265914,7 +265914,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:26:41.635Z",
+   "updatedAt": "2026-11-17T21:29:41.010Z",
    "builtAt": "",
    "notes": [
     {
@@ -266307,12 +266307,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:29:41.010Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T14:51:42.630Z"
+     "updatedAt": "2026-11-17T21:29:41.466Z"
     },
     {
      "id": "s12",
@@ -266454,7 +266454,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -268468,34 +268468,8 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T21:06:34.794Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:29:07.331Z",
-     "buildId": "rebuild-fresh-main-phone-connect-small",
-     "phase": "Phase 1",
-     "step": "s13",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "hulu0241",
-     "notified": "2026-11-17T21:29:23.273Z",
-     "session": "",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -275955,7 +275929,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275964,7 +275938,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
    "updatedAt": "2026-11-17T21:27:29.196Z",
-   "builtAt": "2026-11-17T21:27:29.196Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -278443,22 +278417,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:27:22.258Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s23",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "2026-11-17T21:27:35.499Z",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
-     "note": "session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
