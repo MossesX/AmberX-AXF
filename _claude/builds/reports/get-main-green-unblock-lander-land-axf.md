@@ -316,3 +316,68 @@ Also noted for later:
 **Main CI on 765ca6b51:** the first attempt failed on Gradle, `lib-hub` `HubAppearanceSourceTest` ("first run, save, conflict re-merge…", line 72). That test is unchanged since Oct 21: it waits up to 5 s for a background save on real threads. #713 touches no Kotlin. **The re-run of the failed job passed**, so main is green.
 
 Follow-up worth doing: make that test's wait deterministic, because it can go red on a loaded runner.
+
+## Postgres migration on the VPS (s17)
+
+**axf-data now runs on Postgres.**
+- `deploy/install-data.sh` (main @ 765ca6b51, plus the Dockerfile fix below) started `axf-data-db` (postgres:16-alpine, volume `axf-data-pg`, never published).
+- It copied the empty s13 SQLite store across: backup first, counts and manifests checked.
+- It started axf-data on the DSN in `shadow`, and `axf data engine postgres` cut it over: `reads from postgres … drift 0; next: done`.
+
+**Console data copied in.** `data-migrate apply --all` ran inside the console with the `cli` token. Every namespace got a backup first; the backups are in `.axf-console/migration/backups/`, and the full pre-migration tarball is in `~/hub/data/amberx-axf/backups/pre-postgres-20261116/`. Then `verify`.
+
+**Before / after row counts**
+
+| Table (Postgres) | After | Source (before) | |
+|---|---|---|---|
+| builds | 985 | 985 builds in `store.json` | equal |
+| build_steps | 5951 | 5953 | builds is still `local`: 2 steps added since the copy |
+| journal (builds `journal/*.jsonl`) | 12803 | 12865 lines (+2 unparseable) | 62 lines appended since the copy |
+| journal (all namespaces) | 63389 | — | builds 58588, plugins 4345, console 402, … |
+| ui_review_items | 227 | 227 | equal |
+| settings | 9 | 9 | equal |
+| notes | 40 | 40 | equal |
+| planner_items | 5 | — | |
+| changes (change feed) | 16355 | — | |
+| keys / records / blobs | 15991 / 9663 / 5594 | 15790 keys (M0) | extra keys on axf-data: activity reports since rotated away locally, large-entry records |
+| ledger_features / _history / _feature_builds / _prs / _builds / _prompts / _deploys / _events_seen / _edits / _manifests | 2962 / 26253 / 6049 / 614 / 955 / 735 / 387 / 6535 / 369 / 398 | identical counts in `ledger.sqlite` | equal (SQLite mirrored table for table) |
+
+**Verify and modes**
+- `verify`: 36 of 47 namespaces equal at once. The other 11 were the hot ones, different only by writes made after the copy.
+- Topped up and moved to **shadow: 43 of 47 namespaces**. Writes now go to the files *and* axf-data, with drift logged.
+- Still `local`:
+  - `console`: agent-slots state, crew chat and plan projections are rewritten every few seconds;
+  - `plugins/activity`: rotating reports;
+  - `builds`: its backup plus snapshot needs about 4 GB the disk doesn't have.
+
+**Spot checks**
+- `settings/claude/settings.json` on axf-data equals the hub file.
+- This build's changes entry on axf-data equals the source, except the live heartbeat fields.
+- builds: 985 = 985.
+- Console API: `/api/plugins/data-store/state` → `configured: true, reachable: true`; `data.mjs engine` → postgres.
+- Systems check: the `axf-data` item is ok ("up; last backup … verified").
+
+**Fixes this needed** (all in **#769**, queued first):
+1. **Dockerfile:** `python:3.12-slim` is now Debian trixie but the PGDG apt line said `bookworm-pgdg`. apt failed (exit 100) and axf-data couldn't be built.
+2. **`data-migrate` backup:** a file rotated away between scan and tarball aborted the whole run. Now `tar --ignore-failed-read`.
+3. **`data-migrate` read:** a file gone between the walk and the read raised ENOENT. Such files are now left out of M0.
+
+**Found and noted, not fixed here:**
+- **Node heap:** `data-migrate` holds a whole namespace in memory. builds (2 GB) crashed the default heap (exit 134, plus a 5.5 GB core dump, which I deleted). Re-run with `NODE_OPTIONS=--max-old-space-size=12288`. It should stream.
+- **Snapshots:** every `apply` snapshots each namespace on axf-data and writes a backup per namespace. Three runs made about 5 GB of snapshots and 3 backup sets. I kept one backup set and removed the snapshots of partial axf-data state.
+- **Host writers don't mirror:** session hooks, the builds CLI and the orchestrator run on the VPS host and can't reach axf-data (internal network, no published port). In `shadow` they keep writing the local files without mirroring, and log no drift. `cutover` stays safe, because it requires equal manifests at that moment and will refuse. But changes, builds and sessions can't cut over until host writers reach axf-data: publish it on 127.0.0.1 only, or route host writes through the console.
+- **Disk:** it hit 100% during the migration. I freed about 30 GB:
+  - 646 stale `/tmp/axf-shots-*` folders (15 GB, since Nov 10)
+  - the core dump
+  - duplicate snapshots and backups
+  - my scratch worktrees
+
+  Still 99%. The rest is Docker's 98 GB build cache (mostly shared with images) and 150 GB of build worktrees under `/root/axf-builds`. The systems-check **disk** item is red with this, and its Auto fix (via Mosses) didn't clear it.
+
+**Next steps for the last four namespaces** (exact):
+```
+# inside axf-console, after #769 lands; builds needs ~4 GB free and the bigger heap
+docker exec -e AXF_DATA_TOKEN=<cli token> -e NODE_OPTIONS=--max-old-space-size=12288 axf-console sh -c 'cd /axf && node framework/cli/data-migrate.mjs apply builds && node framework/cli/data-mode.mjs shadow builds'
+# console and plugins/activity: same, in a quiet minute (or after host writers mirror)
+# cutover per namespace once `data-mode status` says ready (30 min without drift; settings first, builds last)
+```
