@@ -821,10 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:37 UTC · `prompting-engine-control-panel-to-create` s2 done (all) · orchestrator
-- 2026-11-17 00:37 UTC · `every-plugin-screen-gets-a-settings-gear` s13 done (all) · orchestrator
-- 2026-11-17 00:38 UTC · `every-plugin-screen-gets-a-settings-gear` s14 done (all) · orchestrator
-- 2026-11-17 00:38 UTC · `every-plugin-screen-gets-a-settings-gear` s15 done (all) · orchestrator
 - 2026-11-17 00:39 UTC · `stop-auto-lander-committing-tracking` s10 done (all) · orchestrator
 - 2026-11-17 00:39 UTC · `console-app-part-2-native-floating` s1 done, → running (all) · orchestrator
 - 2026-11-17 00:39 UTC · `every-plugin-screen-gets-a-settings-gear` s16 done (all) · orchestrator
@@ -1221,6 +1217,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:08 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
+- 2026-11-17 15:09 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
+- 2026-11-17 15:09 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
+- 2026-11-17 15:09 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
+- 2026-11-17 15:09 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
 
 ## Token passes (log)
 
