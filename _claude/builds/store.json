@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7889,
- "updatedAt": "2026-11-17T20:55:30.034Z",
+ "rev": 7890,
+ "updatedAt": "2026-11-17T20:55:39.958Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -280519,7 +280519,7 @@
    "title": "Toolbars 1/5: Build orchestrator (incl. merge queue), Gate & rules, Terminal",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Build orchestrator pages (Pipeline/Pending/Queue, with merge-queue buttons folded in), Gate & rules, Terminal/sessions. API targets + one test. No Molly/AmberX/axHub web/Expenses. Land when done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -280527,7 +280527,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:55:24.920Z",
+   "updatedAt": "2026-11-17T20:55:36.828Z",
    "builtAt": "",
    "notes": [
     {
@@ -280541,6 +280541,14 @@
     {
      "text": "Brett: make the Pending list toolbar its own page-specific set: Queue selected, Split now, Set priority, Hold, Archive, Show what Brett said (plus multi-select). Queue and Active get their own sets too.",
      "at": "2026-11-17T20:42:08.912Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-toolbars-1-5-build-orchestrator-incl--sully.",
+     "at": "2026-11-17T20:55:34.606Z"
+    },
+    {
+     "text": "Brief only: brief is 24142 characters (~6036 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T20:55:36.828Z"
     }
    ],
    "approvals": [],
@@ -280560,13 +280568,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T20:41:43.770Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-toolbars-1-5-build-orchestrator-incl--sully",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T20:55:33.562Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -280579,7 +280587,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T20:55:33.562Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -280588,7 +280596,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T20:55:33.562Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -280708,7 +280716,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
