@@ -7,7 +7,7 @@
  * Parts (installed config `libraries.datagrid.parts`): groups, column-menu {hidden}, sort, expand, drag {trash}, compact.
  */
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
-import { ControlScope, Icon, IconButton, Meter, Slot, escapeSelector, useControlTarget, useControlTargets, useRuntime, type ControlTargetDef } from '../../react';
+import { ControlScope, Icon, IconButton, Meter, Slot, escapeSelector, useControlTarget, useControlTargets, useInstanceLook, useRuntime, type ControlTargetDef } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
@@ -120,7 +120,9 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   // component-tokens@1: this one grid's own token values (axf.tokens.instances → --fx-grid-* on the element) win over the skin's
   const [, tokensTick] = useState(0);
   useEffect(() => rt.settings.onChange(INSTANCE_TOKENS_KEY, () => tokensTick((n) => n + 1)), [rt]);
-  const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}`, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id) } as CSSProperties;
+  // instance-look@1: this grid's own look (skin → app → grid) goes last; the column template is never touched by it
+  const look = useInstanceLook('grid', p.id);
+  const template = { ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id), ...look.style, '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}` } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
   const all = useMemo(() => flatRows(p.groups), [p.groups]);
@@ -203,7 +205,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   } : {});
 
   const grid = (
-    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id}>
+    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id} {...look.attrs}>
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (

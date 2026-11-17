@@ -1170,7 +1170,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 /* component-tokens@1: every colour, line, padding and radius of a table is a --fx-grid-* token (same family as lib-datagrid; defaults = today's look) */
 .fx-tablewrap { overflow-x: auto; border-radius: var(--fx-grid-radius); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-grid-outer-border); }
 .fx-table { width: 100%; border-collapse: collapse; font-size: var(--fx-type-scale-md); color: var(--fx-grid-row-text); }
-.fx-table th, .fx-table td { text-align: left; padding: var(--fx-grid-cell-pad-y) var(--fx-grid-cell-pad-x); border-bottom: var(--fx-border-w) solid var(--fx-grid-line-color); vertical-align: top; }
+.fx-table th, .fx-table td { text-align: left; padding: var(--fx-grid-cell-pad-y) var(--fx-grid-cell-pad-x); border-bottom: var(--fx-grid-border-w) solid var(--fx-grid-line-color); vertical-align: top; }
 .fx-table th { color: var(--fx-grid-header-text); font-weight: var(--fx-grid-header-weight); white-space: nowrap; background: color-mix(in srgb, var(--fx-grid-table-header-bg) calc(var(--fx-grid-opacity) * 100%), transparent); border-bottom-color: var(--fx-grid-header-border); }
 .fx-table tr { min-height: var(--fx-grid-row-height); }
 .fx-table tr:last-child td, .fx-table tr:last-child th { border-bottom: 0; }

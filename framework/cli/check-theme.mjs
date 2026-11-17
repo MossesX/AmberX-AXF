@@ -47,6 +47,7 @@ import { join, relative, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SCALE_TYPES, scaleVars } from '../core/engines/scale-rules.mjs';
 import { layoutToken, layoutTokenVars } from '../core/engines/layout-rules.mjs';
+import { INSTANCE_LOOK_KEY_IDS, instanceLookVar } from '../core/engines/instance-look-rules.mjs';
 import { adoptLine } from './scale-adopt.mjs';
 import { SURFACE_MSG, surfaceFindings } from './surface-rule.mjs';
 import { writeFileSync } from 'node:fs';
@@ -79,6 +80,8 @@ for (const t of SCALE_TYPES) for (const k of Object.keys(scaleVars(t, null))) kn
 // Layout tokens (every layout parameter is a token, core/engines/layout-rules.mjs): the same.
 for (const k of Object.keys(layoutTokenVars(null))) known.add(k);
 known.add(layoutToken('navOrientation'));
+// instance-look@1: the scoped per-grid / per-tab-row variables (--fx-inst-<key>), compiled from token refs only.
+for (const k of INSTANCE_LOOK_KEY_IDS) known.add(instanceLookVar(k));
 // Colour tokens come from the color-theme assets' token keys (engines/theme.ts: --fx-${kebab(key)}).
 for (const f of walk(join(FRAMEWORK, 'assets/color-theme')).filter((f) => f.endsWith('.json'))) {
   const tokens = JSON.parse(readFileSync(f, 'utf8'))?.data?.tokens ?? {};
