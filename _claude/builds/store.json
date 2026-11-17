@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8110,
- "updatedAt": "2026-11-17T21:58:22.912Z",
+ "rev": 8111,
+ "updatedAt": "2026-11-17T21:58:32.236Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -284385,7 +284385,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -284393,7 +284393,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:58:14.389Z",
+   "updatedAt": "2026-11-17T21:58:29.217Z",
    "builtAt": "",
    "notes": [
     {
@@ -284435,6 +284435,14 @@
     {
      "text": "Session on hulu0241 ended (exit 3) with 28 steps left: back in the Queue (run 1).",
      "at": "2026-11-17T21:54:46.253Z"
+    },
+    {
+     "text": "Started run 2 on hulu0241 (Fable, Phase 1): axf-flagship-professional-skin-covering-2--earl.",
+     "at": "2026-11-17T21:58:23.484Z"
+    },
+    {
+     "text": "Brief only: brief is 26362 characters (~6591 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T21:58:29.217Z"
     }
    ],
    "approvals": [],
@@ -284455,12 +284463,12 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-flagship-professional-skin-covering-2--earl",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
-    "launchedAt": "2026-11-17T21:54:21.885Z",
-    "runs": 1,
+    "launchedAt": "2026-11-17T21:58:22.524Z",
+    "runs": 2,
     "crashes": 1,
     "lastRun": {
      "at": "2026-11-17T21:54:44.467Z",
@@ -284480,9 +284488,9 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on hulu0241 ended (exit 3) with 28 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T21:54:21.885Z",
+    "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -284491,7 +284499,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T21:54:21.885Z",
+    "pickedAt": "2026-11-17T21:58:22.524Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -285219,7 +285227,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
