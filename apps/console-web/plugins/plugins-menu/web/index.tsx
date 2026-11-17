@@ -80,7 +80,7 @@ function refreshMenu(rt: AxfRuntime): void {
   void fetchPluginStatus().then((s) => {
     // whichever plugin provides the plugin-manager view (by capability, never by folder name), when it's switched on
     const pm = bundledPlugins.find((p) => p.manifest.provides?.includes('view:plugin-manager'));
-    const manage = pm && (s?.find((x) => x.folder === pm.folder)?.enabled ?? true) ? 'nav:plugin-manager' : 'settings.open:plugins';
+    const manage = pm && (s?.find((x) => x.folder === pm.folder)?.enabled ?? true) ? 'nav:plugin-manager' : 'settings.open:plugins'; // settings-interfaces: console (the plugin list, not this plugin's settings)
     rt.addContextItems({ id: 'plugins-menu.default', module: ID, target: 'default', order: 89, items: [pluginsSubmenu(toRows(s), { manage })] });
   });
 }
@@ -559,7 +559,8 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plugins-menu.info', ([folder = '', show = 'about']) => folder && rt.openDialog(INFO_DIALOG, { plugin: folder, show }), { label: 'About a plugin', searchable: false, params: true } as never);
     rt.actions.register('plugins-menu.settings', () => rt.openDialog(SETTINGS_DIALOG), { label: 'Plugin settings' });
     rt.actions.register('plugins-menu.install', () => rt.openDialog(INSTALL_DIALOG), { label: 'Install plugins' });
-    rt.actions.register('plugins-menu.manage', () => rt.dispatch('settings.open:plugins'), { label: 'Manage plugins' });
+    // Manage plugins = the Plugin Manager when it is on, else the console's plugin list (Settings → Plugins)
+    rt.actions.register('plugins-menu.manage', () => rt.dispatch(rt.actions.get('plugin-manager.open') ? 'plugin-manager.open' : 'settings.open:plugins'), { label: 'Manage plugins' }); // settings-interfaces: console
     rt.actions.register('plugins-menu.enable', ([folder]) => { if (folder) void setEnabled(rt, folder, true); }, { label: 'Enable a plugin', searchable: false });
     rt.actions.register('plugins-menu.disable', ([folder]) => { if (folder) void setEnabled(rt, folder, false); }, { label: 'Disable a plugin', searchable: false });
     refreshMenu(rt);

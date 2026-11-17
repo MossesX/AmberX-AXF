@@ -27,13 +27,25 @@ export function settingsTabOf(p: BundledPlugin): string | undefined {
  * `axf console plugin-settings <id>`, REST POST /api/console-control/plugins/<id>/settings/open and AmberX
  * ("open <plugin> settings").
  */
+/** The plugin whose page this view is (its library registers the view), else undefined (a console page). */
+export function pluginOfView(view: string): BundledPlugin | undefined {
+  return bundledPlugins.find((p) => Object.keys(p.library?.views ?? {}).includes(view));
+}
+
 export function registerPluginSettingsActions(rt: AxfRuntime): () => void {
+  // Every page's own default settings interface (Nov 17 2026, "Make sure every page has the correct default settings
+  // interface"): `settings.here` opens the page's plugin's own window, otherwise the console's Settings.
+  const offHere = rt.actions.register('settings.here', () => {
+    const p = pluginOfView(rt.getState().view);
+    rt.dispatch(p ? `plugin.settings.open:${p.folder}` : 'app.settings');
+  }, { label: 'Settings for this page', effect: 'navigate' });
   // the ⋯ menu on a plugin screen (gear placement `menu`): its Settings item
   rt.contextExtras.set('plugin-host', (_t, folder) => (folder ? [{ id: 'plugin-host.settings', label: 'Settings', icon: 'settings', action: `plugin.settings.open:${folder}` }] : []));
-  return rt.actions.register('plugin.settings.open', ([ref = '', tab = '']) => {
+  const offOpen = rt.actions.register('plugin.settings.open', ([ref = '', tab = '']) => {
     const p = findPlugin(ref);
     if (!p) { rt.toast(`No plugin called “${ref}”.`, 'warning', 'Plugins'); return; }
     const want = tab || settingsTabOf(p);
     rt.dispatch(`settings.plugin:${p.manifest.id}${want ? `:${want}` : ''}`);
   }, { label: 'Open a plugin’s own settings', params: true, effect: 'navigate' });
+  return () => { offHere(); offOpen(); };
 }

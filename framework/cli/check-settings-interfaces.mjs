@@ -12,7 +12,8 @@
  *                     scope plugin and owner = the plugin id
  *   wrong-interface   the named asset exists but is not the plugin's (scope, owner or id off)
  *   opens-console     a plugin's web code opens the console's Settings (`settings.open:plugins`, `app.settings`,
- *                     navigate('settings')) instead of its own window
+ *                     navigate('settings')) instead of its own window; a line that means the console's own Settings
+ *                     on purpose (e.g. its plugin list) carries a `settings-interfaces: console` comment
  *   page-interface    a console page that belongs to a plugin opens another owner's settings, or an app page that
  *                     names a plugin interface as its own (the page's plugin, otherwise the app's)
  *   app-interface     an app in shared-assets.json whose settings pick is not an app interface (scope app)
@@ -82,7 +83,9 @@ export function pluginRows(inv = inventory()) {
     const file = join(PLUGINS, folder, 'assets', 'settings', `${want}.json`);
     const asset = existsSync(file) ? readJson(file) : null;
     const web = walk(join(PLUGINS, folder, 'web'));
-    const opens = web.flatMap((f) => { const src = readFileSync(f, 'utf8'); return OPENS_CONSOLE.filter((re) => re.test(src)).map((re) => `${relative(ROOT, f)} (${re.source.replace(/\\/g, '')})`); });
+    // a line that opens the console's own Settings on purpose (its plugin list, not this plugin's settings) says so with
+    // a `settings-interfaces: console` comment; anything else is a finding
+    const opens = web.flatMap((f) => readFileSync(f, 'utf8').split('\n').flatMap((line, i) => (/settings-interfaces: console/.test(line) ? [] : OPENS_CONSOLE.filter((re) => re.test(line)).map((re) => `${relative(ROOT, f)}:${i + 1} (${re.source.replace(/\\/g, '')})`))));
     rows.push({ folder, id, name: m.name ?? folder, hasSettings, tab: ip.settingsTabId ?? null, keys, want, named, asset: asset ? { id: asset.id, scope: asset.data?.scope ?? null, owner: asset.data?.owner ?? null } : null, opens, view: (inv.views ?? []).filter((v) => v.plugin === id).map((v) => v.id) });
   }
   return rows;
@@ -93,7 +96,7 @@ export function pageRows(inv = inventory(), plugins = pluginRows(inv)) {
   const byId = new Map(plugins.map((p) => [p.id, p]));
   return (inv.views ?? []).map((v) => {
     const p = v.plugin ? byId.get(v.plugin) : null;
-    return { view: v.id, label: v.label, source: v.source, owner: p ? `plugin:${p.id}` : 'console', interface: p ? (p.hasSettings ? `settings/${p.want}` : 'settings/console (the plugin has no settings)') : 'settings/console' };
+    return { view: v.id, label: v.label, source: v.source, owner: p ? `plugin:${p.id}` : 'console', interface: p ? `settings/${p.want}` : 'settings/console', has: p ? !!p.asset && p.asset.owner === p.id : true, ...(v.plugin && !p ? { orphan: v.plugin } : {}) };
   });
 }
 
@@ -121,7 +124,10 @@ export function findings({ plugins, pages, apps }) {
     else if (p.hasSettings && (p.named !== p.want || p.asset.id !== p.want || p.asset.scope !== 'plugin' || p.asset.owner !== p.id)) out.push({ kind: 'wrong-interface', what: `plugin ${p.folder}`, why: `settings/${p.named} is not its own (want ${p.want}, scope plugin, owner ${p.id}; has id ${p.asset?.id}, scope ${p.asset?.scope}, owner ${p.asset?.owner})` });
     for (const o of p.opens) out.push({ kind: 'opens-console', what: `plugin ${p.folder}`, why: `opens the console's Settings: ${o}` });
   }
-  for (const g of pages) if (g.owner !== 'console' && /plugin has no settings/.test(g.interface) === false && !g.interface.startsWith('settings/plugin-')) out.push({ kind: 'page-interface', what: `page ${g.view}`, why: `opens ${g.interface}, not its plugin's own` });
+  for (const g of pages) {
+    if (g.orphan) out.push({ kind: 'page-interface', what: `page ${g.view}`, why: `belongs to ${g.orphan}, which is not a console plugin here` });
+    else if (!g.has) out.push({ kind: 'page-interface', what: `page ${g.view}`, why: `its plugin has no own interface to open (${g.interface}); it would fall back to a generated one` });
+  }
   for (const a of apps) if (a.pick && a.scope && a.scope !== 'app') out.push({ kind: 'app-interface', what: `app ${a.app}`, why: `its settings pick settings/${a.pick} is scope ${a.scope}, not an app interface` });
   return out;
 }
