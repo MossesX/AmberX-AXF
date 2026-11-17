@@ -1369,6 +1369,9 @@ build_defaults.RULES_FILE = ROOT / "framework" / "schemas" / "build-defaults.jso
 import plugin_services  # noqa: E402 — generic cross-plugin services (capability names, never plugin folders)
 
 plugin_services.configure(plugin_enabled)
+import host_services  # noqa: E402 — the host services client (HOST-SERVICES.md), offered as axf.host-services@1
+
+host_services.register()
 
 # Core context + credentials for plugins (the systems-check plugin, alerts and every feature read the same env).
 import console_context  # noqa: E402
