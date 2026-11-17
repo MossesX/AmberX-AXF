@@ -133,6 +133,149 @@
       }
     ]
   },
+  "flagship": {
+    "guest": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "open",
+          "save",
+          "export",
+          "s1",
+          "import"
+        ]
+      },
+      {
+        "id": "edit",
+        "items": [
+          "undo",
+          "redo",
+          "s1",
+          "cut",
+          "copy",
+          "paste",
+          "s2",
+          "delete"
+        ]
+      },
+      {
+        "id": "view",
+        "items": [
+          "next-color",
+          "next-style",
+          "next-layout",
+          "random",
+          "reset",
+          "inspector",
+          "settings",
+          "s1",
+          "shortcuts"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "docs",
+          "about"
+        ]
+      }
+    ],
+    "user": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "open",
+          "save",
+          "export",
+          "s1",
+          "import"
+        ]
+      },
+      {
+        "id": "edit",
+        "items": [
+          "undo",
+          "redo",
+          "s1",
+          "cut",
+          "copy",
+          "paste",
+          "s2",
+          "delete"
+        ]
+      },
+      {
+        "id": "view",
+        "items": [
+          "next-color",
+          "next-style",
+          "next-layout",
+          "random",
+          "reset",
+          "inspector",
+          "settings",
+          "s1",
+          "shortcuts"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "docs",
+          "about"
+        ]
+      }
+    ],
+    "admin": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "open",
+          "save",
+          "export",
+          "s1",
+          "import"
+        ]
+      },
+      {
+        "id": "edit",
+        "items": [
+          "undo",
+          "redo",
+          "s1",
+          "cut",
+          "copy",
+          "paste",
+          "s2",
+          "delete"
+        ]
+      },
+      {
+        "id": "view",
+        "items": [
+          "next-color",
+          "next-style",
+          "next-layout",
+          "random",
+          "reset",
+          "inspector",
+          "settings",
+          "s1",
+          "shortcuts"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "docs",
+          "about"
+        ]
+      }
+    ]
+  },
   "minimal-picker": {
     "guest": [
       {

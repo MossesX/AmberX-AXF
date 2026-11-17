@@ -30,6 +30,9 @@
     "amberx-thin": {
       "--fx-banner-h": "24px"
     },
+    "flagship": {
+      "--fx-banner-h": "34px"
+    },
     "windows-titlebar": {
       "--fx-banner-h": "32px"
     },

@@ -317,6 +317,104 @@
         }
       }
     },
+    "flagship": {
+      "normalized": {
+        "colors": {
+          "background": "theme",
+          "text": "theme",
+          "hover": "theme",
+          "active": "theme",
+          "activeText": "theme",
+          "submenu": "surface2",
+          "accent": "theme"
+        },
+        "font": {
+          "family": "theme",
+          "size": "theme",
+          "weight": "theme"
+        },
+        "icons": {
+          "show": true,
+          "size": "md"
+        },
+        "layout": {
+          "density": "compact",
+          "indent": 2
+        },
+        "width": {
+          "size": 0,
+          "min": 160,
+          "max": 420,
+          "resizable": false,
+          "collapsible": true
+        },
+        "animation": {
+          "kind": "slide",
+          "durationMs": 180,
+          "easing": "standard",
+          "staggerMs": 20,
+          "chevron": "rotate",
+          "reduced": "system"
+        },
+        "behavior": {
+          "single": true,
+          "openOn": "tap",
+          "autoCollapse": true,
+          "remember": true,
+          "followActive": true,
+          "swipe": true
+        },
+        "items": {
+          "order": "",
+          "hidden": "",
+          "pinned": ""
+        },
+        "accents": {}
+      },
+      "errors": [],
+      "valid": {
+        "ok": true,
+        "errors": []
+      },
+      "output": {
+        "vars": {
+          "--fx-navs-submenu": "var(--fx-surface2)",
+          "--fx-nav-item-py": "calc(var(--fx-space) * 0.5)",
+          "--fx-navs-indent": "calc(var(--fx-space) * 2)",
+          "--fx-navs-dur": "180ms",
+          "--fx-navs-ease": "cubic-bezier(0.2, 0, 0, 1)",
+          "--fx-navs-stagger": "20ms"
+        },
+        "attrs": {
+          "data-fx-navs": "on",
+          "data-fx-navs-set": "submenu",
+          "data-fx-navs-anim": "slide",
+          "data-fx-navs-chevron": "rotate",
+          "data-fx-navs-font": "theme",
+          "data-fx-navs-icons": "on",
+          "data-fx-navs-collapsed": "off"
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-navs-submenu": "var(--fx-surface2)",
+          "--fx-nav-item-py": "calc(var(--fx-space) * 0.5)",
+          "--fx-navs-indent": "calc(var(--fx-space) * 2)",
+          "--fx-navs-dur": "0ms",
+          "--fx-navs-ease": "cubic-bezier(0.2, 0, 0, 1)",
+          "--fx-navs-stagger": "0ms"
+        },
+        "attrs": {
+          "data-fx-navs": "on",
+          "data-fx-navs-set": "submenu",
+          "data-fx-navs-anim": "none",
+          "data-fx-navs-chevron": "rotate",
+          "data-fx-navs-font": "theme",
+          "data-fx-navs-icons": "on",
+          "data-fx-navs-collapsed": "off"
+        }
+      }
+    },
     "glide": {
       "normalized": {
         "colors": {

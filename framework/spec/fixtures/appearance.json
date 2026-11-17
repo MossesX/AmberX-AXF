@@ -313,6 +313,72 @@
       "ok": "#3ecc89",
       "scheme": "dark"
     },
+    "flagship-dark": {
+      "bg": "#0b0d12",
+      "fg": "#e8ebf1",
+      "muted": "#929bab",
+      "card": "#11141b",
+      "line": "#262c38",
+      "accent": "#f2a93b",
+      "danger": "#f0646f",
+      "ok": "#3fc58a",
+      "scheme": "dark"
+    },
+    "flagship-daylight-dusk": {
+      "bg": "#141311",
+      "fg": "#ece8e0",
+      "muted": "#a39d91",
+      "card": "#1b1a17",
+      "line": "#34312c",
+      "accent": "#8f98ff",
+      "danger": "#ee7068",
+      "ok": "#4cc48a",
+      "scheme": "dark"
+    },
+    "flagship-daylight-light": {
+      "bg": "#f6f4ef",
+      "fg": "#1d1b17",
+      "muted": "#6a6458",
+      "card": "#fffdf8",
+      "line": "#e0dbcf",
+      "accent": "#3f4bd1",
+      "danger": "#c23a32",
+      "ok": "#2a8752",
+      "scheme": "light"
+    },
+    "flagship-graphite-dark": {
+      "bg": "#0e0f11",
+      "fg": "#e6e8eb",
+      "muted": "#9298a1",
+      "card": "#141518",
+      "line": "#2a2d33",
+      "accent": "#3cc8e0",
+      "danger": "#ef6a6a",
+      "ok": "#45c486",
+      "scheme": "dark"
+    },
+    "flagship-graphite-light": {
+      "bg": "#f2f3f4",
+      "fg": "#16181b",
+      "muted": "#5c636c",
+      "card": "#ffffff",
+      "line": "#d6d9de",
+      "accent": "#00758a",
+      "danger": "#c3343a",
+      "ok": "#1c8550",
+      "scheme": "light"
+    },
+    "flagship-light": {
+      "bg": "#f3f4f7",
+      "fg": "#141821",
+      "muted": "#5d6676",
+      "card": "#ffffff",
+      "line": "#d8dce4",
+      "accent": "#b86a00",
+      "danger": "#c9303b",
+      "ok": "#1d8a57",
+      "scheme": "light"
+    },
     "forest-night": {
       "bg": "#0d1411",
       "fg": "#e3ede8",

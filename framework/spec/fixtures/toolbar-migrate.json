@@ -2293,6 +2293,209 @@
       },
       "errors": []
     },
+    "flagship": {
+      "needed": true,
+      "record": {
+        "id": "flagship",
+        "contract": "page-toolbar@1",
+        "wasOldShape": false,
+        "changed": true,
+        "changes": [
+          "scope: app"
+        ],
+        "sameLook": true
+      },
+      "migrated": {
+        "variant": "icons-labels",
+        "align": "start",
+        "density": "compact",
+        "surface": "raised",
+        "divider": true,
+        "showSearch": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "groups": [
+          {
+            "id": "pages",
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "nav:home"
+              }
+            ],
+            "provider": "views",
+            "max": 6,
+            "label": "Pages"
+          },
+          {
+            "id": "app",
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "app.settings"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "overflow": {
+          "when": "auto",
+          "keep": 2,
+          "label": "More"
+        },
+        "collapsible": true,
+        "scope": "app"
+      },
+      "signatureBefore": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "compact",
+        "surface": "raised",
+        "divider": true,
+        "collapsible": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "groups": [
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 6,
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "signatureAfter": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": true,
+        "density": "compact",
+        "surface": "raised",
+        "divider": true,
+        "collapsible": true,
+        "search": {
+          "live": true,
+          "placeholder": "Search…  (Ctrl K)",
+          "maxResults": 12
+        },
+        "widgets": [
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": 10
+          },
+          {
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 20
+          }
+        ],
+        "groups": [
+          {
+            "id": "pages",
+            "label": "Pages",
+            "provider": "views",
+            "max": 6,
+            "items": [
+              {
+                "id": "home",
+                "icon": "home",
+                "label": "Go home",
+                "action": "action:nav:home",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          },
+          {
+            "id": "app",
+            "label": null,
+            "provider": null,
+            "max": null,
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "action:app.settings",
+                "badge": null,
+                "checked": null,
+                "requires": null
+              }
+            ]
+          }
+        ]
+      },
+      "errors": []
+    },
     "kiosk-lite": {
       "needed": true,
       "record": {
