@@ -9634,6 +9634,18 @@
    "from": "",
    "addenda": []
   },
+  "toolbars-2-5-plan-studio-ui-review-2": {
+   "said": "Split the toolbar build into multiple builds, about three plugins each, so they run on multiple slots. Land the foundation first.",
+   "at": "2026-11-17T20:41:31.688Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "toolbars-3-5-settings-appearance-systems": {
    "said": "Split the toolbar build into multiple builds, about three plugins each, so they run on multiple slots. Land the foundation first.",
    "at": "2026-11-17T20:40:33.480Z",
