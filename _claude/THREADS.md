@@ -820,7 +820,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:07 UTC · `server-auto-lander-fixes-lands` s3 done (all) · orchestrator
 - 2026-11-17 00:07 UTC · `stop-auto-lander-committing-tracking` → running, note (all) · pipeline
 - 2026-11-17 00:08 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
 - 2026-11-17 00:08 UTC · `stop-auto-lander-committing-tracking` branch claude/stop-auto-lander-committing-tracking (all) · pipeline
@@ -1220,6 +1219,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 12:39 UTC · `builds-keep-their-slot-across-phases` → pending, note (all) · reconciler
 - 2026-11-17 12:40 UTC · `orchestrator-stale-row-watchdog-vps` s7 done (all) · orchestrator
 - 2026-11-17 12:41 UTC · `maintenance-plugin-clear-docker-cache` s1 done, → complete (all) · orchestrator
+- 2026-11-17 12:41 UTC · `orchestrator-stale-row-watchdog-vps` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
