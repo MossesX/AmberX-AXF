@@ -301,5 +301,12 @@ console.log(`check-hidden-assets: ${n} checks passed`);
   ok(/export function groupHidden/.test(panel) && /chrome\.unhide:\$\{key\}/.test(panel) && /chrome\.unhideAll/.test(panel) && /Tap again to unhide all/.test(panel) && /Nothing is hidden in this app/.test(panel), 'panel: groups, Unhide, Unhide all with confirm, empty state');
   ok(!/#[0-9a-f]{3,8}\b|\d+px/.test(panel.replace(/\/\*[\s\S]*?\*\//g, '')), 'panel: no literal colours or sizes');
   ok(/\[HIDDEN_ASSETS_DIALOG\]: \{ title: 'Hidden items'/.test(lib) && /HIDDEN_ASSETS_PANEL_ID, tab: 'appearance'/.test(lib) && /HIDDEN_ASSETS_DIALOG = 'axf\.hidden-assets'/.test(panel), 'mounted in Settings → Appearance and as the dialog axf.hidden-assets');
+
+  // s9 the Assets menu: Hidden items… with the live count badge, Unhide all, Hide ▸ every visible piece; canvas Hidden items…
+  flow.unhideAll(); flow.hide('banner:top'); flow.hide('tab-group:x.tabs');
+  eq(flow.badge('hidden-assets.count'), 2, 'the Assets badge is the live hidden count');
+  ok(/menu: 'assets', menuLabel: 'Assets'/.test(cc) && /action: 'chrome\.hidden', badge: HIDDEN_ASSETS_BADGE/.test(cc) && /action: 'chrome\.unhideAll'/.test(cc) && /provider: HIDEABLE_PROVIDER/.test(cc), 'Assets menu: Hidden items… (badge), Unhide all, Hide ▸');
+  ok(/target: 'canvas'/.test(cc) && /register\('chrome\.hidden'/.test(cc), 'Hidden items… on the page menu too (reachable with the menu bar hidden)');
+  ok(/data-axf-target="panel:hidden-assets"/.test(panel) && /data-axf-target=\{`row:\$\{key\}`\}/.test(panel) && /id="hidden\.unhide-all"/.test(panel) && /id=\{`hidden\.unhide\./.test(panel), 'console-control targets: panel, rows, both buttons');
   console.log(`check-hidden-assets (runtime): ${n} checks passed`);
 }

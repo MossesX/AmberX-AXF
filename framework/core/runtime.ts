@@ -100,6 +100,8 @@ export const ROLL_SLOT_KEY = (type: string) => `axf.roll.slot.${type}`;
 export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${type}.${id}`;
 /** Hidden slot override (Settings → Appearance → Assets → Hidden); only hideable types (core/engines/hide.ts). */
 export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
+/** The counter (`rt.badge`) that is the number of pieces hidden in this app (hidden-assets@1): the Assets menu's badge. */
+export const HIDDEN_ASSETS_BADGE = 'hidden-assets.count';
 /** Per-device fold state of a `collapsible` toolbar (same key on Android). */
 export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
 /** Per-device state of a nav that opts in to nav-style@1: collapsed to its icons, the width it was dragged to, the open sub menus (JSON id list). */
@@ -1188,7 +1190,11 @@ export class AxfRuntime {
   /* ---------------- badges ---------------- */
 
   /** A named counter's value (0 when unset). */
-  badge(name: string): number { return this.badgeCounts.get(name) ?? 0; }
+  badge(name: string): number {
+    // hidden-assets@1: the count is read live from the look document (the Assets menu's Hidden items… badge)
+    if (name === HIDDEN_ASSETS_BADGE) { const look = this.lookLayerOn() ? this.lookStore().get() : null; return look ? hiddenCount(look) : 0; }
+    return this.badgeCounts.get(name) ?? 0;
+  }
 
   /** Set a named counter; toolbar items with `badge: name` show it (0 hides it). */
   setBadge(name: string, count: number): void {
