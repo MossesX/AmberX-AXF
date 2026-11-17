@@ -4,24 +4,34 @@
 # the only wildcard a manifest may use (a unit name axf-*) is expanded here to the named units.
 Defaults:axf-host !requiretty, env_reset, secure_path="/usr/sbin:/usr/bin:/sbin:/bin"
 
+# agent-swarm
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task jobs-due
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task jobs-sweep
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task jobs-list
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task jobs-drain
+
 # builds-live
 axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task builds-live-flush
 axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task builds-live-pull
 axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task builds-live-sync
 
 # host-api
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-agent-swarm.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-host-api.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-hub-sync.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-shipped-features.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-agent-swarm.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-host-api.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-hub-sync.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-shipped-features.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-agent-swarm.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-host-api.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-hub-sync.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-shipped-features.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-agent-swarm.service -n 500 -o short-iso --no-pager
 axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-builds-live.service -n 500 -o short-iso --no-pager
 axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-host-api.service -n 500 -o short-iso --no-pager
 axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-hub-sync.service -n 500 -o short-iso --no-pager

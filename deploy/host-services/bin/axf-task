@@ -11,6 +11,8 @@ export PATH=/usr/local/bin:/usr/bin:/bin AXF_CONSOLE_ROOT="$DIR" AXF_HOST_SIDE=1
 # The shared data folder, as the console sees it (/projects/amberx-axf/_data): the installer writes where it is.
 P="$(sed -n 's/^AXHUB_PROJECTS_DIR=//p' /etc/axf-host/env 2>/dev/null | head -1 || true)"
 [ -n "$P" ] && export AXHUB_PROJECTS_DIR="$P"
+DATA="${AXHUB_PROJECTS_DIR:+$AXHUB_PROJECTS_DIR/amberx-axf/_data}"; DATA="${DATA:-$DIR/_data}"
+JOBS="apps/console-web/plugins/agent-swarm/jobs.mjs"
 case "${1:-}" in
   builds-live-flush) exec node framework/cli/builds-live.mjs flush --quiet ;;
   builds-live-pull) exec node framework/cli/builds-live.mjs pull ;;
@@ -21,6 +23,10 @@ case "${1:-}" in
   hub-status) export HOME=/root; CS="$(command -v claude-sync || echo /root/.local/bin/claude-sync)"; exec "$CS" status ;;
   persist-push) exec node framework/cli/persist.mjs push ;;
   persist-pull) exec node framework/cli/persist.mjs pull ;;
+  jobs-due) exec node "$JOBS" due --run --json ;;
+  jobs-sweep) exec node "$JOBS" sweep --json ;;
+  jobs-list) exec node "$JOBS" list --json ;;
+  jobs-drain) exec node deploy/host-services/workers/agent-swarm.mjs --drain "$DATA/host-services/agent-swarm/requests" ;;
   git-fetch) exec git -C "$DIR" fetch -q origin ;;
   git-worktree-prune) exec git -C "$DIR" worktree prune ;;
   *) echo "axf-task: unknown task '${1:-}'" >&2; exit 64 ;;

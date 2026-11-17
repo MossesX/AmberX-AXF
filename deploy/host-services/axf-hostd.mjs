@@ -34,7 +34,7 @@
 import { createServer, request as httpRequest } from 'node:http';
 import { execFile } from 'node:child_process';
 import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, unlinkSync, writeFileSync, appendFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import * as H from '../../framework/core/host-services.mjs';
@@ -88,7 +88,7 @@ export function loadManifests(root = ROOT) {
   const add = (file) => {
     const m = readJson(file, undefined);
     if (m === undefined) { bad.push({ file, error: 'not JSON' }); return; }
-    const errs = H.manifestErrors(m, file.slice(root.length + 1));
+    const errs = H.manifestErrors(m, relative(root, file));
     if (errs.length) { bad.push({ file, id: typeof m?.id === 'string' ? m.id : '', error: errs.join('; ') }); return; }
     raw.push(m);
   };
