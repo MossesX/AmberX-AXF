@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:07 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
 - 2026-11-17 15:07 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
 - 2026-11-17 15:07 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
 - 2026-11-17 15:07 UTC · `auto-lander-drag-rows-to-set-merge-order` s2 done (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:28 UTC · `console-app-part-2-native-floating` → running, note (all) · pipeline
 - 2026-11-17 19:28 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
 - 2026-11-17 19:28 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · orchestrator
+- 2026-11-17 19:29 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 

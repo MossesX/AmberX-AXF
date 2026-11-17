@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7660,
- "updatedAt": "2026-11-17T19:28:34.629Z",
+ "rev": 7661,
+ "updatedAt": "2026-11-17T19:29:11.261Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207074,7 +207074,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -207082,8 +207082,8 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T19:26:33.324Z",
-   "builtAt": "2026-11-17T19:25:55.069Z",
+   "updatedAt": "2026-11-17T19:29:07.332Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -207172,6 +207172,10 @@
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--joey: brief only · start 12.9K tokens ($0.00) · cost $3.30 · 83 turns · 6 tools, MCP none",
      "at": "2026-11-17T19:26:33.324Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:29:07.332Z"
     }
    ],
    "approvals": [
@@ -207232,6 +207236,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:29:07.332Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "59fab543d47e6678db17e83d0daaf8a77e594a95",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -207444,7 +207456,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
