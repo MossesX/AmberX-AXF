@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` s19 done, → landing (all) · orchestrator
-- 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` s19 done, → complete (all) · foreign-write
-- 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
-- 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` note (all) · pipeline
 - 2026-11-17 23:04 UTC · `banner-widget-shapes-plus-change-icon` s18 done, s19 done, → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `flagship-professional-skin-covering-2` s19 done, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:46 UTC · `move-server-side-console-parts-onto-vps` s8 done, s9 done (all) · foreign-write
 - 2026-11-17 23:46 UTC · `settings-fix-part-2-blank-toolbars` s1 done, s2 done, note (all) · foreign-write
 - 2026-11-17 23:46 UTC · `move-everything-axhub-web-console` s6 done (all) · foreign-write
+- 2026-11-17 23:46 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
 
 ## Token passes (log)
 
