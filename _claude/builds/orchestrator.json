@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:12:29.359Z",
+ "updatedAt": "2026-11-17T21:12:38.034Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -173339,7 +173339,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:12:24.516Z",
+   "updatedAt": "2026-11-17T21:12:27.039Z",
    "builtAt": "",
    "notes": [
     {
@@ -173381,6 +173381,10 @@
     {
      "text": "Claude account: hulu0241 (axf-rebuild-fresh-main-hide-any-asset--lenny, shared account login)",
      "at": "2026-11-17T21:12:24.516Z"
+    },
+    {
+     "text": "Brief only: brief is 25839 characters (~6460 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T21:12:27.039Z"
     }
    ],
    "approvals": [],
