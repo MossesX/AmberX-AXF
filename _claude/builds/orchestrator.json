@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:42:27.976Z",
+ "updatedAt": "2026-11-17T00:42:41.280Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -128594,7 +128594,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-17T00:41:40.854Z",
+   "updatedAt": "2026-11-17T00:42:38.951Z",
    "builtAt": "",
    "notes": [
     {
@@ -128616,6 +128616,10 @@
     {
      "text": "Brief only: brief is 24071 characters (~6018 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T00:27:44.051Z"
+    },
+    {
+     "text": "Headless run axf-prompting-engine-control-panel-to-create--gina: brief only · start 18.7K tokens ($0.14) · cost $2.95 · 34 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:42:38.951Z"
     },
     {
      "text": "Fable phase (s1-s3) done on branch claude/prompting-engine-control-panel-to-create: the three Fable commits of the archived twin build prompting-engine-control-panel-events (PR #697, closed Nov 16 at 2500 behind main) were cherry-picked onto current main and re-verified there (tsc, check-prompt-engine 48, plugin tests 14 groups + 66 Python checks, theme / controls / toolbars / console-control / help / lifecycle / plugin-commands all green). The decision dialog it builds on (decision-dialog-ui-review-other, PR #635) is closed unmerged, so prompts go to the engine's own Waiting tab and the alert hub, and to the dialog through axf.decisions@1 when a plugin provides it. Next phase (Opus, s4-s8) continues from here.",
