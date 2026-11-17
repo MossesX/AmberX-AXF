@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7609,
- "updatedAt": "2026-11-17T19:00:44.776Z",
+ "rev": 7610,
+ "updatedAt": "2026-11-17T19:00:55.036Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182980,7 +182980,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -182989,8 +182989,8 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T19:00:42.112Z",
-   "builtAt": "2026-11-17T15:06:54.532Z",
+   "updatedAt": "2026-11-17T19:00:51.850Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
@@ -183632,7 +183632,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
