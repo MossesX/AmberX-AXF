@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7437,
- "updatedAt": "2026-11-17T13:32:18.091Z",
+ "rev": 7438,
+ "updatedAt": "2026-11-17T13:32:24.624Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259697,11 +259697,11 @@
    "pendingId": "",
    "branch": "claude/stop-auto-lander-committing-tracking",
    "pr": "#765",
-   "mergedAt": "2026-11-17T12:49:45Z",
+   "mergedAt": "2026-11-17T12:49:44Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T13:32:15.873Z",
-   "builtAt": "2026-11-17T12:50:29.806Z",
+   "updatedAt": "2026-11-17T13:32:18Z",
+   "builtAt": "2026-11-17T12:50:05.006Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -259750,6 +259750,10 @@
     {
      "text": "Claude account: hulu0241 (axf-stop-auto-lander-committing-tracking--lenny, shared account login)",
      "at": "2026-11-17T12:38:21.661Z"
+    },
+    {
+     "text": "Shipped manifest sm-stop-auto-lander-committing-tracking rev 1 sent to Shipped features (orchestrator): landed 6ad1b3a91, 50 file(s), 0 test line(s), 6 open.",
+     "at": "2026-11-17T13:32:18Z"
     },
     {
      "text": "Reconciler: PR #765 merged",
@@ -259818,6 +259822,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-stop-auto-lander-committing-tracking",
+    "rev": 1,
+    "at": "2026-11-17T13:32:18Z",
+    "landedCommit": "6ad1b3a91de880c3352390f5e8551baa67f6f617"
    },
    "steps": [
     {
