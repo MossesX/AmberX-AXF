@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8229,
- "updatedAt": "2026-11-17T22:39:10.697Z",
+ "rev": 8230,
+ "updatedAt": "2026-11-17T22:39:47.089Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282518,9 +282518,10 @@
    "pendingId": "",
    "branch": "claude/guided-live-demo-test-watch-orchestrator",
    "pr": "#816",
+   "mergedAt": "2026-11-17T22:34:43Z",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T22:07:12.386Z",
+   "updatedAt": "2026-11-17T22:39:42.219Z",
    "builtAt": "",
    "notes": [
     {
@@ -282762,6 +282763,10 @@
     {
      "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T22:07:12.386Z"
+    },
+    {
+     "text": "Reconciler: PR #816 merged",
+     "at": "2026-11-17T22:39:42.219Z"
     }
    ],
    "approvals": [
@@ -282821,10 +282826,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T22:38:20.865Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-17T20:17:09.997Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
