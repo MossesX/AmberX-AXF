@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7923,
- "updatedAt": "2026-11-17T21:05:14.765Z",
+ "rev": 7924,
+ "updatedAt": "2026-11-17T21:05:25.504Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207268,7 +207268,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T21:00:22.853Z",
+   "updatedAt": "2026-11-17T21:05:18.840Z",
    "builtAt": "",
    "notes": [
     {
@@ -207346,6 +207346,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); on main by squash 07f9873c59b8; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T21:00:22.853Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); on main by squash 07f9873c59b8; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T21:05:18.840Z"
     }
    ],
    "approvals": [
@@ -207580,7 +207584,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275782,7 +275786,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:05:11.152Z",
+   "updatedAt": "2026-11-17T21:05:16.134Z",
    "builtAt": "",
    "notes": [
     {
@@ -275884,6 +275888,10 @@
     {
      "text": "Session stopped on its own with 7 steps left: back in Pending for Brett.",
      "at": "2026-11-17T21:05:11.152Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s19): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:05:16.134Z"
     }
    ],
    "approvals": [
@@ -275954,6 +275962,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T21:05:09.148Z",
+     "buildId": "rebuild-every-toolbar-page-specific",
+     "phase": "",
+     "step": "s19",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -276671,7 +276695,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277918,7 +277942,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -277926,7 +277950,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:59:17.739Z",
+   "updatedAt": "2026-11-17T21:05:20.626Z",
    "builtAt": "",
    "notes": [
     {
@@ -278084,6 +278108,10 @@
     {
      "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
      "at": "2026-11-17T20:59:17.739Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s21): session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 2 of 3).",
+     "at": "2026-11-17T21:05:20.626Z"
     }
    ],
    "approvals": [
@@ -278113,15 +278141,15 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 3,
+    "crashes": 4,
     "lastRun": {
-     "at": "2026-11-17T20:59:11.038Z",
+     "at": "2026-11-17T21:05:17.707Z",
      "exit": 143,
      "outcome": "requeued",
      "reason": "crash",
@@ -278138,7 +278166,7 @@
      "note": "Split by Claude into 24 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 2 of 3).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -278168,6 +278196,20 @@
      "notified": "2026-11-17T20:59:23.786Z",
      "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
      "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 1 of 3)."
+    },
+    {
+     "at": "2026-11-17T21:05:17.707Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s21",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 2,
+     "account": "",
+     "notified": "",
+     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
+     "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 2 of 3)."
     }
    ],
    "steps": [
@@ -278686,10 +278728,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T20:59:11.841Z",
-     "rev": 3,
+     "note": "Reset by the watchdog (exit-killed, attempt 2) 2026-11-17T21:05:20.626Z",
+     "rev": 4,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:59:11.842Z"
+     "updatedAt": "2026-11-17T21:05:20.627Z"
     },
     {
      "id": "s22",
@@ -278774,7 +278816,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
