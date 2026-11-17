@@ -1,0 +1,56 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "windows-titlebar",
+  "name": "Windows title bar",
+  "version": "1.0.0",
+  "description": "A title bar with the app's brand and minimize, maximize and close buttons. They act on the app inside the browser: the real OS title bar stays the browser's.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "flat",
+    "logo": {
+      "show": true,
+      "text": "{app}"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center"
+      },
+      {
+        "type": "action-button",
+        "id": "win-minimize",
+        "at": "right",
+        "order": 100000,
+        "widget": {
+          "overflow": false
+        }
+      },
+      {
+        "type": "action-button",
+        "id": "win-maximize",
+        "at": "right",
+        "order": 100001,
+        "widget": {
+          "overflow": false
+        }
+      },
+      {
+        "type": "action-button",
+        "id": "win-close",
+        "at": "right",
+        "order": 100002,
+        "widget": {
+          "overflow": false
+        }
+      }
+    ],
+    "divider": false
+  }
+}

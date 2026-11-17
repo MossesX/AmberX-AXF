@@ -1,0 +1,46 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "approvals-flow",
+  "name": "Approvals Flow",
+  "version": "1.0.0",
+  "description": "Approvals Flow: approval queues. Lists the pages it can; each app shows the ones it has. Pairs with the Review behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:review"
+  ],
+  "data": {
+    "style": "pills",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "approvals-log",
+            "label": "Approvals",
+            "icon": "check",
+            "view": "approvals-log"
+          },
+          {
+            "id": "handoff",
+            "label": "Handoff",
+            "icon": "external",
+            "view": "handoff"
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
+          }
+        ]
+      }
+    ],
+    "indicator": "fill"
+  }
+}

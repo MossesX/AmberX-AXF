@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "gauge",
+  "id": "digital",
+  "name": "Digital",
+  "version": "1.0.0",
+  "description": "Just the number, set large in monospace, with a thin underline meter.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "digital",
+    "thickness": 4,
+    "needle": false,
+    "ticks": 0,
+    "cap": "square",
+    "readout": "big"
+  }
+}

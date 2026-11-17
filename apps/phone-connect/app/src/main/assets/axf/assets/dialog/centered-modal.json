@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "centered-modal",
+  "name": "Centered Modal",
+  "version": "1.0.0",
+  "description": "Classic centered modal that scales in over a dimmed backdrop.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "variant": "modal",
+    "width": 520,
+    "backdrop": "dim",
+    "animation": "scale",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "boardroom",
+  "name": "Boardroom slider",
+  "version": "1.0.0",
+  "description": "Boardroom: circle thumb on a 4 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "formal",
+    "enterprise",
+    "formal"
+  ],
+  "data": {
+    "track": 4,
+    "thumb": "circle",
+    "thumbSize": 18,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": false
+  }
+}

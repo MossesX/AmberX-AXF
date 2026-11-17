@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "amber-signature",
+  "name": "Amber Signature",
+  "version": "1.0.0",
+  "description": "The AmberX house controls: gradient buttons, accent cards, blurred modals and pill tabs.",
+  "author": "AmberX AXF",
+  "tags": [
+    "signature",
+    "brand",
+    "amber"
+  ],
+  "data": {
+    "slots": {
+      "button": "amber-signature",
+      "container": "amber-signature",
+      "slider": "amber-signature",
+      "dialog": "amber-signature",
+      "popup": "amber-signature",
+      "tab-group": "amber-signature",
+      "gauge": "classic-arc",
+      "meter": "striped-pill"
+    },
+    "tone": "signature"
+  }
+}

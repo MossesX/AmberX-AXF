@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "gizmo-console",
+  "name": "GizmoX Console dialog",
+  "version": "1.0.0",
+  "description": "GizmoX Console: drawer, dim backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "developer",
+    "brand",
+    "developer"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 460,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

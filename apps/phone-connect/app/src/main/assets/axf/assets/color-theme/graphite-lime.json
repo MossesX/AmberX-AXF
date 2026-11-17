@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "graphite-lime",
+  "name": "Graphite Lime",
+  "version": "1.0.0",
+  "description": "Neutral graphite with a crisp lime accent.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "neutral"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#141516",
+      "surface": "#1b1d1f",
+      "surface2": "#222427",
+      "surface3": "#2b2e32",
+      "text": "#ecefe9",
+      "muted": "#9aa19a",
+      "border": "#33373b",
+      "accent": "#b6e34b",
+      "accentText": "#1a2205",
+      "accentSoft": "rgba(182,227,75,0.13)",
+      "danger": "#ff6b6b",
+      "success": "#5fd38a",
+      "warning": "#f2c14e",
+      "info": "#6cc4ff",
+      "focus": "#b6e34b",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

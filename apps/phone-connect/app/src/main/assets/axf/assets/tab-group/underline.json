@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "underline",
+  "name": "Underline",
+  "version": "1.0.0",
+  "description": "Muted tabs with an accent rule under the active one (the framework's original look).",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "style": "underline",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": true
+  }
+}

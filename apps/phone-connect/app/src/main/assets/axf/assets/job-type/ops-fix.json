@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "ops-fix",
+  "name": "Ops fix",
+  "version": "1.0.0",
+  "description": "Fix something broken on the VPS or in CI the tools at hand can fix (a dead key, a stuck or crashed build, a failed launch, CI red, a restarting container, missing config), the shared rule 'Fix it yourself'.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "ops"
+  ],
+  "data": {
+    "specialty": "ops-fix",
+    "skills": [
+      "ops-fix"
+    ],
+    "model": "opus",
+    "budget": {
+      "tokens": 600000,
+      "maxTurns": 60,
+      "usd": 8
+    },
+    "trigger": {
+      "kind": "event",
+      "event": "health.red"
+    },
+    "tools": [
+      "Read",
+      "Edit",
+      "Write",
+      "Grep",
+      "Glob",
+      "Bash"
+    ],
+    "inputs": [
+      {
+        "id": "problem",
+        "label": "What is broken",
+        "required": true
+      },
+      {
+        "id": "check",
+        "label": "Systems check item",
+        "default": ""
+      }
+    ],
+    "brief": "Fix this: {{problem}} (systems check item: {{check}}).\n1. Confirm it is still broken and find the cause; read logs, do not guess.\n2. Fix it with the tools at hand. A code change goes on a branch with a PR, never straight to main.\n3. If it needs Brett's hands (a new token on github.com, paying, a device), stop and say exactly what he must do.\n4. Re-run the check that showed it red.\nReport the cause, the fix, before/after of the check, and anything left for Brett.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/ops-fix/{{stamp}}.md"
+    }
+  }
+}

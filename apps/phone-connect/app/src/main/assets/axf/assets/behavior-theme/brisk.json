@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "brisk",
+  "name": "Brisk",
+  "version": "1.0.0",
+  "description": "Brisk admin work: dialogs slide up, buttons lift and shrink, light haptics on phones.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:hub-rail"
+  ],
+  "data": {
+    "motion": {
+      "speed": "fast",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "lift",
+      "press": "shrink",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 500,
+      "doubleTapMs": 260,
+      "dragThreshold": 8
+    },
+    "windows": {
+      "dialogOpen": "slide-up",
+      "backdrop": "dim",
+      "popupOpen": "slide",
+      "drawerOpen": "slide",
+      "snap": true,
+      "snapGrid": 8,
+      "stack": "cascade",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top-right",
+      "toastMs": 4000,
+      "sound": "off",
+      "vibration": "light",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

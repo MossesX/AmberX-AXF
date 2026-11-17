@@ -1,0 +1,50 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "portal-header",
+  "name": "Portal Header",
+  "version": "1.0.0",
+  "description": "Wordmark at the start, the navigation as labels, and the account avatar at the end.",
+  "author": "AmberX AXF",
+  "tags": [
+    "portal",
+    "brand",
+    "live"
+  ],
+  "data": {
+    "variant": "labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "nav",
+        "items": [],
+        "provider": "nav",
+        "max": 6,
+        "label": "Navigation"
+      }
+    ],
+    "widgets": [
+      {
+        "type": "logo",
+        "id": "wordmark",
+        "at": "start",
+        "order": 0
+      },
+      {
+        "type": "spacer",
+        "id": "push",
+        "at": "end",
+        "order": 0
+      },
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "end",
+        "order": 10
+      }
+    ],
+    "surface": "raised",
+    "divider": false
+  }
+}

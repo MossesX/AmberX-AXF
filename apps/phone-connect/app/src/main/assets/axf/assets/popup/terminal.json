@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "terminal",
+  "name": "Terminal pop-ups",
+  "version": "1.0.0",
+  "description": "Terminal: outline pop-ups at the bottom-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "technical",
+    "developer"
+  ],
+  "data": {
+    "position": "bottom-right",
+    "variant": "outline",
+    "duration": 3000,
+    "showIcon": false,
+    "maxVisible": 6
+  }
+}

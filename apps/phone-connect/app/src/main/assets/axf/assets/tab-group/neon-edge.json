@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "neon-edge",
+  "name": "Neon Edge tabs",
+  "version": "1.0.0",
+  "description": "Neon Edge: boxed tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "neon",
+    "vivid",
+    "dark"
+  ],
+  "data": {
+    "style": "boxed",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": true
+  }
+}

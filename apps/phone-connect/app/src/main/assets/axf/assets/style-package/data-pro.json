@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "data-pro",
+  "name": "Data Pro",
+  "version": "1.0.0",
+  "description": "Flat panels, precise ticked sliders and wide detail drawers for analytics and grids.",
+  "author": "AmberX AXF",
+  "tags": [
+    "analytical",
+    "data"
+  ],
+  "data": {
+    "slots": {
+      "button": "data-pro",
+      "container": "data-pro",
+      "slider": "data-pro",
+      "dialog": "data-pro",
+      "popup": "data-pro",
+      "tab-group": "data-pro",
+      "gauge": "tick-arc",
+      "meter": "segments"
+    },
+    "tone": "analytical"
+  }
+}

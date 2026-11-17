@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "settings-jump",
+  "name": "Settings Jump",
+  "version": "1.0.0",
+  "description": "A tab for every settings page, from the settings provider; plugin settings join as they install.",
+  "author": "AmberX AXF",
+  "tags": [
+    "live",
+    "settings"
+  ],
+  "data": {
+    "variant": "labels",
+    "align": "start",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Search settings…",
+      "maxResults": 12,
+      "kinds": [
+        "setting",
+        "settings-tab"
+      ]
+    },
+    "groups": [
+      {
+        "id": "settings",
+        "items": [],
+        "provider": "settings",
+        "max": 10,
+        "label": "Settings pages"
+      }
+    ],
+    "density": "compact"
+  }
+}

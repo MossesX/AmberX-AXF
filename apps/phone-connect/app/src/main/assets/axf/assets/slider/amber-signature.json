@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "amber-signature",
+  "name": "Amber Signature slider",
+  "version": "1.0.0",
+  "description": "Amber Signature: circle thumb on a 5 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "signature",
+    "brand",
+    "amber"
+  ],
+  "data": {
+    "track": 5,
+    "thumb": "circle",
+    "thumbSize": 18,
+    "fill": "gradient",
+    "showValue": "always",
+    "ticks": false
+  }
+}

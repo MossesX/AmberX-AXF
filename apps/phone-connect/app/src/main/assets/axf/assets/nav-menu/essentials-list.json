@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "essentials-list",
+  "name": "Essentials List",
+  "version": "1.0.0",
+  "description": "Essentials List: small apps. Lists the pages it can; each app shows the ones it has. Pairs with the standard behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:standard"
+  ],
+  "data": {
+    "style": "list",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          }
+        ]
+      }
+    ]
+  }
+}

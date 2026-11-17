@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "calm-reader",
+  "name": "Calm Reader dialog",
+  "version": "1.0.0",
+  "description": "Calm Reader: modal, dim backdrop, fade in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "calm",
+    "reading"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 600,
+    "backdrop": "dim",
+    "animation": "fade",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "enterprise",
+  "name": "Enterprise",
+  "version": "1.0.0",
+  "description": "Inter at 14 px, an 8 px rhythm, modest radii and hairline shadows: the dependable business default.",
+  "author": "AmberX AXF",
+  "tags": [
+    "enterprise",
+    "balanced"
+  ],
+  "data": {
+    "fontFamily": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 14,
+    "radius": {
+      "sm": 4,
+      "md": 8,
+      "lg": 12
+    },
+    "space": 8,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 4px 12px var(--fx-shadow)",
+      "lg": "0 12px 32px var(--fx-shadow)"
+    },
+    "density": "comfortable",
+    "motion": 160,
+    "blur": 12,
+    "headingWeight": 650,
+    "tracking": -0.01,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.7,
+    "wrapGroups": false
+  }
+}

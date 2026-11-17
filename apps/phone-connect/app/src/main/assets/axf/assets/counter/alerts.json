@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "counter",
+  "id": "alerts",
+  "name": "Alerts",
+  "version": "1.0.0",
+  "description": "Unread alerts (counter `alerts.unread`), hidden at zero; tap opens the alerts view.",
+  "author": "AmberX AXF",
+  "tags": [
+    "counter"
+  ],
+  "data": {
+    "counter": "alerts.unread",
+    "tone": "danger",
+    "hideAtZero": true,
+    "icon": "bell",
+    "link": "alerts.open",
+    "max": 99
+  }
+}

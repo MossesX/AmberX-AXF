@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "kiosk",
+  "name": "Kiosk",
+  "version": "1.0.0",
+  "description": "Forgiving for strangers: no hover, slow long-press, large drag threshold, nothing minimises.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:kiosk-strip"
+  ],
+  "data": {
+    "motion": {
+      "speed": "slow",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "none",
+      "press": "darken",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 900,
+      "doubleTapMs": 400,
+      "dragThreshold": 20
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "dim",
+      "popupOpen": "fade",
+      "drawerOpen": "fade",
+      "snap": false,
+      "snapGrid": 0,
+      "stack": "center",
+      "minimize": "none",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom",
+      "toastMs": 6000,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "always",
+      "busyCursor": true
+    }
+  }
+}

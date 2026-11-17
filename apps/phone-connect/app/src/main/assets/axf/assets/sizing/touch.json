@@ -1,0 +1,69 @@
+{
+  "$axf": "asset@1",
+  "type": "sizing",
+  "id": "touch",
+  "name": "Touch",
+  "version": "1.0.0",
+  "description": "Finger-sized: 2.8-line buttons and fields, tall list rows, pill chips.",
+  "author": "AmberX AXF",
+  "tags": [
+    "touch",
+    "roomy"
+  ],
+  "data": {
+    "button": {
+      "height": 2.8,
+      "padX": 1.75,
+      "font": 0.95,
+      "icon": 1.15
+    },
+    "iconButton": {
+      "size": 2.4
+    },
+    "chip": {
+      "height": 2,
+      "padX": 1.25,
+      "font": 0.86,
+      "radius": "pill"
+    },
+    "field": {
+      "height": 2.8,
+      "padX": 1,
+      "font": 1
+    },
+    "tab": {
+      "padY": 1.1,
+      "padX": 1.6,
+      "font": 1
+    },
+    "segment": {
+      "padY": 0.7,
+      "padX": 1.4,
+      "font": 0.95
+    },
+    "card": {
+      "pad": 2,
+      "headFont": 1,
+      "radius": "lg"
+    },
+    "listRow": {
+      "minHeight": 3.5,
+      "padX": 1.5,
+      "metaFont": 0.85
+    },
+    "countStrip": {
+      "number": 1.3,
+      "label": 0.75,
+      "pad": 0.75
+    },
+    "table": {
+      "padY": 1,
+      "padX": 1.25,
+      "font": 0.95
+    },
+    "pageHead": {
+      "descriptionFont": 0.95,
+      "descriptionLines": 3
+    }
+  }
+}

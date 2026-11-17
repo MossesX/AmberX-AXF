@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "kiosk-bold",
+  "name": "Kiosk Bold tabs",
+  "version": "1.0.0",
+  "description": "Kiosk Bold: segmented tabs, stretch.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "bold",
+    "kiosk",
+    "touch"
+  ],
+  "data": {
+    "style": "segmented",
+    "align": "stretch",
+    "position": "top",
+    "density": "roomy",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}

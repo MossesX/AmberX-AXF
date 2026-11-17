@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "theme-switch",
+  "id": "amberx-day-night",
+  "name": "AmberX day / night",
+  "version": "1.0.0",
+  "description": "Switches the AmberX app between its Day (saffron) and Night (carbon amber) colours.",
+  "author": "AmberX AXF",
+  "tags": [
+    "theme-switch",
+    "amberx",
+    "enterprise"
+  ],
+  "data": {
+    "light": "saffron-day",
+    "dark": "carbon-amber",
+    "show": "icon",
+    "lightLabel": "Day",
+    "darkLabel": "Night"
+  }
+}
