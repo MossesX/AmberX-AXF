@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8138,
- "updatedAt": "2026-11-17T22:07:40.683Z",
+ "rev": 8139,
+ "updatedAt": "2026-11-17T22:08:05.060Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282711,7 +282711,7 @@
    "title": "Fix: banner settings Interface tab changes the banner, not the settings window",
    "category": "",
    "detail": "In the banner's settings, the Interface tab currently changes the look of the settings window itself. Point every control in that tab at the banner it belongs to, so changes apply to the banner live. Check every other asset's settings Interface tab (toolbars, tab groups, nav, grids) for the same bug and fix them too. Console only, small, land when done.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -282719,8 +282719,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T22:03:38.958Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T22:07:59.784Z",
+   "builtAt": "2026-11-17T22:07:59.785Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -283194,12 +283194,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:07:59.784Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:24:51.614Z",
-     "updatedAt": "2026-11-17T21:24:51.614Z"
+     "updatedAt": "2026-11-17T22:08:00.339Z"
     }
    ],
    "profiles": [
@@ -283210,7 +283210,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
