@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:07:16.777Z",
+ "updatedAt": "2026-11-17T00:07:34.724Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -167433,12 +167433,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:04:37.222Z",
+   "updatedAt": "2026-11-17T00:07:26.389Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T00:04:37.222Z"
+    },
+    {
+     "text": "Split by Claude into 14 steps (1 Fable).",
+     "at": "2026-11-17T00:07:26.389Z"
     }
    ],
    "approvals": [],
@@ -167455,7 +167459,326 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the move of the builds journal out of git: journal lives only on the hub data store (/projects/amberx-axf/_data/builds/journal), repo keeps a pointer + checksum; write the migration contract (what builds-store.mjs verify/history/restore read, fallback when /projects is not mounted) in _claude/builds/README.md and framework/spec/ notes",
+     "model": "Fable",
+     "why": "Storage + migration design for the builds@1 store that every writer and reader depends on",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/README.md",
+      "framework/cli/builds-store.mjs",
+      "framework/core/build-origin.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp01o9mq",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s2",
+     "text": "Find every place the auto-lander commits 'synced files left in the worktree (auto-land)' and list the tracking paths it stages; add a single tracking-paths list (store.json, orchestrator.json, origins.json, journal/*.jsonl, pending/build-queue exports) in one shared module",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "framework/cli/land.mjs",
+      "framework/core/tracking-paths.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp02uusd",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s3",
+     "text": "Stop the auto-lander from committing tracking files: before landing, reset those paths in the build worktree to the branch's merge-base copy (git checkout/restore) instead of committing them; drop the auto-land commit path",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "framework/cli/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp03glii",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s4",
+     "text": "Make builds-live/builds-store writes in a build worktree go to the hub data store only (never staged on the build branch); keep the status-only main publish unchanged",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/builds-live.mjs",
+      "framework/cli/builds-store.mjs",
+      "framework/cli/persist.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp04xj51",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add a worktree guard: deploy/claude-headless.sh and the worktree setup mark tracking files skip-worktree / add them to .git/info/exclude where untracked, so a headless session's commits never include them",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "framework/cli/worktree-setup.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp05zrwl",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s6",
+     "text": "Lander merge of main into a build: on conflicts in tracking files take main's copy (git checkout --theirs/--ours as applicable) and continue instead of stopping",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "framework/cli/land.mjs",
+      "framework/core/landing-line.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp06p4zf",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s7",
+     "text": "Lander merge: on conflicts in generated files, take main's copy then regenerate (node apps/console-web/scripts/control-inventory.mjs, node framework/cli/tracker.mjs) and commit the regenerated result; anything else still stops on conflict",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "framework/cli/land.mjs",
+      "apps/console-web/scripts/control-inventory.mjs",
+      "framework/cli/tracker.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp07s3z7",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s8",
+     "text": "Move the journal out of git per the s1 design: builds-store journal writer/reader use the hub path (with repo fallback read for old parts), history/restore read the hub copy; add journal/ to .gitignore",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/cli/builds-live.mjs",
+      ".gitignore",
+      "_claude/builds/journal/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp080hs6",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s9",
+     "text": "Migration step: copy existing _claude/builds/journal/*.jsonl to the hub data store, verify checksums, then git rm --cached the journal parts; builds-store.mjs verify must still pass",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/journal/",
+      "framework/cli/builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp09q1cz",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s10",
+     "text": "Update CI checks that read the journal (check-builds-store.mjs and the live-store test) to use a fixture journal or the hub path when present, so CI no longer needs the 70 MB files",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-builds-store.mjs",
+      "framework/spec/fixtures/",
+      "framework/spec/check-landing-line.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp0akueu",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s11",
+     "text": "Add a CI guard: a PR branch that changes tracking files (store/orchestrator/origins/journal) outside builds-live status commits fails with a plain message naming the file",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/check-tracking-files.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp0btmlf",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s12",
+     "text": "API parity: expose the lander's tracking-file handling (state: last reset/regenerate per build, setting to show it) via the push-banner REST route, MCP plugin command, CLI land.mjs subcommand and an AmberX voice action; console_show target for the merge-queue row",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "framework/cli/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp0cp1qr",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s13",
+     "text": "Tests: lander unit tests for reset-before-land, tracking-conflict take-main, generated-file regenerate, other-conflict still stops; journal relocation read/write test",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/test/",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/check-builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrp0d2mo6",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "id": "s14",
+     "text": "Run the full checks (builds-store verify, check-builds-store, check-landing-line, check-gate-rules, tracker --check, validate --framework), write _claude/builds/reports/stop-auto-lander-committing-tracking.md (before/after: #733 green→red cause, what changed, journal size moved), THREADS row, open PR with the API reach list, link it with builds-live.mjs link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/stop-auto-lander-committing-tracking.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxnxrq0ejod2",
+     "createdAt": "2026-11-17T00:07:26.389Z"
+    }
+   ]
   },
   {
    "id": "auto-lander-status-tab-rest-mcp-settings",
