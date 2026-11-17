@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:45:57.801Z",
+ "updatedAt": "2026-11-17T20:46:29.254Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -185586,9 +185586,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:41:37.028Z",
-   "updatedAt": "2026-11-17T20:41:39.625Z",
+   "updatedAt": "2026-11-17T20:46:27.074Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 4 steps (0 Fable).",
+     "at": "2026-11-17T20:46:27.074Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -185603,7 +185608,104 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Merge main so the page-toolbar foundation from rebuild-every-toolbar-page-specific is in, then list every console toolbar in the inventory not covered by toolbar builds 1-4 (Claude accounts, Glossary, any leftovers). Add page-specific toolbar assets for Claude accounts and Glossary on that foundation, and wire them into their plugin views (role=toolbar, aria-label, settings id, tap-to-confirm). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/claude-accounts/",
+      "apps/console-web/plugins/glossary-index/",
+      "apps/console-web/src/",
+      "framework/assets/toolbar/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl5xbeq0522a8",
+     "createdAt": "2026-11-17T20:46:27.074Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add page toolbar assets for the leftover console toolbars in the inventory, and hide the toolbar (through the page-toolbar hide setting, not in code) on every console page that builds 1-5 don't cover. Give each new toolbar and button full API reach: control@1 / data-axf-target addresses (console_show deep link), state read, and button actions callable through REST /api/console-control, MCP console_control_*, axf console CLI and the AmberX voice phrases. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/",
+      "apps/console-web/plugins/",
+      "framework/assets/toolbar/",
+      "framework/schemas/",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl5xbeq068hc5",
+     "createdAt": "2026-11-17T20:46:27.074Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add a CI guard to check-toolbars.mjs: it fails when a console page has neither a page-specific toolbar asset nor an explicit hide entry. Add one test covering the new toolbars' API targets (deep link resolves, state read, one action runs). Re-bake the console's src/axf. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/check-toolbars.mjs",
+      "apps/console-web/scripts/",
+      "apps/console-web/src/axf/",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl5xbeq077m02",
+     "createdAt": "2026-11-17T20:46:27.074Z"
+    },
+    {
+     "id": "s4",
+     "text": "Run check-toolbars, check-console-control, check-chrome-assets, check-theme, check-controls and the console typecheck/build. Submit desktop and phone shots with 3 option sets to UI Review. Write _claude/builds/reports/toolbars-5-5-claude-accounts-glossary.md and add the THREADS row. Open a PR that says how each new toolbar is reached (deep link, REST, MCP, CLI, voice), then add it to the merge queue to land.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/toolbars-5-5-claude-accounts-glossary.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/ui-review/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl5xbeq08fug3",
+     "createdAt": "2026-11-17T20:46:27.074Z"
+    }
+   ]
   }
  ]
 }

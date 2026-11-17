@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `assets-menu-hide-any-asset-visible` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `badge-shape-picker-banners-screen-pill` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `banners-page-focus-scroll-to-highlight` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `claude-badge-can-claude-build-green-when` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:45 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 20:45 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · orchestrator
 - 2026-11-17 20:46 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · builds-live
+- 2026-11-17 20:46 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · orchestrator
 
 ## Token passes (log)
 
