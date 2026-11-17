@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:31:08.796Z",
+ "updatedAt": "2026-11-17T15:40:19.416Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171870,7 +171870,7 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -171878,7 +171878,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T15:10:28.408Z",
+   "updatedAt": "2026-11-17T15:40:17.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -171900,6 +171900,10 @@
     {
      "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--rhonda: brief only · start 18.5K tokens ($0.13) · cost $9.66 · 103 turns · 6 tools, MCP none",
      "at": "2026-11-17T15:10:28.408Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:40:17.557Z"
     }
    ],
    "approvals": [],
@@ -172290,7 +172294,7 @@
    "title": "Edit UI mode: inline-edit anything, active only while Ctrl is held",
    "category": "",
    "detail": "Add an 'Edit UI' toggle (banner/toolbar button + setting). When it's on, holding Ctrl (long-press equivalent on phone) makes any element editable in place: labels/text, grid cells and row data where the data source allows writes, column headers, asset properties (toolbar, tab group, banner, widgets: size, colour, icon, order, hide). Releasing Ctrl ends editing; with Edit UI off, Ctrl does nothing special. Hovered element gets an outline; click edits inline; Enter/blur saves, Esc cancels; every change undoable. Edits save through the normal owner (asset system for looks, data API for data), never as one-off overrides. Works in console, axHub web and AmberX. Same toggle and edits via REST, MCP, CLI, voice. Coordinate with rebuild-fresh-main-hide-any-asset (hide/unhide should be one of the inline actions).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -172298,7 +172302,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T15:16:11.973Z",
+   "updatedAt": "2026-11-17T15:40:17.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -172328,6 +172332,10 @@
     {
      "text": "Headless run axf-edit-ui-mode-inline-edit-anything-active--paulie: brief only · start 18.5K tokens ($0.13) · cost $10.70 · 80 turns · 6 tools, MCP none",
      "at": "2026-11-17T15:16:11.973Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:40:17.557Z"
     }
    ],
    "approvals": [],
@@ -172810,7 +172818,7 @@
    "title": "Auto-lander: drag rows to set merge order, lander follows it",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: drag-and-drop rows (and Move to top / Move up / Move down / Move to bottom in each row's menu, multi-select) to set the order PRs get merged in. The order is stored server-side on the VPS and the lander (server-auto-lander) always lands strictly in that order, one at a time, merging main in before each. New PRs join at the bottom; default order is closest-to-main first until Brett reorders. Show a position number column. Same reorder via REST, MCP, CLI, voice ('land #774 next'). Coordinate with auto-lander-grid-one-row-per-build and server-auto-lander-fixes-lands.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -172818,7 +172826,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T15:12:46.173Z",
+   "updatedAt": "2026-11-17T15:40:17.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -172844,6 +172852,10 @@
     {
      "text": "Headless run axf-auto-lander-drag-rows-to-set-merge-order--sully: brief only · start 17.8K tokens ($0.12) · cost $6.40 · 65 turns · 6 tools, MCP none",
      "at": "2026-11-17T15:12:46.173Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:40:17.557Z"
     }
    ],
    "approvals": [],
