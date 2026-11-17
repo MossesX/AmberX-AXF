@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:29:25.111Z",
+ "updatedAt": "2026-11-17T23:29:36.402Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -337078,12 +337078,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:25:30.509Z",
-   "updatedAt": "2026-11-17T23:26:10.921Z",
+   "updatedAt": "2026-11-17T23:29:29.116Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Also fix every subgrid and nested grid in the orchestrator so columns line up; CI check covers subgrids.",
      "at": "2026-11-17T23:26:10.921Z"
+    },
+    {
+     "text": "Split by Claude into 12 steps (0 Fable).",
+     "at": "2026-11-17T23:29:29.116Z"
     }
    ],
    "approvals": [],
@@ -337100,7 +337104,273 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/",
+      "deploy/claude-headless.sh",
+      "_claude/builds/reports/active-tab-stop-button-grid-alignment.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza40eexzn",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza40fj2ly",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s3",
+     "text": "Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50gkoi4",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50h7bzg",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s5",
+     "text": "Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/build-orchestrator/commands.json",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50im35v",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s6",
+     "text": "Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50jgrsx",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s7",
+     "text": "Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/",
+      "apps/console-web/plugins/build-orchestrator/ui/*.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50k3kg0",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s8",
+     "text": "Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/",
+      "framework/cli/check-theme.mjs",
+      "framework/cli/check-controls.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50lcq67",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s9",
+     "text": "Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/scripts/check-active-grid.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50mvxbi",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s10",
+     "text": "Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/",
+      "apps/console-web/plugins/build-orchestrator/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50n5qnz",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s11",
+     "text": "Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets/",
+      "apps/console-web/plugins/ui-review/review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50o3k7b",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "id": "s12",
+     "text": "Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/active-tab-stop-button-grid-alignment.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbqza50p89c1",
+     "createdAt": "2026-11-17T23:29:29.116Z"
+    }
+   ]
   }
  ]
 }
