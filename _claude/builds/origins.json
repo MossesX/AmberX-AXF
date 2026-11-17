@@ -9634,6 +9634,30 @@
    "from": "",
    "addenda": []
   },
+  "toolbars-3-5-settings-appearance-systems": {
+   "said": "Split the toolbar build into multiple builds, about three plugins each, so they run on multiple slots. Land the foundation first.",
+   "at": "2026-11-17T20:40:33.480Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "toolbars-4-5-chat-viewer-codebase": {
+   "said": "Split the toolbar build into multiple builds, about three plugins each, so they run on multiple slots. Land the foundation first.",
+   "at": "2026-11-17T20:40:41.293Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "toolbars-moved-to-side-become-vertical": {
    "said": "If I move the toolbar to the left instead of the top, it needs to run down the side like a column instead of pushing all the content down.",
    "at": "2026-11-16T19:20:10.281Z",

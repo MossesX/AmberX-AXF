@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7847,
- "updatedAt": "2026-11-17T20:40:13.414Z",
+ "rev": 7848,
+ "updatedAt": "2026-11-17T20:40:54.956Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207265,9 +207265,10 @@
    "pendingId": "",
    "branch": "claude/console-app-part-2-native-floating",
    "pr": "#813",
+   "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T20:00:43.121Z",
+   "updatedAt": "2026-11-17T20:40:46.802Z",
    "builtAt": "2026-11-17T19:47:21.446Z",
    "notes": [
     {
@@ -207317,6 +207318,14 @@
     {
      "text": "Reconciler: PR #813; PR #813 names s1, s2, s3, s4, s5, s6, s7 done",
      "at": "2026-11-17T20:00:43.121Z"
+    },
+    {
+     "text": "Reconciler: PR #818 names s1, s2, s3, s4, s5, s6, s7 done; PR #813 merged",
+     "at": "2026-11-17T20:40:46.802Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T20:40:46.803Z"
     }
    ],
    "approvals": [
@@ -207555,7 +207564,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275757,7 +275766,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275765,7 +275774,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:35:46.071Z",
+   "updatedAt": "2026-11-17T20:40:29.749Z",
    "builtAt": "",
    "notes": [
     {
@@ -275803,6 +275812,14 @@
     {
      "text": "Brett: SPLIT. This build now = foundation only (s1-s7 done) + s8 (re-bake the CONSOLE only, run checks) + s28 (report, PR) and LAND it. Molly/AmberX/axHub/Expenses are out (console only). All per-plugin toolbar steps (s9-s21, s25-s27) move to 5 separate builds of ~3 plugins each that start after this one lands. Other console toolbars not in those builds get hidden.",
      "at": "2026-11-17T20:35:04.598Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T20:40:23.475Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s8): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:40:29.749Z"
     }
    ],
    "approvals": [],
@@ -275831,11 +275848,11 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-17T20:34:12.885Z",
+     "at": "2026-11-17T20:40:15.326Z",
      "exit": 0,
      "outcome": "requeued",
      "reason": "phase-done",
-     "stepsLeft": 18,
+     "stepsLeft": 11,
      "account": "",
      "session": "",
      "phase": "Phase 1"
@@ -275848,7 +275865,7 @@
      "note": "Split by Claude into 28 steps (7 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 18 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -275876,6 +275893,20 @@
      "attempt": 0,
      "account": "",
      "notified": "2026-11-17T20:34:48.679Z",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:40:15.137Z",
+     "buildId": "rebuild-every-toolbar-page-specific",
+     "phase": "",
+     "step": "s8",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -276597,7 +276628,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277870,7 +277901,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -277878,7 +277909,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:39:17.468Z",
+   "updatedAt": "2026-11-17T20:40:44.649Z",
    "builtAt": "",
    "notes": [
     {
@@ -277988,6 +278019,10 @@
     {
      "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s14): session was killed (exit 143): step s14 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T20:38:09.526Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s16): session was killed (exit 143): step s16 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T20:40:44.649Z"
     }
    ],
    "approvals": [
@@ -278023,13 +278058,13 @@
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 1,
+    "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T20:32:04.340Z",
+     "at": "2026-11-17T20:40:31.683Z",
      "exit": 143,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 13,
+     "stepsLeft": 9,
      "account": "",
      "session": "",
      "phase": ""
@@ -278042,7 +278077,7 @@
      "note": "Split by Claude into 24 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "session was killed (exit 143): step s16 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -278096,6 +278131,20 @@
      "notified": "",
      "session": "",
      "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3)."
+    },
+    {
+     "at": "2026-11-17T20:40:31.683Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s16",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session was killed (exit 143): step s16 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -278490,10 +278539,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T20:40:44.649Z",
+     "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T19:39:27.698Z"
+     "updatedAt": "2026-11-17T20:40:44.651Z"
     },
     {
      "id": "s17",
@@ -278702,7 +278751,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -280417,9 +280466,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:39:57.457Z",
+   "updatedAt": "2026-11-17T20:40:52.564Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 4 steps (0 Fable).",
+     "at": "2026-11-17T20:40:52.564Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -280434,7 +280488,143 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-17T20:40:52.564Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 4,
+     "note": "Split by Claude into 4 steps (0 Fable)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwl5q5as01m9p6",
+     "title": "",
+     "text": "Merge main so the page-toolbar foundation from rebuild-every-toolbar-page-specific is in (stop if it hasn't landed). Then add page toolbar assets for the Build orchestrator's Pipeline, Pending and Queue pages. Each button is bound to an existing action: split now, queue, unqueue, move, set priority and open the build. Fold the merge-queue buttons (list, add, remove, move) into the Queue page's toolbar. Mount the toolbars on those pages through the foundation's page-toolbar host, each with role=toolbar and a settings id. Register their console-control targets, using the deep link view:builds/tab:pipeline|pending|queue plus toolbar:<id>/button:<id>, so every button can be pressed through REST, MCP, CLI and voice. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets/toolbar/",
+      "apps/console-web/plugins/build-orchestrator/web/",
+      "apps/console-web/plugins/push-banner/",
+      "apps/console-web/src/axf/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T20:40:52.564Z",
+     "updatedAt": "2026-11-17T20:40:52.564Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwl5q5as02clrh",
+     "title": "",
+     "text": "Add a page toolbar asset for Builds → Gate & rules. Bind its buttons to existing gate actions: open a build rule, run the gate check, toggle a rule and refresh the verdicts. Mount it with the foundation host and register its control@1 / console-control targets (deep link view:builds/tab:gate, readable state, presses through REST, MCP, CLI and voice). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/assets/toolbar/",
+      "apps/console-web/plugins/gate/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T20:40:52.564Z",
+     "updatedAt": "2026-11-17T20:40:52.564Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwl5q5as03wbt8",
+     "title": "",
+     "text": "Add page toolbar assets for the Terminal and its sessions nav. Bind the buttons to existing terminal actions: new session, jump in, clear, copy, kill or close the session, and filter My sessions. Mount the toolbars with the foundation host, each with role=toolbar and a settings id, and register their console-control targets (deep link view:terminal, readable state, presses through REST, MCP, CLI and voice). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/assets/toolbar/",
+      "apps/console-web/plugins/console-terminal/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T20:40:52.564Z",
+     "updatedAt": "2026-11-17T20:40:52.564Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwl5q5as04nvgg",
+     "title": "",
+     "text": "Add one test that resolves each new toolbar asset, checks every button is bound to a registered action, and presses one button per page through the console-control API. Then run check-toolbars.mjs, check-console-control.mjs, check-theme.mjs, check-controls.mjs, check-chrome-assets.mjs and the console typecheck and build. Take shots: axf shot for Screenshots, or a UI Review submit with 3 options if the gate requires it. Write _claude/builds/reports/toolbars-1-5-build-orchestrator-incl.md and the THREADS row. Open the PR, with a section on how each toolbar is reached through deep link, REST, MCP, CLI and voice, and put it in the merge queue to land.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/",
+      "framework/cli/check-toolbars.mjs",
+      "framework/cli/check-console-control.mjs",
+      "_claude/builds/reports/toolbars-1-5-build-orchestrator-incl.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T20:40:52.564Z",
+     "updatedAt": "2026-11-17T20:40:52.564Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -280443,12 +280633,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-17T20:40:52.564Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -280493,6 +280683,106 @@
    "kind": "build",
    "planRef": "",
    "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "toolbars-3-5-settings-appearance-systems",
+   "title": "Toolbars 3/5: Settings + Appearance, Systems check, Notifications",
+   "category": "",
+   "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Settings level toolbar + Appearance/Theme manager, Systems check, Notifications. API targets + one test. Land when done.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T20:40:33.480Z",
+   "updatedAt": "2026-11-17T20:40:36.245Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Split the toolbar build into multiple builds, about three plugins each, so they run on multiple slots. Land the foundation first.",
+    "at": "2026-11-17T20:40:33.480Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 968
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "toolbars-4-5-chat-viewer-codebase",
+   "title": "Toolbars 4/5: Chat viewer, Codebase changes, Agent swarm/Breakroom",
+   "category": "",
+   "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Chat viewer, Codebase changes, Agent swarm/Breakroom. API targets + one test. Land when done.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T20:40:41.293Z",
+   "updatedAt": "2026-11-17T20:40:49.454Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Split the toolbar build into multiple builds, about three plugins each, so they run on multiple slots. Land the foundation first.",
+    "at": "2026-11-17T20:40:41.293Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 969
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
