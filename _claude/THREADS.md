@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:25 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 22:25 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 22:25 UTC · `flagship-professional-skin-covering-2` note (all) · mcp
 - 2026-11-17 22:25 UTC · `flagship-professional-skin-covering-2` s6 done (all) · orchestrator
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:42 UTC · `flagship-professional-skin-covering-2` s9 done (all) · foreign-write
 - 2026-11-17 22:43 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
 - 2026-11-17 22:43 UTC · `flagship-professional-skin-covering` note (all) · orchestrator
+- 2026-11-17 22:43 UTC · `flagship-professional-skin-covering-2` s9 done (all) · foreign-write
 
 ## Token passes (log)
 
