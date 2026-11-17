@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:10:52.363Z",
+ "updatedAt": "2026-11-17T21:11:06.848Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -173331,7 +173331,7 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -173339,7 +173339,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:10:27.836Z",
+   "updatedAt": "2026-11-17T21:11:04.164Z",
    "builtAt": "",
    "notes": [
     {
@@ -173369,6 +173369,10 @@
     {
      "text": "Brett: CUT IT DOWN and land fast. Do only s6 (useHidden/Hideable), s7 (right-click Hide), s8 (Hidden list with Unhide), then s16 (re-bake the CONSOLE only, tests, PR, land). Console only. Skipped s9-s15 (Assets menu, REST/MCP/CLI/voice, multi-app rebake, help, UI Review) go to a follow-up build later.",
      "at": "2026-11-17T21:10:27.836Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what (step s6): its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T21:11:04.164Z"
     }
    ],
    "approvals": [],
@@ -173520,7 +173524,7 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T21:11:04.164Z",
      "uid": "st-mwkt948606t1rz",
      "createdAt": "2026-11-17T14:51:42.630Z"
     },

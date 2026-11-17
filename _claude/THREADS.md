@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:30 UTC · `live-build-status-real-time-grids-15` added (0 steps) (all) · console
 - 2026-11-17 19:31 UTC · `guided-live-demo-test-watch-orchestrator` added (0 steps) (all) · console
 - 2026-11-17 19:32 UTC · `console-app-part-2-native-floating` s2 done, → running (all) · orchestrator
 - 2026-11-17 19:32 UTC · `right-click-running-build-open-headless` added (0 steps) (all) · console
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:10 UTC · `rebuild-fresh-main-hide-any-asset` → running, note (all) · Brett
 - 2026-11-17 21:10 UTC · `rebuild-every-toolbar-page-specific` s26 done (all) · orchestrator
 - 2026-11-17 21:10 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · reconciler
+- 2026-11-17 21:11 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · watchdog
 
 ## Token passes (log)
 
