@@ -595,7 +595,7 @@ def snapshot(sessions: list[dict[str, Any]], meters: dict[str, Any], builds: dic
     busy = {r["agent"]["id"] for r in runs if r["agent"]["id"] and r["status"] != "idle"}
     off = [agent_view(a, str(a.get("id"))) for a in roster if a.get("id") not in busy and a.get("status") not in ("fired", "quit")]
     working = [r for r in runs if r["status"] != "idle"]
-    # every build whose detail names a crew member ("Agent: Ping Paulie"): avatars on build rows, steps, reviews
+    # every build whose detail names a crew member ("Agent: Comet", or a former name): avatars on build rows, steps, reviews
     build_agents = {}
     for bid, b in builds.items():
         a = resolve_agent([], roster, str(b.get("detail") or ""))

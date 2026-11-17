@@ -62,7 +62,7 @@ export const agentsRevision = () => rev;
 export function subscribeAgents(fn: () => void): () => void { listeners.add(fn); return () => { listeners.delete(fn); }; }
 export const listAgents = (): AgentInfo[] => [...new Map([...byKey.values()].map((a) => [a.id, a])).values()];
 
-/** Up to two initials from a name ("Ping Paulie" → "PP", "crew-live" → "CL"); "?" when empty. */
+/** Up to two initials from a name ("Sir Pounce" → "SP", "crew-live" → "CL"); "?" when empty. */
 export function agentInitials(name: unknown): string {
   const ws = String(name ?? '').split(/[\s_-]+/).filter(Boolean);
   return ws.slice(0, 2).map((w) => w[0]!.toUpperCase()).join('') || '?';
@@ -76,7 +76,7 @@ export function agentHue(name: unknown): number {
 }
 
 /**
- * The agent a free text names: "Agent: Ping Paulie", "Assigned agent: **Earl the Ear**" (build details, briefs), or
+ * The agent a free text names: "Agent: Comet", "Assigned agent: **Whiskers**" (build details, briefs), or
  * an id / name / alias on its own or as the first line ("<build id>\n<detail>"). Null when no known agent is named.
  */
 export function agentInText(text: unknown): AgentInfo | null {

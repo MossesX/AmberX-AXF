@@ -12,14 +12,26 @@ page in `agents/skills/` (`agent-skill@1`):
 
 | Agent | Skill | Models (cheapest first) |
 |---|---|---|
-| Kotlin Kat | kotlin-compose | Sonnet, Opus, Fable |
-| Rio React | react-ui | Sonnet, Opus, Fable |
-| Py Pete | python-server | Sonnet, Opus |
-| Manny Fest | plugin-manifests | Haiku, Sonnet |
-| Tia Theme | assets-themes | Sonnet, Opus, Fable |
-| Tex Tester | tests | Sonnet, Opus |
-| Doc Holli | docs | Haiku, Sonnet |
-| Merge Max | merge-fixer | Sonnet, Opus |
+| Kit Kat | kotlin-compose | Sonnet, Opus, Fable |
+| Pixel | react-ui | Sonnet, Opus, Fable |
+| Byte | python-server | Sonnet, Opus |
+| Widget | plugin-manifests | Haiku, Sonnet |
+| Velvet | assets-themes | Sonnet, Opus, Fable |
+| Glitch | tests | Sonnet, Opus |
+| Merlin | docs | Haiku, Sonnet |
+| Velcro | merge-fixer | Sonnet, Opus |
+
+## Names (cat names, Nov 17 2026)
+
+Every crew agent carries a cat name from Brett's name pool (`agents/name-pool.json`: Brett's kept names Amber, Marco,
+Patches, Polo, Gizmo, Brownie, Ashes, Jennifer, Molly, Jasmine, Cole, Ciocia, plus 189 cat names). The build
+orchestrator's chat voice is **Patches** (id `boss`). Agent ids never change (branches, tmux sessions, state, pay and
+history are keyed by id); each agent's old names stay in `formerly`, so old build details ("Agent: Ping Paulie"),
+briefs, chat lines and agent-picker settings still find it (roster service `axf.swarm-roster@1`, the Crew, the agent
+directory, the Claude agent picker). Taken names are crossed off, never removed.
+
+Read it: `node swarm.mjs names [--json]`, `GET /api/plugins/agent-swarm/names`, or `names` in `GET …/state`.
+Rename one agent without editing the file: its ID card's name (profile → ID card, `act` `identity`).
 
 Amber's persona (`agents/persona.md`, five lines) is in the shared prefix: reports and chat talk like Amber; code,
 comments and commits stay clean. No jokes about anyone's identity.
@@ -47,7 +59,7 @@ tokens, so swapping the theme rebrands every card. The `qr` code strip shows the
    over budget or over time = killed. The agent ends with a `swarm-report@1` JSON block.
 4. **Check + merge** (`swarm.mjs check …`, `swarm.mjs merge <build> [--push]`): changed files must be inside the
    lease. Done, clean jobs merge in wave order into the build's branch in a separate worktree. A conflict is aborted
-   and handed to Merge Max (`swarm.mjs fix <build> <step>`). Then Boss ticks the steps on the orchestrator tracker,
+   and handed to Velcro (`swarm.mjs fix <build> <step>`). Then Patches ticks the steps on the orchestrator tracker,
    adds one build note and prints the reports' notes for the shared files.
 
 `--dry-run` on `run`, `fix` and `banter` shows what would happen without spending anything. Claude Code is
@@ -69,11 +81,11 @@ tokens, so swapping the theme rebrands every card. The `qr` code strip shows the
 
 On duty · Off duty · Injured · Medical leave (back on its date) · Probation (small jobs, a notice every run) · Fired ·
 Custom (named, works or not) · Suspended (timed, with a reason) · Quit (rage-quit after N failed jobs in a row,
-default 3). Rehire puts an agent back on duty. Every change is in the agent's history and posted by Boss.
+default 3). Rehire puts an agent back on duty. Every change is in the agent's history and posted by Patches.
 
 ## Group chat
 
-Boss posts assignments, lease decisions, status changes and merges; agents post reports and handoffs; coworkers react
+Patches posts assignments, lease decisions, status changes and merges; agents post reports and handoffs; coworkers react
 from a zero-token banter bank, and `swarm.mjs banter` asks the small model for one cheap batch. Off = nothing posted,
 nothing spent; one switch per agent too.
 
@@ -88,7 +100,7 @@ data, secrets redacted (`web/chat-watch.mjs`): `/projects/amberx-axf/_data/agent
 `mentions.json` (breakroom-mentions@1: messages about Brett / the boss / the owner, newest first, each with chat, agent,
 time, matched terms and tone `negative|neutral`). A Claude session reads them with axHub `memory_read` (project
 `amberx-axf`, area `data`, path `agent-swarm/chats/mentions.json`); nothing there is ever read back into the swarm.
-A bare "Boss" is the orchestrator and Boss's and Brett's own posts never count. Also: `swarm.mjs mentions [n]
+A bare "Boss" (the orchestrator's old chat name) is not Brett, and Patches's and Brett's own posts never count. Also: `swarm.mjs mentions [n]
 [--negative]`, `swarm.mjs chats-export` (rewrite the mirror now), `GET /api/plugins/agent-swarm/chat/mentions`
 (`limit`, `negative`), and Breakroom → Group chat → **Everyone / About Brett / Negative**. `AXF_SWARM_CHATS_DIR`
 moves the mirror (`off` = none). Uninstall removes it.
@@ -103,20 +115,20 @@ minutes (longer for "still stuck" lines), so a watchdog that sees the same thing
 | Section | Owner | Lives in | Posts |
 |---|---|---|---|
 | Build orchestrator | Gizmo | Build orchestrator `pipeline.mjs` intake | split done, split by rules (check the steps), auto-queued |
-| Dispatcher (launch queue) | Py Pete | `pipeline.mjs` tick | started on an account, session ended, back in Pending, launch failed, idle / stuck |
-| Watchdog (self-check) | Janitor Joey | `pipeline.mjs` selfCheck | what it fixed, accounts it can't use |
-| Shipped manifests | Doc Holli | `pipeline.mjs` afterTick | manifest sent / failed |
-| Account failover | Manny Fest | `deploy/claude-headless.sh` | account hit its limit, run moved / nothing left / console account switched |
-| Landing (auto-land) | Merge Max | Push banner `land/land.mjs` | PR opened, waits on Brett (held, UI Review, uncommitted code), red CI / conflict, blocked, handed to an agent, ready |
-| Merge queue (test gate) | Landin' Lenny | Push banner `land/merge-queue.mjs` | batch testing, landed, kicked out, green batch that couldn't land |
-| Nightly console deploy | Rio React | `deploy/console-nightly.mjs` | deploying, done, failed |
-| AXP backups | Snap Sully | `deploy/axp-backup/backup.sh` | done, failed |
-| Systems check monitor (`health-monitor`) | Ping Paulie | Systems check server (health monitor) | red item, green again, auto-fix started / ran / failed |
-| Notification rules | Earl the Ear | Notifications control server | a rule fired |
+| Dispatcher (launch queue) | Byte | `pipeline.mjs` tick | started on an account, session ended, back in Pending, launch failed, idle / stuck |
+| Watchdog (self-check) | Dusty | `pipeline.mjs` selfCheck | what it fixed, accounts it can't use |
+| Shipped manifests | Merlin | `pipeline.mjs` afterTick | manifest sent / failed |
+| Account failover | Widget | `deploy/claude-headless.sh` | account hit its limit, run moved / nothing left / console account switched |
+| Landing (auto-land) | Velcro | Push banner `land/land.mjs` | PR opened, waits on Brett (held, UI Review, uncommitted code), red CI / conflict, blocked, handed to an agent, ready |
+| Merge queue (test gate) | Sir Pounce | Push banner `land/merge-queue.mjs` | batch testing, landed, kicked out, green batch that couldn't land |
+| Nightly console deploy | Pixel | `deploy/console-nightly.mjs` | deploying, done, failed |
+| AXP backups | Snickers | `deploy/axp-backup/backup.sh` | done, failed |
+| Systems check monitor (`health-monitor`) | Comet | Systems check server (health monitor) | red item, green again, auto-fix started / ran / failed |
+| Notification rules | Whiskers | Notifications control server | a rule fired |
 
 - Registry: `agents/sections.json` (default owners, events, where the code is). Brett reassigns in **Settings → Plugins
   → Agent swarm → Section owners** (or `sections.mjs assign <section> <agent>`); the pick is kept in the data folder
-  (`sections.json`) and Boss says it in the chat. Rules: `web/sections-core.mjs`.
+  (`sections.json`) and Patches says it in the chat. Rules: `web/sections-core.mjs`.
 - Posting: `node framework/cli/crew-say.mjs <section> <event> <text…> [--ref r]` (Node code imports `crewSay` from it;
   it finds this plugin by capability `service:crew-sections@1`, never by folder, and is a no-op without it). Python
   plugins use the capability `axf.crew-sections@1` (`say(section, event, text, ref)`, returns at once). `AXF_CREW_SAY=off`
@@ -131,8 +143,8 @@ minutes (longer for "still stuck" lines), so a watchdog that sees the same thing
 Recurring kinds of work are **job types** (`job-type@1` assets in `framework/assets/job-type/`, rules
 `framework/core/engines/job-type-rules.mjs`): owning specialty, default model, token budget per run, trigger (on demand,
 schedule, event), brief template, outputs (report path, UI Review group). Six hires own the first six, one each:
-Reel Rhonda (walkthroughs), Ping Paulie (site checks, read-only), Snap Sully (screenshots), Landin' Lenny (landing),
-Janitor Joey (banner cleanup), Earl the Ear (listener QA). They are `jobsOnly`: the build planner never gives them
+Shadow (walkthroughs), Comet (site checks, read-only), Snickers (screenshots), Sir Pounce (landing),
+Dusty (banner cleanup), Whiskers (listener QA). They are `jobsOnly`: the build planner never gives them
 build steps.
 
 - **Route** (`node framework/cli/agent-job.mjs <job-type> [--input k=v]…`, found by capability `service:agent-jobs@1`

@@ -204,7 +204,7 @@ export function planJobs(builds, roster, opts = {}) {
  */
 export function sharedPrefix(parts = {}) {
   return [
-    'You are one specialist agent in the AmberX AXF agent swarm, run headless by the build orchestrator ("Boss").',
+    `You are one specialist agent in the AmberX AXF agent swarm, run headless by the build orchestrator (${BOSS.name}).`,
     'WORK RULES',
     '- Do only the job in the message. Read and edit only inside the leased files and folders listed there; the snippets and folder listings are the context you start from. Do not explore outside your lease, list other folders or read CLAUDE.md.',
     '- Never write shared files (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, framework/catalog/, framework/plan/, tracker.json, CLAUDE.md, rules). Put what they need in your report\'s "notes"; Boss writes them after the merge.',
@@ -281,7 +281,7 @@ export function packJob(job, { prefix, skill, snippets = [], indexes = [], hando
     `JOB ${job.id} (build ${job.buildId}, step ${job.stepId})`,
     `Task: ${job.text}`,
     `Leased files and folders (only these): ${job.leases.length ? job.leases.join(', ') : 'none named; ask in your report if you need one'}`,
-    job.shared?.length ? `Shared files Boss will write after merge (do not touch; put lines in notes): ${job.shared.join(', ')}` : '',
+    job.shared?.length ? `Shared files ${BOSS.name} will write after merge (do not touch; put lines in notes): ${job.shared.join(', ')}` : '',
     job.checks?.length ? `Checks to run: ${job.checks.join(' · ')}` : '',
     `Budget: ${job.budget.tokens} tokens, ${job.budget.maxTurns} turns. Over budget = killed, so be direct.`,
     ...handoffs.filter(Boolean).map((h) => `Handoff from an earlier job: ${str(h, 600)}`),

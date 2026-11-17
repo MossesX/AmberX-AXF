@@ -55,7 +55,7 @@ export function ChatTab({ state, act }: { state: SwarmState; act: Act }) {
         {view !== 'all' && <span className="fx-muted">What the crew says about Brett, the boss or the owner. Secrets are redacted. Sessions read the same list on axHub: data path {watch.HUB_FOLDER}/mentions.json.</span>}
       </div>
       <div className={`sw-room ${colorBy ? `is-vibe is-${base}` : ''}`} data-fx-ctx-target="agent-swarm-chat">
-        {msgs.length === 0 ? <p className="fx-empty">{view === 'all' ? 'Quiet in here. Messages show up as Boss hands out jobs.' : view === 'brett' ? 'Nobody is talking about Brett.' : 'Nothing negative about Brett.'}</p>
+        {msgs.length === 0 ? <p className="fx-empty">{view === 'all' ? 'Quiet in here. Messages show up as ' + core.BOSS.name + ' hands out jobs.' : view === 'brett' ? 'Nobody is talking about Brett.' : 'Nothing negative about Brett.'}</p>
           : <ul className="sw-msgs">{msgs.map((m) => <Bubble key={m.id} m={m} agents={agents} ceiling={colorBy ? state.swarm.chatSettings.vibe : undefined} flag={view === 'all' ? undefined : flags.get(m.id)} />)}</ul>}
         <div ref={end} />
       </div>

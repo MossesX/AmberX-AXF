@@ -208,7 +208,7 @@ export function crew() {
     // an open Claude session (status running) is neither a success nor a failure yet
     const st = core.agentStats(s.runs.filter((r) => r.status !== 'running'), a.id, s.prices, 8); const timed = mine.filter((r) => r.endedAt);
     return {
-      id: a.id, name: core.cardIdentity(a, as).name, role: a.role, specialty: a.specialty, avatar: a.avatar, catchphrase: a.catchphrase, bio: a.bio, jobsOnly: a.jobsOnly,
+      id: a.id, name: core.cardIdentity(a, as).name, formerly: s.names.formerly[a.id] ?? [], role: a.role, specialty: a.specialty, avatar: a.avatar, catchphrase: a.catchphrase, bio: a.bio, jobsOnly: a.jobsOnly,
       status: as.status, statusLabel: core.statusLabel(as), works: core.STATUSES[as.status]?.works !== false,
       running: mine.filter((r) => r.status === 'running').map((r) => ({ jobId: r.jobId, buildId: r.buildId, startedAt: r.startedAt, summary: r.report?.summary ?? '' })),
       pay: s.pay[a.id], spend: { today: s.spend[a.id]?.today.usd ?? 0, week: s.spend[a.id]?.week.usd ?? 0, all: s.spend[a.id]?.all.usd ?? 0, avgPerJob: s.spend[a.id]?.avgPerJob ?? 0 },

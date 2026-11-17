@@ -89,14 +89,14 @@ ok(p["settings"] == {"defaultAgent": "", "askEverySession": True, "askHeadless":
 ok(c.post(f"{B}/assign", json={"agent": "nobody"}).status_code == 400, "assigning an unknown agent is refused")
 r = c.post(f"{B}/assign", json={"agent": "Snap Sully"}).json()
 ok(r["defaultAgent"] == "sully", f"Assign to Claude by name sets the default ({r})")
-ok(c.get(f"{B}/agent-settings").json()["defaultName"] == "Snap Sully", "settings show the default agent's name")
+ok(c.get(f"{B}/agent-settings").json()["defaultName"] == "Snickers", "settings show the default agent's name (his cat name; assigned by his former name)")
 ok(c.put(f"{B}/agent-settings", json={"askHeadless": "yes"}).status_code == 400, "settings refuse a non-boolean switch")
 
 # ---- persona / voice notes
 c.put(f"{B}/persona", json={"agent": "sully", "persona": "Quick and dry; says what he shot.", "voice": "low, Boston"})
 me = c.get(f"{B}/agent").json()
 ok(me["agent"]["id"] == "sully" and me["agent"]["persona"].startswith("Quick") and me["agent"]["voice"] == "low, Boston", "agent-get with no session = the default agent with persona and voice")
-ok(me["agent"]["intro"].startswith("I'm Snap Sully") and me["agent"]["env"] == {"AXF_AGENT": "sully"}, "it says how to introduce itself and AXF_AGENT")
+ok(me["agent"]["intro"].startswith("I'm Snickers") and me["agent"]["env"] == {"AXF_AGENT": "sully"}, "it says how to introduce itself and AXF_AGENT")
 
 # ---- ask ON: the session works as the default until Brett answers; the fake axHub holds one approval
 held: list[dict] = []
@@ -136,7 +136,7 @@ for _ in range(50):
     if held:
         break
     time.sleep(0.05)
-ok(len(held) == 1 and held[0]["tool"] == "axf.claude_session_answer" and held[0]["reason"]["title"].startswith("Claude session: work as Snap Sully"), "one held axHub approval with a reason")
+ok(len(held) == 1 and held[0]["tool"] == "axf.claude_session_answer" and held[0]["reason"]["title"].startswith("Claude session: work as Snickers"), "one held axHub approval with a reason")
 ok(any(a.get("key") == f"claude-ask:{sid}" for a in alerts), "the console bell gets the ask")
 ok(c.get(f"{B}/agent", params={"session": sid}).json()["asking"], "agent-get: still asking")
 
@@ -151,7 +151,7 @@ ok("held on axHub (job-42)" in asks["asks"][0]["hub"], f"the ask records the hel
 # Brett picks Rio in the console pop-up (his signed-in click)
 a = c.post(f"{B}/answer", json={"session": sid, "agent": "rio"}, headers=BRETT).json()
 ok(a["status"] == "picked" and a["agent"]["id"] == "rio" and a["answeredBy"] == "brett", f"Brett's click picks the agent ({a['agent']['id']})")
-ok(c.get(f"{B}/agent", params={"session": sid}).json()["agent"]["name"] == "Rio React", "agent-get: the session is Rio React now")
+ok(c.get(f"{B}/agent", params={"session": sid}).json()["agent"]["name"] == "Pixel", "agent-get: the session is Pixel now")
 ok({"resolved": [f"claude-ask:{sid}"]} in alerts, "the bell item is resolved")
 # the axHub approval arriving later carries the old ticket: no longer valid
 ok(c.post(f"{B}/answer", json={"session": sid, **held[0]["arguments"]["input"]}).status_code == 403, "a stale axHub approval after Brett picked changes nothing")

@@ -134,8 +134,10 @@ def crew(fresh: bool = False) -> list[dict[str, Any]]:
 
 
 def find_agent(ref: str, roster: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """An agent by id, name or a former name (the crew took cat names Nov 17 2026; old settings and briefs keep working)."""
     r = str(ref or "").strip().lower()
-    return next((a for a in roster if r and (a.get("id", "").lower() == r or a.get("name", "").lower() == r)), None)
+    return next((a for a in roster if r and (a.get("id", "").lower() == r or a.get("name", "").lower() == r
+                                              or r in [str(n).lower() for n in a.get("formerly") or []])), None)
 
 
 def default_agent(d: dict[str, Any], roster: list[dict[str, Any]]) -> tuple[str, str]:

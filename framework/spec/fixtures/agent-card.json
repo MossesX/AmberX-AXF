@@ -2,7 +2,7 @@
   "sample": {
     "identity": {
       "id": "kat",
-      "name": "Kotlin Kat",
+      "name": "Kit Kat",
       "role": "Android engineer",
       "specialty": "Kotlin kernel twins and Jetpack Compose screens",
       "hiredAt": "2026-10-31",
@@ -85,7 +85,7 @@
           {
             "id": "name",
             "label": "Name",
-            "value": "Kotlin Kat"
+            "value": "Kit Kat"
           },
           {
             "id": "role",
@@ -158,7 +158,7 @@
           {
             "id": "name",
             "label": "Name",
-            "value": "Kotlin Kat"
+            "value": "Kit Kat"
           },
           {
             "id": "role",
@@ -281,7 +281,7 @@
           {
             "id": "name",
             "label": "Name",
-            "value": "Kotlin Kat"
+            "value": "Kit Kat"
           },
           {
             "id": "employeeId",
@@ -369,7 +369,7 @@
           {
             "id": "name",
             "label": "Name",
-            "value": "Kotlin Kat"
+            "value": "Kit Kat"
           },
           {
             "id": "specialty",

@@ -138,7 +138,7 @@ t('the best hits win the cap: a definition carrying two task words at the end of
 t('brief carries only the job, its leases, snippets and folder listings', () => {
   const job = c.planJobs(B('b', [{ text: 'React card in apps/x/web/ui.tsx', files: ['apps/x/web/ui.tsx', 'apps/x/web/', '_claude/THREADS.md'] }]), roster).jobs[0];
   const p = c.packJob(job, { prefix: c.sharedPrefix(), skill: skills['react-ui'], snippets: [c.extractSnippet('apps/x/web/ui.tsx', 'export const A = 1;', job.text)], indexes: [c.folderIndex('apps/x/web/', ['ui.tsx', 'cards.tsx', 'swarm.css'])] });
-  assert.ok(p.system.startsWith(c.sharedPrefix())); assert.match(p.system, /React UI/); assert.match(p.prompt, /Leased files and folders \(only these\): apps\/x\/web\/ui\.tsx, apps\/x\/web\//); assert.match(p.prompt, /Boss will write.*THREADS/); assert.match(p.prompt, /export const A/);
+  assert.ok(p.system.startsWith(c.sharedPrefix())); assert.match(p.system, /React UI/); assert.match(p.prompt, /Leased files and folders \(only these\): apps\/x\/web\/ui\.tsx, apps\/x\/web\//); assert.match(p.prompt, /Patches will write.*THREADS/); assert.match(p.prompt, /export const A/);
   assert.match(p.prompt, /--- apps\/x\/web\/ \(3 files\) ---\ncards\.tsx\nswarm\.css\nui\.tsx/);
   assert.ok(p.tokens.system + p.tokens.prompt < 2500);
   const big = c.folderIndex('f/', [...Array.from({ length: 200 }, (_, i) => `sub${i % 3}/f${String(i).padStart(3, '0')}.ts`), 'README.md']);
