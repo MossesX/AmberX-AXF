@@ -355,6 +355,110 @@ export class LiveChangeLog {
   }
 }
 
+// ─── Optimistic layer (optimistic@1): pending local ops shown at once, confirmed by the store's echo ─────────────────
+
+/** A local op the viewer made (a drag, an inline edit, a delete) waiting for the store's echo. `at` is when it was made. */
+export interface PendingOp { opId: string; key: string; op: LiveChangeOp; row?: LiveRow; before?: string | null; at: number }
+/** `base` is the confirmed set; `view` is base with every pending op replayed on top, in order: what the grid shows. */
+export interface LiveRowsState { base: LiveRowSet; pending: PendingOp[]; view: LiveRowSet }
+export interface Rollback { opId: string; key: string; reason: RollbackReason; detail?: string }
+export interface LiveRowsResult {
+  state: LiveRowsState;
+  /** keys whose shown row is new or different (view before → view after) */
+  changed: string[];
+  removed: string[];
+  moved: string[];
+  /** op ids the store echoed in this call */
+  confirmed: string[];
+  /** ops taken back in this call, each with its reason; their keys are in changed / removed / moved when the view differs */
+  rolledBack: Rollback[];
+  resync: ResyncNeed | null;
+}
+
+/** Base with the pending ops replayed on top (an op whose key is gone or that changes nothing is simply a no-op). */
+export function viewOf(base: LiveRowSet, pending: PendingOp[]): LiveRowSet {
+  const v = cloneSet(base);
+  for (const p of pending) applyOp(v, p);
+  return v;
+}
+
+export function liveRowsFrom(base: LiveRowSet, pending: PendingOp[] = []): LiveRowsState {
+  return { base, pending: [...pending], view: viewOf(base, pending) };
+}
+
+export function emptyLiveRows(ns: string, epoch?: string): LiveRowsState {
+  return liveRowsFrom(emptyRowSet(ns, epoch));
+}
+
+function settle(prev: LiveRowsState, base: LiveRowSet, pending: PendingOp[], extra: Partial<Pick<LiveRowsResult, 'confirmed' | 'rolledBack' | 'resync'>> = {}): LiveRowsResult {
+  const state = liveRowsFrom(base, pending);
+  const d = diffRowSets(prev.view, state.view);
+  return { state, ...d, confirmed: extra.confirmed ?? [], rolledBack: extra.rolledBack ?? [], resync: extra.resync ?? null };
+}
+
+/**
+ * Show a local op at once. The same opId submitted again replaces the earlier pending op (reason `superseded`); more
+ * than `LIVE_CHANGE_LIMITS.pending` ops in flight roll back the oldest (`superseded`) so a dead store cannot pile up
+ * forever. The changed keys are what the grid re-renders now; the store's echo confirms later (`reconcileLiveChanges`).
+ */
+export function optimisticApply(state: LiveRowsState, op: PendingOp): LiveRowsResult {
+  const rolledBack: Rollback[] = [];
+  let pending = state.pending.filter((p) => {
+    if (p.opId !== op.opId) return true;
+    rolledBack.push({ opId: p.opId, key: p.key, reason: 'superseded', detail: 'submitted again' });
+    return false;
+  });
+  pending.push({ ...op });
+  while (pending.length > LIVE_CHANGE_LIMITS.pending) {
+    const oldest = pending.shift()!;
+    rolledBack.push({ opId: oldest.opId, key: oldest.key, reason: 'superseded', detail: `more than ${LIVE_CHANGE_LIMITS.pending} ops in flight` });
+  }
+  return settle(state, state.base, pending, { rolledBack });
+}
+
+/**
+ * Take a batch from the store: apply it to the confirmed set, confirm every pending op the batch echoes (`origin.opId`),
+ * rebuild the view and report only what the viewer sees differently. A rev gap applies nothing (the grid fetches a
+ * resync and calls `resyncLiveRows`); pending ops stay until then.
+ */
+export function reconcileLiveChanges(state: LiveRowsState, events: LiveChange[]): LiveRowsResult {
+  const r = applyLiveChanges(state.base, events);
+  if (r.resync) return { state, changed: [], removed: [], moved: [], confirmed: [], rolledBack: [], resync: r.resync };
+  const echoed = new Set(events.filter((e) => e.ns === state.base.ns && e.rev > state.base.rev && e.origin?.opId).map((e) => e.origin.opId as string));
+  const confirmed: string[] = [];
+  const pending = state.pending.filter((p) => { if (echoed.has(p.opId)) { confirmed.push(p.opId); return false; } return true; });
+  return settle(state, r.set, pending, { confirmed });
+}
+
+/** The store refused the op (conflict, forbidden, invalid, gone…): take it back and say why. Unknown opId: nothing changes. */
+export function rejectPending(state: LiveRowsState, opId: string, reason: RollbackReason = 'rejected', detail?: string): LiveRowsResult {
+  const hit = state.pending.find((p) => p.opId === opId);
+  if (!hit) return settle(state, state.base, state.pending);
+  return settle(state, state.base, state.pending.filter((p) => p.opId !== opId), { rolledBack: [{ opId, key: hit.key, reason, ...(detail ? { detail } : {}) }] });
+}
+
+/** Roll back every pending op older than `timeoutMs` at `now` (reason `timeout`). The caller owns the clock. */
+export function expirePending(state: LiveRowsState, now: number, timeoutMs: number = OPTIMISTIC_TIMEOUT_MS): LiveRowsResult {
+  const rolledBack: Rollback[] = [];
+  const pending = state.pending.filter((p) => {
+    if (now - p.at < timeoutMs) return true;
+    rolledBack.push({ opId: p.opId, key: p.key, reason: 'timeout', detail: `no echo after ${timeoutMs} ms` });
+    return false;
+  });
+  return settle(state, state.base, pending, { rolledBack });
+}
+
+/** Take the store's truth after a resync: every pending op is rolled back (reason `resync`); the view is diffed by key. */
+export function resyncLiveRows(state: LiveRowsState, frame: LiveChangeResync, keyOf?: (row: LiveRow) => string): LiveRowsResult {
+  const rolledBack: Rollback[] = state.pending.map((p) => ({ opId: p.opId, key: p.key, reason: 'resync' as const, detail: frame.reason }));
+  return settle(state, rowSetFromResync(frame, keyOf), [], { rolledBack });
+}
+
+/** The pending ops that have been waiting longest first, for a "saving…" indicator. */
+export function pendingKeys(state: LiveRowsState): string[] {
+  return [...new Set(state.pending.map((p) => p.key))];
+}
+
 // ─── Registry snapshot + JSON Schemas (framework/schemas/live-change.json, schemas/json/live-change*.schema.json) ─────
 
 export const LIVE_CHANGE_REGISTRY = Object.freeze({
