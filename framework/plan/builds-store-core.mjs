@@ -52,7 +52,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
-import { normPipeline } from '../core/build-pipeline.mjs';
+import { guardStatus, normAttempts, normEscalation, normFailure, normLanded, normPipeline } from '../core/build-pipeline.mjs';
 import { normRecoveries, normRecovery } from '../core/build-watchdog.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 
@@ -63,9 +63,15 @@ export const MODELS = ['Fable', 'Opus'];
  * `queued` (Nov 8 2026, pipeline rebuild) = Brett moved it from Pending to the Queue: the dispatcher starts it when a slot
  * is free; `running` is the pipeline's Building (framework/core/build-pipeline.mjs).
  */
-export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
-/** Statuses that count as finished work (progress, Pending list). */
-export const FINISHED = ['built', 'complete'];
+/*
+ * done-means-merged@1 (Nov 17 2026, framework/spec/DONE-MEANS-MERGED.md): `fixing` (a failure is being worked on),
+ * `landing` (every step done, the auto-lander lands it: what `built` used to say), `landed` (merged to main, CI green on
+ * the merge commit), `complete` (landed + the feature verify passed), `escalated` (the retry ladder ran out: banner +
+ * push). `built` stays as a legacy word read as landed; the pipeline never writes it again.
+ */
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+/** Statuses that count as finished work (progress, Pending list): every step done, whatever the PR is doing. */
+export const FINISHED = ['built', 'landing', 'landed', 'complete'];
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 }; // ≤ 10 min (Nov 13 2026; was 30)
 /**
  * One work profile (Brett, Nov 7 2026: merge every build profile into one). The profiles below were folded into
@@ -174,6 +180,11 @@ export function normBuild(b, ctx = {}) {
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
+    // done-means-merged@1 (framework/core/build-pipeline.mjs): every try at a failure, the open failure, the merge + verify evidence, why it stopped
+    ...(Array.isArray(o.attempts) && o.attempts.length ? { attempts: normAttempts(o.attempts) } : {}),
+    ...(normFailure(o.failure) ? { failure: normFailure(o.failure) } : {}),
+    ...(normLanded(o.landed) ? { landed: normLanded(o.landed) } : {}),
+    ...(normEscalation(o.escalation) ? { escalation: normEscalation(o.escalation) } : {}),
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
     ...(recoveries.length ? { recoveries } : {}), // build-watchdog@1: optional, only once the watchdog has fixed the build
     steps,
@@ -207,7 +218,7 @@ export function normalizeStore(s) {
     rev: Number.isInteger(o.rev) ? o.rev : 0,
     migratedAt: str(o.migratedAt, 40),
     rules: foldRetired(o.rules && typeof o.rules === 'object' ? clone(o.rules) : {}),
-    meta: { queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})) },
+    meta: { queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})), ...(o.meta?.doneMeansMerged && typeof o.meta.doneMeansMerged === 'object' ? { doneMeansMerged: clone(o.meta.doneMeansMerged) } : {}) }, // doneMeansMerged: the one-off migration's record (build-pipeline.mjs migrateDoneStore)
     drafts: foldRetired(o.drafts && typeof o.drafts === 'object' ? clone(o.drafts) : {}, (a, b) => ({ ...a, ops: [...(a.ops ?? []), ...(b.ops ?? [])] })),
     builds: (Array.isArray(o.builds) ? o.builds : []).map((b) => normBuild(b)),
   };
@@ -605,7 +616,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (it.status !== shownItem.status) { // only a real status change on the Pending side moves the build
       const st = orchStatusOfPending(it.status);
       if (st) { if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? it.builtAt || now : ''; } }
-      else if (['built', 'complete', 'failed', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
+      else if (['built', 'landing', 'landed', 'complete', 'failed', 'escalated', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
     }
     const incoming = (it.subPrompts ?? []).map((p, k) => {
       const t = prefix ? plain(p.text) : str(p.text);
@@ -622,7 +633,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (it.status === shownItem.status && b.pending?.status) meta.status = b.pending.status;
     b.pending = { ...(b.pending ?? {}), ...meta };
     b.updatedAt = it.updatedAt || now;
-    if (['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
+    if (['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = str(b.mergedAt) ? 'landed' : 'landing'; b.builtAt = b.builtAt || now; } // done-means-merged@1
   }
   if (!newerOnly) for (const [id, b] of shown) if (!seen.has(id)) {
     if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; }
@@ -991,7 +1002,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
           const nb = normBuild({ id, title: str(t.title, 300).trim(), category: picked[0].b.category, status: 'pending', source: 'harvest', profiles: [profile], order: { [profile]: nextOrder(s, profile) }, steps, createdAt: now, updatedAt: now, notes: [{ text: `Harvested from ${[...new Set(picked.map((p) => p.b.id))].join(', ')} in the Steps view.`, at: now }] }, { now });
           nb.steps = steps.map((x, i) => normStep(x, i, { now }));
           nb.defaultSteps = nb.steps.map((x) => ({ ...x })); nb.defaultAt = now;
-          if (nb.steps.some((x) => x.done)) nb.status = nb.steps.every((x) => x.done) ? 'complete' : 'running';
+          if (nb.steps.some((x) => x.done)) nb.status = nb.steps.every((x) => x.done) ? 'landing' : 'running'; // done-means-merged@1: a harvest is never proven merged
           s.builds.push(nb); made.push(nb.id);
         }
         // the orchestrator refactors what is left in the source builds
@@ -1025,7 +1036,8 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       default: throw new Error(`unknown op ${op.op}`);
     }
   }
-  for (const id of touched) { const b = s.builds.find((x) => x.id === id); if (!b) continue; if (!dry) b.updatedAt = now; if (b.status !== 'archived' && b.status !== 'blocked' && b.status !== 'failed' && b.steps.length) { const d = b.steps.filter((x) => !x.skip); b.status = d.length && d.every((x) => x.done) ? 'complete' : d.some((x) => x.done) ? 'running' : b.status === 'complete' ? 'running' : b.status; } }
+  // done-means-merged@1: every step done = landing (landed when merged; complete stays complete only while merged), never complete from the steps alone
+  for (const id of touched) { const b = s.builds.find((x) => x.id === id); if (!b) continue; if (!dry) b.updatedAt = now; if (!['archived', 'blocked', 'failed', 'fixing', 'escalated'].includes(b.status) && b.steps.length) { const d = b.steps.filter((x) => !x.skip); const allDone = d.length && d.every((x) => x.done); b.status = allDone ? (str(b.mergedAt) ? (b.status === 'complete' ? 'complete' : 'landed') : 'landing') : d.some((x) => x.done) ? 'running' : FINISHED.includes(b.status) ? 'running' : b.status; } }
   renumber(s, profile);
   return { store: s, log, profileName };
 }
@@ -1056,4 +1068,46 @@ export function proposeSplit(steps, n) {
   });
   if (cur.length) out.push(cur);
   return out.map((g) => ({ title: suggestName(g), uids: g.map((x) => x.uid), steps: g }));
+}
+
+// ------------------------------------------------------------------ done-means-merged@1 guard on every write
+
+/** Statuses only proof may set (DONE-MEANS-MERGED.md → When landed, built and complete are allowed). */
+export const GUARDED = Object.freeze(['landed', 'built', 'complete']);
+
+/**
+ * Set one build's status through the guard, pure: { ok, why, build }. A refused landed / built / complete keeps the
+ * status it had and records the refusal as a note (who asked, what was missing), so nobody reads a silent no.
+ */
+export function guardedStatus(b, to, { at = nowIso(), by = 'store', from } = {}) {
+  const x = clone(b); const prev = from ?? x.status;
+  const g = guardStatus({ ...x, status: prev }, to);
+  if (g.ok || !GUARDED.includes(to)) { x.status = to; return { ok: true, why: '', build: x }; }
+  x.status = prev;
+  const text = `Refused ${prev} → ${to} (asked by ${by}): ${g.why}. Done means merged, CI green on main and verified (done-means-merged@1).`;
+  const notes = Array.isArray(x.notes) ? x.notes : [];
+  // the same refusal is noted once (a merge that keeps re-deriving the status must not grow the notes)
+  x.notes = notes.some((n) => n?.text === text) ? notes : [...notes, { text, at }];
+  return { ok: false, why: g.why, build: x };
+}
+
+/**
+ * Every write of the store passes this (builds-store withStore): a build whose status CHANGED to landed / built /
+ * complete without the evidence goes back to the status it had, with a note. A record already at rest in one of
+ * them is never touched (old records are grandfathered; the migration moved the unprovable ones).
+ * → { store, refused: [{ id, from, to, why }] }
+ */
+export function enforceDoneGuard(before, after, { at = nowIso(), by = 'store' } = {}) {
+  const old = new Map((before?.builds ?? []).map((b) => [b.id, b]));
+  const refused = [];
+  const builds = (after?.builds ?? []).map((b) => {
+    if (b.deleted || !GUARDED.includes(b.status)) return b;
+    const prev = old.get(b.id)?.status ?? 'landing';
+    if (prev === b.status || (GUARDED.includes(prev) && b.status === 'built')) return b;
+    const r = guardedStatus(b, b.status, { at, by, from: prev });
+    if (r.ok) return b;
+    refused.push({ id: b.id, from: prev, to: b.status, why: r.why });
+    return { ...r.build, builtAt: ['landing', 'landed', 'built', 'complete'].includes(prev) ? r.build.builtAt : '' };
+  });
+  return { store: refused.length ? { ...after, builds } : after, refused };
 }

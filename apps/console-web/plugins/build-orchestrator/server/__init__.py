@@ -364,6 +364,38 @@ def sees_probe(summary: dict[str, Any] | None = None, running: list[str] | None 
     return {"status": "ok", "summary": f"The console sees {total} build(s) ({run_store} running in the store, {len(running)} live in the Build manager).", "details": []}
 
 
+ESCALATED_ID = "builds-escalated"
+
+
+def escalated_probe(rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """done-means-merged@1: red while any build is escalated (the retry ladder ran out): what broke, every try, since when."""
+    if rows is None:
+        try:
+            r = _pipeline("escalated")
+        except Exception:  # noqa: BLE001 — the probe answers unknown, never throws
+            r = None
+        rows = r.get("escalated") if isinstance(r, dict) else None
+        if rows is None:
+            return {"status": "unknown", "summary": "Couldn't read the builds store.", "unreachable": True}
+    if not rows:
+        return {"status": "ok", "summary": "No build is stuck: every failure is being retried or is fixed."}
+    lines = [f"{x.get('id')}: {x.get('why') or x.get('kind')} Tried: {', '.join(x.get('tried') or []) or 'nothing'}. Since {x.get('since')}." for x in rows[:10]]
+    names = ", ".join(str(x.get("id")) for x in rows[:5]) + ("…" if len(rows) > 5 else "")
+    return {"status": "error", "summary": f"{len(rows)} build{'s' if len(rows) != 1 else ''} stuck after every retry: {names}. Press Retry to start the ladder over.",
+            "details": lines, "link": f"row:{rows[0].get('id')}/tab:attempts"}
+
+
+def _retry_escalated() -> dict[str, Any]:
+    try:
+        r = _pipeline("retry-all", "--by", "systems-check", "--why", "Retry from the systems check banner")
+    except Exception as e:  # noqa: BLE001
+        return {"state": "failed", "message": str(e)[:200]}
+    done = r.get("retried") if isinstance(r, dict) else None
+    if not isinstance(done, list):
+        return {"state": "failed", "message": str((r or {}).get("error") or "retry failed")[:200]}
+    return {"state": "done", "message": f"Retrying {len(done)} build(s): the ladder starts over."}
+
+
 _health_done = False
 
 
@@ -385,6 +417,14 @@ def ensure_health() -> bool:
                       "run": lambda: sees_probe(), "interval": 300,
                       "breaks": "Overview, Build queue and Plan (console and MCP) show 0 builds, so nobody sees what is running.",
                       "instructions": ["`node framework/cli/builds-store.mjs verify` on the VPS.", "`node framework/cli/builds-live.mjs sync` in /opt/axf brings main's store in."]}, FOLDER)
+        reg.register({"id": ESCALATED_ID, "label": "Builds that need you", "service": "builds", "order": 54, "severity": "error",
+                      "run": lambda: escalated_probe(), "interval": 60,
+                      "breaks": "A build Brett asked for is not being built: the server tried every retry and stopped.",
+                      "fix": {"type": "action", "label": "Retry"},
+                      "autoFix": {"label": "Retry", "run": _retry_escalated, "mode": "ask"},
+                      "links": [{"label": "Open the Build orchestrator", "href": "view:build-orchestrator"}],
+                      "instructions": ["`node apps/console-web/plugins/build-orchestrator/pipeline.mjs escalated` lists them with every try.",
+                                       "`… pipeline.mjs retry <build> [strategy]` retries one (the ladder starts over); `retry-all` retries every one."]}, FOLDER)
     except Exception:  # noqa: BLE001 — the orchestrator works without its health item
         return False
     _health_done = True
@@ -392,6 +432,13 @@ def ensure_health() -> bool:
 
 
 ensure_health()
+
+# ---- the stale-row watchdog (stale-row@1): its routes under /watchdog and its systems check item (server/watchdog.py)
+from . import watchdog as _watchdog  # noqa: E402
+
+router.include_router(_watchdog.router_for(FOLDER, brett_click))
+_watchdog.ensure_health(FOLDER)
+
 
 # The build watchdog (build-watchdog@1): its systems check items ('Build watchdog', 'Builds the watchdog gave up on')
 from . import recovery_watchdog as watchdog_mod  # noqa: E402
@@ -412,14 +459,14 @@ def _watchdog(*args: str, who: str = "", timeout: int = 120) -> dict[str, Any]:
 # scan answers with the host's last scan, run asks the host's cron for a pass (it runs within a minute).
 
 
-@router.get("/watchdog/status")
-def watchdog_status() -> dict[str, Any]:
+@router.get("/recovery-watchdog/status")
+def recovery_watchdog_status() -> dict[str, Any]:
     """watchdog-status@1: on/off, cron, last pass + age (stale after 3 min), the host's last scan, recent fixes, gave-up builds."""
     return {**_watchdog("status"), "host": watchdog_mod.on_host()}
 
 
-@router.get("/watchdog/scan")
-def watchdog_scan() -> dict[str, Any]:
+@router.get("/recovery-watchdog/scan")
+def recovery_watchdog_scan() -> dict[str, Any]:
     """The dry run: every build marked running, what the probe saw, its cause and the planned action. Nothing changes."""
     if watchdog_mod.on_host():
         return {**_watchdog("scan"), "ok": True, "source": "live"}
@@ -429,8 +476,8 @@ def watchdog_scan() -> dict[str, Any]:
             "note": "The console can't see the VPS's processes: this is what the host's last watchdog pass saw."}
 
 
-@router.post("/watchdog/run")
-async def watchdog_run(request: Request) -> dict[str, Any]:
+@router.post("/recovery-watchdog/run")
+async def recovery_watchdog_run(request: Request) -> dict[str, Any]:
     """One pass now ({build?} limits it to one build). On the host it runs here; from the container the host runs it."""
     body = await _json_body(request)
     build = _build_id(body["build"]) if body.get("build") else ""
@@ -442,8 +489,8 @@ async def watchdog_run(request: Request) -> dict[str, Any]:
     return {**r, "ok": True, "requested": False}
 
 
-@router.post("/watchdog/requeue")
-async def watchdog_requeue(request: Request) -> dict[str, Any]:
+@router.post("/recovery-watchdog/requeue")
+async def recovery_watchdog_requeue(request: Request) -> dict[str, Any]:
     """Fix (requeue): builds the watchdog gave up on back to the Queue with a fresh retry count ({builds?: [id…]}; none = all)."""
     body = await _json_body(request)
     ids = [_build_id(x) for x in (body.get("builds") or [])]
@@ -462,14 +509,14 @@ def build_recoveries(build_id: str) -> dict[str, Any]:
         raise
 
 
-@router.get("/watchdog/settings")
-def watchdog_settings() -> dict[str, Any]:
+@router.get("/recovery-watchdog/settings")
+def recovery_watchdog_settings() -> dict[str, Any]:
     """The Watchdog settings (Settings → Plugins → Build orchestrator → Watchdog): {settings, keys, defaults}."""
     return _watchdog("settings")
 
 
-@router.put("/watchdog/settings")
-async def watchdog_settings_set(request: Request) -> dict[str, Any]:
+@router.put("/recovery-watchdog/settings")
+async def recovery_watchdog_settings_set(request: Request) -> dict[str, Any]:
     """Save a patch of the Watchdog settings ({key: value}; unknown keys → 400). Hot: the next pass reads them."""
     body = await _json_body(request)
     if not body:
@@ -611,6 +658,32 @@ async def pipeline_action(request: Request) -> dict[str, Any]:
         raise HTTPException(400, "no build id given")
     why = str(body.get("why") or "")[:300]
     args = [action, *ids, "--by", (brett_click(request) or "console")[:80]]
+    if why.strip():
+        args += ["--why", why]
+    return _pipeline(*args)
+
+
+@router.get("/attempts/{build}")
+def build_attempts(build: str) -> dict[str, Any]:
+    """done-means-merged@1: every attempt on a build (strategy, model, account, result), the open failure, the merge +
+    CI + verify evidence, the escalation and what the retry ladder tries next (pipeline.mjs attempts)."""
+    return _pipeline("attempts", _build_id(build))
+
+
+RETRY_STRATEGIES = ("retry", "merge-main", "fix:targeted", "fix:regenerate", "fix:redo-step", "fresh-session", "switch-model", "switch-account")
+
+
+@router.post("/retry/{build}")
+async def build_retry(build: str, request: Request) -> dict[str, Any]:
+    """{strategy?, why?}: Retry by hand. The open failure's attempts so far are marked skipped (they stay in the log), the
+    escalation clears and the build is fixing again: the next tick relaunches it on the ladder's first rung, or at once
+    on the strategy given (never above the step's pinned model). A build with no failure goes back to the Queue."""
+    body = await _json_body(request)
+    strategy = str(body.get("strategy") or "").strip()
+    if strategy and strategy not in RETRY_STRATEGIES:
+        raise HTTPException(400, f"strategy is one of {', '.join(RETRY_STRATEGIES)}")
+    args = ["retry", _build_id(build), *([strategy] if strategy else []), "--by", (brett_click(request) or "console")[:80]]
+    why = str(body.get("why") or "")[:300]
     if why.strip():
         args += ["--why", why]
     return _pipeline(*args)

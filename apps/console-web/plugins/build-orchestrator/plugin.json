@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (10 min or less; checkpoints inside one session, each committed and ticked as it finishes), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick). Build watchdog (Brett, Nov 13 2026: \"Never wait for Brett to notice\"): watchdog.mjs, cron axf-watchdog every minute, finds builds marked running with no live session (killed 143, failed 1, hung, tmux gone, a usage limit), resets and requeues or retries them (another account on a limit, up to Max retries, then Pending with a banner item), keeps every slot filled and sends the phone an FYI per fix; Watchdog tab, Watchdog settings, systems check items, REST / MCP / axf watchdog / voice.",
+  "description": "Breaks every build into small steps (10 min or less; checkpoints inside one session, each committed and ticked as it finishes), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick).",
   "targets": [
     "axf-console"
   ],
@@ -53,7 +53,8 @@
       "framework/spec/check-build-limit.mjs",
       "framework/spec/check-build-pipeline.mjs",
       "framework/cli/builds-reconcile.mjs",
-      "framework/spec/check-projects.mjs"
+      "framework/spec/check-projects.mjs",
+      "framework/spec/DONE-MEANS-MERGED.md"
     ]
   },
   "commands": {
@@ -757,24 +758,196 @@
         "output": "{ group, action, done: [id], refused: [{ id, error }], skipped: [{ id, state }] }"
       },
       {
+        "id": "attempts",
+        "route": "GET /attempts/{build}",
+        "title": "A build's attempts",
+        "description": "done-means-merged@1: every try at getting a build past a failure (crash, red CI, a clash, a failed push, a stall, a fall back to Pending) with its strategy, model, account and result; the open failure, the merge + CI + verify evidence, the escalation and what the retry ladder tries next. Say 'what's wrong with skins' or 'why did skins stop'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, attempts: [{ n, kind, strategy, fixStrategy, model, account, result, startedAt, endedAt, note }], failure, landed, escalation, ladder, next }"
+      },
+      {
+        "id": "retry",
+        "route": "POST /retry/{build}",
+        "title": "Retry a build",
+        "description": "Retry a fixing or escalated build: the ladder starts over for its failure (the attempts so far stay in the log), the next tick relaunches it, or at once on the strategy given (never above the step's pinned model). Say 'retry skins' or 'retry skins in a fresh session'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            },
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "retry",
+                "merge-main",
+                "fix:targeted",
+                "fix:regenerate",
+                "fix:redo-step",
+                "fresh-session",
+                "switch-model",
+                "switch-account"
+              ],
+              "description": "Optional: the rung to run now"
+            },
+            "why": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, strategy, launch? }"
+      },
+      {
         "id": "watchdog-status",
-        "route": "GET /watchdog/status",
+        "route": "GET /watchdog",
+        "title": "Stale-row watchdog status",
+        "readOnly": true,
+        "description": "The VPS stale-row watchdog: its settings (on/off, every how many minutes, dry run only, which lists it watches, notify), the last run (rows read, found, cleaned, GitHub calls), the last runs and the newest cleanup log records. Say 'what did the watchdog clean'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "log": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 500,
+              "description": "how many cleanup log records to include (default 20)"
+            }
+          }
+        },
+        "output": "{ settings, schema, last, lastOk, running, runs, log }"
+      },
+      {
+        "id": "watchdog-run",
+        "route": "POST /watchdog/run",
+        "title": "Run the stale-row watchdog now",
+        "description": "Run the watchdog now: rows on Pending, Queue, Building, the merge queue and UI Review whose PR merged are completed, rows whose PR closed or whose build died are removed; running builds are never touched. Logged, noted on the builds, one FYI to AmberX. force=true runs even when it is off.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "force": {
+              "type": "boolean",
+              "description": "run even when the watchdog is switched off"
+            }
+          }
+        },
+        "output": "watchdog-run@1 { rows, planned, cleaned, changes[] }"
+      },
+      {
+        "id": "watchdog-dry-run",
+        "route": "POST /watchdog/dry-run",
+        "title": "Dry-run the stale-row watchdog",
+        "readOnly": true,
+        "description": "What the watchdog would clean right now and why, changing nothing.",
+        "output": "watchdog-run@1 { dry: true, rows, planned, changes[] }"
+      },
+      {
+        "id": "watchdog-log",
+        "route": "GET /watchdog/log",
+        "title": "Watchdog cleanup log",
+        "readOnly": true,
+        "description": "Every row the watchdog completed or removed (stale-row-log@1), newest first, with the reason and evidence. Filter by list kind, action or build.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "queued",
+                "building",
+                "merge-queue",
+                "ui-review"
+              ]
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "complete",
+                "remove"
+              ]
+            },
+            "build": {
+              "type": "string"
+            }
+          }
+        },
+        "output": "{ records: [stale-row-log@1] }"
+      },
+      {
+        "id": "watchdog-settings",
+        "route": "PUT /watchdog/settings",
+        "title": "Change watchdog settings",
+        "description": "Change the stale-row watchdog's settings: enabled (on/off), intervalMin (1-120), dryRun, tables.builds / tables.merge-queue / tables.ui-review (which lists it watches), notify (the FYI to AmberX).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "intervalMin": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "dryRun": {
+              "type": "boolean"
+            },
+            "tables.builds": {
+              "type": "boolean"
+            },
+            "tables.merge-queue": {
+              "type": "boolean"
+            },
+            "tables.ui-review": {
+              "type": "boolean"
+            },
+            "notify": {
+              "type": "boolean"
+            }
+          }
+        },
+        "output": "{ ok, settings }"
+      },
+      {
+        "id": "recovery-watchdog-status",
+        "route": "GET /recovery-watchdog/status",
         "title": "Build watchdog status",
         "description": "The build watchdog: on or off, its cron, the last pass and how long ago (stale after 3 min), what the VPS saw for every build marked running (pid, tmux, heartbeat, exit), recent fixes (cause → action, attempt, told the phone) and builds it gave up on. Say 'watchdog status'.",
         "readOnly": true,
         "output": "watchdog-status@1 { settings, cron, lastPass, ageMin, stale, lastScan, recent, gaveUp }"
       },
       {
-        "id": "watchdog-scan",
-        "route": "GET /watchdog/scan",
+        "id": "recovery-watchdog-scan",
+        "route": "GET /recovery-watchdog/scan",
         "title": "Watchdog dry run",
         "description": "Every build marked running with what the probe saw, why it is stuck (killed 143, failed 1, OOM 137, usage limit, dead login, tmux or claude gone, stale heartbeat) and what the watchdog would do. Changes nothing.",
         "readOnly": true,
         "output": "{ source, at, builds: [{ id, probe, cause, stuck, action, attempt, note }], stuck }"
       },
       {
-        "id": "watchdog-run",
-        "route": "POST /watchdog/run",
+        "id": "recovery-watchdog-run",
+        "route": "POST /recovery-watchdog/run",
         "title": "Run the watchdog now",
         "description": "One watchdog pass now: stuck builds reset, requeued or retried (another account on a usage limit), slots released and refilled, a phone FYI per fix. From the console the VPS runs it within a minute. Say 'run the watchdog'.",
         "input": {
@@ -789,8 +962,8 @@
         "output": "{ requested, fixes: [watchdog-recovery@1], skipped, fill }"
       },
       {
-        "id": "watchdog-requeue",
-        "route": "POST /watchdog/requeue",
+        "id": "recovery-watchdog-requeue",
+        "route": "POST /recovery-watchdog/requeue",
         "title": "Requeue builds the watchdog gave up on",
         "description": "Fix (requeue): builds the watchdog gave up on (past Max retries, or every account tried) go back to the Queue with a fresh retry count. No builds = all of them.",
         "input": {
@@ -808,16 +981,16 @@
         "output": "{ requeued, failed, notGaveUp }"
       },
       {
-        "id": "watchdog-settings",
-        "route": "GET /watchdog/settings",
+        "id": "recovery-watchdog-settings",
+        "route": "GET /recovery-watchdog/settings",
         "title": "Watchdog settings",
         "description": "The Watchdog settings: enabled, intervalMin, staleMin, graceMin, maxRetries, retryOtherAccount, fyi (batch | each), cooldownMin.",
         "readOnly": true,
         "output": "{ settings, keys, defaults }"
       },
       {
-        "id": "watchdog-settings-set",
-        "route": "PUT /watchdog/settings",
+        "id": "recovery-watchdog-settings-set",
+        "route": "PUT /recovery-watchdog/settings",
         "title": "Change the watchdog settings",
         "description": "Change any Watchdog setting: switch it on or off, the interval, stale heartbeat minutes, max retries, retry on another account, one phone FYI per fix or batched. Say 'set watchdog max retries to 5'.",
         "input": {

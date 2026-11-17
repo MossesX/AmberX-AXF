@@ -12,6 +12,13 @@
  *   … migrate --apply                                       build the store from every older data set (once)
  *   … verify                                                every build, step, status and note of the old files is in the store
  *   … export                                                regenerate the old files (read-only exports of the store)
+ *   … done-means-merged [--apply] [--report <file>]         done-means-merged@1: built / complete records with no merged PR
+ *                                                            back to landing / fixing, once (dry run without --apply)
+ *   … attempt <build> --attempt <json> | --close ok|failed  done-means-merged@1: add an attempt to the build's one log (an
+ *                                                        auto-lander attempt is folded in), or close the open one
+ *   … fail <build> --kind k --why "…" [--head sha]        record a failure found outside the dispatcher: status fixing
+ *   … set-status <build> <status> [--by who]             set a status through the done-means-merged@1 guard: landed / built /
+ *                                                        complete without merge + green CI + verify are refused (a note says why)
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
@@ -40,6 +47,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
+import { migrateDoneStore } from '../core/build-pipeline.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, journalReadDirs, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
@@ -346,6 +354,21 @@ export function mergeRetiredNow({ by = 'profiles-merge' } = {}) {
   } finally { unlock(); flushLiveSoon(); }
 }
 
+/**
+ * done-means-merged@1 migration (framework/core/build-pipeline.mjs migrateDoneStore), once: built / complete records with
+ * no merged PR go back to landing / fixing with a note each; `meta.doneMeansMerged` records the run so a second call is
+ * a no-op ({ already }). Dry: nothing written, the report only.
+ */
+export function migrateDoneNow({ dry = true, by = 'done-means-merged', at = new Date().toISOString() } = {}) {
+  if (dry) { const s = loadStore(); const r = migrateDoneStore(s, { at }); return { report: r.report, already: s.meta?.doneMeansMerged ?? null }; }
+  let report = null; let already = null;
+  const r = withStore((s) => {
+    if (s.meta?.doneMeansMerged) { already = s.meta.doneMeansMerged; report = { $axf: 'done-means-merged@1', at, moved: [], unprovable: [] }; return s; }
+    const m = migrateDoneStore(s, { at }); report = m.report; return m.store;
+  }, { by, action: 'done-means-merged', note: 'built / complete without a merged PR → landing / fixing (done-means-merged@1)' });
+  return { report, already, rev: r.rev, changes: r.changes.length };
+}
+
 /** Write every export now (after the migration, or by hand: `builds-store.mjs export`). */
 export function exportNow() { const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
 
@@ -399,6 +422,8 @@ export function adoptStore(next, { journals = {} } = {}) {
     // their events fire now, so the ledger hears about ticks, PRs and shipped manifests made elsewhere (ids are the
     // writer's revs, so an event a listener already took is skipped)
     let before = null; try { before = existsSync(f) ? core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))) : null; } catch { /* unreadable: nothing to compare */ }
+    // done-means-merged@1: a status that arrives as landed / built / complete without the evidence is refused here too
+    if (before) next = core.enforceDoneGuard(before, next, { by: 'builds-live' }).store;
     if (before) { const changes = adoptedChanges(before, next); if (changes.length) emitChanges(changes, { at: new Date().toISOString(), by: 'builds-live' }); }
     healOrigins(next);
     const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(next)); renameSync(tmp, f);
@@ -442,7 +467,6 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
 /** Read, change, save under a lock. fn(store) returns the new store (or { store, ...extra }). */
 export function withStore(fn, meta = {}) {
   if (remoteOn()) {
-    // cutover: no file lock; the etag read with the store is the lock (a conflict re-reads and re-applies fn)
     for (let i = 0; ; i += 1) {
       try { const r = withStoreOnce(fn, meta); flushLiveSoon(); return r; }
       catch (e) { if (!(e instanceof StoreConflict) || i >= 4) throw e; }
@@ -457,12 +481,13 @@ function withStoreOnce(fn, meta) {
   const base = exportsOn() ? absorbForeign(core.normalizeStore(JSON.parse(JSON.stringify(before))), foreign) : before;
   if (foreign.length) saveStore(before, base, { by: 'foreign-write', action: 'absorb', note: foreign.join('; ') });
   const start = foreign.length ? readStore() : before;
-  // nothing new from outside, but the files still differ from the store (e.g. older): the export below rewrites them
   const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
-  const next = r && r.$axf ? r : r.store;
+  const guarded = core.enforceDoneGuard(start, r && r.$axf ? r : r.store, { by: meta.by || 'cli' });
+  const next = guarded.store;
+  if (guarded.refused.length) process.stderr.write(guarded.refused.map((x) => `builds-store: refused ${x.id} ${x.from} → ${x.to}: ${x.why}\n`).join(''));
   const saved = saveStore(start, next, meta);
   if (exportsOn()) exportAll(saved.store);
-  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign };
+  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: guarded.refused };
 }
 
 // ------------------------------------------------------------------ migration sources
@@ -675,6 +700,66 @@ async function main(argv) {
     if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${dryRunMarkdown(r)}\n`); }
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
+  if (cmd === 'set-status') {
+    const [id, to] = rest; const bi = rest.indexOf('--by'); const by = (bi >= 0 && rest[bi + 1]) || 'cli';
+    if (!id || !core.STATUSES.includes(to)) { process.exitCode = 2; return out({ ok: false, error: `usage: set-status <build> <${core.STATUSES.join('|')}> [--by who]` }, `usage: set-status <build> <status> [--by who]`); }
+    let why = ''; let ok = true;
+    const r = withStore((x) => {
+      const b = core.findBuild(x, id); if (!b) throw new Error(`no build "${id}"`);
+      const g = core.guardedStatus(b, to, { by });
+      ok = g.ok; why = g.why;
+      Object.assign(b, g.build, { updatedAt: new Date().toISOString() });
+      return x;
+    }, { by, action: 'set-status', note: `${id} → ${to}` });
+    const b = core.findBuild(r.store, id);
+    if (!ok) process.exitCode = 1;
+    return out({ ok, why, id: b.id, status: b.status }, ok ? `${b.id}: ${b.status}` : `refused: ${b.id} stays ${b.status}: ${why}`);
+  }
+  if (cmd === 'attempt') {
+    // done-means-merged@1: one log. The auto-lander (and a hand) add attempts here: --attempt '<auto-lander-attempt@1 | attempt@1>'
+    // (a lander attempt is folded with fromAutoLanderAttempt); --close ok|failed closes the build's open attempt of that source
+    const [id] = rest; const gi = (k) => { const i = rest.indexOf(k); return i >= 0 ? rest[i + 1] : ''; };
+    const by = gi('--by') || 'cli'; const close = gi('--close'); const raw = gi('--attempt');
+    if (!id || (!raw && !close)) { process.exitCode = 2; return out({ ok: false, error: 'usage: attempt <build> --attempt <json> | --close ok|failed [--source auto-lander] [--note …] [--by who]' }, 'usage: attempt <build> --attempt <json> | --close ok|failed [--source s] [--note …]'); }
+    const BP = await import('../core/build-pipeline.mjs');
+    let added = null; let closed = null;
+    withStore((x) => {
+      const b = core.findBuild(x, id); if (!b) throw new Error(`no build "${id}"`);
+      const at = new Date().toISOString(); const list = BP.normAttempts(b.attempts);
+      if (raw) {
+        const j = JSON.parse(raw);
+        const a = j.$axf === 'auto-lander-attempt@1' || ['red-ci', 'land'].includes(j.kind) ? BP.fromAutoLanderAttempt(j) : BP.normAttempt(j);
+        // the same try reported twice (one per round) is one attempt: same source, kind, strategy, head and start
+        if (!list.some((y) => y.source === a.source && y.kind === a.kind && y.strategy === a.strategy && y.head === a.head && y.startedAt === a.startedAt)) { list.push(a); added = a; }
+      }
+      if (close) {
+        const src = gi('--source') || 'auto-lander';
+        const o = [...list].reverse().find((y) => y.result === 'started' && y.source === src);
+        if (o) { o.result = close === 'ok' ? 'ok' : 'failed'; o.endedAt = at; o.note = `${o.note ? `${o.note} ` : ''}${gi('--note') || (close === 'ok' ? 'Ok.' : 'Failed.')}`.slice(0, 600); closed = o; if (close === 'ok' && b.failure && ['clash', 'ci-red'].includes(b.failure.kind)) b.failure = null; }
+      }
+      b.attempts = BP.normAttempts(list);
+      if (added || closed) { b.updatedAt = at; if (added) b.notes.push({ text: `Attempt ${b.attempts.length} (${added.source}): ${added.kind} ${added.strategy}${added.fixStrategy ? ` (${added.fixStrategy})` : ''} → ${added.result}${added.note ? `: ${added.note.slice(0, 200)}` : ''}`, at }); }
+      return x;
+    }, { by, action: 'attempt', note: id });
+    return out({ ok: true, added, closed }, `${id}: ${added ? `attempt added (${added.kind} ${added.strategy})` : 'nothing new'}${closed ? `; attempt ${closed.n} closed ${closed.result}` : ''}`);
+  }
+  if (cmd === 'fail') {
+    // a failure found outside the dispatcher (the auto-lander: red CI on the merge commit): failure on the build, status fixing
+    const [id] = rest; const gi = (k) => { const i = rest.indexOf(k); return i >= 0 ? rest[i + 1] : ''; };
+    const BP = await import('../core/build-pipeline.mjs');
+    const f = BP.normFailure({ kind: gi('--kind'), at: new Date().toISOString(), why: gi('--why'), head: gi('--head'), step: gi('--step') });
+    if (!id || !f) { process.exitCode = 2; return out({ ok: false, error: `usage: fail <build> --kind <${BP.FAILURE_KINDS.join('|')}> --why "…" [--head sha] [--step s]` }, 'usage: fail <build> --kind k --why "…" [--head sha]'); }
+    let changed = false;
+    withStore((x) => {
+      const b = core.findBuild(x, id); if (!b) throw new Error(`no build "${id}"`);
+      const open = BP.normFailure(b.failure);
+      if (b.status === 'fixing' && open && open.kind === f.kind && open.head === f.head) return x;
+      b.failure = f; b.status = 'fixing'; b.builtAt = ''; b.updatedAt = f.at; changed = true;
+      b.notes.push({ text: `Fixing: ${f.kind}${f.head ? ` at ${f.head.slice(0, 10)}` : ''} (${f.why}). The server retries on its ladder.`, at: f.at });
+      return x;
+    }, { by: gi('--by') || 'cli', action: 'fail', note: `${id} ${f.kind}` });
+    return out({ ok: true, changed, failure: f }, `${id}: ${changed ? `fixing (${f.kind})` : 'already fixing this failure'}`);
+  }
   if (cmd === 'journal') {
     const sub = rest[0] || 'status';
     if (sub === 'migrate') { const r = migrateJournal({ apply: argv.includes('--apply') }); if (!r.ok) process.exitCode = 1; return out(r, `${r.dry ? 'dry run: ' : ''}${r.parts.length} part(s)${r.parts.reduce((a, p) => a + p.added, 0) ? `, ${r.parts.reduce((a, p) => a + p.added, 0)} byte(s) added on the hub` : ', the hub has every line'}${r.untracked ? `; ${r.untracked.length} repo part(s) untracked` : ''}${r.missing?.length ? `\n✗ ${r.missing.join('\n✗ ')}` : ''}`); }
@@ -683,6 +768,16 @@ async function main(argv) {
     throw new Error('journal migrate [--apply] | verify | status');
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
+  if (cmd === 'done-means-merged') {
+    // done-means-merged@1 (framework/spec/DONE-MEANS-MERGED.md): built / complete records that cannot prove a merge go back
+    // to landing / fixing, once. --dry reports, --apply writes (journalled, live to main like every write); --report <file> writes the list.
+    const apply = rest.includes('--apply');
+    const r = migrateDoneNow({ dry: !apply });
+    const i = rest.indexOf('--report');
+    if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${JSON.stringify(r.report, null, 1)}\n`); }
+    const lines = r.report.moved.map((m) => `${m.id}: ${m.from} → ${m.to} (${m.why})`);
+    return out({ ok: true, dry: !apply, already: r.already ?? null, report: r.report }, r.already ? `already migrated at ${r.already.at} (${r.already.moved} moved, ${r.already.unprovable} unprovable); nothing written` : `${apply ? 'migrated' : 'dry run'}: ${r.report.moved.length} moved, ${r.report.unprovable.length} unprovable (kept complete, no PR / branch / merge to check)\n${lines.join('\n')}`);
+  }
   if (cmd === 'verify') {
     // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
     const store = loadStore();

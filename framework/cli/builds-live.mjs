@@ -25,6 +25,9 @@
  *   … pull                                                    take main's newer builds into this checkout
  *   … sync                                                    flush, send builds newer here than on main, then pull (session start)
  *   … link <build> [--branch b] [--pr n|url] [--merged [iso]]  set a build's branch / PR / merged (live)
+ *         [--sha <merge commit>] [--ci success|failure|running] [--ci-run url] [--verified check|playwright|deploy|hand]
+ *                                                            done-means-merged@1 evidence: landed needs merged + sha + CI
+ *                                                            success, complete also the verify (the store refuses without)
  *   … run-end <build> --exit n [--signal TERM] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]
  *                                                             record how a session ended on the build (pipeline.runEnd, live):
  *                                                             the headless wrapper calls it as claude exits (watchdog evidence)
@@ -415,7 +418,7 @@ export function pullMain() {
 // ------------------------------------------------------------------ link (s2)
 
 /** Set a build's branch / PR / merged time in whatever profile it is in; status follows (built ↔ complete). */
-export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-live') {
+export function linkBuild(id, { branch: br, pr, mergedAt, landed } = {}, by = 'builds-live') {
   let found = null;
   const r = withStore((s) => {
     const b = core.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
@@ -423,11 +426,18 @@ export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-li
     if (typeof br === 'string' && br) b.branch = br;
     if (pr !== undefined && pr !== null && String(pr)) b.pr = normPr(pr);
     if (typeof mergedAt === 'string') b.mergedAt = mergedAt;
+    // done-means-merged@1 evidence: the merge commit, CI on it, the verify (landed / complete need them; the store guard refuses without)
+    if (landed && typeof landed === 'object') {
+      const prN = Number(String(b.pr || '').replace(/\D/g, '')) || 0;
+      b.landed = { ...(b.landed ?? {}), ...Object.fromEntries(Object.entries(landed).filter(([, v]) => v !== undefined && v !== '')), pr: prN || b.landed?.pr || 0, mergedAt: b.mergedAt || b.landed?.mergedAt || '' };
+      if (landed.ci && !landed.ciAt) b.landed.ciAt = new Date().toISOString();
+      if (landed.verifyHow && !landed.verifiedAt) b.landed.verifiedAt = new Date().toISOString();
+    }
     b.updatedAt = new Date().toISOString();
     merge.settleStatus(b, b.updatedAt);
     return s;
   }, { by, action: 'link', note: id });
-  return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes };
+  return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes, refused: r.refused ?? [] };
 }
 /**
  * How a session ended, on the build's run record (pipeline.runEnd; build-pipeline@1): exit code, signal, exit kind, the
@@ -520,8 +530,11 @@ async function main(argv) {
   if (cmd === 'link') {
     const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('link <build> [--branch b] [--pr n] [--merged [iso]]');
     const merged = opt('merged');
-    const r = linkBuild(id, { branch: typeof opt('branch') === 'string' ? opt('branch') : undefined, pr: typeof opt('pr') === 'string' ? opt('pr') : undefined, mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined });
-    return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt } }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}`);
+    const sv = (k) => (typeof opt(k) === 'string' ? opt(k) : undefined);
+    const landed = sv('sha') || sv('ci') || sv('verified') ? { sha: sv('sha'), ci: sv('ci'), ciRun: sv('ci-run'), verifyHow: sv('verified'), verifyLog: sv('verify-log') } : undefined;
+    const r = linkBuild(id, { branch: sv('branch'), pr: sv('pr'), mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined, landed });
+    const refused = r.refused?.find((x) => x.id === r.build.id);
+    return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt, landed: r.build.landed ?? null }, ...(refused ? { refused } : {}) }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}${refused ? `\nrefused ${refused.from} → ${refused.to}: ${refused.why}` : ''}`);
   }
   if (cmd === 'run-end') {
     const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('run-end <build> --exit n [--signal s] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]');

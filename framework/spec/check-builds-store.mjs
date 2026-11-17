@@ -273,7 +273,7 @@ t('a step is ticked at once from the Builds page (never drafted), and the build 
   let b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, false); assert.equal(b.status, 'running');
   assert.equal(orchView().builds.find((x) => x.id === 'from-cli').steps[0].done, false);
   io.withStore((s) => c.applyNow(s, 'all', [{ op: 'step-done', build: 'from-cli', uid: uid(), done: true }]).store, { by: 'test', action: 'tick' });
-  b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, true); assert.equal(b.status, 'complete'); assert.ok(b.steps[0].doneAt);
+  b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, true); assert.equal(b.status, 'landing'); assert.ok(b.steps[0].doneAt); // done-means-merged@1: every step done = landing until merged
   assert.throws(() => c.addDraftOp(io.loadStore(), 'all', { op: 'step-done', build: 'from-cli', uid: uid() }), /unknown draft op/);
   assert.throws(() => c.applyNow(io.loadStore(), 'all', [{ op: 'step-done', build: 'from-cli', uid: 'nope' }]), /no step/);
 });

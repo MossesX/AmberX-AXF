@@ -9,7 +9,7 @@ import { FOLDER } from './api';
 import { BUILD_RULE_DIALOG, BuildRuleDialog } from './BuildRuleDialog';
 import { CHECK_PR_DIALOG, CheckPrDialog } from './CheckPrDialog';
 import { AutoLanderSettings } from './AutoLanderSettings';
-import { GateSettings } from './GateSettings';
+import { GateScreenLinks, GateSettings } from './GateSettings';
 import { GateView, PLUGIN_ID } from './GateView';
 import { appMenu } from './menu';
 import { VIEW_KEY } from './rows';
@@ -35,6 +35,8 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     { id: 'gate.settings', tab: FOLDER, title: 'Gate & rules', icon: 'shield', order: 10, render: () => <GateSettings /> },
     { id: 'gate.auto-lander', tab: FOLDER, title: 'Server auto-lander', icon: 'monitor', order: 20, render: () => <AutoLanderSettings /> },
+    // Build rules and the auto-lander keep their controls on the Gate screen; the sub-tab links straight into them
+    { id: 'gate.screen-links', tab: FOLDER, title: 'On the Gate screen', icon: 'link', order: 30, render: () => <GateScreenLinks /> },
     { id: 'gate.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) { registerGateActions(rt); registerSettingTargets(rt); },

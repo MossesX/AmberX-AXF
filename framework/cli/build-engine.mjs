@@ -23,6 +23,7 @@ import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-ru
 import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '../core/feature-ledger.mjs';
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
+import { REGISTRY as RETRY_LADDER_REGISTRY } from '../core/retry-ladder.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
 import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
 import { REGISTRY as AUTO_LANDER_REGISTRY, jsonSchemas as autoLanderJsonSchemas } from '../core/auto-lander.mjs';
@@ -923,6 +924,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // build-hook@1: the one event every build creator fires (builds store writes → listeners)
   for (const [n, schema] of Object.entries(buildHookJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const hreg = join(FRAMEWORK_DIR, 'schemas/build-hook.json'); writeFileSync(hreg, JSON.stringify(BUILD_HOOK_REGISTRY, null, 2) + '\n'); written.push(hreg);
+  const rlreg = join(FRAMEWORK_DIR, 'schemas/retry-ladder.json'); writeFileSync(rlreg, JSON.stringify(RETRY_LADDER_REGISTRY, null, 2) + '\n'); written.push(rlreg); // done-means-merged@1 retry ladder
   // build-watchdog@1: the stuck-build recovery record on builds@1 (recoveries[]), the probe, the decision and the settings
   const wreg = join(FRAMEWORK_DIR, 'schemas/build-watchdog.json'); writeFileSync(wreg, JSON.stringify(buildWatchdogJsonSchema(), null, 2) + '\n'); written.push(wreg);
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
