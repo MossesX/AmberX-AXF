@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:19 UTC · `axf-data-postgres-real-tables-own` s2 done, → running (all) · orchestrator
 - 2026-11-17 00:19 UTC · `stop-auto-lander-committing-tracking` → queued, note (all) · pipeline
 - 2026-11-17 00:19 UTC · `stop-auto-lander-committing-tracking` → running, note (all) · pipeline
 - 2026-11-17 00:19 UTC · `stop-auto-lander-committing-tracking` → running, note (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 14:52 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
 - 2026-11-17 14:52 UTC · `edit-ui-mode-inline-edit-anything-active` added (0 steps) (all) · console
 - 2026-11-17 14:52 UTC · `edit-ui-mode-inline-edit-anything-active` → queued, note (all) · console
+- 2026-11-17 14:53 UTC · `edit-ui-mode-inline-edit-anything-active` → queued, note (all) · builds-live
 
 ## Token passes (log)
 
