@@ -2,6 +2,27 @@
 
 Brett (Nov 17 2026): "why does the settings interface tab of the banner change just the interface of the settings itself? what's the point of that"
 
+## Result
+
+Fixed for every kind. The Interface tab of any chrome Settings… dialog (banner, toolbar, tab group, nav menu,
+application menu, context menu) now edits the chrome it was opened for: its asset and every look and behaviour
+field, written to `axf.chrome.<type>.<id>` (`.asset` for a tab row's own pick), live. The settings window's own
+layout picker moved out of the tab into a fold above the tabs titled "This settings window (every <kind>)…".
+Grids never had the bug (no chrome dialog; their per-grid tokens already write only that grid's set).
+
+Before: Interface showed the settings-window picker (writes `axf.chrome.settings.<type>` / `.custom.<type>`), so
+the banner never changed. After: pick Accent on Interface and the banner across the top turns accent while the
+dialog keeps its look (shots below).
+
+Checks (all pass): `check-chrome-interface-tab.mts` (new, jsdom, 296), `check-chrome-settings.mts` (326, with the new
+guard), `check-tab-group.mts` (445), `check-chrome-apply.mts` (174), `chrome-settings.mjs check`,
+`check-chrome-assets.mjs`, `check-theme.mjs`, `check-controls.mjs`, `check-toolbars.mjs`, `check-console-control.mjs`,
+`shared-assets.mjs check`; console `tsc --noEmit` and `npm run build`.
+
+Clash check: `rebuild-every-toolbar-page-specific` (in progress, Fable) reworks page toolbars; main's page-toolbar
+model (instance = the page's settings id) landed while this ran and is followed here (`baseDataOf` resolves a page
+toolbar's own asset from its settings id). No pending item covers the Interface tab.
+
 ## s1 — trace (working note)
 
 **Where:** right-click the banner → *Banner settings…* → action `chrome.settings:banner:app` → dialog
@@ -51,10 +72,10 @@ existing "Settings interface for this one" picker, so they stay reachable but ne
 
 The hotfix `claude/hotfix-toolbar-settings-still-change` (PR #673, landed Nov 14) made every toolbar renderer read
 its override; its own diff past main is only its report. The Interface tab bug was the shared `InterfacePicker`, so
-the s3 fix covers toolbars. Cases added: the app toolbar (`axf.chrome.toolbar.app`) and a page toolbar
-(`axf.chrome.toolbar.data-grid-tools`, drawn by `AssetToolbar`). Found on the way: `baseDataOf` compared a page
+the s3 fix covers toolbars. Cases added: the app toolbar (`axf.chrome.toolbar.app`) and a page toolbar (after main's page-toolbar@1 landed:
+a view-scoped asset drawn by `PageToolbar`, instance = the page's settings id `demo`, `axf.chrome.toolbar.demo`). Found on the way: `baseDataOf` compared a page
 toolbar's fields with the app toolbar asset, so a value equal to the app toolbar's was dropped instead of saved;
-it now compares with the page toolbar's own asset.
+it now compares with the page toolbar's own asset (the pick for its settings id, else the asset scoped to it).
 
 ## s6 — tab groups
 

@@ -38,7 +38,8 @@ const { createRoot } = await import('react-dom/client');
 const { AxfRuntime } = await import('../core/runtime.ts');
 const { AxfProvider } = await import('../react/AxfProvider.tsx');
 const { Banner } = await import('../react/components/Banner.tsx');
-const { Toolbar, AssetToolbar, NavMenu, MenuBar } = await import('../react/components/Chrome.tsx');
+const { PageToolbar } = await import('../react/components/Toolbar.tsx');
+const { Toolbar, NavMenu, MenuBar } = await import('../react/components/Chrome.tsx');
 const { TabGroup, tabGroupDataFor } = await import('../react/components/TabGroup.tsx');
 const { tapConfigFor } = await import('../core/engines/tapconfirm.ts');
 const row = () => h(TabGroup, { id: 'demo.sections', label: 'Demo sections', value: 'a', onChange: () => {}, tabs: [{ value: 'a', label: 'Alpha', icon: 'home' }, { value: 'b', label: 'Beta', icon: 'list' }] }, h('p', null, 'body'));
@@ -55,7 +56,10 @@ const doc = W.document as Document;
 const click = (el: Element) => el.dispatchEvent(new (W.MouseEvent as typeof MouseEvent)('click', { bubbles: true, cancelable: true }));
 
 const root = new URL('../', import.meta.url).pathname;
-const assets = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
+const shipped = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
+// a page toolbar scoped to a view (page-toolbar@1): its settings instance is the page's settings id (`demo`), not its asset id
+const pageTb = shipped.find((a) => a.type === 'toolbar' && a.id === 'data-grid-tools');
+const assets = [...shipped, { ...pageTb, id: 'demo-page-tools', name: 'Demo page tools', data: { ...pageTb.data, scope: 'view:demo' } }];
 const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
 
 type ChromeType = (typeof cs.CHROME_TYPES)[number];
@@ -73,7 +77,7 @@ export const CASES: Case[] = [
   { type: 'app-menu', instance: 'app', rendered: (rt) => rt.chromeData('app-menu'), draw: () => h(MenuBar), seen: seenOf('[role="menubar"]') },
   // the context menu draws only while open: its data (what the open menu reads) and the root tokens must follow
   { type: 'context-menu', instance: 'app', rendered: (rt) => rt.chromeData('context-menu') },
-  { type: 'toolbar', instance: 'data-grid-tools', rendered: (rt) => rt.chromeData('toolbar', 'data-grid-tools', rt.registry.get('toolbar', 'data-grid-tools')!.data), draw: () => h(AssetToolbar, { id: 'data-grid-tools' }), seen: seenOf('.fx-toolbar-scope') },
+  { type: 'toolbar', instance: 'demo', rendered: (rt) => rt.chromeData('toolbar', 'demo', rt.registry.get('toolbar', 'demo-page-tools')!.data), draw: () => h(PageToolbar, { view: 'demo', label: 'Demo page' }), seen: seenOf('.fx-toolbar-scope') },
 ];
 
 const settingsWindowKeys = (type: string) => [cs.CHROME_SETTINGS_PICK_KEY(type), cs.CHROME_SETTINGS_PATCH_KEY(type)];

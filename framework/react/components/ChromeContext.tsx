@@ -38,6 +38,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
 import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
+import { pageToolbarSettingsId, parseToolbarScope } from '../../core/engines/toolbar-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentToken, componentTokenError, instanceHasPrevious, instanceTokenValues, isComponentTokenFamily, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken, type ComponentTokenFamily } from '../../core/engines/component-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
@@ -98,9 +99,17 @@ function baseDataOf(rt: AxfRuntime, type: ChromeType, instance: string): Record<
     const own = typeof pick === 'string' && pick ? rt.registry.get('tab-group', pick) : null;
     return (own?.data as unknown as Record<string, unknown>) ?? (rt.assetOrNull('tab-group')?.data as unknown as Record<string, unknown>) ?? null;
   }
-  // a page toolbar is its own instance named by its asset id: it renders that asset, so its fields compare with it
-  const page = type === 'toolbar' && instance !== CHROME_APP_INSTANCE ? rt.registry.get('toolbar', instance) : null;
-  return (page?.data as unknown as Record<string, unknown>) ?? (rt.assetOrNull(type as AssetType)?.data as Record<string, unknown>) ?? null;
+  // a page toolbar is its own instance (page-toolbar@1: the page's settings id, `gate`, `gate.auto-lander`): it renders
+  // its own asset (the pick for that id, else the asset scoped to it, else an asset of that id), so its fields compare with it
+  if (type === 'toolbar' && instance !== CHROME_APP_INSTANCE) {
+    const list = rt.registry.list('toolbar');
+    const pick = rt.settings.get(CHROME_INSTANCE_ASSET_KEY('toolbar', instance));
+    const page = (typeof pick === 'string' ? list.find((a) => a.id === pick) : undefined)
+      ?? list.find((a) => { const d = a.data as unknown as { scope?: string; slot?: string }; const sc = parseToolbarScope(d.scope); return !!sc && sc.kind !== 'app' && pageToolbarSettingsId(sc, d.slot) === instance; })
+      ?? list.find((a) => a.id === instance);
+    if (page) return page.data as unknown as Record<string, unknown>;
+  }
+  return (rt.assetOrNull(type as AssetType)?.data as Record<string, unknown>) ?? null;
 }
 
 /** Set one field for an instance (dropping the override when it equals the asset's own value). */
