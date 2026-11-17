@@ -1,0 +1,235 @@
+{
+  "$axf": "asset@1",
+  "type": "voice",
+  "id": "breakroom",
+  "name": "Breakroom crew",
+  "version": "1.0.0",
+  "description": "The default voice cast: every crew member gets a voice of their own (gender, speed and pitch set apart so you can tell who is talking without looking), Boss a slower, lower voice. Device voices only; no cloud keys needed.",
+  "author": "AmberX AXF",
+  "tags": [
+    "voice",
+    "agents",
+    "group-chat",
+    "default"
+  ],
+  "data": {
+    "default": {
+      "label": "Crew",
+      "prefer": [],
+      "lang": "en-US",
+      "gender": "any",
+      "rate": 1.0,
+      "pitch": 1.0,
+      "volume": 1
+    },
+    "agents": {
+      "boss": {
+        "label": "Boss",
+        "prefer": [
+          "Daniel",
+          "Google UK English Male"
+        ],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 0.95,
+        "pitch": 0.8,
+        "volume": 1
+      },
+      "kat": {
+        "label": "Kotlin Kat",
+        "prefer": [
+          "Samantha",
+          "Google US English"
+        ],
+        "lang": "en-US",
+        "gender": "female",
+        "rate": 1.1,
+        "pitch": 1.25,
+        "volume": 1
+      },
+      "rio": {
+        "label": "Rio React",
+        "prefer": [
+          "Alex"
+        ],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.15,
+        "pitch": 1.05,
+        "volume": 1
+      },
+      "py": {
+        "label": "Py Pete",
+        "prefer": [
+          "Fred"
+        ],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 0.95,
+        "pitch": 0.9,
+        "volume": 1
+      },
+      "manny": {
+        "label": "Manny Fest",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.0,
+        "pitch": 1.1,
+        "volume": 1
+      },
+      "tia": {
+        "label": "Tia Theme",
+        "prefer": [
+          "Victoria",
+          "Karen"
+        ],
+        "lang": "en-US",
+        "gender": "female",
+        "rate": 1.05,
+        "pitch": 1.35,
+        "volume": 1
+      },
+      "tex": {
+        "label": "Tex Tester",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.2,
+        "pitch": 0.95,
+        "volume": 1
+      },
+      "doc": {
+        "label": "Doc Holli",
+        "prefer": [
+          "Moira",
+          "Tessa"
+        ],
+        "lang": "en-US",
+        "gender": "female",
+        "rate": 0.9,
+        "pitch": 1.0,
+        "volume": 1
+      },
+      "max": {
+        "label": "Merge Max",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.0,
+        "pitch": 0.75,
+        "volume": 1
+      },
+      "rhonda": {
+        "label": "Reel Rhonda",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "female",
+        "rate": 1.1,
+        "pitch": 1.15,
+        "volume": 1
+      },
+      "paulie": {
+        "label": "Ping Paulie",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.25,
+        "pitch": 1.2,
+        "volume": 1
+      },
+      "sully": {
+        "label": "Snap Sully",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.05,
+        "pitch": 0.85,
+        "volume": 1
+      },
+      "lenny": {
+        "label": "Landin' Lenny",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 0.9,
+        "pitch": 0.7,
+        "volume": 1
+      },
+      "joey": {
+        "label": "Janitor Joey",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.1,
+        "pitch": 1.0,
+        "volume": 1
+      },
+      "earl": {
+        "label": "Earl the Ear",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 0.85,
+        "pitch": 0.9,
+        "volume": 1
+      },
+      "gina": {
+        "label": "Greenlight Gina",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "female",
+        "rate": 1.15,
+        "pitch": 1.2,
+        "volume": 1
+      },
+      "gizmo": {
+        "label": "Gizmo",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "any",
+        "rate": 1.0,
+        "pitch": 1.4,
+        "volume": 1
+      }
+    },
+    "pool": [
+      {
+        "label": "Pool 1",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "female",
+        "rate": 1.05,
+        "pitch": 1.2,
+        "volume": 1
+      },
+      {
+        "label": "Pool 2",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.0,
+        "pitch": 0.85,
+        "volume": 1
+      },
+      {
+        "label": "Pool 3",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "female",
+        "rate": 0.95,
+        "pitch": 1.05,
+        "volume": 1
+      },
+      {
+        "label": "Pool 4",
+        "prefer": [],
+        "lang": "en-US",
+        "gender": "male",
+        "rate": 1.1,
+        "pitch": 1.0,
+        "volume": 1
+      }
+    ]
+  }
+}
