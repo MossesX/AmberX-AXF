@@ -323,6 +323,8 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-widget-shape-editor__presets { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); }
 .fx-widget-shape-editor__swatch { display: inline-block; flex: none; inline-size: calc(var(--fx-font-size) * 1.1); block-size: calc(var(--fx-font-size) * 1.1); margin-inline-end: var(--fx-dens-gap-sm); background: currentColor; clip-path: var(--fx-widget-shape-clip); }
 .fx-widget-shape-editor__actions { justify-content: flex-end; flex-wrap: wrap; }
+/* Banners settings → Widget shape and icon (react/components/BannerWidgetShapeRows.tsx): the row's glyph in the widget's shape */
+.fx-banner-shape-rows__glyph { display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: calc(var(--fx-row-h) * 0.7); block-size: calc(var(--fx-row-h) * 0.7); background: var(--fx-surface2); border-radius: var(--fx-widget-shape-radius); clip-path: var(--fx-widget-shape-clip); }
 .fx-banner-widgets__fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 24), 1fr)); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
 :where([data-fx-tiny]) .fx-banner__side.is-left { justify-content: flex-start; } :where([data-fx-tiny]) .fx-banner__side .fx-widget-label, :where([data-fx-tiny]) .fx-banner__side .fx-widget-progress__label { display: none; }
 .fx-banner__side.is-center { justify-content: center; justify-content: safe center; }
