@@ -26,7 +26,8 @@
  *
  *   … status [--json]              on/off, cron installed, last pass and its age (stale after 3 min), the last scan the host
  *                                  saw, recent fixes, builds it gave up on
- *   … settings [--json] · set key=value… [--by who] | set --json '{…}'   the Watchdog settings (keys: SETTING_KEYS)
+ *   … settings [--json] · set key=value… [--by who] | set --patch '{…}'   the Watchdog settings (keys: SETTING_KEYS)
+ *   … recoveries <build> [--json]  a build's recoveries[] (oldest first) and the retries it has used
  *   … requeue [<id>…]              Fix (requeue): builds it gave up on back to the Queue with a fresh retry count
  *   … cron                         what the axf-watchdog cron runs every minute: a pass when the watchdog is on and
  *                                  intervalMin has gone by since the last one, or when the console asked for one (request)
@@ -514,9 +515,16 @@ export async function main(argv = process.argv.slice(2)) {
   }
   if (cmd === 'settings') return out({ ok: true, settings: loadSettings(), keys: SETTING_KEYS, defaults: { ...W.DEFAULTS, ...EXTRA_DEFAULTS } }, JSON.stringify(loadSettings(), null, 1));
   if (cmd === 'set') {
-    const patch = typeof f.json === 'string' ? JSON.parse(f.json) : Object.fromEntries(f._.map((kv) => { const i = kv.indexOf('='); if (i < 1) throw Object.assign(new Error(`set key=value (keys: ${SETTING_KEYS.join(', ')})`), { code: 2 }); return [kv.slice(0, i), kv.slice(i + 1)]; }));
+    const patch = typeof f.patch === 'string' ? JSON.parse(f.patch) : Object.fromEntries(f._.map((kv) => { const i = kv.indexOf('='); if (i < 1) throw Object.assign(new Error(`set key=value (keys: ${SETTING_KEYS.join(', ')})`), { code: 2 }); return [kv.slice(0, i), kv.slice(i + 1)]; }));
     const r = saveSettings(patch, { by: typeof f.by === 'string' ? f.by : undefined });
     return out({ ok: true, settings: r }, `saved: ${Object.keys(patch).map((k) => `${k}=${r[k]}`).join(' · ')}`);
+  }
+  if (cmd === 'recoveries') {
+    const id = f._[0]; if (!id) throw Object.assign(new Error('recoveries <build>'), { code: 2 });
+    const b = loadStore().builds.find((x) => x.id === id || (x.aliases ?? []).includes(id));
+    if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+    const list = W.normRecoveries(b.recoveries);
+    return out({ ok: true, build: b.id, status: b.status, retries: retriesOf(sinceGiveUp(b)), recoveries: list }, list.length ? list.map((r) => `${r.at} ${r.cause} → ${r.action}${r.attempt ? ` #${r.attempt}` : ''}${r.notified ? ' · told the phone' : ''} · ${r.note}`).join('\n') : `${b.id}: no recoveries`);
   }
   if (cmd === 'requeue') { const r = requeueGaveUp(f._); if (r.failed.length) process.exitCode = 1; return out({ ok: !r.failed.length, ...r }, `requeued ${r.requeued.join(', ') || 'nothing'}${r.failed.length ? ` · failed ${r.failed.map((x) => `${x.id}: ${x.error}`).join('; ')}` : ''}`); }
   if (cmd === 'cron') {
@@ -527,7 +535,7 @@ export async function main(argv = process.argv.slice(2)) {
   if (cmd === 'request') { const r = requestRun({ by: typeof f.by === 'string' ? f.by : undefined, build: typeof f.build === 'string' ? f.build : '' }); return out({ ok: true, ...r }, `asked the host for a watchdog pass (${r.at}): the next cron minute runs it`); }
   if (cmd === 'install-cron') { const r = installCron({ dir: typeof f.dir === 'string' ? f.dir : undefined }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `cron not installed: ${r.skipped}` : `installed ${r.file}`) : `cron not installed: ${r.error}`); }
   if (cmd === 'remove-cron') { const r = removeCron(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.removed ? `removed ${r.file}` : `${r.file} was not there`) : `not removed: ${r.error}`); }
-  throw Object.assign(new Error(`unknown command ${cmd} (status, scan, run, settings, set, requeue, cron, request, install-cron, remove-cron)`), { code: 2 });
+  throw Object.assign(new Error(`unknown command ${cmd} (status, scan, run, settings, set, recoveries, requeue, cron, request, install-cron, remove-cron)`), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === SELF) {
