@@ -23,7 +23,7 @@ export interface ChromeField {
 }
 export interface ChromeMove { positions: ChromePosition[]; via: 'instance' | 'layout' | 'none'; field: string }
 export interface ChromeSettingsTab { id: string; label: string; icon: string; order: number }
-export interface ChromeSettingsChoice { id: string; name: string; custom: boolean; extends: string }
+export interface ChromeSettingsChoice { id: string; name: string; custom: boolean; extends: string; locked?: boolean }
 export interface ChromeSettingsPlanEntry { type: ChromeType; defaultId: string; customId: string }
 export interface AssetLike { id: string; name?: string; data?: Record<string, unknown> }
 
@@ -77,8 +77,16 @@ export const CONTROLLED_COLORS: readonly ('warning' | 'accent' | 'info' | 'succe
 export function controlledColorOf(v: unknown): (typeof CONTROLLED_COLORS)[number];
 export function chromeSettingsErrors(asset: unknown): string[];
 export function resolveSettingsChain(get: (id: string) => AssetLike | null | undefined, id: string, seen?: string[]): Record<string, unknown> | null;
+export const CHROME_SETTINGS_LOCKED: boolean;
+export const CHROME_SETTINGS_LOCKED_APP: string;
+export const CHROME_SETTINGS_LOCKED_NAME: string;
+export const CHROME_SETTINGS_LOCKED_NOTE: string;
+export const CHROME_SETTINGS_LOCKED_SOURCE: 'locked';
+export function chromeSettingsLockedId(type: ChromeType | string, ids: string[]): string | null;
+export interface ChromeIgnoredPick { key: string; type: ChromeType; instance?: string; kind: 'pick' | 'patch' | 'instance'; value: unknown }
+export function chromeSettingsIgnoredPicks(saved: unknown): ChromeIgnoredPick[];
 export function chromeSettingsPick(saved: unknown, type: ChromeType | string, ids: string[]): string | null;
-export type ChromeInterfaceSource = 'instance' | 'type' | 'default';
+export type ChromeInterfaceSource = 'locked' | 'instance' | 'type' | 'default';
 export function chromeInstanceSettingsPick(instanceSaved: unknown, typeSaved: unknown, type: ChromeType | string, ids: string[]): { id: string; source: ChromeInterfaceSource } | null;
 export interface ChromeInstanceInterface { type: ChromeType; instance: string; interface: string }
 export function chromeInstanceInterfaceList(saved: unknown): ChromeInstanceInterface[];

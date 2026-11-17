@@ -6,6 +6,8 @@ export const APP_LOOK_MAX_BYTES: number;
 /** How many backups an app-look document keeps (newest first). */
 export const LOOK_BACKUPS_MAX: number;
 export const SKIN_NEVER: readonly string[];
+/** Never-slots an older skin may still name (toolbar): read and dropped, never an error. */
+export const SKIN_IGNORED: readonly string[];
 /** The section of a skin that is switched on its own: the colour theme slot. */
 export const SKIN_COLOR_SLOT: 'color-theme';
 export const SKIN_USES: readonly ('on' | 'off' | 'inherit')[];

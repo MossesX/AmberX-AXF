@@ -37,7 +37,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
-import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
+import { CHROME_SETTINGS_LOCKED, CHROME_SETTINGS_LOCKED_NAME, CHROME_SETTINGS_LOCKED_NOTE, CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows, type ChromeInterfaceSource } from '../../core/engines/chrome-settings-rules.mjs';
 import { pageToolbarSettingsId, parseToolbarScope } from '../../core/engines/toolbar-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentToken, componentTokenError, instanceHasPrevious, instanceTokenValues, isComponentTokenFamily, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken, type ComponentTokenFamily } from '../../core/engines/component-tokens.mjs';
@@ -62,14 +62,16 @@ const instanceOf = (type: ChromeType, payload: string | undefined): string => (C
 
 /**
  * The settings asset a dialog renders through, resolved (inherit@1) and normalized; null when the app ships none.
- * With an instance: that one's own pick first (axf.chrome.<type>.<instance>.interface), then the kind's, then the default.
+ * Locked (CHROME_SETTINGS_LOCKED, Brett, Nov 17 2026): always the Gizmo X AI Studio interface of the kind; the stored
+ * picks and the in-app layout patch are read and ignored, never deleted. Unlocked: that instance's own pick first
+ * (axf.chrome.<type>.<instance>.interface), then the kind's, then the default, with the app's layout patch over a copy.
  */
-export function chromeSettingsUi(rt: AxfRuntime, type: ChromeType, instance?: string): { id: string; ui: SettingsUi; custom: boolean; source: 'instance' | 'type' | 'default' } | null {
+export function chromeSettingsUi(rt: AxfRuntime, type: ChromeType, instance?: string): { id: string; ui: SettingsUi; custom: boolean; source: ChromeInterfaceSource } | null {
   const assets = rt.registry.list('settings');
   const pick = chromeInstanceSettingsPick(instance ? rt.settings.get(CHROME_INSTANCE_INTERFACE_KEY(type, instance)) : undefined, rt.settings.get(CHROME_SETTINGS_PICK_KEY(type)), type, assets.map((a) => a.id));
   if (!pick) return null;
   const { id, source } = pick;
-  const patch = rt.settings.get(CHROME_SETTINGS_PATCH_KEY(type));
+  const patch = CHROME_SETTINGS_LOCKED ? undefined : rt.settings.get(CHROME_SETTINGS_PATCH_KEY(type));
   const get = (x: string) => rt.registry.get('settings', x) ?? null;
   const data = resolveSettingsChain(get, id);
   if (!data) return null;
@@ -84,6 +86,7 @@ export function chromeSettingsUi(rt: AxfRuntime, type: ChromeType, instance?: st
  * Returns an error text, or '' when done.
  */
 export function setChromeInterface(rt: AxfRuntime, type: ChromeType, instance: string, which: string): string {
+  if (CHROME_SETTINGS_LOCKED) return CHROME_SETTINGS_LOCKED_NOTE; // nothing written, nothing cleared: an old pick stays stored, read and ignored
   const key = CHROME_INSTANCE_INTERFACE_KEY(type, instance);
   if (!which || which === 'inherit') { rt.settings.clear(key); return ''; }
   const id = which === 'default' ? chromeSettingsDefaultId(type) : which === 'custom' ? chromeSettingsCustomId(type, rt.manifest.app.id) : which;
@@ -220,6 +223,7 @@ export function installChrome(rt: AxfRuntime): void {
     rt.actions.register('settings.controlled-colour', ([c]) => { if (c && (CONTROLLED_COLORS as readonly string[]).includes(c)) rt.settings.set(CONTROLLED_COLOR_KEY, c); }, { label: 'Colour of controlled (overridden) settings', params: true });
     rt.actions.register('chrome.interface', ([type, which = 'default']) => {
       const ty = t(type); if (!ty) return;
+      if (CHROME_SETTINGS_LOCKED) { rt.toast(CHROME_SETTINGS_LOCKED_NOTE, 'info', 'Chrome settings'); return; }
       const key = CHROME_SETTINGS_PICK_KEY(ty);
       if (which === 'reset') { rt.settings.clear(CHROME_SETTINGS_PATCH_KEY(ty)); return; }
       const id = which === 'default' ? chromeSettingsDefaultId(ty) : which === 'custom' ? chromeSettingsCustomId(ty, rt.manifest.app.id) : which;
@@ -477,7 +481,10 @@ export function SettingsWindowPicker({ type }: { type: ChromeType }) {
   );
 }
 
-/** Which settings interface this kind's dialog uses (the shared default first), + reset the custom copy. Styles the settings window only. */
+/**
+ * Which settings interface this kind's dialog uses (the shared default first), + reset the custom copy. Styles the
+ * settings window only. Locked (Brett, Nov 17 2026): names the one interface in force and offers nothing to change.
+ */
 function InterfacePicker({ type }: { type: ChromeType }) {
   const rt = useRuntime();
   useAxfState();
@@ -485,6 +492,14 @@ function InterfacePicker({ type }: { type: ChromeType }) {
   const assets = rt.registry.list('settings');
   const choices = chromeSettingsChoices(type, assets as never);
   const picked = chromeSettingsPick(rt.settings.get(CHROME_SETTINGS_PICK_KEY(type)), type, assets.map((a) => a.id));
+  if (CHROME_SETTINGS_LOCKED) {
+    return (
+      <div className="fx-stack" data-axf-settings-window-locked={type}>
+        <Note tone="info">{CHROME_SETTINGS_LOCKED_NOTE}</Note>
+        <Note tone="info">In use: {choices.find((c) => c.id === picked)?.name ?? picked ?? 'none'} ({CHROME_SETTINGS_LOCKED_NAME}). Every {chromeLabel(type).toLowerCase()} opens this one.</Note>
+      </div>
+    );
+  }
   const customId = chromeSettingsCustomId(type, rt.manifest.app.id);
   const patch = rt.settings.get(CHROME_SETTINGS_PATCH_KEY(type));
   const patched = !!patch && typeof patch === 'object' && Object.keys(patch as object).length > 0;
@@ -526,6 +541,13 @@ export function InstanceInterfacePicker({ type, instance }: { type: ChromeType; 
   const own = rt.settings.get(CHROME_INSTANCE_INTERFACE_KEY(type, instance));
   const kind = chromeSettingsPick(rt.settings.get(CHROME_SETTINGS_PICK_KEY(type)), type, assets.map((a) => a.id));
   const kindName = choices.find((c) => c.id === kind)?.name ?? kind ?? 'none';
+  if (CHROME_SETTINGS_LOCKED) {
+    return (
+      <div data-axf-instance-interface={`${type}:${instance}`}>
+        <Note tone="info">Settings interface for this one: {kindName} ({CHROME_SETTINGS_LOCKED_NAME}), the same as every {chromeLabel(type).toLowerCase()}. Locked for now.</Note>
+      </div>
+    );
+  }
   const value = typeof own === 'string' && choices.some((c) => c.id === own) ? own : 'inherit';
   const customId = chromeSettingsCustomId(type, rt.manifest.app.id);
   const options = [

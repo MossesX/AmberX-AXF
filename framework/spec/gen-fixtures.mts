@@ -707,6 +707,16 @@ write('spacing.json', {
       none: cs.chromeInstanceSettingsPick(edited.id, undefined, 'tab-group', []),
     },
     instanceInterfaces: cs.chromeInstanceInterfaceList(savedInst),
+    // the lock (Nov 17 2026, build settings-fix-part-2-blank-toolbars): every window is the Gizmo X AI Studio interface
+    // (chrome-<type>-axf-console, else the shared default); stored picks and the layout patch are read and ignored
+    locked: {
+      on: cs.CHROME_SETTINGS_LOCKED, app: cs.CHROME_SETTINGS_LOCKED_APP, source: cs.CHROME_SETTINGS_LOCKED_SOURCE,
+      id: { gizmo: cs.chromeSettingsLockedId('tab-group', ['chrome-tab-group', 'chrome-tab-group-axf-console', custom.id]), defaultOnly: cs.chromeSettingsLockedId('tab-group', ['chrome-tab-group', 'chrome-tab-group-molly']), none: cs.chromeSettingsLockedId('tab-group', ['chrome-toolbar']) },
+      pickIgnored: cs.chromeSettingsPick('chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-tab-group-axf-console']),
+      instanceIgnored: cs.chromeInstanceSettingsPick('chrome-tab-group-molly', 'chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-tab-group-axf-console']),
+      choices: cs.chromeSettingsChoices('tab-group', [edited, defaults['chrome-toolbar']!, custom, defaults['chrome-tab-group']!]),
+      ignoredPicks: cs.chromeSettingsIgnoredPicks({ ...savedInst, 'axf.chrome.settings.custom.toolbar': { layout: 'list' }, 'axf.chrome.settings.custom.banner': {}, 'axf.chrome.settings.nav-menu': '' }),
+    },
     prefixTargets: Object.fromEntries(['axf-ws-toolbar:main', 'axf-ws-toolbar:', 'axf-ws-toolbarx'].map((t) => [t, cs.chromeTypeOfTarget(t)])),
     instanceSlugs: Object.fromEntries(['Tree search', 'ui-review.sections', '  MCP server!! ', ''].map((l) => [l || '(empty)', cs.chromeInstanceSlug(l)])),
     overrides: {

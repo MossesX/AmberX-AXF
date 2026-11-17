@@ -340,26 +340,85 @@ export function resolveSettingsChain(get, id, seen = []) {
   return out;
 }
 
-/** The settings asset a chrome type's dialog renders through: the saved pick when it exists, else the shared default. */
-export function chromeSettingsPick(saved, type, ids) {
+/* ---------------- the locked settings interface (Brett, Nov 17 2026) ---------------- */
+
+/**
+ * Every settings window is locked to one interface (Brett, Nov 17 2026, build settings-fix-part-2-blank-toolbars:
+ * "Don't even allow editing or changing the fucking settings layout."): the Gizmo X AI Studio settings interface of
+ * the kind, `chrome-<type>-axf-console` (the Dev Console's copy, which follows the shared default until edited), and
+ * where an app does not ship that copy the shared default `chrome-<type>` it extends. The per-app pick
+ * (`axf.chrome.settings.<type>`), the per-instance pick (`axf.chrome.<type>.<instance>.interface`) and the in-app layout
+ * patch (`axf.chrome.settings.custom.<type>`) are read and ignored, never deleted: `chromeSettingsIgnoredPicks` lists
+ * what a store still holds so the state stays readable. Unlocking later is one flag here, not a migration.
+ */
+export const CHROME_SETTINGS_LOCKED = true;
+/** The app whose settings interface every kind renders through: the Dev Console (Gizmo X AI Studio). */
+export const CHROME_SETTINGS_LOCKED_APP = 'axf-console';
+export const CHROME_SETTINGS_LOCKED_NAME = 'Gizmo X AI Studio';
+/** Why a picker shows no choices and an action that would change the pick does nothing. */
+export const CHROME_SETTINGS_LOCKED_NOTE = `Settings windows are locked to the ${CHROME_SETTINGS_LOCKED_NAME} settings interface. Picking another interface or editing the layout is off for now.`;
+export const CHROME_SETTINGS_LOCKED_SOURCE = 'locked';
+
+/** The id the lock resolves for a kind from the ids an app ships: the Gizmo X AI Studio copy, else the shared default, else null. */
+export function chromeSettingsLockedId(type, ids) {
   const list = Array.isArray(ids) ? ids : [];
+  const g = chromeSettingsCustomId(type, CHROME_SETTINGS_LOCKED_APP);
+  if (list.includes(g)) return g;
+  const d = chromeSettingsDefaultId(type);
+  return list.includes(d) ? d : null;
+}
+
+/** The saved pick as the unlocked rules read it: the saved id when it is a shipped interface of the type, else the shared default. */
+function unlockedPick(saved, type, list) {
   if (typeof saved === 'string' && list.includes(saved) && chromeTypeOfSettingsId(saved) === type) return saved;
   const d = chromeSettingsDefaultId(type);
   return list.includes(d) ? d : null;
 }
 
 /**
+ * The settings asset a chrome type's dialog renders through. Locked (CHROME_SETTINGS_LOCKED): always the locked id;
+ * `saved` (the per-app pick) is read and ignored. Unlocked: the saved pick when it exists, else the shared default.
+ */
+export function chromeSettingsPick(saved, type, ids) {
+  const list = Array.isArray(ids) ? ids : [];
+  if (CHROME_SETTINGS_LOCKED) return chromeSettingsLockedId(type, list);
+  return unlockedPick(saved, type, list);
+}
+
+/**
  * The settings interface ONE instance's dialog renders through (build per-instance-settings-window-picker):
- * `{ id, source }` where source is `instance` (its own pick), `type` (the kind's pick for the app) or `default` (the
- * shared default); null when the app ships none. A pick whose asset is gone (another skin, a removed copy) falls
- * through to the next level, so a dialog always opens.
+ * `{ id, source }` where source is `locked` (every window while CHROME_SETTINGS_LOCKED), `instance` (its own pick),
+ * `type` (the kind's pick for the app) or `default` (the shared default); null when the app ships none. A pick whose
+ * asset is gone (another skin, a removed copy) falls through to the next level, so a dialog always opens.
  */
 export function chromeInstanceSettingsPick(instanceSaved, typeSaved, type, ids) {
   const list = Array.isArray(ids) ? ids : [];
+  if (CHROME_SETTINGS_LOCKED) {
+    const locked = chromeSettingsLockedId(type, list);
+    return locked ? { id: locked, source: CHROME_SETTINGS_LOCKED_SOURCE } : null;
+  }
   if (typeof instanceSaved === 'string' && list.includes(instanceSaved) && chromeTypeOfSettingsId(instanceSaved) === type) return { id: instanceSaved, source: 'instance' };
-  const id = chromeSettingsPick(typeSaved, type, list);
+  const id = unlockedPick(typeSaved, type, list);
   if (!id) return null;
   return { id, source: typeof typeSaved === 'string' && typeSaved === id && id !== chromeSettingsDefaultId(type) ? 'type' : 'default' };
+}
+
+/**
+ * The stored picks the lock reads and ignores: `[{ key, type, instance?, value }]` for every `axf.chrome.settings.<type>`,
+ * `axf.chrome.settings.custom.<type>` (the layout patch) and `axf.chrome.<type>.<instance>.interface` a store still
+ * holds. Nothing is deleted; this is the readable state behind "what would apply if the lock came off".
+ */
+export function chromeSettingsIgnoredPicks(saved) {
+  const out = [];
+  if (!isObj(saved)) return out;
+  for (const t of CHROME_TYPES) {
+    const pick = saved[CHROME_SETTINGS_PICK_KEY(t)];
+    if (typeof pick === 'string' && pick) out.push({ key: CHROME_SETTINGS_PICK_KEY(t), type: t, kind: 'pick', value: pick });
+    const patch = saved[CHROME_SETTINGS_PATCH_KEY(t)];
+    if (isObj(patch) && Object.keys(patch).length) out.push({ key: CHROME_SETTINGS_PATCH_KEY(t), type: t, kind: 'patch', value: { ...patch } });
+  }
+  for (const i of chromeInstanceInterfaceList(saved)) out.push({ key: CHROME_INSTANCE_INTERFACE_KEY(i.type, i.instance), type: i.type, instance: i.instance, kind: 'instance', value: i.interface });
+  return out;
 }
 
 /**
@@ -380,11 +439,17 @@ export function chromeInstanceInterfaceList(saved) {
   return out.sort((a, b) => CHROME_TYPES.indexOf(a.type) - CHROME_TYPES.indexOf(b.type) || a.instance.localeCompare(b.instance));
 }
 
-/** The choices a picker offers for a chrome type: the shared default first, then every custom copy / other interface for it. */
+/**
+ * The choices a picker offers for a chrome type: the shared default first, then every custom copy / other interface
+ * for it. Locked: the one interface the lock resolves (so a picker has nothing to switch to), flagged `locked`.
+ */
 export function chromeSettingsChoices(type, assets) {
   const d = chromeSettingsDefaultId(type);
   const mine = (Array.isArray(assets) ? assets : []).filter((a) => a && typeof a.id === 'string' && (a.id === d || (isObj(a.data) && a.data.for === type) || chromeTypeOfSettingsId(a.id) === type));
-  return [...mine.filter((a) => a.id === d), ...mine.filter((a) => a.id !== d).sort((a, b) => a.id.localeCompare(b.id))].map((a) => ({ id: a.id, name: a.name ?? a.id, custom: a.id !== d, extends: isObj(a.data) && typeof a.data.extends === 'string' ? a.data.extends : '' }));
+  const rows = [...mine.filter((a) => a.id === d), ...mine.filter((a) => a.id !== d).sort((a, b) => a.id.localeCompare(b.id))].map((a) => ({ id: a.id, name: a.name ?? a.id, custom: a.id !== d, extends: isObj(a.data) && typeof a.data.extends === 'string' ? a.data.extends : '' }));
+  if (!CHROME_SETTINGS_LOCKED) return rows;
+  const locked = chromeSettingsLockedId(type, rows.map((r) => r.id));
+  return rows.filter((r) => r.id === locked).map((r) => ({ ...r, locked: true }));
 }
 
 /**
