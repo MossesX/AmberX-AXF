@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7200,
- "updatedAt": "2026-11-17T00:39:37.062Z",
+ "rev": 7201,
+ "updatedAt": "2026-11-17T00:39:52.133Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206228,7 +206228,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T00:39:05.597Z",
+   "updatedAt": "2026-11-17T00:39:12.351Z",
    "builtAt": "",
    "notes": [
     {
@@ -206238,6 +206238,10 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:20:52.279Z"
+    },
+    {
+     "text": "s1 (Fable): branch claude/console-app-part-2-native-floating carries the part 1 shell and the overlay@1 contract (merged from claude/console-app-part-2-native-floating-2, no conflicts) and fixes the console type-check the lander hit: the wake-listener plugin typed window.axfNative differently from part 1's bridge. tsc green, nativeRules 7/7, wake-listener 109/109, console-commands 120/120, theme/controls/console-control/token-registry/help checks pass. No Java here: JUnit (OverlayContractTest) runs in CI. Supersedes PR #750 (-2 branch) once this lands.",
+     "at": "2026-11-17T00:39:12.351Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-console-app-part-2-native-floating--joey.",
@@ -207151,7 +207155,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-16T22:53:00.171Z",
+   "updatedAt": "2026-11-17T00:39:18.617Z",
    "builtAt": "",
    "notes": [
     {
@@ -207189,6 +207193,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T22:53:00.171Z"
+    },
+    {
+     "text": "Superseded: build console-app-part-2-native-floating (branch claude/console-app-part-2-native-floating) carries this branch's commits plus the type-check fix the lander needed. Land that one; PR #750 shrinks to nothing once it merges.",
+     "at": "2026-11-17T00:39:18.616Z"
     }
    ],
    "approvals": [],
@@ -207417,7 +207425,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -230201,7 +230209,7 @@
    "pr": "#639",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:45.788Z",
-   "updatedAt": "2026-11-15T00:42:34.863Z",
+   "updatedAt": "2026-11-17T00:39:21.760Z",
    "builtAt": "2026-11-15T00:42:34.863Z",
    "notes": [
     {
@@ -230235,6 +230243,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-15T00:42:18.410Z"
+    },
+    {
+     "text": "Superseded: the -2 branch's commits and the failing type-check fix (wake-listener vs part 1 bridge) are on claude/console-app-part-2-native-floating (build console-app-part-2-native-floating). PR #750 is no longer needed once that lands.",
+     "at": "2026-11-17T00:39:21.760Z"
     }
    ],
    "approvals": [],
@@ -230529,7 +230541,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
