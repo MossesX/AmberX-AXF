@@ -225,12 +225,13 @@ orchestrator's (API step of this build):
 
 | Transport | Where |
 | --- | --- |
-| Deep link | `row:<build>` (status chip), `row:<build>/tab:attempts`, `view:systems-check` (the escalation item) |
-| REST | `GET /api/plugins/build-orchestrator/attempts/<build>`, `POST …/retry/<build>` `{ strategy?, by, reason }`, `POST …/reset/<build>` |
-| MCP | `build-orchestrator_attempts`, `build-orchestrator_retry`, `build-orchestrator_reset` (plugin commands) |
-| CLI | `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs attempts <build>`, `… retry <build> [strategy]`, `… reset <build>`; `node framework/cli/builds-store.mjs done-means-merged --dry\|--apply` |
-| Voice (AmberX) | "what's wrong with <build>", "retry <build>", "why did <build> stop" (console-control-voice@1) |
+| Deep link | `row:<build>` (status chip), `row:<build>/tab:attempts` (the expanded row on its Attempts tab; TabGroup `tab:build-orchestrator.build=attempts`), `view:systems-check` (item `builds-escalated`) |
+| REST | `GET /api/plugins/build-orchestrator/attempts/<build>`, `POST …/retry/<build>` `{ strategy?, why? }` (Retry: the ladder starts over; a strategy runs at once, never above the pin) | <!-- axf-plugin:build-orchestrator -->
+| MCP | plugin commands `attempts` and `retry` of the build orchestrator (plugin-commands@1) |
+| CLI | `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs attempts <build>`, `… retry <build> [strategy] [--why w]`; `… pipeline.mjs attempts \| escalated \| retry \| retry-all`; `node framework/cli/builds-store.mjs set-status \| attempt \| fail \| done-means-merged --dry\|--apply`; `… builds-live.mjs link <build> --sha --ci --verified`; `… build-orchestrator/verify.mjs list \| plan \| run` | <!-- axf-plugin:build-orchestrator -->
+| Voice (AmberX) | console actions `build-orchestrator.attempts:<build>` ("what's wrong with <build>", "why did <build> stop") and `build-orchestrator.retry:<build>[\|strategy]` ("retry <build> in a fresh session") |
 
+A hand's reset to the Queue is the existing Queue action (`pipeline.mjs queue`); there is no separate reset route.
 Every write carries `by` and `reason: { title, description }` and is a journalled store write.
 
 ## Related contracts

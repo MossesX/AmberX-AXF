@@ -53,7 +53,8 @@
       "framework/spec/check-build-limit.mjs",
       "framework/spec/check-build-pipeline.mjs",
       "framework/cli/builds-reconcile.mjs",
-      "framework/spec/check-projects.mjs"
+      "framework/spec/check-projects.mjs",
+      "framework/spec/DONE-MEANS-MERGED.md"
     ]
   },
   "commands": {
