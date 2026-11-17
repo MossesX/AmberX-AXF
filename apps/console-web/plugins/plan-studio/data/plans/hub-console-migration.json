@@ -1,0 +1,480 @@
+{
+ "$axf": "plan@1",
+ "id": "hub-console-migration",
+ "title": "Move everything from axHub web into the console",
+ "status": "parked",
+ "priority": "P1",
+ "category": "Dev Console > Hub",
+ "tags": [
+  "hub",
+  "console",
+  "plugin",
+  "contract",
+  "api"
+ ],
+ "project": "amberx-axf",
+ "profile": "",
+ "summary": "Every axHub web page, option and action becomes a console screen under one Hub view group (hub-console@1), with the same reach by deep link, REST, MCP, CLI and voice; axHub stays backend + MCP only and its web UI is retired. Parked copy of build move-everything-axhub-web-console: the build runs the steps; this plan is the whole migration in one place.",
+ "goal": "The Dev Console is the only hub UI. Approvals, log, passes/veto, users, account, apps/connectors, services, handoff, auth admin and every hub setting live in the console and work from the phone through Phone Connect.",
+ "why": "Brett, Nov 17 2026: \"I really need to get this axHub and AmberX over the console. I really need that done. With the phone app.\"",
+ "touches": [
+  {
+   "key": "app:axhub-web"
+  },
+  {
+   "key": "plugin:hub-admin"
+  },
+  {
+   "key": "plugin:approvals-banner"
+  },
+  {
+   "key": "plugin:claude-settings"
+  },
+  {
+   "key": "library:ai.amberx.axf.hub"
+  },
+  {
+   "key": "library:ai.amberx.axf.approvals"
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Inventory every axHub web page, option and setting (approvals, approval log, passes, veto/countdown, users, account, apps/connectors, services, handoff, auth admin, each settings page) and the axHub REST/MCP endpoint behind each one; write the parity map as a hub-console@1 spec draft and save the whole migration as a parked Plan Studio plan",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Contract",
+   "dependsOn": [],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s2",
+   "text": "Define the hub-console@1 contract: one console address per hub screen (view:hub/…), the state shape each screen reads, the action list per screen with personOnly flags (approve/deny/shelve/grant pass stay person-only), and how the console reads them through the hub (proxy, own session, never the console token for decisions); add the schema and a fixture",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Contract",
+   "dependsOn": [
+    "s1"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s3",
+   "text": "Write the hub-console@1 validator and route table (framework/core/hub-console.mjs) with a spec check that holds it to the fixture, and record the deferred Android twin in PORTING.md",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Contract",
+   "dependsOn": [
+    "s2"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s4",
+   "text": "Design the migration of axHub web's saved UI settings (per-user page prefs, approval view options, connector display options) into console settings keys, and write the one-shot migration script with a dry-run mode",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Contract",
+   "dependsOn": [
+    "s3"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s5",
+   "text": "Scaffold the hub-admin console plugin: plugin.json (builtWith, lifecycle dataDir, settings tab under Plugins), install.mjs and uninstall.mjs, and an empty Hub view group registered on the console nav",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Plugin scaffold",
+   "dependsOn": [
+    "s4"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s6",
+   "text": "Server side of the plugin: a FastAPI router that proxies the hub-console@1 reads to axHub with retries and a clear unavailable state, plus its unit tests",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Plugin scaffold",
+   "dependsOn": [
+    "s5"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s7",
+   "text": "Approvals screen: live list of held/confirm calls with countdown, title-first reason, collapsible code, and Approve / Deny / Shelve through the approvals-banner relay (Brett's own hub session, personOnly), on framework controls and the tab-group asset",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s6"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s8",
+   "text": "Approvals API part: deep link view:hub/tab:approvals, state read REST + MCP tool hub_approvals_list, CLI `axf hub approvals`, voice action hub.approvals; decide actions registered personOnly so no session can run them",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s7"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s9",
+   "text": "Approval log screen: searchable history of decided/expired/denied calls with filters (service, tool, who, outcome) as a DataGrid",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s8"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s10",
+   "text": "Approval log API: deep link, REST + MCP hub_approval_log, CLI `axf hub approval-log`, voice hub.approvalLog",
+   "model": "Fable",
+   "minutes": 6,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s9"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s11",
+   "text": "Passes and veto settings screen: active passes with revoke, grant pass form (service, tools/scope, minutes), veto countdown length and No-wait status shown read-only where owner-only",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s10"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s12",
+   "text": "Passes/veto API: deep link, REST + MCP hub_passes_list / hub_pass_revoke / hub_pass_request (grant stays Brett's click), CLI `axf hub passes`, voice hub.passes; countdown setting through control@1",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s11"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s13",
+   "text": "Users screen: list, invite, roles, disable, with destructive actions behind confirm",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s12"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s14",
+   "text": "Users API: deep link, REST + MCP hub_users_*, CLI `axf hub users`, voice hub.users; role changes and disable need confirm",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s13"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s15",
+   "text": "Account screen: profile, sessions/devices with sign-out, linked phone, notification prefs",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s14"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s16",
+   "text": "Account API: deep link, REST + MCP hub_account_*, CLI `axf hub account`, voice hub.account",
+   "model": "Fable",
+   "minutes": 6,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s15"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s17",
+   "text": "Apps/connectors screen: connected services with status, policies per tool (allow/veto/confirm), add/reconnect/remove connector, token health shown as systems-check items",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s16"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s18",
+   "text": "Services detail screen: one service's tools, schemas, policy editor and recent calls",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s17"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s19",
+   "text": "Connectors/services API: deep links (view:hub/tab:connectors, row:<service>), REST + MCP hub_services_list / hub_service_get / hub_policy_set / hub_connector_remove (confirm), CLI `axf hub services`, voice hub.services; register a health@1 check for dead connector keys",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s18"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s20",
+   "text": "Handoff screen: open handoffs between devices/sessions, send, accept, clear",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s19"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s21",
+   "text": "Handoff API: deep link, REST + MCP hub_handoff_*, CLI `axf hub handoff`, voice hub.handoff",
+   "model": "Fable",
+   "minutes": 6,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s20"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s22",
+   "text": "Auth admin screen: OAuth clients, API tokens (create shows once, revoke with confirm), sign-in methods; no secret ever stored in the console",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s21"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s23",
+   "text": "Auth admin API: deep link, REST + MCP hub_auth_*, CLI `axf hub auth`, voice hub.auth; token create/revoke personOnly or confirm per the contract",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s22"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s24",
+   "text": "Hub settings: one Settings → Plugins → Hub sub-tab with the level toolbar, every former axHub web setting as a registered setting; run the settings migration from step 4 against a copy and wire it into install.mjs",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Screens + API",
+   "dependsOn": [
+    "s23"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s25",
+   "text": "Console-control registration: every hub screen, tab, row and action gets its control address (data-axf-target), toolbars role=toolbar + settings ids, tab rows through TabGroup; make check-console-control, check-toolbars, check-chrome-assets, check-theme and check-controls pass",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Control, parity, retire",
+   "dependsOn": [
+    "s24"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s26",
+   "text": "Phone Connect tie-in: hub approval and veto notices open the console's Approvals screen through Phone Connect deep links instead of the AmberX app; note the overlap with builds phone-connect and remove-amberx-app-code-once-phone on those builds",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Control, parity, retire",
+   "dependsOn": [
+    "s25"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s27",
+   "text": "Parity check: a script that walks the hub-console@1 route table and fails when any axHub web page/action has no console screen, deep link, REST route, MCP tool, CLI command or voice action; add it to CI",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Control, parity, retire",
+   "dependsOn": [
+    "s26"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s28",
+   "text": "Retire the axHub web UI from this repo's side: apps/axhub-web marked retired in its manifest, axhub.amberxai.com UI paths redirect to the console's Hub screens (deploy config), shared-assets list updated; open the matching axHub-repo change as a follow-up item (server stays backend/MCP only)",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Control, parity, retire",
+   "dependsOn": [
+    "s27"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s29",
+   "text": "Docs and help: plugin README, help entries, glossary descriptions, decision line in memory/decisions.md, rule line that the console is the only hub UI",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Docs, review, land",
+   "dependsOn": [
+    "s28"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s30",
+   "text": "UI Review: desktop + phone shots of each hub screen with 3 options per screen as assets, submitted with --choices",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Docs, review, land",
+   "dependsOn": [
+    "s29"
+   ],
+   "done": false,
+   "doneAt": ""
+  },
+  {
+   "id": "s31",
+   "text": "Run all checks (hub-console spec check, plugin tests, parity, theme/controls/toolbars/console-control, lifecycle --after-uninstall, console typecheck + build), write _claude/builds/reports/move-everything-axhub-web-console.md with how each screen is reached by deep link/REST/MCP/CLI/voice, update the THREADS row, push the branch and open the PR",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Docs, review, land",
+   "dependsOn": [
+    "s30"
+   ],
+   "done": false,
+   "doneAt": ""
+  }
+ ],
+ "requirements": [
+  {
+   "text": "Decisions (approve / deny / shelve / grant pass / delete user / create token) are Brett's own tap through the approvals-banner relay: personOnly, never the console token."
+  },
+  {
+   "text": "Every screen: deep link (view:hub/tab:hub.tabs=…), state read over REST + MCP, every non-person action over REST, MCP, CLI and voice, all four the same."
+  },
+  {
+   "text": "UI on framework controls and asset tokens only; TabGroup for the tab row; check-theme, check-controls, check-toolbars, check-chrome-assets and check-console-control pass."
+  }
+ ],
+ "acceptance": [
+  {
+   "text": "The parity script walks the hub-console@1 route table and finds no axHub web page or action without a console screen, deep link, REST route, MCP tool, CLI command and voice action",
+   "done": false
+  },
+  {
+   "text": "apps/axhub-web is marked retired; axhub.amberxai.com UI paths redirect to the console Hub screens",
+   "done": false
+  },
+  {
+   "text": "Phone Connect deep links open the console Approvals screen from hub notices",
+   "done": false
+  }
+ ],
+ "decisions": [
+  {
+   "text": "Hub facts the hub does not expose yet (connector add / remove, device handoff accept / clear, OAuth client and API token admin) show a clear \"this hub has not got it yet\" state and answer hub_missing on the API; the axHub-repo routes are a follow-up item (step 28). See framework/spec/HUB-CONSOLE.md."
+  }
+ ],
+ "risks": [
+  {
+   "text": "The console token must never decide: a route-table mistake could let a session approve its own call.",
+   "mitigation": "Decide actions are personOnly in console-control@1 and the relay refuses the console token; the spec check and the parity script assert both."
+  }
+ ],
+ "outOfScope": [
+  {
+   "text": "New Android or Kotlin work: the twin is recorded as a deferred gap in PORTING.md."
+  }
+ ],
+ "links": [
+  {
+   "kind": "build",
+   "ref": "move-everything-axhub-web-console",
+   "label": "the build"
+  },
+  {
+   "kind": "doc",
+   "ref": "framework/spec/HUB-CONSOLE.md",
+   "label": "hub-console@1 spec"
+  },
+  {
+   "kind": "related",
+   "ref": "phone-connect",
+   "label": "Phone Connect"
+  },
+  {
+   "kind": "related",
+   "ref": "remove-amberx-app-code-once-phone",
+   "label": "Remove the AmberX app code once Phone Connect is paired"
+  }
+ ],
+ "body": "# Move everything from axHub web into the console\n\nSee `framework/spec/HUB-CONSOLE.md` for the page-by-page inventory (hub endpoint, reads, actions, options) and the console address each page lands on.\n\nParked: the build `move-everything-axhub-web-console` runs these steps; this plan is the parked whole so later sessions see the migration in one place.",
+ "createdAt": "2026-11-17T22:49:27.405Z",
+ "updatedAt": "2026-11-17T22:49:27.405Z",
+ "createdBy": "Claude (build move-everything-axhub-web-console s1)",
+ "version": 1
+}
