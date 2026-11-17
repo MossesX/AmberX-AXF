@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 83,
     "settings": 89,
-    "functions": 275,
+    "functions": 276,
     "buttons": 62,
     "plugins": 71
   },
@@ -3899,6 +3899,21 @@
         "docs"
       ],
       "file": "src/menuLibrary.tsx"
+    },
+    {
+      "address": "function:plugin.settings.open",
+      "kind": "function",
+      "id": "plugin.settings.open",
+      "label": "Open a plugin’s settings",
+      "detail": "Action",
+      "keywords": [
+        "plugin.settings.open",
+        "plugin",
+        "settings",
+        "open"
+      ],
+      "params": true,
+      "file": "src/pluginSettingsActions.ts"
     },
     {
       "address": "function:home.card",
