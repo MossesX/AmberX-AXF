@@ -19,6 +19,8 @@ import { WindowManager } from './engines/windows';
 import { normalizeDockLayout } from './engines/dock';
 import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, type ChromeToolbarItem } from './engines/chrome';
 /** The embed@1 functions whose chrome a host may take over and draw merged (chrome@1). */
+/** The chrome the shell draws once per app (instance `app`); hiding one as a piece drops its layout region (hiddenAppChrome). */
+const APP_CHROME_KINDS: readonly AssetType[] = ['toolbar', 'nav-menu', 'app-menu', 'banner'];
 const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
@@ -1572,7 +1574,7 @@ export class AxfRuntime {
   /** Does this widget get drawn: not hidden, and not empty with hide-when-empty on? */
   bannerWidgetShown(key: string): boolean {
     const v = this.bannerWidgetView(key);
-    if (v.hidden) return false;
+    if (v.hidden || this.widgetHidden(key)) return false;
     if (!v.hideWhenEmpty) return true;
     const i = key.indexOf(':');
     const data = (this.registry.get(key.slice(0, i) as AssetType, key.slice(i + 1)) as { data: unknown } | undefined)?.data;
@@ -1630,7 +1632,10 @@ export class AxfRuntime {
   /** Widgets on the active toolbar (its own `widgets` plus run-time ones), start and end. */
   toolbarWidgets(): Record<'start' | 'end', PlacedAttachment[]> {
     const tb = this.slotHidden('toolbar') ? null : (this.asset('toolbar')?.data as { widgets?: HostAttachment[] } | undefined) ?? null;
-    return placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('toolbar'));
+    const placed = placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('toolbar'));
+    // a widget hidden as a piece (hidden-assets@1 `widget:<type>:<id>`) leaves the row; its neighbours close up
+    const shown = (list: PlacedAttachment[]) => list.filter((p) => !this.widgetHidden(p.key));
+    return { start: shown(placed.start), end: shown(placed.end) };
   }
 
   /* ---------------- arranging widgets on hosts (drag + snap; core/engines/widgets.ts) ---------------- */
@@ -1946,7 +1951,25 @@ export class AxfRuntime {
   hiddenSlots(): AssetType[] {
     const o: Record<string, boolean | undefined> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') o[t] = v; }
-    return hiddenSlots(o, this.defaultHiddenSlots(), this.embedHiddenSlots()) as AssetType[];
+    return hiddenSlots(o, this.defaultHiddenSlots(), [...this.embedHiddenSlots(), ...this.hiddenAppChrome()]) as AssetType[];
+  }
+
+  /** Is a banner / toolbar widget (`<type>:<id>`) hidden as a piece (hidden-assets@1 `widget:<type>:<id>`)? Read-only. */
+  widgetHidden(key: string): boolean {
+    const look = this.lookLayerOn() ? this.lookStore().get() : null;
+    return !!look && isAssetHidden(look, { kind: 'widget', id: key });
+  }
+
+  /**
+   * The app-wide chrome hidden as a piece (hidden-assets@1, instance `app`: the toolbar, nav, menu bar and banner the shell
+   * draws once). They leave the layout the way a hidden slot does, so the neighbours take the room (no gap, no overlap);
+   * the slot choice itself (`axf.hide.<type>`) is untouched, and Unhide brings the piece back.
+   */
+  hiddenAppChrome(): AssetType[] {
+    // read-only: layout runs on every render, so this never snapshots or saves a look document (ensureLook may)
+    const look = this.lookLayerOn() ? this.lookStore().get() : null;
+    if (!look) return [];
+    return APP_CHROME_KINDS.filter((k) => isAssetHidden(look, { kind: k, id: 'app' }));
   }
 
   /** Hide or show a slot's chrome. Ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
@@ -3052,7 +3075,7 @@ export class AxfRuntime {
       }, set: () => { /* writes go through set(), which the base owns */ } },
       getState: { value: () => view.state },
       set: { value: (patch: Partial<AxfState>, persist = false) => (base as unknown as { set(p: Partial<AxfState>, persist?: boolean): void }).set(patch, persist) },
-      hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), base.embedHiddenSlots()) as AssetType[] },
+      hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), [...base.embedHiddenSlots(), ...base.hiddenAppChrome()]) as AssetType[] },
       slotHidden: { value: (type: AssetType) => hideable(type) && view.hiddenSlots().includes(type) },
       spacing: { value: () => spacingOf(resolved().spacing) },
       appliedInterface: { value: () => (skinScope ? base.appliedInterface() : interfaceId) },

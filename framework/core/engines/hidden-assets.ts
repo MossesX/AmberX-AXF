@@ -12,7 +12,7 @@
  * hidden, unhiding what is not), so a writer can skip the save. Kinds come from the chrome-settings@1 kind list plus
  * `widget`; there is no app list anywhere. Kotlin twin deferred (spec/PORTING.md); fixture spec/fixtures/hidden-assets.json.
  */
-import { HIDDEN_ASSETS_FIELD, HIDDEN_ASSETS_MAX, hiddenAssetKey, hiddenAssetKinds, isHiddenAssetId, isHiddenAssetKind, normalizeHiddenAssets, parseHiddenAssetKey, type HiddenAsset, type HiddenAssetTarget } from './hidden-assets-rules.mjs';
+import { HIDDEN_ASSETS_FIELD, hiddenAssetKey, hiddenAssetKinds, isHiddenAssetId, isHiddenAssetKind, normalizeHiddenAssets, parseHiddenAssetKey, type HiddenAsset, type HiddenAssetTarget } from './hidden-assets-rules.mjs';
 import type { AppLookDocument } from './skin-rules.mjs';
 
 export { HIDDEN_ASSETS_CONTRACT, HIDDEN_ASSETS_FIELD, HIDDEN_ASSETS_MAX, HIDDEN_ASSET_ID, HIDDEN_ASSET_WIDGET_KIND, hiddenAssetKey, hiddenAssetKinds, hiddenAssetsSchema, isHiddenAssetId, isHiddenAssetKind, normalizeHiddenAsset, normalizeHiddenAssets, parseHiddenAssetKey } from './hidden-assets-rules.mjs';

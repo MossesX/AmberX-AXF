@@ -269,5 +269,20 @@ console.log(`check-hidden-assets: ${n} checks passed`);
   const runtimeSrc = readFileSync(join(root, 'core/runtime.ts'), 'utf8');
   ok(/lookStoreRef\?\.refresh\?\.\(\)/.test(runtimeSrc), 'refreshFromSaved re-reads the look document');
   ok(/changeLook\(\(cur\) => hideAsset\(cur, t, [\s\S]*?\}\), false\)/.test(runtimeSrc) && /changeLook\(\(cur\) => unhideAsset\(cur, t\), false\)/.test(runtimeSrc), 'a hide or unhide repaints without the skin-switch sweep');
+
+  // s6 reflow: the app-wide chrome (instance `app`) hidden as a piece leaves the layout grid like a hidden slot; widgets leave their row
+  const flow = new AxfRuntime({ manifest: manifest('app-r'), assets: assets as never, storageKey: 'hidden-app-r' });
+  ok(!flow.slotHidden('toolbar'), 'the app toolbar is drawn');
+  ok(flow.hide('toolbar:app') && flow.slotHidden('toolbar') && flow.hiddenSlots().includes('toolbar'), 'toolbar:app hidden → its layout region goes (hiddenSlots)');
+  ok(!flow.slotHiddenOwn('toolbar') && typeof flow.settings.get('axf.hide.toolbar') !== 'boolean', 'the slot choice itself is untouched');
+  ok(!flow.slotHidden('nav-menu') && flow.hide('nav-menu:app') && flow.slotHidden('nav-menu'), 'nav-menu:app the same');
+  ok(flow.hide('toolbar:page.tools') && flow.hiddenAppChrome().join() === 'toolbar,nav-menu', 'a page toolbar is not the app slot');
+  ok(flow.unhide('toolbar:app') && !flow.slotHidden('toolbar'), 'unhide → the region is back');
+  ok(flow.hide('widget:clock:main') && flow.widgetHidden('clock:main') && !flow.bannerWidgetShown('clock:main'), 'a hidden widget is not shown on the banner');
+  ok(!flow.widgetHidden('clock:other'), 'other widgets stay');
+  const shell = readFileSync(join(root, 'react/hidden.tsx'), 'utf8');
+  ok(/export function useHidden\(/.test(shell) && /export function Hideable\(/.test(shell) && /installHiddenChrome/.test(readFileSync(join(root, 'react/AxfProvider.tsx'), 'utf8')), 'useHidden, Hideable and the DOM pass are installed');
+  for (const [f, re] of [['react/components/TabGroup.tsx', /useHidden\('tab-group', id\)/], ['react/components/Chrome.tsx', /useHidden\('toolbar', id\)/], ['react/components/BannerSettings.tsx', /useHidden\('banner', id\)/]] as const) ok(re.test(readFileSync(join(root, f), 'utf8')), `${f} draws nothing while hidden`);
+  ok(/\[data-axf-hidden-piece\] \{ display: none !important; \}/.test(readFileSync(join(root, 'ui/axf.css'), 'utf8')), 'a hand-drawn hidden piece takes no room');
   console.log(`check-hidden-assets (runtime): ${n} checks passed`);
 }
