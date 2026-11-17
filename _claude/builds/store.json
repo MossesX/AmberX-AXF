@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8190,
- "updatedAt": "2026-11-17T22:27:19.096Z",
+ "rev": 8191,
+ "updatedAt": "2026-11-17T22:27:25.516Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -289169,6 +289169,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-17T22:26:09.371Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "dispatcher-split-builds-evenly-across",
+   "title": "Dispatcher: split builds evenly across Claude accounts",
+   "category": "",
+   "detail": "Bug: the orchestrator plans every build on hulu0241 (5/5 full) while mossesx-max- (Moses X) sits at 0/5. Fix the dispatcher/planner in apps/console-web/plugins/build-orchestrator/pipeline.mjs (planned.account, loadOwnAccounts, accounts.json) so subscription accounts are filled round-robin: alternate accounts per launch and always pick the account with the fewest running builds, keeping running counts equal (e.g. 3/3, not 5/0). Re-plan already-planned Pending/Queue builds when they launch, not stick to the stale planned account. API keys stay off until both subscriptions are busy. Show per-account running counts in the pipeline status. Add a test. Land as soon as green.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "dispatcher-split-builds-evenly-across",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T22:27:03.346Z",
+   "updatedAt": "2026-11-17T22:27:03.346Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need it to split evenly. One and one and one and one. Every other one. The same amount running on each account.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 982
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-17T22:27:03.346Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}

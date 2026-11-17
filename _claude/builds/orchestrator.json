@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:27:19.096Z",
+ "updatedAt": "2026-11-17T22:27:25.516Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -189417,6 +189417,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "Make every toolbar blank and just all it has is a settings hook. A little gear with a settings hook. That's it. Every toolbar, we'll edit them later. Don't even allow editing or changing the fucking settings layout.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "dispatcher-split-builds-evenly-across",
+   "title": "Dispatcher: split builds evenly across Claude accounts",
+   "category": "",
+   "detail": "Bug: the orchestrator plans every build on hulu0241 (5/5 full) while mossesx-max- (Moses X) sits at 0/5. Fix the dispatcher/planner in apps/console-web/plugins/build-orchestrator/pipeline.mjs (planned.account, loadOwnAccounts, accounts.json) so subscription accounts are filled round-robin: alternate accounts per launch and always pick the account with the fewest running builds, keeping running counts equal (e.g. 3/3, not 5/0). Re-plan already-planned Pending/Queue builds when they launch, not stick to the stale planned account. API keys stay off until both subscriptions are busy. Show per-account running counts in the pipeline status. Add a test. Land as soon as green.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "dispatcher-split-builds-evenly-across",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T22:27:03.346Z",
+   "updatedAt": "2026-11-17T22:27:03.346Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need it to split evenly. One and one and one and one. Every other one. The same amount running on each account.",
     "at": "",
     "source": "",
     "session": "",
