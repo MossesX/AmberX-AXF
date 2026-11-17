@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8385,
- "updatedAt": "2026-11-17T23:28:47.353Z",
+ "rev": 8386,
+ "updatedAt": "2026-11-17T23:29:00.095Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268616,7 +268616,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "mossesx-max-",
-     "notified": "",
+     "notified": "2026-11-17T23:28:46.562Z",
      "session": "axf-move-server-side-console-parts-onto-vps--lenny",
      "note": "session on mossesx-max- ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -269293,7 +269293,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -295057,7 +295057,7 @@
      "action": "retry",
      "attempt": 2,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-17T23:28:46.562Z",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 2 of 3)."
     }
@@ -295785,7 +295785,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
