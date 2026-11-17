@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:59:47.504Z",
+ "updatedAt": "2026-11-17T21:00:25.797Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131490,7 +131490,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T20:55:18.194Z",
+   "updatedAt": "2026-11-17T21:00:22.853Z",
    "builtAt": "",
    "notes": [
     {
@@ -131564,6 +131564,10 @@
     {
      "text": "Refused pending → landed (asked by watchdog): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T20:55:18.199Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); on main by squash 07f9873c59b8; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T21:00:22.853Z"
     }
    ],
    "approvals": [
