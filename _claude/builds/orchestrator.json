@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:33:59.364Z",
+ "updatedAt": "2026-11-17T04:34:19.105Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -167392,7 +167392,7 @@
    "pr": "#773",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-17T04:33:37.832Z",
+   "updatedAt": "2026-11-17T04:33:42.929Z",
    "builtAt": "",
    "notes": [
     {
@@ -167422,6 +167422,10 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-runs-long-builds-across--sully.",
      "at": "2026-11-17T03:33:04.466Z"
+    },
+    {
+     "text": "Phase 2 (Opus) done: s5–s20 committed, PR #773. Two steps added: s21 (Fable) console-control@1 group segment kind, so row:<build>/group:<g> addresses register; s22 (Opus) shoot and submit the Groups panel's three views to UI Review (blocked in s19: the scratch console from rebuild-shots opens Build profiles, not the orchestrator view).",
+     "at": "2026-11-17T04:33:42.929Z"
     }
    ],
    "approvals": [
@@ -167880,8 +167884,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:33:40.106Z",
      "note": "",
      "uid": "st-mwjw9ltv0kdeoy",
      "createdAt": "2026-11-16T23:28:18.115Z"
