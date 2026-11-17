@@ -38,7 +38,7 @@ const { createRoot } = await import('react-dom/client');
 const { AxfRuntime } = await import('../core/runtime.ts');
 const { AxfProvider } = await import('../react/AxfProvider.tsx');
 const { Banner } = await import('../react/components/Banner.tsx');
-const { Toolbar, AssetToolbar } = await import('../react/components/Chrome.tsx');
+const { Toolbar, AssetToolbar, NavMenu, MenuBar } = await import('../react/components/Chrome.tsx');
 const { TabGroup, tabGroupDataFor } = await import('../react/components/TabGroup.tsx');
 const { tapConfigFor } = await import('../core/engines/tapconfirm.ts');
 const row = () => h(TabGroup, { id: 'demo.sections', label: 'Demo sections', value: 'a', onChange: () => {}, tabs: [{ value: 'a', label: 'Alpha', icon: 'home' }, { value: 'b', label: 'Beta', icon: 'list' }] }, h('p', null, 'body'));
@@ -69,6 +69,10 @@ export const CASES: Case[] = [
   { type: 'banner', instance: 'app', rendered: (rt) => rt.banner({ all: true }).data, draw: () => h(Banner), seen: seenOf('.fx-banner') },
   { type: 'toolbar', instance: 'app', rendered: (rt) => rt.chromeData('toolbar'), draw: () => h(Toolbar, { views }), seen: seenOf('[role="toolbar"]') },
   { type: 'tab-group', instance: 'demo.sections', rendered: (rt) => ({ data: tabGroupDataFor(rt, 'demo.sections'), tap: tapConfigFor((k) => rt.settings.get(k), 'tab-group', 'demo.sections'), tapChoice: cs.chromeFieldValue('tab-group', null, rt.settings.get(cs.CHROME_INSTANCE_KEY('tab-group', 'demo.sections')), cs.CHROME_TAP_FIELD) }), draw: row, seen: seenOf('[data-axf-tab-group="demo.sections"]') },
+  { type: 'nav-menu', instance: 'app', rendered: (rt) => rt.chromeData('nav-menu'), draw: () => h(NavMenu, { views }), seen: seenOf('[data-fx-ctx-target="nav"], nav') },
+  { type: 'app-menu', instance: 'app', rendered: (rt) => rt.chromeData('app-menu'), draw: () => h(MenuBar), seen: seenOf('[role="menubar"]') },
+  // the context menu draws only while open: its data (what the open menu reads) and the root tokens must follow
+  { type: 'context-menu', instance: 'app', rendered: (rt) => rt.chromeData('context-menu') },
   { type: 'toolbar', instance: 'data-grid-tools', rendered: (rt) => rt.chromeData('toolbar', 'data-grid-tools', rt.registry.get('toolbar', 'data-grid-tools')!.data), draw: () => h(AssetToolbar, { id: 'data-grid-tools' }), seen: seenOf('.fx-toolbar-scope') },
 ];
 

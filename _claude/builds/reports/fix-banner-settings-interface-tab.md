@@ -62,3 +62,10 @@ Case `tab-group:demo.sections` (a real `TabGroup` drawn beside the dialog): ever
 `axf.chrome.tab-group.demo.sections`, the row's data and markup change at once, and the row's own asset pick on the
 same tab writes `axf.chrome.tab-group.demo.sections.asset`. The dialog's own tab row (`chrome.settings.tab-group`)
 is a different instance and is left alone.
+
+## s7 — nav menu, application menu, context menu
+
+Cases `nav-menu:app` (drawn `NavMenu`), `app-menu:app` (drawn `MenuBar`) and `context-menu:app` (data the open menu
+reads; it draws only while open). Every Interface control writes only `axf.chrome.<kind>.app`; nav and menu bar
+redraw at once; the settings window is untouched. No code change needed past the s3 fix: all kinds shared the one
+`InterfacePicker`.
