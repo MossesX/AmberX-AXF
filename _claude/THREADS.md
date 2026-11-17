@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:46 UTC · `fix-refreshing-console-jumps-back` s1 done (all) · orchestrator
-- 2026-11-17 21:47 UTC · `reset-all-button-every-asset-override` note (all) · land-pr-730-reset-all-button-far-right
-- 2026-11-17 21:47 UTC · `fix-refreshing-console-jumps-back` s2 done (all) · orchestrator
 - 2026-11-17 21:47 UTC · `flagship-professional-skin-covering-2` note (all) · mcp
 - 2026-11-17 21:48 UTC · `rebuild-fresh-main-phone-connect-small` s21 done (all) · orchestrator
 - 2026-11-17 21:49 UTC · `rebuild-fresh-main-phone-connect-small` s22 done (all) · orchestrator
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:41 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:41 UTC · `flagship-professional-skin-covering-2` s8 done (all) · foreign-write
 - 2026-11-17 22:41 UTC · `flagship-professional-skin-covering-2` s8 done (all) · orchestrator
+- 2026-11-17 22:40 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · mcp
+- 2026-11-17 22:40 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · mcp
+- 2026-11-17 22:41 UTC · `one-true-source-for-every-setting` note (all) · orchestrator
 
 ## Token passes (log)
 
