@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8189,
- "updatedAt": "2026-11-17T22:27:00.967Z",
+ "rev": 8190,
+ "updatedAt": "2026-11-17T22:27:19.096Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -261580,7 +261580,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:26:39.655Z"
+     "updatedAt": "2026-11-17T22:27:08.490Z"
     },
     {
      "id": "s11",
@@ -261605,7 +261605,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:26:39.655Z"
+     "updatedAt": "2026-11-17T22:27:08.490Z"
     },
     {
      "id": "s12",
@@ -270514,7 +270514,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -271589,7 +271589,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T22:24:21.835Z"
+     "updatedAt": "2026-11-17T22:27:08.490Z"
     },
     {
      "id": "s27",
@@ -287788,7 +287788,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T22:26:39.655Z"
+     "updatedAt": "2026-11-17T22:27:08.490Z"
     },
     {
      "id": "s7",
