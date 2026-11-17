@@ -6,7 +6,8 @@ then it fails and you don't say anything and we find out days later?"
 
 Reference engine: `framework/core/build-pipeline.mjs` (the builds@1 fields, status guards, migration: `normAttempt`,
 `normLanded`, `guardStatus`, `migrateDone`) and `framework/core/retry-ladder.mjs` (pure: `nextStrategy`, `escalationOf`,
-`ladderFor`). Fixture: `framework/spec/fixtures/done-means-merged.json` (`spec/check-done-means-merged.mjs`). Server rule:
+`ladderFor`, `walk`; registry `framework/schemas/retry-ladder.json`). Fixture: `framework/spec/fixtures/done-means-merged.json`
+(`spec/check-done-means-merged.mjs`: records, guard, migration, ladder, one full walk per kind). Server rule:
 `done-means-merged` in `build-rules@1` (BUILD-RULES.md; its brief block goes into every build brief). Kotlin twin
 deferred (PORTING.md). Reuses the auto-lander (`auto-lander@1`, AUTO-LANDER.md, build `server-auto-lander-fixes-lands`):
 its attempt record, its escalation record and its policy shape; this contract is the build-wide ladder the lander's
