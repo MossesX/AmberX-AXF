@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7656,
- "updatedAt": "2026-11-17T19:27:47.211Z",
+ "rev": 7657,
+ "updatedAt": "2026-11-17T19:28:04.702Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275786,12 +275786,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T19:27:44.196Z",
+   "updatedAt": "2026-11-17T19:28:00.126Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
      "at": "2026-11-17T18:58:57.805Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-rebuild-every-toolbar-page-specific--lenny, shared account login)",
+     "at": "2026-11-17T19:28:00.126Z"
     }
    ],
    "approvals": [],
@@ -276561,7 +276565,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

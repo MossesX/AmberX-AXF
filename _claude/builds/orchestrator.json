@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:27:47.211Z",
+ "updatedAt": "2026-11-17T19:28:04.702Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -180674,12 +180674,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T19:27:44.196Z",
+   "updatedAt": "2026-11-17T19:28:00.126Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
      "at": "2026-11-17T18:58:57.805Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-rebuild-every-toolbar-page-specific--lenny, shared account login)",
+     "at": "2026-11-17T19:28:00.126Z"
     }
    ],
    "approvals": [],
