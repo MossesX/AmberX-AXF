@@ -6,7 +6,7 @@
  * The start overlay is also taken once per dialog option (ui-choices@1: opt-<id>--…), each drawn with that option's
  * dialog asset data applied the way the dialog engine applies it (root data-fx-dialog* attributes, --fx-dialog-w).
  *
- *   node scripts/orchestrator-demo-shots.mjs <out-dir>        (build first: npm run build)
+ *   node apps/console-web/plugins/orchestrator-demo/shots.mjs <out-dir>   (build first: npm run build in apps/console-web)
  *   OD_SHOTS_PORT=7098 · PW_CHROMIUM=<chromium path>
  */
 import { spawn } from 'node:child_process';
@@ -15,13 +15,13 @@ import { mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
-import * as core from '../../../framework/core/live-demo.mjs';
-import * as R from '../plugins/orchestrator-demo/runner.mjs';
+import * as core from '../../../../framework/core/live-demo.mjs';
+import * as R from './runner.mjs';
 
-const APP = join(dirname(fileURLToPath(import.meta.url)), '..');
+const APP = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const ROOT = join(APP, '../..');
 const OUT = process.argv[2];
-if (!OUT) { console.error('usage: node scripts/orchestrator-demo-shots.mjs <out-dir>'); process.exit(2); }
+if (!OUT) { console.error('usage: node apps/console-web/plugins/orchestrator-demo/shots.mjs <out-dir>'); process.exit(2); }
 const PORT = Number(process.env.OD_SHOTS_PORT) || 7098;
 let playwright;
 for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }

@@ -80,7 +80,7 @@ Voice phrases: `voice.json`. Every route goes through `runner.mjs`, the one plac
 
 Item `r-20261117-qxltg01` "Orchestrator demo: start overlay, caption bar and summary" (6 shots + 3 overlay options:
 Spotlight modal, Bottom sheet, Compact card; assets in `plugins/orchestrator-demo/assets/dialog/`). Shots:
-[shots/](guided-live-demo-test-watch-orchestrator/shots/), made by `apps/console-web/scripts/orchestrator-demo-shots.mjs`.
+[shots/](guided-live-demo-test-watch-orchestrator/shots/), made by `apps/console-web/plugins/orchestrator-demo/shots.mjs`.
 **This session had no console token**, so the item was saved in the build worktree, not on the console. Post it with
 `AXF_CONSOLE_URL=… AXF_TOKEN=… node apps/console-web/plugins/ui-review/review.mjs submit … --console --choices
 _claude/builds/reports/guided-live-demo-test-watch-orchestrator/choices.json`.
