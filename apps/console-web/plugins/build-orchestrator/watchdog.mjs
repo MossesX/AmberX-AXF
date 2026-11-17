@@ -24,6 +24,13 @@
  * (claude-workers route, every tried account excluded: pipeline.tried / planned). Past the cap, or every account tried:
  * the build goes to Pending with the reason as its note, in the Errors tab, with a banner item and an alert.
  *
+ *   … cron                         what the axf-watchdog cron runs every minute: a pass when the watchdog is on and
+ *                                  intervalMin has gone by since the last one, or when the console asked for one (request)
+ *   … request [--by who]           ask the host for a pass now (the console container can't see tmux: the next cron pass runs it)
+ *   … install-cron [--dir repo] · remove-cron    /etc/cron.d/axf-watchdog (AXF_WATCHDOG_CRON): every minute, under flock
+ *                                  /run/axf-watchdog.lock; the line removes its own file once the plugin folder is gone.
+ *                                  install.mjs / uninstall.mjs and deploy/install-console.sh call these.
+ *
  * Every slot filled (Brett: "keep every slot filled"): after the recoveries, every pass runs the dispatcher tick
  * (pipeline.mjs tick, under its lock) while agent slots are free and Queue work waits, at most FILL_ROUNDS rounds. Slots
  * still idle with the Queue non-empty after that are a pass-level recovery with cause 'idle-slots' (action 'tick'; the
@@ -33,7 +40,7 @@
  * Environment for tests: AXF_WATCHDOG_SETTINGS (a JSON patch over the settings), AXF_WATCHDOG_ACCOUNTS (comma list of usable
  * accounts instead of deploy/claude-workers.mjs status), AXF_WATCHDOG_PROBE (a JSON map build → probe instead of the host).
  */
-import { mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -307,6 +314,54 @@ export function run({ env = process.env, only = '', settings = loadSettings(env)
 
 const line = (x) => `${x.id}: ${x.decision.cause}${x.decision.exit != null ? ` (exit ${x.decision.exit})` : ''} → ${x.decision.action}${x.decision.attempt ? ` · attempt ${x.decision.attempt}` : ''} · ${x.decision.note}`;
 
+// ------------------------------------------------------------------ schedule: the axf-watchdog cron
+
+export const CRON_NAME = 'axf-watchdog';
+export const cronFile = (env = process.env) => env.AXF_WATCHDOG_CRON || `/etc/cron.d/${CRON_NAME}`;
+export const requestFile = (env = process.env) => join(pipeDir(env), 'watchdog-request.json');
+export const CRON_LOG = '/var/log/axf-watchdog.log';
+
+/** The cron file: every minute, one pass at a time (flock), removes itself when the plugin is gone. */
+export function cronText(dir = resolve(HERE, '../../../..'), env = process.env) {
+  const w = join(dir, 'apps/console-web/plugins/build-orchestrator/watchdog.mjs');
+  return [
+    '# AXF build watchdog (apps/console-web/plugins/build-orchestrator/watchdog.mjs, build-watchdog@1). Removes itself when the plugin is gone.',
+    'SHELL=/bin/sh', 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', '',
+    `* * * * * root if [ -f "${w}" ]; then cd "${dir}" && flock -n /run/axf-watchdog.lock timeout 300 node "${w}" cron >> ${CRON_LOG} 2>&1; else rm -f ${cronFile(env)}; fi`, '',
+  ].join('\n');
+}
+/** Write the cron file (0644, as cron requires). { ok, file, skipped? } — skipped where there is no cron.d to write (a container, CI). */
+export function installCron({ dir, env = process.env } = {}) {
+  const f = cronFile(env);
+  if (!existsSync(dirname(f))) return { ok: true, file: f, skipped: `${dirname(f)} does not exist here (not the VPS host)` };
+  try { writeFileSync(`${f}.tmp`, cronText(dir, env), { mode: 0o644 }); renameSync(`${f}.tmp`, f); return { ok: true, file: f }; }
+  catch (e) { return { ok: false, file: f, error: str(e.message, 200) }; }
+}
+export function removeCron(env = process.env) {
+  const f = cronFile(env);
+  try { const had = existsSync(f); rmSync(f, { force: true }); return { ok: true, file: f, removed: had }; } catch (e) { return { ok: false, file: f, error: str(e.message, 200) }; }
+}
+export const cronInstalled = (env = process.env) => existsSync(cronFile(env));
+
+/** Ask the host for a pass (the console and voice): the next cron pass runs it, within a minute. */
+export function requestRun({ by = process.env.AXF_ACTOR || 'console', build = '', env = process.env } = {}) {
+  const r = { at: new Date().toISOString(), by: str(by, 80), build: str(build, 80) };
+  mkdirSync(dirname(requestFile(env)), { recursive: true });
+  writeFileSync(requestFile(env), `${JSON.stringify(r)}\n`);
+  return r;
+}
+
+/** The cron's pass: due when on and intervalMin has passed, or asked for. Returns the pass, or { ran: false, why }. */
+export function cronPass({ env = process.env, now = Date.now() } = {}) {
+  const settings = loadSettings(env);
+  const asked = readJson(requestFile(env));
+  const last = Date.parse(loadState(env).lastPass || 0) || 0;
+  if (!asked && !settings.enabled) return { ran: false, why: 'the watchdog is off (Settings → Plugins → Build orchestrator → Watchdog)' };
+  if (!asked && now - last < settings.intervalMin * 60e3 - 5e3) return { ran: false, why: `next pass due ${new Date(last + settings.intervalMin * 60e3).toISOString()}` };
+  try { rmSync(requestFile(env), { force: true }); } catch { /* gone */ }
+  return { ran: true, asked: asked ?? null, ...run({ env, settings: asked && !settings.enabled ? { ...settings, enabled: true } : settings, only: asked?.build || '' }) };
+}
+
 // ------------------------------------------------------------------ CLI
 
 function flags(argv) {
@@ -333,7 +388,15 @@ export async function main(argv = process.argv.slice(2)) {
       ...(r.fill.launched.length ? [`  filled slots: started ${r.fill.launched.join(', ')}`] : []), ...(r.fill.idle ? [`  idle-slots: ${r.fill.idle.note}`] : []),
       ...r.fixes.map((x) => `  fixed ${x.buildId}: ${x.cause} → ${x.action}${x.attempt ? ` (attempt ${x.attempt})` : ''}`), ...r.skipped.map((x) => `  left ${x.id}: ${x.why}`), ...r.errors.map((x) => `  failed ${x.id}: ${x.error}`)].join('\n'));
   }
-  throw Object.assign(new Error(`unknown command ${cmd} (scan, run)`), { code: 2 });
+  if (cmd === 'cron') {
+    const r = cronPass();
+    if (!r.ran) return f.json ? out(r, '') : undefined; // quiet when not due: the cron log stays readable
+    return out(r, `${r.at} pass${r.asked ? ` (asked by ${r.asked.by})` : ''}: ${r.scan.builds.length} running · ${r.fixes.length} fixed${r.fixes.map((x) => ` · ${x.buildId} ${x.cause}→${x.action}`).join('')}${r.fill.launched.length ? ` · started ${r.fill.launched.join(', ')}` : ''}${r.fill.idle ? ' · idle-slots' : ''}${r.errors.length ? ` · ${r.errors.length} failed` : ''}`);
+  }
+  if (cmd === 'request') { const r = requestRun({ by: typeof f.by === 'string' ? f.by : undefined, build: typeof f.build === 'string' ? f.build : '' }); return out({ ok: true, ...r }, `asked the host for a watchdog pass (${r.at}): the next cron minute runs it`); }
+  if (cmd === 'install-cron') { const r = installCron({ dir: typeof f.dir === 'string' ? f.dir : undefined }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `cron not installed: ${r.skipped}` : `installed ${r.file}`) : `cron not installed: ${r.error}`); }
+  if (cmd === 'remove-cron') { const r = removeCron(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.removed ? `removed ${r.file}` : `${r.file} was not there`) : `not removed: ${r.error}`); }
+  throw Object.assign(new Error(`unknown command ${cmd} (scan, run, cron, request, install-cron, remove-cron)`), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === SELF) {
