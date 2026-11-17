@@ -253,6 +253,74 @@ class Routes(unittest.TestCase):
         self.assertEqual(self.bus.snapshot()["items"][1]["source"], "ingest")
 
 
+class HubWatchTests(unittest.TestCase):
+    """The axf_server.http observer: axHub /mcp calls, connect / disconnect, auth failures, Anthropic health."""
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(HERE.parents[4] / "framework" / "python"))
+        from axf_server import http
+        import hub_watch
+        self.http, self.hw = http, hub_watch
+        self.bus, _ = bus()
+        self.stop = hub_watch.install(self.bus.append, {"localhost"})
+
+    def tearDown(self) -> None:
+        self.stop()
+
+    def call(self, status: int, answer: dict | None = None, rpc: dict | None = None, url: str = "https://axhub.example/mcp", boom: bool = False) -> None:
+        def transport(req):
+            if boom:
+                raise self.http.HttpError("connection refused")
+            return self.http.Response(status, {"content-type": "application/json"}, json.dumps(answer or {}).encode(), req.url)
+        body = json.dumps(rpc or {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "call", "arguments": {
+            "service": "vps", "action": "run", "reason": {"title": "Restart the console"}, "token": "sk-ant-api03-SECRETSECRETSECRET"}}}).encode()
+        try:
+            self.http.request("POST", url, headers={"authorization": "Bearer hub-token-xyz"}, body=body, transport=transport)
+        except self.http.HttpError:
+            pass
+
+    def kinds(self) -> list[str]:
+        return [e["kind"] for e in self.bus.snapshot()["items"]]
+
+    def test_call_states(self) -> None:
+        self.call(200, {"result": {"content": [{"type": "text", "text": "ok: done"}]}})
+        self.call(200, {"result": {"content": [{"type": "text", "text": "Held for veto: runs in 30 s unless Brett denies it"}]}})
+        self.call(200, {"result": {"isError": True, "content": [{"type": "text", "text": "Brett denied this call"}]}})
+        self.call(200, {"error": {"code": -1, "message": "unknown service"}})
+        items = self.bus.snapshot()["items"]
+        self.assertEqual(items[0]["kind"], "connect")
+        states = [e["detail"]["state"] for e in items if e["kind"] == "axhub"]
+        self.assertEqual(states, ["ok", "veto", "denied", "error"])
+        self.assertEqual(items[1]["detail"]["tool"], "call vps.run")
+        self.assertEqual(items[1]["detail"]["reason"], "Restart the console")
+        self.assertNotIn("hub-token-xyz", json.dumps(items))
+        self.assertNotIn("SECRETSECRET", json.dumps(items))
+
+    def test_connect_disconnect_auth(self) -> None:
+        self.call(200, {"result": {}})
+        self.call(0, boom=True)
+        self.call(0, boom=True)  # still down: one disconnect line only
+        self.call(200, {"result": {}})
+        self.call(401)
+        ks = self.kinds()
+        self.assertEqual(ks.count("disconnect"), 1)
+        self.assertEqual(ks.count("connect"), 2)
+        self.assertTrue(self.bus.snapshot(kinds=["error"])["items"][-1]["summary"].startswith("axHub refused the token (401) on call vps.run"))
+        self.assertTrue(self.bus.state()["connected"])
+
+    def test_ignored(self) -> None:
+        self.call(200, {"result": {}}, url="https://localhost/mcp")
+        self.call(200, {"result": {}}, url="https://example.com/api/other")
+        self.call(200, {"result": {}}, rpc={"jsonrpc": "2.0", "id": 1, "method": "initialize"})
+        self.assertEqual(self.kinds(), ["connect"])  # only the handshake's connect line
+
+    def test_anthropic(self) -> None:
+        self.call(200, {}, url="https://api.anthropic.com/v1/messages")
+        self.call(200, {}, url="https://api.anthropic.com/v1/messages")
+        self.call(401, {}, url="https://api.anthropic.com/v1/messages")
+        self.assertEqual(self.kinds(), ["connect", "disconnect", "error"])
+
+
 if __name__ == "__main__":
     os.environ.pop("AXF_CLAUDE_LINK_SPOOL", None)
     unittest.main(verbosity=1)

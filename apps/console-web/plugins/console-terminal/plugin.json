@@ -1,7 +1,9 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.terminal",
-  "lazy": { "core": "open" },
+  "lazy": {
+    "core": "open"
+  },
   "name": "Terminal",
   "version": "0.5.0",
   "kind": "module",
@@ -21,6 +23,7 @@
     "context-menu:*",
     "dialog:terminal.connect",
     "dialog:terminal.connection",
+    "service:axf.claude-link@1",
     "service:axf.headless@1",
     "service:axf.session-feed@1",
     "settings-tab:terminal",

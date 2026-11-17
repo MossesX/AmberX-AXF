@@ -36,7 +36,7 @@ from urllib.parse import urljoin, urlsplit
 
 __all__ = ["HttpError", "TargetRefused", "ResponseTooLarge", "HttpStatusError", "Request", "Response", "Transport",
            "target_ok", "origin_of", "request", "get_json", "post_json", "HttpClient", "LOOPBACK_HOSTS",
-           "CREDENTIAL_HEADERS", "DEFAULT_TIMEOUT", "DEFAULT_MAX_BYTES"]
+           "CREDENTIAL_HEADERS", "DEFAULT_TIMEOUT", "DEFAULT_MAX_BYTES", "observe"]
 
 DEFAULT_TIMEOUT = 30.0
 DEFAULT_MAX_BYTES = 8 * 1024 * 1024
@@ -175,12 +175,55 @@ def urllib_transport(req: Request) -> Response:
         raise HttpError(str(getattr(e, "reason", e)) or type(e).__name__) from None
 
 
+_OBSERVERS: list[Callable[[dict[str, Any]], None]] = []
+
+
+def observe(fn: Callable[[dict[str, Any]], None]) -> Callable[[], None]:
+    """Watch every `request`: fn({method, url, status, ms, error, body, response}) after it ends (status 0 + error on
+    network trouble). Headers are never passed, so no credential reaches an observer; a failing observer never fails
+    the call. Returns the unsubscribe. Used by the Claude link (axf.claude-link@1) to log axHub /mcp traffic."""
+    _OBSERVERS.append(fn)
+    return lambda: _OBSERVERS.remove(fn) if fn in _OBSERVERS else None
+
+
+def _tell(info: dict[str, Any]) -> None:
+    for fn in list(_OBSERVERS):
+        try:
+            fn(info)
+        except Exception:  # noqa: BLE001
+            pass
+
+
 def request(method: str, url: str, *, headers: Mapping[str, str] | None = None, body: bytes | None = None,
             json_body: Any = None, timeout: float = DEFAULT_TIMEOUT, max_bytes: int = DEFAULT_MAX_BYTES,
             truncate: bool = False, redirects: str = "never", max_redirects: int = 5,
             auth_origins: Iterable[str] = (), secret_headers: Iterable[str] = (),
             allow_http_hosts: Iterable[str] = (), transport: Transport | None = None) -> Response:
     """Make one outbound request under the rules in the module docstring."""
+    if not _OBSERVERS:
+        return _request(method, url, headers=headers, body=body, json_body=json_body, timeout=timeout, max_bytes=max_bytes, truncate=truncate,
+                        redirects=redirects, max_redirects=max_redirects, auth_origins=auth_origins, secret_headers=secret_headers,
+                        allow_http_hosts=allow_http_hosts, transport=transport)
+    import time as _time
+    t0 = _time.monotonic()
+    sent = json.dumps(json_body).encode() if json_body is not None else body
+    try:
+        resp = _request(method, url, headers=headers, body=body, json_body=json_body, timeout=timeout, max_bytes=max_bytes, truncate=truncate,
+                        redirects=redirects, max_redirects=max_redirects, auth_origins=auth_origins, secret_headers=secret_headers,
+                        allow_http_hosts=allow_http_hosts, transport=transport)
+    except Exception as e:
+        _tell({"method": method.upper(), "url": url, "status": 0, "ms": int((_time.monotonic() - t0) * 1000), "error": f"{type(e).__name__}: {e}"[:300],
+               "body": sent, "response": None})
+        raise
+    _tell({"method": method.upper(), "url": url, "status": resp.status, "ms": int((_time.monotonic() - t0) * 1000), "error": "", "body": sent, "response": resp})
+    return resp
+
+
+def _request(method: str, url: str, *, headers: Mapping[str, str] | None = None, body: bytes | None = None,
+             json_body: Any = None, timeout: float = DEFAULT_TIMEOUT, max_bytes: int = DEFAULT_MAX_BYTES,
+             truncate: bool = False, redirects: str = "never", max_redirects: int = 5,
+             auth_origins: Iterable[str] = (), secret_headers: Iterable[str] = (),
+             allow_http_hosts: Iterable[str] = (), transport: Transport | None = None) -> Response:
     if redirects not in ("never", "strip-auth"):
         raise ValueError("redirects is 'never' or 'strip-auth'")
     allow = tuple(allow_http_hosts)
