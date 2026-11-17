@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7496,
- "updatedAt": "2026-11-17T15:08:18.568Z",
+ "rev": 7497,
+ "updatedAt": "2026-11-17T15:08:29.194Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242367,7 +242367,7 @@
    "pr": "#720",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-16T23:15:26.403Z",
+   "updatedAt": "2026-11-17T15:08:21.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -242401,6 +242401,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:15:26.403Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:21.884Z"
     }
    ],
    "approvals": [],
@@ -242875,7 +242879,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244308,7 +244312,7 @@
    "pr": "#718",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
-   "updatedAt": "2026-11-16T23:15:19.233Z",
+   "updatedAt": "2026-11-17T15:08:25.259Z",
    "builtAt": "",
    "notes": [
     {
@@ -244334,6 +244338,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:15:19.233Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:25.259Z"
     }
    ],
    "approvals": [],
@@ -244641,7 +244649,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -250787,7 +250795,7 @@
    "pr": "#761",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-17T00:02:44.120Z",
+   "updatedAt": "2026-11-17T15:08:18.732Z",
    "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
@@ -250881,6 +250889,10 @@
     {
      "text": "Reconciler: PR #761",
      "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:18.732Z"
     }
    ],
    "approvals": [
@@ -251030,7 +251042,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
