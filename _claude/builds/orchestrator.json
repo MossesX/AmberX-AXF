@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:53:18.337Z",
+ "updatedAt": "2026-11-17T22:53:40.940Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -212219,9 +212219,22 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:53:07.696Z",
-   "updatedAt": "2026-11-17T22:53:07.696Z",
+   "updatedAt": "2026-11-17T22:53:28.604Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:53:16.383Z"
+    },
+    {
+     "text": "On hold (console). It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T22:53:22.354Z"
+    },
+    {
+     "text": "Brett: run this on Fable as a sweep of the WHOLE console, but only after move-everything-axhub-web-console (axHub + AmberX moved into the console) has landed. On hold until then.",
+     "at": "2026-11-17T22:53:28.604Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
