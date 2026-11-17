@@ -832,13 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:05 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-17 23:05 UTC · `flagship-professional-skin-covering-2` s19 done, s21 done, note (all) · foreign-write
-- 2026-11-17 23:05 UTC · `move-everything-axhub-web-console` s3 done (all) · orchestrator
-- 2026-11-17 23:06 UTC · `move-everything-axhub-web-console` s3 done (all) · foreign-write
-- 2026-11-17 23:06 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-17 23:06 UTC · `flagship-professional-skin-covering-2` s21 done (all) · foreign-write
-- 2026-11-17 23:04 UTC · `plan-blueprints` → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `blueprint-notes-tasks` → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `molly-one-shell` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `molly-native-expenses` note (all) · foreign-write
@@ -1232,6 +1225,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:46 UTC · `remove-amberx-app-code-once-phone` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `settings-fix-part-2-blank-toolbars` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `dispatcher-split-builds-evenly-across` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `one-true-source-for-every-setting` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `vps-sets-every-build-status-manifest` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `api-fully-drives-every-field-type-forms` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · dedupe-steps
 
 ## Token passes (log)
 
