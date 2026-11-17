@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `amberx-open-url-must-open-page-even-when` → complete, note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `reset-all-button-every-asset-override` note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `alert-every-time-build-falls-back-to` note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `auto-lander-grid-one-row-per-build` s5 done, → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `every-settings-interface-gets` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · foreign-write
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:55 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · foreign-write
 - 2026-11-17 23:55 UTC · `move-server-side-console-parts-onto-vps` s15 done (all) · foreign-write
 - 2026-11-17 23:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 23:56 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
+- 2026-11-17 23:56 UTC · `move-server-side-console-parts-onto-vps` s15 done (all) · foreign-write
+- 2026-11-17 23:56 UTC · `rebuild-every-toolbar-page-specific` → complete (all) · foreign-write
+- 2026-11-17 23:56 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · foreign-write
 
 ## Token passes (log)
 
