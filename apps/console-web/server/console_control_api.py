@@ -56,7 +56,7 @@ _audit_lock = threading.Lock()
 
 
 # Actions whose press only opens a window or a dialog (plugin-settings@1, settings-reset@1): navigation, never a veto.
-NAVIGATE_FUNCTIONS = frozenset({"function:plugin.settings.open", "function:settings.plugin", "function:settings.reset.ask", "function:settings.reset.plan", "function:settings.interface"})
+NAVIGATE_FUNCTIONS = frozenset({"function:plugin.settings.open", "function:settings.plugin", "function:settings.reset.ask", "function:settings.reset.plan", "function:settings.interface", "function:app.settings"})
 
 
 def policy_of(cmd: dict[str, Any]) -> dict[str, Any]:
@@ -68,12 +68,12 @@ def policy_of(cmd: dict[str, Any]) -> dict[str, Any]:
     if cmd.get("verb") == "press":
         word = str(cmd.get("address") or "").rsplit("/", 1)[-1].split(":", 1)[-1]
         spec = cc.press_spec(str(cmd.get("address") or ""))
-        if bool(spec and spec.get("personOnly")) or bool(cc.DECIDING_RE.search(word)):
+        if str(cmd.get("address") or "") in NAVIGATE_FUNCTIONS:
+            tag, effect = "allow", "navigate"  # pressing it only opens something (a settings window, a confirm dialog)
+        elif bool(spec and spec.get("personOnly")) or bool(cc.DECIDING_RE.search(word)):
             tag = "person"
         elif bool(spec and spec.get("destructive")) or bool(cc.DESTRUCTIVE_RE.search(word)):
             tag, destructive = "confirm", True
-        elif str(cmd.get("address") or "") in NAVIGATE_FUNCTIONS:
-            tag, effect = "allow", "navigate"  # pressing it only opens something (a settings window, a confirm dialog)
     return {"tag": tag, "effect": effect, "readOnly": effect in ("read", "navigate"), "destructive": destructive, "requires": requires}
 
 
@@ -341,6 +341,10 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
             return {"$axf": cc.FRAME, "ok": False, "code": "not_found", "message": f"nothing called {intent['find']['q']}", "heard": text, "intent": intent,
                     "say": f"I couldn't find {intent['find']['q']}.", **({"openUrl": r["openUrl"]} if r.get("openUrl") else {})}
     cmd = {"$axf": cc.FRAME, **cc.intent_command(intent, hit["address"] if hit else None)}
+    # a plugin's settings open its own window (plugin-settings@1), never Settings → Plugins → <tab>
+    own = cc.plugin_of_settings_address(hit["address"]) if hit and cmd["verb"] == "open" else None
+    if own is not None:
+        cmd = {"$axf": cc.FRAME, "verb": "press", "address": "function:plugin.settings.open", "value": own}
     if hit and hit.get("value") is not None and cmd["verb"] in ("open", "press"):
         cmd["verb"], cmd["value"] = "press", hit["value"]
     ans = guarded(cmd, by, audience, g, to)

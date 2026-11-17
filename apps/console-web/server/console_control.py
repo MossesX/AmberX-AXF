@@ -95,15 +95,16 @@ def static_targets() -> list[dict[str, Any]]:
         for t in inv.get(key, []) or []:
             if isinstance(t, dict) and t.get("address"):
                 out.append({**t, "virtual": True})
-    # every plugin screen's settings gear (src/PluginSettingsGear.tsx) and the sub-tab it opens
+    # every plugin screen's settings gear (src/PluginSettingsGear.tsx) and its settings, which open the plugin's own window
+    # (settings:plugin/<id>, plugin-settings@1); the sub-tab address stays the voice and search handle for "<plugin> settings"
     known = {t["address"] for t in out}
     for p in inv.get("plugins", []) or []:
         if p.get("settingsGear") and p["settingsGear"] not in known:
             out.append(_target(p["settingsGear"], "button", f"{p['label']} settings", detail=f"Settings gear · {p['label']}", keywords=["gear", "settings", p.get("folder")],
-                               opens=p.get("settingsTab"), plugin=p["id"], virtual=True))
+                               opens=f"settings:plugin/{p['id']}", plugin=p["id"], virtual=True))
         if p.get("settingsTab") and p["settingsTab"] not in known:
             known.add(p["settingsTab"])
-            out.append(_target(p["settingsTab"], "subtab", f"{p['label']} settings", detail="Settings › Plugins", keywords=["settings", p.get("folder")], plugin=p["id"], virtual=True))
+            out.append(_target(p["settingsTab"], "subtab", f"{p['label']} settings", detail="Its own settings window", keywords=["settings", p.get("folder")], plugin=p["id"], opens=f"settings:plugin/{p['id']}", virtual=True))
     return out
 
 
@@ -480,6 +481,15 @@ def toggle_plugin(ref: str, enabled: bool, by: str = "", force: bool = False, is
 
 
 
+def plugin_of_settings_address(address: str) -> str | None:
+    """The plugin folder whose settings tab this address is (Settings → Plugins → <tab>), else None."""
+    for p in inventory().get("plugins", []) or []:
+        tab = p.get("settingsTab")
+        if tab and (address == tab or address.startswith(tab + "/")):
+            return str(p.get("folder") or p.get("id"))
+    return None
+
+
 def plugin_settings_state(ref: str, is_enabled: Any = None) -> dict[str, Any]:
     """One plugin's settings without a browser (build every-plugin-screen-gets-a-settings-gear): its Settings → Plugins
     sub-tab, the gear on its screen, whether it is on, and every setting in that tab (values the server can read; the
@@ -564,6 +574,11 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": HUB_SKIN_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "lock"}
     if m := re.match(r"^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$", p):
         return {"verb": "set", "find": {"q": HUB_SKIN_OVERRIDE_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "override"}
+    # settings reset (settings-reset@1): opens the confirm dialog for the scope; the reset itself is the dialog's tap
+    if re.match(r"^reset (?:all |the |my )?(?:console )?settings$", p):
+        return {"verb": "press", "address": "function:settings.reset.ask", "value": "console"}
+    if m := re.match(r"^reset (?:the )?(.+?)(?:'s)? settings$", p):
+        return {"verb": "press", "address": "function:settings.reset.ask", "value": _strip(m.group(1))}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):

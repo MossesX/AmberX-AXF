@@ -7,6 +7,7 @@
  *
  *   "scroll down" · "scroll up a bit" · "page down" · "go to the top" / "scroll to the bottom"
  *   "open plugins settings" · "open the pipeline tab" · "go to plan studio" · "show me <x>"
+ *   "reset settings" · "reset <plugin> settings" (the reset confirm dialog, settings-reset@1)
  *   "find <words>" · "search for <words>"
  *   "show step 3 of <build>" · "step three of <build>"
  *   "disable plugin <y>" · "turn off the <y> plugin" · "turn the <y> plugin off" · "enable <y> plugin"
@@ -86,6 +87,9 @@ export function voiceIntent(text) {
     return { verb: 'set', find: { q: HUB_SKIN_OVERRIDE_SETTING, kinds: ['setting'] }, value: m[1] === 'override' };
   }
 
+  // settings reset (settings-reset@1): opens the confirm dialog for the scope; the reset itself is the dialog's tap
+  if (/^reset (?:all |the |my )?(?:console )?settings$/.test(p)) return { verb: 'press', address: 'function:settings.reset.ask', value: 'console' };
+  if ((m = /^reset (?:the )?(.+?)(?:'s)? settings$/.exec(p))) return { verb: 'press', address: 'function:settings.reset.ask', value: strip(m[1]) };
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
   if ((m = /^(?:turn|switch) (?:the )?(.+?) (on|off)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2] === 'on' };

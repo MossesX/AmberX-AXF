@@ -84,6 +84,19 @@ export function undoSettingsReset(rt: AxfRuntime): boolean {
   return true;
 }
 
+/** A scope as people say it: `console`, a plugin id, its last id segment or its settings label ("agent manager"). */
+export function resolveResetScope(rt: AxfRuntime, ref: string): ResetScope | null {
+  const raw = (ref ?? '').trim().replace(/^plugin:/, '');
+  if (!raw || raw === 'console' || raw === 'app') return { kind: 'console' };
+  const fold = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const plugins = [...new Set(rt.settings.listTabs().map((t) => t.plugin).filter((p): p is string => !!p))];
+  const hit = plugins.find((p) => p === raw) ?? plugins.find((p) => p.toLowerCase() === raw.toLowerCase() || p.split('.').pop() === raw.toLowerCase())
+    ?? plugins.find((p) => rt.settings.listTabs().some((t) => t.plugin === p && fold(t.label) === fold(raw)))
+    ?? plugins.find((p) => fold(p.split('.').pop() ?? '') === fold(raw));
+  // not registered here (off, or another app's): a full plugin id still names it; a bare word that matches nothing is no scope
+  return hit ? { kind: 'plugin', id: hit } : raw.includes('.') ? parseResetScope(raw) : null;
+}
+
 /** A display name for the scope. */
 export function resetScopeName(rt: AxfRuntime, scope: ResetScope): string {
   if (scope.kind === 'console') return rt.manifest.app.name;
@@ -92,7 +105,7 @@ export function resetScopeName(rt: AxfRuntime, scope: ResetScope): string {
 
 /** Open the confirm dialog for a scope (`console`, `plugin:<id>` or a plugin id). */
 export function askReset(rt: AxfRuntime, scope: string | ResetScope = 'console', opts: { includeAssets?: boolean } = {}): void {
-  const s = typeof scope === 'string' ? parseResetScope(scope) : scope;
+  const s = typeof scope === 'string' ? resolveResetScope(rt, scope) : scope;
   if (!s) { rt.toast(`Nothing called “${String(scope)}” to reset.`, 'warning', 'Settings'); return; }
   rt.openDialog(RESET_CONFIRM_DIALOG, { scope: resetScopeKey(s), ...(opts.includeAssets ? { includeAssets: true } : {}) });
 }
@@ -111,9 +124,9 @@ export function ResetDialogBody({ scope, includeAssets }: { scope: string; inclu
 
 /** Register the dialog's actions. */
 export function registerResetActions(rt: AxfRuntime): void {
-  rt.actions.register(SETTINGS_RESET_ASK, ([scope, assets]) => askReset(rt, scope || 'console', { includeAssets: assets === 'assets' }), { label: 'Reset settings… (asks first)', params: true });
+  rt.actions.register(SETTINGS_RESET_ASK, ([scope, assets]) => askReset(rt, scope || 'console', { includeAssets: assets === 'assets' }), { label: 'Reset settings… (asks first)', params: true, effect: 'navigate' });
   rt.actions.register(SETTINGS_RESET_RUN, ([scope, assets]) => {
-    const s = parseResetScope(scope || 'console');
+    const s = resolveResetScope(rt, scope || 'console');
     if (!s) { rt.toast(`Nothing called “${scope}” to reset.`, 'warning', 'Settings'); return; }
     runSettingsReset(rt, s, assets === 'assets' || assets === 'true');
   }, { label: 'Reset settings (confirmed)', params: true, effect: 'destructive' });
@@ -127,7 +140,8 @@ export function registerResetActions(rt: AxfRuntime): void {
 
 /** One owner's interface as the API reads it: the resolved interface, its current values and its changed assets. */
 export function settingsInterfaceReport(rt: AxfRuntime, ownerRef: string): Record<string, unknown> | null {
-  const owner = parseSettingsOwner(ownerRef);
+  const sc = resolveResetScope(rt, ownerRef);
+  const owner = sc ? (sc.kind === 'console' ? parseSettingsOwner('app') : parseSettingsOwner(`plugin:${sc.id}`)) : null;
   if (!owner) return null;
   const state = resetStateOf(rt);
   const assets = rt.registry.list('settings');
@@ -151,6 +165,6 @@ function keyOwnerOf(g: { settings: { key: string }[] }, state: ResetState): bool
 
 /** The plan as the API reads it (dry run). */
 export function settingsResetReport(rt: AxfRuntime, scopeRef: string, includeAssets: boolean): ResetPlan | null {
-  const s = parseResetScope(scopeRef);
+  const s = resolveResetScope(rt, scopeRef);
   return s ? planReset(rt, s, includeAssets) : null;
 }
