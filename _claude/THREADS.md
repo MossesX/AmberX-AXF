@@ -829,9 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:50 UTC · `assets-menu-hide-any-asset-visible` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `badge-shape-picker-banners-screen-pill` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `banners-page-focus-scroll-to-highlight` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `claude-badge-can-claude-build-green-when` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `pending-tab-one-collapsed-row-per-build` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `remove-console-s-own-notes-manager` → archived, note (all) · watchdog
@@ -1229,6 +1226,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
 - 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` s12 done (all) · orchestrator
 - 2026-11-17 21:28 UTC · `fix-banner-settings-interface-tab` s2 done (all) · orchestrator
+- 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` → running, note (all) · pipeline
+- 2026-11-17 21:28 UTC · `land-pr-730-reset-all-button-far-right` branch claude/land-pr-730-reset-all-button-far-right (all) · pipeline
+- 2026-11-17 21:28 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
 
 ## Token passes (log)
 

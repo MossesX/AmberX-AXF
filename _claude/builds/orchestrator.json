@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:28:17.707Z",
+ "updatedAt": "2026-11-17T21:28:25.387Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186823,15 +186823,15 @@
    "title": "Land PR #730 Reset all button (far right)",
    "category": "",
    "detail": "Branch claude/reset-all-button-every-asset-override (PR #730). Brett picked UI Review option: button far right. Merge origin/main: clashes only in generated files apps/axhub-web/axf.lock.json, apps/molly/axf.lock.json, apps/console-web/src/control/inventory.json; take main's lock files (molly is removed, drop if gone), regenerate inventory.json, run checks, land. Console only. At most 3 steps.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/land-pr-730-reset-all-button-far-right",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:27:49.530Z",
+   "updatedAt": "2026-11-17T21:28:07.019Z",
    "builtAt": "",
    "notes": [
     {
@@ -186841,6 +186841,14 @@
     {
      "text": "Split by Claude into 3 steps (0 Fable).",
      "at": "2026-11-17T21:27:38.182Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-land-pr-730-reset-all-button-far-right--gina.",
+     "at": "2026-11-17T21:27:59.183Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-land-pr-730-reset-all-button-far-right--gina, shared account login)",
+     "at": "2026-11-17T21:28:07.019Z"
     }
    ],
    "approvals": [],
@@ -186857,7 +186865,76 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Check out claude/reset-all-button-every-asset-override (PR #730) and merge origin/main. Resolve the clashes in the generated files: take main's apps/axhub-web/axf.lock.json; take main's apps/molly/axf.lock.json, or drop it if main removed apps/molly; leave apps/console-web/src/control/inventory.json for step 2. Check that the far-right Reset all button Brett picked in UI Review is still in the merged console code. Commit the merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/axhub-web/axf.lock.json",
+      "apps/molly/axf.lock.json",
+      "apps/console-web/src/control/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7ea4m01nftd",
+     "createdAt": "2026-11-17T21:27:38.182Z"
+    },
+    {
+     "id": "s2",
+     "text": "Regenerate apps/console-web/src/control/inventory.json from the merged tree with the console-control inventory generator. Confirm the Reset all control is registered there with its control@1 target, its REST /api/console-control route, its MCP console_control_* tool, its axf console CLI command and its voice action, so the API covers it. Run check-console-control.mjs, check-theme.mjs, check-controls.mjs, check-toolbars.mjs, tracker.mjs --check and a console typecheck, and fix anything they fail on. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/inventory.json",
+      "framework/cli/check-console-control.mjs",
+      "apps/console-web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7ea4m02q9bt",
+     "createdAt": "2026-11-17T21:27:38.182Z"
+    },
+    {
+     "id": "s3",
+     "text": "Push the branch and write the report _claude/builds/reports/land-pr-730-reset-all-button-far-right.md: the merge, which lock files were taken or dropped, the inventory regeneration, check results before and after, how Reset all is reached (deep link, REST, MCP, CLI, voice), and Brett's words 'reset all on the right'. Update the PR #730 description to say how each API is reached, link the build with builds-live.mjs link land-pr-730-reset-all-button-far-right --branch claude/reset-all-button-every-asset-override --pr 730, and add PR #730 to the merge queue (land.mjs queue add 730). Never merge it directly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/land-pr-730-reset-all-button-far-right.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7ea4m03oqed",
+     "createdAt": "2026-11-17T21:27:38.182Z"
+    }
+   ]
   }
  ]
 }
