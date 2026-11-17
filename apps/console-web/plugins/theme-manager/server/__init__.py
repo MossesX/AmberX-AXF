@@ -199,6 +199,20 @@ def skin_map(find: str = "") -> Any:
     return _skins("map", *([find] if find else []))
 
 
+@router.get("/skin-map")
+def skin_map_doc(skin: str = "", find: str = "") -> Any:
+    """skin-map@1, the whole map: every slot (what it controls, the tokens it writes, the components that read them, where its data and layout live), every dataset and layout. `skin` adds what that skin sets on every row (its extends folded); `find` filters rows by token, key or name."""
+    if find and not skin:
+        return _skins("map", find)
+    return _skins("map", *([skin] if skin else []))
+
+
+@router.get("/skin-map/{slot}")
+def skin_map_slot(slot: str, skin: str = "") -> Any:
+    """One slot of skin-map@1 (toolbar, parts.toolbar, motion, colorTheme…): its rows, and with `skin` what that skin sets there."""
+    return _skins("map", *([skin] if skin else []), "--slot", slot)
+
+
 @router.get("/skins/covers/{skin}")
 def skin_covers(skin: str) -> Any:
     """What one skin (or design package) sets or styles, type by type: 'what does the Windows skin cover?'."""

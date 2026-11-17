@@ -22,6 +22,7 @@ import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
+import { registerSkinMapActions } from './SkinMap';
 export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
@@ -46,6 +47,8 @@ export const SETTINGS_TABS = {
   about: { id: 'about', label: 'About', icon: 'info', order: 90, description: 'Versions and help.' },
   // What the AI may change when it makes a skin (skin-config@1); shown only while something provides axf.skin-config@1.
   'skin-config': { id: 'skin-config', label: 'Skin config', icon: 'sliders', parent: 'appearance', order: 30, description: 'Before AI makes a skin: pick what it may change, lock the rest, set how deep it may build menus. The current look is the Default skin.' },
+  // skin-map@1 (build flagship-professional-skin-covering-2): every slot, what it controls and where its data and layout live.
+  'skin-map': { id: 'skin-map', label: 'Skin map', icon: 'layers', parent: 'appearance', order: 40, description: 'Every slot a skin fills, grouped by surface: what it controls, the tokens it writes, the components that read them, where its data and layout live, and what the skin in force sets there.' },
 } as const;
 
 /* ---------------- hooks ---------------- */
@@ -1106,6 +1109,7 @@ export const library: AxfWebLibrary = {
       }
     };
     rt.actions.register('app.settings', () => openSettings(undefined), { label: 'Settings' });
+    registerSkinMapActions(rt);
     // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
     rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });
     rt.actions.register('settings.level', ([l]) => { const lv = settingsLevel(settingsUi(rt), l); if (l) rt.settings.set(SETTINGS_LEVEL_KEY, lv); }, { label: 'Pick the settings level', params: true });
