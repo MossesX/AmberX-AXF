@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7383,
- "updatedAt": "2026-11-17T04:52:58.199Z",
+ "rev": 7384,
+ "updatedAt": "2026-11-17T12:22:23.906Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262510,6 +262510,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T03:41:38.121Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "maintenance-plugin-clear-docker-cache",
+   "title": "Maintenance plugin: Clear Docker cache button, restarts Docker if needed",
+   "category": "",
+   "detail": "Add a 'Clear Docker cache' action to the Maintenance plugin. It runs docker builder prune -af and shows space freed. If the cache is reported as in use (reclaimable 0 while cache size > 0), it offers/does a Docker restart (systemctl restart docker), waits for every container to come back on its restart policy, verifies them, then prunes again and reports before/after disk. Context: on Nov 17 the disk hit 100%; 87 GB of build cache showed as 'active' and prune freed nothing until Docker was restarted, which dropped disk from 96% to 78%. Confirm before restart (it drops all apps ~1-2 min). Reachable from UI, REST, MCP, CLI and voice; log to systems check. Also add to the disk systems-check item's Auto fix.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T12:22:21.824Z",
+   "updatedAt": "2026-11-17T12:22:21.824Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a button in the maintenance plugin to clear the cache and to reset Docker if it needs to to clear the cache.",
+    "at": "2026-11-17T12:22:21.824Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 937
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

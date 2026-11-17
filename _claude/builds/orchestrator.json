@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:52:58.199Z",
+ "updatedAt": "2026-11-17T12:22:23.906Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -170320,6 +170320,37 @@
      "createdAt": "2026-11-17T03:41:38.121Z"
     }
    ]
+  },
+  {
+   "id": "maintenance-plugin-clear-docker-cache",
+   "title": "Maintenance plugin: Clear Docker cache button, restarts Docker if needed",
+   "category": "",
+   "detail": "Add a 'Clear Docker cache' action to the Maintenance plugin. It runs docker builder prune -af and shows space freed. If the cache is reported as in use (reclaimable 0 while cache size > 0), it offers/does a Docker restart (systemctl restart docker), waits for every container to come back on its restart policy, verifies them, then prunes again and reports before/after disk. Context: on Nov 17 the disk hit 100%; 87 GB of build cache showed as 'active' and prune freed nothing until Docker was restarted, which dropped disk from 96% to 78%. Confirm before restart (it drops all apps ~1-2 min). Reachable from UI, REST, MCP, CLI and voice; log to systems check. Also add to the disk systems-check item's Auto fix.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T12:22:21.824Z",
+   "updatedAt": "2026-11-17T12:22:21.824Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a button in the maintenance plugin to clear the cache and to reset Docker if it needs to to clear the cache.",
+    "at": "2026-11-17T12:22:21.824Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
