@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7624,
- "updatedAt": "2026-11-17T19:07:41.938Z",
+ "rev": 7625,
+ "updatedAt": "2026-11-17T19:08:08.006Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -215005,10 +215005,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-13T21:17:08.385Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-17T19:08:04.648Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -215227,7 +215227,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222565,10 +222565,10 @@
     "dispatchedAt": "2026-11-16T13:13:13.711Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-14T04:21:06.942Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-17T19:08:04.648Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-16T13:13:13.711Z",
@@ -222696,7 +222696,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
