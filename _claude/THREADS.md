@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:53 UTC · `orchestrator-runs-long-builds-across` → running, note (all) · pipeline
 - 2026-11-16 23:53 UTC · `orchestrator-runs-long-builds-across` branch claude/orchestrator-runs-long-builds-across (all) · pipeline
 - 2026-11-16 23:53 UTC · `orchestrator-runs-long-builds-across` note (all) · orchestrator
 - 2026-11-16 23:55 UTC · `axhub-veto-countdown-setting-read-only` s12 done, → complete (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 04:37 UTC · `get-main-green-unblock-lander-land-axf` PR #775 (all) · foreign-write
 - 2026-11-17 04:37 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
 - 2026-11-17 04:39 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
+- 2026-11-17 04:39 UTC · `server-auto-lander-fixes-lands` s24 done (all) · orchestrator
 
 ## Token passes (log)
 
