@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `build-notifications-same-notification-per-build` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:21 UTC · `icon-picker-every-banner-settings-widget` s11 done, note (all) · foreign-write
 - 2026-11-17 23:21 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-17 23:22 UTC · `flagship-professional-skin-covering-2` s25 done (all) · orchestrator
+- 2026-11-17 23:22 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
 
 ## Token passes (log)
 
