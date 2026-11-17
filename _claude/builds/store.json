@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8289,
- "updatedAt": "2026-11-17T22:55:22.824Z",
+ "rev": 8290,
+ "updatedAt": "2026-11-17T22:55:43.522Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262471,7 +262471,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T22:36:23.382Z",
+   "updatedAt": "2026-11-17T22:55:28.811Z",
    "builtAt": "",
    "notes": [
     {
@@ -262623,22 +262623,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T22:09:09.103Z",
-     "buildId": "banner-widget-shapes-plus-change-icon",
-     "phase": "",
-     "step": "s5",
-     "cause": "tmux-missing",
-     "exit": null,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "2026-11-17T22:09:23.059Z",
-     "session": "",
-     "note": "its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -263063,12 +263047,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:55:28.811Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-16T23:03:57.915Z"
+     "updatedAt": "2026-11-17T22:55:34.269Z"
     },
     {
      "id": "s18",
@@ -263131,7 +263115,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271891,7 +271875,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "landing",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -271899,8 +271883,8 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:35:39.849Z",
-   "builtAt": "2026-11-17T22:35:08.383Z",
+   "updatedAt": "2026-11-17T22:55:38.771Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -272249,6 +272233,10 @@
     {
      "text": "Headless run axf-rebuild-fresh-main-phone-connect-small--rhonda: brief only · start 19.8K tokens ($0.07) · cost $0.28 · 9 turns · 6 tools, MCP none",
      "at": "2026-11-17T22:35:39.849Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:55:38.771Z"
     }
    ],
    "approvals": [
@@ -272275,7 +272263,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-17T20:38:05.061Z",
+    "queuedAt": "2026-11-17T22:55:37.373Z",
     "queuedBy": "console",
     "account": "hulu0241",
     "session": "",
@@ -272303,7 +272291,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
@@ -272317,34 +272305,8 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T22:35:27.023Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--rhonda",
-     "phase": "Phase 2"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T22:26:04.716Z",
-     "buildId": "rebuild-fresh-main-phone-connect-small",
-     "phase": "Phase 1",
-     "step": "s15",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "hulu0241",
-     "notified": "2026-11-17T22:29:39.904Z",
-     "session": "",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -273026,7 +272988,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": {
