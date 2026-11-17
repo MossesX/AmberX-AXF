@@ -186,7 +186,8 @@
       "AXF_DEMO_GAP_MS_TEST"
     ],
     "mentions": [
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "framework/cli/axf.mjs"
     ]
   },
   "opens": "dialog",
