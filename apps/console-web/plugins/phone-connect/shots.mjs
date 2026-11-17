@@ -4,7 +4,7 @@
  * `vite preview` of dist/ with the plugin's routes answered from a fixed fixture (no VPS, no phone). Each shot opens
  * the sub-tab through console-control, like the deep link does.
  *
- *   node scripts/phone-connect-shots.mjs <out-dir>        (build first: npm run build)
+ *   node apps/console-web/plugins/phone-connect/shots.mjs <out-dir>   (build the console first: npm run build)
  *   PC_SHOTS_PORT=7098 · PW_CHROMIUM=<chromium path> · PC_SHOTS_ONLY=tabs,stacked,split
  */
 import { spawn } from 'node:child_process';
@@ -14,10 +14,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 
-const APP = join(dirname(fileURLToPath(import.meta.url)), '..');
+const APP = join(dirname(fileURLToPath(import.meta.url)), '../..'); // apps/console-web
 const ROOT = join(APP, '../..');
 const OUT = process.argv[2];
-if (!OUT) { console.error('usage: node scripts/phone-connect-shots.mjs <out-dir>'); process.exit(2); }
+if (!OUT) { console.error('usage: node apps/console-web/plugins/phone-connect/shots.mjs <out-dir>'); process.exit(2); }
 const PORT = Number(process.env.PC_SHOTS_PORT) || 7098;
 let playwright;
 for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }

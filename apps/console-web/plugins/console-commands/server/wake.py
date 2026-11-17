@@ -107,7 +107,7 @@ def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
         local = None
     if local is not None:
         done = bool(local.get("ok")) and (local.get("command") or {}).get("status") == "done"
-        return {"ok": bool(local.get("ok")), "opened": done, "notified": bool(local.get("ok")) and not done, "message": str(local.get("output") or ""), "via": "phone-connect"}
+        return {"ok": bool(local.get("ok")), "opened": done, "notified": bool(local.get("ok")) and not done, "message": str(local.get("output") or ""), "via": "phone"}
     url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
     tok = os.environ.get("AXHUB_TOKEN", "")
     if not tok:

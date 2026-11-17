@@ -221,7 +221,7 @@ Tool names stay, so no caller changes. What changed on the console side, and wha
 
 | Tool | Console today | Hub adapter (MossesX/axHub, to do there) |
 | --- | --- | --- |
-| `amberx.open_url` | the console's own callers (wake, overlay verbs, Vinny's `hub_call`) ask `axf.phone@1.hub_tool` first: a paired, online phone opens it (url policy applies); otherwise axHub → AmberX as before | relay to the console: `POST /api/plugins/phone-connect/open {url, where}` with the console token (`X-AXF-Via: hub`); keep AXPP to AmberX only while an AmberX device is still online |
+| `amberx.open_url` | the console's own callers (wake, overlay verbs, Vinny's `hub_call`) ask `axf.phone@1.hub_tool` first: a paired, online phone opens it (url policy applies); otherwise axHub → AmberX as before | relay to the console: `POST /api/plugins/phone-connect/open {url, where}` with the console token (`X-AXF-Via: hub`); keep AXPP to AmberX only while an AmberX device is still online | <!-- axf-plugin:phone-connect -->
 | `amberx.recorder_stop` · `amberx.recorder_status` | same: the paired phone first (`recorder.stop`, `recorder.status`) | relay to `POST recorder/stop` · `GET recorder/status?ask=1` |
 | `amberx.recorder_start` | **unchanged**: its approval is the hub's (a straight approval, never auto); the console never routes it around the hub | after the hub's approval, relay to `POST recorder/start {session, group, note, approvalId: <the hub approval id>}`; the phone then asks Android's capture consent (`consent_required` until Brett says yes) |
 | push (notify-control channel `amberx`) | the alert hub sends what may buzz the phone to the paired phone (`notify`); AmberX still reads its feed while it exists | nothing: push never went through a hub tool |
