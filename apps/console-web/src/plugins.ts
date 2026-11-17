@@ -33,6 +33,12 @@ export interface PluginManifest {
   opens?: 'main' | 'window' | 'dialog' | 'tab' | false;
   /** which UI moves (view:<id> / dialog:<id>) */
   opensUi?: string;
+  /** the console's generic settings sub-tab (PluginDefaultSettingsTab) under Settings → Plugins; parent is always 'plugins' */
+  settingsTab?: { default: true; label?: string; icon?: string; order?: number };
+  /** false = no host settings gear on its screens (needs settingsGearReason); default true */
+  settingsGear?: boolean;
+  /** why a plugin's screens carry no settings gear (required with settingsGear: false) */
+  settingsGearReason?: string;
 }
 
 export interface BundledPlugin {
@@ -181,6 +187,19 @@ function pluginUrl(folder: string, path: string): string { return `/api/plugins/
 /** Fetch for a plugin's own server routes (/api/plugins/<folder>/...), with the console token. */
 export async function pluginFetch(folder: string, path: string, init: RequestInit = {}): Promise<Response> {
   return fetch(pluginUrl(folder, path), { ...init, headers: authHeaders(consoleTokens, init), cache: 'no-store' });
+}
+
+/**
+ * Fetch for Brett's own action on a plugin route (an owner-only switch, a veto pass): his signed-in axHub session
+ * first, WITHOUT the console token. Behind the wall a request carrying a bearer token reaches the console as a token
+ * call (X-Auth-Via: token, no session headers), and a token is what agents and scripts hold, so an owner check can
+ * never see Brett through it. Only when there is no session (401, or the wall sent the browser to sign in) does it
+ * go again with the console token, and the server answers what that may do.
+ */
+export async function ownerFetch(folder: string, path: string, init: RequestInit = {}): Promise<Response> {
+  const r = await fetch(pluginUrl(folder, path), { ...init, credentials: 'same-origin', cache: 'no-store' });
+  if (r.status !== 401 && !r.redirected) return r;
+  return pluginFetch(folder, path, init);
 }
 
 /** Where a plugin's 401 message sends people (the console token lives under Settings → Account & security). */

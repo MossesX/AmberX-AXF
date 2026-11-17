@@ -5,6 +5,7 @@ import { createAxf, type AxfManifest } from './axf/core';
 import { AxfProvider } from './axf/react';
 import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
+import { registerPluginSettingsActions } from './pluginSettingsActions';
 import { App } from './App';
 import './axf/ui/axf.css';
 import './console.css';
@@ -27,6 +28,7 @@ const axf = createAxf({
   assets: Object.values(assetModules),
 });
 registerActions(axf);
+registerPluginSettingsActions(axf);
 
 // One-time move to the new default toolbar for browsers that saved their choices before saves recorded the
 // app's defaults (newer saves carry them, and the runtime adopts a changed default by itself).

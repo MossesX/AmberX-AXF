@@ -15,7 +15,7 @@
       {
         "target": "action:claude-settings.open",
         "title": "Claude settings",
-        "text": "Opens Settings \u2192 Plugins \u2192 Claude: the settings every Claude session reads on axHub before it acts.",
+        "text": "Opens Settings → Plugins → Claude: the settings every Claude session reads on axHub before it acts.",
         "kind": "menu-item"
       },
       {
@@ -35,6 +35,60 @@
         "title": "No wait",
         "text": "Shows while No wait is on: Amber's held calls run at once instead of waiting on the 90 s veto. Turn off revokes the pass straight away.",
         "kind": "banner"
+      },
+      {
+        "target": "claude-settings.view",
+        "title": "View",
+        "text": "How this page looks on this device: Tabs or Classic (one page). With tabs, pick the side they sit on and whether they show words, icons or both. Right-clicking the tab row changes the same thing.",
+        "kind": "card"
+      },
+      {
+        "target": "claude-settings.approvals",
+        "title": "Approvals & veto",
+        "text": "What Amber can run at once, what waits on a veto and what needs your confirm, read live from axHub. Change a tool or a whole service, set its hold, or apply your default: only VPS writes and account switches hold. Only your own hub session can change these.",
+        "kind": "card"
+      },
+      {
+        "target": "hold-seconds",
+        "title": "Hold (seconds)",
+        "text": "How long a held call waits before it runs by itself, unless you deny it. 10 to 1800 seconds.",
+        "kind": "field"
+      },
+      {
+        "target": "every-tool-here",
+        "title": "Every tool here",
+        "text": "Sets every tool of this service to one choice. axHub's own rules still hold: destructive tools stay on confirm.",
+        "kind": "field"
+      },
+      {
+        "target": "show-tools",
+        "title": "Show tools",
+        "text": "Lists this service's tools, so you can set each one.",
+        "kind": "button"
+      },
+      {
+        "target": "apply-changes",
+        "title": "Apply changes",
+        "text": "Applies your default on axHub: only VPS writes and account switches hold. It lists what changes and asks first. Destructive tools keep their confirm.",
+        "kind": "button"
+      },
+      {
+        "target": "find-a-tool",
+        "title": "Find a tool",
+        "text": "Filters the services below to the tools with this in their name.",
+        "kind": "field"
+      },
+      {
+        "target": "tabs-sit-on-the",
+        "title": "Tabs sit on the",
+        "text": "Which side the tabs sit on: top, bottom, left or right. Saved for this device.",
+        "kind": "field"
+      },
+      {
+        "target": "tabs-show",
+        "title": "Tabs show",
+        "text": "What the tabs show: words, icons or both. Saved for this device.",
+        "kind": "field"
       }
     ],
     "intros": []

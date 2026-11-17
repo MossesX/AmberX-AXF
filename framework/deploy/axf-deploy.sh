@@ -244,3 +244,37 @@ axf_cron_file() {
   printf '%s\n' "$@" > "/etc/cron.d/$_axf_name"
   chmod 644 "/etc/cron.d/$_axf_name"
 }
+
+# ---------------------------------------------------------------------------------------------------- systemd units
+
+# axf_systemd_unit SRC DIR → installs the unit file SRC into $AXF_SYSTEMD_DIR (default /etc/systemd/system) with every
+# @DIR@ replaced by DIR (0644). Prints the installed path. Does not reload or enable anything.
+axf_systemd_unit() {
+  local _axf_src="$1" _axf_dir="$2" _axf_to="${AXF_SYSTEMD_DIR:-/etc/systemd/system}"
+  [ -f "$_axf_src" ] || { echo "axf_systemd_unit: no unit file $_axf_src" >&2; return 1; }
+  mkdir -p "$_axf_to"
+  sed "s|@DIR@|$_axf_dir|g" "$_axf_src" > "$_axf_to/$(basename "$_axf_src")"
+  chmod 644 "$_axf_to/$(basename "$_axf_src")"
+  printf '%s\n' "$_axf_to/$(basename "$_axf_src")"
+}
+
+# axf_auto_lander_install DIR [--dry-run] → the server auto-lander (auto-lander@1) as a systemd service + timer: installs
+# deploy/systemd/axf-auto-lander.{service,timer} from DIR, reloads systemd and enables the timer (every minute).
+# --dry-run (or AXF_DEPLOY_DRY=1): writes the units to $AXF_SYSTEMD_DIR, runs one `auto-lander.mjs tick --dry-run`
+# against $AXF_AUTO_LANDER_DIR (AXF_AUTO_LANDER_ONLY=<build> limits it to one build) and prints the systemctl calls instead of running them.
+axf_auto_lander_install() {
+  local _axf_dir="$1" _axf_dry="${AXF_DEPLOY_DRY:-}"
+  [ "${2:-}" = "--dry-run" ] && _axf_dry=1
+  [ -f "$_axf_dir/deploy/auto-lander/auto-lander.mjs" ] || { echo "axf_auto_lander_install: $_axf_dir has no deploy/auto-lander" >&2; return 1; }
+  axf_systemd_unit "$_axf_dir/deploy/systemd/axf-auto-lander.service" "$_axf_dir" >/dev/null
+  axf_systemd_unit "$_axf_dir/deploy/systemd/axf-auto-lander.timer" "$_axf_dir" >/dev/null
+  if [ -n "$_axf_dry" ]; then
+    echo "systemctl daemon-reload"
+    echo "systemctl enable --now axf-auto-lander.timer"
+    (cd "$_axf_dir" && node deploy/auto-lander/auto-lander.mjs tick --dry-run --json ${AXF_AUTO_LANDER_ONLY:+--only "$AXF_AUTO_LANDER_ONLY"} >/dev/null)
+    return
+  fi
+  touch /var/log/axf-auto-lander.log
+  systemctl daemon-reload
+  systemctl enable --now axf-auto-lander.timer
+}

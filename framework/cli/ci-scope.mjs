@@ -41,7 +41,7 @@ export const RULES = Object.freeze([
   { re: /^apps\/amberx-droid\//, needs: ['engine', 'console', 'amberxweb', 'amberx'] },
   { re: /^apps\/molly\//, needs: ['engine', 'console', 'molly'] },
   { re: /^apps\/walkthrough-studio\//, needs: ['engine', 'console', 'walkthrough'] },
-  { re: /^apps\/(console|voicevault|axhub-android)\//, needs: ['engine', 'android'] },
+  { re: /^apps\/(console|console-droid|voicevault|axhub-android)\//, needs: ['engine', 'android'] },
   { re: /^apps\/demo\//, needs: ['engine'] },
   { re: /^deploy\//, needs: ['engine', 'console'] },
   // data and docs: the builds store, tracker and manifests are checked by the engine sweep
@@ -94,6 +94,7 @@ export function lightCommands(files, { exists = () => false, list = () => [] } =
     'node framework/cli/tracker.mjs --check',
     'node framework/cli/project.mjs validate --all',
     'node framework/cli/builds-store.mjs verify',
+    'node framework/cli/check-tracking-files.mjs',
     'node framework/cli/check-theme.mjs',
     'node framework/cli/check-controls.mjs',
     'node framework/cli/check-toolbars.mjs',

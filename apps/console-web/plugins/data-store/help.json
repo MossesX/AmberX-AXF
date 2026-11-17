@@ -1,0 +1,128 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "data-store-help",
+  "name": "Data store help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Settings → Plugins → Data store (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:data-store",
+    "entries": [
+      {
+        "target": "data-store",
+        "title": "Data store",
+        "text": "Where the console's data lives. axf-data is a small container that holds notes, builds, settings, planner items and plugin data, so they stay readable and writable when the console is down. Its store is Postgres in its own container (axf-data-db): builds, steps, UI reviews, planner items, settings, notes and the control registry are real tables, not file copies. Each area (namespace) moves onto it in stages: Shadow, then Cut over."
+      },
+      {
+        "target": "panel:data-store.status",
+        "title": "Where the data is",
+        "text": "One row per namespace: its mode (Local = the console's files, Shadow = written to both and compared, On axf-data = axf-data only, Rolling back = being copied back), how many keys axf-data holds, the drift count and the next step. The tables behind the keys: axf data tables, the tables plugin command, or 'what tables are there'."
+      },
+      {
+        "target": "panel:data-store.backups",
+        "title": "Backups",
+        "text": "axf-data is backed up daily at 03:17 UTC (pg_dump of the Postgres database, 14 days plus weekly copies) and each backup is checked: readable by pg_restore, counts against the live store. At 03:40 the SQLite files the console still writes (Shipped features ledger, Chat viewer) are mirrored into Postgres rows. A failed or late backup turns the Systems check item red and its Auto fix runs one."
+      },
+      {
+        "target": "data-store-backup",
+        "title": "Backup now",
+        "text": "Starts a backup on axf-data now and checks it against the live store. The result shows here in a minute."
+      },
+      {
+        "target": "data-store-verify",
+        "title": "Verify",
+        "text": "Re-checks the newest backup: the database copy is intact, every file in it has the right hash, and its counts match the live store."
+      },
+      {
+        "target": "panel:data-store.mode",
+        "title": "Move a namespace",
+        "text": "Moves one namespace onto axf-data, staged. Shadow writes to both and logs any difference; Cut over is allowed only after shadow has been quiet for the window with no drift (or the drift was read and accepted); Roll back copies axf-data's changes back to the local files."
+      },
+      {
+        "target": "data-store-shadow",
+        "title": "Shadow",
+        "text": "Starts writing this namespace to axf-data as well as to the local files. Reads still come from the local files; differences go to the drift log. Needs the migration copy to match (data-migrate)."
+      },
+      {
+        "target": "data-store-cutover",
+        "title": "Cut over",
+        "text": "Makes axf-data the only store for this namespace. The local files become a read-only backup. Refused while there is unaccepted drift or shadow hasn't been quiet for the window."
+      },
+      {
+        "target": "data-store-rollback",
+        "title": "Roll back",
+        "text": "Takes this namespace back to the local files: writes wait while every change axf-data has since the cut is copied back, then the namespace is local again."
+      },
+      {
+        "target": "data-store-local",
+        "title": "Back to local",
+        "text": "Stops shadowing this namespace. axf-data keeps its copy but nothing reads or writes it."
+      },
+      {
+        "target": "list:data-store-drift",
+        "title": "Drift log",
+        "text": "What shadow found different between the local files and axf-data, and mirror writes that failed. Read it before accepting drift for a cutover."
+      },
+      {
+        "target": "backup-now",
+        "title": "Backup now",
+        "text": "Shows “Backup now”. Part of Data store.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "verify",
+        "title": "Verify",
+        "text": "Shows “Verify”. Part of Data store.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "namespace",
+        "title": "Namespace",
+        "text": "Where you set “Namespace”. Change it and the app uses the new value. Part of Data store.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "quiet-window-minutes",
+        "title": "Quiet window (minutes)",
+        "text": "Where you set “Quiet window (minutes)”. Change it and the app uses the new value. Part of Data store.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "accept-the-logged-drift",
+        "title": "Accept the logged drift",
+        "text": "Turns “Accept the logged drift” on or off. It takes effect straight away and is remembered. Part of Data store.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "shadow",
+        "title": "Shadow",
+        "text": "Shows “Shadow”. Part of Data store.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "cut-over",
+        "title": "Cut over",
+        "text": "Cuts over. Part of Data store.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "back-to-local",
+        "title": "Back to local",
+        "text": "Shows “Back to local”. Part of Data store.",
+        "kind": "button",
+        "draft": true
+      }
+    ]
+  }
+}

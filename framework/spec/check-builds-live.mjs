@@ -112,10 +112,15 @@ async function main() {
   r = run(A, LIVE, ['link', 'y', '--branch', 'claude/y', '--pr', 'https://github.com/o/r/pull/12']);
   fetchA(); m = mainStore();
   let y = m.builds.find((b) => b.id === 'y');
-  check(y.status === 'built' && y.pr === '#12' && y.branch === 'claude/y', `link: built, awaiting merge (${y.status} ${y.pr} ${y.branch})`);
+  // done-means-merged@1: every step done + an open PR = landing (the lander's); merged = landed (complete only once verified)
+  check(y.status === 'landing' && y.pr === '#12' && y.branch === 'claude/y', `link: landing, awaiting merge (${y.status} ${y.pr} ${y.branch})`);
   r = run(A, LIVE, ['link', 'y', '--merged']);
   fetchA(); m = mainStore(); y = m.builds.find((b) => b.id === 'y');
-  check(y.status === 'complete' && !!y.mergedAt, `merged: complete (${y.status})`);
+  // the store guard: merged without CI on the merge commit is not landed; the refusal is a note
+  check(y.status === 'landing' && !!y.mergedAt && y.notes.some((n) => /^Refused landing → landed/.test(n.text)), `merged, no CI evidence: refused, stays landing with a note (${y.status})`);
+  r = run(A, LIVE, ['link', 'y', '--sha', 'abc1234', '--ci', 'success']);
+  fetchA(); m = mainStore(); y = m.builds.find((b) => b.id === 'y');
+  check(y.status === 'landed' && y.landed?.sha === 'abc1234' && y.landed?.ci === 'success', `merged + CI green on the merge commit: landed (${y.status})`);
   check(core.validateStore(m).ok, 'main\'s store is valid builds@1 after every live write');
 
   // 6. a feature branch with its own (older) copy merges main with the driver: clean, newer wins, nothing regresses
@@ -126,7 +131,7 @@ async function main() {
   const mg = gitTry(C, 'merge', '--no-edit', 'origin/main');
   const cs = JSON.parse(readFileSync(join(C, STORE_REL), 'utf8'));
   check(mg.status === 0, `merge with the driver is clean (${mg.stdout}${mg.stderr})`);
-  check(stepsDone(cs, 'x') === 's1,s2,s3,s4' && cs.builds.find((b) => b.id === 'y').status === 'complete', `merged store: x ${stepsDone(cs, 'x')}, y ${cs.builds.find((b) => b.id === 'y').status}`);
+  check(stepsDone(cs, 'x') === 's1,s2,s3,s4' && cs.builds.find((b) => b.id === 'y').status === 'landed', `merged store: x ${stepsDone(cs, 'x')}, y ${cs.builds.find((b) => b.id === 'y').status}`);
 
   // 7. heal: a pushed branch whose builds files conflict with main gets main merged in (driver), pushed, not forced
   const D = join(T, 'd'); git(T, 'clone', '-q', join(T, 'remote.git'), 'd');
@@ -149,8 +154,9 @@ async function main() {
   check(!mu.steps[3].done && mu.steps[0].done, 'a newer undo wins for that step only');
   check(mu.branch === base.branch, 'a blank branch never wipes a set one');
   check(merge.mergeJournalText('{"at":"2"}\n{"at":"1"}\n', '{"at":"1"}\n{"at":"3"}\n') === '{"at":"2"}\n{"at":"1"}\n{"at":"3"}\n', 'journal union: the first file as it is, then each new line once');
-  check(merge.liveStatus({ status: 'running', pr: '#5', steps: [{ done: true }] }) === 'built' && merge.liveStatus({ status: 'running', pr: '#5', mergedAt: 'x', steps: [{ done: true }] }) === 'complete' && merge.liveStatus({ status: 'running', steps: [{ done: true }] }) === 'complete', 'liveStatus: built until merged, complete without a PR');
-  check(merge.liveStatus({ status: 'archived', pr: '#5', steps: [{ done: true }] }) === 'archived' && merge.liveStatus({ status: 'complete', steps: [{ done: false }] }) === 'complete', 'liveStatus keeps archived and built-without-ticks');
+  // done-means-merged@1: all done = landing until merged, landed once merged (with or without a PR: never complete without the verify)
+  check(merge.liveStatus({ status: 'running', pr: '#5', steps: [{ done: true }] }) === 'landing' && merge.liveStatus({ status: 'running', pr: '#5', mergedAt: 'x', steps: [{ done: true }] }) === 'landed' && merge.liveStatus({ status: 'running', steps: [{ done: true }] }) === 'landing', 'liveStatus: landing until merged, landed once merged, never built or complete');
+  check(merge.liveStatus({ status: 'archived', pr: '#5', steps: [{ done: true }] }) === 'archived' && merge.liveStatus({ status: 'complete', mergedAt: 'x', steps: [{ done: false }] }) === 'complete' && merge.liveStatus({ status: 'complete', pr: '#5', steps: [{ done: false }] }) === 'landing' && merge.liveStatus({ status: 'complete', steps: [{ done: false }] }) === 'complete' && merge.liveStatus({ status: 'fixing', steps: [{ done: true }] }) === 'fixing' && merge.liveStatus({ status: 'escalated', steps: [{ done: true }] }) === 'escalated', 'liveStatus keeps archived, merged complete, fixing and escalated; an unmerged complete without ticks is landing');
   check(merge.liveStatus({ status: 'pending', steps: [{ done: true }, { done: false }] }) === 'pending' && merge.liveStatus({ status: 'running', steps: [{ done: true }, { done: false }] }) === 'running', 'liveStatus: a paused (pending) build with ticks stays pending');
   check(merge.liveStatus({ status: 'complete', pr: '#5', mergedAt: 'x', steps: [{ done: true }, { done: false }] }) === 'complete', 'liveStatus: merged = complete even with steps unticked');
 
@@ -165,7 +171,7 @@ async function main() {
       b('all-done', { pr: '#7', steps: [{ id: 's1', done: true }] }), b('epic', { kind: 'epic', planRef: 'x.epic' }), b('ticked'), { ...b('waits'), status: 'pending' }];
     const plan = rc.idlePlan(builds, alive, { now, skip: ['ticked'] });
     const to = Object.fromEntries(plan.map((c) => [c.id, c.set.status]));
-    check(JSON.stringify(to) === JSON.stringify({ stale: 'pending', merged: 'complete', 'all-done': 'built' }), `idlePlan: stale → pending (paused), merged → complete, all done → built; live, fresh, epics, ticked and pending untouched (${JSON.stringify(to)})`);
+    check(JSON.stringify(to) === JSON.stringify({ stale: 'pending', merged: 'landed', 'all-done': 'landing' }), `idlePlan: stale → pending (paused), merged → landed, all done → landing; live, fresh, epics, ticked and pending untouched (${JSON.stringify(to)})`);
     check(rc.idlePlan(builds, null, { now }).length === 0, 'idlePlan: processes unseen (no tmux) = nothing touched');
   }
 

@@ -38,3 +38,17 @@ export function GateSettings() {
 }
 
 
+
+/** Links from Settings → Plugins → Gate into the Gate screen's own tabs (build rules and the auto-lander stay there). */
+export function GateScreenLinks() {
+  const rt = useRuntime();
+  const open = (tab: string) => { rt.closeDialog(); rt.dispatch(`gate.open:${tab}`); };
+  return (
+    <div className="axp-gate__bar">
+      <Button id="gate-link-rules" icon="shield" onClick={() => open('rules')}>Rules</Button>
+      <Button id="gate-link-build-rules" icon="list" onClick={() => open('build-rules')}>Build rules</Button>
+      <Button id="gate-link-auto-lander" icon="branch" onClick={() => open('auto-lander')}>Auto-lander</Button>
+      <Button id="gate-link-history" icon="clock" onClick={() => open('history')}>History</Button>
+    </div>
+  );
+}
