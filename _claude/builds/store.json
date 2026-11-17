@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7902,
- "updatedAt": "2026-11-17T20:58:08.128Z",
+ "rev": 7903,
+ "updatedAt": "2026-11-17T20:58:21.146Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268172,7 +268172,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T20:52:16.260Z",
+   "updatedAt": "2026-11-17T20:58:18.378Z",
    "builtAt": "",
    "notes": [
     {
@@ -268266,7 +268266,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -268402,12 +268402,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T20:58:18.378Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T16:54:55.110Z"
+     "updatedAt": "2026-11-17T20:58:18.722Z"
     },
     {
      "id": "s5",
@@ -275081,7 +275081,7 @@
    "title": "Separate settings per plugin + reset confirm dialog",
    "category": "",
    "detail": "1) Every plugin gets its OWN settings interface showing only that plugin's settings; stop opening the console settings and jumping to the plugin's tab. The console keeps its own separate settings interface. Settings interfaces are not shared. 2) Sweep every page/plugin so each opens its correct default settings interface. 3) Clicking Reset in any settings interface opens a confirmation dialog with an 'Include assets' switch (on = also reset assets/skins to default; off = settings only) and a scrollable table listing every changed asset, same as the table in the settings panel.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275090,7 +275090,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
    "updatedAt": "2026-11-17T20:57:47.020Z",
-   "builtAt": "2026-11-17T20:57:14.749Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 18 steps (3 Fable).",
@@ -275279,34 +275279,8 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T19:45:34.937Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-separate-settings-per-plugin-reset--earl",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T19:46:04.546Z",
-     "buildId": "separate-settings-per-plugin-reset",
-     "phase": "",
-     "step": "s4",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -278125,62 +278099,8 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T20:29:29.227Z",
-     "exit": 143,
-     "signal": "TERM",
-     "kind": "stopped",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--earl",
-     "phase": "Phase 2"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T20:16:06.062Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s4",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    },
-    {
-     "at": "2026-11-17T20:32:04.340Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s12",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3)."
-    },
-    {
-     "at": "2026-11-17T20:57:08.031Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s21",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -280593,17 +280513,7 @@
     "pickedAt": "2026-11-17T20:55:33.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T20:56:46.904Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-toolbars-1-5-build-orchestrator-incl--sully",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
