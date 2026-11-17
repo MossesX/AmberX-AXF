@@ -154,18 +154,40 @@ function settingsTabs(files, ps) {
   const block = std.slice(std.indexOf('export const SETTINGS_TABS = {'), std.indexOf('} as const;', std.indexOf('export const SETTINGS_TABS = {')));
   for (const m of block.matchAll(/\{ id: '([\w.-]+)', label: '([^']+)'(?:, icon: '[^']+')?(?:, parent: '([\w-]+)')?/g)) out.set(m[1], { id: m[1], label: m[2], parent: m[3] ?? null, plugin: null });
   out.set('general', out.get('general') ?? { id: 'general', label: 'General', parent: null, plugin: null });
+  // a plugin's constants are read across its whole web/ folder (FOLDER, VIEW, SETTINGS_TAB are often imported)
+  const pluginConsts = new Map();
+  const constsFor = (f, src) => {
+    const owner = ownerOf(f, ps);
+    if (!owner) return constsOf(src);
+    if (!pluginConsts.has(owner.folder)) {
+      const all = new Map();
+      for (const g of files.filter((x) => x.startsWith(owner.dir + '/'))) for (const [k, v] of constsOf(read(g))) if (!all.has(k)) all.set(k, v);
+      pluginConsts.set(owner.folder, all);
+    }
+    return new Map([...pluginConsts.get(owner.folder), ...constsOf(src)]);
+  };
   for (const f of files) {
     const src = read(f);
-    const consts = constsOf(src);
+    const consts = constsFor(f, src);
     for (const m of src.matchAll(/settingsTabs: \[([\s\S]*?)\]/g)) {
-      for (const t of m[1].matchAll(/\{ id: (?:'([\w.-]+)'|(\w+)), label: (?:'([^']+)'|`([^`]+)`)(?:[^}]*?parent: '([\w-]+)')?/g)) {
-        const id = t[1] ?? consts.get(t[2]);
-        if (!id || out.has(id)) continue;
+      for (const t of m[1].matchAll(/\{ id: (?:'([\w.-]+)'|(\w+)), label: (?:'([^']+)'|`([^`]+)`|"([^"]+)")(?:[^}]*?parent: '([\w-]+)')?/g)) {
         const owner = ownerOf(f, ps);
+        const id = t[1] ?? consts.get(t[2]) ?? (t[2] === 'FOLDER' && owner ? owner.folder : undefined);
+        if (!id || out.has(id)) continue;
         // every plugin settings tab is a sub-tab of Settings → Plugins (App.tsx underPlugins)
-        out.set(id, { id, label: t[3] ?? t[4].replace(/\$\{[^}]+\}/g, '').trim(), parent: owner ? 'plugins' : t[5] ?? null, plugin: owner?.m.id ?? null });
+        out.set(id, { id, label: t[3] ?? t[5] ?? t[4].replace(/\$\{[^}]+\}/g, '').trim(), parent: owner ? 'plugins' : t[6] ?? null, plugin: owner?.m.id ?? null });
       }
     }
+  }
+  // a framework library's tab a plugin spreads in and declares (`settings-tab:mcp` from libs/mcp) is that plugin's sub-tab
+  for (const p of ps) for (const pr of p.m.provides ?? []) {
+    const t = pr.startsWith('settings-tab:') ? out.get(pr.slice(13)) : undefined;
+    if (t && !t.plugin) out.set(t.id, { ...t, parent: 'plugins', plugin: p.m.id });
+  }
+  // plugin.json `settingsTab: { default: true }` with no tab of its own: the console's default sub-tab, id = folder
+  for (const p of ps) {
+    if (p.m.settingsTab?.default !== true || [...out.values()].some((t) => t.plugin === p.m.id) || out.has(p.folder)) continue;
+    out.set(p.folder, { id: p.folder, label: p.m.settingsTab.label ?? p.m.name, parent: 'plugins', plugin: p.m.id });
   }
   return [...out.values()].map((t) => ({ ...t, address: tabAddress(t.id, t.parent) }));
 }
@@ -346,7 +368,9 @@ function pluginTargets(ps, sTabs, viewOfPlugin) {
       detail: `Plugin${m.kind ? ` · ${m.kind}` : ''}`, keywords: words(short, m.name, (m.description ?? '').split(/[.:]/)[0]?.slice(0, 80)),
       aliases: [...new Set([short, p.folder, m.name.toLowerCase()])],
       ...(m.lazy?.core ? { core: true } : {}), ...(m.enabledByDefault === false ? { enabledByDefault: false } : {}),
-      ...(view ? { view: `view:${enc(view)}` } : {}), ...(tab ? { settingsTab: tab.address } : {}),
+      ...(view ? { view: `view:${enc(view)}` } : {}), ...(tab ? { settingsTab: tab.address, settingsTabId: tab.id } : {}),
+      // the host settings gear on its screen (src/PluginSettingsGear.tsx), unless plugin.json opts out
+      ...(view && tab && m.settingsGear !== false ? { settingsGear: `view:${enc(view)}/button:settings-gear` } : {}),
       provides: (m.provides ?? []).filter((x) => x.startsWith('service:')), requires: m.requires ?? [], optional: m.optional ?? [],
     };
   });

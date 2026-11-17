@@ -206,11 +206,26 @@ export async function main(argv, { out = (s) => console.log(s), err = (s) => con
     out(JSON.stringify(r));
     return r.ok || r.code === 'confirmation_required' ? 0 : 1;
   }
+  if (argv[0] === 'auto-lander') return autoLanderCli(argv.slice(1));
   return cli(argv, g, { out, err });
 }
 
 /** The first words `axf gate …` hands to this file (framework/cli/axf.mjs, plugin.json "cli"); the rest go to plugin-commands. */
-export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'settings', 'help']);
+export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'auto-lander', 'settings', 'help']);
+
+/**
+ * `axf gate auto-lander status|show <build>|run [--now]|retry <build>|fix <build>|pause|resume|settings|set <key> <value>`:
+ * the server auto-lander's own CLI (deploy/auto-lander/auto-lander.mjs), the same commands REST, MCP and voice call.
+ * `run` asks the service for a tick (as the console does); `run --now` ticks here at once.
+ */
+export async function autoLanderCli(argv) {
+  const al = await import('../../../../deploy/auto-lander/auto-lander.mjs');
+  const [cmd = 'status', ...rest] = argv;
+  const known = ['status', 'show', 'run', 'retry', 'fix', 'pause', 'resume', 'settings', 'set'];
+  if (!known.includes(cmd)) { console.error(`axf gate auto-lander ${known.join('|')}`); return 2; }
+  const args = cmd === 'run' && !rest.includes('--now') ? ['run', '--request', ...rest] : [cmd, ...rest.filter((x) => x !== '--now')];
+  try { await al.main(args); return process.exitCode || 0; } catch (e) { console.error(e.message); return e.code === 'invalid' ? 2 : 1; }
+}
 
 const USAGE = [
   'axf gate rules list [--kind k] [--enabled true|false] [--owner o]',
@@ -223,6 +238,7 @@ const USAGE = [
   'axf gate lander status | waiting [--rule r] [--state s] | runs [--limit n] [--result r]',
   'axf gate lander mode [on|off] | land-now <pr> [--confirm <token>] | pause [--why "…"] | resume',
   'axf gate settings [get] | settings set <key> <value>',
+  'axf gate auto-lander status | show <build> | run [--now] | retry <build> | fix <build> | pause | resume | settings | set <key> <value>',
   'axf gate build-rules list [--doer vps|session] [--kind k] [--phase p] [--enabled true|false] [--q text]',
   'axf gate build-rules get <id> | on <id> | off <id> | delete <id> [--confirm <token>]',
   'axf gate build-rules add <id> --title "…" --text "…" --doer vps|session --kind mechanical|judgement --phase before|dispatch|after|gate [--check …] [--autofix …] [--brief-block …]',

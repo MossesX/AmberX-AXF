@@ -34,6 +34,161 @@
     "mode": "merge-queue"
    }
   },
+  "CONFIG_AUTO": {
+   "autoLander": {
+    "enabled": true,
+    "mode": "serial",
+    "maxAttempts": 5,
+    "backoffMin": 2,
+    "fix": false
+   }
+  },
+  "SAVED_EIGHT": {
+   "$axf": "gate-rule-set@1",
+   "rev": 4,
+   "at": "2026-11-15T12:00:00Z",
+   "rules": [
+    {
+     "$axf": "gate-rule@1",
+     "id": "merge-queue-only",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Only the lander merges",
+     "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
+     "settings": {
+      "mode": "serial",
+      "autoLand": false,
+      "directMerge": false,
+      "depth": 3,
+      "batchSize": 8
+     },
+     "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "ci-green",
+     "kind": "ci",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "CI green",
+     "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
+     "settings": {
+      "on": "head",
+      "redJoins": false,
+      "noRunMin": 10
+     },
+     "source": "land-core.blockReason ci; merge-queue-core.notReady"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "tests",
+     "kind": "tests",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Tests after regeneration",
+     "description": "The quick tests the generated-files manifest asks for pass after the lander resolved generated and additive files.",
+     "settings": {
+      "commands": [
+       [
+        "node",
+        "apps/console-web/scripts/control-inventory.mjs",
+        "--check"
+       ],
+       [
+        "node",
+        "framework/spec/check-project-fixtures.mjs"
+       ]
+      ]
+     },
+     "source": "land-core.landTests (framework/spec/generated-files.json)"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "theme",
+     "kind": "theme",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Theme tokens",
+     "description": "Every colour, size, spacing, font, radius and border comes from asset tokens (check-theme).",
+     "settings": {
+      "check": "framework/cli/check-theme.mjs"
+     },
+     "source": "CI job check-theme"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "controls",
+     "kind": "controls",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Framework controls",
+     "description": "UI uses framework controls, never raw ones (check-controls).",
+     "settings": {
+      "check": "framework/cli/check-controls.mjs"
+     },
+     "source": "CI job check-controls"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "toolbars",
+     "kind": "controls",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Toolbars",
+     "description": "Every toolbar has role=\"toolbar\" and an aria-label; tab rows are the framework TabGroup (check-toolbars).",
+     "settings": {
+      "check": "framework/cli/check-toolbars.mjs"
+     },
+     "source": "CI job check-toolbars"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "ui-review",
+     "kind": "ui-review",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "UI Review",
+     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "settings": {
+      "holdOn": [
+       "waiting",
+       "changes",
+       "rejected",
+       "unknown"
+      ]
+     },
+     "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "clash",
+     "kind": "clash",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "No code clash with main",
+     "description": "Builds, union and generated files are resolved by the lander; a code conflict files a fix and the PR waits for it.",
+     "settings": {
+      "autoResolve": [
+       "builds",
+       "union",
+       "union-json",
+       "generated"
+      ],
+      "fileFix": true
+     },
+     "source": "land-core.planConflicts / classifyPath"
+    }
+   ]
+  },
   "SNAPSHOTS": {
    "green": {
     "number": 701,
@@ -288,6 +443,30 @@
       "fileFix": true
      },
      "source": "land-core.planConflicts / classifyPath"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "auto-lander",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "info",
+     "owner": "console",
+     "title": "Auto-lander fixes and lands",
+     "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+     "settings": {
+      "maxAttempts": 3,
+      "backoff": {
+       "baseMin": 5,
+       "factor": 3,
+       "maxMin": 60
+      },
+      "attemptTimeoutMin": 45,
+      "mergeMain": true,
+      "fixSessions": true,
+      "land": true,
+      "escalateTo": "banner"
+     },
+     "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
     }
    ]
   },
@@ -434,6 +613,30 @@
       "fileFix": true
      },
      "source": "land-core.planConflicts / classifyPath"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "auto-lander",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "info",
+     "owner": "console",
+     "title": "Auto-lander fixes and lands",
+     "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+     "settings": {
+      "maxAttempts": 3,
+      "backoff": {
+       "baseMin": 5,
+       "factor": 3,
+       "maxMin": 60
+      },
+      "attemptTimeoutMin": 45,
+      "mergeMain": true,
+      "fixSessions": true,
+      "land": true,
+      "escalateTo": "banner"
+     },
+     "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
     }
    ]
   },
@@ -711,6 +914,30 @@
       "fileFix": true
      },
      "source": "land-core.planConflicts / classifyPath"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "auto-lander",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "info",
+     "owner": "console",
+     "title": "Auto-lander fixes and lands",
+     "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+     "settings": {
+      "maxAttempts": 3,
+      "backoff": {
+       "baseMin": 5,
+       "factor": 3,
+       "maxMin": 60
+      },
+      "attemptTimeoutMin": 45,
+      "mergeMain": true,
+      "fixSessions": true,
+      "land": true,
+      "escalateTo": "banner"
+     },
+     "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
     }
    ]
   },
@@ -872,6 +1099,32 @@
        "fileFix": true
       },
       "source": "land-core.planConflicts / classifyPath",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "auto-lander",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "info",
+      "owner": "console",
+      "title": "Auto-lander fixes and lands",
+      "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+      "settings": {
+       "maxAttempts": 3,
+       "backoff": {
+        "baseMin": 5,
+        "factor": 3,
+        "maxMin": 60
+       },
+       "attemptTimeoutMin": 45,
+       "mergeMain": true,
+       "fixSessions": true,
+       "land": true,
+       "escalateTo": "banner"
+      },
+      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
      }
@@ -1047,6 +1300,32 @@
        "fileFix": true
       },
       "source": "land-core.planConflicts / classifyPath",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "auto-lander",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "info",
+      "owner": "console",
+      "title": "Auto-lander fixes and lands",
+      "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+      "settings": {
+       "maxAttempts": 3,
+       "backoff": {
+        "baseMin": 5,
+        "factor": 3,
+        "maxMin": 60
+       },
+       "attemptTimeoutMin": 45,
+       "mergeMain": true,
+       "fixSessions": true,
+       "land": true,
+       "escalateTo": "banner"
+      },
+      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
      }
@@ -1225,6 +1504,32 @@
       "source": "land-core.planConflicts / classifyPath",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "auto-lander",
+      "kind": "custom",
+      "enabled": false,
+      "severity": "info",
+      "owner": "console",
+      "title": "Auto-lander fixes and lands",
+      "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+      "settings": {
+       "maxAttempts": 3,
+       "backoff": {
+        "baseMin": 5,
+        "factor": 3,
+        "maxMin": 60
+       },
+       "attemptTimeoutMin": 45,
+       "mergeMain": true,
+       "fixSessions": true,
+       "land": true,
+       "escalateTo": "banner"
+      },
+      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
      }
     ],
     "updatedBy": "migration",
@@ -1237,6 +1542,206 @@
       "queueDepth",
       "autoLander.enabled",
       "autoLander.mode"
+     ]
+    }
+   },
+   "auto": {
+    "$axf": "gate-rule-set@1",
+    "rev": 1,
+    "at": "2026-11-15T12:00:00Z",
+    "rules": [
+     {
+      "$axf": "gate-rule@1",
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Only the lander merges",
+      "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
+      "settings": {
+       "mode": "serial",
+       "autoLand": false,
+       "directMerge": false,
+       "depth": 3,
+       "batchSize": 8
+      },
+      "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "ci-green",
+      "kind": "ci",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "CI green",
+      "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
+      "settings": {
+       "on": "head",
+       "redJoins": false,
+       "noRunMin": 10
+      },
+      "source": "land-core.blockReason ci; merge-queue-core.notReady",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "tests",
+      "kind": "tests",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Tests after regeneration",
+      "description": "The quick tests the generated-files manifest asks for pass after the lander resolved generated and additive files.",
+      "settings": {
+       "commands": [
+        [
+         "node",
+         "apps/console-web/scripts/control-inventory.mjs",
+         "--check"
+        ],
+        [
+         "node",
+         "framework/spec/check-project-fixtures.mjs"
+        ]
+       ]
+      },
+      "source": "land-core.landTests (framework/spec/generated-files.json)",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "theme",
+      "kind": "theme",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Theme tokens",
+      "description": "Every colour, size, spacing, font, radius and border comes from asset tokens (check-theme).",
+      "settings": {
+       "check": "framework/cli/check-theme.mjs"
+      },
+      "source": "CI job check-theme",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "controls",
+      "kind": "controls",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Framework controls",
+      "description": "UI uses framework controls, never raw ones (check-controls).",
+      "settings": {
+       "check": "framework/cli/check-controls.mjs"
+      },
+      "source": "CI job check-controls",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "toolbars",
+      "kind": "controls",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Toolbars",
+      "description": "Every toolbar has role=\"toolbar\" and an aria-label; tab rows are the framework TabGroup (check-toolbars).",
+      "settings": {
+       "check": "framework/cli/check-toolbars.mjs"
+      },
+      "source": "CI job check-toolbars",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "ui-review",
+      "kind": "ui-review",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "UI Review",
+      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "settings": {
+       "holdOn": [
+        "waiting",
+        "changes",
+        "rejected",
+        "unknown"
+       ]
+      },
+      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "clash",
+      "kind": "clash",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "No code clash with main",
+      "description": "Builds, union and generated files are resolved by the lander; a code conflict files a fix and the PR waits for it.",
+      "settings": {
+       "autoResolve": [
+        "builds",
+        "union",
+        "union-json",
+        "generated"
+       ],
+       "fileFix": true
+      },
+      "source": "land-core.planConflicts / classifyPath",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "auto-lander",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "info",
+      "owner": "console",
+      "title": "Auto-lander fixes and lands",
+      "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+      "settings": {
+       "maxAttempts": 5,
+       "backoff": {
+        "baseMin": 2,
+        "factor": 3,
+        "maxMin": 60
+       },
+       "attemptTimeoutMin": 45,
+       "mergeMain": true,
+       "fixSessions": false,
+       "land": true,
+       "escalateTo": "banner"
+      },
+      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     }
+    ],
+    "updatedBy": "migration",
+    "migratedFrom": {
+     "frame": "push-banner-config@1",
+     "at": "2026-11-15T12:00:00Z",
+     "keys": [
+      "autoLander.enabled",
+      "autoLander.mode",
+      "autoLander.maxAttempts",
+      "autoLander.backoffMin",
+      "autoLander.fix"
      ]
     }
    },
@@ -1383,6 +1888,30 @@
        "fileFix": true
       },
       "source": "land-core.planConflicts / classifyPath"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "auto-lander",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "info",
+      "owner": "console",
+      "title": "Auto-lander fixes and lands",
+      "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+      "settings": {
+       "maxAttempts": 3,
+       "backoff": {
+        "baseMin": 5,
+        "factor": 3,
+        "maxMin": 60
+       },
+       "attemptTimeoutMin": 45,
+       "mergeMain": true,
+       "fixSessions": true,
+       "land": true,
+       "escalateTo": "banner"
+      },
+      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
      }
     ],
     "updatedBy": "migration",
@@ -1391,6 +1920,353 @@
      "at": "2026-11-15T12:00:00Z",
      "keys": []
     }
+   }
+  },
+  "joinDefaults": {
+   "savedEight": {
+    "$axf": "gate-rule-set@1",
+    "rev": 4,
+    "at": "2026-11-15T12:00:00Z",
+    "rules": [
+     {
+      "$axf": "gate-rule@1",
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Only the lander merges",
+      "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
+      "settings": {
+       "mode": "serial",
+       "autoLand": false,
+       "directMerge": false,
+       "depth": 3,
+       "batchSize": 8
+      },
+      "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "ci-green",
+      "kind": "ci",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "CI green",
+      "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
+      "settings": {
+       "on": "head",
+       "redJoins": false,
+       "noRunMin": 10
+      },
+      "source": "land-core.blockReason ci; merge-queue-core.notReady"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "tests",
+      "kind": "tests",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Tests after regeneration",
+      "description": "The quick tests the generated-files manifest asks for pass after the lander resolved generated and additive files.",
+      "settings": {
+       "commands": [
+        [
+         "node",
+         "apps/console-web/scripts/control-inventory.mjs",
+         "--check"
+        ],
+        [
+         "node",
+         "framework/spec/check-project-fixtures.mjs"
+        ]
+       ]
+      },
+      "source": "land-core.landTests (framework/spec/generated-files.json)"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "theme",
+      "kind": "theme",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Theme tokens",
+      "description": "Every colour, size, spacing, font, radius and border comes from asset tokens (check-theme).",
+      "settings": {
+       "check": "framework/cli/check-theme.mjs"
+      },
+      "source": "CI job check-theme"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "controls",
+      "kind": "controls",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Framework controls",
+      "description": "UI uses framework controls, never raw ones (check-controls).",
+      "settings": {
+       "check": "framework/cli/check-controls.mjs"
+      },
+      "source": "CI job check-controls"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "toolbars",
+      "kind": "controls",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Toolbars",
+      "description": "Every toolbar has role=\"toolbar\" and an aria-label; tab rows are the framework TabGroup (check-toolbars).",
+      "settings": {
+       "check": "framework/cli/check-toolbars.mjs"
+      },
+      "source": "CI job check-toolbars"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "ui-review",
+      "kind": "ui-review",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "UI Review",
+      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "settings": {
+       "holdOn": [
+        "waiting",
+        "changes",
+        "rejected",
+        "unknown"
+       ]
+      },
+      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "clash",
+      "kind": "clash",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "No code clash with main",
+      "description": "Builds, union and generated files are resolved by the lander; a code conflict files a fix and the PR waits for it.",
+      "settings": {
+       "autoResolve": [
+        "builds",
+        "union",
+        "union-json",
+        "generated"
+       ],
+       "fileFix": true
+      },
+      "source": "land-core.planConflicts / classifyPath"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "auto-lander",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "info",
+      "owner": "console",
+      "title": "Auto-lander fixes and lands",
+      "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+      "settings": {
+       "maxAttempts": 3,
+       "backoff": {
+        "baseMin": 5,
+        "factor": 3,
+        "maxMin": 60
+       },
+       "attemptTimeoutMin": 45,
+       "mergeMain": true,
+       "fixSessions": true,
+       "land": true,
+       "escalateTo": "banner"
+      },
+      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "defaults"
+     }
+    ],
+    "joinedDefaults": [
+     "auto-lander"
+    ]
+   },
+   "complete": {
+    "$axf": "gate-rule-set@1",
+    "rev": 1,
+    "at": "2026-11-15T12:00:00Z",
+    "rules": [
+     {
+      "$axf": "gate-rule@1",
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Only the lander merges",
+      "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
+      "settings": {
+       "mode": "serial",
+       "autoLand": false,
+       "directMerge": false,
+       "depth": 3,
+       "batchSize": 8
+      },
+      "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "ci-green",
+      "kind": "ci",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "CI green",
+      "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
+      "settings": {
+       "on": "head",
+       "redJoins": false,
+       "noRunMin": 10
+      },
+      "source": "land-core.blockReason ci; merge-queue-core.notReady"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "tests",
+      "kind": "tests",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Tests after regeneration",
+      "description": "The quick tests the generated-files manifest asks for pass after the lander resolved generated and additive files.",
+      "settings": {
+       "commands": [
+        [
+         "node",
+         "apps/console-web/scripts/control-inventory.mjs",
+         "--check"
+        ],
+        [
+         "node",
+         "framework/spec/check-project-fixtures.mjs"
+        ]
+       ]
+      },
+      "source": "land-core.landTests (framework/spec/generated-files.json)"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "theme",
+      "kind": "theme",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Theme tokens",
+      "description": "Every colour, size, spacing, font, radius and border comes from asset tokens (check-theme).",
+      "settings": {
+       "check": "framework/cli/check-theme.mjs"
+      },
+      "source": "CI job check-theme"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "controls",
+      "kind": "controls",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Framework controls",
+      "description": "UI uses framework controls, never raw ones (check-controls).",
+      "settings": {
+       "check": "framework/cli/check-controls.mjs"
+      },
+      "source": "CI job check-controls"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "toolbars",
+      "kind": "controls",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Toolbars",
+      "description": "Every toolbar has role=\"toolbar\" and an aria-label; tab rows are the framework TabGroup (check-toolbars).",
+      "settings": {
+       "check": "framework/cli/check-toolbars.mjs"
+      },
+      "source": "CI job check-toolbars"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "ui-review",
+      "kind": "ui-review",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "UI Review",
+      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "settings": {
+       "holdOn": [
+        "waiting",
+        "changes",
+        "rejected",
+        "unknown"
+       ]
+      },
+      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "clash",
+      "kind": "clash",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "No code clash with main",
+      "description": "Builds, union and generated files are resolved by the lander; a code conflict files a fix and the PR waits for it.",
+      "settings": {
+       "autoResolve": [
+        "builds",
+        "union",
+        "union-json",
+        "generated"
+       ],
+       "fileFix": true
+      },
+      "source": "land-core.planConflicts / classifyPath"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "auto-lander",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "info",
+      "owner": "console",
+      "title": "Auto-lander fixes and lands",
+      "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+      "settings": {
+       "maxAttempts": 3,
+       "backoff": {
+        "baseMin": 5,
+        "factor": 3,
+        "maxMin": 60
+       },
+       "attemptTimeoutMin": 45,
+       "mergeMain": true,
+       "fixSessions": true,
+       "land": true,
+       "escalateTo": "banner"
+      },
+      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
+     }
+    ]
    }
   },
   "landerSettings": {
@@ -1510,6 +2386,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [],
@@ -1600,6 +2485,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -1695,6 +2589,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -1788,6 +2691,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -1881,6 +2793,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -1970,6 +2891,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -2064,6 +2994,15 @@
        "framework/ui/axf.css",
        "apps/console-web/src/App.tsx"
       ]
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -2158,6 +3097,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "its data conflicts resolve by themselves (_claude/builds/store.json, framework/spec/fixtures/theme.json)."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [],
@@ -2245,6 +3193,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -2344,6 +3301,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -2438,6 +3404,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -2527,6 +3502,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -2618,6 +3602,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -2711,6 +3704,15 @@
      "enabled": true,
      "verdict": "pass",
      "reason": "It merges cleanly with main."
+    },
+    {
+     "id": "auto-lander",
+     "kind": "custom",
+     "severity": "info",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "pass",
+     "reason": "The server fixes and lands it on its own (auto-lander@1)."
     }
    ],
    "reasons": [
@@ -2806,6 +3808,15 @@
      "enabled": true,
      "verdict": "pass",
      "reason": "It merges cleanly with main."
+    },
+    {
+     "id": "auto-lander",
+     "kind": "custom",
+     "severity": "info",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "pass",
+     "reason": "The server fixes and lands it on its own (auto-lander@1)."
     }
    ],
    "reasons": [
@@ -2900,6 +3911,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -2989,6 +4009,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -3081,6 +4110,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -3173,6 +4211,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
      }
     ],
     "reasons": [
@@ -3262,6 +4309,15 @@
       "id": "clash",
       "kind": "clash",
       "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "skip",
+      "reason": "evaluated by console."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
       "owner": "console",
       "enabled": true,
       "verdict": "skip",

@@ -151,7 +151,14 @@ set_mode("ui-review", "shadow")
 pd = ds.plugin("ui-review")
 pd.write_json("items.json", {"items": [1]})
 check(pd.read_json("items.json", None) == {"items": [1]} and pd.key("items.json") == "ui-review/items.json", "a plugin's dataDir through the layer")
-check(client.get("/v1/ui-review/items.json", headers={"authorization": "Bearer t"}).json() == {"items": [1]}, "…mirrored in shadow")
+import time as _t
+_mir = None
+for _ in range(50):  # the shadow mirror is written in the background; wait for it (flaky on slow CI runners)
+    _mir = client.get("/v1/ui-review/items.json", headers={"authorization": "Bearer t"}).json()
+    if _mir == {"items": [1]}:
+        break
+    _t.sleep(0.1)
+check(_mir == {"items": [1]}, "…mirrored in shadow")
 try:
     pd.path("../other/x.json")
     check(False, "a plugin can't leave its folder")

@@ -87,7 +87,6 @@ function SessionsView() {
         </div>
         <div className={`${P}__acts`}>
           <IconButton icon="refresh" label="Refresh" onClick={load} />
-          <IconButton icon="settings" label="Check-in settings" onClick={() => rt.dispatch('settings.open:session-checkin')} />
         </div>
       </header>
 

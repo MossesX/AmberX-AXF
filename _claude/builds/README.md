@@ -167,6 +167,29 @@ pending to queue … If he has slots open, he grabs the next build in the queue 
 - Contract: `framework/core/build-pipeline.mjs` (build-pipeline@1, the `pipeline` record on a build). Rules:
   `apps/console-web/plugins/build-orchestrator/pipeline-core.mjs`. Report: `reports/pipeline-rebuild.md`.
 
+## When a build gets stuck: the watchdog recovers it (since Nov 17 2026)
+
+Brett, Nov 13 2026: "if anything stops working, the server/orchestrator fixes it automatically with no one asking …
+Never wait for Brett to notice."
+
+- Every run's end is evidence: `claude-headless.sh` writes exit code, signal, exit kind, a usage / login stop, account
+  and time onto the build (`pipeline.runEnd`, `builds-live.mjs run-end`, live) and into `<slots dir>/runs/<build>.json`
+  the moment claude exits, even when it was killed.
+- The **watchdog** (`apps/console-web/plugins/build-orchestrator/watchdog.mjs`, cron `axf-watchdog` every minute) probes
+  every build marked running (`agent-slots.mjs alive <build>`: claude pid, tmux, heartbeat) and decides by build-watchdog@1
+  (`framework/core/build-watchdog.mjs`). Killed 143, OOM 137, failed 1, tmux or claude gone, a stale heartbeat (hung:
+  killed first) = **retry**: the step reset, the slot, worker claim and build lock freed, back in the Queue at its place.
+  A usage limit or dead login = retry on the **next worker account**. A missed clean end = the normal exit transition.
+- **At most Max retries (3)** since the build last ticked a step; then **Pending**, Errors tab, a systems check banner item
+  with **Requeue**, and an alert. Brett's requeue starts the count again. A live or just-started build is never touched.
+- Every fix is a `recoveries[]` record on the build (watchdog-recovery@1: when, step, cause, exit, action, attempt,
+  account, notified; journal action `watchdog-recover`) and a phone FYI (`watchdog.fix`, batched per pass), then the
+  dispatcher ticks while slots are free and the Queue has work (idle slots with Queue work = an `idle-slots` fix).
+- See it: Build orchestrator → **Watchdog** (and each build's Recoveries); settings in Settings → Plugins → Build
+  orchestrator → Watchdog; `axf watchdog status|scan|run`, REST `watchdog/*`, MCP `watchdog-*`, voice `watchdog.run`.
+  The systems check's **Build watchdog** item goes red when no pass ran for 3 minutes (Auto fix reinstalls the cron).
+- A session never recovers builds by hand: the watchdog does it, under its locks, with the record.
+
 ## Own Claude login per build (since Nov 5 2026)
 
 Every headless build runs on its own copy of a Claude login (`deploy/claude-login.mjs`, build `build-own-login`):
