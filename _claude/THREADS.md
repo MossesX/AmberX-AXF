@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `all-banners-hide-when-empty` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:23 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 23:24 UTC · `active-tab-add-stop-button-per-running` added (0 steps) (all) · console
 - 2026-11-17 23:25 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 23:25 UTC · `icon-picker-every-banner-settings-widget` s11 done, note (all) · foreign-write
+- 2026-11-17 23:25 UTC · `flagship-professional-skin-covering-2` s24 done, s25 done (all) · foreign-write
+- 2026-11-17 23:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 
 ## Token passes (log)
 
