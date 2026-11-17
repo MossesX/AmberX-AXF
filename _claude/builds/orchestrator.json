@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:46:11.488Z",
+ "updatedAt": "2026-11-17T21:46:27.119Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175264,7 +175264,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:46:08.983Z",
+   "updatedAt": "2026-11-17T21:46:20.658Z",
    "builtAt": "",
    "notes": [
     {
@@ -175482,6 +175482,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 8 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T21:46:08.983Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:46:20.658Z"
     }
    ],
    "approvals": [
@@ -187861,7 +187865,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:34:10.438Z",
+   "updatedAt": "2026-11-17T21:46:23.725Z",
    "builtAt": "",
    "notes": [
     {
@@ -187871,6 +187875,14 @@
     {
      "text": "Split by Claude into 28 steps (9 Fable).",
      "at": "2026-11-17T21:34:10.438Z"
+    },
+    {
+     "text": "Brett: build this FIRST, top priority, on Fable Ultra Code. Goal: a very, very professional app look. Toolbars excluded (see earlier note).",
+     "at": "2026-11-17T21:46:17.440Z"
+    },
+    {
+     "text": "Brett: skins must NOT touch toolbars (or their buttons/settings). Toolbars are blank with only a settings gear for now, and Brett will edit them himself later; a skin must never overwrite or restyle those edits. Leave toolbar look out of this build.",
+     "at": "2026-11-17T21:46:23.725Z"
     }
    ],
    "approvals": [],
