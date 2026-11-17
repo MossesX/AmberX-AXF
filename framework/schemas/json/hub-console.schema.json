@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/hub-console.schema.json",
+  "title": "hub-console@1 — the route table that puts every axHub web page in the Dev Console",
+  "description": "One console view (view:hub) with a TabGroup row (tab:hub.tabs=<screen>); one entry per hub screen with the hub call behind its state, its rows, its actions (who may run each: person / confirm / command) and its registered settings. Reaches (REST, MCP, CLI, voice, deep link) are derived from the ids unless an entry fixes a tool name. Validated by framework/core/hub-console.mjs; fixture framework/spec/fixtures/hub-console.json; spec framework/spec/HUB-CONSOLE.md.",
+  "type": "object",
+  "required": ["$axf", "view", "tabRow", "plugin", "settingsSubtab", "hub", "channels", "who", "reaches", "screens", "deferred"],
+  "additionalProperties": true,
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,39}$" },
+    "tool": { "type": "string", "pattern": "^hub_[a-z0-9_]{2,59}$", "description": "The MCP tool name (plugin-commands@1 PLUGIN_TOOL_NAME, hub_ prefix)." },
+    "channel": { "enum": ["bearer", "session", "console"] },
+    "who": { "enum": ["person", "confirm", "command"] },
+    "effect": { "enum": ["read", "write", "destructive", "navigate"] },
+    "hubCall": { "type": ["string", "null"], "minLength": 1, "description": "The hub route(s) behind it, as text (METHOD /path …); null when the console does it alone or the hub lacks the route (then `missing` says so)." },
+    "missing": {
+      "type": "object", "required": ["why", "proposed"], "additionalProperties": false,
+      "properties": { "why": { "type": "string", "minLength": 10 }, "proposed": { "type": "string", "minLength": 5, "description": "The route the axHub repo should grow (follow-up item)." }, "cli": { "type": "string", "description": "The hub's own CLI line that does it today, when there is one." } }
+    },
+    "read": {
+      "type": "object", "required": ["channel", "hub", "tool", "shape", "fields"], "additionalProperties": true,
+      "properties": {
+        "channel": { "$ref": "#/$defs/channel" },
+        "hub": { "type": "string", "minLength": 1 },
+        "tool": { "$ref": "#/$defs/tool" },
+        "shape": { "type": "string", "pattern": "^[a-z][a-z0-9-]*@[0-9]+$", "description": "The named frame of what the read answers." },
+        "fields": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "params": { "type": "object", "additionalProperties": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] } },
+        "poll": { "type": "object", "required": ["idleMs"], "properties": { "idleMs": { "type": "integer", "minimum": 1000 }, "heldMs": { "type": "integer", "minimum": 500 } } }
+      }
+    },
+    "action": {
+      "type": "object", "required": ["id", "label", "who", "effect", "hub"], "additionalProperties": true,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "who": { "$ref": "#/$defs/who" },
+        "effect": { "$ref": "#/$defs/effect" },
+        "row": { "type": "boolean", "description": "True when it acts on one row (the address carries /row:<id>)." },
+        "hub": { "$ref": "#/$defs/hubCall" },
+        "channel": { "$ref": "#/$defs/channel" },
+        "tool": { "$ref": "#/$defs/tool" },
+        "input": { "type": "array", "items": { "type": "string" } },
+        "opens": { "type": "string", "description": "For effect navigate: the console-control address it opens." },
+        "missing": { "$ref": "#/$defs/missing" }
+      },
+      "allOf": [
+        { "if": { "properties": { "who": { "const": "person" } } }, "then": { "not": { "required": ["tool"] }, "description": "A person action is never a tool, CLI command or voice action." } },
+        { "if": { "properties": { "who": { "enum": ["confirm", "command"] } } }, "then": { "required": ["tool"] } },
+        { "if": { "properties": { "hub": { "type": "null" } }, "required": ["hub"] }, "then": { "anyOf": [{ "required": ["missing"] }, { "properties": { "channel": { "const": "console" } }, "required": ["channel"] }, { "properties": { "effect": { "enum": ["read", "navigate"] } } }] } }
+      ]
+    },
+    "setting": {
+      "type": "object", "required": ["key", "kind", "label", "default"], "additionalProperties": true,
+      "properties": {
+        "key": { "type": "string", "pattern": "^axf\\.hub\\.[a-zA-Z0-9.]+$" },
+        "kind": { "enum": ["toggle", "number", "text", "choice", "json"] },
+        "label": { "type": "string", "minLength": 1 },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "min": { "type": "number" }, "max": { "type": "number" },
+        "who": { "$ref": "#/$defs/who" },
+        "personOnly": { "type": "boolean" },
+        "ownedBy": { "type": "string" },
+        "writes": { "type": "string" }
+      }
+    },
+    "screen": {
+      "type": "object", "required": ["id", "title", "icon", "order", "gate", "replaces", "state", "actions", "settings"], "additionalProperties": true,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "icon": { "type": "string", "minLength": 1 },
+        "order": { "type": "integer", "minimum": 0 },
+        "gate": { "enum": ["none", "user", "admin"], "description": "Who the hub lets read it: nobody signed in / any hub account / a hub admin." },
+        "replaces": { "type": "array", "items": { "type": "string", "pattern": "^#/" }, "description": "The axHub web routes this screen replaces (parity)." },
+        "state": { "$ref": "#/$defs/read" },
+        "rows": {
+          "type": "object", "required": ["grid", "idField", "path"], "additionalProperties": true,
+          "properties": {
+            "grid": { "type": "string", "pattern": "^hub\\.[a-z][a-z0-9-]*$" },
+            "idField": { "type": "string", "minLength": 1 },
+            "path": { "type": "string", "minLength": 1 },
+            "idPattern": { "type": "string" },
+            "read": { "$ref": "#/$defs/read" }
+          }
+        },
+        "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+        "settings": { "type": "array", "items": { "$ref": "#/$defs/setting" } },
+        "health": { "type": "object", "required": ["id", "label", "what"], "properties": { "id": { "type": "string" }, "label": { "type": "string" }, "what": { "type": "string" } } }
+      }
+    }
+  },
+  "properties": {
+    "$axf": { "const": "hub-console@1" },
+    "note": { "type": "string" },
+    "view": { "$ref": "#/$defs/id" },
+    "tabRow": { "type": "string", "pattern": "^[a-z][a-z0-9-]*\\.[a-z][a-z0-9-]*$" },
+    "plugin": { "$ref": "#/$defs/id" },
+    "settingsSubtab": { "$ref": "#/$defs/id" },
+    "hub": { "type": "object", "required": ["session", "feed", "oldHub"], "properties": { "session": { "type": "string" }, "feed": { "type": "string" }, "oldHub": { "type": "string" } } },
+    "channels": { "type": "object", "required": ["bearer", "session", "console"], "additionalProperties": { "type": "string" } },
+    "who": { "type": "object", "required": ["person", "confirm", "command"], "additionalProperties": { "type": "string" } },
+    "reaches": { "type": "object", "required": ["rest", "mcp", "cli", "voice", "deepLink"], "additionalProperties": { "type": "string" } },
+    "screens": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/screen" } },
+    "deferred": { "type": "array", "items": { "type": "object", "required": ["id", "title", "why"], "properties": { "id": { "$ref": "#/$defs/id" }, "title": { "type": "string" }, "why": { "type": "string", "minLength": 10 } } } }
+  }
+}

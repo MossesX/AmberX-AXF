@@ -1,8 +1,76 @@
 # HUB-CONSOLE — hub-console@1, every axHub web page as a console screen
 
-Status: draft (step 1 of build `move-everything-axhub-web-console`, Nov 17 2026, Fable). The contract itself (addresses,
-state shapes, action lists, personOnly flags) is step 2; the validator and route table (`framework/core/hub-console.mjs`)
-step 3. This file starts as the inventory and parity map and becomes the contract as the steps land.
+Status: contract (build `move-everything-axhub-web-console`, Nov 17 2026, Fable). Route table (data, the single source):
+`framework/schemas/hub-console.json`; JSON Schema `framework/schemas/json/hub-console.schema.json`; fixture
+`framework/spec/fixtures/hub-console.json`; validator and derivations `framework/core/hub-console.mjs` (step 3) with
+`framework/spec/check-hub-console.mjs`. Kotlin twin deferred (PORTING.md). The inventory that produced the table is kept
+below.
+
+## The contract
+
+**One table, five projections.** `hub-console.json` lists every hub screen once; the hub-admin plugin draws its nav and
+TabGroup row from it, the console server mounts its reads and actions from it, the MCP tools, the CLI and voice name
+things from it, and the parity check walks it. Nothing about a hub screen is decided in a component.
+
+| Field | Meaning |
+| --- | --- |
+| `view`, `tabRow` | the console view (`view:hub`) and its TabGroup settings id (`tab:hub.tabs=<screen>`) |
+| `plugin`, `settingsSubtab` | the console plugin (`hub-admin`) and its Settings → Plugins sub-tab (`subtab:settings.subtabs=hub`) |
+| `screens[]` | one per hub screen: `id` (tab value, REST segment, CLI word, voice word), `title`, `icon`, `order`, `gate` (`none` / `user` / `admin`: who the hub lets read it), `replaces[]` (the axHub web hash routes it retires), `state`, `rows?`, `actions[]`, `settings[]`, `health?` |
+| `state` / `rows.read` | a read: `channel`, the hub call as text, its MCP `tool`, the named `shape` it answers, its `fields`, `params`, `poll` |
+| `rows` | the grid (`grid:hub.<screen>`), the id field and the path to the rows in the state, an `idPattern` that gates `row:<id>` addresses, an optional per-row read |
+| `actions[]` | `id`, `label`, `who`, `effect` (`read` / `write` / `destructive` / `navigate`), `row` (acts on one row), the hub call or `null` with a `missing` block (`why`, `proposed` route for the axHub repo, the hub's `cli` line today) or `channel: console` (the plugin does it alone) or `opens` (a navigate) |
+| `settings[]` | registered settings under `axf.hub.*` with kind, default, range; `who` when a set writes to the hub; `personOnly` + `ownedBy` for owner-only values shown read-only |
+| `deferred[]` | hub areas with no screen on either side and why (parity treats them as intentional) |
+
+**Who may run an action** (`who`, enforced three times: the table, console-control, the relay):
+
+- `person`: Brett's own tap in his signed-in console browser (wall admin, same origin, user activation). Registered
+  `personOnly`, so console-control's catalog never lists it and `console_control_*`, `axf console …` and voice refuse it
+  with `denied` / `requires: person`. **Never** an MCP tool, a CLI line or a voice action (`tool` is forbidden on it).
+  Approve, Deny, Shelve, Postpone, Ignore, Revoke, Reopen, auto-approve on, Grant pass, Go pass, set a password,
+  sign out, create a token.
+- `confirm`: a command may run it, but the first call answers `confirmation_required` and the second carries the
+  confirm token (console-control@1); every call is audited with `by` and `reason`. Revoke pass, user role / permissions /
+  disable / sign-out / delete, invite, policy set, connector add / reconnect / remove, handoff clear, token revoke,
+  OAuth client add / remove.
+- `command`: a plain command on every transport. Extend a pass, request a pass (asks Brett; the grant stays his click),
+  end the go pass, stop auto-approve, save a profile, enable a user, mark a handoff sent, check, download.
+
+**Channels.** Reads go through the hub-admin server: `bearer` reads (the feed, `GET /auth/api/policy`, MCP
+`list_services` / `describe_service`) use the console's hub token; `session` reads (`/auth/api/*`) use the console's
+own hub session — the tapping browser's `axhub_session` cookie forwarded by the approvals-banner relay when there is
+one, else the server's owner sign-in (`AXF_HUB_RELAY_USER` / `AXF_HUB_RELAY_PASSWORD`, env only). Writes always use the
+session channel and, for `person`, only the browser's or owner's session on Brett's tap. **The console token never
+decides and never writes to the hub.** `console` channel actions touch only the plugin's own data.
+
+**Reaches** (derived, `reachesOf`): for screen `s`, row `r`, action `a`:
+
+| Reach | Read | Row read | Action |
+| --- | --- | --- | --- |
+| deep link | `view:hub/tab:hub.tabs=s` | `…/grid:hub.s/row:r` | `…[/grid:hub.s/row:r]/button:a` |
+| REST | `GET /api/plugins/hub-admin/s` | `GET …/s/r` | `POST …/s[/r]/a` (`DELETE …/s/r` when `effect: destructive` and `row`) |
+| MCP | `state.tool` | `rows.read.tool` | `action.tool` (fixed in the table or `hub_<s>_<a>`), none for `person` |
+| CLI | `axf hub s` | `axf hub s r` | `axf hub s a [r] [--confirm]`, none for `person` |
+| voice | `hub.s` | `hub.s` | `hub.s.<camelCase a>`, none for `person` |
+
+A REST action route exists for every action, `person` ones included: that is the route the browser's own tap uses, and
+it refuses anything but a wall admin's same-origin browser request (the relay's rules), so the route's existence is not a
+way in. Settings live at `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hub/setting:<key>` and are
+control@1 `console.pluginsettings` entries; `who: confirm` settings (the veto countdown) write through the hub's policy
+route with a confirm.
+
+**Hub routes the hub lacks** are in the table as `missing` blocks (9 today: connector add / reconnect / remove, handoff
+accept / clear, token create / revoke, OAuth client add / remove). The console shows them as a plain "this hub hasn't got
+it yet" note with the proposed route and the hub's CLI line; the API answers `{ ok: false, code: "hub_missing",
+proposed }`. Step 28 opens the matching axHub-repo item from `hubMissing(table)`.
+
+**Hash routes** (`routeToScreen`): the retired axHub web addresses (`#/approvals?status=…`, `#/approvals/<id>`,
+`#/approvals/log?pass=…`, `#/handoff/<id>?file=…`, …) map to a screen plus params (`row` only when it matches the
+screen's `idPattern`; unknown params dropped); deferred areas answer `{ screen: null, deferred }`; anything else `null`.
+The deploy redirect (step 28) sends `https://axhub.amberxai.com/#/<route>` to the console's deep link.
+
+## Inventory (the record behind the table)
 
 Brett (Nov 17 2026): "I really need to get this axHub and AmberX over the console. I really need that done. With the phone
 app." The Dev Console becomes the only hub UI. axHub stays the backend and MCP hub; its web pages (`apps/axhub-web`, served
@@ -83,7 +151,7 @@ Per-user UI state axHub web keeps today and the console key it lands on:
 The migration script (`framework/cli/hub-settings-migrate.mjs`, step 4) reads a user's axHub web settings export (the
 hub's `settings/<app>.json` for `axhub-web`) and writes the console keys above, `--dry-run` by default.
 
-## Console screens (addresses, step 2 fixes the shapes)
+## Console screens (summary; the table is authoritative)
 
 One view group **Hub** on the console nav, one TabGroup row `hub.tabs`:
 
