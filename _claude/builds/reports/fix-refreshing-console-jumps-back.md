@@ -38,6 +38,32 @@ The console has no saved place at all. Every reload path above lands on `startVi
 tabs and no selection; that is the "jumps back". The fix is one place store (session-scoped, keyed by console-control
 addresses) that every reload path saves into and the shell restores from, with URL deep links winning.
 
-## Scroll lock after an update
+## Scroll lock after an update (step 2)
 
-See step 2 below.
+No code in the console, the framework or any plugin sets `overflow`, `pointer-events`, `touch-action` or `inert` on
+`html`, `body` or `#root` at run time (searched `style.overflow`, `style.pointerEvents`, `inert`, `overscrollBehavior`
+across `framework/react`, `framework/libs`, `apps/console-web/src`, `apps/console-web/plugins`). The lock is the layout
+plus what is left on screen after the reload:
+
+1. **Only `.fx-main` scrolls.** `html, body, #root { height: 100% }` (`framework/ui/axf.css:128`) and
+   `.fx-shell { overflow: hidden }` (`framework/ui/axf.css:420`) mean the document never scrolls; `.fx-main`
+   (`framework/ui/axf.css:431`) is the one scroller and has no `overscroll-behavior`. On the phone a pull past the top
+   chains to the root, which Chrome / the WebView reads as pull-to-refresh (the "refresh" itself), and the page comes back
+   on Home at the top.
+2. **The waiting screen replaces the whole shell** after every reload until the hub answers
+   (`framework/react/AppShell.tsx:91-97`): nothing to scroll, the real view mounts later at scroll 0.
+3. **Stale dialog history entry.** `DialogHost` pushes `{ axfDialog: true }` while a dialog is open
+   (`framework/react/components/Overlays.tsx:47`) and only drops it when the dialog closes in the same page
+   (`:54`). Refreshing with a dialog open (the What's new panel, the systems check's auto-opened Fix help,
+   `plugins/systems-check/web/SystemCheck.tsx:254`) keeps that entry on the reloaded page: the first Back after the
+   update does nothing visible, the second jumps to the previous page.
+4. **Full-screen layers that block the pane while open:** the dialog backdrop `.fx-backdrop`
+   (`framework/ui/axf.css:1029`, `position: fixed; inset: 0; z-index: 70`) and the workspace menu scrim `.axp-wt__scrim`
+   (`plugins/console-terminal/web/nav.tsx:246`, `terminal.css:100`). Both are tied to live state, so they can only stay
+   if that state does.
+
+Fix plan (step 8): when a reload or refresh ends, and once on every load as a safety net, clear any inline
+`overflow` / `pointer-events` / `touch-action` / `inert` on `html`, `body`, `#root` and `.fx-main`, drop a stale
+`axfDialog` history entry when no dialog is open, and keep `.fx-main` scroll chaining contained
+(`overscroll-behavior-y: contain`) so an upward scroll in the console never turns into a reload by accident. Reloading
+on purpose stays one tap (browser reload, `axf console refresh`, the console place API).
