@@ -12,7 +12,7 @@
  *                     scope plugin and owner = the plugin id
  *   wrong-interface   the named asset exists but is not the plugin's (scope, owner or id off)
  *   opens-console     a plugin's web code opens the console's Settings (`settings.open:plugins`, `app.settings`,
- *                     navigate('settings')) instead of its own window; a line that means the console's own Settings
+ *                     a navigation to the Settings view) instead of its own window; a line that means the console's own Settings
  *                     on purpose (e.g. its plugin list) carries a `settings-interfaces: console` comment
  *   page-interface    a console page that belongs to a plugin opens another owner's settings, or an app page that
  *                     names a plugin interface as its own (the page's plugin, otherwise the app's)
