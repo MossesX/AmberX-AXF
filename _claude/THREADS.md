@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `server-every-failed-merge-alerts-brett` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `show-commits-behind-main-every-build` → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `tap-to-confirm-follows-label-visibility` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `unlink-plan-studio-builds-delete-all` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:29 UTC · `active-tab-stop-button-grid-alignment` note (all) · orchestrator
 - 2026-11-17 23:29 UTC · `move-server-side-console-parts-onto-vps` s5 done, note (all) · foreign-write
 - 2026-11-17 23:29 UTC · `rebuild-every-toolbar-page-specific` → complete (all) · foreign-write
+- 2026-11-17 23:29 UTC · `active-tab-stop-button-grid-alignment` note (all) · foreign-write
 
 ## Token passes (log)
 
