@@ -8272,6 +8272,18 @@
    "from": "",
    "addenda": []
   },
+  "shrink-git-history-drop-old-builds": {
+   "said": "Design the move of the builds journal out of git (stop-auto-lander-committing-tracking s1)",
+   "at": "2026-11-17T00:15:35.778Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "skin-animations-animated-colour-swatches": {
    "said": "where can I put some cool animations, like color swatches; make a separate build right now",
    "at": "2026-11-13T19:49:22.438Z",

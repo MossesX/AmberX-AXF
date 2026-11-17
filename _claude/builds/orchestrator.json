@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:15:47.274Z",
+ "updatedAt": "2026-11-17T00:16:06.805Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168987,6 +168987,37 @@
      "createdAt": "2026-11-17T00:13:50.489Z"
     }
    ]
+  },
+  {
+   "id": "shrink-git-history-drop-old-builds",
+   "title": "Shrink git history: drop the old builds journal parts",
+   "category": "",
+   "detail": "Follow-up to stop-auto-lander-committing-tracking (builds-journal@1, framework/spec/BUILDS.md > Journal home). Once s8-s9 move _claude/builds/journal/*.jsonl to the hub data store, git history still carries the 911 MiB of old parts (13 files, every clone and worktree pays for them; repo pack 554 MiB). Removing them needs a history rewrite (git filter-repo on main and every live claude/* branch), a force push, and a re-clone or re-init of every checkout and worktree (/opt/axf, /root/axf-builds/*, the console container, laptops). Brett's call: do it in a quiet window with every build landed or parked. Not started; nothing here changes until he says so.",
+   "status": "pending",
+   "hidden": false,
+   "source": "stop-auto-lander-committing-tracking s1",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T00:15:35.778Z",
+   "updatedAt": "2026-11-17T00:15:35.778Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Design the move of the builds journal out of git (stop-auto-lander-committing-tracking s1)",
+    "at": "2026-11-17T00:15:35.778Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
