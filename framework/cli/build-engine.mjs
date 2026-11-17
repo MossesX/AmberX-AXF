@@ -26,6 +26,7 @@ import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } 
 import { REGISTRY as RETRY_LADDER_REGISTRY } from '../core/retry-ladder.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
 import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
+import { REGISTRY as AUTO_LANDER_REGISTRY, jsonSchemas as autoLanderJsonSchemas } from '../core/auto-lander.mjs';
 import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
 import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
@@ -929,6 +930,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // gate-rules@1: the gate a PR passes before it lands (gate-rule@1, gate-rule-set@1) and the lander's state (lander-state@1) + the registry snapshot
   for (const [n, schema] of Object.entries(gateRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const greg = join(FRAMEWORK_DIR, 'schemas/gate-rules.json'); writeFileSync(greg, JSON.stringify(GATE_RULES_REGISTRY, null, 2) + '\n'); written.push(greg);
+  // auto-lander@1: the server fixes and lands every build on its own (attempt, build, policy, action, state) + the registry snapshot
+  for (const [n, schema] of Object.entries(autoLanderJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const alreg = join(FRAMEWORK_DIR, 'schemas/auto-lander.json'); writeFileSync(alreg, JSON.stringify(AUTO_LANDER_REGISTRY, null, 2) + '\n'); written.push(alreg);
   // build-rules@1: every builder rule as one store the VPS owns (build-rule@1, build-rules-store@1, build-rule-history@1) + the registry snapshot
   for (const [n, schema] of Object.entries(buildRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const breg = join(FRAMEWORK_DIR, 'schemas/build-rules.json'); writeFileSync(breg, JSON.stringify(BUILD_RULES_REGISTRY, null, 2) + '\n'); written.push(breg);

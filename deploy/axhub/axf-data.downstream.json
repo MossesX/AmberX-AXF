@@ -1,0 +1,15 @@
+{
+  "$axf": "axhub-downstream@1",
+  "note": "axf-data as an axHub downstream (route only: axHub keeps the service token, never the data). axHub proxies POST /mcp to the url with the token as a bearer, the same way it proxies the console's /mcp, and lists the tools under the prefix. Its container joins the internal axf-data network (deploy/install-data.sh, AXF_DATA_CLIENTS). Data tokens: conf/env/axhub.env on the VPS (AXF_DATA_TOKEN); never in the repo.",
+  "id": "axf-data",
+  "name": "Console data (axf-data)",
+  "url": "http://axf-data:7700/mcp",
+  "transport": "streamable-http",
+  "auth": { "type": "bearer", "env": "AXF_DATA_TOKEN", "file": "/root/hub/data/axf-data/conf/env/axhub.env" },
+  "network": "axf-data",
+  "prefix": "data",
+  "health": "http://axf-data:7700/v1/health",
+  "tools": ["data_status", "notes_list", "note_read", "note_write", "builds_list", "build_get", "build_note", "settings_get", "settings_set", "data_get", "data_list", "data_append"],
+  "confirm": { "note_write": "veto", "build_note": "veto", "settings_set": "veto", "data_append": "veto" },
+  "stores": "nothing: every call is forwarded; axf-data answers with the hub token's grants (notes, builds, settings, planner read/write; ui-review and changes read)"
+}

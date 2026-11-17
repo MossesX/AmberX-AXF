@@ -235,6 +235,42 @@
         "title": "axf gate build-rules",
         "text": "The CLI: list, get, add, edit, on, off, delete (two-step), history, runs, run <build> --phase before|after|gate [--dry-run], brief <build>. Also node apps/console-web/plugins/gate/build-rules.mjs.",
         "kind": "control"
+      },
+      {
+        "target": "auto-lander-server",
+        "title": "Server auto-lander",
+        "text": "The VPS fixes and lands finished builds by itself, every minute: merges main into a clash, starts a fix session for red CI, sends green PRs to the merge queue. After 3 failed tries of one kind it stops and puts a red item in the systems check with Fix.",
+        "kind": "screen"
+      },
+      {
+        "target": "button:gate-al-fix",
+        "title": "Fix",
+        "text": "Resets the selected build's attempts and starts a fix session for it on the next tick, whatever CI says.",
+        "kind": "control"
+      },
+      {
+        "target": "button:gate-al-retry",
+        "title": "Retry",
+        "text": "Resets the selected build's attempts and escalation; the next tick tries again from attempt 1.",
+        "kind": "control"
+      },
+      {
+        "target": "cli:gate/auto-lander",
+        "title": "axf gate auto-lander",
+        "text": "status, show <build>, run [--now], retry <build>, fix <build>, pause, resume, settings, set <key> <value>. Same as REST /api/plugins/gate/auto-lander and MCP gate_auto_lander_*.",
+        "kind": "control"
+      },
+      {
+        "target": "fix-and-land-by-itself",
+        "title": "Fix and land by itself",
+        "text": "On: the server auto-lander merges main in, starts fix sessions and lands builds by itself every minute. Off: it still reads every build but changes nothing.",
+        "kind": "control"
+      },
+      {
+        "target": "push-to-my-phone-when-it-gives-up",
+        "title": "Push to my phone when it gives up",
+        "text": "One phone push per build the auto-lander gives up on (after the set number of failed tries). The systems check banner item shows either way.",
+        "kind": "control"
       }
     ],
     "intros": [
@@ -247,7 +283,7 @@
             "target": "rules"
           },
           {
-            "say": "Auto-lander: the Merge queue switch, what is landing and what waits, and why.",
+            "say": "Auto-lander: Server is the VPS auto-lander that fixes and lands builds by itself; Merge line is the Merge queue switch and what waits.",
             "target": "auto-lander"
           },
           {

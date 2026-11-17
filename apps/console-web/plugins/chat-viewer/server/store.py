@@ -24,6 +24,8 @@ import threading
 from pathlib import Path
 from typing import Any
 
+import data_store
+
 from . import schema as S
 
 SCHEMA_SQL = """
@@ -66,6 +68,7 @@ class Store:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
+        data_store.sqlite_hydrate(self.path)  # data-store@1 (blob-sqlite): the newest copy from axf-data in cutover
         self.db = sqlite3.connect(str(self.path), check_same_thread=False, isolation_level=None)
         self.db.row_factory = sqlite3.Row
         self.db.execute("PRAGMA journal_mode=WAL")
@@ -101,6 +104,7 @@ class Store:
             except Exception:
                 self.db.execute("ROLLBACK")
                 raise
+            data_store.sqlite_upload(self.path, self.db)  # data-store@1: after the commit, never inside it
             return change
 
     def _upsert(self, cur: sqlite3.Row | None, s: dict[str, Any], msgs: list[dict[str, Any]], title: str, now: str, append: bool) -> str:
@@ -189,6 +193,7 @@ class Store:
                 self.db.execute(f"DELETE FROM {t} WHERE session_id=?", (sid,))  # noqa: S608 — fixed table names
             self.db.execute("UPDATE cursors SET offset=0, size=-1 WHERE session_id=?", (sid,))
             self.db.execute("COMMIT")
+            data_store.sqlite_upload(self.path, self.db)
             return n > 0
 
     # ------------------------------------------------------------------ reads
