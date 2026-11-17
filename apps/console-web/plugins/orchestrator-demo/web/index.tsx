@@ -13,7 +13,9 @@
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { DIALOG_START, DIALOG_SUMMARY, FOLDER, VIEW } from './api';
+import { DIALOG_START, DIALOG_SUMMARY, FOLDER, VIEW, demo, type DemoState } from './api';
+import actionsDoc from '../actions.json';
+import voiceDoc from '../voice.json';
 import { CaptionBar } from './CaptionBar';
 import { DemoView } from './DemoView';
 import { SettingsPanel } from './Settings';
@@ -45,6 +47,46 @@ function openDeepLink(rt: AxfRuntime) {
   for (const ms of [0, 1200, 3000]) setTimeout(open, ms);
 }
 
+type Reply = { state?: DemoState | null; settings?: unknown };
+type VoiceRegistry = { register(module: string, commands: { id: string; phrases: string[]; action: string; reply?: string; owner?: string }[]): () => void };
+
+/** One line of where the run is, for demo.state and voice. */
+export function stateLine(s: DemoState | null | undefined): string {
+  const run = s?.run;
+  if (!run) return 'No orchestrator demo has run yet.';
+  const sum = s.summary;
+  const cap = s.caption;
+  const where = cap ? `act ${cap.n} of ${cap.of}: ${cap.title}` : run.state;
+  return `Demo ${s.held ? 'paused' : run.state}${cap ? `, ${where}` : ''}. ${sum?.pass ?? 0} passed, ${sum?.fail ?? 0} failed, ${sum?.skipped ?? 0} skipped.`;
+}
+
+/** The console actions (actions.json): each is one REST call; the answer or the plain refusal goes to a toast. */
+function registerActions(rt: AxfRuntime) {
+  const calls: Record<string, (args: string[]) => Promise<Reply>> = {
+    'demo.start': ([how = '']) => demo.start(how === 'pause' ? true : how === 'no-pause' ? false : undefined),
+    'demo.pause': () => demo.pause(),
+    'demo.resume': () => demo.resume(),
+    'demo.next': () => demo.next(),
+    'demo.stop': () => demo.stop(),
+    'demo.state': () => demo.state(),
+  };
+  for (const a of actionsDoc.actions) {
+    const call = calls[a.id];
+    if (!call) continue;
+    rt.actions.register(a.id, (args: string[]) => {
+      call(args ?? []).then(
+        (r) => { rt.toast(a.id === 'demo.state' ? stateLine(r.state) : a.reply, 'info', 'Orchestrator demo'); if (a.id === 'demo.start') rt.navigate('builds'); },
+        (e: Error) => rt.toast(e.message, 'warning', 'Orchestrator demo'),
+      );
+    }, { label: a.label, params: a.id === 'demo.start' } as never);
+  }
+}
+
+function registerVoice() {
+  const v = (globalThis as { amberxVoice?: VoiceRegistry }).amberxVoice;
+  v?.register(ID, voiceDoc.commands.map((c) => ({ id: c.id, phrases: [...c.phrases], action: c.action, owner: voiceDoc.owner, reply: actionsDoc.actions.find((a) => a.id === c.action.split(':')[0])?.reply || undefined })));
+}
+
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Orchestrator demo',
@@ -55,6 +97,8 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('orchestrator-demo.open', () => rt.openDialog(DIALOG_START), { label: 'Orchestrator demo: open the start overlay' });
     rt.actions.register('orchestrator-demo.summary', () => rt.openDialog(DIALOG_SUMMARY), { label: 'Orchestrator demo: summary' });
+    registerActions(rt);
+    registerVoice();
     openDeepLink(rt);
   },
   views: {

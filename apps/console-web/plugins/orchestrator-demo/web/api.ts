@@ -36,7 +36,7 @@ export const isLive = (s: DemoState | null) => !!s?.run && !TERMINAL.includes(s.
 export const demo = {
   state: () => api.call<StateRes>('state'),
   open: (pause?: boolean) => api.post<StateRes>('open', pause === undefined ? {} : { pause }),
-  start: (pause: boolean) => api.post<StateRes>('start', { pause }),
+  start: (pause?: boolean) => api.post<StateRes>('start', pause === undefined ? {} : { pause }),
   pause: () => api.post<StateRes>('pause'),
   resume: () => api.post<StateRes>('resume'),
   next: () => api.post<StateRes>('next'),
