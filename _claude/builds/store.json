@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7777,
- "updatedAt": "2026-11-17T20:18:28.598Z",
+ "rev": 7778,
+ "updatedAt": "2026-11-17T20:18:37.708Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275191,7 +275191,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T20:18:23.520Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -275665,7 +275665,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -276997,7 +276997,7 @@
    "pr": "#815",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T20:18:17.450Z",
+   "updatedAt": "2026-11-17T20:18:21.816Z",
    "builtAt": "",
    "notes": [
     {
@@ -277059,6 +277059,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 18 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T20:18:17.450Z"
+    },
+    {
+     "text": "Watchdog fixed Live build status: real-time grids, 15-second VPS liveness check, animated runni (step s5): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:18:21.816Z"
     }
    ],
    "approvals": [],
@@ -277132,6 +277136,20 @@
      "attempt": 0,
      "account": "",
      "notified": "2026-11-17T20:12:11.802Z",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:18:15.108Z",
+     "buildId": "live-build-status-real-time-grids-15",
+     "phase": "",
+     "step": "s5",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-17T20:18:23.520Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -277706,7 +277724,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
