@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:42 UTC · `orchestrator-runs-long-builds-across` s6 done (all) · foreign-write
 - 2026-11-17 03:40 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s7 done (all) · orchestrator
 - 2026-11-17 03:41 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s8 done (all) · orchestrator
 - 2026-11-17 03:43 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s9 done (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 18:49 UTC · `pending-optimizer-ai-finds-pending` note (all) · mcp
 - 2026-11-17 18:49 UTC · `pending-optimizer-ai-finds-pending` note (all) · orchestrator
 - 2026-11-17 18:50 UTC · `pending-optimizer-ai-finds-pending` note (all) · mcp
+- 2026-11-17 18:56 UTC · `separate-settings-per-plugin-reset` added (0 steps) (all) · console
 
 ## Token passes (log)
 

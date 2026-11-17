@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7603,
- "updatedAt": "2026-11-17T18:50:37.614Z",
+ "rev": 7604,
+ "updatedAt": "2026-11-17T18:56:38.765Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -273523,6 +273523,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T18:49:04.476Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "separate-settings-per-plugin-reset",
+   "title": "Separate settings per plugin + reset confirm dialog",
+   "category": "",
+   "detail": "1) Every plugin gets its OWN settings interface showing only that plugin's settings; stop opening the console settings and jumping to the plugin's tab. The console keeps its own separate settings interface. Settings interfaces are not shared. 2) Sweep every page/plugin so each opens its correct default settings interface. 3) Clicking Reset in any settings interface opens a confirmation dialog with an 'Include assets' switch (on = also reset assets/skins to default; off = settings only) and a scrollable table listing every changed asset, same as the table in the settings panel.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:56:36.706Z",
+   "updatedAt": "2026-11-17T18:56:36.706Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Each plugin needs its own settings interface, not the console's. Reset asks in a confirm dialog with a switch to include assets and a scrollable table of changed assets. Make sure every page has the correct default settings interface.",
+    "at": "2026-11-17T18:56:36.706Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 958
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

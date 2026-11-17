@@ -8205,6 +8205,18 @@
    "from": "",
    "addenda": []
   },
+  "separate-settings-per-plugin-reset": {
+   "said": "Each plugin needs its own settings interface, not the console's. Reset asks in a confirm dialog with a switch to include assets and a scrollable table of changed assets. Make sure every page has the correct default settings interface.",
+   "at": "2026-11-17T18:56:36.706Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "server-auto-lander-fixes-lands": {
    "said": "We need the auto lander to bang shit out on its own. It needs to automatically fix it. We need a server rule to do that. Make the server do it automatically without the console.",
    "at": "2026-11-16T23:22:58.656Z",
