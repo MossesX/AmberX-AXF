@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:31:22.192Z",
+ "updatedAt": "2026-11-17T22:31:33.101Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -190924,7 +190924,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:27:03.346Z",
-   "updatedAt": "2026-11-17T22:28:08.807Z",
+   "updatedAt": "2026-11-17T22:31:12.711Z",
    "builtAt": "",
    "notes": [
     {
@@ -190942,6 +190942,10 @@
     {
      "text": "Brett: the only real cap is the VPS total of 8 builds at once (agent-slots maxBuilds 8). Per-account building/queue limits: 0 means no limit. Set both subscription accounts (hulu0241, mossesx-max-) to 0 in claude-accounts workers.json so they're unlimited, and the total 8 is split evenly between them (4 and 4).",
      "at": "2026-11-17T22:28:08.807Z"
+    },
+    {
+     "text": "Split by Claude into 13 steps (0 Fable).",
+     "at": "2026-11-17T22:31:12.711Z"
     }
    ],
    "approvals": [],
@@ -190958,7 +190962,288 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read apps/console-web/plugins/build-orchestrator/pipeline.mjs (tick, planned.account, loadOwnAccounts, accounts.json reading, account routing) and deploy/claude-workers.mjs route; write down in the build notes where an account gets picked and stuck to a build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "deploy/claude-workers.mjs",
+      "apps/console-web/plugins/build-orchestrator/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr01ckpm",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add a pure helper pickAccount(accounts, running, lastPicked, model) in apps/console-web/plugins/build-orchestrator/account-balance.mjs: subscription accounts only, those able to run the phase's model, fewest running builds first, tie broken by round-robin after the last account picked; API-key accounts only when every subscription account is at its cap",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/account-balance.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr02m1yf",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add runningByAccount(): count running builds per account from live sessions/agent slots (not from planned.account), plus a persisted lastPicked cursor in the plugin's data dir through data-store@1 (data-files.mjs)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/account-balance.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr03a3q5",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s4",
+     "text": "Wire pickAccount into pipeline.mjs tick: choose the account at launch time, pass it to deploy/claude-headless.sh --account, update the cursor; ignore any stale planned.account on Pending/Queue builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr04gxvf",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s5",
+     "text": "Re-plan on launch: when a Pending/Queue build launches, overwrite planned.account with the account actually picked (with a build note 'account re-planned: X → Y'), and make the planner's preview (planned.account for not-yet-launched builds) use the same balancing over projected counts so the plan shows alternation",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr05oavz",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s6",
+     "text": "Make loadOwnAccounts / accounts.json reading mark each account subscription vs API key and its per-account cap; API keys stay off until both subscriptions are busy (at cap)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/account-balance.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr06xnkz",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s7",
+     "text": "Add per-account running counts (running/cap, e.g. 3/5 · 3/5) to `pipeline.mjs status` output and its JSON (accounts: [{id,label,running,cap,kind}])",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr07jx4n",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s8",
+     "text": "Expose the same counts through the plugin's REST status route and MCP (plugin-commands) so console API, MCP, CLI and voice read one shape",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr08hhng",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s9",
+     "text": "Show per-account running counts in the Pipeline tab status strip (framework Chip/TabGroup controls, tokens only), registering a data-axf-target for console_show deep link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr09g0xq",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s10",
+     "text": "Unit test account-balance.mjs: 0/0 → alternates A,B,A,B; 5/0 → next 5 go to the empty one; ties round-robin; model filter; API key used only when both subscriptions full; stale planned.account ignored",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/account-balance.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr0axdnf",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s11",
+     "text": "Integration test of pipeline tick with a fake launcher: six queued builds over two accounts land 3/3, and the status JSON reports the counts; hook it into the plugin's test script / CI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/pipeline-balance.test.mjs",
+      "apps/console-web/plugins/build-orchestrator/package.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr0blsox",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s12",
+     "text": "Update the plugin README (account balancing, status counts, API: REST route, MCP tool, CLI `pipeline.mjs status`, voice) and help entry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fr0cdhe6",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    },
+    {
+     "id": "s13",
+     "text": "Run tests and CI checks (plugin tests, check-theme, check-console-control, plugin-lifecycle check), write _claude/builds/reports/dispatcher-split-builds-evenly-across.md with Brett's words and before/after (5/0 → 3/3), add the THREADS row, push branch, open PR saying how each piece is reached via API, add to merge queue to land when green",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/dispatcher-split-builds-evenly-across.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl9o1fs0d66z8",
+     "createdAt": "2026-11-17T22:31:12.711Z"
+    }
+   ]
   },
   {
    "id": "move-everything-axhub-web-console",
