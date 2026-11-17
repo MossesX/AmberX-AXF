@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7483,
- "updatedAt": "2026-11-17T15:05:17.107Z",
+ "rev": 7484,
+ "updatedAt": "2026-11-17T15:05:25.518Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265249,7 +265249,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T15:02:06.901Z",
+   "updatedAt": "2026-11-17T15:05:22.381Z",
    "builtAt": "",
    "notes": [
     {
@@ -265291,7 +265291,7 @@
     "queuedAt": "2026-11-17T14:59:47.027Z",
     "queuedBy": "console",
     "account": "",
-    "session": "axf-auto-lander-drag-rows-to-set-merge-order--sully",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
@@ -265310,13 +265310,7 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-17T15:00:58.892Z",
-     "why": "subscription account hulu0241"
-    },
+    "planned": null,
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -265343,12 +265337,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:05:22.381Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T15:00:55.483Z",
-     "updatedAt": "2026-11-17T15:00:55.483Z"
+     "updatedAt": "2026-11-17T15:05:22.866Z"
     },
     {
      "id": "s2",
