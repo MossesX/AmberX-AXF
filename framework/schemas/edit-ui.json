@@ -1,0 +1,119 @@
+{
+  "$axf": "edit-ui@1",
+  "frames": {
+    "target": "edit-ui-target@1",
+    "op": "edit-ui-op@1",
+    "undo": "edit-ui-undo@1",
+    "state": "edit-ui-state@1"
+  },
+  "modes": [
+    "off",
+    "armed",
+    "held",
+    "editing"
+  ],
+  "gates": [
+    "ctrl",
+    "touch"
+  ],
+  "events": [
+    "enable",
+    "disable",
+    "ctrl-down",
+    "ctrl-up",
+    "window-blur",
+    "long-press",
+    "begin",
+    "commit",
+    "cancel"
+  ],
+  "targetKinds": [
+    "text",
+    "cell",
+    "column",
+    "property",
+    "token"
+  ],
+  "props": [
+    "size",
+    "colour",
+    "icon",
+    "order",
+    "hide",
+    "label"
+  ],
+  "columnProps": [
+    "label",
+    "width",
+    "order",
+    "hide"
+  ],
+  "tokenProps": [
+    "size",
+    "colour"
+  ],
+  "hideProps": [
+    "hide"
+  ],
+  "owners": [
+    "asset-token",
+    "asset-property",
+    "hidden-assets",
+    "data",
+    "read-only"
+  ],
+  "reasons": [
+    "off",
+    "not-held",
+    "busy",
+    "bad-target",
+    "unknown-asset",
+    "unknown-source",
+    "no-writer",
+    "code-text",
+    "locked",
+    "permission",
+    "owner-unavailable",
+    "nothing-to-undo",
+    "nothing-to-redo"
+  ],
+  "hide": {
+    "build": "rebuild-fresh-main-hide-any-asset",
+    "by": "edit-ui"
+  },
+  "limits": {
+    "undoMax": 100,
+    "textMax": 4000
+  },
+  "lookPermission": "assets.swap",
+  "actions": [
+    "editui.on",
+    "editui.off",
+    "editui.toggle",
+    "editui.state",
+    "editui.set",
+    "editui.undo",
+    "editui.redo"
+  ],
+  "settings": {
+    "enabledKey": "axf.editUi.enabled",
+    "group": {
+      "id": "axf.editUi",
+      "label": "Edit UI",
+      "icon": "edit",
+      "tab": "general",
+      "order": 45,
+      "description": "Inline-edit anything on the screen. With Edit UI on, hold Ctrl (long-press on a phone) and click the thing to edit it; let go of Ctrl to stop. Every edit saves where that value lives (the look, a data source) and can be undone with Ctrl+Z.",
+      "settings": [
+        {
+          "key": "axf.editUi.enabled",
+          "label": "Edit UI",
+          "kind": "toggle",
+          "default": false,
+          "scope": "user",
+          "description": "On: hold Ctrl and click anything to edit it inline. Off: Ctrl does nothing."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/edit-ui-op.schema.json",
+  "title": "AmberX AXF edit-ui op (edit-ui@1)",
+  "description": "Generated from framework/core/engines/edit-ui-rules.mjs. One committed edit: the target, the owner it saves through, the value before and after.",
+  "type": "object",
+  "required": [
+    "$axf",
+    "target",
+    "owner",
+    "before",
+    "after"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "edit-ui-op@1"
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "text",
+            "cell",
+            "column",
+            "property",
+            "token"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "text: the element's console-control address when it has one (button:…, tab:…)"
+        },
+        "assetType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "assetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "instance": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "a dotted path inside the asset data or token map (menus.0.items.2.label, accent)"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "cell / text: the data source id"
+        },
+        "record": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "grid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "column: the grid instance"
+        },
+        "column": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "prop": {
+          "enum": [
+            "size",
+            "colour",
+            "icon",
+            "order",
+            "hide",
+            "label",
+            "width"
+          ],
+          "description": "property: size, colour, icon, order, hide, label; column: label, width, order, hide"
+        },
+        "slot": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "token: the control@1 token target (tokens.theme, tokens.style, …)"
+        }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "asset-token",
+            "asset-property",
+            "hidden-assets",
+            "data",
+            "read-only"
+          ]
+        },
+        "key": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "the settings key, look path or data source the owner writes"
+        },
+        "reason": {
+          "enum": [
+            "off",
+            "not-held",
+            "busy",
+            "bad-target",
+            "unknown-asset",
+            "unknown-source",
+            "no-writer",
+            "code-text",
+            "locked",
+            "permission",
+            "owner-unavailable",
+            "nothing-to-undo",
+            "nothing-to-redo"
+          ],
+          "description": "read-only: why"
+        },
+        "detail": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "read-only: the reason in words"
+        }
+      }
+    },
+    "before": {
+      "description": "a scalar value: text, number, boolean or null",
+      "type": [
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ]
+    },
+    "after": {
+      "description": "a scalar value: text, number, boolean or null",
+      "type": [
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ]
+    },
+    "gate": {
+      "enum": [
+        "ctrl",
+        "touch"
+      ]
+    }
+  }
+}

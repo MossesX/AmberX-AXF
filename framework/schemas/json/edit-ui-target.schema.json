@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/edit-ui-target.schema.json",
+  "title": "AmberX AXF edit-ui target (edit-ui@1)",
+  "description": "Generated from framework/core/engines/edit-ui-rules.mjs. What one inline edit is about: a text label, a grid cell, a column header, an asset property or a look token.",
+  "type": "object",
+  "required": [
+    "kind"
+  ],
+  "properties": {
+    "kind": {
+      "enum": [
+        "text",
+        "cell",
+        "column",
+        "property",
+        "token"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "text: the element's console-control address when it has one (button:…, tab:…)"
+    },
+    "assetType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "assetId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "instance": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "path": {
+      "type": "string",
+      "maxLength": 300,
+      "description": "a dotted path inside the asset data or token map (menus.0.items.2.label, accent)"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "cell / text: the data source id"
+    },
+    "record": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "field": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "grid": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "column: the grid instance"
+    },
+    "column": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "prop": {
+      "enum": [
+        "size",
+        "colour",
+        "icon",
+        "order",
+        "hide",
+        "label",
+        "width"
+      ],
+      "description": "property: size, colour, icon, order, hide, label; column: label, width, order, hide"
+    },
+    "slot": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "token: the control@1 token target (tokens.theme, tokens.style, …)"
+    }
+  }
+}
