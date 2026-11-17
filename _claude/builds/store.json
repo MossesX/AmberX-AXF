@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7497,
- "updatedAt": "2026-11-17T15:08:29.194Z",
+ "rev": 7498,
+ "updatedAt": "2026-11-17T15:08:38.458Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140483,7 +140483,7 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-16T23:14:50.682Z",
+   "updatedAt": "2026-11-17T15:08:32.347Z",
    "builtAt": "",
    "notes": [
     {
@@ -140533,6 +140533,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:14:50.682Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:32.347Z"
     }
    ],
    "approvals": [],
@@ -140667,7 +140671,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -197808,7 +197812,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-16T23:15:35.930Z",
+   "updatedAt": "2026-11-17T15:08:29.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -197882,6 +197886,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:15:35.930Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:29.557Z"
     }
    ],
    "approvals": [],
@@ -198057,7 +198065,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222626,7 +222634,7 @@
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-16T23:16:14.535Z",
+   "updatedAt": "2026-11-17T15:08:35.255Z",
    "builtAt": "",
    "notes": [
     {
@@ -222648,6 +222656,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:16:14.535Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:35.255Z"
     }
    ],
    "approvals": [],
@@ -222779,7 +222791,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {

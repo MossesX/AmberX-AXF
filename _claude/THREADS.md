@@ -821,9 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:35 UTC · `every-plugin-screen-gets-a-settings-gear` s10 done (all) · orchestrator
-- 2026-11-17 00:36 UTC · `prompting-engine-control-panel-to-create` s1 done, → running (all) · orchestrator
-- 2026-11-17 00:36 UTC · `every-plugin-screen-gets-a-settings-gear` s11 done (all) · orchestrator
 - 2026-11-17 00:36 UTC · `every-plugin-screen-gets-a-settings-gear` s10 done (all) · foreign-write
 - 2026-11-17 00:36 UTC · `prompting-engine-control-panel-to-create` s1 done (all) · foreign-write
 - 2026-11-17 00:37 UTC · `stop-auto-lander-committing-tracking` s9 done (all) · orchestrator
@@ -1221,6 +1218,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:08 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · orchestrator
+- 2026-11-17 15:08 UTC · `server-gate-one-session-per-build-no` note (all) · orchestrator
+- 2026-11-17 15:08 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
+- 2026-11-17 15:08 UTC · `ui-review-filter-and-search-by-pr` note (all) · orchestrator
 
 ## Token passes (log)
 
