@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:34:22.081Z",
+ "updatedAt": "2026-11-17T00:34:39.608Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142691,14 +142691,14 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
-   "branch": "",
+   "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T00:34:19.611Z",
+   "updatedAt": "2026-11-17T00:34:29.175Z",
    "builtAt": "",
    "notes": [
     {
@@ -142708,6 +142708,14 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:20:12.320Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-orchestrator-stale-row-watchdog-vps--paulie.",
+     "at": "2026-11-17T00:34:24.725Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-stale-row-watchdog-vps--paulie, shared account login)",
+     "at": "2026-11-17T00:34:29.175Z"
     }
    ],
    "approvals": [],

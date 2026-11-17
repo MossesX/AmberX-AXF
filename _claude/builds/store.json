@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7186,
- "updatedAt": "2026-11-17T00:34:22.081Z",
+ "rev": 7187,
+ "updatedAt": "2026-11-17T00:34:39.608Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -222791,14 +222791,14 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
-   "branch": "",
+   "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T00:34:19.611Z",
+   "updatedAt": "2026-11-17T00:34:29.175Z",
    "builtAt": "",
    "notes": [
     {
@@ -222808,6 +222808,14 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:20:12.320Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-orchestrator-stale-row-watchdog-vps--paulie.",
+     "at": "2026-11-17T00:34:24.725Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-stale-row-watchdog-vps--paulie, shared account login)",
+     "at": "2026-11-17T00:34:29.175Z"
     }
    ],
    "approvals": [],
@@ -222827,13 +222835,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:20:10.359Z",
     "queuedBy": "brett",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-orchestrator-stale-row-watchdog-vps--paulie",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T00:34:23.849Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -222846,7 +222854,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T00:34:23.849Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -222855,7 +222863,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T00:34:23.849Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -223442,7 +223450,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
