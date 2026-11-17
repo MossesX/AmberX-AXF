@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:50 UTC · `settings-interface-gear-every-plugin` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `hotfix-orchestrator-grid-columns-don-t` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `reset-all-button-every-asset-override` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `alert-every-time-build-falls-back-to` → archived, note (all) · watchdog
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:32 UTC · `flagship-professional-skin-covering` note (all) · orchestrator
 - 2026-11-17 21:32 UTC · `rebuild-fresh-main-hide-any-asset` s12 done (all) · orchestrator
 - 2026-11-17 21:32 UTC · `fix-banner-settings-interface-tab` s6 done (all) · orchestrator
+- 2026-11-17 21:32 UTC · `land-pr-730-reset-all-button-far-right` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
