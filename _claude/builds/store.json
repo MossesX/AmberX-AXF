@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7225,
- "updatedAt": "2026-11-17T00:48:39.344Z",
+ "rev": 7226,
+ "updatedAt": "2026-11-17T00:48:54.170Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259218,7 +259218,7 @@
    "title": "Stop the auto-lander committing tracking files into builds",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (its step s24). Before landing, the auto-lander commits 'synced files left in the worktree (auto-land)' onto each build branch: _claude/builds/store.json, orchestrator.json, origins.json, journal jsonl. That commit turns CI red on every build (#733: 98f6c0d0 green, 41e3e2ac red). Stop committing orchestrator/build-tracking data into build branches; keep it on the hub/data store only; reset or ignore those files in worktrees. When the lander merges main into a build, take main's copy of tracking files and regenerate generated files (apps/console-web/scripts/control-inventory.mjs, tracker) instead of stopping on conflict. Journal files are ~70 MB on GitHub: move them out of git. Small and urgent. Land through the orchestrator.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -259226,8 +259226,8 @@
    "pr": "#765",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:46:34.294Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T00:48:43.806Z",
+   "builtAt": "2026-11-17T00:48:43.807Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -259679,12 +259679,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:48:43.806Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T00:07:26.389Z",
-     "updatedAt": "2026-11-17T00:07:26.389Z"
+     "updatedAt": "2026-11-17T00:48:44.411Z"
     }
    ],
    "profiles": [
@@ -259695,7 +259695,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
