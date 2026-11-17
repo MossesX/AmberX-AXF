@@ -442,6 +442,22 @@ def status(at: str = "") -> dict[str, Any]:
             "recorder": rec or {"running": False}, "origin": origin()}
 
 
+SETTINGS_ADDRESS = "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect"
+
+
+def state(at: str = "") -> dict[str, Any]:
+    """Everything the settings tab shows, in one read (REST GET state, MCP phone_connect_state, `axf phone state`), with
+    the console-control@1 addresses that open each part (console_show / console_open)."""
+    at = at or now()
+    devs = devices(at)
+    return {"ok": True, "$axf": "phone-connect-state@1", "status": status(at), "devices": devs, "settings": S.settings(),
+            "commands": [command_view(c) for c in S.commands(limit=20)],
+            "links": {"settings": SETTINGS_ADDRESS, "tabs": {t: f"tab:phone-connect.tabs={t}" for t in ("pair", "phones", "features", "activity")},
+                      "devices": {d["deviceId"]: f"row:device/{d['deviceId']}" for d in devs},
+                      "features": {k: f"setting:phone-connect.feature.{k}" for k in S.FEATURES},
+                      "actions": {"open": "phone.open", "device": "phone.device:<deviceId>", "tab": "phone.tab:<pair|phones|features|activity>"}}}
+
+
 class PhoneCapability:
     """axf.phone@1: other plugins reach the phone without naming this one. Every method raises PhoneError on a wire error.
     Deciding an approval is not here and never will be (personOnly)."""

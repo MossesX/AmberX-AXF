@@ -162,9 +162,30 @@ function ActivityPane() {
   );
 }
 
+/** Deep links (console actions phone.tab / phone.device, console_show row:device/<id>): which tab, which row to show. */
+const SHOW_EVENT = 'axp-phone:show';
+let pending: { tab: Tab; device?: string } | null = null;
+export const TABS: Tab[] = ['pair', 'phones', 'features', 'activity'];
+export function showInPanel(tab: Tab, device?: string): void {
+  pending = { tab, device };
+  globalThis.dispatchEvent(new CustomEvent(SHOW_EVENT));
+}
+
 export function PhoneConnectPanel() {
   const { st, err, reload } = useStatus();
-  const [tab, setTab] = useState<Tab>(st?.paired ? 'phones' : 'pair');
+  const [tab, setTab] = useState<Tab>(pending?.tab ?? 'pair');
+  const [focus, setFocus] = useState(pending?.device ?? '');
+  useEffect(() => {
+    const take = () => { if (pending) { setTab(pending.tab); setFocus(pending.device ?? ''); pending = null; } };
+    take();
+    globalThis.addEventListener(SHOW_EVENT, take);
+    return () => globalThis.removeEventListener(SHOW_EVENT, take);
+  }, []);
+  useEffect(() => {
+    if (!focus) return;
+    const t = setTimeout(() => document.querySelector(`[data-axf-target="row:device/${CSS.escape(focus)}"]`)?.scrollIntoView({ block: 'center' }), 300);
+    return () => clearTimeout(t);
+  }, [focus, tab]);
   return (
     <div className={P}>
       <div className={`${P}__line`}>

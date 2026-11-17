@@ -20,7 +20,9 @@
     "action:phone.url",
     "action:phone.notify",
     "action:phone.recorder",
-    "action:phone.say"
+    "action:phone.say",
+    "action:phone.tab",
+    "action:phone.device"
   ],
   "scopes": [
     "ROUTES"
@@ -59,6 +61,12 @@
         "route": "GET /status",
         "id": "status",
         "title": "Phone Connect status: the paired phone's presence, the pending pairing code, feature switches and the recorder",
+        "readOnly": true
+      },
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "Everything Settings → Plugins → Phone Connect shows, in one read, with the console-control addresses that open each part",
         "readOnly": true
       },
       {

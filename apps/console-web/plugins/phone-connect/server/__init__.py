@@ -17,6 +17,7 @@ Console routes (console token or the wall's signed-in admin; `person` = the wall
   POST   recorder/start {session, group?, note?, approvalId} · recorder/stop · GET recorder/status
   GET    commands?deviceId= · commands/{id}?wait=<s>   a command with its ack and result
   GET    status                     presence, pairing, features, recorder (what the UI, MCP, CLI and voice read)
+  GET    state                      status + devices + settings + recent commands + the console-control addresses
   GET    settings · POST settings {features: {open_url|notify|approval|recorder|voice: bool}}
 
 Device routes (device_router, /api/plugins/phone-connect/device/…, no console token: `Authorization: Bearer tok_…` and
@@ -218,6 +219,11 @@ async def get_command(cid: str, wait: int = 0) -> Any:
 @router.get("/status")
 def get_status() -> dict[str, Any]:
     return svc.status()
+
+
+@router.get("/state")
+def get_state() -> dict[str, Any]:
+    return svc.state()
 
 
 @router.get("/settings")

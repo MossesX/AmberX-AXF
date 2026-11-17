@@ -209,3 +209,9 @@ plugin_services.provide("axf.notify@1", Gate(), folder="notify-control")
 check("a direct notification asks axf.notify@1 first", cl.post(f"{P}/notify", json={"title": "x"}, headers=SESSION).json()["error"]["code"], "denied")
 ok("the alert hub's own pushes were checked already", cap.push_alert({"source": "x", "severity": "error", "title": "t"}, "phone-connect.direct")["ok"])
 plugin_services.withdraw("notify-control")
+
+# ---- s14 state + addresses
+stt = cl.get(f"{P}/state").json()
+ok("state carries status, devices, settings and commands", stt["$axf"] == "phone-connect-state@1" and stt["devices"] and "features" in stt["settings"] and isinstance(stt["commands"], list))
+check("state names the settings address", stt["links"]["settings"], "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect")
+check("state names each phone's row", stt["links"]["devices"]["phone-0123456789abcdef"], "row:device/phone-0123456789abcdef")

@@ -203,8 +203,8 @@ The plugin phase exposes each feature four ways, the same command underneath: RE
 (`status`, `devices`, `devices/{id}`, `pair`, `pair/cancel`, `devices/{id}/revoke`, `…/rotate`, `…/forget`, `open`,
 `notify`, `recorder/start|stop|status`, `voice`, `commands`, `commands/{id}`), MCP `phone_*` (plugin commands), CLI
 `axf phone …`, voice ("open the console on my phone", "start recording Build review"). Deep link: `console_open` target
-`view:settings/tab:settings.tabs=plugins/subtab:phone-connect`. State: `GET status` (presence, watch, capabilities,
-recorder state) and `GET devices`. Approve / deny / shelve are not on any of them.
+`view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect`, rows `row:device/<id>`. State: `GET status`
+(presence, watch, capabilities, recorder state), `GET devices` and `GET state` (all of it plus the addresses). Approve / deny / shelve are not on any of them.
 
 ## Migration from AmberX
 

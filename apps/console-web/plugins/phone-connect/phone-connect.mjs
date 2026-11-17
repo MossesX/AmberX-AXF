@@ -4,6 +4,7 @@
  * voice phone.*. Reaches the console at AXF_CONSOLE_URL (default http://127.0.0.1:8080) with AXF_TOKEN.
  *
  *   axf phone status                         presence, pairing code, features, recorder
+ *   axf phone state                          everything the settings tab shows + its console-control addresses
  *   axf phone pair [--cancel]                issue a pairing code (shown once; claim it in the app with your hub sign-in)
  *   axf phone devices                        every phone
  *   axf phone revoke <deviceId>              refused: revoking is the owner's tap in the console (a session can't)
@@ -39,7 +40,8 @@ export function request(argv) {
   const [word, a1, ...more] = args;
   const dev = flags.device ? { deviceId: String(flags.device) } : {};
   switch (word) {
-    case 'status': case 'state': return { method: 'GET', path: '/status' };
+    case 'status': return { method: 'GET', path: '/status' };
+    case 'state': return { method: 'GET', path: '/state' };
     case 'pair': return flags.cancel ? { method: 'POST', path: '/pair/cancel', body: {} } : { method: 'POST', path: '/pair/start', body: {} };
     case 'devices': return a1 ? { method: 'GET', path: `/devices/${encodeURIComponent(a1)}` } : { method: 'GET', path: '/devices' };
     case 'revoke': if (!a1) throw new Error('axf phone revoke <deviceId>'); return { method: 'POST', path: `/devices/${encodeURIComponent(a1)}/revoke`, body: {} };

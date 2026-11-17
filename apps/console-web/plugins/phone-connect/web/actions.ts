@@ -4,6 +4,7 @@
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { phone } from './client';
+import { showInPanel, TABS } from './settings';
 
 const TITLE = 'Phone';
 type Say = (text: string, kind?: 'success' | 'info' | 'warning') => void;
@@ -12,6 +13,15 @@ export function registerActions(rt: AxfRuntime, open: () => void): void {
   const say: Say = (text, kind = 'info') => rt.toast(text, kind, TITLE);
   const done = (r: { ok?: boolean; error?: { message: string } }, okText: string) => say(r.error ? r.error.message : okText, r.error ? 'warning' : 'success');
   rt.actions.register('phone.open', () => open(), { label: 'Phone Connect settings' });
+  rt.actions.register('phone.tab', ([tab = 'pair']) => {
+    const t = TABS.find((x) => x === tab) ?? 'pair';
+    open();
+    showInPanel(t);
+  }, { label: 'Phone Connect: open a tab (phone.tab:<pair|phones|features|activity>)', params: true });
+  rt.actions.register('phone.device', ([id = '']) => {
+    open();
+    showInPanel('phones', id);
+  }, { label: 'Show one paired phone (phone.device:<deviceId>; console_show row:device/<id>)', params: true });
   rt.actions.register('phone.status', async () => {
     const s = await phone<{ presence: string; device: { name: string } | null }>('status');
     say(s.error ? s.error.message : `${s.device?.name ?? 'Phone'}: ${s.presence}`);

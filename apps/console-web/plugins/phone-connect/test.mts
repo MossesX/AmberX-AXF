@@ -5,6 +5,7 @@ import { cliWords, request } from './phone-connect.mjs';
 
 const cases: [string[], object][] = [
   [['status'], { method: 'GET', path: '/status' }],
+  [['state'], { method: 'GET', path: '/state' }],
   [['pair'], { method: 'POST', path: '/pair/start', body: {} }],
   [['pair', '--cancel'], { method: 'POST', path: '/pair/cancel', body: {} }],
   [['devices'], { method: 'GET', path: '/devices' }],
