@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7547,
- "updatedAt": "2026-11-17T17:04:16.910Z",
+ "rev": 7548,
+ "updatedAt": "2026-11-17T17:05:15.727Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27403,14 +27403,14 @@
    "title": "Live reload (axf dev) + device hot reload",
    "category": "Build engine",
    "detail": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "claude/x.engine.dev",
    "pr": "#513",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-12T03:24:20.682Z",
+   "updatedAt": "2026-11-17T17:04:33.388Z",
    "builtAt": "",
    "notes": [
     {
@@ -27574,7 +27574,7 @@
    },
    "kind": "epic",
    "planRef": "x.engine.dev",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -266656,7 +266656,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -266664,7 +266664,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T17:04:13.882Z",
+   "updatedAt": "2026-11-17T17:05:10.185Z",
    "builtAt": "",
    "notes": [
     {
@@ -266690,6 +266690,10 @@
     {
      "text": "Claude account: hulu0241 (axf-rebuild-fresh-main-phone-connect-small--gina, shared account login)",
      "at": "2026-11-17T16:55:27.282Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 25 steps left: back in Pending for Brett.",
+     "at": "2026-11-17T17:05:10.185Z"
     }
    ],
    "approvals": [],
@@ -266710,14 +266714,23 @@
     "queuedAt": "2026-11-17T16:53:28.041Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-phone-connect-small--gina",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T16:55:15.937Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T17:05:09.307Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 25,
+     "account": "hulu0241",
+     "session": "axf-rebuild-fresh-main-phone-connect-small--gina",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-17T16:54:55.110Z",
      "by": "orchestrator",
@@ -266726,10 +266739,16 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on hulu0241 stopped on its own with 25 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-17T16:55:15.937Z",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T17:05:12.329Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "2026-11-17T16:55:15.937Z",
     "heldAt": "",
@@ -267417,7 +267436,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
