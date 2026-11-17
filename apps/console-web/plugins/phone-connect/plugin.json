@@ -25,13 +25,13 @@
   ],
   "enabledByDefault": true,
   "optional": [
-    "axf.notify@1",
-    "axf.health@1",
-    "approvals-relay@1"
+    "service:axf.notify@1",
+    "service:axf.health@1"
   ],
   "banner": false,
   "tabable": false,
-  "uiEditor": "none",
+  "uiEditor": [],
+  "deviceRoutes": true,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/phone-connect",
