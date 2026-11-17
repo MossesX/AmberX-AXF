@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:28 UTC · `github-client-plugin-see-control-every` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `merges-are-only-merged-once-github` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `new-project-wizard-name-linked-repo` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `orchestrator-checks-shipped-features` → landing, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `pending-tab-one-collapsed-row-per-build` → landing, note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` note (all) · Brett
 - 2026-11-17 22:54 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
 - 2026-11-17 22:54 UTC · `api-fully-drives-every-field-type-forms` note (all) · Brett
+- 2026-11-17 22:54 UTC · `flagship-professional-skin-covering-2` s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, note (all) · foreign-write
+- 2026-11-17 22:54 UTC · `move-everything-axhub-web-console` s1 done (all) · foreign-write
 
 ## Token passes (log)
 
