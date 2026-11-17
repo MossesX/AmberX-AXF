@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:20 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` merged, note (all) · reconciler
 - 2026-11-17 19:20 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · reconciler
 - 2026-11-17 19:20 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 - 2026-11-17 19:20 UTC · `pass-approval-hook-deep-link-amberx-notification` → pending, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:03 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 21:03 UTC · `rebuild-every-toolbar-page-specific` s17 done (all) · orchestrator
 - 2026-11-17 21:04 UTC · `rebuild-every-toolbar-page-specific` s18 done (all) · orchestrator
+- 2026-11-17 21:05 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
