@@ -829,8 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `reset-all-button-every-asset-override` → fixing, note (all) · pipeline
-- 2026-11-17 19:11 UTC · `alert-every-time-build-falls-back-to` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `auto-lander-grid-one-row-per-build` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `every-settings-interface-gets` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `to-do-manager-fully-voice-mcp-controlled` → fixing, note (all) · pipeline
@@ -1229,6 +1227,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:58 UTC · `terminal-main-tab-streaming-console-s` s12 done (all) · orchestrator
 - 2026-11-17 20:58 UTC · `rebuild-every-toolbar-page-specific` s13 done (all) · orchestrator
 - 2026-11-17 20:59 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
+- 2026-11-17 20:59 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 20:59 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 
 ## Token passes (log)
 

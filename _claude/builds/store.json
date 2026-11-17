@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7906,
- "updatedAt": "2026-11-17T20:59:09.152Z",
+ "rev": 7907,
+ "updatedAt": "2026-11-17T20:59:18.135Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275774,7 +275774,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:59:07.118Z",
+   "updatedAt": "2026-11-17T20:59:10.132Z",
    "builtAt": "",
    "notes": [
     {
@@ -275852,6 +275852,10 @@
     {
      "text": "Session stopped on its own with 10 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:59:07.118Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s14): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:59:10.132Z"
     }
    ],
    "approvals": [
@@ -275910,10 +275914,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T18:58:59.749Z",
+     "at": "2026-11-17T20:59:15.037Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -275922,6 +275926,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T20:59:06.288Z",
+     "buildId": "rebuild-every-toolbar-page-specific",
+     "phase": "",
+     "step": "s14",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -276639,7 +276659,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277886,7 +277906,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -277894,7 +277914,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:58:05.768Z",
+   "updatedAt": "2026-11-17T20:59:11.841Z",
    "builtAt": "",
    "notes": [
     {
@@ -278044,6 +278064,10 @@
     {
      "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
      "at": "2026-11-17T20:58:05.768Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s21): session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T20:59:11.841Z"
     }
    ],
    "approvals": [
@@ -278073,21 +278097,21 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 2,
+    "crashes": 3,
     "lastRun": {
-     "at": "2026-11-17T20:57:08.031Z",
+     "at": "2026-11-17T20:59:11.038Z",
      "exit": 143,
      "outcome": "requeued",
      "reason": "crash",
      "stepsLeft": 4,
      "account": "",
-     "session": "",
+     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
      "phase": ""
     },
     "split": {
@@ -278114,6 +278138,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T20:59:11.038Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s21",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
+     "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 1 of 3)."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -278630,10 +278670,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T20:57:11.329Z",
-     "rev": 2,
+     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T20:59:11.841Z",
+     "rev": 3,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:57:11.333Z"
+     "updatedAt": "2026-11-17T20:59:11.842Z"
     },
     {
      "id": "s22",
@@ -278718,7 +278758,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
