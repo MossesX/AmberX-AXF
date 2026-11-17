@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "claude-accounts-home",
+  "name": "Claude accounts",
+  "version": "1.0.0",
+  "description": "Claude accounts on Home: List Claude accounts.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Claude accounts",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "claude-accounts",
+      "command": "list"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

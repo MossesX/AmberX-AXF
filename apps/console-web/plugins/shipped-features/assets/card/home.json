@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "shipped-features-home",
+  "name": "Shipped features",
+  "version": "1.0.0",
+  "description": "Shipped features on Home: Shipped features summary.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Shipped features",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "shipped-features",
+      "command": "summary"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

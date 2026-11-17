@@ -230,6 +230,12 @@ stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs i
 archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
+Nov 14 2026 (build `fix-build-whose-session-finishes-phase-e`): the exit transition `nextStatusOnExit()` with
+`EXIT_REASONS` (all-done, phase-done, crash, crash-limit, upgrade-blocked, needs-brett, stopped), `pipeline.phase`,
+`pipeline.crashes`, `lastRun.reason` / `lastRun.phase`, `STATUS_AFTER.failed = pending`, the Errors tab for a
+crash-limited build in Pending; golden cases in `spec/fixtures/build-pipeline-exit.json` (`check-build-pipeline.mjs`).
+Same deferral: no Kotlin twin while Android is on hold; a port replays the fixture's `transition` block.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:
@@ -305,6 +311,12 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
 
+## Deferred: settings open in a floating dialog (Nov 13 2026)
+
+`framework/core/engines/settingsopen.ts` (build `all-settings-interfaces-open-floating`): every settings interface
+always opens in a floating glass dialog (`app.settings`, `settings.open[:tab]`); there is no page / pane / floating
+choice (removed Nov 16 2026). Web only; the Kotlin twin (`lib-settings` always opening its screen in a dialog, with no
+placement option) is a deferred gap, no new Android work. Check: `framework/spec/check-settings-open.mts`.
 ## Deferred: the console app's on-device wake listener (Nov 13 2026)
 Build `console-app-wake-word-voice-listener` (Fable). The wake listener is the console plugin `apps/console-web/plugins/wake-listener`
 (wake-listener@1: wake phrases, switch, state machine, command catalog and spoken wizard in `core.mjs` / `catalog.mjs`; the page
@@ -340,3 +352,22 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: data-store@1 client (Nov 15 2026)
+
+Build data-container-axf-data-holds-all adds `framework/core/data-store.mjs` (the axf-data client: get / put / update /
+delete / list / append / read / watch / snapshot / manifest over http, file and memory backends, rev / etag conflicts,
+backoff, `manifestOf`), `framework/core/data-store-mode.mjs` (local → shadow → cutover → rollback) and the fixtures
+`framework/spec/fixtures/data-store*.json`; spec `framework/spec/DATA-STORE.md`. Kotlin twin deferred (no new Android
+work): axf-data's `JsonDocumentStore` / `OfflineFirstRepository` keep their own shapes until a lib-hubstore successor
+speaks data-store@1 (same keys, `If-Match` etags, `data-error@1` codes, the `pure` and `http` blocks of the fixture).
+
+Build axf-data-postgres-real-tables-own (Nov 15 2026) moved axf-data's store onto Postgres (`services/axf-data/pg.py`,
+`tables.py`, `engine.py`; spec `DATA-STORE.md` → Engine). Server-side only: the wire contract, the Node client and the
+fixtures did not change, so there is nothing new to port; the Kotlin gap above is unchanged. The new frames
+(`data-tables@1`, `data-engine@1`, `data-mirror-run@1`) are operator frames read by the console, the CLI and voice; no
+Android app renders them.
+
+Build stop-auto-lander-committing-tracking adds `framework/core/tracking-paths.mjs` (tracking-paths@1: the files a build
+branch never commits) and the builds journal's hub home (builds-journal@1). Build tooling only (lander, CI, CLI): no
+Kotlin twin, none needed; the baked copies ride along unused.
