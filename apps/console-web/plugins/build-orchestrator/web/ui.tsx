@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { StatusChip } from './attempts';
 import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, SelectField, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
@@ -504,7 +505,7 @@ function BuildGrid({ builds, all, rules, busy, act }: { builds: Build[]; all: Bu
       render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 9)', render: (b) => <PriorityTag build={b.id} /> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
-      render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },
+      render: (b) => <span title={(core.STATUS_LABEL as Record<string, string>)[b.status]}><StatusChip status={b.status} /></span> },
     { id: 'next', label: 'Next', width: 'calc(var(--fx-font-size) * 6)', sortable: true, sortValue: (b) => core.nextUp(b, rules).step?.model ?? 'zz',
       render: (b) => { const n = core.nextUp(b, rules); return n.done ? <span className="fx-muted">—</span> : n.needsApproval ? <span className="oc-flag" title="The next phase upgrades the model: only you can approve it">your OK → {n.phase?.model}</span> : n.step ? <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model} {n.step.id}</span> : <span className="fx-muted">—</span>; } },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 3.5)', align: 'end', sortable: true, sortValue: (b) => core.progress(b).total,

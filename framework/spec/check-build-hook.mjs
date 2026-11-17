@@ -130,7 +130,13 @@ await ta('delivery: cursors per listener, a throwing listener keeps its cursor, 
   // replay delivers the given events and leaves cursors alone
   r = await io.deliver({ to, events: actual.events.created }); assert.equal(r.ok, 1); assert.deepEqual(JSON.parse(readFileSync(join(dir, 'cursors.json'), 'utf8')), { ok: 2, bad: 2, grow: 3 });
 });
-await ta('real builds journal replays without throwing', async () => { const io = await import('../cli/build-hooks.mjs'); const ev = io.journalEvents(); assert.ok(Array.isArray(ev)); });
+// the real journal is on the hub (builds-journal@1): CI replays the fixture journal; a checkout that reaches the hub replays that too
+await ta('the builds journal replays (fixture journal; the hub one where it is mounted)', async () => {
+  const io = await import('../cli/build-hooks.mjs');
+  const ev = io.journalEvents(join(ROOT, 'framework/spec/fixtures-journal'));
+  assert.ok(ev.length >= 2 && ev.some((e) => String(e.id).includes('journal-fixture')), `fixture journal gave ${ev.length} event(s)`);
+  assert.ok(Array.isArray(io.journalEvents()));
+});
 t('schemas/build-hook.json + schemas/json/build-event.schema.json are current (run axf schemas)', () => { assert.ok(same(JSON.parse(rd('framework/schemas/build-hook.json')), H.REGISTRY)); for (const [name, s] of Object.entries(H.jsonSchemas())) assert.ok(same(JSON.parse(rd(`framework/schemas/json/${name}`)), s), name); });
 t('PORTING.md lists the contract', () => assert.match(rd('framework/spec/PORTING.md'), /build-hook@1/));
 console.log(`check-build-hook: ${n} checks passed`);

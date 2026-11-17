@@ -7,6 +7,10 @@ button.oc-model { cursor: pointer }
 .oc-badge.is-queued { color: var(--fx-info) }
 .oc-badge.is-waiting, .oc-badge.is-blocked { color: var(--fx-warning) }
 .oc-badge.is-archived { color: var(--fx-muted) }
+.oc-badge.is-fixing { color: var(--fx-warning) }
+.oc-badge.is-landing { color: var(--fx-accent) }
+.oc-badge.is-landed, .oc-badge.is-built, .oc-badge.is-complete { color: var(--fx-success) }
+.oc-badge.is-escalated, .oc-badge.is-failed { color: var(--fx-danger) }
 .oc-count { margin-left: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg); border-radius: var(--fx-radius-lg); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-accent); font-size: var(--fx-type-root-xs) }
 .oc-gate { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
 .oc-flag { font-size: var(--fx-type-root-xs); color: var(--fx-muted) }
@@ -67,3 +71,16 @@ button.oc-model { cursor: pointer }
 .og-dot.is-success::before { background: var(--fx-success) }
 .og-dot.is-warning::before { background: var(--fx-warning) }
 .og-dot.is-danger::before { background: var(--fx-danger) }
+
+/* Stale-row watchdog card (WatchdogPanel.tsx): layout only, every control is a framework control */
+.axp-build-orchestrator__wd { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.axp-build-orchestrator__wd-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.axp-build-orchestrator__wd-fields, .axp-build-orchestrator__wd-list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding-top: var(--fx-dens-gap-lg) }
+.axp-build-orchestrator__wd-inline { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.axp-build-orchestrator__wd-muted { color: var(--fx-muted); font-size: var(--fx-type-root-sm) }
+.axp-build-orchestrator__wd-err { color: var(--fx-danger); font-size: var(--fx-type-root-sm) }
+.axp-build-orchestrator__wd-rows { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); margin: 0; padding: 0; list-style: none; font-size: var(--fx-type-root-sm); overflow-wrap: anywhere }
+.axp-build-orchestrator__wd-rows > li { padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-left: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-orchestrator__wd-rows > li.is-done, .axp-build-orchestrator__wd-rows > li.is-complete { border-left-color: var(--fx-success) }
+.axp-build-orchestrator__wd-rows > li.is-remove { border-left-color: var(--fx-warning) }
+.axp-build-orchestrator__wd-rows > li.is-skipped { color: var(--fx-muted) }

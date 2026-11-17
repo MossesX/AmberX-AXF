@@ -117,10 +117,97 @@ publish (Nov 13 2026, main-ci-red-test-sandbox-profile-export).
 
 ## Versioning
 
-Every write: store `rev` + 1, changed records `rev` + 1, one line in `_claude/builds/journal/<YYYY-MM>.jsonl` with each
-changed build before and after (`diffStores`). At 80 MB a month rolls into `<YYYY-MM>-p2.jsonl`, `-p3`… (GitHub refuses a file
-over 100 MiB, which would stop every live status commit); a full part is never rewritten and history reads them all. `builds-store.mjs history <id>` lists revisions, `restore <id> <rev>` puts
+Every write: store `rev` + 1, changed records `rev` + 1, one line in the journal (`<YYYY-MM>.jsonl`) with each
+changed build before and after (`diffStores`). At 80 MB a month rolls into `<YYYY-MM>-p2.jsonl`, `-p3`… (GitHub refused a file
+over 100 MiB while the journal was a repo file, which would have stopped every live status commit; the parts stay so a
+read never opens a multi-GB file); a full part is never rewritten and history reads them all. `builds-store.mjs history <id>` lists revisions, `restore <id> <rev>` puts
 a build back (itself a journalled write). Removals are soft; a record missing from a written state is put back deleted.
+Where the journal files live: *Journal home* below.
+
+## Journal home (builds-journal@1)
+
+Status: designed Nov 17 2026 (build `stop-auto-lander-committing-tracking` s1, Fable); implemented by its steps s8–s10.
+Until they land the journal is the repo folder `_claude/builds/journal/` (911 MiB, 13 parts, committed, rewritten by every
+live status commit and dragged into build branches by the auto-lander). After them it is **shared data on the hub**, and
+the repo carries a pointer with checksums. Operator notes and the migration order: `_claude/builds/README.md` → *The
+journal leaves git*. No Python or Kotlin twin: one writer (the CLI), build tooling only.
+
+### Home
+
+| Setting | Journal folder | Mode |
+|---|---|---|
+| `AXF_BUILDS_STORE=<file>` | `<file minus .json>.journal/` | test (unchanged) |
+| `AXF_BUILDS_JOURNAL=<dir>` | that folder (`off` = spool) | explicit |
+| `persistRoot()` non-null (`/projects` mounted or `AXF_DATA_DIR`) | `<root>/builds/journal/` → `/projects/amberx-axf/_data/builds/journal/` | **hub** |
+| otherwise | `<repo>/_claude/builds/journal/` (git-ignored) | **spool** |
+
+`journalDir()` in `framework/cli/builds-store.mjs` is the one resolver; every reader and writer (`journal()`, `journalOf`,
+`restoreBuild`, `verify`, `build-hooks.mjs journalEvents`, `builds-live.mjs`) goes through it. File names, the 80 MiB
+`journalPart` roll-over and the line format do not change. Appends take `<journal dir>/.lock` (mkdir-style `lock()`, 30 s
+stale), shared by every checkout on the machine, and a new file takes the folder's owner and mode (`writeKeepingOwner`).
+
+### Pointer: `_claude/builds/journal.json`
+
+```
+{ $axf: 'builds-journal@1', home: 'hub' | 'repo', dir: 'builds/journal', updatedAt, storeRev,
+  parts: { '<YYYY-MM>[-pN]': { bytes, lines, sha256, sealed, firstAt, lastAt } } }
+```
+
+- `home: 'repo'` (or no pointer) = pre-migration: parts are repo files. `home: 'hub'` = the contract above.
+- **Sealed part**: `journalPart` has moved past it, or its month is over. Never appended again; `bytes`, `lines`,
+  `sha256` are exact and final.
+- **Open part**: the entry is a floor as of `updatedAt`: the file is at least `bytes` long, has at least `lines` lines,
+  and the first `bytes` bytes hash to `sha256` (sound because the file is append-only under the lock).
+- Written by the live publisher (`builds-live.mjs publish`) in the same status-only commit as the store, from the hub
+  files it can see; it re-hashes only a part whose size changed since the last publish (cached in `store.json.live.json`).
+  A checkout in spool mode never writes it.
+- Merge: `axf-builds` driver, per part key: union of keys, the entry with the higher `lastAt` wins (a sealed entry beats
+  an open one for the same key). In `BUILDS_PATHS`, the lander's `BUILDS` class and the tracking-paths list.
+
+### Reads
+
+- `history <id>` / `restore <id> <rev>` / `journalOf`: every part in the home, newest first, plus spool lines not yet drained.
+  Spool mode says so in the output (`journal home not reachable: N local line(s) only`); `restore` refuses a revision it
+  cannot see rather than guessing.
+- `verify`: besides the store checks, with `home: 'hub'`: every pointer part exists; sealed parts hash exactly; the open
+  part meets its floor; every spool line is present on the hub. Hub not mounted → `journal: not checked (hub not mounted)`
+  as a warning (exit 0). A sealed part that fails its hash is a failure (exit 1) and a systems check item.
+- `check-builds-store.mjs` and `check-builds-live.mjs` run on a test store (`AXF_BUILDS_STORE`), so CI needs no hub and no
+  70 MiB files; `check-builds-live` asserts the status commit carries `journal.json` and **no** `journal/*.jsonl`.
+
+### Writes
+
+- Hub mode: `journal()` appends to the hub part directly. The live publish no longer puts journal lines on main (the
+  `journalExtra` / `journalSizes` / per-part `files[rel]` path in `publish`, and the journal half of `pullFrom`,
+  `toConsole` and `syncAll`, go away); it refreshes the pointer instead.
+- Spool mode: `journal()` appends to the spool. The live flush drains the spool through the console API
+  (`POST /journal/append` on the build-orchestrator plugin, plugin-commands@1 → REST, MCP `journal-append`, CLI
+  `axf build-orchestrator journal-append`, voice), which appends on the hub under the lock and returns the part key;
+  lines leave the spool only after the hub took them (direct or API). Unreachable = they wait like the live outbox;
+  `builds-live.mjs status` reports `journal spool: N line(s)`, and *Builds reach main live* turns amber after 15 min.
+- The same plugin exposes `GET /journal/history/{id}`, `GET /journal/verify`, `POST /journal/restore` so every journal
+  action works from the console, MCP, CLI and voice without a checkout (API parity rule, Nov 8 2026).
+- A build worktree never stages the spool or the pointer on its branch: the spool is git-ignored and the pointer is
+  written only by the publisher's private index onto main.
+
+### Migration (once, VPS, `builds-store.mjs journal migrate --dry | --apply`)
+
+1. Per repo part: `mergeJournalText` union of the repo copy, any hub `_data` copy and the stale claude-sync copy at
+   `/projects/amberx-axf/_claude/builds/journal/` → written to the hub home.
+2. Seal full and past-month parts, hash all, write the pointer, run `verify` (every repo line must be on the hub).
+3. `git rm --cached` the parts; `_claude/builds/journal/` into `.gitignore`; `.gitattributes` swaps the `journal/*.jsonl`
+   line for `journal.json`; one commit on the build branch. `md-studio` keeps skipping the folder.
+4. Prune the stale hub `_claude/builds/journal` copy (hub delete = axHub veto call with a reason) and keep claude-sync from
+   carrying the spool there.
+5. `--apply` refuses to run when the pointer already says `home: 'hub'`; `--dry` writes nothing.
+
+### Deferred
+
+- Git history still carries the 911 MiB; a rewrite needs a force push and a re-clone of every checkout and worktree, so
+  it is Brett's call (Pending item `shrink-git-history-drop-old-builds`).
+- `history <id>` scans every part; a per-build index (`<journal dir>/index/<id>.jsonl`, rebuildable from the parts) is
+  the next step when reads get slow.
+- A `builds-journal@1` JSON Schema under `schemas/json/` (the pointer validator in builds-store is the contract today).
 
 ## Steps view ops (draft until Apply)
 

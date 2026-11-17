@@ -61,7 +61,7 @@ t('deny-upgrade needs Brett too', () => {
   assert.equal(c.apply(x, { action: 'deny-upgrade', id: 'u', phase: 1, approver: BRETT }).state.builds[0].upgradeRequests[0].state, 'denied');
 });
 s = c.apply(s, { action: 'step', id: 'demo-build', step: 's4' }).state;
-t('all done → complete with builtAt', () => { assert.equal(b().status, 'complete'); assert.ok(b().builtAt); });
+t('all done → landing with builtAt (done-means-merged@1: landed once merged, complete once verified)', () => { assert.equal(b().status, 'landing'); assert.ok(b().builtAt); });
 t('estimates', () => { assert.equal(c.estimateMinutes('2 h'), 120); assert.equal(c.estimateMinutes('1.5 d'), 720); assert.equal(c.estimateMinutes('x'), null); });
 t('10-minute steps: a ceiling the rule can lower, never raise; older steps keep 30', () => {
   assert.equal(c.DEFAULT_RULES.maxStepMinutes, 10); assert.equal(c.maxStep({ maxStepMinutes: 30 }), 10); assert.equal(c.maxStep({ maxStepMinutes: 5 }), 5); assert.equal(c.maxStep({}), 10);
@@ -125,7 +125,7 @@ t('CLI: a session can ask for an upgrade (axHub confirm call) but not approve it
   assert.equal(c.nextUp(b2).needsApproval, true);
 });
 t('every change shows on Pending builds at once (one store, no sync)', () => { const it = loadPending().items.find((x) => x.id === 'cli'); assert.ok(it); assert.equal(it.status, 'complete'); assert.equal(it.subPrompts[0].text, '[Opus] one'); assert.equal(it.subPrompts[0].done, true); });
-t('CLI saves the store (versioned)', () => { const f = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.equal(f.$axf, 'builds@1'); assert.ok(f.rev >= 2); assert.equal(f.builds.find((b) => b.id === 'cli').status, 'complete'); });
+t('CLI saves the store (versioned)', () => { const f = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.equal(f.$axf, 'builds@1'); assert.ok(f.rev >= 2); assert.equal(f.builds.find((b) => b.id === 'cli').status, 'landing'); }); // done-means-merged@1: every step done = landing until merged
 // the orchestrator's own builds in the real store keep the small-steps rule (Pending-only items are warned about by pending.mjs --check-steps)
 const store = JSON.parse(readFileSync(new URL('../../../../_claude/builds/store.json', import.meta.url), 'utf8'));
 // same scope as before the store: the Main framework orchestrator's builds, plus builds added through the orchestrator since

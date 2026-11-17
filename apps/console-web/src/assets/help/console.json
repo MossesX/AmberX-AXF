@@ -1045,6 +1045,25 @@
         "title": "What to search",
         "kind": "tab",
         "text": "Narrows the hits: everything, screens and tabs, settings, buttons, plugins, or the rows and steps loaded right now."
+      },
+      {
+        "target": "settings-gear",
+        "title": "Settings gear",
+        "text": "Every plugin screen has this gear at the right end of the row above it. It opens that plugin's own tab in Settings → Plugins, where its options, on/off switch, logs and info are.",
+        "tryIt": "Tap the gear, or say \"open <plugin> settings\" to AmberX.",
+        "kind": "control"
+      },
+      {
+        "target": "plugin-default-settings",
+        "title": "About this plugin",
+        "text": "The standard panel every plugin's settings tab can carry: switch the plugin on or off, its version and the model that built it, what it needs and who needs it, and its latest log lines.",
+        "kind": "control"
+      },
+      {
+        "target": "open-in-plugin-manager",
+        "title": "Open in Plugin Manager",
+        "text": "Opens this plugin in the Plugin Manager: its full details, dependencies, files and every log line.",
+        "kind": "button"
       }
     ],
     "intros": [

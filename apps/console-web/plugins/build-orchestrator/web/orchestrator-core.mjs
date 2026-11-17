@@ -20,10 +20,10 @@ export const MODELS = ['Fable', 'Opus'];
  * `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR).
  * `queued` (Nov 8 2026) = in the Queue: Brett moved it from Pending, the dispatcher starts it when a slot is free.
  */
-export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
-export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
-/** Finished work: no steps left (built waits only on its PR). */
-export const isFinished = (status) => status === 'built' || status === 'complete';
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Building', waiting: 'Needs approval', fixing: 'Fixing', blocked: 'Blocked', failed: 'Failed', built: 'Landed (legacy)', landing: 'Landing', landed: 'Landed · merged, CI green', complete: 'Complete · verified', escalated: 'Escalated', archived: 'Archived' };
+/** Finished work: no steps left (landing waits only on its PR; done-means-merged@1). */
+export const isFinished = (status) => status === 'built' || status === 'landing' || status === 'landed' || status === 'complete';
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
@@ -254,11 +254,11 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
 
 /** Status the build should show, from its steps (explicit blocked/failed/archived stay). */
 export function derivedStatus(build, rules) {
-  if (['blocked', 'failed', 'archived'].includes(build.status)) return build.status;
+  if (['blocked', 'failed', 'archived', 'fixing', 'escalated', 'landed', 'complete'].includes(build.status)) return build.status; // done-means-merged@1: set with their records, never from the steps
   if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
-  if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.pr && !build.mergedAt ? 'built' : 'complete'; // built without ticking its steps
+  if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.mergedAt ? 'landed' : 'landing'; // built without ticking its steps
   const n = nextUp(build, rules);
-  if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
+  if (n.done) return build.mergedAt ? 'landed' : 'landing';
   if (n.needsApproval) return 'waiting';
   if (build.status === 'queued') return build.steps.some((s) => s.done) ? 'running' : 'queued'; // the Queue holds until a session ticks a step
   return build.steps.some((s) => s.done) || build.status === 'running' ? 'running' : 'pending';

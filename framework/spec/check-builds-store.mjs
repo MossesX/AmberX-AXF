@@ -5,6 +5,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import * as c from '../plan/builds-store-core.mjs';
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -238,7 +240,7 @@ t('a step is ticked at once from the Builds page (never drafted), and the build 
   let b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, false); assert.equal(b.status, 'running');
   assert.equal(orchView().builds.find((x) => x.id === 'from-cli').steps[0].done, false);
   io.withStore((s) => c.applyNow(s, 'all', [{ op: 'step-done', build: 'from-cli', uid: uid(), done: true }]).store, { by: 'test', action: 'tick' });
-  b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, true); assert.equal(b.status, 'complete'); assert.ok(b.steps[0].doneAt);
+  b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, true); assert.equal(b.status, 'landing'); assert.ok(b.steps[0].doneAt); // done-means-merged@1: every step done = landing until merged
   assert.throws(() => c.addDraftOp(io.loadStore(), 'all', { op: 'step-done', build: 'from-cli', uid: uid() }), /unknown draft op/);
   assert.throws(() => c.applyNow(io.loadStore(), 'all', [{ op: 'step-done', build: 'from-cli', uid: 'nope' }]), /no step/);
 });
@@ -252,5 +254,38 @@ t('every write is versioned in the journal and can be restored', () => {
 io.withStore((s) => c.addDraftOp(s, 'all', { op: 'rename-build', id: 'shared', title: 'Draft name' }), { by: 'test', action: 'draft' });
 t('draft survives a reload, Apply writes it', () => { assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 1); io.applyDraftNow('all', 'test'); assert.equal(io.loadStore().builds.find((x) => x.id === 'shared').title, 'Draft name'); assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 0); });
 t('the store on disk leaves out an unchanged default breakdown', () => { const raw = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.ok(raw.builds.some((b) => !('defaultSteps' in b))); });
+
+// builds-journal@1: the real journal lives on the hub, so CI reads the fixture journal (framework/spec/fixtures-journal)
+// through AXF_BUILDS_JOURNAL in a child process (this one is pinned to a test store); no 70 MB part is needed
+t('history reads the journal home (fixture journal through AXF_BUILDS_JOURNAL)', () => {
+  const env = { ...process.env, AXF_BUILDS_JOURNAL: fileURLToPath(new URL('./fixtures-journal', import.meta.url)), AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0' };
+  delete env.AXF_BUILDS_STORE;
+  const code = `const io = await import(${JSON.stringify(new URL('../cli/builds-store.mjs', import.meta.url).href)}); console.log(JSON.stringify({ mode: io.journalMode(), dir: io.journalDir(), h: io.journalOf('journal-fixture').map((x) => x.rev) }));`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { env, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const o = JSON.parse(r.stdout.trim().split('\n').pop());
+  assert.equal(o.mode, 'explicit'); assert.ok(o.dir.endsWith('fixtures-journal')); assert.deepEqual(o.h, [1, 2]);
+});
+
+// builds-journal@1 relocation: a write goes to the journal home (here an explicit folder; the hub's <data root>/builds/journal
+// works the same), never the repo; history reads it back; the pointer and verify see a changed sealed part
+t('a journal write lands in the home, history reads it back, verify catches a changed sealed part', () => {
+  const home = mkdtempSync(join(tmpdir(), 'axf-journal-home-')); const data = mkdtempSync(join(tmpdir(), 'axf-journal-data-'));
+  const env = { ...process.env, AXF_BUILDS_JOURNAL: home, AXF_DATA_DIR: data, AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0' };
+  delete env.AXF_BUILDS_STORE;
+  const mod = JSON.stringify(new URL('../cli/builds-store.mjs', import.meta.url).href);
+  const code = `const io = await import(${mod}); const c = await import(${JSON.stringify(new URL('../plan/builds-store-core.mjs', import.meta.url).href)});
+    io.withStore((s) => { s.builds.push(c.normBuild({ id: 'journal-move', title: 'Journal move', profile: 'all', steps: [{ id: 's1', title: 'one' }] })); return s; }, { by: 'test', action: 'write' });
+    const fs = await import('node:fs'); const files = fs.readdirSync(io.journalDir()).filter((f) => f.endsWith('.jsonl'));
+    const p = io.journalPointer(io.journalDir()); const ok = io.verifyJournal(p, io.journalDir()).ok;
+    const k = Object.keys(p.parts)[0]; const sealed = { ...p, parts: { [k]: { ...p.parts[k], sealed: true, sha256: 'x' } } };
+    console.log(JSON.stringify({ mode: io.journalMode(), dir: io.journalDir(), files, h: io.journalOf('journal-move').length, ok, bad: io.verifyJournal(sealed, io.journalDir()).failed.length }));`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { env, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const o = JSON.parse(r.stdout.trim().split('\n').pop());
+  assert.equal(o.mode, 'explicit'); assert.equal(o.dir, home); assert.ok(o.files.length === 1, `files ${o.files}`);
+  assert.equal(o.h, 1); assert.equal(o.ok, true); assert.equal(o.bad, 1);
+  assert.ok(readdirSync(join(data, '_claude/builds')).every((f) => f !== 'journal'), 'nothing journalled next to the store');
+});
 
 console.log(`builds-store: ${n} checks passed`);

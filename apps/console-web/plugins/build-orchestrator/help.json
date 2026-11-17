@@ -263,6 +263,25 @@
         "kind": "button"
       },
       {
+        "target": "back-to-queue",
+        "title": "Back to Queue",
+        "text": "This build finished its phase but was parked in Pending by mistake. Sends it back to the Queue (the same as Queue) so its next phase starts when a slot and an account for its model are free.",
+        "kind": "button"
+      },
+      {
+        "target": "action:build-orchestrator.requeue-stuck",
+        "title": "Requeue builds stuck after a phase",
+        "text": "Lists Pending builds whose last session finished its phase with steps left. Add :apply to move them back to the Queue so their next phase starts.",
+        "kind": "menu"
+      },
+      {
+        "target": "view:build-orchestrator",
+        "title": "Build orchestrator",
+        "text": "Breaks every build into small steps (10 min or less; checkpoints inside one session, each committed and ticked as it finishes), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Bret",
+        "kind": "screen",
+        "draft": true
+      },
+      {
         "target": "action:build-orchestrator.tab:groups",
         "title": "Groups",
         "text": "Your own groups of builds (Console app, UI, Urgent…): each sorted by state from partial to landed with a count per state. Drag Pending builds in, or pick them and tap Add to group.",

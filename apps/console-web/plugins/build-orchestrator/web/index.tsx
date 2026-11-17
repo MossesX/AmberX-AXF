@@ -7,7 +7,10 @@ import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { SPLIT_SECTION_ID, SplitSettings } from './split-settings';
 import { focusBuild } from './focus';
+import { showAttempts } from './attempts';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
+import { registerWatchdogActions } from './watchdogActions';
+import { WatchdogPanel, registerWatchdogTargets } from './WatchdogPanel';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
 const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
@@ -65,6 +68,8 @@ export const plugin: AxfWebLibrary = {
       try { const b = (await loadRows(true)).find((x) => x.id === id); openTab(b?.tab || 'builds'); if (!b) rt.toast(`No open build "${id}" in the tabs: showing All builds.`, 'warning'); }
       catch { openTab('builds'); }
     };
+    registerWatchdogActions(rt);
+    registerWatchdogTargets(rt);
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
@@ -97,6 +102,17 @@ export const plugin: AxfWebLibrary = {
         .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} is in the Queue: the dispatcher starts it when its turn comes.`, 'success'); void open('queue'); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Start a build (put it in the Queue)' });
+    rt.actions.register('build-orchestrator.requeue-stuck', ([arg]) => {
+      const apply = decodeURIComponent(arg ?? '') === 'apply';
+      void pipeApi.post<{ ok: boolean; error?: string; found?: { id: string }[]; moved?: string[] }>('pipeline/requeue-stuck', { apply })
+        .then((r) => {
+          if (!r.ok) throw new Error(r.error);
+          const found = r.found?.length ?? 0;
+          rt.toast(apply ? `${r.moved?.length ?? 0} build(s) back in the Queue: their next phase starts when a slot frees.` : found ? `${found} build(s) parked after a finished phase: build-orchestrator.requeue-stuck:apply moves them.` : 'No build is parked after a finished phase.', found || apply ? 'success' : 'info');
+          void open(apply ? 'queue' : 'pending');
+        })
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: requeue builds parked in Pending after a finished phase (":apply" moves them)', params: true });
     for (const action of BUILD_ACTIONS) {
       rt.actions.register(`build-orchestrator.${action}`, ([arg]) => {
         const ids = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);
@@ -113,12 +129,29 @@ export const plugin: AxfWebLibrary = {
           .catch((e: Error) => rt.toast(e.message, 'danger'));
       }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
     }
+    // done-means-merged@1: a build's Attempts tab (deep link row:<build>/tab:attempts) and Retry, the same calls as
+    // REST GET attempts/<id> + POST retry/<id>, the MCP commands attempts / retry and orchestrator.mjs attempts | retry.
+    // Voice: "what's wrong with <build>", "why did <build> stop" → attempts; "retry <build> [in a fresh session]" → retry.
+    const attempts = (arg = '') => { let id = ''; try { id = decodeURIComponent(arg).trim(); } catch { id = arg.trim(); } if (!id) { void open('errors'); return; } showAttempts(id); void open(id); };
+    rt.actions.register('build-orchestrator.attempts', ([arg]) => attempts(arg ?? ''), { label: "Build orchestrator: a build's attempts (what failed, every try, what is next)", params: true, effect: 'navigate' });
+    rt.actions.register('build-orchestrator.retry', ([arg]) => {
+      const [id = '', strategy = ''] = decodeURIComponent(arg ?? '').split('|').map((x) => x.trim());
+      if (!id) { rt.toast('Name a build: build-orchestrator.retry:<build>[|strategy]', 'warning'); return; }
+      void pipeApi.post<{ ok: boolean; error?: string; status?: string }>(`retry/${encodeURIComponent(id)}`, strategy ? { strategy } : {})
+        .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id}: retrying${strategy ? ` (${strategy})` : ''}. The ladder starts over.`, 'success'); attempts(id); })
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: retry a build (<build>|strategy: retry, fix:targeted, fresh-session, switch-model, switch-account …)', params: true });
     // console-control@1: every loaded build is a search hit with its address (row:<id>, the orchestrator grid's row);
     // focusing one that is not drawn opens its tab and expands it first, so row:<id>/step:s3 reaches its step too
-    addLoadedSource('build-orchestrator.builds', () => { if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined); return rows.map((r) => ({
+    addLoadedSource('build-orchestrator.builds', () => { if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
+      // the attempts address first: loadedItemFor takes the first item an address starts with
+      return [...rows.map((r) => ({
+      address: `row:${r.id}/tab:attempts`, kind: 'tab' as const, label: `${r.title}: attempts`, icon: 'refresh', detail: `Build attempts · ${r.status}`, keywords: [r.id, 'attempts', 'retry', 'failed', r.status].filter(Boolean),
+      open: () => rt.dispatch(`build-orchestrator.attempts:${encodeURIComponent(r.id)}`),
+    })), ...rows.map((r) => ({
       address: `row:${r.id}`, kind: 'row' as const, label: r.title, icon: 'layers', detail: `Build · ${TAB_NAME[r.tab] ?? r.status}`, keywords: [r.id, r.status, r.tab, r.nextModel].filter(Boolean),
       open: () => rt.dispatch(`build-orchestrator.focus:${encodeURIComponent(r.id)}`),
-    })); });
+    }))]; });
     rt.search.add('build-orchestrator.builds', () => {
       if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
       return rows.map((r) => ({
@@ -144,6 +177,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
   settingsPanels: [
     { id: 'build-orchestrator.split', tab: 'build-orchestrator', title: 'Split', icon: 'layers', order: 10, render: () => <SplitSettings api={pipeApi} open /> },
+    { id: 'build-orchestrator.watchdog', tab: 'build-orchestrator', title: 'Watchdog', icon: 'shield', order: 20, render: () => <WatchdogPanel /> },
     { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

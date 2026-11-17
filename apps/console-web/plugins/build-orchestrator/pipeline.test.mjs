@@ -14,6 +14,9 @@ import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-g
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
+import * as RL from '../../../../framework/core/retry-ladder.mjs';
+import * as SC from '../../../../framework/plan/builds-store-core.mjs';
+import { verifyPlan } from './verify.mjs';
 process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -136,16 +139,45 @@ t('plan: an unapproved upgrade phase waits for Brett', () => {
 // ---------------- session end
 t('endOutcome: finished → built with a PR, complete without; crash requeues; clean stop returns to Pending; failed after maxRuns', () => {
   const done = build('d', 'running', [step('s1', 'Opus', true)], { pipeline: { runs: 1, account: 'w-pro', session: 'axf-d' } });
-  assert.equal(P.endOutcome(done, { exit: 0 }).status, 'complete');
-  assert.equal(P.endOutcome({ ...done, pr: '12' }, { exit: 0 }).status, 'built');
+  // done-means-merged@1: every step done = landing (with or without a PR), landed once merged; never built or complete here
+  assert.equal(P.endOutcome(done, { exit: 0 }).status, 'landing');
+  assert.equal(P.endOutcome({ ...done, pr: '12' }, { exit: 0 }).status, 'landing');
+  assert.equal(P.endOutcome({ ...done, pr: '12', mergedAt: '2026-11-17T00:00:00.000Z' }, { exit: 0 }).status, 'landed');
   const crashed = P.endOutcome(build('c', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, account: 'w-pro' } }), { exit: 1 });
   assert.equal(crashed.status, 'queued'); assert.match(crashed.note, /back in the Queue/);
   const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus' } }), { exit: 0 });
   assert.equal(stopped.status, 'pending'); assert.match(stopped.note, /back in Pending for Brett/);
   const phase = P.endOutcome(build('p', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1, model: 'Fable' } }), { exit: 0 });
-  assert.equal(phase.status, 'queued', 'Fable phase done, Opus phase next: back in the Queue for an Opus account');
+  assert.equal(phase.status, 'queued', 'Fable phase done, Opus phase next: back in the Queue for an Opus account'); assert.equal(phase.reason, 'phase-done');
   const dead = P.endOutcome(build('f', 'running', [step('s1', 'Opus')], { pipeline: { runs: 3 } }), { exit: 137 });
-  assert.equal(dead.status, 'failed'); assert.match(dead.note, /failed/);
+  assert.equal(dead.status, 'pending', 'the crash limit: back in Pending for Brett'); assert.equal(dead.reason, 'crash-limit'); assert.match(dead.note, /crash limit/); assert.equal(BP.tabOf({ ...build('f', 'pending', [step('s1', 'Opus')]), pipeline: { lastRun: dead.run } }), 'errors');
+});
+t('endOutcome: a phase done with steps left goes back to the Queue whatever the models (same model, no model on the record, same model with a new label)', () => {
+  const ph = (id, phase, model, done = false) => ({ ...step(id, model, done), phase });
+  // B: Opus "Phase 1" → Opus "Phase 2"
+  const sameModel = P.endOutcome(build('b', 'running', [ph('s1', 'Phase 1', 'Opus', true), ph('s2', 'Phase 2', 'Opus')], { pipeline: { runs: 1, model: 'Opus', phase: 'Phase 1', launchedAt: '2026-11-08T00:30:00.000Z' } }), { exit: 0 });
+  assert.deepEqual([sameModel.status, sameModel.reason, sameModel.run.phase], ['queued', 'phase-done', 'Phase 1']); assert.match(sameModel.note, /finished phase Phase 1 .*back in the Queue at its place/);
+  // C: Fable → Opus with no model and no phase on the record (a run from before the dispatcher stored them)
+  const bare = P.endOutcome(build('c', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1 } }), { exit: 0 });
+  assert.deepEqual([bare.status, bare.reason], ['queued', 'phase-done']);
+  // D: Fable "Schema" → Fable "Engine"
+  const relabel = P.endOutcome(build('d', 'running', [ph('s1', 'Schema', 'Fable', true), ph('s2', 'Engine', 'Fable')], { pipeline: { runs: 1, model: 'Fable', phase: 'Schema' } }), { exit: 0 });
+  assert.deepEqual([relabel.status, relabel.reason], ['queued', 'phase-done']);
+  // the phase it was launched for is still open: a stop mid-phase, Pending (never a relaunch loop on a session that ticked nothing)
+  const idle = P.endOutcome(build('i', 'running', [ph('s1', 'Phase 1', 'Opus', true), ph('s2', 'Phase 2', 'Opus'), ph('s3', 'Phase 2', 'Opus')], { pipeline: { runs: 2, model: 'Opus', phase: 'Phase 2', launchedAt: '2026-11-08T02:00:00.000Z' } }), { exit: 0 });
+  assert.deepEqual([idle.status, idle.reason], ['pending', 'stopped']);
+  // a phase end never counts as a crash; the patch keeps the queue position
+  const crashedBefore = P.endOutcome(build('k', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 3, crashes: 2, model: 'Fable', queuedAt: now } }), { exit: 0 });
+  assert.deepEqual([crashedBefore.status, crashedBefore.crashes, crashedBefore.keepQueue, 'queuedAt' in crashedBefore.patch], ['queued', 2, true, false]);
+  // Opus → Fable with "Fable upgrades need my approval" on and no approval: Pending; off: the Queue
+  const up = build('u', 'running', [step('s1', 'Opus', true), step('s2', 'Fable')], { pipeline: { runs: 1, model: 'Opus', phase: 'Phase 1' } });
+  setUpgradePolicy({ approvalRequired: true, source: 'test' });
+  const blocked = P.endOutcome(up, { exit: 0 }); assert.deepEqual([blocked.status, blocked.reason], ['pending', 'upgrade-blocked']); assert.match(blocked.note, /needs Brett's approval/);
+  const approved = P.endOutcome({ ...up, approvals: [{ phase: 1, from: 'Opus', to: 'Fable', at: now, by: 'brett' }] }, { exit: 0 }); assert.deepEqual([approved.status, approved.reason], ['queued', 'phase-done']);
+  setUpgradePolicy({ approvalRequired: false, source: 'test' });
+  const auto = P.endOutcome(up, { exit: 0 }); assert.deepEqual([auto.status, auto.reason], ['queued', 'phase-done']);
+  // the session said it needs Brett (a build left waiting): Pending even with its phase done
+  assert.deepEqual([P.endOutcome({ ...up, status: 'waiting' }, { exit: 0 }).reason, P.endOutcome(up, { exit: 0, needsBrett: true }).status], ['needs-brett', 'pending']);
 });
 
 // ---------------- split
@@ -416,8 +448,8 @@ t('actions: Queue → back to Pending / hold / archive / delete; live builds are
   assert.deepEqual(BP.actionsFor(build('r', 'running', [])), []); assert.deepEqual(BP.actionsFor(build('w', 'waiting', [])), []);
   assert.deepEqual(BP.actionsFor(build('a', 'archived', [])), ['unarchive', 'delete']);
   assert.deepEqual(BP.actionsFor(build('d', 'pending', [], { deleted: true })), ['restore']);
-  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)])), 'built');
-  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)], { mergedAt: now })), 'complete');
+  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)])), 'landing');
+  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)], { mergedAt: now })), 'landed');
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus')])), 'pending');
 });
 t('one build account: only it takes builds, whatever its role; every other one (API too) is off, overflow included', () => {
@@ -491,6 +523,100 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
   assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: null }).why, /not dispatched by the orchestrator/);
   assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: { ...rec, hash: 'f'.repeat(64) } }).why, /not alpha's/);
 });
+
+// ---------------- done-means-merged@1: a dispatcher tick simulation (detector → ladder → relaunch), with its own clock
+{
+  const T0 = Date.parse('2026-11-17T01:00:00Z');
+  const iso = (min) => new Date(T0 + min * 60e3).toISOString();
+  const accounts = ['w-max', 'w-two'];
+  /** One tick at minute `min`: classify, record, ask the ladder; a launch opens an attempt on the account / model it picked. */
+  const tick = (b, min, ctx = {}) => {
+    const now = T0 + min * 60e3; const at = iso(min);
+    const f = P.classifyFailure(b, { now, ...ctx });
+    if (f) P.recordFailure(b, f, { at });
+    if (b.status !== 'fixing') return { f, d: null };
+    const fail = BP.normFailure(b.failure);
+    if (P.landerOwns(b, fail, ctx.land ?? null, { now })) return { f, d: null, lander: true };
+    const d = RL.nextStrategy(b.attempts, fail, {}, { at, pinnedModel: 'Fable', model: b.pipeline.model, account: b.pipeline.account, accounts });
+    if (d.escalate) { b.status = 'escalated'; b.escalation = RL.escalationOf(b.attempts, fail, { at, head: fail.head }); return { f, d }; }
+    if (d.inFlight || (d.notBefore && Date.parse(d.notBefore) > now)) return { f, d, wait: true };
+    const model = d.model || b.pipeline.model; const account = d.account || b.pipeline.account;
+    b.attempts = BP.normAttempts([...b.attempts, P.attemptOf(d, fail, { at, account, model, session: `axf-${b.id}--a${b.attempts.length + 1}` })]);
+    b.pipeline = { ...b.pipeline, model, account, session: `axf-${b.id}--a${b.attempts.length}`, launchedAt: at };
+    return { f, d };
+  };
+  const fresh = () => ({ id: 'sim', title: 'Sim', status: 'running', branch: 'claude/sim', pr: '', steps: [{ id: 's1', done: true }, { id: 's2', model: 'Fable' }], attempts: [], notes: [], pipeline: { model: 'Fable', account: 'w-max', session: 'axf-sim--fake', launchedAt: iso(0) }, updatedAt: iso(0) });
+
+  t('done-means-merged sim: a crash is retried the same way once, then a fresh session, then on another account', () => {
+    const b = fresh();
+    let r = tick(b, 1, { ended: { reason: 'crash', exit: 1 } });
+    assert.equal(r.f.kind, 'crash'); assert.equal(b.status, 'fixing'); assert.equal(r.d.strategy, 'retry');
+    assert.deepEqual(b.attempts.map((a) => [a.n, a.kind, a.strategy, a.result]), [[1, 'crash', 'retry', 'started']]);
+    assert.match(P.retryAddendum(r.d, b.failure, b.attempts), /## Retry: attempt 1[\s\S]*the session crashed/);
+    r = tick(b, 3, { ended: { reason: 'crash', exit: 1 } });
+    assert.equal(b.attempts[0].result, 'failed', 'the run that failed again closes its attempt');
+    // backoff after the first failure (2 min from its end at minute 3): a wait, nothing launched
+    assert.ok(r.wait && r.d.strategy === 'fresh-session' && r.d.notBefore === iso(5), JSON.stringify(r.d));
+    r = tick(b, 6);
+    assert.equal(r.d.strategy, 'fresh-session'); assert.equal(b.attempts.at(-1).result, 'started');
+    r = tick(b, 7, { ended: { reason: 'crash', exit: 1 } });
+    r = tick(b, 12);
+    assert.equal(r.d.strategy, 'switch-account'); assert.equal(b.attempts.at(-1).account, 'w-two', 'another account');
+    assert.equal(new Set(b.attempts.map((a) => RL.rungOf(a))).size, b.attempts.length, 'every attempt a different strategy');
+  });
+
+  t('done-means-merged sim: crash, then red CI on the PR (the lander first), then a different strategy, then escalation', () => {
+    const b = fresh();
+    tick(b, 1, { ended: { reason: 'crash', exit: 1 } });
+    // the retry run gets the phase done: the attempt closes ok, the failure clears, every step done, a PR opens
+    b.attempts[0].result = 'ok'; b.attempts[0].endedAt = iso(4); b.failure = null; b.status = 'landing'; b.steps[1].done = true; b.pr = '#77'; b.builtAt = iso(4);
+    assert.equal(P.classifyFailure(b, { now: T0 + 5 * 60e3 }), null, 'landing with a PR is not a failure');
+    // red CI on the PR head: the lander's (it hands a fix agent); the build's ladder waits for it
+    const land = { id: 'sim', head: 'h1', state: 'blocked', reason: { kind: 'ci', text: 'sim: CI is red (android / check-theme).' } };
+    let r = tick(b, 6, { land });
+    assert.equal(b.failure.kind, 'ci-red'); assert.equal(b.failure.head, 'h1'); assert.ok(r.lander, 'the auto-lander owns red CI first');
+    b.attempts = BP.normAttempts([...b.attempts, { kind: 'ci-red', strategy: 'fix', fixStrategy: 'targeted', head: 'h1', pr: 77, startedAt: iso(6), result: 'started', source: 'auto-lander' }]);
+    r = tick(b, 8, { land });
+    assert.equal(r.f, null, 'the same failure (kind, head) is not raised twice');
+    // the lander's fix did not clear it: its attempt failed, the build's ladder takes over with a different strategy
+    b.attempts.at(-1).result = 'failed'; b.attempts.at(-1).endedAt = iso(20);
+    r = tick(b, 30, { land });
+    assert.ok(!r.lander); assert.notEqual(RL.rungOf(r.d), 'fix:targeted', 'never the strategy that already failed'); assert.equal(RL.rungOf(r.d), 'fix:regenerate');
+    // every later try fails too: the ladder walks on and escalates only when it runs out, after N different attempts
+    let min = 31; let guard = 0;
+    while (b.status === 'fixing' && guard++ < 20) {
+      const open = b.attempts.find((a) => a.result === 'started'); if (open) { open.result = 'failed'; open.endedAt = iso(min); }
+      min += 60; tick(b, min, { land });
+    }
+    assert.equal(b.status, 'escalated');
+    const tried = b.attempts.filter((a) => a.kind === 'ci-red').map((a) => RL.rungOf(a));
+    assert.equal(new Set(tried).size, tried.length, `every ci-red attempt a different strategy (${tried.join(', ')})`);
+    assert.ok(tried.length >= 3, 'at least three different tries before escalating');
+    assert.equal(b.escalation.kind, 'ci-red'); assert.ok(b.escalation.tried.length >= 3 && b.escalation.why.length > 10);
+    assert.equal(P.classifyFailure(b, { now: T0 + (min + 60) * 60e3, land }), null, 'an escalated build is not classified again (no second push)');
+    const a = P.alertFor('escalated', { id: 'sim', title: 'Sim', at: b.escalation.at, why: b.escalation.why, tried: b.escalation.tried });
+    assert.equal(a.key, `pipeline:escalated:sim:${b.escalation.at}`); assert.equal(a.severity, 'error'); assert.match(a.body, /Tried: /);
+  });
+
+  t('done-means-merged sim: the merged + green + verified path is the only way to complete', () => {
+    const at = iso(0);
+    const base = { id: 'ok', title: 'Ok', status: 'landing', branch: 'claude/ok', pr: '#9', profiles: ['all'], order: { all: 0 }, steps: [{ id: 's1', text: 'Run `node framework/spec/check-done-means-merged.mjs`', done: true }] };
+    const store = (b) => SC.normalizeStore({ $axf: 'builds@1', rev: 1, builds: [b] });
+    const step = (before, patch) => { const after = store({ ...before.builds[0], ...patch }); return SC.enforceDoneGuard(before, after, { at, by: 'sim' }); };
+    let s = store(base);
+    let r = step(s, { status: 'complete' });
+    assert.equal(r.store.builds[0].status, 'landing', 'complete straight from landing is refused'); assert.equal(r.refused[0].to, 'complete');
+    r = step(s, { status: 'landed', mergedAt: at });
+    assert.equal(r.store.builds[0].status, 'landing', 'merged but no CI on the merge commit: refused');
+    r = step(s, { status: 'landed', mergedAt: at, landed: { pr: 9, sha: 'm1', mergedAt: at, ci: 'success', ciAt: at } });
+    assert.equal(r.store.builds[0].status, 'landed', 'merged + CI green on the merge commit = landed'); s = r.store;
+    r = step(s, { status: 'complete' });
+    assert.equal(r.store.builds[0].status, 'landed', 'landed is not complete without the verify');
+    assert.deepEqual(verifyPlan(s.builds[0]).commands, ['node framework/spec/check-done-means-merged.mjs'], 'the verify comes from the step');
+    r = step(s, { status: 'complete', landed: { ...s.builds[0].landed, verifiedAt: at, verifyHow: 'check', verifyLog: 'ok' } });
+    assert.equal(r.store.builds[0].status, 'complete', 'merged + green + verified = complete'); assert.deepEqual(r.refused, []);
+  });
+}
 
 // ---------------- the CLI end to end (scratch store, fake accounts, fake launcher, fake splitter)
 const e2e = process.env.AXF_PIPELINE_TEST_E2E !== 'off' && existsSync(join(HERE, 'pipeline.mjs'));
@@ -594,26 +720,44 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(json(pipe('show', r.id, '--json')).build.status, 'queued');
     json(pipe('unqueue', r.id, '--json'));
   });
-  t('e2e session end: a crash requeues (run 2), a clean finish with every step done = complete', () => {
+  t('e2e session end: a crash is a failure the ladder retries (attempt 1, run 2), a clean finish with every step done = landing', () => {
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 1, at: new Date().toISOString() }) + '\n');
     let r = json(pipe('tick', '--json'));
     assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'requeued']]);
     assert.equal(find('alpha').pipeline.lastRun.exit, 1); assert.equal(find('alpha').pipeline.lastRun.outcome, 'requeued');
-    // the account it freed takes it again in the same tick: run 2
-    assert.deepEqual(r.launched.map((l) => l.id), ['alpha']); assert.equal(find('alpha').status, 'running'); assert.equal(find('alpha').pipeline.runs, 2);
-    assert.match(find('alpha').notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
+    // done-means-merged@1: the detector classifies the crash (status fixing) and the retry runner relaunches it in the same tick: run 2, attempt 1 = retry
+    assert.deepEqual(r.failures.map((x) => [x.id, x.failure.kind]), [['alpha', 'crash']]);
+    assert.deepEqual(r.retries.filter((x) => x.action === 'launched').map((x) => [x.id, x.strategy]), [['alpha', 'retry']]);
+    const a = find('alpha');
+    assert.equal(a.status, 'fixing'); assert.equal(a.pipeline.runs, 2); assert.equal(a.failure.kind, 'crash');
+    assert.deepEqual(a.attempts.map((x) => [x.n, x.kind, x.strategy, x.result]), [[1, 'crash', 'retry', 'started']]);
+    assert.match(readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'), /## Retry: attempt 1/);
+    assert.match(a.notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
+    assert.match(a.notes.map((x) => x.text).join('\n'), /Fixing: the session crashed/);
     // beta's session ticks its step and ends cleanly
     orch('act', 'step', 'beta', 's1', 'done');
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');
     r = json(pipe('tick', '--json'));
-    assert.ok(['complete', 'built'].includes(find('beta').status), find('beta').status);
+    assert.ok(['complete', 'built', 'landing', 'landed'].includes(find('beta').status), find('beta').status);
     assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
   });
-  t('e2e session end: a clean stop with steps left goes back to Pending for Brett', () => {
-    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 0, at: new Date().toISOString() }) + '\n');
-    const r = json(pipe('tick', '--json'));
+  t('e2e session end: a clean stop with steps left is fell-to-pending, retried; a session that asked Brett goes back to Pending', () => {
+    const end = (exit) => writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit, at: new Date(Date.now() + 1000).toISOString() }) + '\n');
+    end(0);
+    let r = json(pipe('tick', '--json'));
     assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
-    assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending/);
+    // done-means-merged@1: nobody asked Brett anything, so it is a failure the ladder answers, not a silent stop
+    assert.deepEqual(r.failures.map((x) => [x.id, x.failure.kind]), [['alpha', 'fell-to-pending']]);
+    let a = find('alpha');
+    assert.equal(a.status, 'fixing');
+    assert.deepEqual(a.attempts.map((x) => [x.kind, x.strategy, x.result]), [['crash', 'retry', 'failed'], ['fell-to-pending', 'retry', 'started']]);
+    // the retry run asks Brett (status waiting) and stops: a real wait, back in Pending, no retry
+    orch('act', 'status', 'alpha', 'waiting');
+    end(0);
+    r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
+    assert.deepEqual(r.failures, []);
+    assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending|needs Brett/);
   });
   t('e2e idle: nothing running with work in Pending raises the idle alert once, cleared when a build runs', () => {
     const st = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));
@@ -735,8 +879,12 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(json(pipe('tick', '--json')).launched.filter((l) => l.id === 'dup').length, 0, 'the next tick never launches it twice');
     // the session ends: the lock goes with it
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('dup').pipeline.session, name: 'dup', exit: 0, at: new Date().toISOString() }) + '\n');
-    json(pipe('tick', '--json'));
-    assert.ok(!existsSync(join(wtRoot, 'dup', '.axf-build.lock')), 'lock released at session end');
+    const rEnd = json(pipe('tick', '--json'));
+    // the old run's lock went with it; a clean stop with steps left is fell-to-pending, so the retry runner may have
+    // relaunched it in the same tick (done-means-merged@1): then the lock on file is the new run's, never the old one's
+    const relaunched = (rEnd.retries ?? []).some((x) => x.id === 'dup' && x.action === 'launched');
+    if (relaunched) assert.notEqual(JSON.parse(readFileSync(join(wtRoot, 'dup', '.axf-build.lock'), 'utf8')).beat, lk.beat, 'a fresh lock for the retry run');
+    else assert.ok(!existsSync(join(wtRoot, 'dup', '.axf-build.lock')), 'lock released at session end');
     if (find('dup').status === 'queued') json(pipe('unqueue', 'dup', '--json'));
   });
   t('e2e hold / release / archive / delete / restore, one and many at once (bulk select)', () => {
@@ -806,6 +954,104 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(json(pipe('parallel', filed.id, 'default', '--json')).parts, 0);
     assert.notEqual(pipe('parallel', 'omega', '3', '--expect-fail').status, 0, 'a lead keeps its parts');
     assert.notEqual(pipe('parallel', filed.id, '40', '--expect-fail').status, 0, 'out of range');
+  });
+}
+
+// ---------------- dispatcher integration: session exit → Queue → next phase (fake headless launcher, own sandbox)
+if (e2e) {
+  const tmp = mkdtempSync(join(tmpdir(), 'axf-pipeline-exit-'));
+  const storeFile = join(tmp, 'store.json');
+  const pipeDir = join(tmp, 'pipeline'); const slotsDir = join(tmp, 'slots'); const hdir = join(tmp, 'headless'); const accountsDir = join(tmp, 'accounts'); const workersDir = join(tmp, 'workers'); const wtRoot = join(tmp, 'worktrees');
+  for (const d of [pipeDir, slotsDir, hdir, accountsDir, workersDir, wtRoot]) mkdirSync(d, { recursive: true });
+  for (const name of ['console', 'w-max', 'w-pro']) { mkdirSync(join(accountsDir, name), { recursive: true }); writeFileSync(join(accountsDir, name, '.credentials.json'), '{}'); }
+  writeFileSync(join(accountsDir, '.active'), 'console\n');
+  writeFileSync(join(workersDir, 'seen.json'), JSON.stringify({ console: { email: 'c@x', plan: 'max' }, 'w-max': { email: 'max@x', plan: 'max' }, 'w-pro': { email: 'pro@x', plan: 'pro' } }));
+  writeFileSync(join(workersDir, 'workers.json'), JSON.stringify({ workers: ['w-max', 'w-pro'] }));
+  const launcher = join(tmp, 'launcher.sh');
+  writeFileSync(launcher, `#!/usr/bin/env bash
+set -e
+name=""; account=""; model=""
+while [[ $# -gt 0 ]]; do case "$1" in --name) name="$2"; shift 2;; --account) account="$2"; shift 2;; --model) model="$2"; shift 2;; --) shift;; *) shift;; esac; done
+n=$(( $(grep -c . "${tmp}/launches.log" 2>/dev/null || echo 0) + 1 ))
+echo "$name $account $model $AXF_BUILD_PHASE" >> "${tmp}/launches.log"
+echo "started axf-$name--r$n in $(pwd)"
+`); chmodSync(launcher, 0o755);
+  const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
+    AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
+    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: '/bin/false', AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0, maxRuns: 2, splitProvider: 'off' }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all',
+    AXF_PIPELINE_LOCK: join(tmp, 'pipeline.lock') };
+  mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
+  const run = (file, ...args) => { const r = spawnSync(process.execPath, [join(HERE, file), ...args], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0) throw new Error(`${file} ${args.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
+  const pipe = (...a) => run('pipeline.mjs', ...a);
+  const orch = (...a) => run('orchestrator.mjs', ...a);
+  const json = (r) => JSON.parse(r.stdout.trim().split('\n').pop());
+  const store = () => JSON.parse(readFileSync(storeFile, 'utf8'));
+  const find = (id) => store().builds.find((b) => b.id === id);
+  const launches = () => readFileSync(join(tmp, 'launches.log'), 'utf8').trim().split('\n');
+  const twoPhase = (id) => orch('act', JSON.stringify({ action: 'add', id, title: id, steps: [{ text: `${id} contract`, model: 'Fable', estimate: '10 min' }, { text: `${id} UI and tests`, model: 'Opus', estimate: '10 min' }] }));
+
+  twoPhase('two');
+  t('exit e2e: a two-phase build (Fable then Opus) launches phase 1 on the Fable account and records its phase', () => {
+    json(pipe('queue', 'two', '--json'));
+    const r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]), [['two', 'w-max', 'Fable']]);
+    const b = find('two'); assert.equal(b.status, 'running'); assert.ok(b.pipeline.phase, 'phase recorded at launch'); assert.equal(b.pipeline.session, 'axf-two--r1');
+    assert.match(launches()[0], new RegExp(`^two w-max claude-fable\\S* ${b.pipeline.phase}$`), 'the launcher gets AXF_BUILD_PHASE');
+  });
+  t('exit e2e: phase 1 done → back in the Queue (journalled), and the in-process tick starts phase 2 on an Opus account at once', () => {
+    const phase1 = find('two').pipeline.phase;
+    orch('act', 'step', 'two', 's1', 'done');
+    const r = json(pipe('exit', 'two', '--session', 'axf-two--r1', '--exit', '0', '--kind', 'phase-done', '--phase', phase1, '--json'));
+    assert.equal(r.ended.status, 'queued'); assert.equal(r.ended.reason, 'phase-done'); assert.equal(r.ended.next, 'Opus');
+    assert.deepEqual(r.tick.launched.map((l) => [l.id, l.model]), [['two', 'Opus']], 'no wait for the cron');
+    const b = find('two'); assert.equal(b.status, 'running'); assert.equal(b.pipeline.model, 'Opus'); assert.equal(b.pipeline.runs, 2); assert.equal(b.pipeline.crashes, 0, 'a phase end is not a crash');
+    assert.equal(b.pipeline.lastRun.reason, 'phase-done'); assert.equal(b.pipeline.lastRun.phase, phase1);
+    assert.ok(b.notes.some((x) => x.text.startsWith(`phase ${phase1} done, requeued for Opus`)), b.notes.map((x) => x.text).join('\n'));
+    assert.match(launches()[1], /^two w-(max|pro) claude-opus/);
+    assert.match(readFileSync(join(pipeDir, 'log.jsonl'), 'utf8'), /"reason":"phase-done"/);
+  });
+  t('exit e2e: the same exit reported twice (wrapper, then the cron reading events.jsonl) ends the run once, no double launch', () => {
+    const r = json(pipe('exit', 'two', '--session', 'axf-two--r1', '--exit', '0', '--kind', 'phase-done', '--json'));
+    assert.equal(r.ended, null); assert.equal(r.tick, null); assert.equal(launches().length, 2);
+    writeFileSync(join(hdir, 'events.jsonl'), `${JSON.stringify({ event: 'session-end', session: 'axf-two--r1', name: 'two', exit: 0, kind: 'phase-done', at: new Date().toISOString() })}\n`);
+    const tk = json(pipe('tick', '--json')); assert.equal(tk.ended.length, 0); assert.equal(tk.launched.length, 0); assert.equal(find('two').pipeline.runs, 2);
+  });
+  t('exit e2e: a crash requeues and relaunches; the crash limit (maxRuns 2 crashes) parks it in Pending (Errors tab)', () => {
+    let r = json(pipe('exit', 'two', '--session', find('two').pipeline.session, '--exit', '1', '--kind', 'crash', '--json'));
+    assert.equal(r.ended.reason, 'crash'); assert.equal(r.ended.status, 'queued'); assert.deepEqual(r.tick.launched.map((l) => l.id), ['two']);
+    assert.equal(find('two').pipeline.crashes, 1);
+    // a crash reported with exit 0 (the wrapper's kind wins) is still a crash
+    r = json(pipe('exit', 'two', '--session', find('two').pipeline.session, '--exit', '0', '--kind', 'crash', '--json'));
+    assert.equal(r.ended.reason, 'crash-limit'); assert.equal(r.ended.status, 'pending'); assert.equal(r.tick, null);
+    assert.equal(find('two').pipeline.crashes, 2); assert.equal(BP.tabOf(find('two')), 'errors');
+    assert.equal(json(pipe('requeue-stuck', '--json')).found.length, 0, 'a crash-limit build is not "stuck after a phase"');
+  });
+  t('exit e2e: a clean stop mid-phase (phase-done claimed, its steps open) goes to Pending as stopped', () => {
+    twoPhase('mid'); json(pipe('queue', 'mid', '--json')); json(pipe('tick', '--json'));
+    assert.equal(find('mid').status, 'running');
+    const r = json(pipe('exit', 'mid', '--session', find('mid').pipeline.session, '--exit', '0', '--kind', 'phase-done', '--json'));
+    assert.equal(r.ended.status, 'pending'); assert.equal(r.ended.reason, 'stopped');
+  });
+  t('requeue-stuck: dry run lists the build the old rule parked, --apply moves it to the Queue (journalled); needs-brett stays', () => {
+    twoPhase('parked'); twoPhase('asked');
+    orch('act', 'step', 'parked', 's1', 'done'); orch('act', 'step', 'asked', 's1', 'done');
+    const st = store(); const at = new Date().toISOString();
+    for (const [id, reason] of [['parked', ''], ['asked', 'needs-brett']]) {
+      const b = st.builds.find((x) => x.id === id);
+      b.status = 'pending'; b.pipeline = { ...BP.emptyPipeline(), queuedAt: '2026-11-01T00:00:00.000Z', model: 'Fable', runs: 1, lastRun: { at, exit: 0, outcome: 'returned', reason, stepsLeft: 1, account: 'w-max', session: `axf-${id}`, phase: '' } };
+    }
+    writeFileSync(storeFile, JSON.stringify(st));
+    let r = json(pipe('requeue-stuck', '--json'));
+    assert.equal(r.apply, false); assert.deepEqual(r.found.map((f) => [f.id, f.next]), [['parked', 'Opus']]); assert.deepEqual(r.moved, []);
+    assert.equal(find('parked').status, 'pending', 'the dry run writes nothing');
+    const row = json(pipe('status', '--json')).table.pending.find((x) => x.id === 'parked'); assert.equal(row.stuck.next, 'Opus');
+    r = json(pipe('requeue-stuck', '--apply', '--json'));
+    assert.deepEqual(r.moved, ['parked']);
+    const b = find('parked'); assert.equal(b.status, 'queued'); assert.equal(b.pipeline.queuedAt, '2026-11-01T00:00:00.000Z', 'keeps its place');
+    assert.equal(b.pipeline.lastRun.reason, 'phase-done'); assert.match(b.notes.at(-1).text, /^phase .* done, requeued for Opus/);
+    assert.equal(find('asked').status, 'pending', 'needs-brett stays for Brett');
+    const q = json(pipe('status', '--json')).table.queued.find((x) => x.id === 'parked'); assert.equal(q.requeue.next, 'Opus'); assert.equal(q.requeue.reason, 'phase-done');
+    assert.equal(json(pipe('requeue-stuck', '--json')).found.length, 0, 'nothing left to repair');
   });
 }
 
