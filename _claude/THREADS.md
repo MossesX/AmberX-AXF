@@ -819,9 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:17 UTC · `banner-widget-shapes-plus-change-icon` s2 done (all) · foreign-write
-- 2026-11-16 23:17 UTC · `merge-main-land-console-axhub-retry` → queued, note (all) · brett
-- 2026-11-16 23:17 UTC · `own-look-per-grid-and-tab-group` PR #752 (all) · builds-live
 - 2026-11-16 23:17 UTC · `amberx-open-url-must-open-page-even-when` → running, note (all) · pipeline
 - 2026-11-16 23:17 UTC · `amberx-open-url-must-open-page-even-when` note (all) · orchestrator
 - 2026-11-16 23:17 UTC · `amberx-open-url-must-open-page-even-when` note (all) · orchestrator
@@ -1219,6 +1216,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:33 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
 - 2026-11-17 03:33 UTC · `server-auto-lander-fixes-lands` → running (all) · orchestrator
 - 2026-11-17 03:34 UTC · `fix-red-ci-blocked-builds-they-land` note (all) · orchestrator
+- 2026-11-17 03:33 UTC · `prompting-engine-control-panel-to-create` → running, note (all) · pipeline
+- 2026-11-17 03:34 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
+- 2026-11-17 03:34 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
 
 ## Token passes (log)
 
