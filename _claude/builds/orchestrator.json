@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:00:33.117Z",
+ "updatedAt": "2026-11-17T22:00:46.656Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175288,7 +175288,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:59:46.252Z",
+   "updatedAt": "2026-11-17T22:00:32.371Z",
    "builtAt": "",
    "notes": [
     {
@@ -175550,6 +175550,10 @@
     {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T21:59:14.803Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T22:00:32.371Z"
     }
    ],
    "approvals": [
