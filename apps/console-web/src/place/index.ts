@@ -6,9 +6,11 @@ import type { AxfRuntime } from '../axf/core';
 import { installPlaceSaving } from './placeState';
 import { restoreOnLoad } from './placeRestore';
 import { installScrollAndSelectionSteps } from './placeScroll';
+import { installPullRefreshSave } from './pullRefresh';
 
 export * from './placeState';
 export * from './placeRestore';
+export { installPullRefreshSave, PULL_SAVE_DISTANCE } from './pullRefresh';
 
 let installed = false;
 
@@ -17,6 +19,7 @@ export function installPlace(rt: AxfRuntime): void {
   installed = true;
   installScrollAndSelectionSteps();
   installPlaceSaving(rt);
+  installPullRefreshSave();
   restoreOnLoad(rt);
   // a hard `console.refresh` reloads past the HTTP cache with a one-time `?axf-refresh=`: drop it once loaded
   try {
