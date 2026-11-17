@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7673,
- "updatedAt": "2026-11-17T19:34:36.266Z",
+ "rev": 7674,
+ "updatedAt": "2026-11-17T19:34:46.546Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276528,7 +276528,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T19:33:55.622Z",
+   "updatedAt": "2026-11-17T19:34:39.334Z",
    "builtAt": "",
    "notes": [
     {
@@ -276542,6 +276542,10 @@
     {
      "text": "Brett: besides the full guided demo, add a few smaller pipeline tests on the same Maintenance > Test tab, each its own button and runnable without AI: queue-to-launch, step tick-off, crash + watchdog recovery, red CI + auto-fix, merge-main + land, stale-row cleanup. Each shows pass/fail and what it did.",
      "at": "2026-11-17T19:33:55.622Z"
+    },
+    {
+     "text": "Brett: make it a full, fully integrated test suite in Maintenance that tests every pipeline and verifies everything (not just a few tests). Also add an Errors section in Maintenance to view and manage all VPS errors (watchdog, dispatcher, lander, cron, containers, failed runs) in one place.",
+     "at": "2026-11-17T19:34:39.334Z"
     }
    ],
    "approvals": [],
@@ -276567,7 +276571,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
