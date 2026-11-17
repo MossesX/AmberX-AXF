@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:42 UTC · `pass-approval-hook-deep-link-amberx-notification` s10 done, note (all) · foreign-write
-- 2026-11-17 22:42 UTC · `open-any-website-by-voice-on-the-phone-optionall` → complete, note (all) · foreign-write
 - 2026-11-17 22:42 UTC · `amberx-build-notifications-for-every-stage-start` → complete, note (all) · foreign-write
 - 2026-11-17 22:42 UTC · `build-notifications-same-notification-per-build` → complete, note (all) · foreign-write
 - 2026-11-17 22:42 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → complete, note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:05 UTC · `flagship-professional-skin-covering-2` s19 done, s21 done, note (all) · foreign-write
 - 2026-11-17 23:05 UTC · `move-everything-axhub-web-console` s3 done (all) · orchestrator
 - 2026-11-17 23:06 UTC · `move-everything-axhub-web-console` s3 done (all) · foreign-write
+- 2026-11-17 23:06 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 23:06 UTC · `flagship-professional-skin-covering-2` s21 done (all) · foreign-write
 
 ## Token passes (log)
 
