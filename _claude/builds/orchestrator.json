@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:45:15.556Z",
+ "updatedAt": "2026-11-17T21:45:28.734Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186610,7 +186610,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T21:42:53.168Z",
+   "updatedAt": "2026-11-17T21:45:14.175Z",
    "builtAt": "",
    "notes": [
     {
@@ -186700,6 +186700,10 @@
     {
      "text": "Brett (FINAL, overrides earlier notes on this): Gizmo X AI Studio is the fixed interface for EVERY settings window. Remove the settings-interface tab/row entirely: no picker, no 'Edit this interface' switch, no way to edit or change the settings window's own layout or look at all.",
      "at": "2026-11-17T21:42:53.168Z"
+    },
+    {
+     "text": "Brett (new, do in this build): strip EVERY page toolbar in the console to blank. Remove all buttons (New, Open, Save, Undo, Redo, Cut, Theme, etc. from PR #817). Each toolbar keeps only one small gear button that opens its settings. Applies to all plugin pages, old and new. Buttons get added back later by Brett.",
+     "at": "2026-11-17T21:45:14.175Z"
     }
    ],
    "approvals": [],
