@@ -191,3 +191,10 @@ ok("relay: a device-made decision is refused", ab.phone_tap_errors({**good, "by"
 check("relay: refused taps are never sent to the hub", ab.PhoneTapRelay().decide_from_phone_tap({**good, "auth": "token"})["code"], "denied")
 os.environ.pop("AXF_HUB_RELAY_USER", None)
 check("relay: without the owner sign-in nothing is decided", ab.PhoneTapRelay().decide_from_phone_tap(good)["code"], "no_credential")
+
+# ---- s10 alerts to the phone
+r = cap.push_alert({"source": "build-orchestrator", "severity": "error", "title": "CI red on main", "body": "android.yml failed"}, "builds.ci-red", "https://console.test/builds")
+c = S.command(r["id"])
+check("an alert becomes a phone notification", (c["command"], c["arguments"]["kind"], c["arguments"]["priority"], c["arguments"]["notifyId"]), ("notify", "alert", "high", "builds.ci-red"))
+r = cap.push_alert({"source": "x", "severity": "warning", "title": "t"}, "", "https://elsewhere.test/")
+ok("a link outside the phone's policy is dropped, not refused", r["ok"] and "url" not in S.command(r["id"])["arguments"])

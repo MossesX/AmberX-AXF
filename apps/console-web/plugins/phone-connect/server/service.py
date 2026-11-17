@@ -471,3 +471,12 @@ class PhoneCapability:
 
     def command(self, cid: str) -> dict[str, Any]:
         return command(cid)
+
+    def push_alert(self, alert: dict[str, Any], notify_id: str = "", url: str = "") -> dict[str, Any]:
+        """The alert hub's phone channel: one console alert (it already passed axf.notify@1) as a phone notification."""
+        sev = str(alert.get("severity") or "info")
+        kind = "alert" if sev in ("error", "critical") else "fix" if str(alert.get("source") or "").startswith(("fix", "build")) else "fyi"
+        d = default_device()
+        link = url if url.startswith("https://") and d and not E.url_errors(url, d, origin()) else ""
+        return self.notify(kind, str(alert.get("title") or "Console alert"), str(alert.get("body") or ""), notify_id=(notify_id or "phone-connect.direct")[: E.LIMITS["tool"]],
+                           url=link, priority="high" if sev in ("error", "critical") else "normal", by={"kind": "service", "who": "alerts", "via": "console"})
