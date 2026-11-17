@@ -4,12 +4,12 @@
     "grid": {
       "label": "Grid",
       "prefix": "--fx-grid-",
-      "tokens": 32
+      "tokens": 39
     },
     "tabs": {
       "label": "Tab group",
       "prefix": "--fx-tab-",
-      "tokens": 58
+      "tokens": 61
     }
   },
   "tokens": [
@@ -82,6 +82,56 @@
       "description": "The sort direction arrow on a sorted column (currentColor = the header text).",
       "path": "grid.sortArrow",
       "var": "--fx-grid-sort-arrow"
+    },
+    {
+      "family": "grid",
+      "key": "filterChipBg",
+      "kind": "colour",
+      "default": "var(--fx-surface3)",
+      "level": "pro",
+      "description": "Background of a filter / count chip in the toolbar above the grid.",
+      "path": "grid.filterChipBg",
+      "var": "--fx-grid-filter-chip-bg"
+    },
+    {
+      "family": "grid",
+      "key": "filterChipText",
+      "kind": "colour",
+      "default": "var(--fx-muted)",
+      "level": "pro",
+      "description": "Text of a filter / count chip above the grid.",
+      "path": "grid.filterChipText",
+      "var": "--fx-grid-filter-chip-text"
+    },
+    {
+      "family": "grid",
+      "key": "filterChipBorder",
+      "kind": "colour",
+      "default": "transparent",
+      "level": "advanced",
+      "description": "Border of a filter / count chip above the grid.",
+      "path": "grid.filterChipBorder",
+      "var": "--fx-grid-filter-chip-border"
+    },
+    {
+      "family": "grid",
+      "key": "filterChipActiveBg",
+      "kind": "colour",
+      "default": "var(--fx-accent-soft)",
+      "level": "pro",
+      "description": "Background of a filter chip that is on.",
+      "path": "grid.filterChipActiveBg",
+      "var": "--fx-grid-filter-chip-active-bg"
+    },
+    {
+      "family": "grid",
+      "key": "filterChipActiveText",
+      "kind": "colour",
+      "default": "var(--fx-accent)",
+      "level": "pro",
+      "description": "Text of a filter chip that is on.",
+      "path": "grid.filterChipActiveText",
+      "var": "--fx-grid-filter-chip-active-text"
     },
     {
       "family": "grid",
@@ -182,6 +232,26 @@
       "description": "Background of an expanded row's detail panel.",
       "path": "grid.expandedBg",
       "var": "--fx-grid-expanded-bg"
+    },
+    {
+      "family": "grid",
+      "key": "focusedBg",
+      "kind": "colour",
+      "default": "transparent",
+      "level": "advanced",
+      "description": "Tint laid over the row that has keyboard focus (transparent = none).",
+      "path": "grid.focusedBg",
+      "var": "--fx-grid-focused-bg"
+    },
+    {
+      "family": "grid",
+      "key": "disabledText",
+      "kind": "colour",
+      "default": "inherit",
+      "level": "pro",
+      "description": "Text colour of a disabled row.",
+      "path": "grid.disabledText",
+      "var": "--fx-grid-disabled-text"
     },
     {
       "family": "grid",
@@ -449,7 +519,7 @@
       "kind": "colour",
       "default": "transparent",
       "level": "pro",
-      "description": "Border of the active tab (underline style).",
+      "description": "Ring drawn inside the active tab's edge (underline style; transparent = none).",
       "path": "tabs.activeBorder",
       "var": "--fx-tab-active-border"
     },
@@ -485,6 +555,16 @@
     },
     {
       "family": "tabs",
+      "key": "pressedBorder",
+      "kind": "colour",
+      "default": "var(--fx-tab-hover-border)",
+      "level": "advanced",
+      "description": "Border of a tab while it is pressed (boxed style).",
+      "path": "tabs.pressedBorder",
+      "var": "--fx-tab-pressed-border"
+    },
+    {
+      "family": "tabs",
       "key": "disabledText",
       "kind": "colour",
       "default": "var(--fx-tab-text)",
@@ -492,6 +572,26 @@
       "description": "Text of a disabled tab.",
       "path": "tabs.disabledText",
       "var": "--fx-tab-disabled-text"
+    },
+    {
+      "family": "tabs",
+      "key": "disabledBg",
+      "kind": "colour",
+      "default": "transparent",
+      "level": "advanced",
+      "description": "Tint laid over a disabled tab's background (transparent = none).",
+      "path": "tabs.disabledBg",
+      "var": "--fx-tab-disabled-bg"
+    },
+    {
+      "family": "tabs",
+      "key": "disabledBorder",
+      "kind": "colour",
+      "default": "transparent",
+      "level": "advanced",
+      "description": "Ring drawn inside a disabled tab's edge (transparent = none).",
+      "path": "tabs.disabledBorder",
+      "var": "--fx-tab-disabled-border"
     },
     {
       "family": "tabs",
@@ -922,6 +1022,11 @@
     "--fx-grid-header-border": "var(--fx-border)",
     "--fx-grid-header-weight": "600",
     "--fx-grid-sort-arrow": "currentColor",
+    "--fx-grid-filter-chip-bg": "var(--fx-surface3)",
+    "--fx-grid-filter-chip-text": "var(--fx-muted)",
+    "--fx-grid-filter-chip-border": "transparent",
+    "--fx-grid-filter-chip-active-bg": "var(--fx-accent-soft)",
+    "--fx-grid-filter-chip-active-text": "var(--fx-accent)",
     "--fx-grid-row-bg": "transparent",
     "--fx-grid-row-alt-bg": "transparent",
     "--fx-grid-row-text": "inherit",
@@ -932,6 +1037,8 @@
     "--fx-grid-selected-border": "var(--fx-accent)",
     "--fx-grid-focus-ring": "var(--fx-focus)",
     "--fx-grid-expanded-bg": "var(--fx-surface2)",
+    "--fx-grid-focused-bg": "transparent",
+    "--fx-grid-disabled-text": "inherit",
     "--fx-grid-disabled-opacity": "1",
     "--fx-grid-line-color": "var(--fx-border)",
     "--fx-grid-outer-border": "transparent",
@@ -962,7 +1069,10 @@
     "--fx-tab-active-weight": "inherit",
     "--fx-tab-pressed-text": "var(--fx-tab-hover-text)",
     "--fx-tab-pressed-bg": "var(--fx-tab-hover-bg)",
+    "--fx-tab-pressed-border": "var(--fx-tab-hover-border)",
     "--fx-tab-disabled-text": "var(--fx-tab-text)",
+    "--fx-tab-disabled-bg": "transparent",
+    "--fx-tab-disabled-border": "transparent",
     "--fx-tab-disabled-opacity": "1",
     "--fx-tab-focus-ring": "var(--fx-focus)",
     "--fx-tab-indicator": "var(--fx-accent)",
@@ -1071,6 +1181,51 @@
       "family": "grid"
     },
     {
+      "id": "grid.filterChipBg",
+      "token": "--fx-grid-filter-chip-bg",
+      "kind": "color",
+      "default": "var(--fx-surface3)",
+      "level": "pro",
+      "description": "Background of a filter / count chip in the toolbar above the grid.",
+      "family": "grid"
+    },
+    {
+      "id": "grid.filterChipText",
+      "token": "--fx-grid-filter-chip-text",
+      "kind": "color",
+      "default": "var(--fx-muted)",
+      "level": "pro",
+      "description": "Text of a filter / count chip above the grid.",
+      "family": "grid"
+    },
+    {
+      "id": "grid.filterChipBorder",
+      "token": "--fx-grid-filter-chip-border",
+      "kind": "color",
+      "default": "transparent",
+      "level": "advanced",
+      "description": "Border of a filter / count chip above the grid.",
+      "family": "grid"
+    },
+    {
+      "id": "grid.filterChipActiveBg",
+      "token": "--fx-grid-filter-chip-active-bg",
+      "kind": "color",
+      "default": "var(--fx-accent-soft)",
+      "level": "pro",
+      "description": "Background of a filter chip that is on.",
+      "family": "grid"
+    },
+    {
+      "id": "grid.filterChipActiveText",
+      "token": "--fx-grid-filter-chip-active-text",
+      "kind": "color",
+      "default": "var(--fx-accent)",
+      "level": "pro",
+      "description": "Text of a filter chip that is on.",
+      "family": "grid"
+    },
+    {
       "id": "grid.rowBg",
       "token": "--fx-grid-row-bg",
       "kind": "color",
@@ -1158,6 +1313,24 @@
       "default": "var(--fx-surface2)",
       "level": "pro",
       "description": "Background of an expanded row's detail panel.",
+      "family": "grid"
+    },
+    {
+      "id": "grid.focusedBg",
+      "token": "--fx-grid-focused-bg",
+      "kind": "color",
+      "default": "transparent",
+      "level": "advanced",
+      "description": "Tint laid over the row that has keyboard focus (transparent = none).",
+      "family": "grid"
+    },
+    {
+      "id": "grid.disabledText",
+      "token": "--fx-grid-disabled-text",
+      "kind": "color",
+      "default": "inherit",
+      "level": "pro",
+      "description": "Text colour of a disabled row.",
       "family": "grid"
     },
     {
@@ -1400,7 +1573,7 @@
       "kind": "color",
       "default": "transparent",
       "level": "pro",
-      "description": "Border of the active tab (underline style).",
+      "description": "Ring drawn inside the active tab's edge (underline style; transparent = none).",
       "family": "tabs"
     },
     {
@@ -1431,12 +1604,39 @@
       "family": "tabs"
     },
     {
+      "id": "tabs.pressedBorder",
+      "token": "--fx-tab-pressed-border",
+      "kind": "color",
+      "default": "var(--fx-tab-hover-border)",
+      "level": "advanced",
+      "description": "Border of a tab while it is pressed (boxed style).",
+      "family": "tabs"
+    },
+    {
       "id": "tabs.disabledText",
       "token": "--fx-tab-disabled-text",
       "kind": "color",
       "default": "var(--fx-tab-text)",
       "level": "pro",
       "description": "Text of a disabled tab.",
+      "family": "tabs"
+    },
+    {
+      "id": "tabs.disabledBg",
+      "token": "--fx-tab-disabled-bg",
+      "kind": "color",
+      "default": "transparent",
+      "level": "advanced",
+      "description": "Tint laid over a disabled tab's background (transparent = none).",
+      "family": "tabs"
+    },
+    {
+      "id": "tabs.disabledBorder",
+      "token": "--fx-tab-disabled-border",
+      "kind": "color",
+      "default": "transparent",
+      "level": "advanced",
+      "description": "Ring drawn inside a disabled tab's edge (transparent = none).",
       "family": "tabs"
     },
     {
@@ -1826,6 +2026,11 @@
     "grid.headerBorder": "string",
     "grid.headerWeight": "number",
     "grid.sortArrow": "string",
+    "grid.filterChipBg": "string",
+    "grid.filterChipText": "string",
+    "grid.filterChipBorder": "string",
+    "grid.filterChipActiveBg": "string",
+    "grid.filterChipActiveText": "string",
     "grid.rowBg": "string",
     "grid.rowAltBg": "string",
     "grid.rowText": "string",
@@ -1836,6 +2041,8 @@
     "grid.selectedBorder": "string",
     "grid.focusRing": "string",
     "grid.expandedBg": "string",
+    "grid.focusedBg": "string",
+    "grid.disabledText": "string",
     "grid.disabledOpacity": "number",
     "grid.lineColor": "string",
     "grid.outerBorder": "string",
@@ -1866,7 +2073,10 @@
     "tabs.activeWeight": "number",
     "tabs.pressedText": "string",
     "tabs.pressedBg": "string",
+    "tabs.pressedBorder": "string",
     "tabs.disabledText": "string",
+    "tabs.disabledBg": "string",
+    "tabs.disabledBorder": "string",
     "tabs.disabledOpacity": "number",
     "tabs.focusRing": "string",
     "tabs.indicator": "string",

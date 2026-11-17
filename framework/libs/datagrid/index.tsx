@@ -120,7 +120,8 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   // component-tokens@1: this one grid's own token values (axf.tokens.instances → --fx-grid-* on the element) win over the skin's
   const [, tokensTick] = useState(0);
   useEffect(() => rt.settings.onChange(INSTANCE_TOKENS_KEY, () => tokensTick((n) => n + 1)), [rt]);
-  const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}`, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id) } as CSSProperties;
+  const own = instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id) as CSSProperties;
+  const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}`, ...own } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
   const all = useMemo(() => flatRows(p.groups), [p.groups]);
@@ -236,7 +237,8 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     </div>
   );
   // plugins attached to this dataset draw above it (a toolbar, chips); nothing contributed = just the grid
-  return dsId ? <><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} />{grid}</> : grid;
+  // the wrapper adds no box (display: contents); it carries this grid's own tokens so the toolbar's chips follow them
+  return dsId ? <><div className="axf-grid-above" style={own} data-axf-not-toolbar="no box of its own: carries this grid's tokens to whatever plugins draw above it"><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} /></div>{grid}</> : grid;
 }
 
 function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; cols: GridColumn<R>[]; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {

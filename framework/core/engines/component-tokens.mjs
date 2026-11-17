@@ -61,6 +61,11 @@ export const COMPONENT_TOKEN_FAMILIES = {
       t('headerBorder', 'colour', 'var(--fx-border)', 'pro', 'Line under the header row.'),
       t('headerWeight', 'number', '600', 'advanced', 'Font weight of the column headers.'),
       t('sortArrow', 'colour', 'currentColor', 'pro', 'The sort direction arrow on a sorted column (currentColor = the header text).'),
+      t('filterChipBg', 'colour', 'var(--fx-surface3)', 'pro', 'Background of a filter / count chip in the toolbar above the grid.'),
+      t('filterChipText', 'colour', 'var(--fx-muted)', 'pro', 'Text of a filter / count chip above the grid.'),
+      t('filterChipBorder', 'colour', 'transparent', 'advanced', 'Border of a filter / count chip above the grid.'),
+      t('filterChipActiveBg', 'colour', 'var(--fx-accent-soft)', 'pro', 'Background of a filter chip that is on.'),
+      t('filterChipActiveText', 'colour', 'var(--fx-accent)', 'pro', 'Text of a filter chip that is on.'),
       // rows and states
       t('rowBg', 'colour', 'transparent', 'basic', 'Background of a plain row.'),
       t('rowAltBg', 'colour', 'transparent', 'pro', 'Background of every second row (zebra striping; same as rowBg = no stripes).'),
@@ -72,6 +77,8 @@ export const COMPONENT_TOKEN_FAMILIES = {
       t('selectedBorder', 'colour', 'var(--fx-accent)', 'pro', 'Outline of a row in a multi-selection.'),
       t('focusRing', 'colour', 'var(--fx-focus)', 'pro', 'Keyboard focus ring on a row or header cell.'),
       t('expandedBg', 'colour', 'var(--fx-surface2)', 'pro', 'Background of an expanded row\'s detail panel.'),
+      t('focusedBg', 'colour', 'transparent', 'advanced', 'Tint laid over the row that has keyboard focus (transparent = none).'),
+      t('disabledText', 'colour', 'inherit', 'pro', 'Text colour of a disabled row.'),
       t('disabledOpacity', 'opacity', '1', 'advanced', 'How faded a disabled row is (1 = not faded; set var(--fx-opacity-disabled) or a number below 1).'),
       // lines, frame, sizes
       t('lineColor', 'colour', 'var(--fx-border)', 'basic', 'Grid lines between rows and cells.'),
@@ -111,13 +118,16 @@ export const COMPONENT_TOKEN_FAMILIES = {
       // active / selected
       t('activeText', 'colour', 'var(--fx-text)', 'basic', 'Text of the active tab.'),
       t('activeBg', 'colour', 'transparent', 'basic', 'Background of the active tab (underline style).'),
-      t('activeBorder', 'colour', 'transparent', 'pro', 'Border of the active tab (underline style).'),
+      t('activeBorder', 'colour', 'transparent', 'pro', 'Ring drawn inside the active tab\'s edge (underline style; transparent = none).'),
       t('activeWeight', 'number', 'inherit', 'advanced', 'Font weight of the active tab.'),
       // pressed
       t('pressedText', 'colour', 'var(--fx-tab-hover-text)', 'advanced', 'Text of a tab while it is pressed.'),
       t('pressedBg', 'colour', 'var(--fx-tab-hover-bg)', 'advanced', 'Background of a tab while it is pressed.'),
+      t('pressedBorder', 'colour', 'var(--fx-tab-hover-border)', 'advanced', 'Border of a tab while it is pressed (boxed style).'),
       // disabled, focus
       t('disabledText', 'colour', 'var(--fx-tab-text)', 'pro', 'Text of a disabled tab.'),
+      t('disabledBg', 'colour', 'transparent', 'advanced', 'Tint laid over a disabled tab\'s background (transparent = none).'),
+      t('disabledBorder', 'colour', 'transparent', 'advanced', 'Ring drawn inside a disabled tab\'s edge (transparent = none).'),
       t('disabledOpacity', 'opacity', '1', 'advanced', 'How faded a disabled tab is (1 = not faded; set var(--fx-opacity-disabled) or a number below 1).'),
       t('focusRing', 'colour', 'var(--fx-focus)', 'pro', 'Keyboard focus ring on a tab.'),
       // indicator
