@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7919,
- "updatedAt": "2026-11-17T21:03:08.104Z",
+ "rev": 7920,
+ "updatedAt": "2026-11-17T21:03:17.086Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275782,7 +275782,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:03:05.200Z",
+   "updatedAt": "2026-11-17T21:03:07.631Z",
    "builtAt": "",
    "notes": [
     {
@@ -275876,6 +275876,10 @@
     {
      "text": "Session stopped on its own with 8 steps left: back in Pending for Brett.",
      "at": "2026-11-17T21:03:05.200Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s18): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:03:07.631Z"
     }
    ],
    "approvals": [
@@ -275946,6 +275950,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T21:03:03.991Z",
+     "buildId": "rebuild-every-toolbar-page-specific",
+     "phase": "",
+     "step": "s18",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-17T21:03:09.384Z",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -276663,7 +276683,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
