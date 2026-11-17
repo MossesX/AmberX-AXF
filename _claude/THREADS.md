@@ -816,7 +816,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:12 UTC · `banner-widget-shapes-plus-change-icon` s1 done, → running (all) · orchestrator
 - 2026-11-16 23:13 UTC · `auto-lander-controls-in-the-gate-plugin` → archived, note (all) · cli
 - 2026-11-16 23:13 UTC · `fable-rebuild-plan-studio-cleared-out` → queued, note (all) · brett
 - 2026-11-16 23:13 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · brett
@@ -1216,6 +1215,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:59 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` note (all) · orchestrator
 - 2026-11-17 00:58 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` note (all) · orchestrator
 - 2026-11-17 00:59 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` s2 done (all) · orchestrator
+- 2026-11-17 01:00 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` s2 done (all) · foreign-write
 
 ## Token passes (log)
 
