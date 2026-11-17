@@ -826,8 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:09 UTC · `phone-connect-small-android-companion` note (all) · foreign-write
-- 2026-11-17 19:09 UTC · `shipped-features-open-button-views-each` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `every-plugin-screen-gets-a-settings-gear` → running, note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `settings-interface-gear-every-plugin` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · foreign-write
@@ -1226,6 +1224,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:32 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 - 2026-11-17 20:32 UTC · `separate-settings-per-plugin-reset` s16 done (all) · orchestrator
 - 2026-11-17 20:32 UTC · `rebuild-every-toolbar-page-specific` → running (all) · Brett
+- 2026-11-17 20:33 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
+- 2026-11-17 20:33 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 
 ## Token passes (log)
 
