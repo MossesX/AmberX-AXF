@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7743,
- "updatedAt": "2026-11-17T20:07:48.557Z",
+ "rev": 7744,
+ "updatedAt": "2026-11-17T20:08:06.183Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276967,7 +276967,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T20:07:28.247Z",
+   "updatedAt": "2026-11-17T20:08:03.071Z",
    "builtAt": "",
    "notes": [
     {
@@ -276989,6 +276989,10 @@
     {
      "text": "Claude account: hulu0241 (axf-live-build-status-real-time-grids-15--gina, shared account login)",
      "at": "2026-11-17T19:42:25.228Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done, s1-s4 on branch claude/live-build-status-real-time-grids-15. Calls made: (1) broke = any stop that is not a clean phase end: killed, OOM, failed exit, process or tmux gone, dead heartbeat, usage limit or dead login (recovering=true while the watchdog is on it), give-up, and status failed / escalated / blocked; exit 0 while still marked running stays running until the store moves it. (2) Liveness adds no check: the 15-second pass runs build-watchdog@1 causeOf on the same probe and publishes; recoveries stay the watchdog's one-minute pass. (3) The channel is the console SSE stream, event build-live, id = seq, with Last-Event-ID replay from a 2000-frame ring. (4) run-indicator is a Themes slot (skin by slot), default starter pulse; tokens are theme vars, color-mix at --fx-opacity-tint and opacity only; the pink background is --fx-run-broke-bg. Next phase (Opus): the VPS liveness pass + publisher, the grid rows / alert / dialog reading build-live@1 state and the --fx-run-* tokens, REST / MCP / CLI / voice for the state and the run-indicator pick.",
+     "at": "2026-11-17T20:08:03.071Z"
     }
    ],
    "approvals": [],
@@ -277611,7 +277615,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
