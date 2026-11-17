@@ -34,7 +34,7 @@ import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
-import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
+import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, journalReadDirs, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
 /**
@@ -67,8 +67,31 @@ export function worktreeHome() {
  */
 const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !== 'off' ? d : d === undefined ? worktreeHome() : ''; };
 export const storeFile = () => process.env.AXF_BUILDS_STORE || (scratchDir() ? join(scratchDir(), STORE_REL) : join(REPO_ROOT, STORE_REL));
-// a worktree's journal stays with the checkout's parts until the journal moves to the hub (s8): never a fresh part on the hub
-export const journalDir = () => (!process.env.AXF_BUILDS_STORE && worktreeHome() ? join(REPO_ROOT, '_claude/builds/journal') : join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal'));
+/**
+ * The journal (builds-journal@1, framework/spec/BUILDS.md → Journal home): next to a test store (AXF_BUILDS_STORE),
+ * else persist.mjs journalHome(): AXF_BUILDS_JOURNAL, the hub data store (<data root>/builds/journal), or the
+ * git-ignored repo spool. Reads also look in the repo folder for parts written before the move (journalReadDirs).
+ */
+const testJournal = () => (process.env.AXF_BUILDS_STORE ? join(dirname(storeFile()), `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal`) : '');
+export const journalDir = () => testJournal() || journalHome().dir;
+/** test | explicit | hub | spool */
+export const journalMode = () => (testJournal() ? 'test' : journalHome().mode);
+const journalDirs = () => (testJournal() ? [testJournal()] : journalReadDirs().filter((d) => existsSync(d)));
+/** Every journal part by key ('YYYY-MM[-pN]'): the files holding it (home first) and its size (the biggest copy). */
+export function journalParts() {
+  const out = {};
+  for (const d of journalDirs()) {
+    let names = []; try { names = readdirSync(d).filter((f) => f.endsWith('.jsonl')); } catch { continue; }
+    for (const f of names) { const k = f.slice(0, -6); const size = statSync(join(d, f)).size; const p = (out[k] ??= { files: [], size: 0 }); p.files.push(join(d, f)); p.size = Math.max(p.size, size); }
+  }
+  return out;
+}
+/** One part's lines: the union of every copy (home and the repo's old one), in order, each line once. */
+export function journalPartText(key) {
+  const p = journalParts()[key]; if (!p) return '';
+  const texts = p.files.map((f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } });
+  return texts.length === 1 ? texts[0] : merge.mergeJournalText(...texts);
+}
 
 export class StoreLocked extends Error {}
 function lock(f, waitMs = 20000) {
@@ -279,8 +302,14 @@ export const journalMax = () => Number(process.env.AXF_BUILDS_JOURNAL_BYTES) || 
 function journal(entry) {
   const d = journalDir(); mkdirSync(d, { recursive: true });
   const line = `${JSON.stringify(entry)}\n`;
-  const sizes = Object.fromEntries(readdirSync(d).filter((f) => f.endsWith('.jsonl')).map((f) => [f.slice(0, -6), statSync(join(d, f)).size]));
-  appendFileSync(join(d, `${merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax())}.jsonl`), line);
+  // one lock per journal folder, shared by every checkout on the machine (the hub home is shared by all of them)
+  const unlock = testJournal() ? () => {} : lock(join(d, '.journal'));
+  try {
+    // part sizes count the old repo copies too, so the hub continues the numbering instead of reopening a full part
+    const sizes = Object.fromEntries(Object.entries(journalParts()).map(([k, p]) => [k, p.size]));
+    const f = join(d, `${merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax())}.jsonl`);
+    if (existsSync(f)) appendFileSync(f, line); else writeKeepingOwner(f, line);
+  } finally { unlock(); }
   // every change to a build goes live to main (builds-live.mjs); draft-only writes stay local
   if (entry.builds?.length) enqueueLive(entry);
 }
@@ -441,9 +470,8 @@ export function dryRunMarkdown({ store, report, sources }) {
 
 /** Restore one build to the state it had at journal revision `rev` (itself a new, journalled write). */
 export function journalOf(id) {
-  const d = journalDir(); if (!existsSync(d)) return [];
   const out = [];
-  for (const f of readdirSync(d).filter((x) => x.endsWith('.jsonl')).sort()) for (const line of readFileSync(join(d, f), 'utf8').split('\n')) {
+  for (const key of Object.keys(journalParts()).sort()) for (const line of journalPartText(key).split('\n')) {
     if (!line.trim()) continue; let e; try { e = JSON.parse(line); } catch { continue; }
     for (const b of e.builds ?? []) if (b.id === id) out.push({ rev: e.rev, at: e.at, by: e.by, action: e.action, op: b.op, buildRev: b.rev, after: b.after });
   }
