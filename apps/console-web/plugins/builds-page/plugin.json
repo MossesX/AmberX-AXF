@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.builds-page",
   "name": "Builds",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-builds-page",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

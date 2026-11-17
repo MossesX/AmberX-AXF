@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-build-orchestrator",
   "version": "0.5.0",
   "kind": "module",
   "apiLevel": 1,

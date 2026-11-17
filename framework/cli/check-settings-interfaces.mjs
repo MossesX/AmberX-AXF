@@ -21,10 +21,13 @@
  *   node framework/cli/check-settings-interfaces.mjs --list          every plugin and page with its interface, then the findings
  *   node framework/cli/check-settings-interfaces.mjs --json          the same as JSON
  *   node framework/cli/check-settings-interfaces.mjs --write-baseline   record the current count (it only comes down)
+ *   node framework/cli/check-settings-interfaces.mjs --fix [--range a-m]  write each missing settings/plugin-<slug> default
+ *                     (the engine's generatedPluginSettings: the plugin's registered tabs and keys at Basic, level toolbar
+ *                     on) and point plugin.json settingsInterface at it; --range limits it to folders starting a…m
  *
  * Ratchet: framework/spec/settings-interfaces-baseline.json (`max` findings; 0 once the sweep is done).
  */
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -123,6 +126,52 @@ export function findings({ plugins, pages, apps }) {
   return out;
 }
 
+/** The default interface a plugin gets (core/engines/plugin-settings.ts generatedPluginSettings, from the inventory). */
+export function generatedData(p, inv) {
+  const own = (inv.settingsTabs ?? []).filter((t) => t.plugin === p.id || (p.tab && t.id === p.tab));
+  const ids = new Set(own.map((t) => t.id));
+  const tabs = [...own, ...(inv.settingsTabs ?? []).filter((t) => !ids.has(t.id) && t.parent && ids.has(t.parent))];
+  if (!tabs.length && p.tab) tabs.push({ id: p.tab });
+  const levelOf = {};
+  for (const t of tabs) levelOf[t.id] = 'basic';
+  for (const k of p.keys) levelOf[k] = 'basic';
+  return {
+    scope: 'plugin', owner: p.id, layout: 'list', header: 'compact', search: false, descriptions: true,
+    tabs: tabs.slice(0, 24).map((t) => ({ id: t.id, ...(t.parent && t.parent !== 'plugins' ? { parent: t.parent } : {}) })),
+    hide: [], groups: [], levels: true, defaultLevel: 'basic', levelOf: Object.fromEntries(Object.entries(levelOf).slice(0, 200)), visible: {},
+  };
+}
+
+/** Write the missing interface of one plugin and name it in its plugin.json. → what it wrote. */
+export function fixPlugin(p, inv) {
+  const wrote = [];
+  const dir = join(PLUGINS, p.folder, 'assets', 'settings');
+  const file = join(dir, `${p.want}.json`);
+  if (!existsSync(file)) {
+    mkdirSync(dir, { recursive: true });
+    const asset = {
+      $axf: 'asset@1', type: 'settings', version: '1.0.0', author: 'check-settings-interfaces (plugin-settings@1)', id: p.want,
+      name: `${p.name}: its own settings`,
+      description: `${p.name}'s own settings interface (plugin-settings@1): only its tabs and keys, the level toolbar on, opened in its own window, never the console's Settings. Generated from its registered settings; edit it like any settings asset.`,
+      tags: ['plugin-settings', p.folder], data: generatedData(p, inv),
+    };
+    writeFileSync(file, JSON.stringify(asset, null, 2) + '\n');
+    wrote.push(relative(ROOT, file));
+  }
+  const pj = join(PLUGINS, p.folder, 'plugin.json');
+  const text = readFileSync(pj, 'utf8');
+  const want = `settings/${p.want}`;
+  if (!text.includes(`"settingsInterface"`)) {
+    // insert after the "name" line, keeping the file's own formatting
+    const next = text.replace(/^(\s*)("name"\s*:\s*"(?:[^"\\]|\\.)*",?)\s*$/m, (_m, ind, line) => `${ind}${line.endsWith(',') ? line : `${line},`}\n${ind}"settingsInterface": "${want}",`);
+    if (next !== text) { writeFileSync(pj, next); wrote.push(relative(ROOT, pj)); }
+  } else if (!text.includes(`"settingsInterface": "${want}"`)) {
+    writeFileSync(pj, text.replace(/"settingsInterface"\s*:\s*"[^"]*"/, `"settingsInterface": "${want}"`));
+    wrote.push(relative(ROOT, pj));
+  }
+  return wrote;
+}
+
 export function run() {
   const inv = inventory();
   const plugins = pluginRows(inv);
@@ -132,6 +181,19 @@ export function run() {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
+  if (args.has('--fix')) {
+    const argv = process.argv.slice(2);
+    const range = argv.includes('--range') ? argv[argv.indexOf('--range') + 1] ?? 'a-z' : 'a-z';
+    const [lo, hi] = range.toLowerCase().split('-');
+    const inv = inventory();
+    let n = 0;
+    for (const p of pluginRows(inv)) {
+      const c = p.folder[0].toLowerCase();
+      if (!p.hasSettings || c < lo || c > (hi ?? lo)) continue;
+      for (const f of fixPlugin(p, inv)) { console.log(`wrote ${f}`); n++; }
+    }
+    console.log(`${n} file(s) written (${range})`);
+  }
   const r = run();
   if (args.has('--json')) { console.log(JSON.stringify(r, null, 2)); process.exit(0); }
   if (args.has('--list')) {

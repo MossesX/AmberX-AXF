@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.follow-amber",
   "name": "Follow Amber",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-follow-amber",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

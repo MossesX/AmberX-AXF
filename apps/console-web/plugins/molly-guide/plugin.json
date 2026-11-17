@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.molly-guide",
   "name": "Gizmo guide",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-molly-guide",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

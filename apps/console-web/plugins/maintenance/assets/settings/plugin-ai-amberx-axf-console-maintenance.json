@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "check-settings-interfaces (plugin-settings@1)",
+  "id": "plugin-ai-amberx-axf-console-maintenance",
+  "name": "Maintenance: its own settings",
+  "description": "Maintenance's own settings interface (plugin-settings@1): only its tabs and keys, the level toolbar on, opened in its own window, never the console's Settings. Generated from its registered settings; edit it like any settings asset.",
+  "tags": [
+    "plugin-settings",
+    "maintenance"
+  ],
+  "data": {
+    "scope": "plugin",
+    "owner": "ai.amberx.axf.console.maintenance",
+    "layout": "list",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "maintenance"
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "maintenance": "basic",
+      "axf.maintenance.nightly": "basic",
+      "axf.maintenance.nightlyJobs": "basic",
+      "axf.maintenance.profileMode": "basic",
+      "axf.maintenance.profileSchedule": "basic",
+      "axf.maintenance.profileWeekday": "basic"
+    },
+    "visible": {}
+  }
+}

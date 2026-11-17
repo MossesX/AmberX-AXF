@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.basic-filter",
   "name": "Basic filter",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-basic-filter",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

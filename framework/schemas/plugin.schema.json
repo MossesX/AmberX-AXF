@@ -46,6 +46,11 @@
     "description": {
       "type": "string"
     },
+    "settingsInterface": {
+      "type": "string",
+      "pattern": "^settings/plugin-[a-z0-9][a-z0-9-]{1,47}$",
+      "description": "plugin-settings@1: the plugin's own settings interface, settings/plugin-<slug of its id> in its assets/settings (scope plugin, owner = its id). Its settings open there, in its own window, never in the app's Settings. check-settings-interfaces.mjs --fix writes the default."
+    },
     "provides": {
       "type": "array",
       "items": {

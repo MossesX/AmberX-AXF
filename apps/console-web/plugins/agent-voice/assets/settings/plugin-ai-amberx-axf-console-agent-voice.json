@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "check-settings-interfaces (plugin-settings@1)",
+  "id": "plugin-ai-amberx-axf-console-agent-voice",
+  "name": "Agent voice: its own settings",
+  "description": "Agent voice's own settings interface (plugin-settings@1): only its tabs and keys, the level toolbar on, opened in its own window, never the console's Settings. Generated from its registered settings; edit it like any settings asset.",
+  "tags": [
+    "plugin-settings",
+    "agent-voice"
+  ],
+  "data": {
+    "scope": "plugin",
+    "owner": "ai.amberx.axf.console.agent-voice",
+    "layout": "list",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "agent-voice"
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "agent-voice": "basic",
+      "agent-voice.banner": "basic",
+      "agent-voice.assistantLight": "basic"
+    },
+    "visible": {}
+  }
+}

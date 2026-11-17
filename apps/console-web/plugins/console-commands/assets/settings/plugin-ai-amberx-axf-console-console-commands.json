@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "check-settings-interfaces (plugin-settings@1)",
+  "id": "plugin-ai-amberx-axf-console-console-commands",
+  "name": "Console commands: its own settings",
+  "description": "Console commands's own settings interface (plugin-settings@1): only its tabs and keys, the level toolbar on, opened in its own window, never the console's Settings. Generated from its registered settings; edit it like any settings asset.",
+  "tags": [
+    "plugin-settings",
+    "console-commands"
+  ],
+  "data": {
+    "scope": "plugin",
+    "owner": "ai.amberx.axf.console.console-commands",
+    "layout": "list",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "console-commands"
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "console-commands": "basic",
+      "console-commands.enabled": "basic",
+      "console-commands.toast": "basic"
+    },
+    "visible": {}
+  }
+}

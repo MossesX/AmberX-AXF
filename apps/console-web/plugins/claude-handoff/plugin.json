@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.claude-handoff",
   "name": "Claude handoff banner",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-claude-handoff",
   "version": "0.3.1",
   "kind": "module",
   "apiLevel": 1,

@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.changes-grid",
   "name": "Changes & features grid",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-changes-grid",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

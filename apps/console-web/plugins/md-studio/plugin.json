@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.md-studio",
   "name": "MD Studio",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-md-studio",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,
