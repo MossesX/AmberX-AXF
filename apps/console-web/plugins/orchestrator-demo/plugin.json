@@ -197,5 +197,34 @@
   },
   "cli": {
     "demo": "cli.mjs"
+  },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-accent",
+      "--fx-accent-soft",
+      "--fx-blur",
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-danger",
+      "--fx-dens-gap-3xl",
+      "--fx-dens-gap-4xl",
+      "--fx-dens-gap-lg",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-xl",
+      "--fx-dens-gap-xs",
+      "--fx-dialog-w",
+      "--fx-font-size",
+      "--fx-muted",
+      "--fx-opacity-glass",
+      "--fx-radius-md",
+      "--fx-row-h",
+      "--fx-shadow-lg",
+      "--fx-space",
+      "--fx-surface",
+      "--fx-text",
+      "--fx-type-root-sm",
+      "--fx-warning"
+    ]
   }
 }
