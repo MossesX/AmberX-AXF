@@ -1,5 +1,5 @@
 import type { AxfRuntime } from './axf/core';
-import { capturePlace, restorePlace } from './place';
+import { capturePlace, releaseScrollLock, restorePlace } from './place';
 
 /** Console actions: menus/toolbars/context menus call these by id. The data-dependent ones read the store through `window.__axfConsole` set by App. */
 export function registerActions(axf: AxfRuntime) {
@@ -13,7 +13,8 @@ export function registerActions(axf: AxfRuntime) {
   on('console.refresh', async () => {
     const place = capturePlace(axf, 'refresh-soft');
     await store()?.refresh();
-    restorePlace(axf, place, { navigate: false, timeoutMs: 4000 });
+    const run = restorePlace(axf, place, { navigate: false, timeoutMs: 4000 });
+    void (run?.finished ?? Promise.resolve('')).then(() => releaseScrollLock(axf));
   }, { label: 'Reload data' });
   on('console.openProject', () => axf.openDialog('project'), { label: 'Open project' });
   on('console.install', ([lib = '']) => axf.openDialog('install', { library: lib }), { label: 'Install library' });

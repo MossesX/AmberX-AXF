@@ -7,10 +7,12 @@ import { installPlaceSaving } from './placeState';
 import { restoreOnLoad } from './placeRestore';
 import { installScrollAndSelectionSteps } from './placeScroll';
 import { installPullRefreshSave } from './pullRefresh';
+import { installScrollLockGuard, releaseScrollLock } from './scrollLock';
 
 export * from './placeState';
 export * from './placeRestore';
 export { installPullRefreshSave, PULL_SAVE_DISTANCE } from './pullRefresh';
+export { installScrollLockGuard, releaseScrollLock, type ScrollLockRelease } from './scrollLock';
 
 let installed = false;
 
@@ -20,7 +22,10 @@ export function installPlace(rt: AxfRuntime): void {
   installScrollAndSelectionSteps();
   installPlaceSaving(rt);
   installPullRefreshSave();
-  restoreOnLoad(rt);
+  installScrollLockGuard(rt);
+  const run = restoreOnLoad(rt);
+  // when the restore ends (put back, cancelled by a tap, timed out), nothing may be left holding the page still
+  void run?.finished.then(() => releaseScrollLock(rt));
   // a hard `console.refresh` reloads past the HTTP cache with a one-time `?axf-refresh=`: drop it once loaded
   try {
     const u = new URL(location.href);
