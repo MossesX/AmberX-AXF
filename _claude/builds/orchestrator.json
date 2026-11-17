@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:09:47.167Z",
+ "updatedAt": "2026-11-17T15:09:58.242Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157432,7 +157432,7 @@
    "pr": "#720",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-17T15:08:21.884Z",
+   "updatedAt": "2026-11-17T15:09:41.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -157470,6 +157470,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:21.884Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:41.722Z"
     }
    ],
    "approvals": [],
@@ -159029,7 +159033,7 @@
    "pr": "#718",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
-   "updatedAt": "2026-11-17T15:08:25.259Z",
+   "updatedAt": "2026-11-17T15:09:48.925Z",
    "builtAt": "",
    "notes": [
     {
@@ -159059,6 +159063,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:25.259Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:48.925Z"
     }
    ],
    "approvals": [],
