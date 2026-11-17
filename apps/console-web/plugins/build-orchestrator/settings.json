@@ -1,0 +1,31 @@
+{
+  "$axf": "build-orchestrator-settings-schema@1",
+  "description": "The Build orchestrator's step-group settings (step-groups@1, Settings → Plugins → Build orchestrator → Step groups). Stored in pipeline-settings@1 (the dispatcher's settings.json), read and written through GET /api/plugins/build-orchestrator/step-groups/settings and PUT the same (or POST pipeline/settings), MCP orchestrator-groups-settings / orchestrator-groups-settings-set, `pipeline.mjs groups settings [key=value …]`, voice groups.setting:<key>:<value>. Normalised by pipeline-core.mjs normSettings. level = the lowest settings level the row shows at (simple, basic, developer, administrator).",
+  "settings": {
+    "splitOverMin": {
+      "type": "integer",
+      "min": 0,
+      "max": 1440,
+      "default": 30,
+      "title": "Split builds over (min)",
+      "description": "A build whose open steps add up to more than this many minutes is split into step groups that run in parallel slots. 0 = never split. Brett, Nov 16 2026: 30.",
+      "level": "basic"
+    },
+    "maxParallelGroups": {
+      "type": "integer",
+      "min": 1,
+      "max": 12,
+      "default": 3,
+      "title": "Max parallel groups per build",
+      "description": "At most this many groups of one build run at once. Always within the agent cap: every group takes one agent slot.",
+      "level": "developer"
+    },
+    "parallelGroups": {
+      "type": "boolean",
+      "default": true,
+      "title": "Parallel groups",
+      "description": "On: long builds are split and their groups run side by side. Off: every build runs as one sequential session (a build already split runs one group at a time).",
+      "level": "simple"
+    }
+  }
+}

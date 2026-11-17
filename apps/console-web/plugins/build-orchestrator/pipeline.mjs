@@ -962,6 +962,19 @@ export function fixGroupConflict(id, gid, { env = process.env, by = process.env.
   throw Object.assign(new Error(`Fix with Claude did not start: ${str(lastErr?.message, 300)}`), { code: 1 });
 }
 
+/** The step-group settings (settings.json, pipeline-settings@1 keys). */
+export const GROUP_SETTING_KEYS = ['splitOverMin', 'maxParallelGroups', 'parallelGroups'];
+/** Read them, or change them first (`patch`, only those keys; values normalised by normSettings). */
+export function groupSettings(patch = null) {
+  if (patch && typeof patch === 'object') {
+    const bad = Object.keys(patch).filter((k) => !GROUP_SETTING_KEYS.includes(k));
+    if (bad.length) throw Object.assign(new Error(`not a step-group setting: ${bad.join(', ')} (${GROUP_SETTING_KEYS.join(', ')})`), { code: 2 });
+    if (Object.keys(patch).length) { saveSettings(patch); logLine({ event: 'groups-settings', patch }); }
+  }
+  const s = loadSettings();
+  return Object.fromEntries(GROUP_SETTING_KEYS.map((k) => [k, s[k]]));
+}
+
 /** Split builds with a group in merge conflict: [{ id, title, group, note }] (the banner item and its Fix with Claude). */
 export function groupConflicts() {
   return live(loadStore()).filter((b) => BP.isSplit(b)).flatMap((b) => BP.groupsOf(b).filter((g) => g.state === 'conflict').map((g) => ({ id: b.id, title: b.title, group: g.id, note: g.note, fixing: !!g.session })));
@@ -977,6 +990,13 @@ export function groupsOfBuild(id) {
 function groupsCli(rest, { out }) {
   const [sub = 'list', id, gid] = rest;
   const need = (x, what) => { if (!x) throw Object.assign(new Error(`say which ${what}: pipeline.mjs groups ${sub} <build>${what === 'group' ? ' <group>' : ''}`), { code: 2 }); return x; };
+  if (sub === 'settings') {
+    // groups settings [key=value …]: the three step-group settings (settings.json), the same as GET / PUT step-groups/settings
+    const patch = {};
+    for (const a of rest.slice(1)) { const i = a.indexOf('='); if (i < 1 || !GROUP_SETTING_KEYS.includes(a.slice(0, i))) throw Object.assign(new Error(`groups settings ${GROUP_SETTING_KEYS.map((k) => `${k}=…`).join(' ')}`), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' || v === 'on' ? true : v === 'false' || v === 'off' ? false : Number(v); }
+    const r = groupSettings(Object.keys(patch).length ? patch : null);
+    return out({ ok: true, settings: r }, `Parallel groups ${r.parallelGroups ? 'on' : 'off'} · split builds over ${r.splitOverMin} min · at most ${r.maxParallelGroups} groups per build`);
+  }
   if (sub === 'conflicts') { const c = groupConflicts(); return out({ ok: true, conflicts: c }, c.map((x) => `${x.id}/${x.group}: ${x.note}`).join('\n') || 'no group in merge conflict'); }
   if (sub === 'list') { const r = groupsOfBuild(need(id, 'build')); return out({ ok: true, ...r }, [r.line, ...r.groups.map((g) => `  ${g.id.padEnd(4)} ${g.label.padEnd(18)} ${g.steps.done}/${g.steps.total} · merge #${g.mergeOrder + 1}${g.account ? ` · ${g.account}` : ''}${g.branch ? ` · ${g.branch}` : ''}`)].join('\n')); }
   if (sub === 'merge') { const r = gid ? SG.mergeGroup(need(id, 'build'), gid, { force: true }) : SG.mergeReady(need(id, 'build')); if (!gid && r.allMerged) landSplitBuild(r.id); return out({ ok: true, ...r }, gid ? r.note : `${r.id}: merged ${r.merged.join(', ') || 'nothing'}${r.conflict ? ` · conflict in ${r.conflict.group}: ${r.conflict.note}` : ''}`); }

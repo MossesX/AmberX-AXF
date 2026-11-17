@@ -605,10 +605,11 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
+    splitProvider, apiOverflow, apiAccounts; step groups: splitOverMin, maxParallelGroups, parallelGroups). Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
+               "splitOverMin", "maxParallelGroups", "parallelGroups"}  # step-groups@1 (settings.json)
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 
@@ -621,6 +622,32 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     if not pairs:
         raise HTTPException(400, "nothing to change")
     return _pipeline("set", *pairs)
+
+
+# ---- step groups (step-groups@1): one long build over several slots; every route ends in `pipeline.mjs groups …`
+
+GROUP_SETTING_KEYS = ("splitOverMin", "maxParallelGroups", "parallelGroups")
+GROUP_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
+
+
+def _who(request: Request) -> str:
+    return (brett_click(request) or "console")[:80]
+
+
+@router.get("/step-groups/settings")
+def step_groups_settings() -> dict[str, Any]:
+    """The three step-group settings (settings.json): splitOverMin, maxParallelGroups, parallelGroups."""
+    return _pipeline("groups", "settings")
+
+
+@router.put("/step-groups/settings")
+async def step_groups_settings_set(request: Request) -> dict[str, Any]:
+    body = await _json_body(request)
+    bad = [k for k in body if k not in GROUP_SETTING_KEYS]
+    if bad or not body:
+        raise HTTPException(400, f"send any of {', '.join(GROUP_SETTING_KEYS)}")
+    pairs = [f"{k}={'true' if v is True else 'false' if v is False else v}" for k, v in body.items()]
+    return _pipeline("groups", "settings", *pairs, who=_who(request))
 
 
 @router.post("/pipeline/route")

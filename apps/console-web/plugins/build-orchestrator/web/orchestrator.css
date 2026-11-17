@@ -60,3 +60,6 @@ button.oc-model { cursor: pointer }
 .og-dot.is-success::before { background: var(--fx-success) }
 .og-dot.is-warning::before { background: var(--fx-warning) }
 .og-dot.is-danger::before { background: var(--fx-danger) }
+
+/* step groups (step-groups.tsx): a number field and its Save button sit on one baseline */
+.sg-field { align-items: flex-end; }
