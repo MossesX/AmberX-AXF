@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7823,
- "updatedAt": "2026-11-17T20:33:26.868Z",
+ "rev": 7824,
+ "updatedAt": "2026-11-17T20:33:36.533Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -277783,7 +277783,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:33:22.023Z",
+   "updatedAt": "2026-11-17T20:33:26.763Z",
    "builtAt": "",
    "notes": [
     {
@@ -277885,6 +277885,10 @@
     {
      "text": "Brief only: brief is 27678 characters (~6920 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T20:33:22.023Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-guided-live-demo-test-watch-orchestrator--joey, shared account login)",
+     "at": "2026-11-17T20:33:26.763Z"
     }
    ],
    "approvals": [
@@ -278599,7 +278603,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
