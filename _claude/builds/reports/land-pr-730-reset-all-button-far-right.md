@@ -2,11 +2,11 @@
 
 Brett (2026-11-17 21:26): "reset all on the right"
 
-Build `land-pr-730-reset-all-button-far-right` (Opus). Branch `claude/reset-all-button-every-asset-override`, PR #730.
+Build `land-pr-730-reset-all-button-far-right` (Opus). Branch `claude/reset-all-button-every-asset-override`, PR #730 → #803.
 Original build: `reset-all-button-every-asset-override` (report `reset-all-button-every-asset-override.md`).
 
 ## Result
-PR #730 is merged up to date with main, every check passes, and the PR is in the merge queue.
+The branch is up to date with main, every check passes, and the PR is in the merge queue as #803. That PR replaces #730 on the same branch.
 Reset all is the last control in the Settings → Appearance "Asset overrides" toolbar. The toolbar uses `fx-row--between`, so Reset all sits on the far right (the "header, Reset all on the right" option, `framework/react/components/ChromeContext.tsx`).
 
 ## Merge (s1)
@@ -56,4 +56,4 @@ Nothing needed fixing.
 | Actions | `chrome.reset-all:confirm`, `chrome.overrides`, `chrome.overrides-undo:<id\|last>` |
 
 ## Landing
-PR #730 had been closed when the earlier build was archived. It was reopened, linked to this build (`builds-live.mjs link`) and added to the merge queue (`land.mjs queue add 730`). It was not merged directly.
+PR #730 was closed on 2026-11-17 at 17:03. The merge queue had already reopened the same branch as **PR #803**, so GitHub refused to reopen #730 ("There is already an open pull request from claude/reset-all-button-every-asset-override"). #803 carries the work instead. Its description now says how each API is reached. It is linked to this build (`builds-live.mjs link land-pr-730-reset-all-button-far-right --branch claude/reset-all-button-every-asset-override --pr 803`) and added back to the merge queue (`land.mjs queue add 803`). The watchdog had taken it out of the queue when the old build was cancelled. It was not merged directly.
