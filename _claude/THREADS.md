@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `pending-tab-one-collapsed-row-per-2` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `shipped-features-organized-sortable` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `vps-sends-shipped-features-every-merge` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `phone-connect-small-android-companion` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:56 UTC · `guided-live-demo-test-watch-orchestrator` s20 done (all) · orchestrator
 - 2026-11-17 20:56 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
 - 2026-11-17 20:56 UTC · `toolbars-1-5-build-orchestrator-incl` → pending, note (all) · pipeline
+- 2026-11-17 20:57 UTC · `separate-settings-per-plugin-reset` s18 done, → landing (all) · orchestrator
 
 ## Token passes (log)
 
