@@ -95,12 +95,12 @@
       },
       {
         "route": "POST /pair/cancel",
-        "id": "pair_cancel",
+        "id": "pair-cancel",
         "title": "Cancel the pending pairing code"
       },
       {
         "route": "POST /open",
-        "id": "open_url",
+        "id": "open-url",
         "title": "Open a page on the phone (https, inside the phone's url policy)"
       },
       {
@@ -110,17 +110,17 @@
       },
       {
         "route": "POST /recorder/start",
-        "id": "recorder_start",
+        "id": "recorder-start",
         "title": "Start the phone's audio-output recorder (needs approvalId: Brett's confirm; the phone asks Android's consent)"
       },
       {
         "route": "POST /recorder/stop",
-        "id": "recorder_stop",
+        "id": "recorder-stop",
         "title": "Stop the phone's audio-output recorder"
       },
       {
         "route": "GET /recorder/status",
-        "id": "recorder_status",
+        "id": "recorder-status",
         "title": "The recorder state the phone last reported (ask=1 asks it again)",
         "readOnly": true
       },
@@ -142,7 +142,7 @@
       },
       {
         "route": "GET /commands/{cid}",
-        "id": "command_result",
+        "id": "command-result",
         "title": "One command with its ack and result (wait=<s> holds until it is done)",
         "readOnly": true
       },
@@ -154,7 +154,7 @@
       },
       {
         "route": "POST /settings",
-        "id": "set_features",
+        "id": "set-features",
         "title": "Switch phone features on or off: {features: {open_url|notify|approval|recorder|voice: bool}}"
       },
       {
@@ -205,7 +205,19 @@
   },
   "tokens": {
     "$axf": "token-registry@1",
-    "uses": [],
+    "uses": [
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-sm",
+      "--fx-font-mono",
+      "--fx-muted",
+      "--fx-radius-md",
+      "--fx-surface2",
+      "--fx-type-eyebrow-tracking",
+      "--fx-type-scale-2xl",
+      "--fx-type-scale-sm"
+    ],
     "defines": []
   },
   "builtWith": {
@@ -213,7 +225,7 @@
     "builtAt": "2026-11-17"
   },
   "help": "help.json",
-  "opens": "main",
+  "opens": false,
   "cli": {
     "phone-connect": "phone-connect.mjs",
     "phone": "phone-connect.mjs"
