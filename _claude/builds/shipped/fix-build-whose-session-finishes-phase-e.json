@@ -1,0 +1,391 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fix-build-whose-session-finishes-phase-e",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-16T21:12:04Z",
+ "build": {
+  "id": "fix-build-whose-session-finishes-phase-e",
+  "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: fix-build-whose-session-finishes-phase-e\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically\" (fix-build-whose-session-finishes-phase-e) — Phase 3, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/fix-build-whose-session-finishes-phase-e · PR #685\nSteps in this phase (9 left, ~1.4 h):\n[ ] s4 (~8 min) Wire the dispatcher's session-exit handler to nextStatusOnExit(): replace the branch that writes status pending after a phase finishes with the contract's result, write it through the builds store with a journalled note ('phase <n> done, requeued for <model>')\n[ ] s5 (~10 min) Launch the next phase automatically: after a requeue on exit, run one dispatcher tick in-process (not waiting for the 1-minute cron) so a free slot and an account with the next phase's model start it at once through deploy/claude-headless.sh --account; guard against double launch with the existing pipeline lock\n[ ] s6 (~8 min) Make the headless exit path report phase completion reliably: claude-headless.sh passes exit kind (phase-done | crash | stopped) and the finished phase to pipeline.mjs on exit so the handler can tell a clean phase end from a crash\n[ ] s7 (~10 min) Repair existing stuck builds: add pipeline.mjs requeue-stuck (dry-run by default, --apply) that finds Pending builds whose last run ended phase-done with steps left and moves them back to the Queue, journalled; run it as part of builds-reconcile.mjs --apply\n[ ] s8 (~10 min) Show it in the Pipeline tab: a queued build requeued after a phase shows a 'Next phase: <model>, waiting for slot/account' line and the reason; Pending builds that were wrongly parked show a one-tap 'Back to Queue' (same as queue action)\n[ ] s9 (~10 min) API parity for the UI change: requeue reason + next phase readable in the pipeline state REST route and MCP tool, console_show deep link target for a build's pipeline row, requeue-stuck as REST route + plugin command (MCP) + CLI + AmberX voice action (pipeline-requeue-stuck), all four calling the same function\n[ ] s10 (~10 min) Tests: dispatcher integration test with a fake headless launcher — two-phase build (Fable then Opus) finishes phase 1, lands in Queue, next tick launches phase 2 on an Opus account; crash path and crash limit; requeue-stuck dry-run/apply; run check-build-pipeline, check-builds-store, builds-store verify\n[ ] s11 (~6 min) Docs: update the pipeline rule text in _claude/builds/README.md and the build-orchestrator plugin README (phase-done goes back to Queue and launches the next phase; Pending only when Brett is needed), help entries for the new command\n[ ] s12 (~10 min) Finish: run the full checks (check-build-pipeline, check-builds-store, plugin-commands/console tools pins, glossary catalog --check), take Pipeline tab shots via axf shot (non-blocking), write the report _claude/builds/reports/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps.md (before/after, how each API is reached), add the THREADS.md row, push the branch, open the PR and link it with builds-live.mjs link\nRead first: apps/console-web/plugins/build-orchestrator/pipeline.mjs, deploy/claude-headless.sh, framework/cli/builds-reconcile.mjs, apps/console-web/plugins/build-orchestrator/web/, apps/console-web/plugins/build-orchestrator/server/, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/test/, framework/spec/check-builds-store.mjs, _claude/builds/README.md, apps/console-web/plugins/build-orchestrator/README.md, _claude/builds/reports/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-build-whose-session-finishes-phase-e <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-build-whose-session-finishes-phase-e <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-build-whose-session-finishes-phase-e \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n",
+ "models": [
+  "Opus",
+  "Fable"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-fix-build-whose-session-finishes-phase-e--gina",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-14T23:13:13.109Z",
+   "endedAt": "2026-11-14T23:28:07.738Z",
+   "exit": 0,
+   "costUsd": 5.9155
+  },
+  {
+   "session": "axf-fix-build-whose-session-finishes-phase-e--lenny",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-16T13:12:13.721Z",
+   "endedAt": "2026-11-16T13:23:55.562Z",
+   "exit": 0,
+   "costUsd": 3.5682
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Trace the bug: read framework/core/build-pipeline.mjs (build-pipeline@1 transitions), apps/console-web/plugins/build-orchestrator/pipeline.mjs (tick, session-exit handling) and deploy/claude-headless.sh exit path, then write a short repro with the exact code path that sends a phase-done build with steps left to Pending to _claude/builds/reports/<build id>.md (notes section)",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-14T23:13:13.109Z",
+   "doneAt": "2026-11-13T10:45:20.452Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Fix the build-pipeline@1 exit transition: a session that ends cleanly with its phase done and steps left (any model, Fable→Opus or Opus→Fable with upgrade policy satisfied) resolves to status queued with reason 'phase-done', keeps its queue position, does not count against the 3-run crash limit, and only goes to Pending for a real stop (crash limit hit, blocked upgrade under fableUpgradeApproval on, needs Brett). Pure function nextStatusOnExit() with a reason code",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T10:45:20.452Z",
+   "doneAt": "2026-11-14T23:23:06.450Z",
+   "actualMin": 2198,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Add golden cases for the new exit transition (phase-done → queued, crash → queued until 3 runs, crash limit → pending, blocked upgrade → pending, all steps done → built) to the build-pipeline checks",
+   "model": "Fable",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-14T23:23:06.450Z",
+   "doneAt": "2026-11-14T23:26:57.202Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Wire the dispatcher's session-exit handler to nextStatusOnExit(): replace the branch that writes status pending after a phase finishes with the contract's result, write it through the builds store with a journalled note ('phase <n> done, requeued for <model>')",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-14T23:26:57.202Z",
+   "doneAt": "2026-11-16T13:14:32.587Z",
+   "actualMin": 2268,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Launch the next phase automatically: after a requeue on exit, run one dispatcher tick in-process (not waiting for the 1-minute cron) so a free slot and an account with the next phase's model start it at once through deploy/claude-headless.sh --account; guard against double launch with the existing pipeline lock",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T13:14:32.587Z",
+   "doneAt": "2026-11-16T13:15:47Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Make the headless exit path report phase completion reliably: claude-headless.sh passes exit kind (phase-done | crash | stopped) and the finished phase to pipeline.mjs on exit so the handler can tell a clean phase end from a crash",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-16T13:15:47Z",
+   "doneAt": "2026-11-16T13:16:32.748Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Repair existing stuck builds: add pipeline.mjs requeue-stuck (dry-run by default, --apply) that finds Pending builds whose last run ended phase-done with steps left and moves them back to the Queue, journalled; run it as part of builds-reconcile.mjs --apply",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T13:16:32.748Z",
+   "doneAt": "2026-11-16T13:17:32.955Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Show it in the Pipeline tab: a queued build requeued after a phase shows a 'Next phase: <model>, waiting for slot/account' line and the reason; Pending builds that were wrongly parked show a one-tap 'Back to Queue' (same as queue action)",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T13:17:32.955Z",
+   "doneAt": "2026-11-16T13:18:52.473Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "API parity for the UI change: requeue reason + next phase readable in the pipeline state REST route and MCP tool, console_show deep link target for a build's pipeline row, requeue-stuck as REST route + plugin command (MCP) + CLI + AmberX voice action (pipeline-requeue-stuck), all four calling the same function",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T13:18:52.473Z",
+   "doneAt": "2026-11-16T13:20:08.256Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Tests: dispatcher integration test with a fake headless launcher — two-phase build (Fable then Opus) finishes phase 1, lands in Queue, next tick launches phase 2 on an Opus account; crash path and crash limit; requeue-stuck dry-run/apply; run check-build-pipeline, check-builds-store, builds-store verify",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T13:20:08.256Z",
+   "doneAt": "2026-11-16T13:21:35.982Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Docs: update the pipeline rule text in _claude/builds/README.md and the build-orchestrator plugin README (phase-done goes back to Queue and launches the next phase; Pending only when Brett is needed), help entries for the new command",
+   "model": "Opus",
+   "estimate": "6 min",
+   "estimateMin": 6,
+   "startedAt": "2026-11-16T13:21:35.982Z",
+   "doneAt": "2026-11-16T13:22:28.158Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Finish: run the full checks (check-build-pipeline, check-builds-store, plugin-commands/console tools pins, glossary catalog --check), take Pipeline tab shots via axf shot (non-blocking), write the report _claude/builds/reports/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps.md (before/after, how each API is reached), add the THREADS.md row, push the branch, open the PR and link it with builds-live.mjs link",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-16T13:22:28.158Z",
+   "doneAt": "2026-11-16T13:23:41.716Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/fix-build-whose-session-finishes-phase-e",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 685,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/685"
+ },
+ "landedCommit": "cd1f5867661b864c0c675dea0e68189d84260bd4",
+ "commits": [
+  "29c80d28050c04bca604e12862bbde70d8e8e5a3",
+  "ebb799154dcc2c1116dad81fb34db63db7cce7d4",
+  "2fb8eac80d347cc49bc6a85029a026d6e4c49d04",
+  "b9512746152330572330036faa11260eb4f90f99",
+  "ae7a9e879ef45d23f67a8acc8cb506cdd58d9df1",
+  "99fa560f15cb7c05ce5b24c2daa4eebed4789969",
+  "c8b0ba41b7fbb84ff52258b56580abcef43f899b",
+  "5357b07b33a000bd484ec8dbb3ed56939fb54517",
+  "cbbc6a7e8135268e3a68f857cb2e75366f28bef0",
+  "46d2122dfc59548a48465f609f3fe5da02449e62",
+  "42c55947ea4a38d5306e3b6b4ee348facefd25d2",
+  "2eaa8d56eb63118e1cff807c6f1a058100e810d6",
+  "18621b1358a87d4e55560db4d0f7eb03f8b1e8ef",
+  "e288a5724a80531bc11d45797fd8fa49204c8d80",
+  "8a149f3c2df545f7d975a4ccc4f4a3391791d290",
+  "ddb5f2cf1a2c981d9915466a082aa84adfd1d852",
+  "d2790bc613c94c10826a34ba9eb02cc6a73d2950"
+ ],
+ "mergedAt": "2026-11-16T21:01:55Z",
+ "landedAt": "2026-11-16T21:01:44Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/README.md",
+  "_claude/builds/journal/2026-11-p6.jsonl",
+  "_claude/builds/journal/2026-11-p7.jsonl",
+  "_claude/builds/journal/2026-11-p8.jsonl",
+  "_claude/builds/journal/2026-11-p9.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/reports/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps.md",
+  "_claude/builds/reports/fix-build-whose-session-finishes-phase-e.md",
+  "_claude/builds/store.json",
+  "apps/amberx-droid/src/axf/core/build-pipeline.d.mts",
+  "apps/amberx-droid/src/axf/core/build-pipeline.mjs",
+  "apps/axhub-web/src/axf/core/build-pipeline.d.mts",
+  "apps/axhub-web/src/axf/core/build-pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/README.md",
+  "apps/console-web/plugins/build-orchestrator/assets/card/home.json",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+  "apps/console-web/plugins/claude-accounts/assets/card/home.json",
+  "apps/console-web/plugins/claude-accounts/help.json",
+  "apps/console-web/src/axf/core/build-pipeline.d.mts",
+  "apps/console-web/src/axf/core/build-pipeline.mjs",
+  "apps/console-web/src/control/inventory.json",
+  "apps/molly/src/axf/core/build-pipeline.d.mts",
+  "apps/molly/src/axf/core/build-pipeline.mjs",
+  "deploy/claude-headless.sh",
+  "framework/cli/builds-reconcile.mjs",
+  "framework/core/build-pipeline.d.mts",
+  "framework/core/build-pipeline.mjs",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-pipeline.mjs",
+  "framework/spec/fixtures/build-pipeline-exit.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/README.md",
+    "apps/console-web/plugins/build-orchestrator/assets/card/home.json",
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/journal/2026-11-p6.jsonl",
+    "_claude/builds/journal/2026-11-p7.jsonl",
+    "_claude/builds/journal/2026-11-p8.jsonl",
+    "_claude/builds/journal/2026-11-p9.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/reports/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps.md",
+    "_claude/builds/reports/fix-build-whose-session-finishes-phase-e.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/core/build-pipeline.d.mts",
+    "apps/console-web/src/axf/core/build-pipeline.mjs",
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-pipeline.mjs",
+    "framework/spec/fixtures/build-pipeline-exit.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-accounts",
+   "files": [
+    "apps/console-web/plugins/claude-accounts/assets/card/home.json",
+    "apps/console-web/plugins/claude-accounts/help.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/core/build-pipeline.d.mts",
+    "apps/amberx-droid/src/axf/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/core/build-pipeline.d.mts",
+    "apps/axhub-web/src/axf/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/core/build-pipeline.d.mts",
+    "apps/molly/src/axf/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-pipeline.d.mts",
+    "framework/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/builds-reconcile.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 9.4837,
+  "estimated": false,
+  "tokens": {
+   "input": 1160,
+   "output": 1468,
+   "cacheRead": 9780638,
+   "cacheWrite": 279698
+  }
+ },
+ "report": "_claude/builds/reports/fix-build-whose-session-finishes-phase-e.md",
+ "open": []
+}

@@ -162,7 +162,7 @@
   "pluginKey": {
    "own": "ui-review/items.json",
    "ok": "plugins/shipped-features/ledger.sqlite",
-   "nested": "plugins/agent-swarm/chats/2026/a.json",
+   "nested": "plugins/sample-plugin/chats/2026/a.json",
    "bad": {
     "error": "invalid_key"
    }

@@ -186,7 +186,7 @@ def engine_set(body: EngineBody) -> dict[str, Any]:
 
 # ── voice (AmberX): a phrase → one of the routes above ───────────────────────────────────────────────────────────────
 _NS_WORDS = {"settings": "settings", "setting": "settings", "changes": "changes", "change log": "changes", "notes": "notes", "note": "notes",
-             "planner": "planner", "plans": "planner", "plan studio": "planner", "ui review": "ui-review", "reviews": "ui-review",
+             "planner": "planner", "plans": "planner", "plan studio": "planner", "ui review": "ui-review", "reviews": "ui-review",  # namespace words, not plugins: axf-not-plugin:ui-review
              "sessions": "sessions", "chats": "sessions", "console": "console", "builds": "builds", "build store": "builds"}
 _MOVES = (("roll back", "rollback"), ("rollback", "rollback"), ("cut over", "cutover"), ("cutover", "cutover"), ("cut", "cutover"),
           ("shadow", "shadow"), ("back to local", "local"), ("stop shadow", "local"))

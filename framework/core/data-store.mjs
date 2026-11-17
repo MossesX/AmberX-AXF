@@ -36,7 +36,7 @@ export const NAMESPACES = Object.freeze({
   builds: { label: 'Builds store, journal and history', kinds: ['record', 'journal', 'blob'], today: '_claude/builds' },
   settings: { label: 'Settings documents', kinds: ['record'], today: '/projects/_shared/_data/settings' },
   planner: { label: 'Planner items', kinds: ['record', 'journal'], today: '/projects/amberx-axf/_data/plan-studio' },
-  'ui-review': { label: 'UI reviews', kinds: ['record', 'blob'], pluginFolder: 'ui-review', today: '.axf-console/plugins/ui-review' },
+  'ui-review': { label: 'UI reviews', kinds: ['record', 'blob'], pluginFolder: 'ui-review', today: '.axf-console/plugins/ui-review' }, // a core namespace kept in that folder today: axf-not-plugin:ui-review
   plugins: { label: 'Plugin data folders', kinds: ['record', 'blob', 'journal'], open: true, today: '.axf-console/plugins/<folder>' },
   changes: { label: 'Codebase changes log', kinds: ['record'], today: '/projects/amberx-axf/_data/changes' },
   sessions: { label: 'Session archives', kinds: ['record', 'blob', 'journal'], today: '/projects/amberx-axf/_data/sessions' },
