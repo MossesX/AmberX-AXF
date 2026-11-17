@@ -1,0 +1,29 @@
+{
+ "$axf": "asset@1",
+ "type": "instance-look",
+ "id": "own-look-per-grid-and-ta-mwjyfxon-grid-quiet-ledger",
+ "name": "own-look-per-grid-and-ta-mwjyfxon: Quiet ledger",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Flat rows, thin rules, faint zebra; dense.",
+ "tags": [
+  "ui-choice",
+  "choice-set:own-look-per-grid-and-ta-mwjyfxon",
+  "choice-option:grid-quiet-ledger"
+ ],
+ "data": {
+  "kind": "grid",
+  "look": {
+   "rowBg": "transparent",
+   "rowAltBg": "surface",
+   "textSize": "sm",
+   "spacing": "sm",
+   "borderW": "thin",
+   "borderColor": "border",
+   "radius": "none",
+   "hoverBg": "surface2",
+   "selectedBg": "accentSoft",
+   "selectedFg": "text"
+  }
+ }
+}

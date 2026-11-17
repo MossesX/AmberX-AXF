@@ -1,0 +1,29 @@
+{
+ "$axf": "asset@1",
+ "type": "instance-look",
+ "id": "own-look-per-grid-and-ta-mwjyg13i-grid-soft-cards",
+ "name": "own-look-per-grid-and-ta-mwjyg13i: Soft cards",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "No lines, rounded frame, tinted selection, accent text.",
+ "tags": [
+  "ui-choice",
+  "choice-set:own-look-per-grid-and-ta-mwjyg13i",
+  "choice-option:grid-soft-cards"
+ ],
+ "data": {
+  "kind": "grid",
+  "look": {
+   "rowBg": "surface",
+   "rowAltBg": "surface",
+   "textSize": "md",
+   "spacing": "md",
+   "borderW": "none",
+   "borderColor": "transparent",
+   "radius": "md",
+   "hoverBg": "surface2",
+   "selectedBg": "accentSoft",
+   "selectedFg": "accent"
+  }
+ }
+}

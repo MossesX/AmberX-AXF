@@ -1,0 +1,29 @@
+{
+ "$axf": "asset@1",
+ "type": "instance-look",
+ "id": "own-look-per-grid-and-ta-mwjyghlf-grid-high-contrast",
+ "name": "own-look-per-grid-and-ta-mwjyghlf: High contrast",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Strong zebra, medium rules, solid accent selection; best on a phone in daylight.",
+ "tags": [
+  "ui-choice",
+  "choice-set:own-look-per-grid-and-ta-mwjyghlf",
+  "choice-option:grid-high-contrast"
+ ],
+ "data": {
+  "kind": "grid",
+  "look": {
+   "rowBg": "bg",
+   "rowAltBg": "surface2",
+   "textSize": "md",
+   "spacing": "md",
+   "borderW": "medium",
+   "borderColor": "muted",
+   "radius": "sm",
+   "hoverBg": "surface3",
+   "selectedBg": "accent",
+   "selectedFg": "accentText"
+  }
+ }
+}

@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "instance-look",
+  "id": "grid-high-contrast",
+  "name": "High contrast",
+  "version": "1.0.0",
+  "description": "Strong zebra, medium rules and a solid accent selection: easiest to scan on a phone in daylight. A named grid look (instance-look@1): Change grid look\u2026 on any grid copies it into that grid's own look; Reset to skin drops it. Option 3 of 3 for build own-look-per-grid-and-tab-group (UI Review choices).",
+  "author": "Theme manager",
+  "tags": [
+    "instance-look",
+    "grid",
+    "ui-choice"
+  ],
+  "data": {
+    "kind": "grid",
+    "look": {
+      "rowBg": "bg",
+      "rowAltBg": "surface2",
+      "textSize": "md",
+      "spacing": "md",
+      "borderW": "medium",
+      "borderColor": "muted",
+      "radius": "sm",
+      "hoverBg": "surface3",
+      "selectedBg": "accent",
+      "selectedFg": "accentText"
+    }
+  }
+}

@@ -95,13 +95,14 @@ export function lookValueFromFamily(key: InstanceLookKeyId, raw: unknown, colour
       const name = colourTokenName(unvar(v).replace(/^--fx-/, ''), colourTokens);
       return name;
     }
-    case 'space': { const m = /^(?:var\(--fx-)?dens-gap-([a-z0-9]+)\)?$/.exec(v); return m && SPACE_STEPS.includes(m[1]) ? m[1] : null; }
-    case 'text': { const m = /^(?:var\(--fx-)?type-root-([a-z0-9]+)\)?$/.exec(v); return m && TEXT_STEPS.includes(m[1]) ? m[1] : null; }
+    case 'space': { const m = /^(?:var\(--fx-)?dens-gap-([a-z0-9]+)\)?$/.exec(v); const g = m?.[1]; return g && SPACE_STEPS.includes(g) ? g : null; }
+    case 'text': { const m = /^(?:var\(--fx-)?type-root-([a-z0-9]+)\)?$/.exec(v); const g = m?.[1]; return g && TEXT_STEPS.includes(g) ? g : null; }
     case 'radius': {
       if (v === '0' || v === '0px') return 'none';
       if (v === '999px') return 'pill';
       const m = /^(?:radius\.|var\(--fx-radius-)([a-z]+)\)?$/.exec(v);
-      return m && RADIUS_STEPS.includes(m[1]) ? m[1] : null;
+      const g = m?.[1];
+      return g && RADIUS_STEPS.includes(g) ? g : null;
     }
     case 'border': {
       if (v === '0' || v === '0px') return 'none';

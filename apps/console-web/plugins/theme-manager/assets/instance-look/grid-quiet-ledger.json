@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "instance-look",
+  "id": "grid-quiet-ledger",
+  "name": "Quiet ledger",
+  "version": "1.0.0",
+  "description": "Flat rows with thin rules and a faint zebra: dense, calm, reads like a ledger. A named grid look (instance-look@1): Change grid look\u2026 on any grid copies it into that grid's own look; Reset to skin drops it. Option 1 of 3 for build own-look-per-grid-and-tab-group (UI Review choices).",
+  "author": "Theme manager",
+  "tags": [
+    "instance-look",
+    "grid",
+    "ui-choice"
+  ],
+  "data": {
+    "kind": "grid",
+    "look": {
+      "rowBg": "transparent",
+      "rowAltBg": "surface",
+      "textSize": "sm",
+      "spacing": "sm",
+      "borderW": "thin",
+      "borderColor": "border",
+      "radius": "none",
+      "hoverBg": "surface2",
+      "selectedBg": "accentSoft",
+      "selectedFg": "text"
+    }
+  }
+}

@@ -597,7 +597,7 @@
     "src/axf/core/engines/hide.ts": "d7a969db7c5e98a4",
     "src/axf/core/engines/instance-look-rules.d.mts": "3b6efcfb45aba069",
     "src/axf/core/engines/instance-look-rules.mjs": "907621693bd6da5c",
-    "src/axf/core/engines/instance-look.ts": "50288b6d5f4b1689",
+    "src/axf/core/engines/instance-look.ts": "e53e654b7a1c9902",
     "src/axf/core/engines/interface.ts": "b19e7a7c4d43f344",
     "src/axf/core/engines/job-type-rules.d.mts": "2bc4fa120fe6709c",
     "src/axf/core/engines/job-type-rules.mjs": "1b0185de2f27f003",

@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "instance-look",
+  "id": "grid-soft-cards",
+  "name": "Soft cards",
+  "version": "1.0.0",
+  "description": "Rows sit on the surface with no lines and a rounded frame; the selection is tinted and the text takes the accent. A named grid look (instance-look@1): Change grid look\u2026 on any grid copies it into that grid's own look; Reset to skin drops it. Option 2 of 3 for build own-look-per-grid-and-tab-group (UI Review choices).",
+  "author": "Theme manager",
+  "tags": [
+    "instance-look",
+    "grid",
+    "ui-choice"
+  ],
+  "data": {
+    "kind": "grid",
+    "look": {
+      "rowBg": "surface",
+      "rowAltBg": "surface",
+      "textSize": "md",
+      "spacing": "md",
+      "borderW": "none",
+      "borderColor": "transparent",
+      "radius": "md",
+      "hoverBg": "surface2",
+      "selectedBg": "accentSoft",
+      "selectedFg": "accent"
+    }
+  }
+}

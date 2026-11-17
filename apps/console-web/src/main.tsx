@@ -19,7 +19,7 @@ const sharedAssets = import.meta.glob('./axf/assets/**/*.json', { eager: true, i
 const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });
 const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager: true, import: 'default' });
 // Plugin Home cards (card@1 at plugins/<folder>/assets/card/*.json; the VPS writes missing ones, build rule home-card).
-const pluginCards = import.meta.glob(['../plugins/*/assets/card/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
+const pluginCards = import.meta.glob(['../plugins/*/assets/card/*.json', '../plugins/*/assets/instance-look/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' }); // cards + named grid / tab-row looks (instance-look@1)
 const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...overrideAssets };
 
 const axf = createAxf({
