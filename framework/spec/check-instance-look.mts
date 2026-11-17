@@ -129,5 +129,79 @@ ok(look.additionalProperties === false, 'schema refuses unknown keys');
 for (const [k, p] of Object.entries(look.properties as Record<string, { enum?: string[] }>)) ok(Array.isArray(p.enum) && p.enum.length > 0 && !p.enum.some((v) => /^-?\d*\.?\d+(px|em|rem|%)?$|^#|\(/.test(v)), `schema ${k} is an enum with no raw value`);
 eq(schema.properties.data.properties.kind.enum, L.INSTANCE_LOOK_KINDS, 'schema kinds');
 
+/* ---- phase 2: skin swap restyles, reset returns to the skin (through the settings store the components read) ---- */
+{
+  const skinA = { grid: { rowBg: 'var(--fx-surface)', hoverBg: 'var(--fx-surface2)', radius: 'radius.sm' }, tabs: { activeBg: 'var(--fx-accent-soft)', gap: 'dens-gap-sm' } };
+  const skinB = { grid: { rowBg: 'var(--fx-surface3)', hoverBg: 'var(--fx-accent-soft)', radius: 'radius.lg' }, tabs: { activeBg: 'var(--fx-accent)', gap: 'dens-gap-lg' } };
+  const id = 'builds.rows';
+  let saved: Record<string, unknown> = { 'axf.display.fontScale': 1 };
+  saved = L.writeInstanceLook(saved, 'grid', id, L.setInstanceLookKey({}, 'rowBg', 'accentSoft', ct), ct);
+  const a = L.resolveFromSettings(saved, 'grid', id, skinA, ct);
+  const b = L.resolveFromSettings(saved, 'grid', id, skinB, ct);
+  eq(a.vars['--fx-inst-row-bg'], 'var(--fx-accent-soft)', 'the own key wins over skin A');
+  eq(b.vars['--fx-inst-row-bg'], 'var(--fx-accent-soft)', 'the own key stays under skin B');
+  eq([a.vars['--fx-inst-hover-bg'], b.vars['--fx-inst-hover-bg']], ['var(--fx-surface2)', 'var(--fx-accent-soft)'], 'a key the grid did not set restyles with the skin swap');
+  eq([a.vars['--fx-inst-radius'], b.vars['--fx-inst-radius']], ['var(--fx-radius-sm)', 'var(--fx-radius-lg)'], 'radius follows the skin swap');
+  eq([a.source.rowBg, a.source.hoverBg], ['instance', 'skin'], 'source per key');
+  ok(!a.followsSkin, 'an own key = not following the skin');
+  const reset = L.resetInstanceLook(saved, 'grid', id);
+  eq(reset, { 'axf.display.fontScale': 1 }, 'reset drops only the instance record');
+  const back = L.resolveFromSettings(reset, 'grid', id, skinA, ct);
+  eq(back, L.resolveInstanceLook('grid', { skin: L.lookFromFamilies('grid', skinA, ct) }, ct), 'after reset the grid resolves to exactly the skin layer');
+  ok(back.followsSkin && back.source.rowBg === 'skin', 'after reset every key comes from the skin');
+  const tabs = L.resolveFromSettings(L.writeInstanceLook({}, 'tab-group', 'settings.main', { spacing: 'xl' }, ct), 'tab-group', 'settings.main', skinB, ct);
+  eq([tabs.bind['--fx-tab-gap'], tabs.vars['--fx-inst-spacing'], tabs.vars['--fx-inst-selected-bg']], ['var(--fx-inst-spacing)', 'var(--fx-dens-gap-xl)', 'var(--fx-accent)'], 'a tab row: own spacing bound to --fx-tab-gap, selected from skin B');
+  const empty = L.resolveFromSettings({}, 'tab-group', 'x', null, ct);
+  ok(empty.empty && !Object.keys(L.instanceLookStyle(empty)).length, 'no skin values and no record: nothing on the root (the :root defaults stand)');
+}
+
+/* ---- phase 2: the CSS reads --fx-inst-* only under a data-fx-inst gate, never with a fallback ---- */
+{
+  const files = { 'ui/axf.css': readFileSync(join(root, 'ui/axf.css'), 'utf8'), 'libs/datagrid/datagrid.css': readFileSync(join(root, 'libs/datagrid/datagrid.css'), 'utf8') };
+  for (const [file, css] of Object.entries(files)) {
+    for (const rule of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      if (!rule[2].includes('--fx-inst-')) continue;
+      const sel = rule[1].trim().split('\n').pop()!.trim();
+      ok(/\[data-fx-inst~='[a-zA-Z]+'\]/.test(sel), `${file}: ${sel} reads --fx-inst-* under a data-fx-inst gate`);
+      for (const m of rule[2].matchAll(/var\((--fx-inst-[a-z-]+)([^)]*)\)/g)) ok(m[2].trim() === '', `${file}: ${m[1]} has no var() fallback`);
+      for (const m of sel.matchAll(/data-fx-inst~='([a-zA-Z]+)'/g)) ok(L.INSTANCE_LOOK_KEY_IDS.includes(m[1] as L.InstanceLookKeyId), `${file}: gate ${m[1]} is a look key`);
+    }
+  }
+  for (const v of ['--fx-grid-font-size', '--fx-tab-font-size', '--fx-grid-border-w']) ok(v in componentTokenDefaults(), `${v} is a component-tokens@1 family token now`);
+  ok(files['libs/datagrid/datagrid.css'].includes('font-size: var(--fx-grid-font-size)') && !/border-bottom: var\(--fx-border-w\) solid var\(--fx-grid-/.test(files['libs/datagrid/datagrid.css']), 'the grid reads its font size and line width from its family tokens');
+  ok(!/--axf-grid-cols[^;]*--fx-inst-/.test(readFileSync(join(root, 'libs/datagrid/index.tsx'), 'utf8')), 'the look never touches the column template (fixed cell widths)');
+}
+
+/* ---- phase 2: CLI round-trip on a scratch look document (framework/cli/instance-look.mjs = axf look) ---- */
+{
+  const { mkdtempSync, mkdirSync, writeFileSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { spawnSync } = await import('node:child_process');
+  const dir = mkdtempSync(join(tmpdir(), 'axf-look-cli-'));
+  mkdirSync(join(dir, 'looks'));
+  const file = join(dir, 'looks', 'axf-console.json');
+  writeFileSync(file, JSON.stringify({ $axf: 'app-look@1', app: 'axf-console', default: { slots: {}, settings: {} }, own: { settings: {} } }));
+  const env = { ...process.env, AXF_APPEARANCE_FILE: join(dir, 'appearance.json'), AXF_LOOKS_DIR: join(dir, 'looks') };
+  const cli = (...args: string[]) => { const r = spawnSync('node', [join(root, 'cli/instance-look.mjs'), ...args, '--json'], { env, encoding: 'utf8' }); return { code: r.status, out: r.stdout ? JSON.parse(r.stdout) : null, err: r.stderr }; };
+  const doc = () => JSON.parse(readFileSync(file, 'utf8'));
+  let r = cli('set', 'grid', 'ui-review.items', 'rowBg=surface2', 'textSize=sm', 'radius=pill');
+  eq([r.code, r.out?.look], [0, { rowBg: 'surface2', textSize: 'sm', radius: 'pill' }], 'cli set');
+  eq(doc().own.settings['axf.chrome.grid.ui-review.items.look'], { rowBg: 'surface2', textSize: 'sm', radius: 'pill' }, 'cli writes the same settings key the dialog writes');
+  r = cli('set', 'grid', 'ui-review.items', 'radius=4px');
+  ok(r.code === 2 && /raw/.test(r.err), `cli refuses a raw px (exit 2, says why): ${r.err}`);
+  r = cli('set', 'grid', 'ui-review.items', 'rowBg=#123456');
+  ok(r.code === 2 && doc().own.settings['axf.chrome.grid.ui-review.items.look'].rowBg === 'surface2', 'cli refuses a raw colour and writes nothing');
+  r = cli('list');
+  eq(r.out?.map((x: { kind: string; id: string }) => `${x.kind}:${x.id}`), ['grid:ui-review.items'], 'cli list');
+  r = cli('reset', 'grid', 'ui-review.items');
+  ok(r.code === 0 && r.out?.changed && r.out?.followsSkin && !('axf.chrome.grid.ui-review.items.look' in doc().own.settings), 'cli reset = back to the skin');
+  r = cli('undo', 'grid', 'ui-review.items');
+  eq(r.out?.look, { rowBg: 'surface2', textSize: 'sm', radius: 'pill' }, 'cli undo puts the record back');
+  ok(cli('undo', 'grid', 'ui-review.items').code === 1, 'one undo only');
+  r = cli('get', 'tab-group', 'settings.main');
+  ok(r.code === 0 && r.out?.followsSkin === true, 'cli get of a row nobody set follows the skin');
+  ok(cli('get', 'table', 'x').code === 2, 'cli refuses an unknown kind');
+}
+
 if (bad.length) { console.error(`check-instance-look: ${bad.length} of ${n} checks failed`); for (const b of bad) console.error(`  ✗ ${b}`); process.exit(1); }
 console.log(`✓ instance-look@1: ${n} checks passed`);
