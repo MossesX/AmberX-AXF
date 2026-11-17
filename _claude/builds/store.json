@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7576,
- "updatedAt": "2026-11-17T18:27:06.363Z",
+ "rev": 7577,
+ "updatedAt": "2026-11-17T18:28:36.505Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271296,6 +271296,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T18:26:55.611Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "nothing-saved-browser-all-console",
+   "title": "Nothing saved in the browser: all console settings and asset overrides live on the server",
+   "category": "",
+   "detail": "Move every console setting, asset override (axf.chrome.* per-asset settings), layout, dock, column, tab and UI state out of browser localStorage into the server (axf-data, per user), so voice/API/MCP can read and reset them and every device sees the same thing. One-time migration uploads what the browser has now, then the browser keeps nothing. Add a global 'Reset every asset override' (all axf.chrome.* at once) in Settings > Appearance and as an action/API. Also: reloading the console keeps you on the page/tab/dialog you were on instead of going to Home. Full API parity, tests.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:28:34.337Z",
+   "updatedAt": "2026-11-17T18:28:34.337Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I don't want anything saved in the browser anymore. Right now it says 10 assets are controlled. If I refresh it, it brings me to the homepage.",
+    "at": "2026-11-17T18:28:34.337Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 953
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

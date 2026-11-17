@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:27:06.363Z",
+ "updatedAt": "2026-11-17T18:28:36.505Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -177493,6 +177493,37 @@
      "createdAt": "2026-11-17T18:26:55.611Z"
     }
    ]
+  },
+  {
+   "id": "nothing-saved-browser-all-console",
+   "title": "Nothing saved in the browser: all console settings and asset overrides live on the server",
+   "category": "",
+   "detail": "Move every console setting, asset override (axf.chrome.* per-asset settings), layout, dock, column, tab and UI state out of browser localStorage into the server (axf-data, per user), so voice/API/MCP can read and reset them and every device sees the same thing. One-time migration uploads what the browser has now, then the browser keeps nothing. Add a global 'Reset every asset override' (all axf.chrome.* at once) in Settings > Appearance and as an action/API. Also: reloading the console keeps you on the page/tab/dialog you were on instead of going to Home. Full API parity, tests.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:28:34.337Z",
+   "updatedAt": "2026-11-17T18:28:34.337Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I don't want anything saved in the browser anymore. Right now it says 10 assets are controlled. If I refresh it, it brings me to the homepage.",
+    "at": "2026-11-17T18:28:34.337Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
