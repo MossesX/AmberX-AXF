@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8097,
- "updatedAt": "2026-11-17T21:52:33.730Z",
+ "rev": 8098,
+ "updatedAt": "2026-11-17T21:53:11.021Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268307,7 +268307,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:52:18.433Z",
+   "updatedAt": "2026-11-17T21:53:08.943Z",
    "builtAt": "",
    "notes": [
     {
@@ -268549,6 +268549,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 5 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T21:52:12.042Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T21:53:08.943Z"
     }
    ],
    "approvals": [
@@ -268578,7 +268582,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -269326,7 +269330,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
