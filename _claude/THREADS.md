@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:09 UTC · `notify-phone-when-queue-starts-building` added (0 steps) (all) · foreign-write
 - 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · orchestrator
 - 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
 - 2026-11-17 19:10 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:35 UTC · `rebuild-every-toolbar-page-specific` note (all) · Brett
 - 2026-11-17 20:35 UTC · `guided-live-demo-test-watch-orchestrator` s12 done, → running (all) · orchestrator
 - 2026-11-17 20:37 UTC · `guided-live-demo-test-watch-orchestrator` s13 done (all) · orchestrator
+- 2026-11-17 20:37 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · Brett
 
 ## Token passes (log)
 
