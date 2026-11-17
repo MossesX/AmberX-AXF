@@ -13,6 +13,8 @@ import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { registerZone, startDrag, type DropPos } from '../dnd';
 import { runDragMove, useDraggableHost } from '../../react/dragHost';
+import { nextColumnOrder, orderColumns, rowDropOf } from '../../core/engines/drag-hosts';
+export { orderColumns };
 import spec from './library.json';
 import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
@@ -119,12 +121,6 @@ type Line<R> = { kind: 'group'; g: GridGroup<R>; depth: number } | { kind: 'row'
 
 /** The per-device column order of a grid (drag-move@1 `grid-column`), used when the host passes no `columnOrder`. */
 export const GRID_COLUMNS_KEY = (gridId: string) => `axf.grid.columns.${gridId}`;
-/** Columns in `order` (ids it names first, in that order; the rest after, as declared). */
-export function orderColumns<C extends { id: string }>(columns: readonly C[], order: readonly string[]): C[] {
-  const rank = new Map(order.map((id, i) => [id, i]));
-  return [...columns].map((c, i) => ({ c, i })).sort((a, b) => (rank.get(a.c.id) ?? order.length + a.i) - (rank.get(b.c.id) ?? order.length + b.i)).map((x) => x.c);
-}
-
 export function DataGrid<R>(p: DataGridProps<R>) {
   const rt = useRuntime();
   const zone = p.zone ?? `axf-grid:${p.id}`;
@@ -185,12 +181,12 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   useDraggableHost('grid-column', p.id, {
     list: () => ({ label: `${p.label ?? p.id} columns`, items: cols.map((c) => ({ id: c.id, label: c.label, ...(c.fixed ? { locked: true } : {}) })), accepts: { add: !!(config.columnMenu && p.onToggleColumn), remove: !!(config.columnMenu && p.onToggleColumn) } }),
     apply: (plan) => {
-      const next = plan.order[p.id];
       if (plan.op === 'remove') return p.onToggleColumn!(plan.item.id, false);
       const col = p.columns.find((c) => c.id.toLowerCase() === plan.item.id.toLowerCase());
       if (!col) throw new Error(`${p.label ?? p.id} has no column ${plan.item.id} (${p.columns.map((c) => c.id).join(', ')})`);
       if (plan.op === 'add') p.onToggleColumn!(col.id, true);
-      if (Array.isArray(next)) { const shown = next.map((id) => (id.toLowerCase() === col.id.toLowerCase() ? col.id : id)); writeOrder([...shown, ...ordered.map((c) => c.id).filter((id) => !shown.includes(id))]); }
+      const ids = nextColumnOrder(plan, p.id, ordered.map((c) => c.id));
+      if (ids) writeOrder(ids);
     },
     locate: (id) => (id === null ? gridRef.current?.querySelector('.axf-grid-head') ?? null : gridRef.current?.querySelector(`[data-axf-col="${escapeSelector(id)}"]`) ?? null),
   });
@@ -200,11 +196,8 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     list: () => ({ label: `${p.label ?? p.id} rows`, items: lines.filter((l): l is { kind: 'row'; r: R; depth: number } => l.kind === 'row').map((l) => ({ id: p.rowId(l.r), label: p.rowLabel?.(l.r) ?? p.rowId(l.r), ...(sorted ? { locked: true } : {}) })) }),
     apply: (plan) => {
       if (sorted) throw new Error(`${p.label ?? p.id} is sorted by ${p.sort!.col}; switch the sort off (Original order) to move rows`);
-      const next = plan.order[p.id]; if (!Array.isArray(next)) return;
-      const i = next.indexOf(plan.item.id);
-      const before = next[i + 1], after = next[i - 1];
-      if (before) p.onMove!({ kind: 'row', id: plan.item.id }, { kind: 'row', id: before }, 'before');
-      else if (after) p.onMove!({ kind: 'row', id: plan.item.id }, { kind: 'row', id: after }, 'after');
+      const drop = rowDropOf(plan, p.id);
+      if (drop) p.onMove!({ kind: 'row', id: plan.item.id }, { kind: 'row', id: drop.id }, drop.pos);
     },
     locate: (id) => (id === null ? gridRef.current : rowEl(id)),
   });
