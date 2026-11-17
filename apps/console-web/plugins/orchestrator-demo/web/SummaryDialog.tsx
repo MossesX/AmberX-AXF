@@ -29,9 +29,9 @@ export function SummaryDialog({ close }: { close: () => void }) {
   const acts = sum?.acts ?? [];
 
   const columns: GridColumn<ActSummary>[] = [
-    { id: 'n', label: '#', width: 'calc(var(--fx-space) * 3)', render: (a) => acts.indexOf(a) + 1, sortValue: (a) => acts.indexOf(a) },
+    { id: 'n', label: '#', width: 'calc(var(--fx-space) * 7)', render: (a) => acts.indexOf(a) + 1, sortValue: (a) => acts.indexOf(a) },
     { id: 'title', label: 'Act', width: 'minmax(calc(var(--fx-space) * 14), 2fr)', fixed: true, render: (a) => <span className={`axp-orchestrator-demo__act is-${a.result}`}>{a.title}</span> },
-    { id: 'result', label: 'Result', width: 'calc(var(--fx-space) * 8)', sortable: true, sortValue: (a) => a.result, render: (a) => <Chip tone={a.result === 'not-run' ? undefined : TONE[a.result]}>{LABEL[a.result]}</Chip> },
+    { id: 'result', label: 'Result', width: 'calc(var(--fx-space) * 18)', sortable: true, sortValue: (a) => a.result, render: (a) => <Chip tone={a.result === 'not-run' ? undefined : TONE[a.result]}>{LABEL[a.result]}</Chip> },
     { id: 'what', label: 'What happened', width: 'minmax(calc(var(--fx-space) * 14), 3fr)', render: (a) => <span className={a.error ? 'axp-orchestrator-demo__error' : 'axp-orchestrator-demo__muted'}>{a.error || a.observed}</span> },
     { id: 'evidence', label: 'Evidence', width: 'minmax(calc(var(--fx-space) * 12), 2fr)', render: (a) => <span className="axp-orchestrator-demo__evidence">{a.evidence.filter((e) => e.ref).slice(0, 3).map((e, i) => <EvidenceLink key={i} e={e} />)}</span> },
   ];

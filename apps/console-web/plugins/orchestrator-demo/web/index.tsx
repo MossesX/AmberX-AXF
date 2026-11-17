@@ -38,13 +38,25 @@ function openDeepLink(rt: AxfRuntime) {
   const what = parseOpen(globalThis.location?.search ?? '');
   if (!what) return;
   const u = new URL(globalThis.location.href); u.searchParams.delete(DEEP_LINK); globalThis.history?.replaceState(null, '', u.toString());
-  // the shell restores its last page while plugins load: open again after it has settled
+  // the shell restores its last page while plugins load (late on a cold start or a slow phone): keep the link's
+  // screen on top until it has stayed for a few seconds, then leave the person free to move on
+  const dialog = what === 'summary' ? DIALOG_SUMMARY : what === 'start' ? DIALOG_START : '';
+  const there = () => (dialog ? rt.getState().dialog?.id === dialog : what === 'page' ? rt.getState().view === VIEW : true);
   const open = () => {
     if (what === 'settings') rt.dispatch(`settings.open:${SETTINGS_TAB}`);
     else if (what === 'page') rt.navigate(VIEW);
-    else rt.openDialog(what === 'summary' ? DIALOG_SUMMARY : DIALOG_START);
+    else rt.openDialog(dialog);
   };
-  for (const ms of [0, 1200, 3000]) setTimeout(open, ms);
+  if (what === 'settings') { for (const ms of [0, 1200, 3000]) setTimeout(open, ms); return; }
+  const until = Date.now() + 25000;
+  let stable = 0;
+  const keep = setInterval(() => {
+    if (there()) { stable += 300; if (stable >= 2500) clearInterval(keep); return; }
+    stable = 0;
+    if (Date.now() > until) { clearInterval(keep); return; }
+    open();
+  }, 300);
+  open();
 }
 
 type Reply = { state?: DemoState | null; settings?: unknown };

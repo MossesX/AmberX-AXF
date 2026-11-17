@@ -15,8 +15,8 @@
 
 /* live caption bar: docked at the top, or anchored just above the focused element (top / left set inline) */
 .axp-orchestrator-demo__caption {
-  position: fixed; z-index: 900; top: var(--fx-dens-gap-3xl); left: 50%; transform: translateX(-50%);
-  width: min(calc(var(--fx-space) * 40), calc(100vw - var(--fx-dens-gap-3xl) * 2));
+  position: fixed; z-index: 900; top: calc(var(--fx-row-h) * 3); left: 50%; transform: translateX(-50%);
+  width: min(calc(var(--fx-font-size) * 34), calc(100vw - var(--fx-dens-gap-3xl) * 2));
   display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl);
   background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-blur));
   color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-accent); border-radius: var(--fx-radius-md); box-shadow: var(--fx-shadow-lg);
