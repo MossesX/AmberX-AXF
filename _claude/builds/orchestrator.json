@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T12:40:42.397Z",
+ "updatedAt": "2026-11-17T12:41:41.857Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -170444,7 +170444,7 @@
    "title": "Maintenance plugin: Clear Docker cache button, restarts Docker if needed",
    "category": "",
    "detail": "Add a 'Clear Docker cache' action to the Maintenance plugin. It runs docker builder prune -af and shows space freed. If the cache is reported as in use (reclaimable 0 while cache size > 0), it offers/does a Docker restart (systemctl restart docker), waits for every container to come back on its restart policy, verifies them, then prunes again and reports before/after disk. Context: on Nov 17 the disk hit 100%; 87 GB of build cache showed as 'active' and prune freed nothing until Docker was restarted, which dropped disk from 96% to 78%. Confirm before restart (it drops all apps ~1-2 min). Reachable from UI, REST, MCP, CLI and voice; log to systems check. Also add to the disk systems-check item's Auto fix.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -170452,8 +170452,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T12:33:04.136Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T12:41:36.636Z",
+   "builtAt": "2026-11-17T12:41:36.636Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -170504,8 +170504,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:41:36.636Z",
      "note": "",
      "uid": "st-mwknxcw201loc2",
      "createdAt": "2026-11-17T12:22:35.624Z"

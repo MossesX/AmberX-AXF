@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7414,
- "updatedAt": "2026-11-17T12:40:42.397Z",
+ "rev": 7415,
+ "updatedAt": "2026-11-17T12:41:41.857Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262650,7 +262650,7 @@
    "title": "Maintenance plugin: Clear Docker cache button, restarts Docker if needed",
    "category": "",
    "detail": "Add a 'Clear Docker cache' action to the Maintenance plugin. It runs docker builder prune -af and shows space freed. If the cache is reported as in use (reclaimable 0 while cache size > 0), it offers/does a Docker restart (systemctl restart docker), waits for every container to come back on its restart policy, verifies them, then prunes again and reports before/after disk. Context: on Nov 17 the disk hit 100%; 87 GB of build cache showed as 'active' and prune freed nothing until Docker was restarted, which dropped disk from 96% to 78%. Confirm before restart (it drops all apps ~1-2 min). Reachable from UI, REST, MCP, CLI and voice; log to systems check. Also add to the disk systems-check item's Auto fix.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -262658,8 +262658,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T12:33:04.136Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T12:41:36.636Z",
+   "builtAt": "2026-11-17T12:41:36.636Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -262699,29 +262699,23 @@
    "pipeline": {
     "queuedAt": "2026-11-17T12:22:24.534Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-maintenance-plugin-clear-docker-cache--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T12:23:23.274Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "waiting for the split before it can start",
     "route": "",
-    "dispatchedAt": "2026-11-17T12:23:23.274Z",
-    "planned": {
-     "model": "Opus",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-17T12:23:05.909Z",
-     "why": "subscription account hulu0241"
-    },
+    "dispatchedAt": "",
+    "planned": null,
     "tried": [],
-    "pickedAt": "2026-11-17T12:23:23.274Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -262742,12 +262736,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:41:36.636Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T12:22:35.624Z",
-     "updatedAt": "2026-11-17T12:22:35.906Z"
+     "updatedAt": "2026-11-17T12:41:37.356Z"
     }
    ],
    "profiles": [
