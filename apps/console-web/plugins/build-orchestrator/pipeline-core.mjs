@@ -36,6 +36,7 @@
 import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
+import { planGroups } from '../../../../framework/core/build-groups.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
 export const SCHEMA = 'pipeline-settings@1';
@@ -62,8 +63,14 @@ export const DEFAULTS = Object.freeze({
   apiAccounts: [],
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
+  /** step-groups@1: a build estimated over this many minutes is split into step groups that run in parallel slots (Brett, Nov 16 2026: 30). */
+  splitOverMin: 30,
+  /** step-groups@1: at most this many groups of one build run at once (always within the agent cap). */
+  maxParallelGroups: 3,
+  /** step-groups@1: split long builds into parallel groups at all (off = every build runs as one sequential session). */
+  parallelGroups: true,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
+const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], splitOverMin: [0, 1440], maxParallelGroups: [1, 12] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -85,6 +92,9 @@ export function normSettings(raw = {}) {
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === undefined ? DEFAULTS.apiOverflow : o.apiOverflow === true,
     healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
+    splitOverMin: o.splitOverMin === undefined ? DEFAULTS.splitOverMin : clamp('splitOverMin', o.splitOverMin),
+    maxParallelGroups: o.maxParallelGroups === undefined ? DEFAULTS.maxParallelGroups : clamp('maxParallelGroups', o.maxParallelGroups),
+    parallelGroups: o.parallelGroups === undefined ? DEFAULTS.parallelGroups : o.parallelGroups !== false && o.parallelGroups !== 'false',
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -452,7 +462,8 @@ export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }) {
     `Rules: every step ${max} minutes or less, with an estimate; 3 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; anything bigger than ${max} minutes is cut into several steps; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
     `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
-    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
+    `Files and order (step groups): a build over ${DEFAULTS.splitOverMin} minutes runs its independent steps at the same time in separate sessions and merges them back. So give every step "files": the exact repo paths it creates or edits (no globs, no folders when a file is known); two steps that touch the same file run one after the other. Give "dependsOn": the ids ("s1", "s2" …, a step's id is its position in your list) of earlier steps whose result it needs even when they share no file (an API step on the UI it serves, tests on what they test). Only real dependencies: every extra one makes the build slower. Never a later step, never the step itself.`,
+    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"],"dependsOn":["s1"]}]}`,
     '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
     said ? `Brett said (verbatim):\n${said}` : '', addenda,
   ].filter(Boolean).join('\n');
@@ -478,8 +489,16 @@ export function parseSplit(text, rules = { maxStepMinutes: STEP_MINUTES }) {
     const m = EST_RE.exec(est); const minutes = m ? Math.round(Number(m[1]) * (/^h/i.test(m[2] || '') ? 60 : 1)) : null;
     if (minutes == null) problems.push(`step ${i + 1} has no estimate`); else if (minutes > max) problems.push(`step ${i + 1} is ${minutes} min (limit ${max})`);
     const model = modelKey(r?.model) === FOUNDATION_MODEL ? 'Fable' : 'Opus';
-    steps.push({ id: `s${i + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
+    // dependsOn: "s3", 3 or "3" all name the third step of the answer
+    const deps = [...new Set(list(r?.dependsOn).map((d) => (typeof d === 'number' ? `s${d}` : /^\d+$/.test(str(d, 10).trim()) ? `s${str(d, 10).trim()}` : str(d, 10).trim().toLowerCase())).filter(Boolean))];
+    for (const d of deps) {
+      const n = /^s(\d+)$/.exec(d)?.[1];
+      if (!n || Number(n) < 1 || Number(n) > raw.length) problems.push(`step ${i + 1} depends on "${d}", not a step of the answer`);
+      else if (Number(n) === i + 1) problems.push(`step ${i + 1} depends on itself`);
+    }
+    steps.push({ id: `s${i + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300).trim().replace(/^\.\//, '')).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20), ...(deps.length ? { dependsOn: deps } : {}) });
   });
+  if (!problems.length) { const plan = planGroups({ steps }, { splitOverMin: 0 }); if (plan.error) problems.push(plan.error); }
   return problems.length ? { steps, error: problems.join('; ') } : { steps, error: '' };
 }
 
@@ -502,6 +521,24 @@ export function rulesSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
   steps.forEach((s, i) => { s.id = `s${i + 1}`; });
   steps.push({ id: `s${steps.length + 1}`, text: `Tests green, report _claude/builds/reports/${b.id}.md, THREADS row, commit, push, PR`, model: 'Opus', estimate: `${max} min`, why: '', files: [`_claude/builds/reports/${b.id}.md`, '_claude/THREADS.md'], checks: [] });
   return steps;
+}
+
+/**
+ * The step-group plan the orchestrator writes on a build (step-groups@1, framework/core/build-groups.mjs planGroups) under
+ * the pipeline settings: parallelGroups off = threshold 0 (one group). A build with an open step that names no files stays
+ * one sequential group: without files nothing says two steps are independent, so running them apart could clash.
+ */
+export function groupPlan(b, settings = normSettings()) {
+  const s = normSettings(settings);
+  const threshold = s.parallelGroups ? s.splitOverMin : 0;
+  const plan = planGroups(b, { splitOverMin: threshold });
+  if (plan.error || !plan.split) return plan;
+  const bare = list(b?.steps).filter((x) => !x.done && !x.skip && !list(x.files).length).map((x) => x.id);
+  if (bare.length) {
+    const one = planGroups(b, { splitOverMin: 0 });
+    return { ...one, minutes: plan.minutes, threshold, reason: `${plan.minutes} min over ${threshold} min, but step${bare.length === 1 ? '' : 's'} ${bare.slice(0, 5).join(', ')}${bare.length > 5 ? ' …' : ''} name${bare.length === 1 ? 's' : ''} no files: one group` };
+  }
+  return plan;
 }
 
 /** Does this build still need the orchestrator's split? (no steps, or steps over the limit / without estimates) */

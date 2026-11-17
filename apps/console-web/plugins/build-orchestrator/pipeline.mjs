@@ -77,6 +77,7 @@ import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
+import * as BG from '../../../../framework/core/build-groups.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
 import { isBuildId, namesOf, planAliases, uniqueBuildId } from '../../../../framework/core/build-id.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -408,20 +409,56 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
   if (!steps.length) { steps = P.rulesSplit(b, rules); used = 'rules'; note = `Split by rules${error ? ` (Claude: ${str(error, 200)})` : ''}: one step per line of the request, review the steps.`; }
   else note = `Split by Claude into ${steps.length} steps (${steps.filter((s) => s.model === 'Fable').length} Fable).`;
   const done = new Map(b.steps.filter((s) => s.done).map((s) => [s.text.trim().toLowerCase(), s]));
-  let out = null;
+  let out = null; let groups = null;
   withStore((s) => {
     const rec = storeCore.findBuild(s, b.id); const now = nowIso();
-    const next = steps.map((st, i) => { const old = done.get(st.text.trim().toLowerCase()); return storeCore.normStep({ ...st, id: `s${i + 1}`, done: !!old, doneAt: old?.doneAt ?? '', uid: old?.uid }, i, { now }); });
+    const next = steps.map((st, i) => { const old = done.get(st.text.trim().toLowerCase()); return storeCore.normStep({ ...st, id: `s${i + 1}`, group: '', done: !!old, doneAt: old?.doneAt ?? '', uid: old?.uid }, i, { now }); });
     // a done step the new split dropped is kept at the top so nothing done is lost
-    const kept = rec.steps.filter((x) => x.done && !next.some((n) => n.uid === x.uid)).map((x, i) => ({ ...x, id: `d${i + 1}` }));
+    const kept = rec.steps.filter((x) => x.done && !next.some((n) => n.uid === x.uid)).map((x, i) => ({ ...x, id: `d${i + 1}`, group: '' }));
     rec.steps = [...kept, ...next]; rec.steps.forEach((x, i) => { x.id = `s${i + 1}`; });
+    // the answer's dependsOn names its own positions (s1 = its first step); kept steps shift them
+    const shift = (d) => { const n = /^s(\d+)$/.exec(d)?.[1]; return n ? `s${Number(n) + kept.length}` : ''; };
+    for (const x of rec.steps.slice(kept.length)) { const deps = (x.dependsOn ?? []).map(shift).filter(Boolean); if (deps.length) x.dependsOn = deps; else delete x.dependsOn; }
+    // step groups (step-groups@1): a build over the threshold runs its independent steps in parallel slots
+    const plan = P.groupPlan(rec, settings);
+    const grouped = BG.withGroups(rec, plan); rec.steps = grouped.steps; if (grouped.groups) rec.groups = grouped.groups; else delete rec.groups;
+    groups = { split: !!grouped.groups, count: grouped.groups?.length ?? 1, reason: plan.reason, error: plan.error };
+    note = `${note} Groups: ${plan.reason}.`;
     if (!rec.rearranged) { rec.defaultSteps = rec.steps.map((x) => ({ ...x })); rec.defaultAt = now; }
     rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), split: { at: now, by, provider: used, steps: rec.steps.length, note: str(note, 400) }, splitRequested: '', note: used === 'rules' ? 'steps made by rules: review them' : '' });
     rec.notes.push({ text: note, at: now }); rec.updatedAt = now; out = rec;
     return s;
   }, { by, action: 'pipeline:split', note: b.id });
-  logLine({ event: 'split', build: b.id, provider: used, steps: out.steps.length, error });
-  return { id: b.id, provider: used, steps: out.steps.length, error, note };
+  logLine({ event: 'split', build: b.id, provider: used, steps: out.steps.length, error, groups: groups?.count ?? 1 });
+  return { id: b.id, provider: used, steps: out.steps.length, error, note, groups };
+}
+
+/** May the orchestrator (re)plan this build's groups? Only before any group runs: pending or queued, no live or merged group. */
+export function groupsPlannable(b) {
+  if (!b || b.deleted || b.hidden || !['pending', 'queued'].includes(b.status) || !(b.steps ?? []).length) return false;
+  return !(b.groups ?? []).some((g) => BP.GROUP_LIVE_STATES.includes(g.state) || ['ready-to-merge', 'merged'].includes(g.state));
+}
+
+/**
+ * Work out a build's step groups from the steps it has (files, dependsOn), without a re-split: hand-written steps and
+ * every build filed before step-groups@1. Writes `groups[]` only when the plan splits (or clears a stale one); a build
+ * that stays one group is not written. `apply: false` returns the plan alone. Throws code 2 when it may not be replanned.
+ */
+export function planBuildGroups(id, { apply = true, by = process.env.AXF_ACTOR || 'orchestrator', settings = loadSettings() } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (!groupsPlannable(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${(b.groups ?? []).length ? ' with groups already running or merged' : ''}: its groups can't be planned now`), { code: 2 });
+  const plan = P.groupPlan(b, settings);
+  const had = (b.groups ?? []).length > 0;
+  const result = { id: b.id, split: plan.split && !plan.error, groups: plan.groups, mergeOrder: plan.mergeOrder, minutes: plan.minutes, threshold: plan.threshold, reason: plan.reason, error: plan.error, written: false };
+  if (!apply || plan.error || (!result.split && !had)) return result;
+  withStore((s) => {
+    const rec = storeCore.findBuild(s, b.id); const g = BG.withGroups(rec, plan); const now = nowIso();
+    rec.steps = g.steps; if (g.groups) rec.groups = g.groups; else delete rec.groups;
+    rec.notes.push({ text: `Step groups: ${plan.reason}.`, at: now }); rec.updatedAt = now;
+    return s;
+  }, { by, action: 'pipeline:groups-plan', note: `${b.id}: ${str(plan.reason, 200)}` });
+  logLine({ event: 'groups-plan', build: b.id, groups: plan.groups.length, split: result.split, reason: plan.reason });
+  return { ...result, written: true };
 }
 
 /** Every build that needs the orchestrator's split gets one (a few per round); auto-queue when the Claude setting says so. */
@@ -442,6 +479,16 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
       catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
     for (const b of want.slice(max)) out.skipped.push({ id: b.id, error: 'next round' });
+  }
+  // step groups for builds whose steps were written by hand (or before step-groups@1): worked out from their files, no
+  // re-split; pure, and written only when the plan splits, so a build that stays one group costs nothing per tick
+  out.grouped = [];
+  for (const b of live(loadStore())) {
+    if (!groupsPlannable(b) || (b.groups ?? []).length || P.needsSplit(b, rules)) continue;
+    const plan = P.groupPlan(b, settings);
+    if (!plan.split || plan.error) continue;
+    try { const r = planBuildGroups(b.id, { by: 'orchestrator', settings }); if (r.written) { out.grouped.push({ id: b.id, groups: r.groups.length }); crewSay('orchestrator', 'done', `${b.id} runs as ${r.groups.length} step groups in parallel slots: ${r.reason}.`, { ref: b.id }); } }
+    catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
   }
   if (settings.autoQueue) {
     const fresh = loadStore();
