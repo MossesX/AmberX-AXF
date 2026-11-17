@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s4 done (all) · orchestrator
 - 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s5 done (all) · orchestrator
 - 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s6 done (all) · orchestrator
 - 2026-11-17 00:26 UTC · `stop-auto-lander-committing-tracking` s4 done (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:05 UTC · `auto-lander-drag-rows-to-set-merge-order` s1 done, → running (all) · orchestrator
 - 2026-11-17 15:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · mcp
 - 2026-11-17 15:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · foreign-write
+- 2026-11-17 15:05 UTC · `live-hot-refresh-every-grid-list-re` added (0 steps) (all) · console
 
 ## Token passes (log)
 
