@@ -826,30 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 18:44 UTC · `ci-run-only-what-changed-no-second-run` note (all) · mcp
-- 2026-11-17 18:44 UTC · `ci-run-only-what-changed-no-second-run` note (all) · orchestrator
-- 2026-11-17 18:47 UTC · `pending-optimizer-ai-finds-pending` added (0 steps) (all) · console
-- 2026-11-17 18:48 UTC · `pending-optimizer-ai-finds-pending` note (all) · mcp
-- 2026-11-17 18:49 UTC · `pending-optimizer-ai-finds-pending` note (all) · mcp
-- 2026-11-17 18:49 UTC · `pending-optimizer-ai-finds-pending` note (all) · orchestrator
-- 2026-11-17 18:50 UTC · `pending-optimizer-ai-finds-pending` note (all) · mcp
-- 2026-11-17 18:56 UTC · `separate-settings-per-plugin-reset` added (0 steps) (all) · console
-- 2026-11-17 18:56 UTC · `rebuild-every-toolbar-page-specific` added (0 steps) (all) · console
-- 2026-11-17 18:57 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
-- 2026-11-17 18:57 UTC · `separate-settings-per-plugin-reset` note (all) · builds-live
-- 2026-11-17 18:58 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
-- 2026-11-17 19:00 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · Brett
-- 2026-11-17 19:00 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · Brett
-- 2026-11-17 19:01 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running (all) · Brett
-- 2026-11-17 19:02 UTC · `x.engine.dev` → archived, note (all) · cli
-- 2026-11-17 19:02 UTC · `orchestrator-stale-row-watchdog-vps` merged, note (all) · cli
-- 2026-11-17 19:02 UTC · `merge-main-land-console-axhub-retry` → archived, note (all) · cli
-- 2026-11-17 19:02 UTC · `amberx-open-url-must-open-page-even-when` → archived, note (all) · cli
-- 2026-11-17 19:02 UTC · `orchestrator-runs-long-builds-across` → archived, note (all) · cli
-- 2026-11-17 19:02 UTC · `molly-one-shell` note (all) · cli
-- 2026-11-17 19:02 UTC · `molly-native-expenses` note (all) · cli
-- 2026-11-17 19:02 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · cli
-- 2026-11-17 19:02 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · cli
 - 2026-11-17 19:02 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · cli
 - 2026-11-17 19:02 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · cli
 - 2026-11-17 19:02 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · cli
@@ -1226,6 +1202,30 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:56 UTC · `land-rename-long-builds-resolve-clash` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `land-overlay-preview-ui-review-resolve` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `full-voice-control-merge-main-and-land` → archived, note (all) · watchdog
+- 2026-11-17 19:56 UTC · `separate-settings-per-plugin-reset` s4 done (all) · foreign-write
+- 2026-11-17 19:56 UTC · `guided-live-demo-test-watch-orchestrator` s2 done (all) · foreign-write
+- 2026-11-17 19:56 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `prompting-engine-control-panel-to-create` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `land-project-duplicate-boilerplate` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `land-overlay-preview-ui-review-resolve` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `console-look-becomes-default-axhub-skin` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `shipped-features-organized-sortable` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `vps-sends-shipped-features-every-merge` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `phone-connect-small-android-companion` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `shipped-features-open-button-views-each` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `fix-console-deep-links-open-page-lands` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `orchestrator-on-hold-status-and-tab` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `axhub-veto-countdown-setting-read-only` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `settings-interface-gear-every-plugin` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `alert-every-time-build-falls-back-to` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `auto-lander-grid-one-row-per-build` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `every-settings-interface-gets` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `own-look-per-grid-and-tab-group` note (all) · watchdog
+- 2026-11-17 19:56 UTC · `maintenance-plugin-clear-docker-cache` note (all) · watchdog
 
 ## Token passes (log)
 

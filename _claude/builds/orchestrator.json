@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:56:29.458Z",
+ "updatedAt": "2026-11-17T19:56:51.454Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123153,7 +123153,7 @@
    "pr": "#776",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -123215,6 +123215,10 @@
     {
      "text": "Watchdog: Pending build drag-anything-by-api-and-voice-follow-up-to-full → Remove: Its PR was closed without a merge (PR #776 closed; not on main; build drag-anything-by-api-and-voice-follow-up-to-full: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 784 → Remove: The build was cancelled (PR #784 open; not on main; build drag-anything-by-api-and-voice-follow-up-to-full: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -129468,7 +129472,7 @@
    "pr": "#770",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -129534,6 +129538,10 @@
     {
      "text": "Watchdog: Pending build prompting-engine-control-panel-to-create → Remove: Its PR was closed without a merge (PR #770 closed; not on main; build prompting-engine-control-panel-to-create: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 785 → Remove: The build was cancelled (PR #785 open; not on main; build prompting-engine-control-panel-to-create: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -133593,7 +133601,7 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -133643,6 +133651,10 @@
     {
      "text": "Watchdog: Pending build land-project-duplicate-boilerplate → Remove: Its PR was closed without a merge (PR #621 closed; not on main; build land-project-duplicate-boilerplate: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 786 → Remove: The build was cancelled (PR #786 open; not on main; build land-project-duplicate-boilerplate: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -134037,7 +134049,7 @@
    "pr": "#653",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-17T19:56:19.504Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -134067,6 +134079,10 @@
     {
      "text": "Watchdog: Pending build land-overlay-preview-ui-review-resolve → Remove: Its PR was closed without a merge (PR #653 closed; build land-overlay-preview-ui-review-resolve: pending; branch claude/land-overlay-preview-ui-review-resolve deleted) (pending → archived)",
      "at": "2026-11-17T19:56:19.504Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261113-9079daf9 → Remove: Its PR was closed without a merge (PR #653 closed; build land-overlay-preview-ui-review-resolve: pending; branch claude/land-overlay-preview-ui-review-resolve deleted)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -143090,7 +143106,7 @@
    "pr": "#717",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -143224,6 +143240,10 @@
     {
      "text": "Watchdog: Pending build console-look-becomes-default-axhub-skin → Remove: Its PR was closed without a merge (PR #717 closed; not on main; build console-look-becomes-default-axhub-skin: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 790 → Remove: The build was cancelled (PR #790 open; not on main; build console-look-becomes-default-axhub-skin: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -152394,7 +152414,7 @@
    "pr": "#706",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -152448,6 +152468,10 @@
     {
      "text": "Watchdog: Pending build pending-tab-one-collapsed-row-per-2 → Remove: Its PR was closed without a merge (PR #706 closed; not on main; build pending-tab-one-collapsed-row-per-2: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 794 → Remove: The build was cancelled (PR #794 open; not on main; build pending-tab-one-collapsed-row-per-2: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -154011,7 +154035,7 @@
    "pr": "#708",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -154057,6 +154081,10 @@
     {
      "text": "Watchdog: Pending build shipped-features-organized-sortable → Remove: Its PR was closed without a merge (PR #708 closed; not on main; build shipped-features-organized-sortable: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 795 → Remove: The build was cancelled (PR #795 open; not on main; build shipped-features-organized-sortable: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -154149,7 +154177,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -154235,6 +154263,10 @@
     {
      "text": "Watchdog: Pending build vps-sends-shipped-features-every-merge → Remove: Its PR was closed without a merge (PR #709 closed; not on main; build vps-sends-shipped-features-every-merge: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 796 → Remove: The build was cancelled (PR #796 open; not on main; build vps-sends-shipped-features-every-merge: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -155876,7 +155908,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -156018,6 +156050,10 @@
     {
      "text": "Watchdog: Pending build phone-connect-small-android-companion → Remove: Its PR was closed without a merge (PR #712 closed; not on main; build phone-connect-small-android-companion: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 797 → Remove: The build was cancelled (PR #797 open; not on main; build phone-connect-small-android-companion: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -156831,7 +156867,7 @@
    "pr": "#714",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -156873,6 +156909,10 @@
     {
      "text": "Watchdog: Pending build shipped-features-open-button-views-each → Remove: Its PR was closed without a merge (PR #714 closed; not on main; build shipped-features-open-button-views-each: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 798 → Remove: The build was cancelled (PR #798 open; not on main; build shipped-features-open-button-views-each: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -160484,7 +160524,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -160554,6 +160594,10 @@
     {
      "text": "Watchdog: Pending build fix-console-deep-links-open-page-lands → Remove: Its PR was closed without a merge (PR #721 closed; not on main; build fix-console-deep-links-open-page-lands: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 781 → Remove: The build was cancelled (PR #781 open; not on main; build fix-console-deep-links-open-page-lands: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -160684,7 +160728,7 @@
    "pr": "#722",
    "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -160726,6 +160770,10 @@
     {
      "text": "Watchdog: Pending build orchestrator-on-hold-status-and-tab → Remove: Its PR was closed without a merge (PR #722 closed; not on main; build orchestrator-on-hold-status-and-tab: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 799 → Remove: The build was cancelled (PR #799 open; not on main; build orchestrator-on-hold-status-and-tab: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -160818,7 +160866,7 @@
    "pr": "#764",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -160896,6 +160944,10 @@
     {
      "text": "Watchdog: Pending build axhub-veto-countdown-setting-read-only → Remove: Its PR was closed without a merge (PR #764 closed; not on main; build axhub-veto-countdown-setting-read-only: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 800 → Remove: The build was cancelled (PR #800 open; not on main; build axhub-veto-countdown-setting-read-only: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -161807,7 +161859,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -161905,6 +161957,10 @@
     {
      "text": "Watchdog: Pending build settings-interface-gear-every-plugin → Remove: Its PR was closed without a merge (PR #725 closed; not on main; build settings-interface-gear-every-plugin: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 801 → Remove: The build was cancelled (PR #801 open; not on main; build settings-interface-gear-every-plugin: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -162569,7 +162625,7 @@
    "pr": "#729",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -162615,6 +162671,10 @@
     {
      "text": "Watchdog: Pending build hotfix-orchestrator-grid-columns-don-t → Remove: Its PR was closed without a merge (PR #729 closed; not on main; build hotfix-orchestrator-grid-columns-don-t: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 802 → Remove: The build was cancelled (PR #802 open; not on main; build hotfix-orchestrator-grid-columns-don-t: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -163356,7 +163416,7 @@
    "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -163410,6 +163470,10 @@
     {
      "text": "Watchdog: Pending build reset-all-button-every-asset-override → Remove: Its PR was closed without a merge (PR #730 closed; not on main; build reset-all-button-every-asset-override: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 803 → Remove: The build was cancelled (PR #803 open; not on main; build reset-all-button-every-asset-override: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -163687,7 +163751,7 @@
    "pr": "#728",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -163741,6 +163805,10 @@
     {
      "text": "Watchdog: Pending build alert-every-time-build-falls-back-to → Remove: Its PR was closed without a merge (PR #728 closed; not on main; build alert-every-time-build-falls-back-to: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 804 → Remove: The build was cancelled (PR #804 open; not on main; build alert-every-time-build-falls-back-to: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -163955,7 +164023,7 @@
    "pr": "#778",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -164025,6 +164093,10 @@
     {
      "text": "Watchdog: Pending build auto-lander-grid-one-row-per-build → Remove: Its PR was closed without a merge (PR #778 closed; not on main; build auto-lander-grid-one-row-per-build: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 805 → Remove: The build was cancelled (PR #805 open; not on main; build auto-lander-grid-one-row-per-build: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -164293,7 +164365,7 @@
    "pr": "#732",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -164335,6 +164407,10 @@
     {
      "text": "Watchdog: Pending build every-settings-interface-gets → Remove: Its PR was closed without a merge (PR #732 closed; not on main; build every-settings-interface-gets: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 806 → Remove: The build was cancelled (PR #806 open; not on main; build every-settings-interface-gets: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -164668,7 +164744,7 @@
    "pr": "#733",
    "priority": "P0",
    "createdAt": "2026-11-16T20:22:23.083Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -164718,6 +164794,10 @@
     {
      "text": "Watchdog: Pending build to-do-manager-fully-voice-mcp-controlled → Remove: Its PR was closed without a merge (PR #733 closed; not on main; build to-do-manager-fully-voice-mcp-controlled: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 807 → Remove: The build was cancelled (PR #807 open; not on main; build to-do-manager-fully-voice-mcp-controlled: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
@@ -165722,7 +165802,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -165812,6 +165892,10 @@
     {
      "text": "Watchdog: Pending build own-look-per-grid-and-tab-group → Remove: Its PR was closed without a merge (PR #752 closed; not on main; build own-look-per-grid-and-tab-group: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 808 → Remove: The build was cancelled (PR #808 open; not on main; build own-look-per-grid-and-tab-group: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [
@@ -172108,7 +172192,7 @@
    "pr": "#779",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:56:32.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -172150,6 +172234,10 @@
     {
      "text": "Watchdog: Pending build maintenance-plugin-clear-docker-cache → Remove: Its PR was closed without a merge (PR #779 closed; not on main; build maintenance-plugin-clear-docker-cache: pending) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 809 → Remove: The build was cancelled (PR #809 open; not on main; build maintenance-plugin-clear-docker-cache: archived)",
+     "at": "2026-11-17T19:56:32.078Z"
     }
    ],
    "approvals": [],
