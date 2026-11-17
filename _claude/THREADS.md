@@ -826,8 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · mcp
-- 2026-11-17 15:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · foreign-write
 - 2026-11-17 15:05 UTC · `live-hot-refresh-every-grid-list-re` added (0 steps) (all) · console
 - 2026-11-17 15:05 UTC · `live-hot-refresh-every-grid-list-re` → queued, note (all) · console
 - 2026-11-17 15:06 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
@@ -1226,6 +1224,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:21 UTC · `console-app-part-2-native-floating` → queued, note (all) · console
 - 2026-11-17 19:22 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · orchestrator
 - 2026-11-17 19:22 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · pipeline
+- 2026-11-17 19:25 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · watchdog
+- 2026-11-17 19:25 UTC · `server-auto-lander-fixes-lands` note (all) · watchdog
 
 ## Token passes (log)
 
