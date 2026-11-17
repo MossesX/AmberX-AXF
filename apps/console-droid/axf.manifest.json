@@ -1,0 +1,18 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "console-droid",
+    "name": "AXF Console",
+    "version": "0.1.0",
+    "about": "The AXF console on your phone, with a floating toolbar over every app."
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "android-webview-shell"
+  },
+  "initializedAt": "2026-11-13T19:00:00.000Z",
+  "targets": [
+    "android"
+  ],
+  "startView": "home"
+}
