@@ -55,3 +55,10 @@ the s3 fix covers toolbars. Cases added: the app toolbar (`axf.chrome.toolbar.ap
 (`axf.chrome.toolbar.data-grid-tools`, drawn by `AssetToolbar`). Found on the way: `baseDataOf` compared a page
 toolbar's fields with the app toolbar asset, so a value equal to the app toolbar's was dropped instead of saved;
 it now compares with the page toolbar's own asset.
+
+## s6 — tab groups
+
+Case `tab-group:demo.sections` (a real `TabGroup` drawn beside the dialog): every Interface control writes only
+`axf.chrome.tab-group.demo.sections`, the row's data and markup change at once, and the row's own asset pick on the
+same tab writes `axf.chrome.tab-group.demo.sections.asset`. The dialog's own tab row (`chrome.settings.tab-group`)
+is a different instance and is left alone.

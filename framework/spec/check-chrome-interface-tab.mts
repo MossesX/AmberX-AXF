@@ -39,6 +39,9 @@ const { AxfRuntime } = await import('../core/runtime.ts');
 const { AxfProvider } = await import('../react/AxfProvider.tsx');
 const { Banner } = await import('../react/components/Banner.tsx');
 const { Toolbar, AssetToolbar } = await import('../react/components/Chrome.tsx');
+const { TabGroup, tabGroupDataFor } = await import('../react/components/TabGroup.tsx');
+const { tapConfigFor } = await import('../core/engines/tapconfirm.ts');
+const row = () => h(TabGroup, { id: 'demo.sections', label: 'Demo sections', value: 'a', onChange: () => {}, tabs: [{ value: 'a', label: 'Alpha', icon: 'home' }, { value: 'b', label: 'Beta', icon: 'list' }] }, h('p', null, 'body'));
 const views = { home: { title: 'Home', icon: 'home', render: () => h('p', null, 'home') } };
 /** The drawn chrome's markup plus the root tokens the runtime compiled: what a look change must move. */
 const seenOf = (sel: string) => () => `${[...doc.querySelectorAll(sel)].map((e) => e.outerHTML.slice(0, 600)).join('')}|${doc.documentElement.getAttribute('style') ?? ''}|${[...doc.documentElement.attributes].map((a) => `${a.name}=${a.value}`).join(' ')}`;
@@ -65,6 +68,7 @@ type Case = {
 export const CASES: Case[] = [
   { type: 'banner', instance: 'app', rendered: (rt) => rt.banner({ all: true }).data, draw: () => h(Banner), seen: seenOf('.fx-banner') },
   { type: 'toolbar', instance: 'app', rendered: (rt) => rt.chromeData('toolbar'), draw: () => h(Toolbar, { views }), seen: seenOf('[role="toolbar"]') },
+  { type: 'tab-group', instance: 'demo.sections', rendered: (rt) => ({ data: tabGroupDataFor(rt, 'demo.sections'), tap: tapConfigFor((k) => rt.settings.get(k), 'tab-group', 'demo.sections'), tapChoice: cs.chromeFieldValue('tab-group', null, rt.settings.get(cs.CHROME_INSTANCE_KEY('tab-group', 'demo.sections')), cs.CHROME_TAP_FIELD) }), draw: row, seen: seenOf('[data-axf-tab-group="demo.sections"]') },
   { type: 'toolbar', instance: 'data-grid-tools', rendered: (rt) => rt.chromeData('toolbar', 'data-grid-tools', rt.registry.get('toolbar', 'data-grid-tools')!.data), draw: () => h(AssetToolbar, { id: 'data-grid-tools' }), seen: seenOf('.fx-toolbar-scope') },
 ];
 
@@ -110,10 +114,26 @@ for (const c of CASES) {
     check(!stray.length, `${name}: control ${i} (${el.closest('[aria-label]')?.getAttribute('aria-label') ?? el.textContent}) writes only this ${c.type}'s keys (stray: ${stray.join(', ')})`);
     if (changed.some((k) => ownsKey(c.type, c.instance, k))) {
       wrote++;
-      if (changed.includes(cs.CHROME_INSTANCE_KEY(c.type, c.instance))) check(JSON.stringify(c.rendered(rt)) !== shownBefore, `${name}: control ${i} shows on the ${c.type} at once`);
+      if (changed.includes(cs.CHROME_INSTANCE_KEY(c.type, c.instance))) check(JSON.stringify(c.rendered(rt)) !== shownBefore, `${name}: control ${i} (${JSON.stringify(rt.settings.get(cs.CHROME_INSTANCE_KEY(c.type, c.instance)))}) shows on the ${c.type} at once`);
       const lookAfter = cs.normalizeInstanceOverride(c.type, rt.settings.get(cs.CHROME_INSTANCE_KEY(c.type, c.instance)));
       const lookChanged = cs.CHROME_FIELDS[c.type].filter((f) => f.group === 'look' && lookBefore[f.key] !== lookAfter[f.key]).map((f) => f.key);
       if (c.seen && lookChanged.length) check(c.seen() !== seenBefore, `${name}: ${lookChanged.join(', ')} restyles the drawn ${c.type} live`);
+    }
+  }
+  // a tab row picks its own asset on the same tab: `….asset`, this row only
+  if (c.type === 'tab-group') {
+    const sel = panel()?.querySelector<HTMLSelectElement>('select');
+    const other = sel ? [...sel.options].map((o) => o.value).find((v) => v !== 'default' && v !== sel.value) : undefined;
+    check(!!sel && !!other, `${name}: the Interface tab offers this row's asset`);
+    if (sel && other) {
+      const before = JSON.stringify(c.rendered(rt));
+      await act(async () => {
+        Object.getOwnPropertyDescriptor((W.HTMLSelectElement as unknown as { prototype: object }).prototype, 'value')!.set!.call(sel, other);
+        sel.dispatchEvent(new (W.Event as typeof Event)('change', { bubbles: true }));
+        await sleep(2);
+      });
+      check(rt.settings.get(cs.CHROME_INSTANCE_ASSET_KEY(c.type, c.instance)) === other, `${name}: the asset pick writes ${cs.CHROME_INSTANCE_ASSET_KEY(c.type, c.instance)}`);
+      check(JSON.stringify(c.rendered(rt)) !== before, `${name}: the row redraws with the picked asset`);
     }
   }
   check(wrote > 0, `${name}: the Interface tab changes ${cs.CHROME_INSTANCE_KEY(c.type, c.instance)}`);
