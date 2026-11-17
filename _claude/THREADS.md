@@ -832,22 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:38 UTC · `one-true-source-for-every-setting` → queued, note (all) · console
-- 2026-11-17 22:39 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · foreign-write
-- 2026-11-17 22:39 UTC · `guided-live-demo-test-watch-orchestrator` merged, note (all) · reconciler
-- 2026-11-17 22:39 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-17 22:40 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-17 22:40 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-17 22:40 UTC · `banner-widget-shapes-plus-change-icon` s13 done, s14 done, s15 done, s16 done (all) · foreign-write
-- 2026-11-17 22:40 UTC · `rebuild-fresh-main-phone-connect-small` s15 done, s27 done, → complete, note (all) · foreign-write
-- 2026-11-17 22:40 UTC · `icon-picker-every-banner-settings-widget` s9 done (all) · foreign-write
-- 2026-11-17 22:40 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
-- 2026-11-17 22:40 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
-- 2026-11-17 22:40 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
-- 2026-11-17 22:40 UTC · `move-everything-axhub-web-console` added (155 steps) (all) · foreign-write
-- 2026-11-17 22:40 UTC · `auto-lander-never-wait-missing-ui-review` added (34 steps) (all) · foreign-write
-- 2026-11-17 22:40 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · foreign-write
-- 2026-11-17 22:31 UTC · `pass-approval-hook-deep-link-amberx-notification` → landing (all) · foreign-write
 - 2026-11-17 22:31 UTC · `orchestrator-settings-collapsible-split` → landing (all) · foreign-write
 - 2026-11-17 22:31 UTC · `group-chat-audio-hear-agents-talk-while` → landing (all) · foreign-write
 - 2026-11-17 22:31 UTC · `picker-dialog-plugin-replaces-all` → landing (all) · foreign-write
@@ -1232,6 +1216,22 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:59 UTC · `move-everything-axhub-web-console` s2 done (all) · orchestrator
 - 2026-11-17 22:59 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
 - 2026-11-17 23:00 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
+- 2026-11-17 22:55 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 22:55 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-17 22:55 UTC · `icon-picker-every-banner-settings-widget` s9 done, s10 done (all) · foreign-write
+- 2026-11-17 22:55 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
+- 2026-11-17 22:55 UTC · `flagship-professional-skin-covering-2` s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, note (all) · foreign-write
+- 2026-11-17 22:55 UTC · `move-everything-axhub-web-console` s1 done, note (all) · foreign-write
+- 2026-11-17 22:55 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-17 22:55 UTC · `one-true-source-for-every-setting` added (80 steps) (all) · foreign-write
+- 2026-11-17 22:55 UTC · `vps-sets-every-build-status-manifest` added (120 steps) (all) · foreign-write
+- 2026-11-17 22:55 UTC · `api-fully-drives-every-field-type-forms` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:55 UTC · `banner-widget-shapes-plus-change-icon` s17 done (all) · orchestrator
+- 2026-11-17 23:00 UTC · `console-app-part-2-native-floating` → complete, note (all) · foreign-write
+- 2026-11-17 23:00 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 23:00 UTC · `rebuild-every-toolbar-page-specific` → complete, note (all) · foreign-write
+- 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` s17 done, s18 done, note (all) · foreign-write
+- 2026-11-17 23:00 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
 
 ## Token passes (log)
 
