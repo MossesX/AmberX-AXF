@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:50 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `main-gate-nothing-reaches-main-without-passing` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `all-banners-hide-when-empty` → archived, note (all) · watchdog
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:26 UTC · `fix-banner-settings-interface-tab` → running, note (all) · pipeline
 - 2026-11-17 21:26 UTC · `land-pr-730-reset-all-button-far-right` added (0 steps) (all) · console
 - 2026-11-17 21:26 UTC · `land-pr-730-reset-all-button-far-right` → queued, note (all) · console
+- 2026-11-17 21:26 UTC · `rebuild-fresh-main-hide-any-asset` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
