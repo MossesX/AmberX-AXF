@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:06 UTC · `banner-widget-shapes-more-than-circle` s15 done (all) · orchestrator
 - 2026-11-16 20:07 UTC · `settings-interface-gear-every-plugin` s21 done (all) · orchestrator
 - 2026-11-16 20:07 UTC · `hide-any-ui-asset-global-context-menu` note (all) · orchestrator
 - 2026-11-16 20:07 UTC · `hide-any-ui-asset-global-context-menu` s1 done, → running (all) · orchestrator
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:01 UTC · `grid-token-set-colours-hover-selected` branch claude/grid-token-set-colours-hover-selected, note (all) · builds-live
 - 2026-11-17 00:02 UTC · `own-look-per-grid-and-tab-group` s7 done (all) · orchestrator
 - 2026-11-17 00:02 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
+- 2026-11-17 00:01 UTC · `every-plugin-screen-gets-a-settings-gear` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
