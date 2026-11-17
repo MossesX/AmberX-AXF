@@ -95,8 +95,10 @@ await t('run: complete / archive builds under the store lock, remove queue entri
   assert.equal(first.ok, true, first.error);
   const s = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8'));
   const get = (id) => s.builds.find((x) => x.id === id);
-  assert.equal(get('q-merged').status, 'complete'); assert.equal(get('q-merged').mergedAt, '2026-11-16T10:00:00Z');
-  assert.ok(get('q-merged').notes.some((x) => /^Watchdog: Queued build q-merged → Complete/.test(x.text)), 'build note');
+  // done-means-merged@1: the merge and its commit are recorded; landed waits for CI on the merge commit, so the build goes to landing
+  assert.equal(get('q-merged').status, 'landing'); assert.equal(get('q-merged').mergedAt, '2026-11-16T10:00:00Z');
+  assert.equal(get('q-merged').landed.sha, 'm101');
+  assert.ok(get('q-merged').notes.some((x) => /^Watchdog: Queued build q-merged → Complete.*\(queued → landing; landed not yet: .*CI green/.test(x.text)), 'build note');
   assert.equal(get('p-closed').status, 'archived');
   assert.equal(get('q-open').status, 'queued');
   assert.deepEqual(controlCalls, [105]);

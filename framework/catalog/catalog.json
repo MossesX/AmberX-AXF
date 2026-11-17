@@ -2530,6 +2530,10 @@
                   "title": "Shipped manifests: every landed build's prompt, brief, models, steps, commit, files, tests and cost in Shipped features (shipped-manifest@1)"
                 },
                 {
+                  "id": "cx.buildengine.parallelsplit",
+                  "title": "Split settings and parallel split: one collapsible Split section with every split option; a request that falls into independent parts runs as parallel builds (lead with contract + integration steps, parts linked with combined progress), per-build 'split into N parallel'"
+                },
+                {
                   "id": "cx.buildengine.hardlimit",
                   "title": "VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1)"
                 },

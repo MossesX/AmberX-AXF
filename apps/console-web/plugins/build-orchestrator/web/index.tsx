@@ -1,11 +1,12 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { setPriorityHost, type PriorityHost } from '@console/axf/react';
+import { flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
+import { SPLIT_SECTION_ID, SplitSettings } from './split-settings';
 import { focusBuild } from './focus';
 import { WatchdogSettingsPanel, watchdogApi, type WatchdogStatus } from './watchdog';
 import { showAttempts } from './attempts';
@@ -97,6 +98,19 @@ export const plugin: AxfWebLibrary = {
       } catch (e) { rt.toast((e as Error).message, 'danger'); }
     }, { label: 'Build watchdog: run a pass now (optionally one build)' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
+    // the Split section (Nov 13 2026): Rules tab, the collapsible opened and flashed
+    rt.actions.register('build-orchestrator.split-settings', () => {
+      rt.navigate('build-orchestrator'); openTab('rules');
+      flashWhenReady(() => { const el = document.getElementById(SPLIT_SECTION_ID) as HTMLDetailsElement | null; if (el) el.open = true; return el; }, 5000);
+    }, { label: 'Build orchestrator: open the Split settings (split provider, parallel split)', effect: 'navigate' });
+    // a build's own parallel split ask (Nov 13 2026: "split into N parallel"): build-orchestrator.parallel <id> <2-12|off|default>
+    rt.actions.register('build-orchestrator.parallel', ([id, parts]) => {
+      const b = decodeURIComponent(id ?? ''); const n = decodeURIComponent(parts ?? '');
+      if (!b || !n) { void open('pending'); return; }
+      void pipeApi.post<{ ok: boolean; error?: string; note?: string; resplit?: boolean }>('pipeline/parallel', { id: b, parts: n })
+        .then((r) => rt.toast(r.ok ? `${b}: ${r.note}${r.resplit ? ' (split again on the next tick)' : ''}` : r.error ?? 'failed', r.ok ? 'success' : 'danger'))
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: split a build into N parallel builds (id, 2-12 | off | default)', params: true, effect: 'write' });
     // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,
     // group-action runs queue | land | archive | priority:<P> on every build of a group (the same POST groups calls)
     const groupCall = (path: string, body: Record<string, unknown>, done: string) => void pipeApi.post<{ ok: boolean; error?: string }>(path, body)
@@ -181,12 +195,15 @@ export const plugin: AxfWebLibrary = {
       return out;
     });
   },
-  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'groups', 'custom groups', 'custom tabs', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
+  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'groups', 'custom groups', 'custom tabs', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model', 'split', 'parallel split', 'parallel builds'], render: () => <OrchestratorPage /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
-  settingsPanels: [{ id: 'build-orchestrator.recovery-watchdog', tab: 'build-orchestrator', title: 'Recovery watchdog', icon: 'shield', order: 21, render: () => <WatchdogSettingsPanel /> },
+  settingsPanels: [
+    { id: 'build-orchestrator.split', tab: 'build-orchestrator', title: 'Split', icon: 'layers', order: 10, render: () => <SplitSettings api={pipeApi} open /> },
     { id: 'build-orchestrator.watchdog', tab: 'build-orchestrator', title: 'Watchdog', icon: 'shield', order: 20, render: () => <WatchdogPanel /> },
-    { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+    { id: 'build-orchestrator.recovery-watchdog', tab: 'build-orchestrator', title: 'Recovery watchdog', icon: 'shield', order: 21, render: () => <WatchdogSettingsPanel /> },
+    { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+  ],
 };
