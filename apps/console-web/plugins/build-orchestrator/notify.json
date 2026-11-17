@@ -119,6 +119,21 @@
       },
       "push": true,
       "priority": "normal"
+    },
+    {
+      "id": "watchdog.cleaned",
+      "label": "Watchdog cleaned stale rows",
+      "group": "builds",
+      "app": "console",
+      "source": "Stale-row watchdog (VPS)",
+      "description": "FYI, one per run that cleaned something: how many stale rows the VPS watchdog took off the builds lists (Pending, Queue, Building, merge queue, UI Review) and which, each with why (PR merged, PR closed, build archived). Nothing to do; the Cleanups log has every one.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "watchdog:cleaned"
+      },
+      "setting": "watchdog.notify",
+      "push": true,
+      "priority": "normal"
     }
   ]
 }

@@ -175,6 +175,7 @@ export async function run(opts = {}) {
       rec.logged = log.appendLog(dataDir(), log.recordsOf(applied, { at: rec.at, by }), rec.at);
       try { rec.noted = await log.noteBuilds(applied, { by }); } catch (e) { rec.warnings = [...(rec.warnings ?? []), `build notes: ${String(e.message).slice(0, 200)}`]; }
       try { const c = log.changesLine(rec); if (c.id) rec.changesEntry = c.id; } catch (e) { rec.warnings = [...(rec.warnings ?? []), `codebase changes: ${String(e.message).slice(0, 200)}`]; }
+      try { const n = await (await import('./watchdog/notify.mjs')).notifyRun(rec, { enabled: settings.notify, post: opts.post }); rec.notified = n.sent; } catch (e) { rec.warnings = [...(rec.warnings ?? []), `notify: ${String(e.message).slice(0, 200)}`]; }
     }
     rec.ok = true;
     if (opts.afterApply) await opts.afterApply(rec, applied, p);
