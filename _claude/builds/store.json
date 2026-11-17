@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7399,
- "updatedAt": "2026-11-17T12:33:35.965Z",
+ "rev": 7400,
+ "updatedAt": "2026-11-17T12:33:56.830Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262684,7 +262684,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T12:33:27.337Z",
+   "updatedAt": "2026-11-17T12:33:44.175Z",
    "builtAt": "",
    "notes": [
     {
@@ -262710,6 +262710,10 @@
     {
      "text": "Claude account: hulu0241 (axf-move-server-side-console-parts-onto-vps--sully, shared account login)",
      "at": "2026-11-17T12:29:35.849Z"
+    },
+    {
+     "text": "Headless run axf-move-server-side-console-parts-onto-vps--sully: brief only · start 18.1K tokens ($0.06) · cost $0.82 · 20 turns · 6 tools, MCP none",
+     "at": "2026-11-17T12:33:44.175Z"
     },
     {
      "text": "Overlaps recorded (s2): maintenance-plugin-clear-docker-cache owns the Clear Docker cache action, this build owns where it runs (host unit, user, sudo whitelist, socket). server-auto-lander-fixes-lands units and axf_systemd_unit are reused; this build adds the user, whitelist and socket to them. Clash notes posted on both.",

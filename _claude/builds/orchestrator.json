@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T12:33:35.965Z",
+ "updatedAt": "2026-11-17T12:33:56.830Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -170439,7 +170439,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T12:33:27.337Z",
+   "updatedAt": "2026-11-17T12:33:44.175Z",
    "builtAt": "",
    "notes": [
     {
@@ -170465,6 +170465,10 @@
     {
      "text": "Claude account: hulu0241 (axf-move-server-side-console-parts-onto-vps--sully, shared account login)",
      "at": "2026-11-17T12:29:35.849Z"
+    },
+    {
+     "text": "Headless run axf-move-server-side-console-parts-onto-vps--sully: brief only · start 18.1K tokens ($0.06) · cost $0.82 · 20 turns · 6 tools, MCP none",
+     "at": "2026-11-17T12:33:44.175Z"
     },
     {
      "text": "Overlaps recorded (s2): maintenance-plugin-clear-docker-cache owns the Clear Docker cache action, this build owns where it runs (host unit, user, sudo whitelist, socket). server-auto-lander-fixes-lands units and axf_systemd_unit are reused; this build adds the user, whitelist and socket to them. Clash notes posted on both.",
