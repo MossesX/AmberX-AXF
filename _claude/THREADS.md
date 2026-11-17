@@ -816,9 +816,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 22:59 UTC · `icon-packs-with-drag-drop-pack-designer` → queued, note (all) · console
-- 2026-11-16 22:59 UTC · `banner-widget-shapes-plus-change-icon` added (0 steps) (all) · console
-- 2026-11-16 22:59 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · console
 - 2026-11-16 23:00 UTC · `attach-widgets-to-any-toolbar-banner` s1 done, → running (all) · orchestrator
 - 2026-11-16 23:01 UTC · `toolbar-widgets-in-any-banner-style` branch claude/attach-widgets-to-any-toolbar-banner (all) · orchestrator
 - 2026-11-16 23:01 UTC · `toolbar-widgets-in-any-banner-style` note (all) · orchestrator
@@ -1216,6 +1213,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:46 UTC · `stop-auto-lander-committing-tracking` s13 done (all) · orchestrator
 - 2026-11-17 00:46 UTC · `server-rule-done-means-merged-working` s3 done (all) · orchestrator
 - 2026-11-17 00:47 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
+- 2026-11-17 00:48 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` → running, note (all) · pipeline
+- 2026-11-17 00:48 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` branch claude/rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou (all) · pipeline
+- 2026-11-17 00:48 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
 
 ## Token passes (log)
 
