@@ -119,9 +119,9 @@ function ServerPanel({ refreshSec }: { refreshSec: number }) {
       </Container>
       <GateList<AutoLanderBuild>
         id="gate.auto-lander" label="Builds in the auto-lander" title={`Builds (${builds.length})`} rows={builds} columns={cols}
-        rowId={(b) => b.build} rowLabel={(b) => `${b.build}: ${STATE_LABEL[b.state] ?? b.state}`} hidden={rows === 1 ? ['attempts'] : []}
+        rowId={(b) => b.build} rowLabel={(b) => `${b.build}: ${STATE_LABEL[b.state] ?? b.state}`} hidden={[]}
         expanded={expanded} onToggleExpand={(id) => setExpanded((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]))} renderDetail={attemptLog}
-        selected={selected} onRowClick={(b) => setSelected((cur) => (cur === b.build ? null : b.build))} rowTone={(b) => stateTone(b.state) ?? 'muted'}
+        selected={selected} onRowClick={(b) => { setSelected((cur) => (cur === b.build ? null : b.build)); setExpanded((cur) => (cur.includes(b.build) ? cur : [...cur, b.build])); }} rowTone={(b) => stateTone(b.state) ?? 'muted'}
         empty={<p className="axp-gate__sub">{s ? 'No finished builds yet: the auto-lander picks them up as they are built.' : 'Loading…'}</p>}
       />
     </>
