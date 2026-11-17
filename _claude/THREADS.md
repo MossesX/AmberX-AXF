@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:25 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` branch claude/remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the (all) · pipeline
 - 2026-11-16 23:26 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
 - 2026-11-16 23:27 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → running, branch claude/remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the, note (all) · builds-live
 - 2026-11-16 23:28 UTC · `icon-packs-with-drag-drop-pack-designer` s4 done (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:52 UTC · `orchestrator-runs-long-builds-across` s10 done (all) · orchestrator
 - 2026-11-17 03:52 UTC · `server-auto-lander-fixes-lands` s14 done (all) · orchestrator
 - 2026-11-17 03:53 UTC · `server-auto-lander-fixes-lands` s15 done (all) · orchestrator
+- 2026-11-17 03:53 UTC · `server-rule-done-means-merged-working` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
