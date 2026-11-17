@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8078,
- "updatedAt": "2026-11-17T21:46:40.661Z",
+ "rev": 8079,
+ "updatedAt": "2026-11-17T21:46:49.713Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -284230,7 +284230,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:46:28.984Z",
+   "updatedAt": "2026-11-17T21:46:42.048Z",
    "builtAt": "",
    "notes": [
     {
@@ -284248,6 +284248,10 @@
     {
      "text": "Brett: skins must NOT touch toolbars (or their buttons/settings). Toolbars are blank with only a settings gear for now, and Brett will edit them himself later; a skin must never overwrite or restyle those edits. Leave toolbar look out of this build.",
      "at": "2026-11-17T21:46:23.725Z"
+    },
+    {
+     "text": "Brett: the skin redoes the whole app layout too: where dropdown menus open, tab bar placement, everything (except toolbars). Very important: everything must be fully token-driven, no hardcoded look or position values anywhere.",
+     "at": "2026-11-17T21:46:42.048Z"
     }
    ],
    "approvals": [],
@@ -285023,7 +285027,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
