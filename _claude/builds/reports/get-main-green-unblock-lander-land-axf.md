@@ -306,3 +306,13 @@ Not changed, but noted: a lander round takes 7–8 min, because auto-land walks 
 Also noted for later:
 - `merge=union` (THREADS.md, STATUS.md, decisions.md) and the builds-live driver don't exist on GitHub, so PRs touching those files show as conflicting whenever main moves.
 - My local "full sweep" runs early in this build covered only single-line `- run:` steps. From s14 on, every step is run from the workflow YAML (`/tmp/runjob.py`).
+
+## Postgres (#713) landed (s16 done, 02:53)
+
+**Merged by the merge queue at 02:53** (765ca6b51), on its own, after #704. The queue run was green: sweep, Web Dev Console + Python API, AmberX, Gradle.
+- Before it went in, I merged #704 and then main into it. The lifecycle exemption was extended to the data-store's own code (its mirror map names `chats.db` and the ledger by key).
+- Until #704 was in, #713 was held out of the queue by removal pinned to its real head, plus an auto-land hold. The hold was released afterwards.
+
+**Main CI on 765ca6b51:** the first attempt failed on Gradle, `lib-hub` `HubAppearanceSourceTest` ("first run, save, conflict re-merge…", line 72). That test is unchanged since Oct 21: it waits up to 5 s for a background save on real threads. #713 touches no Kotlin. **The re-run of the failed job passed**, so main is green.
+
+Follow-up worth doing: make that test's wait deterministic, because it can go red on a loaded runner.
