@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:06:24.295Z",
+ "updatedAt": "2026-11-17T00:06:42.501Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -155626,7 +155626,7 @@
    "title": "axf-data on Postgres: real tables in its own container",
    "category": "",
    "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "archived",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155634,7 +155634,7 @@
    "pr": "#713",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-16T23:21:44.960Z",
+   "updatedAt": "2026-11-17T00:06:34.119Z",
    "builtAt": "",
    "notes": [
     {
@@ -155672,6 +155672,14 @@
     {
      "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
      "at": "2026-11-16T23:21:44.960Z"
+    },
+    {
+     "text": "Back from the Archive as pending (cli).",
+     "at": "2026-11-17T00:06:31.488Z"
+    },
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-17T00:06:34.119Z"
     }
    ],
    "approvals": [],

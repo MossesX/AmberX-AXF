@@ -815,8 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:19 UTC · `assets-menu-hide-any-asset-hidden-list` → queued (all) · mcp
-- 2026-11-16 20:20 UTC · `assets-menu-hide-any-asset-hidden-list` → running (all) · mcp
 - 2026-11-16 20:22 UTC · `to-do-manager-fully-voice-mcp-controlled` added (0 steps) (all) · console
 - 2026-11-16 20:22 UTC · `to-do-manager-fully-voice-mcp-controlled` → queued, note (all) · console
 - 2026-11-16 20:23 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · mcp
@@ -1215,6 +1213,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:05 UTC · `stop-auto-lander-committing-tracking` → queued, note (all) · builds-live
 - 2026-11-17 00:05 UTC · `gate-auto-lander-tab-and-controls` added (0 steps) (all) · console
 - 2026-11-17 00:05 UTC · `gate-auto-lander-tab-and-controls` → queued, note (all) · console
+- 2026-11-17 00:06 UTC · `axf-data-postgres-real-tables-own` → pending, note (all) · cli
+- 2026-11-17 00:06 UTC · `axf-data-postgres-real-tables-own` → queued, note (all) · brett
 
 ## Token passes (log)
 
