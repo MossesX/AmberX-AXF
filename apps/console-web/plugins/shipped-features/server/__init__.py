@@ -39,6 +39,8 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
 
+import data_store
+
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console image)
@@ -96,6 +98,7 @@ def _manifest_rows(c: sqlite3.Connection, sql: str, *args: Any) -> list[dict[str
 
 def _connect() -> sqlite3.Connection | None:
     f = db_file()
+    data_store.sqlite_hydrate(f)  # data-store@1: in cutover the newest ledger comes from axf-data
     if not f.exists():
         return None
     c = sqlite3.connect(f"file:{f}?mode=ro", uri=True, timeout=5)
