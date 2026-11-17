@@ -824,11 +824,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 04:04 UTC · `server-auto-lander-fixes-lands` s19 done (all) · orchestrator
-- 2026-11-17 04:04 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s11 done (all) · orchestrator
-- 2026-11-17 04:04 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s17 done (all) · orchestrator
-- 2026-11-17 04:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s17 done (all) · foreign-write
-- 2026-11-17 04:06 UTC · `server-auto-lander-fixes-lands` s20 done (all) · orchestrator
 - 2026-11-17 04:06 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s12 done (all) · orchestrator
 - 2026-11-17 04:07 UTC · `server-rule-done-means-merged-working` s13 done (all) · orchestrator
 - 2026-11-17 04:07 UTC · `orchestrator-runs-long-builds-across` s15 done (all) · orchestrator
@@ -1224,6 +1219,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:06 UTC · `context-menus-plugin-one-true-source` → running (all) · auto-lander
 - 2026-11-17 19:06 UTC · `context-menus-plugin-one-true-source` note (all) · auto-lander
 - 2026-11-17 19:06 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · auto-lander
+- 2026-11-17 19:06 UTC · `group-chat-audio-hear-agents-talk-while` → running (all) · auto-lander
+- 2026-11-17 19:06 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · orchestrator
+- 2026-11-17 19:06 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · auto-lander
+- 2026-11-17 19:06 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · auto-lander
+- 2026-11-17 19:06 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
 
 ## Token passes (log)
 
