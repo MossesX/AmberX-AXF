@@ -572,6 +572,32 @@ async def pipeline_action(request: Request) -> dict[str, Any]:
     return _pipeline(*args)
 
 
+@router.get("/attempts/{build}")
+def build_attempts(build: str) -> dict[str, Any]:
+    """done-means-merged@1: every attempt on a build (strategy, model, account, result), the open failure, the merge +
+    CI + verify evidence, the escalation and what the retry ladder tries next (pipeline.mjs attempts)."""
+    return _pipeline("attempts", _build_id(build))
+
+
+RETRY_STRATEGIES = ("retry", "merge-main", "fix:targeted", "fix:regenerate", "fix:redo-step", "fresh-session", "switch-model", "switch-account")
+
+
+@router.post("/retry/{build}")
+async def build_retry(build: str, request: Request) -> dict[str, Any]:
+    """{strategy?, why?}: Retry by hand. The open failure's attempts so far are marked skipped (they stay in the log), the
+    escalation clears and the build is fixing again: the next tick relaunches it on the ladder's first rung, or at once
+    on the strategy given (never above the step's pinned model). A build with no failure goes back to the Queue."""
+    body = await _json_body(request)
+    strategy = str(body.get("strategy") or "").strip()
+    if strategy and strategy not in RETRY_STRATEGIES:
+        raise HTTPException(400, f"strategy is one of {', '.join(RETRY_STRATEGIES)}")
+    args = ["retry", _build_id(build), *([strategy] if strategy else []), "--by", (brett_click(request) or "console")[:80]]
+    why = str(body.get("why") or "")[:300]
+    if why.strip():
+        args += ["--why", why]
+    return _pipeline(*args)
+
+
 @router.post("/pipeline/split")
 async def pipeline_split(request: Request) -> dict[str, Any]:
     """{id}: ask the orchestrator to (re)split a build into ≤ 30-min steps on its next tick (the console container has no

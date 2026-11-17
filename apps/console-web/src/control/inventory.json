@@ -8,7 +8,7 @@
     "tabs": 80,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 275,
+    "functions": 277,
     "buttons": 62,
     "plugins": 71
   },
@@ -1360,7 +1360,7 @@
       "view": "build-orchestrator",
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/attempts.tsx",
-      "line": 64,
+      "line": 72,
       "tabs": [
         {
           "address": "view:build-orchestrator/tab:build-orchestrator.build=steps",
@@ -4534,6 +4534,39 @@
         "orchestrator",
         "requeue",
         "stuck"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.attempts",
+      "kind": "function",
+      "id": "build-orchestrator.attempts",
+      "label": "build-orchestrator.attempts",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.attempts",
+        "build",
+        "orchestrator",
+        "attempts"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.retry",
+      "kind": "function",
+      "id": "build-orchestrator.retry",
+      "label": "Build orchestrator: retry a build (<build>|strategy: retry, fix:targeted, fresh-session, switch-model, switch-account …)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.retry",
+        "build",
+        "orchestrator",
+        "retry"
       ],
       "params": true,
       "plugin": "ai.amberx.axf.console.build-orchestrator",

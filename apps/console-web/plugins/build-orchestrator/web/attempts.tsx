@@ -11,7 +11,7 @@
  * Tokens and framework controls only (Chip, Button, Note, TabGroup, DataGrid). Control@1 targets: the TabGroup registers
  * tab:build-orchestrator.build=steps|attempts; the Retry button carries data-axf-target button:retry-<build>.
  */
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Chip, Icon, Note, TabGroup } from '@console/axf/react';
 import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 
@@ -55,10 +55,18 @@ export function StatusChip({ status, data = {}, held = false }: { status: string
 
 /** Steps | Attempts for one expanded build (the TabGroup asset; the tab is kept per build for the session). */
 const TAB: Record<string, 'steps' | 'attempts'> = {};
+const ATTEMPTS_EVENT = 'axf:orchestrator-attempts';
+/** Open a build's Attempts tab (row:<build>/tab:attempts, build-orchestrator.attempts:<build>): kept for its next mount too. */
+export function showAttempts(id: string): void { TAB[id] = 'attempts'; window.dispatchEvent(new CustomEvent(ATTEMPTS_EVENT, { detail: id })); }
 export function BuildDetail({ id, data, steps, onRetry, busy, initial }: { id: string; data: AttemptsData; steps: ReactNode; onRetry: (strategy: string) => void; busy: boolean; initial?: 'steps' | 'attempts' }) {
   const n = data.attempts?.length ?? 0;
   const [tab, setTabState] = useState<'steps' | 'attempts'>(() => TAB[id] ?? initial ?? (data.failure || data.escalation ? 'attempts' : 'steps'));
   const setTab = (t: 'steps' | 'attempts') => { TAB[id] = t; setTabState(t); };
+  useEffect(() => {
+    const on = (e: Event) => { if ((e as CustomEvent<string>).detail === id) setTabState('attempts'); };
+    window.addEventListener(ATTEMPTS_EVENT, on);
+    return () => window.removeEventListener(ATTEMPTS_EVENT, on);
+  }, [id]);
   return (
     <div className="fx-stack" data-axf-build-detail={id}>
       <TabGroup<'steps' | 'attempts'> id="build-orchestrator.build" label={`${id} details`} value={tab} onChange={setTab}

@@ -8,7 +8,8 @@
  * dispatcher takes the next Queue build and starts a headless session on an account that runs its next phase's model.
  *
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
- *   … escalated | retry <id> [strategy] [--why w] | retry-all   done-means-merged@1: what is stuck; Retry by hand (the ladder starts over)
+ *   … attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all   done-means-merged@1: every attempt, what is
+ *                                     stuck; Retry by hand (the ladder starts over; a strategy runs at once)
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
  *   … unqueue <id…>                Queue → Pending
  *   … hold <id…> [--why w] | release <id…>   On hold: stays in the Queue, the dispatcher skips it until released
@@ -1445,6 +1446,14 @@ async function main(argv) {
   if (cmd === 'aliases') { const r = assignAliases({ apply: has('apply'), all: has('all'), by }); return out({ ok: true, applied: has('apply'), aliases: r }, r.map((x) => `${x.id} → ${x.alias}`).join('\n') || 'every build id is a valid build name'); }
   if (cmd === 'land-alias') { const r = landAlias(rest[0], { by }); return out({ ok: true, ...r }, `${r.id} → ${r.alias}${r.dir ? `\nfolder ${r.dir}` : ''}${r.branch ? `\nbranch ${r.branch}` : ''}\n${r.note}`); }
   // done-means-merged@1: what is stuck, and the hand's Retry (the banner, the Attempts tab, REST / MCP / voice reach the same)
+  if (cmd === 'attempts') {
+    const b = storeCore.findBuild(loadStore(), rest[0] || ''); if (!b) throw Object.assign(new Error(`no build "${rest[0] || ''}"`), { code: 2 });
+    const v = attemptsView(b);
+    return out({ ok: true, id: b.id, status: b.status, ...v }, [`${b.id}: ${b.status}${v.failure ? ` · fixing ${v.failure.kind}${v.failure.step ? ` on ${v.failure.step}` : ''}: ${v.failure.why}` : ''}${v.escalation ? ` · escalated: ${v.escalation.why}` : ''}`,
+      ...v.attempts.map((a) => `  ${String(a.n).padStart(2)} ${a.kind.padEnd(15)} ${(a.strategy + (a.fixStrategy ? `:${a.fixStrategy}` : '')).padEnd(18)} ${(a.model || '-').padEnd(5)} ${(a.account || a.source).padEnd(12)} ${a.result.padEnd(8)} ${a.startedAt} ${a.note.slice(0, 80)}`),
+      v.next ? `  next: ${v.next.strategy}${v.next.fixStrategy ? `:${v.next.fixStrategy}` : ''}${v.next.model ? ` on ${v.next.model}` : ''}${v.next.notBefore ? ` not before ${v.next.notBefore}` : ''}` : '',
+      v.landed ? `  landed: merged ${v.landed.mergedAt || '-'} sha ${v.landed.sha || '-'} CI ${v.landed.ci} verify ${v.landed.verifiedAt ? `${v.landed.verifyHow} ${v.landed.verifiedAt}` : 'not yet'}` : ''].filter(Boolean).join('\n'));
+  }
   if (cmd === 'escalated') { const e = escalated(); return out({ ok: true, escalated: e }, e.map((x) => `${x.id}: ${x.kind} since ${x.since} after ${x.attempts} attempt(s): ${x.why}`).join('\n') || 'nothing escalated'); }
   if (cmd === 'retry') {
     if (!rest[0] || rest[0].startsWith('--')) throw Object.assign(new Error('retry <build> [strategy] [--why "…"]'), { code: 2 });
@@ -1510,7 +1519,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | escalated | retry <id> [strategy] [--why w] | retry-all [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
