@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:05 UTC · `pass-approval-hook-deep-link-amberx-notification` → running (all) · auto-lander
 - 2026-11-17 19:05 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · auto-lander
 - 2026-11-17 19:05 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · auto-lander
 - 2026-11-17 19:05 UTC · `orchestrator-settings-collapsible-split` → running (all) · auto-lander
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:10 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · pipeline
 - 2026-11-17 20:10 UTC · `terminal-main-tab-streaming-console-s` s8 done (all) · orchestrator
 - 2026-11-17 20:10 UTC · `live-build-status-real-time-grids-15` PR #815 (all) · builds-live
+- 2026-11-17 20:10 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
 
 ## Token passes (log)
 
