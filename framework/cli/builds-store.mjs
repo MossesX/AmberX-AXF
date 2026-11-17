@@ -19,6 +19,7 @@
  *   --json on any command prints JSON.
  *
  * AXF_BUILDS_STORE=<file> points at another store (tests); its journal goes next to it.
+ * In a build worktree the store lives on the hub data store (worktreeHome), never in the checkout.
  * Live (Nov 3 2026, orch-live-sync): every write that changes a build is also queued for main (builds-live.mjs) and
  * published there at once as its own status-only commit, whatever branch this checkout is on. AXF_BUILDS_LIVE=0 = off.
  * The old per-profile files (orchestrator.json, pending.json, build-queue.json) stay for one release as READ-ONLY
@@ -36,10 +37,38 @@ import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
-/** A scratch data folder (AXF_DATA_DIR set to a folder, as tests do): the store lives there too, seeded from the repo's. */
-const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !== 'off' ? d : ''; };
+/**
+ * A build worktree's data home (stop-auto-lander-committing-tracking s4): in a linked git worktree (`.git` is a file)
+ * on a branch other than main, with the hub data store reachable (persist.mjs persistRoot), the store, its sidecars and
+ * its orchestrator exports live at <data root>/builds/worktrees/<worktree>/ instead of the checkout, seeded once
+ * from the checkout's copy. The checkout's tracking files (framework/core/tracking-paths.mjs) are then never written,
+ * so never staged on the build branch. The status-only publish to main (builds-live.mjs) is unchanged: it reads the
+ * store wherever it lives. AXF_BUILDS_HOME=repo keeps the store in the checkout; tests (AXF_BUILDS_STORE,
+ * AXF_DATA_DIR) are unaffected.
+ */
+let worktreeHomeMemo;
+export function worktreeHome() {
+  if (process.env.AXF_BUILDS_STORE || process.env.AXF_DATA_DIR !== undefined || process.env.AXF_BUILDS_HOME === 'repo') return '';
+  if (worktreeHomeMemo !== undefined) return worktreeHomeMemo;
+  worktreeHomeMemo = '';
+  try {
+    if (!statSync(join(REPO_ROOT, '.git')).isFile()) return worktreeHomeMemo;
+    const head = readFileSync(join(REPO_ROOT, '.git'), 'utf8').match(/gitdir:\s*(.+)/)?.[1]?.trim();
+    const ref = head ? readFileSync(join(resolve(REPO_ROOT, head), 'HEAD'), 'utf8').trim() : '';
+    if (/^ref: refs\/heads\/main$/.test(ref)) return worktreeHomeMemo;
+    const root = persistRoot();
+    if (root) worktreeHomeMemo = join(root, 'builds/worktrees', REPO_ROOT.split('/').pop().replace(/[^A-Za-z0-9._-]/g, '-'));
+  } catch { /* not a worktree */ }
+  return worktreeHomeMemo;
+}
+/**
+ * A scratch data folder (AXF_DATA_DIR set to a folder, as tests do), or a build worktree's hub home: the store lives
+ * there too, seeded from the repo's.
+ */
+const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !== 'off' ? d : d === undefined ? worktreeHome() : ''; };
 export const storeFile = () => process.env.AXF_BUILDS_STORE || (scratchDir() ? join(scratchDir(), STORE_REL) : join(REPO_ROOT, STORE_REL));
-export const journalDir = () => join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal');
+// a worktree's journal stays with the checkout's parts until the journal moves to the hub (s8): never a fresh part on the hub
+export const journalDir = () => (!process.env.AXF_BUILDS_STORE && worktreeHome() ? join(REPO_ROOT, '_claude/builds/journal') : join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal'));
 
 export class StoreLocked extends Error {}
 function lock(f, waitMs = 20000) {
@@ -82,7 +111,10 @@ function foldOrigins(store) {
 export const mergeOriginsText = (a, b) => { const pa = (() => { try { return JSON.parse(a || '{}').origins ?? {}; } catch { return {}; } })(); const pb = (() => { try { return JSON.parse(b || '{}').origins ?? {}; } catch { return {}; } })(); const out = { ...pa }; for (const [k, v] of Object.entries(pb)) out[k] = mergeOrigin(out[k], v); return originsText(out); };
 function readStore() {
   const f = storeFile();
-  if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, readFileSync(join(REPO_ROOT, STORE_REL))); }
+  if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) {
+    mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, readFileSync(join(REPO_ROOT, STORE_REL)));
+    const o = join(REPO_ROOT, ORIGINS_REL); if (!existsSync(originsFile()) && existsSync(o)) writeFileSync(originsFile(), readFileSync(o));
+  }
   if (!existsSync(f)) {
     if (process.env.AXF_BUILDS_STORE) return core.emptyStore();
     // first use on this checkout: migrate from the older files (the dry run is `migrate --dry`)
