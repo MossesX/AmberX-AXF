@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `focus-every-screen-console-open-console` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `github-client-plugin-see-control-every` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `merges-are-only-merged-once-github` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `new-project-wizard-name-linked-repo` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:47 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 - 2026-11-17 20:47 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
 - 2026-11-17 20:47 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 20:48 UTC · `guided-live-demo-test-watch-orchestrator` s16 done (all) · orchestrator
 
 ## Token passes (log)
 
