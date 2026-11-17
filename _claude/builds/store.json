@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7952,
- "updatedAt": "2026-11-17T21:12:38.034Z",
+ "rev": 7953,
+ "updatedAt": "2026-11-17T21:13:37.858Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268229,7 +268229,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:11:25.607Z",
+   "updatedAt": "2026-11-17T21:13:33.077Z",
    "builtAt": "",
    "notes": [
     {
@@ -268337,7 +268337,16 @@
      "at": "2026-11-17T21:11:25.607Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T21:13:33.077Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "What's up with the new phone connection? You gonna build it or what?",
@@ -268355,12 +268364,12 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-17T21:11:14.919Z",
-    "runs": 3,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T20:39:27.512Z",
+    "runs": 2,
     "crashes": 1,
     "lastRun": {
      "at": "2026-11-17T21:06:39.726Z",
@@ -268380,9 +268389,9 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "requeued after phase Phase 1: next phase Opus waits for a slot and an account",
     "route": "",
-    "dispatchedAt": "2026-11-17T21:11:14.919Z",
+    "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -268391,7 +268400,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T21:11:14.919Z",
+    "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
@@ -268550,12 +268559,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:13:33.077Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T16:54:55.110Z"
+     "updatedAt": "2026-11-17T21:13:33.542Z"
     },
     {
      "id": "s7",

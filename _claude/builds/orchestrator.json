@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:12:38.034Z",
+ "updatedAt": "2026-11-17T21:13:37.858Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175207,7 +175207,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:11:25.607Z",
+   "updatedAt": "2026-11-17T21:13:33.077Z",
    "builtAt": "",
    "notes": [
     {
@@ -175315,7 +175315,16 @@
      "at": "2026-11-17T21:11:25.607Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T21:13:33.077Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "What's up with the new phone connection? You gonna build it or what?",
@@ -175456,8 +175465,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:13:33.077Z",
      "note": "",
      "uid": "st-mwkxnkau068hsd",
      "createdAt": "2026-11-17T16:54:55.110Z"
