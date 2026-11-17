@@ -822,9 +822,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:12 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
-- 2026-11-17 00:13 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
-- 2026-11-17 00:13 UTC · `server-auto-lander-fixes-lands` note (all) · foreign-write
 - 2026-11-17 00:13 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
 - 2026-11-17 00:14 UTC · `gate-auto-lander-tab-and-controls` → running, note (all) · pipeline
 - 2026-11-17 00:14 UTC · `gate-auto-lander-tab-and-controls` branch claude/gate-auto-lander-tab-and-controls (all) · pipeline
@@ -1222,6 +1219,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 13:05 UTC · `orchestrator-stale-row-watchdog-vps` s15 done (all) · orchestrator
 - 2026-11-17 13:05 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
 - 2026-11-17 13:10 UTC · `orchestrator-stale-row-watchdog-vps` PR #780, note (all) · reconciler
+- 2026-11-17 13:18 UTC · `fix-console-deep-links-open-page-lands` s4 done, → built (all) · orchestrator
+- 2026-11-17 13:19 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
+- 2026-11-17 13:19 UTC · `fix-console-deep-links-open-page-lands` note (all) · pipeline
 
 ## Token passes (log)
 
