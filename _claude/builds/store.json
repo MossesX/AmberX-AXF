@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8231,
- "updatedAt": "2026-11-17T22:39:57.768Z",
+ "rev": 8232,
+ "updatedAt": "2026-11-17T22:40:36.520Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268115,7 +268115,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T13:00:31.314Z",
+   "updatedAt": "2026-11-17T22:40:10.114Z",
    "builtAt": "",
    "notes": [
     {
@@ -268153,6 +268153,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T13:00:31.314Z"
+    },
+    {
+     "text": "Brett (do this first): move the build slot counter / agent-slots system fully onto the VPS as the one true source. It must count every real running build session on the host (claude -p trees, tmux axf-* sessions) from every account, not only launches it reserved itself. Right now it shows 1 running while 5 run (Hulu 4, Moses 1), and its axf-builds.slice is inactive. The dispatcher, orchestrator and console all read the count from this one VPS service. Test: N real sessions running => counter shows N.",
+     "at": "2026-11-17T22:40:10.114Z"
     }
    ],
    "approvals": [],
@@ -268877,7 +268881,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
