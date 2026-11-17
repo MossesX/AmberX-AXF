@@ -1,0 +1,13 @@
+/* Orchestrator demo. Theme tokens only, axp-orchestrator-demo prefix, shared is-* states; controls are the framework's. */
+
+/* start overlay */
+.axp-orchestrator-demo__overlay { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); min-width: 0; max-height: 75vh; overflow-y: auto; }
+.axp-orchestrator-demo__lead { margin: 0; }
+.axp-orchestrator-demo__parts { margin: 0; padding-left: var(--fx-dens-gap-4xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-orchestrator-demo__part { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-orchestrator-demo__part-title { font-weight: 600; }
+.axp-orchestrator-demo__muted { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.axp-orchestrator-demo__note { margin: 0; color: var(--fx-muted); }
+.axp-orchestrator-demo__error { margin: 0; color: var(--fx-danger); }
+.axp-orchestrator-demo__toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); padding-top: var(--fx-dens-gap-xl); border-top: var(--fx-border-w) solid var(--fx-border); }
+.axp-orchestrator-demo__spacer { flex: 1 1 auto; min-width: var(--fx-space); }

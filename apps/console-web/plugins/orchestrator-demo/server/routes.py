@@ -2,7 +2,8 @@
 
 Every route is a thin call into runner.mjs (the one place the run is read and changed), so the console UI, REST, the
 plugin-commands MCP tools, the CLI and voice all go through the same code. The runner answers one JSON line
-{ok, code?, error?, state?, summary?, settings?}; a refusal becomes an HTTP error with its plain reason.
+{ok, code?, error?, state?, summary?, settings?}; a refusal becomes an HTTP error whose detail is the plain reason
+(the code in the X-Axf-Code header).
 """
 from __future__ import annotations
 
@@ -42,7 +43,7 @@ def answer(res: dict[str, Any]) -> dict[str, Any]:
         return res
     code = str(res.get("code") or "error")
     raise HTTPException(STATUS.get(code, 500 if code in ("runner-failed", "error") else 400),
-                        {"code": code, "error": res.get("error") or "refused", "state": res.get("state")})
+                        str(res.get("error") or "refused"), headers={"X-Axf-Code": code})
 
 
 async def body_of(request: Request) -> dict[str, Any]:
@@ -126,7 +127,7 @@ async def set_pause_between_steps(request: Request) -> dict[str, Any]:
     """Turn Pause between steps on or off for the run now and as the default. Body {pause: true|false}."""
     b = await body_of(request)
     if "pause" not in b:
-        raise HTTPException(400, {"code": "usage", "error": "send {pause: true|false}"})
+        raise HTTPException(400, "send {pause: true|false}", headers={"X-Axf-Code": "usage"})
     on = "true" if pause_flag(b["pause"]) == ["--pause"] else "false"
     settings = answer(run_runner("settings", "--pause", on)).get("settings")
     res = run_runner("event", "set-pause", "--pause", on)
