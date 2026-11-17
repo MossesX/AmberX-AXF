@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7119,
- "updatedAt": "2026-11-17T00:06:56.499Z",
+ "rev": 7120,
+ "updatedAt": "2026-11-17T00:07:16.777Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212176,7 +212176,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T19:57:20.524Z",
-   "updatedAt": "2026-11-16T23:20:36.078Z",
+   "updatedAt": "2026-11-17T00:06:55.316Z",
    "builtAt": "",
    "notes": [
     {
@@ -212186,6 +212186,10 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:20:36.078Z"
+    },
+    {
+     "text": "Duplicate of grid-token-set-colours-hover-selected (same Brett ask, same step text). Built there: branch claude/grid-token-set-colours-hover-selected. Marked complete so it is not built twice.",
+     "at": "2026-11-17T00:06:55.316Z"
     }
    ],
    "approvals": [],
@@ -212449,7 +212453,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
