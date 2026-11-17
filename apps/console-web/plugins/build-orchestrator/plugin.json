@@ -27,6 +27,7 @@
     "service:ui-review@1"
   ],
   "banner": false,
+  "buildHooks": "fell-back.mjs",
   "tabable": {
     "view": "build-orchestrator",
     "label": "Orchestrator",
@@ -374,6 +375,33 @@
           ]
         },
         "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-fell-back",
+        "route": "GET /pipeline/fell-back",
+        "title": "Builds that fell back to Pending",
+        "description": "Every build that dropped out of the Queue or Building back to Pending (session stopped with steps left, reconciler pause, self-check release, CI or land failure, unqueue): which build, why, steps left and since when. Each is a red systems check banner item with Requeue and Open until it is requeued, archived or held. Say 'what fell back to pending'.",
+        "readOnly": true,
+        "output": "{ items: [{ id, title, from, since, by, why, stepsLeft, stepsTotal, link }] }"
+      },
+      {
+        "id": "pipeline-fell-back-requeue",
+        "route": "POST /pipeline/fell-back/requeue",
+        "title": "Requeue a build that fell back",
+        "description": "Put a build that fell back to Pending back in the Queue (the banner item's Requeue button); the banner item and its phone alert clear. Say 'requeue skins'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ ok, id, status }"
       },
       {
         "id": "pipeline-build-action",

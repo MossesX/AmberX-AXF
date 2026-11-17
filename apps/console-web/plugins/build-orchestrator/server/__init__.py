@@ -22,6 +22,7 @@ import json
 import os
 import re
 import subprocess
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -538,6 +539,127 @@ async def pipeline_split(request: Request) -> dict[str, Any]:
     Claude; the dispatcher on the host does it within a minute)."""
     body = await _json_body(request)
     return _pipeline("split", _build_id(body.get("id")), "--request", "--by", (brett_click(request) or "console")[:80])
+
+
+# ---- fell back to Pending (Brett, Nov 16 2026: "Every time something falls back to Pending, I need a fucking alert
+# somewhere."). fell-back.mjs (a build-hook@1 listener) keeps one record per build that moved from the Queue or Building
+# back to Pending; each becomes its own red systems check item (health@1 id build-fell-back:<id>) saying which build,
+# why, steps left and since when, with Requeue (the item's auto-fix, ask first) and Open (view:build-orchestrator).
+# A red item is pushed once to the AmberX app; it clears when the build is requeued, archived, deleted, finished or held.
+
+FELL_BACK_CLI = CLI.parent / "fell-back.mjs"
+FELL_BACK_PREFIX = "build-fell-back:"
+FELL_BACK_EVERY_S = 60
+FELL_BACK_LINK = "view:build-orchestrator"
+_fell_back: dict[str, dict[str, Any]] = {}
+_fell_back_lock = threading.Lock()
+
+
+def fell_back_list() -> list[dict[str, Any]]:
+    proc = subprocess.run(["node", str(FELL_BACK_CLI), "list", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {}
+    except json.JSONDecodeError:
+        res = {}
+    if not res.get("ok"):
+        raise RuntimeError(str(res.get("error") or proc.stderr.strip()[-300:] or "fell-back list failed"))
+    return [x for x in res.get("items") or [] if isinstance(x, dict) and ID_RE.match(str(x.get("id") or ""))]
+
+
+def _since_words(iso: str) -> str:
+    try:
+        t = datetime.fromisoformat(iso.replace("Z", "+00:00"))
+        return t.strftime("%b %d %H:%M UTC")
+    except ValueError:
+        return iso or "unknown"
+
+
+def fell_back_probe(bid: str) -> dict[str, Any]:
+    """The banner item for one build (from the last sync): red while it sits in Pending, green once it has left."""
+    x = _fell_back.get(bid)
+    if not x:
+        return {"status": "ok", "summary": f"{bid} is no longer waiting in Pending."}
+    steps = f"{x.get('stepsLeft', 0)} of {x.get('stepsTotal', 0)} step{'s' if x.get('stepsTotal') != 1 else ''} left"
+    return {"status": "error",
+            "summary": f"{x.get('title') or bid} fell back from {x.get('from') or 'the Queue'} to Pending ({steps}). Why: {x.get('why') or 'not recorded'}",
+            "details": [f"Build: {bid}", f"Since: {_since_words(str(x.get('since') or ''))}", f"Moved by: {x.get('by') or 'unknown'}", f"Why: {x.get('why') or 'not recorded'}", steps]}
+
+
+def fell_back_requeue(bid: str, by: str = "systems-check") -> dict[str, Any]:
+    res = _pipeline("queue", bid, "--by", by[:80])
+    fell_back_sync()
+    return res
+
+
+def _register_fell_back(reg: Any, x: dict[str, Any]) -> str:
+    bid = str(x["id"])
+    cid = FELL_BACK_PREFIX + bid
+    reg.register({"id": cid, "label": f"Back in Pending: {str(x.get('title') or bid)[:80]}", "service": "console", "order": 8, "severity": "error",
+                  "run": lambda: fell_back_probe(bid), "interval": FELL_BACK_EVERY_S,
+                  "breaks": "Nothing builds it until it is back in the Queue: the work it was doing has stopped.",
+                  "links": [{"label": "Open", "url": FELL_BACK_LINK}],
+                  "instructions": ["Requeue puts it back in the Queue; the dispatcher starts it when a slot and an account for its model are free.",
+                                   "Open shows it in the Build orchestrator (Pending tab) to archive it, hold it or read its notes.",
+                                   f"Same without the console: `node apps/console-web/plugins/build-orchestrator/pipeline.mjs queue {bid}`, MCP pipeline-queue, or say 'requeue {bid}'."],
+                  "autoFix": {"label": "Requeue", "mode": "ask", "run": lambda: {"state": "done", "message": f"{bid} → Queue ({fell_back_requeue(bid).get('status', 'queued')})"}}},
+                 FOLDER)
+    return cid
+
+
+def fell_back_sync() -> list[dict[str, Any]]:
+    """Ledger → banner items: register the new ones (checked and pushed now), drop the ones that left Pending."""
+    global _fell_back
+    reg = plugin_services.get(HEALTH_CAP)
+    with _fell_back_lock:
+        items = fell_back_list()
+        now = {str(x["id"]): x for x in items}
+        old = set(_fell_back)
+        _fell_back = now
+        if reg is None:
+            return items
+        fresh = [_register_fell_back(reg, x) for i, x in now.items() if i not in old or FELL_BACK_PREFIX + i not in reg.checks()]
+        gone = [FELL_BACK_PREFIX + i for i in old - set(now)]
+        for cid in [c for c in reg.checks() if c.startswith(FELL_BACK_PREFIX) and c[len(FELL_BACK_PREFIX):] not in now]:
+            if cid not in gone:
+                gone.append(cid)
+        mon = getattr(reg, "monitor", None)
+        if mon is not None and gone:
+            mon.annotate(mon.run_ids(gone))  # green: the phone alert closes, and a later fall-back pushes again
+        for cid in gone:
+            reg.unregister(cid)
+        if mon is not None and fresh:
+            mon.annotate(mon.run_ids(fresh))  # red now: pushed once to the AmberX app
+    return items
+
+
+def _fell_back_loop() -> None:
+    while True:
+        try:
+            fell_back_sync()
+        except Exception:  # noqa: BLE001 — the next round tries again
+            pass
+        time.sleep(FELL_BACK_EVERY_S)
+
+
+if not os.environ.get("AXF_FELL_BACK_NO_SCHEDULE"):
+    threading.Thread(target=_fell_back_loop, name="build-fell-back", daemon=True).start()
+
+
+@router.get("/pipeline/fell-back")
+def pipeline_fell_back() -> dict[str, Any]:
+    """Every build that fell back to Pending and still sits there: which, from where, why, steps left, since when."""
+    try:
+        return {"ok": True, "items": fell_back_sync()}
+    except RuntimeError as e:
+        raise HTTPException(500, str(e)[:400]) from None
+
+
+@router.post("/pipeline/fell-back/requeue")
+async def pipeline_fell_back_requeue(request: Request) -> dict[str, Any]:
+    """{id}: the banner item's Requeue: back to the Queue; the item and its phone alert clear."""
+    body = await _json_body(request)
+    return fell_back_requeue(_build_id(body.get("id")), (brett_click(request) or "console")[:80])
 
 
 @router.post("/pipeline/account")

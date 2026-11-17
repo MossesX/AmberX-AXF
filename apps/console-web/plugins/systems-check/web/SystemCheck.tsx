@@ -383,7 +383,9 @@ export function SystemBanner() {
                 </button>
                 {s.run[c.id] === 'working' || s.run[c.id] === 'waiting' || (s.fixedUntil[c.id] && !isIssue(c))
                   ? <RunBadge r={s.fixedUntil[c.id] && !isIssue(c) ? 'done' : s.run[c.id]} />
+                  : askFirst(c) ? <ActBadge icon="zap" label={c.autoFixLabel!} onClick={() => void healthAutoFix(c)} />
                   : <ActBadge icon={fixIcon(c)} label={label} onClick={() => void autoFix(c, rt)} />}
+                {c.links.filter(isConsoleLink).map((l) => <ActBadge key={l.url} icon="external" label={l.label} onClick={() => openLink(rt, l.url)} />)}
               </li>
             );
           })}
@@ -426,6 +428,24 @@ const STATUS_LABEL: Record<Status, string> = { ok: 'OK', warn: 'Warning', error:
 export function StatusDot({ s }: { s: Status }) { return <span className={`axp-systems-check-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
 function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'success' : s === 'error' ? 'danger' : s === 'warn' ? 'warning' : undefined}>{STATUS_LABEL[s]}</Chip>; }
 const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', waiting: 'Waiting for you', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you', skipped: 'Skipped' };
+/** A console address (console-control@1: `view:…`, `settings:…`) opens in the console; anything else is a web page. */
+export const isConsoleLink = (l: { url: string }) => /^(view|settings):/.test(l.url);
+export function openLink(rt: ReturnType<typeof useRuntime>, url: string) {
+  if (url.startsWith('view:')) rt.navigate(url.slice(5));
+  else if (url.startsWith('settings:')) rt.dispatch(`settings.open:${url.slice(9)}`);
+  else window.open(url, '_blank', 'noopener,noreferrer');
+}
+export function LinkTo({ l }: { l: { label: string; url: string } }) {
+  const rt = useRuntime();
+  if (isConsoleLink(l)) return <Button size="sm" icon="external" onClick={() => openLink(rt, l.url)}>{l.label}</Button>;
+  return <a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a>;
+}
+/** A health@1 item whose own fix waits for a press (ask first, e.g. Requeue on a build that fell back to Pending). */
+const askFirst = (c: Check) => !!c.health && !!c.autoFixLabel && c.autoFixMode === 'ask' && !c.fixing && c.status !== 'ok';
+async function healthAutoFix(c: Check) {
+  try { await call(`health/autofix/${encodeURIComponent(c.id)}`, { method: 'POST' }); } catch { /* the item says what happened after the re-check */ }
+  setTimeout(() => void recheck(c.id).catch(() => undefined), 3000);
+}
 /** A small action badge (icon + a word) for the banner's drop-down rows: same height as the run badges. */
 function ActBadge({ icon, label, onClick, disabled, title }: { icon: string; label: string; onClick: () => void; disabled?: boolean; title?: string }) {
   return <Button size="sm" tone="primary" icon={icon} disabled={disabled} title={title ?? label} onClick={onClick}>{label}</Button>;
@@ -518,7 +538,7 @@ function CheckBody({ c, inPrompt }: { c: Check; inPrompt?: boolean }) {
       {c.details.length > 0 && <ul className="axp-systems-check-details">{c.details.map((d) => <li key={d} className="fx-mono fx-small">{d}</li>)}</ul>}
       {c.status !== 'ok' && c.fix && <><h4 className="axp-systems-check-h">Fix it here</h4><FixPanel c={c} /></>}
       {c.instructions.length > 0 && <><h4 className="axp-systems-check-h">{c.status === 'ok' ? 'How it was set up' : 'Fix it manually'}</h4><StepList className="axp-systems-check-steps" steps={c.instructions} /></>}
-      {c.links.length > 0 && <><h4 className="axp-systems-check-h">Resources</h4><ul className="axp-systems-check-links">{c.links.map((l) => <li key={l.url}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a></li>)}</ul></>}
+      {c.links.length > 0 && <><h4 className="axp-systems-check-h">Resources</h4><ul className="axp-systems-check-links">{c.links.map((l) => <li key={l.url}><LinkTo l={l} /></li>)}</ul></>}
       {c.status === 'ok' && c.fix?.type === 'secrets' && <FixPanel c={c} />}
     </div>
   );

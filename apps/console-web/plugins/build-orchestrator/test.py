@@ -16,6 +16,8 @@ ROOT = HERE.parents[1]  # apps/console-web
 sys.path.insert(0, str(ROOT / "server"))
 sys.path.insert(0, str(HERE.parent))
 
+import os  # noqa: E402
+os.environ.setdefault("AXF_FELL_BACK_NO_SCHEDULE", "1")  # no background sync in the self-test
 srv = import_module("build-orchestrator.server")
 n = 0
 
@@ -191,5 +193,60 @@ finally:
             os.environ.pop(k, None)
         else:
             os.environ[k] = v
+
+# ---- fell back to Pending (Nov 16 2026): ledger → one red banner item per build, cleared when it leaves Pending
+
+
+class _FakeMonitor:
+    def __init__(self, reg):
+        self.reg, self.annotated = reg, []
+
+    def run_ids(self, ids):
+        return [{"id": i, **self.reg.checks()[i]["run"]()} for i in ids if i in self.reg.checks()]
+
+    def annotate(self, items):
+        self.annotated += [(i["id"], i["status"]) for i in items]
+        return items
+
+
+class _FakeReg:
+    def __init__(self):
+        self._c, self.fixes = {}, {}
+        self.monitor = _FakeMonitor(self)
+
+    def register(self, spec, owner=""):
+        self._c[spec["id"]] = spec
+        self.fixes[spec["id"]] = spec.get("autoFix")
+        return spec["id"]
+
+    def unregister(self, cid):
+        self._c.pop(cid, None)
+
+    def checks(self):
+        return dict(self._c)
+
+
+_reg = _FakeReg()
+_orig_get, _orig_list = srv.plugin_services.get, srv.fell_back_list
+_rows = [{"id": "alpha", "title": "Alpha", "from": "Building", "since": "2026-11-16T12:00:00Z", "by": "reconcile", "why": "Reconciler: paused", "stepsLeft": 2, "stepsTotal": 3, "link": "view:build-orchestrator"}]
+srv.plugin_services.get = lambda cap: _reg if cap == srv.HEALTH_CAP else _orig_get(cap)
+srv.fell_back_list = lambda: list(_rows)
+try:
+    srv.fell_back_sync()
+    cid = srv.FELL_BACK_PREFIX + "alpha"
+    check(cid in _reg.checks(), "a build that fell back gets its own systems check item")
+    check((cid, "error") in _reg.monitor.annotated, "it is checked at once and red, so it is pushed to AmberX")
+    spec = _reg.checks()[cid]
+    check(spec["autoFix"]["label"] == "Requeue" and spec["autoFix"]["mode"] == "ask", "its button is Requeue (ask first)")
+    check(spec["links"] == [{"label": "Open", "url": "view:build-orchestrator"}], "Open goes to the Build orchestrator")
+    p = srv.fell_back_probe("alpha")
+    check("Reconciler: paused" in p["summary"] and "2 of 3 steps left" in p["summary"] and any("Nov 16 12:00 UTC" in d for d in p["details"]),
+          "the item says which build, why, steps left and since when")
+    _rows.clear()
+    _reg.monitor.annotated.clear()
+    srv.fell_back_sync()
+    check(cid not in _reg.checks() and (cid, "ok") in _reg.monitor.annotated, "requeued / archived / held: the item goes green (alert resolved) and is removed")
+finally:
+    srv.plugin_services.get, srv.fell_back_list = _orig_get, _orig_list
 
 print(f"build-orchestrator: {n} checks passed")
