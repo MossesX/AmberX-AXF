@@ -87,8 +87,8 @@ is reached by voice and REST. Unknown kinds and unknown `prop` values are refuse
 | Owner kind | What it writes | How (runtime adapter, `edit-ui-owners.ts`) |
 | --- | --- | --- |
 | `asset-token` | a look token: `token` targets, and `property` `size` / `colour` | control@1 token overrides: `axf.tokens.<slot>` (`withTokenOverride`), or `axf.tokens.instances` for a component instance's family tokens (`INSTANCE_TOKENS_KEY`) |
-| `asset-property` | a field of an asset instance: `property` `icon` / `order` / `label`, `text` targets that come from an asset, `column` `label` / `width` / `order` | the chrome instance override `axf.chrome.<kind>.<instance>` (chrome-settings@1) for chrome kinds; otherwise the asset override through the look writer (`runtime.changeLook` → app-look@1 `extras`); a swap of a whole slot stays `runtime.swap` |
-| `hidden-assets` | `property` `hide` / `column` `hide` | the hide-any-asset contract (below) |
+| `asset-property` | a field of an asset instance: `property` `icon` / `order` / `label`, `text` targets that come from an asset, every `column` prop (`label` / `width` / `order` / `hide`: a column lives in its grid instance, it is not chrome, so its hide is the grid's own column override `axf.grid.<grid>.columns`, not a Hidden-list entry) | the chrome instance override `axf.chrome.<kind>.<instance>` (chrome-settings@1) for chrome kinds; otherwise the asset override through the look writer (`runtime.changeLook` → app-look@1 `extras`); a swap of a whole slot stays `runtime.swap` |
+| `hidden-assets` | `property` `hide` | the hide-any-asset contract (below) |
 | `data` | `cell` targets, and `text` targets with a `source` | a registered data-source writer (`rt.editUi.registerDataSource(source, writer)`); without one the owner is `read-only` with `no-writer` |
 | `read-only` | nothing | the refusal and its reason go back to the UI as a toast; `begin` is refused |
 
@@ -103,7 +103,7 @@ A text target with both `assetType` and `source` is an asset edit (the asset is 
 
 ## Hide / unhide shares the hide-any-asset contract
 
-Hiding through the Edit UI is not a second way to hide. `property` / `column` with `prop: 'hide'` resolve to the
+Hiding through the Edit UI is not a second way to hide. `property` targets with `prop: 'hide'` resolve to the
 `hidden-assets` owner, which is the engine of build `rebuild-fresh-main-hide-any-asset` (`framework/core/engines/hidden-assets.ts`:
 `hide(look, target)`, `unhide(look, target)`, `isHidden`, `listHidden`; the per-app list in app-look@1 with entries
 `{ kind, id, assetRef?, hiddenAt, by }`; runtime `rt.hide` / `rt.unhide` / `rt.hidden`). An Edit UI hide writes one such
