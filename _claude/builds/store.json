@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7182,
- "updatedAt": "2026-11-17T00:33:08.912Z",
+ "rev": 7183,
+ "updatedAt": "2026-11-17T00:33:17.232Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -251371,7 +251371,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:32:45.876Z",
+   "updatedAt": "2026-11-17T00:33:14.156Z",
    "builtAt": "2026-11-17T00:32:45.876Z",
    "notes": [
     {
@@ -251437,6 +251437,10 @@
     {
      "text": "Self-check: own-look-per-grid-and-tab-group had no session on record but axf-own-look-per-grid-and-tab-group--lenny is alive: kept running and tracking it.",
      "at": "2026-11-17T00:22:07.054Z"
+    },
+    {
+     "text": "Headless run axf-own-look-per-grid-and-tab-group--lenny: brief only · start 17.5K tokens ($0.06) · cost $13.97 · 229 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:33:14.156Z"
     }
    ],
    "approvals": [
@@ -251926,7 +251930,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
