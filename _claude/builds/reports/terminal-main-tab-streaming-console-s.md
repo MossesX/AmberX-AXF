@@ -88,7 +88,7 @@ default until then.
 
 check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, check-plugin-commands,
 plugin-lifecycle check (clean), glossary catalog --check + test.mts, console `npm run build` (tsc + vite),
-`test_claude_link.py` (27 tests), the plugin's `test.py` (140), `claude-link-emit.test.mjs` (18), `axf_server/test.py`
+`test_claude_link.py` (26 tests), the plugin's `test.py` (140), `claude-link-emit.test.mjs` (18), `axf_server/test.py`
 (397), `test_mcp_tools.py` (222), `tests/test_console_control.py`. `deploy/claude-workers.test.mjs` could not run here:
 the VPS hard build limit was full (8/8), which refuses its end-to-end launch before any changed code runs; CI runs it.
 
