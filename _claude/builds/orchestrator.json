@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T03:38:13.816Z",
+ "updatedAt": "2026-11-17T03:38:35.530Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -169800,6 +169800,37 @@
      "createdAt": "2026-11-17T00:19:30.095Z"
     }
    ]
+  },
+  {
+   "id": "builds-keep-their-slot-across-phases",
+   "title": "Builds keep their slot across phases",
+   "category": "",
+   "detail": "When a build's phase finishes (e.g. Fable phase done, Opus phase next), it must NOT go back in line or release its slot. The next phase starts immediately in the same slot (same or new session, right model/account). A build holds its slot until it is merged and done. Builds already running always finish before any queued build starts. Server-side rule, enforced by the orchestrator on the VPS. Land through the orchestrator.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T03:38:28.564Z",
+   "updatedAt": "2026-11-17T03:38:28.564Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "They didn't go back online. They finished. That is retarded. I want the 8 that are running to finish before the rest go.",
+    "at": "2026-11-17T03:38:28.564Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
