@@ -9,7 +9,8 @@
  * Covers: plugin screens (build orchestrator, gate), a tab of a plugin screen (gate › auto-lander), a tab of a built-in
  * screen (settings › plugins), the link in the hash, a slow backend (the plugin list answers late), the link surviving a
  * reload before it landed (sessionStorage, the sign-in round trip), a remote open and console_refresh on an open console
- * (straight to the screen, back on it after the reload), the parameter taken off the address bar, and an
+ * (straight to the screen, back on it after the reload), the address bar following the console and a browser refresh
+ * landing where it was, and an
  * unknown screen answering with a warning instead of hanging.
  */
 import { spawn } from 'node:child_process';
@@ -32,8 +33,11 @@ let checks = 0;
 const ok = (c, what) => { if (!c) throw new Error(`✗ ${what}`); checks++; };
 const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 
-const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: 'ignore' });
-const stop = () => { try { server.kill('SIGTERM'); } catch { /* gone */ } };
+// a server already on the port (another run's leftover) would serve a stale dist/: refuse it
+try { await fetch(`http://127.0.0.1:${PORT}/`); console.error(`port ${PORT} is already in use (DL_E2E_PORT=<free port>)`); process.exit(2); } catch { /* free */ }
+// its own process group, so stopping it also stops the vite child npx starts (it would outlive the run otherwise)
+const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: 'ignore', detached: true });
+const stop = () => { try { process.kill(-server.pid, 'SIGTERM'); } catch { try { server.kill('SIGTERM'); } catch { /* gone */ } } };
 process.on('exit', stop);
 
 let browser;
@@ -65,7 +69,8 @@ const CASES = [
   { address: 'view:build-orchestrator', screen: 'build-orchestrator' },
   { address: 'view:gate', screen: 'gate' },
   { address: 'view:gate/tab:gate.tabs=auto-lander', screen: 'gate', tab: ['view:gate/tab:gate.tabs', 'auto-lander'] },
-  { address: 'view:settings/tab:settings.tabs=plugins', screen: 'settings', tab: ['view:settings/tab:settings.tabs', 'plugins'] },
+  // Settings opens as a floating popup over the current screen (Nov 2026): the dialog is up, on the plugins tab
+  { address: 'view:settings/tab:settings.tabs=plugins', dialog: 'axf.settings.tab' },
 ];
 
 try {
@@ -82,12 +87,18 @@ try {
     await page.goto(`http://127.0.0.1:${PORT}/?axf-target=${encodeURIComponent(c.address)}`);
     const r = await landed(page, c.address);
     ok(r.link.answer?.ok, `${c.address}: the link opened (${r.link.answer?.message ?? ''})`);
-    ok(r.state.screen === c.screen, `${c.address}: lands on ${c.screen}, not ${r.state.screen}`);
+    if (c.screen) ok(r.state.screen === c.screen, `${c.address}: lands on ${c.screen}, not ${r.state.screen}`);
+    if (c.dialog) ok(r.state.dialog === c.dialog, `${c.address}: opens the ${c.dialog} popup (${r.state.screen} ${r.state.dialog ?? 'no dialog'})`);
     if (c.tab) ok(r.state.tabs?.[c.tab[0]] === c.tab[1], `${c.address}: tab ${c.tab[0]} is ${c.tab[1]} (${JSON.stringify(r.state.tabs)})`);
-    ok(!r.url.includes('axf-target'), `${c.address}: the parameter is taken off the address bar (${r.url})`);
-    // the screen is still the one asked for a moment later (no late boot step moved it back home)
+    const here = await page.evaluate(() => window.axfConsoleHere());
+    ok(here.startsWith(c.address), `${c.address}: the console is at ${here}`);
+    await sleep(600);
+    const bar = new URL(await page.evaluate(() => location.href)).searchParams.get('axf-target') ?? '';
+    ok(bar.startsWith(c.address), `${c.address}: the address bar keeps where the console is (${bar})`);
+    // still there a moment later (no late boot step moved it back home)
     await sleep(1500);
-    ok((await page.evaluate(() => window.axfConsoleControlState().screen)) === c.screen, `${c.address}: still on ${c.screen} after boot settled`);
+    const later = await page.evaluate(() => window.axfConsoleHere());
+    ok(later.startsWith(c.address), `${c.address}: still at ${c.address} after boot settled (${later})`);
     ok(!errors.length, `${c.address}: no page errors (${errors.slice(0, 3).join(' | ')})`);
     if (SHOTS) await page.screenshot({ path: join(SHOTS, `deep-link-${c.address.replace(/[^a-z0-9]+/gi, '-')}.png`) });
     await ctx.close();
@@ -117,12 +128,13 @@ try {
   {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
     const { page } = await freshPage(ctx);
+    // the tab's saved copy from a load that never landed (the page went to sign-in first), and a bare URL coming back
+    await page.addInitScript(() => { if (!sessionStorage.getItem('e2e.seeded')) { sessionStorage.setItem('e2e.seeded', '1'); sessionStorage.setItem('axf.console.deep-link', 'view:build-orchestrator'); } });
     await page.goto(`http://127.0.0.1:${PORT}/`);
-    await page.evaluate(() => sessionStorage.setItem('axf.console.deep-link', 'view:build-orchestrator'));
-    await page.reload();
     const r = await landed(page, 'saved');
     ok(r.state.screen === 'build-orchestrator', `the saved link lands after a reload (${r.state.screen})`);
-    ok(!(await page.evaluate(() => sessionStorage.getItem('axf.console.deep-link'))), 'the saved link is cleared once it landed');
+    await sleep(600);
+    ok(String(await page.evaluate(() => sessionStorage.getItem('axf.console.deep-link'))).startsWith('view:build-orchestrator'), 'the saved copy follows the screen once it landed');
     await ctx.close();
   }
 
@@ -216,6 +228,35 @@ try {
     await ctx.close();
   }
 
+  // A browser refresh reloads exactly where Brett is (s4, Nov 16 2026): he opens Gate, taps the Auto-lander tab, and
+  // the address bar follows; a reload (and a fresh tab on that URL, as after the sign-in round trip) lands back there.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const { page, errors } = await freshPage(ctx);
+    await page.goto(`http://127.0.0.1:${PORT}/`);
+    await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 45_000 });
+    await sleep(800);
+    ok(!(await page.evaluate(() => location.search.includes('axf-target'))), `the home screen keeps the bare URL (${await page.evaluate(() => location.href)})`);
+    const opened = await page.evaluate(() => window.axfConsoleControl({ verb: 'open', address: 'view:gate', by: 'e2e' }));
+    ok(opened.ok, `opened gate (${opened.message ?? ''})`);
+    const tab = page.getByRole('tab', { name: /auto-lander/i }).first();
+    await tab.waitFor({ timeout: 30_000 });
+    await tab.click();
+    await sleep(800);
+    const url = await page.evaluate(() => location.href);
+    ok(new URL(url).searchParams.get('axf-target') === 'view:gate/tab:gate.tabs=auto-lander', `the address bar follows to gate › auto-lander (${url})`);
+    await page.reload();
+    const r = await landed(page, 'browser refresh');
+    ok(r.state.screen === 'gate' && r.state.tabs?.['view:gate/tab:gate.tabs'] === 'auto-lander', `a browser refresh comes back to gate › auto-lander (${r.state.screen} ${JSON.stringify(r.state.tabs)})`);
+    const fresh = await ctx.newPage();
+    await fresh.route('**/api/**', (rr) => { const u = new URL(rr.request().url()); if (u.pathname === '/api/me') return rr.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ME) }); if (u.pathname === '/api/events') return rr.abort().catch(() => {}); return rr.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' }); });
+    await fresh.goto(url);
+    const f = await landed(fresh, 'copied URL');
+    ok(f.state.screen === 'gate' && f.state.tabs?.['view:gate/tab:gate.tabs'] === 'auto-lander', `the URL alone (a new tab, the sign-in return) opens gate › auto-lander (${f.state.screen} ${JSON.stringify(f.state.tabs)})`);
+    ok(!errors.length, `browser refresh: no page errors (${errors.slice(0, 3).join(' | ')})`);
+    await ctx.close();
+  }
+
   // an unknown screen answers (not ok) instead of hanging, and leaves the console usable
   {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
@@ -227,7 +268,7 @@ try {
     await ctx.close();
   }
 
-  console.log(`✓ deep-link e2e — ${checks} checks (${CASES.map((c) => c.address).join(', ')}, hash, slow backend, reload, wake, remote open + refresh, unknown)`);
+  console.log(`✓ deep-link e2e — ${checks} checks (${CASES.map((c) => c.address).join(', ')}, hash, slow backend, reload, wake, remote open + refresh, browser refresh, unknown)`);
 } catch (e) {
   console.error(e instanceof Error ? e.message : e);
   process.exitCode = 1;

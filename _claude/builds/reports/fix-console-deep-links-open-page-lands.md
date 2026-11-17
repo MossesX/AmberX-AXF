@@ -72,3 +72,37 @@ the query string.
   argument and behaves as before.
 - axHub's `amberx.open_url` passes arguments through to the device. If its schema is ever narrowed, `newTab` must be
   listed there.
+
+## Follow-up (Nov 17 2026): remote opens and refreshes never land on home (s5), refresh stays put (s4)
+
+Brett, Nov 16: a browser refresh must reload exactly where he is, never the console home.
+
+- **Remote refresh** (`console_refresh`, soft and hard): before reloading, the console writes where it is (screen,
+  deepest tab, open dialog with its plain props, main-pane scroll) into `?axf-target=` and the tab's sessionStorage,
+  and restores all of it after the reload. It used to reload the bare URL, so it always came back on home.
+- **Remote open**: the executor waited only ~0.5 s for a tab that was not registered yet, and not at all when the screen
+  was already on show; a plugin tab arriving with its lazy chunk on a busy device answered "nothing on this screen is
+  …". It now waits up to 6 s on that screen. A deep link only counts as landed when every tab it names is chosen, and
+  is re-applied if the screen restores its own last tab after mounting (Gate went back to Rules).
+- **Browser refresh**: once the page has landed, the address bar follows the console: `?axf-target=<here>` is replaced
+  (not pushed) as Brett moves between screens, tabs and sub-tabs; home keeps the bare URL. The address, dialog and
+  scroll are also saved on every move and on pagehide. A refresh, a copied URL in a new tab and the sign-in round trip
+  all land back there.
+- **Settings is a popup now** (main, Nov 2026): `view:settings/…` opens a floating dialog over the current screen.
+  "Where the console is" reads the popup's rendered targets, so the URL and the landed check say
+  `view:settings/tab:settings.tabs=plugins` while it is open.
+- `window.axfConsoleHere()` returns the current address (tests, devtools).
+- Not changed: a queued legacy command woken through AmberX (`?axf-cmd=<id>`) still boots the woken page on its start
+  screen for the moment before the command arrives; console-control `open` / `focus` with no console already wake with
+  the target link.
+
+How each surface reaches it: the same address everywhere: the URL (`?axf-target=`), REST `/api/console-control`
+(`state` returns the screen and tabs, `open` / `focus` go there), MCP `console_show` / `console_refresh` /
+`console_control_*`, CLI `axf console focus <address>` / `axf console refresh [--hard]`, voice ("open gate auto-lander",
+"refresh the console").
+
+Tests: `scripts/deep-link.e2e.mjs` **52 checks green, twice**. New: a warm console on the orchestrator is sent
+Gate › Auto-lander remotely and never passes through home; a remote refresh reloads onto Gate › Auto-lander; Brett
+opens Gate, taps the Auto-lander tab, the URL follows, a reload and the copied URL in a new tab both land there; the
+home screen keeps the bare URL; settings › plugins opens the popup on the plugins tab. The e2e now runs its preview
+server in its own process group and refuses a port that is already serving (a leftover server served a stale `dist/`).

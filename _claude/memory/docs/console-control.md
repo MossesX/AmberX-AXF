@@ -14,7 +14,7 @@ any grid row or build step pulled into focus, all by address. Build
 | Executor (browser) | `apps/console-web/src/control/executor.ts`: runs relay commands, highlights, answers with a state snapshot; `window.axfConsoleControl(cmd)` |
 | Search | `apps/console-web/src/control/search.ts` (`addLoadedSource` for loaded rows, steps, review items, chat lines) |
 | Palette | `apps/console-web/src/control/SearchPalette.tsx`: Ctrl+K, `console.control.search`, `?axf-cmd=search&q=` |
-| Deep link on load | `apps/console-web/src/control/deepLink.ts`: `?axf-target=<address>` opens that screen / tab / row once it registers (kept through reloads and sign-in); test `scripts/deep-link.e2e.mjs`; phone `amberx.open_url {newTab: true}` for a tab of its own |
+| Deep link on load | `apps/console-web/src/control/deepLink.ts`: `?axf-target=<address>` opens that screen / tab / row once it registers (kept through reloads and sign-in); after that the URL follows the console (`?axf-target=<here>`, home = bare URL) and sessionStorage keeps dialog + scroll, so a browser refresh or `console_refresh` lands where it was; `window.axfConsoleHere()`; test `scripts/deep-link.e2e.mjs`; phone `amberx.open_url {newTab: true}` for a tab of its own |
 | Console actions | `apps/console-web/src/actions/console-control.ts` (`console.control.open/focus/scroll/search/state/press/set/plugin`), `voice-control.ts` |
 | Server | `apps/console-web/server/console_control.py` (inventory, search, plugins, voice twin), `console_control_api.py` (REST, guards, audit, rate limit) |
 | MCP | `console_control_targets`, `_state`, `_do`, `_search`, `_focus`, `_scroll`, `_plugin`, `_voice`; `console_open` / `console_show` take an address |
