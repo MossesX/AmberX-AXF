@@ -49,7 +49,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
-import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, SHOWS, SIZES, type OverlayBarVerb, type OverlayVerb } from './overlay';
+import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayItems, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, SHOWS, SIZES, type OverlayBarVerb, type OverlayVerb } from './overlay';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -97,7 +97,19 @@ interface State { status: Status; hub: string; count: number; pending: Pending[]
 
 let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], held: [], items: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
-const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); subs.forEach((f) => f()); };
+const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); toPhone(); subs.forEach((f) => f()); };
+
+/* The Android console app's floating toolbar (overlay@1 `overlayItems`): what waits, one by one, sent when it changes. */
+let lastPhone = '';
+function toPhone(): void {
+  // read loosely: the plugin also runs in apps without the console's axfNative typing
+  const host = typeof window !== 'undefined' ? (window as unknown as { axfNativeHost?: { overlayItems?: (json: string) => string } }).axfNativeHost : undefined;
+  if (!host?.overlayItems) return;
+  const json = JSON.stringify(st.status === 'ok' ? overlayItems(st.held, st.pending) : []);
+  if (json === lastPhone) return;
+  lastPhone = json;
+  try { host.overlayItems(json); } catch { /* the shell answers on its own thread; nothing to undo */ }
+}
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 
 /** The hub's address, from the console's own account endpoint (AXF_WALL_HUB on the server); https only. */
