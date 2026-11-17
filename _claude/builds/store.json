@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8380,
- "updatedAt": "2026-11-17T23:26:40.621Z",
+ "rev": 8381,
+ "updatedAt": "2026-11-17T23:27:19.782Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268445,7 +268445,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:25:51.572Z",
+   "updatedAt": "2026-11-17T23:27:13.513Z",
    "builtAt": "",
    "notes": [
     {
@@ -268581,7 +268581,17 @@
     "pickedAt": "2026-11-17T23:04:29.385Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T23:27:13.513Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+     "phase": "Phase 2"
+    }
    },
    "steps": [
     {
@@ -269255,11 +269265,11 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Fable",
+    "model": "Opus",
     "status": "pending",
     "estimate": "",
     "source": "console",
