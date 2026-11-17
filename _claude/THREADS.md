@@ -831,7 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:40 UTC · `rebuild-every-toolbar-page-specific` → queued, note (all) · pipeline
 - 2026-11-17 20:40 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 20:40 UTC · `toolbars-3-5-settings-appearance-systems` added (0 steps) (all) · console
 - 2026-11-17 20:40 UTC · `toolbars-4-5-chat-viewer-codebase` added (0 steps) (all) · console
@@ -1231,6 +1230,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:12 UTC · `icon-picker-every-banner-settings-widget` s3 done (all) · orchestrator
 - 2026-11-17 22:13 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
 - 2026-11-17 22:13 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
+- 2026-11-17 22:07 UTC · `fix-refreshing-console-jumps-back` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
