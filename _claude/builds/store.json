@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8144,
- "updatedAt": "2026-11-17T22:09:23.978Z",
+ "rev": 8145,
+ "updatedAt": "2026-11-17T22:09:33.599Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259577,7 +259577,7 @@
      "action": "retry",
      "attempt": 1,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T22:09:23.059Z",
      "session": "",
      "note": "its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3)."
     }
@@ -260074,7 +260074,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -268718,7 +268718,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-17T22:09:23.059Z",
      "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
      "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -269404,7 +269404,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -282306,7 +282306,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -282314,7 +282314,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:09:12.117Z",
+   "updatedAt": "2026-11-17T22:09:29.789Z",
    "builtAt": "",
    "notes": [
     {
@@ -282368,6 +282368,10 @@
     {
      "text": "Watchdog fixed Icon picker for every banner and settings widget (step s3): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:50:32.993Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-icon-picker-every-banner-settings-widget--joey, shared account login)",
+     "at": "2026-11-17T22:09:29.789Z"
     }
    ],
    "approvals": [],
@@ -282743,7 +282747,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:09:23.978Z",
+ "updatedAt": "2026-11-17T22:09:33.599Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186444,7 +186444,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -186452,7 +186452,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:09:12.117Z",
+   "updatedAt": "2026-11-17T22:09:29.789Z",
    "builtAt": "",
    "notes": [
     {
@@ -186506,6 +186506,10 @@
     {
      "text": "Watchdog fixed Icon picker for every banner and settings widget (step s3): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:50:32.993Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-icon-picker-every-banner-settings-widget--joey, shared account login)",
+     "at": "2026-11-17T22:09:29.789Z"
     }
    ],
    "approvals": [],
