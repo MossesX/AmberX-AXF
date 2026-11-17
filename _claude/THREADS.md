@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:09 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:38 UTC · `live-build-status-real-time-grids-15` note (all) · builds-live
 - 2026-11-17 19:38 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
 - 2026-11-17 19:39 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
+- 2026-11-17 19:39 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · builds-live
 
 ## Token passes (log)
 
