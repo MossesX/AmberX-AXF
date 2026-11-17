@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7973,
- "updatedAt": "2026-11-17T21:20:28.148Z",
+ "rev": 7974,
+ "updatedAt": "2026-11-17T21:20:47.926Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275889,7 +275889,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275897,8 +275897,8 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:19:14.735Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T21:20:40.525Z",
+   "builtAt": "2026-11-17T21:20:40.525Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -276051,6 +276051,10 @@
     {
      "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s27): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:19:14.735Z"
+    },
+    {
+     "text": "Reconciler: PR #817 names s4, s5, s27, s28 done",
+     "at": "2026-11-17T21:20:40.525Z"
     }
    ],
    "approvals": [
@@ -276797,12 +276801,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-17T21:20:40.525Z",
+     "note": "PR #817 (claude/rebuild-every-toolbar-page-specific)",
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T18:58:57.805Z"
+     "updatedAt": "2026-11-17T21:20:40.530Z"
     },
     {
      "id": "s28",
@@ -276822,12 +276826,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-17T21:20:40.525Z",
+     "note": "PR #817 (claude/rebuild-every-toolbar-page-specific)",
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T18:58:57.805Z"
+     "updatedAt": "2026-11-17T21:20:40.530Z"
     }
    ],
    "profiles": [
@@ -276838,7 +276842,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -281886,6 +281890,56 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T20:46:27.074Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "icon-picker-every-banner-settings-widget",
+   "title": "Icon picker for every banner and settings widget",
+   "category": "",
+   "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T21:20:30.021Z",
+   "updatedAt": "2026-11-17T21:20:33.403Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "allows me to select icons for all the widgets in the banner; some don't even have icons, just big long strings of text; and the settings too",
+    "at": "2026-11-17T21:20:30.021Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 974
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

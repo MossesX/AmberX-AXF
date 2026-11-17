@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:20:28.148Z",
+ "updatedAt": "2026-11-17T21:20:47.926Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181419,7 +181419,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181427,8 +181427,8 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:19:14.735Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T21:20:40.525Z",
+   "builtAt": "2026-11-17T21:20:40.525Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -181581,6 +181581,10 @@
     {
      "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s27): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:19:14.735Z"
+    },
+    {
+     "text": "Reconciler: PR #817 names s4, s5, s27, s28 done",
+     "at": "2026-11-17T21:20:40.525Z"
     }
    ],
    "approvals": [
@@ -182202,9 +182206,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:20:40.525Z",
+     "note": "PR #817 (claude/rebuild-every-toolbar-page-specific)",
      "uid": "st-mwl2335e19udje",
      "createdAt": "2026-11-17T18:58:57.805Z"
     },
@@ -182224,9 +182228,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:20:40.525Z",
+     "note": "PR #817 (claude/rebuild-every-toolbar-page-specific)",
      "uid": "st-mwl2335e1apcb4",
      "createdAt": "2026-11-17T18:58:57.805Z"
     }
@@ -186085,6 +186089,38 @@
      "createdAt": "2026-11-17T20:46:27.074Z"
     }
    ]
+  },
+  {
+   "id": "icon-picker-every-banner-settings-widget",
+   "title": "Icon picker for every banner and settings widget",
+   "category": "",
+   "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T21:20:30.021Z",
+   "updatedAt": "2026-11-17T21:20:33.403Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "allows me to select icons for all the widgets in the banner; some don't even have icons, just big long strings of text; and the settings too",
+    "at": "2026-11-17T21:20:30.021Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

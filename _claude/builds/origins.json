@@ -4476,6 +4476,18 @@
    "from": "",
    "addenda": []
   },
+  "icon-picker-every-banner-settings-widget": {
+   "said": "allows me to select icons for all the widgets in the banner; some don't even have icons, just big long strings of text; and the settings too",
+   "at": "2026-11-17T21:20:30.021Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "idle-alert-phone-flag-when-nothing-is-building": {
    "said": "alerts on my phone when shit stops building, dude. You constantly need to be checking every, you know, all the time. If there's nothing running, I need a flag to appear on my phone.",
    "at": "",
