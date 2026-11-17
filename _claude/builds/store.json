@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8146,
- "updatedAt": "2026-11-17T22:09:43.154Z",
+ "rev": 8147,
+ "updatedAt": "2026-11-17T22:09:58.773Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282772,10 +282772,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-banner-settings-interface-tab",
-   "pr": "",
+   "pr": "#823",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T22:08:23.747Z",
+   "updatedAt": "2026-11-17T22:09:56.591Z",
    "builtAt": "2026-11-17T22:07:59.785Z",
    "notes": [
     {
@@ -282873,6 +282873,10 @@
     {
      "text": "Headless run axf-fix-banner-settings-interface-tab--paulie: brief only · start 17.4K tokens ($0.06) · cost $8.52 · 173 turns · 6 tools, MCP none",
      "at": "2026-11-17T22:08:23.747Z"
+    },
+    {
+     "text": "Reconciler: PR #823; PR #823 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13 done",
+     "at": "2026-11-17T22:09:56.591Z"
     }
    ],
    "approvals": [],
@@ -283270,7 +283274,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
