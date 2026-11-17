@@ -33,7 +33,9 @@ public class ConsoleActivity extends Activity {
         boolean fresh = WebHost.current() == null;
         WebHost.get(this, ShellRules.deepLink(link)); // a fresh page starts at the link
         if (!fresh && link != null && state == null) WebHost.open(this, link); // a running page goes there
+        OverlayService.loadConfig(this);
         OverlayService.startIfWanted(this);
+        Perms.offerOnStart(this); // first start with the toolbar on: why, then Android's "Display over other apps"
     }
 
     /** Draw under the bars (Insets keeps everything clear of them); Android 15 does this by itself for target 35. */

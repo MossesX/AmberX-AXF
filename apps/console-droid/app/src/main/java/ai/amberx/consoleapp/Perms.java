@@ -1,12 +1,14 @@
 package ai.amberx.consoleapp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,8 @@ final class Perms {
     static final String[] ALL = { MIC, NOTIFY, OVERLAY };
 
     private static final List<Runnable> waiting = new ArrayList<>();
+    /** The overlay flow sent Brett to Android's page; {@link #resumed} checks the answer ({@link OverlayPermission}). */
+    private static boolean sentToSettings, grantedBefore;
 
     static boolean has(Context c, String name) {
         switch (name) {
@@ -58,24 +62,57 @@ final class Perms {
                 if (Build.VERSION.SDK_INT >= 33) a.requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, ConsoleActivity.PERMS);
                 else answered(a);
                 break;
-            case OVERLAY:
-                a.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + a.getPackageName())));
-                break;
+            case OVERLAY: explainOverlay(a); break;
             default: answered(a);
         }
     }
 
+    /**
+     * "Display over other apps": one line on why before Android's page (a bare list of apps), then the page itself.
+     * "Not now" answers the ask as it stands; the start offer ({@link #offerOnStart}) is shown only once.
+     */
+    static void explainOverlay(ConsoleActivity a) {
+        a.getSharedPreferences("perms", Context.MODE_PRIVATE).edit().putBoolean("overlayOffered", true).apply();
+        if (OverlayPermission.onAsk(has(a, OVERLAY), false).equals(OverlayPermission.NONE)) { answered(a); return; }
+        new AlertDialog.Builder(a)
+            .setTitle(OverlayPermission.TITLE)
+            .setMessage(OverlayPermission.BODY)
+            .setPositiveButton(OverlayPermission.ALLOW, (d, w) -> openOverlaySettings(a))
+            .setNegativeButton(OverlayPermission.NOT_NOW, (d, w) -> answered(a))
+            .setOnCancelListener(d -> answered(a))
+            .show();
+    }
+
+    private static void openOverlaySettings(ConsoleActivity a) {
+        grantedBefore = has(a, OVERLAY);
+        sentToSettings = true;
+        a.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + a.getPackageName())));
+    }
+
+    /** The app's first start with the toolbar on and the permission missing: offer it once. */
+    static void offerOnStart(ConsoleActivity a) {
+        boolean offered = a.getSharedPreferences("perms", Context.MODE_PRIVATE).getBoolean("overlayOffered", false);
+        if (OverlayPermission.onStart(OverlayService.config.on, has(a, OVERLAY), offered).equals(OverlayPermission.EXPLAIN)) explainOverlay(a);
+    }
+
     /** A prompt was answered: run who waited, tell the page. */
-    static void answered(Context c) {
+    static void answered(Context c) { answered(c, OverlayPermission.UNCHANGED); }
+
+    private static void answered(Context c, String overlayOutcome) {
         List<Runnable> run = new ArrayList<>(waiting);
         waiting.clear();
         for (Runnable r : run) r.run();
-        NativeBridge.emit("permissions", stateJson(c));
+        NativeBridge.emit("permissions", OverlayPermission.withOutcome(stateJson(c), overlayOutcome));
     }
 
-    /** Back from Android's settings screen ("Display over other apps"): same as an answer; the overlay may start now. */
+    /** Back from Android's settings screen ("Display over other apps"): check it, say so, start the toolbar when granted. */
     static void resumed(ConsoleActivity a) {
-        if (!waiting.isEmpty()) answered(a);
+        String outcome = OverlayPermission.afterReturn(sentToSettings, grantedBefore, has(a, OVERLAY));
+        boolean back = sentToSettings;
+        sentToSettings = false;
+        if (back || !waiting.isEmpty()) answered(a, outcome);
+        String line = OverlayPermission.message(outcome);
+        if (line != null) Toast.makeText(a, line, Toast.LENGTH_LONG).show();
         OverlayService.startIfWanted(a);
     }
 }

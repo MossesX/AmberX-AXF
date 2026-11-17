@@ -90,6 +90,14 @@ Short name `overlay` (`android.permission.SYSTEM_ALERT_WINDOW`). `axfNative.perm
 coming back, `Perms.resumed` reports a `permissions` event and starts the toolbar when it is on. Without it the
 toolbar never shows and every verb falls back to the app.
 
+The flow (`OverlayPermission`, JUnit `OverlayPermissionTest`): one tap asks; the shell first says in one line why
+("Let the console float over other apps … find AXF Console and switch it on") with **Open settings** / **Not now**,
+because Android's page is a bare list of apps. Coming back it checks the permission: granted starts the toolbar and
+says "Floating toolbar is on"; still off says so. The `permissions` event then carries `overlayFlow`
+(`granted` / `still-off`) next to `mic`, `notifications`, `overlay`. On the app's first start with the toolbar on and
+the permission missing, the same explanation is offered once; after that only an ask brings it back (the console's
+`native.permission:overlay` through REST, MCP, the CLI or voice; `axfNative.requestPermission('overlay')`).
+
 ## Safe areas
 
 The toolbar is never placed above the status bar or the camera cutout (`OverlayRules.topPx` clamps to
