@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8243,
- "updatedAt": "2026-11-17T22:43:24.181Z",
+ "rev": 8244,
+ "updatedAt": "2026-11-17T22:43:32.938Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -289114,12 +289114,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:29:59.240Z",
-   "updatedAt": "2026-11-17T21:32:02.788Z",
+   "updatedAt": "2026-11-17T22:43:24.016Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 27 steps (10 Fable).",
      "at": "2026-11-17T21:32:02.788Z"
+    },
+    {
+     "text": "Duplicate of flagship-professional-skin-covering-2 (same brief, Nov 17 2026): Phase 1 (s1-s9, Fable) landed there on branch claude/flagship-professional-skin-covering-2. Do not build this one separately; fold or drop it.",
+     "at": "2026-11-17T22:43:24.016Z"
     }
    ],
    "approvals": [],
@@ -289871,7 +289875,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
