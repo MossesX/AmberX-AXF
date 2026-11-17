@@ -400,6 +400,30 @@
         "title": "Max retries",
         "text": "How many times a crashed or killed build is retried since it last ticked a step. Past it the build goes back to Pending with a banner item and an alert. Account stops (usage limit, login) never count.",
         "kind": "field"
+      },
+      {
+        "target": "dry-run-only",
+        "title": "Dry run only",
+        "text": "The stale-row watchdog decides and records what it would clean (the Runs tab shows the plan) but changes nothing on the builds lists.",
+        "kind": "toggle"
+      },
+      {
+        "target": "tell-amberx-what-was-cleaned",
+        "title": "Tell AmberX what was cleaned",
+        "text": "One FYI on the phone per watchdog run that cleaned something (Notifications: Watchdog cleaned stale rows). Off: the Cleanups log still records every one.",
+        "kind": "toggle"
+      },
+      {
+        "target": "run-every-minutes",
+        "title": "Run every (minutes)",
+        "text": "How often the stale-row watchdog runs, 1 to 120 minutes. Its cron fires every 5 minutes; a longer interval skips the ticks in between. Save applies it.",
+        "kind": "field"
+      },
+      {
+        "target": "fresh-session",
+        "title": "Fresh session",
+        "text": "Retries this failed build now in a brand-new Claude session instead of the next rung of the retry ladder (done-means-merged@1). The attempts so far stay in the log.",
+        "kind": "button"
       }
     ],
     "intros": []
