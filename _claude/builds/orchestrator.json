@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:17:35.997Z",
+ "updatedAt": "2026-11-17T04:17:53.521Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -169918,6 +169918,10 @@
     {
      "text": "Headless run axf-builds-keep-their-slot-across-phases--rhonda: brief only · start 14.6K tokens ($0.12) · cost $8.24 · 92 turns · 6 tools, MCP none",
      "at": "2026-11-17T04:17:16.857Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done: spec framework/spec/BUILD-PIPELINE.md, core in framework/core/build-pipeline.mjs, 395 checks in check-build-pipeline.mjs. Decisions for phase 2: phase-handoff is a build-pipeline@1 state (stateOf: status queued + slot.holder), not a new builds@1 status, so the store and every reader keep working. pipeline.slot is now { holder, account, model, since, entry, released }; a legacy string reads as the live entry with no hold. The dispatcher already takes the slot at launch (takeSlot) and keeps it at session end (slotAfterExit via endOutcome); the reaper keeps the hold. Still to wire (s5-s15): plan() should use pickNext(builds, { max }) for order and freeSlots; agent-slots hold/release; claude-headless.sh --held-slot; the lander releases on merge (releaseSlot why merged) and the Queue actions on cancel (actionReleasesSlot); run migrateSlots once through the builds store; built keeps the slot until merged and a stop for Brett keeps it too (release-slot action for Brett).",
+     "at": "2026-11-17T04:16:48.712Z"
     }
    ],
    "approvals": [],
