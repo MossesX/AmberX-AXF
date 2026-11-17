@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as hc from '../core/hub-console.mjs';
+import * as mig from '../core/hub-settings-migration.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
@@ -117,6 +118,48 @@ t('the spec and PORTING.md say what they must', () => {
   assert.ok(spec.includes(hc.HUB_MISSING) && spec.includes('framework/schemas/hub-console.json') && spec.includes('framework/core/hub-console.mjs'));
   const porting = readFileSync(join(ROOT, 'framework/spec/PORTING.md'), 'utf8');
   assert.ok(porting.includes('## Deferred: hub-console@1'), 'PORTING.md records the deferred Kotlin twin');
+});
+
+/* ---- hub-settings-migration@1 (s4): axHub web's saved settings → the console's hub-console settings ---- */
+t('the migration plan: every source key gets one line with the pinned outcome, target and value', () => {
+  const mg = fx.migration;
+  const lines = mig.planMigration(mg.source, mg.target, table);
+  assert.equal(lines.length, Object.keys(mg.source.values).length, 'one line per source key');
+  for (const expect of mg.plan) {
+    const got = lines.find((l) => l.key === expect.key);
+    assert.ok(got, expect.key);
+    assert.equal(got.outcome, expect.outcome, `${expect.key} outcome`);
+    if (expect.to) assert.equal(got.to, expect.to, `${expect.key} target`);
+    if ('value' in expect) assert.deepEqual(got.value, expect.value, `${expect.key} value`);
+    assert.ok(typeof got.why === 'string' && got.why.length > 5, `${expect.key} says why`);
+    if (got.outcome === 'move' || got.outcome === 'review') assert.match(got.to, /^axf\.hub\./, 'moved keys land under axf.hub.');
+  }
+  assert.deepEqual(mig.summarize(lines), mg.counts);
+  for (const [key, outcome] of Object.entries(mg.forcePlan)) assert.equal(mig.planMigration(mg.source, mg.target, table, { force: true }).find((l) => l.key === key).outcome, outcome, `--force moves ${key}`);
+  assert.deepEqual(mig.planMigration(null, null, table), [], 'no source document: nothing to do');
+});
+t('apply writes only the moved keys, once; the report pins what happened', () => {
+  const mg = fx.migration;
+  const lines = mig.planMigration(mg.source, mg.target, table);
+  const r = mig.applyMigration(mg.target, lines, { now: '2026-11-17T12:00:00Z', sourceFile: 'a.json', targetFile: 'b.json' });
+  assert.equal(r.already, false);
+  for (const k of mg.applied.written) assert.ok(Object.hasOwn(r.target.values, k), `${k} written`);
+  for (const k of mg.applied.untouched) assert.deepEqual(r.target.values[k], mg.target.values[k], `${k} untouched`);
+  assert.equal(r.target.updatedBy, mg.applied.updatedBy); assert.equal(r.target.$axf, mig.SETTINGS_FORMAT);
+  assert.equal(r.report.$axf, mig.REPORT_FRAME); assert.deepEqual(r.report.counts, mg.counts); assert.equal(r.report.lines.length, lines.length);
+  const again = mig.applyMigration(r.target, lines, { report: r.report });
+  assert.equal(again.already, true, 'a second apply with the report present is a no-op');
+  assert.deepEqual(again.target, r.target);
+  assert.equal(mig.applyMigration(r.target, lines, { report: r.report, again: true }).already, false, '--again repeats it');
+  assert.deepEqual(mig.applyMigration(null, [], {}).target.values, {}, 'no target: a new empty document');
+});
+t('coercion follows the table\'s setting kinds', () => {
+  const s = hc.settingsOf(table);
+  const poll = s.find((x) => x.key === 'axf.hub.poll'); const show = s.find((x) => x.key === 'axf.hub.connectors.show'); const secs = s.find((x) => x.key === 'axf.hub.veto.countdownSeconds');
+  assert.deepEqual(mig.coerce(poll, { heldMs: 1000 }), { ok: true, value: { idleMs: 10000, heldMs: 1000 } });
+  assert.equal(mig.coerce(poll, 'nope').ok, false);
+  assert.deepEqual(mig.coerce(show, 'all'), { ok: true, value: 'all' }); assert.equal(mig.coerce(show, 'everything').ok, false);
+  assert.deepEqual(mig.coerce(secs, '120'), { ok: true, value: 120 }); assert.equal(mig.coerce(secs, 5).ok, false); assert.equal(mig.coerce(secs, 5000).ok, false);
 });
 
 console.log(`hub-console@1: ${n} checks passed`);

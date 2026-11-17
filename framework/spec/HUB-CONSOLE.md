@@ -148,8 +148,17 @@ Per-user UI state axHub web keeps today and the console key it lands on:
 | chrome picks for axHub web (`axf.chrome.*`, nav/toolbar/banner assets) | app-look@1 `looks/axhub-web.json` on the hub | stay with the app-look document; the console's Hub screens draw under the console's look (skins rule) |
 | approvals poll rate (10 s / 3 s with a held call) | constants | `axf.hub.poll` `{idleMs, heldMs}` |
 
-The migration script (`framework/cli/hub-settings-migrate.mjs`, step 4) reads a user's axHub web settings export (the
-hub's `settings/<app>.json` for `axhub-web`) and writes the console keys above, `--dry-run` by default.
+**The migration** (hub-settings-migration@1, `framework/core/hub-settings-migration.mjs`, CLI
+`framework/cli/hub-settings-migrate.mjs`): both apps keep their Settings values on the hub as hub-settings@1 documents
+(`/projects/_shared/_data/settings/apps/axhub-web.json` → `axf-console.json`). The plan is a rule list over keys: named
+rules move the hub page preferences onto the `axf.hub.*` settings the table registers (values coerced to the setting's
+kind, options and range), the generic `axhub-web.<x>` → `axf.hub.<x>` rule marks a key `review`, app-level keys the
+console already owns (`axf.display.*`, `axf.dev.*`, chrome, tokens, plugin settings) and device / session-only keys
+(`axf.hubsync.connection`, `axf.approvals.open`) are `skip` with the reason, and a key the console already has a value for
+is `keep` unless `--force`. `plan` (the default) is a dry run that writes nothing; `apply` writes the moved keys into the
+console document (per-key merge, `updatedBy: hub-settings-migrate`) and a hub-settings-migration-report@1 next to the
+plugin's data, after which a second `apply` is a no-op without `--again`. `--from` / `--to` run it against copies (step 24
+does, before `install.mjs` wires it in). Look values never move: they ride the app-look document.
 
 ## Console screens (summary; the table is authoritative)
 
