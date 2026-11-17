@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:06:48.598Z",
+ "updatedAt": "2026-11-17T21:07:06.308Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181329,7 +181329,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181337,7 +181337,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:06:05.454Z",
+   "updatedAt": "2026-11-17T21:07:04.050Z",
    "builtAt": "",
    "notes": [
     {
@@ -181443,6 +181443,10 @@
     {
      "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s19): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:05:16.134Z"
+    },
+    {
+     "text": "Session stopped on its own with 6 steps left: back in Pending for Brett.",
+     "at": "2026-11-17T21:07:04.050Z"
     }
    ],
    "approvals": [
