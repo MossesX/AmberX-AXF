@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:06 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · auto-lander
 - 2026-11-17 19:06 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
 - 2026-11-17 19:06 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 - 2026-11-17 19:06 UTC · `always-fill-every-slot-when-slots-are` → running (all) · auto-lander
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:14 UTC · `rebuild-every-toolbar-page-specific` s6 done (all) · orchestrator
 - 2026-11-17 20:14 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-17 20:15 UTC · `separate-settings-per-plugin-reset` s9 done (all) · orchestrator
+- 2026-11-17 20:16 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
