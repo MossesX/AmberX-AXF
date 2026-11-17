@@ -826,8 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:09 UTC · `notify-phone-when-queue-starts-building` added (0 steps) (all) · console
-- 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · pipeline
 - 2026-11-17 19:09 UTC · `x.engine.dev` → archived, note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `molly-one-shell` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `molly-native-expenses` note (all) · foreign-write
@@ -1226,6 +1224,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:21 UTC · `guided-live-demo-test-watch-orchestrator` s6 done (all) · orchestrator
 - 2026-11-17 20:22 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 - 2026-11-17 20:22 UTC · `live-build-status-real-time-grids-15` s6 done (all) · orchestrator
+- 2026-11-17 20:22 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
+- 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
