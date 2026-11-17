@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:34:40.279Z",
+ "updatedAt": "2026-11-17T18:34:48.570Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -177954,7 +177954,7 @@
    "title": "Merge queue view: every build that's fully built and ready to merge but not merged yet (display only)",
    "category": "",
    "detail": "Bring back a Merge queue tab, display only: it lists every build/PR that is completely built and ready to merge but not merged yet, in the order the orchestrator will land them, with CI state, commits behind main, and why it's waiting. It does NOT merge anything: landing stays with the orchestrator/lander. Rows use the shared grid (row numbers, columns menu). Full API parity (deep link, state read, MCP, CLI, voice). Tests + UI Review.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -177962,12 +177962,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:32:41.029Z",
-   "updatedAt": "2026-11-17T18:33:45.985Z",
+   "updatedAt": "2026-11-17T18:34:41.344Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 15 steps (0 Fable).",
      "at": "2026-11-17T18:33:45.985Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console): Folded into Grid Filter plugin as the 'Ready to merge' preset.",
+     "at": "2026-11-17T18:34:41.344Z"
     }
    ],
    "approvals": [],
@@ -178326,8 +178330,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T18:34:36.995Z",
-   "updatedAt": "2026-11-17T18:34:36.995Z",
+   "updatedAt": "2026-11-17T18:34:38.756Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
