@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7763,
- "updatedAt": "2026-11-17T20:14:24.602Z",
+ "rev": 7764,
+ "updatedAt": "2026-11-17T20:14:43.812Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -277752,6 +277752,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T20:14:07.888Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s4): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:14:11.231Z"
     }
    ],
    "approvals": [],
@@ -278402,7 +278406,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
