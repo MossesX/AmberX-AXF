@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7614,
- "updatedAt": "2026-11-17T19:05:25.847Z",
+ "rev": 7615,
+ "updatedAt": "2026-11-17T19:05:35.422Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151789,7 +151789,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151798,7 +151798,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T19:05:23.349Z",
+   "updatedAt": "2026-11-17T19:05:30.347Z",
    "builtAt": "",
    "notes": [
     {
@@ -151868,6 +151868,14 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:12:00.170Z"
+    },
+    {
+     "text": "Auto-lander: fix attempt 1 (s10) added. CI is red on 4b5465ae5 (claude/pass-approval-hook-deep-link-amberx-notification):",
+     "at": "2026-11-17T19:05:25.541Z"
+    },
+    {
+     "text": "Queued by auto-lander for fix attempt 1.",
+     "at": "2026-11-17T19:05:30.347Z"
     }
    ],
    "approvals": [
@@ -151894,8 +151902,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-17T19:05:18.650Z",
+    "queuedBy": "auto-lander",
     "account": "",
     "session": "",
     "slot": "[object Object]",
@@ -151907,7 +151915,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "fix attempt 1",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -152183,7 +152191,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {

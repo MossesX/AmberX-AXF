@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:05:25.847Z",
+ "updatedAt": "2026-11-17T19:05:35.422Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101697,7 +101697,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -101705,7 +101705,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T19:05:23.349Z",
+   "updatedAt": "2026-11-17T19:05:30.347Z",
    "builtAt": "",
    "notes": [
     {
@@ -101775,6 +101775,14 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:12:00.170Z"
+    },
+    {
+     "text": "Auto-lander: fix attempt 1 (s10) added. CI is red on 4b5465ae5 (claude/pass-approval-hook-deep-link-amberx-notification):",
+     "at": "2026-11-17T19:05:25.541Z"
+    },
+    {
+     "text": "Queued by auto-lander for fix attempt 1.",
+     "at": "2026-11-17T19:05:30.347Z"
     }
    ],
    "approvals": [
