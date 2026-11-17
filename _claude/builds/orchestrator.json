@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:58:39.000Z",
+ "updatedAt": "2026-11-17T21:58:47.008Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -187965,7 +187965,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:58:29.217Z",
+   "updatedAt": "2026-11-17T21:58:32.313Z",
    "builtAt": "",
    "notes": [
     {
@@ -188015,6 +188015,10 @@
     {
      "text": "Brief only: brief is 26362 characters (~6591 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T21:58:29.217Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-flagship-professional-skin-covering-2--earl, shared account login)",
+     "at": "2026-11-17T21:58:32.313Z"
     }
    ],
    "approvals": [],
