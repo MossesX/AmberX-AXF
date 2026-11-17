@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8153,
- "updatedAt": "2026-11-17T22:13:19.741Z",
+ "rev": 8154,
+ "updatedAt": "2026-11-17T22:13:32.408Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282346,7 +282346,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:12:25.094Z",
+   "updatedAt": "2026-11-17T22:13:20.545Z",
    "builtAt": "",
    "notes": [
     {
@@ -282408,18 +282408,13 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-icon-picker-every-banner-settings-widget--joey.",
      "at": "2026-11-17T22:09:32.322Z"
-    }
-   ],
-   "approvals": [
+    },
     {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-17T22:12:25.094Z",
-     "by": "auto",
-     "kind": "downgrade"
+     "text": "Overlap with banner-widget-shapes-plus-change-icon (#821): it adds iconOverride {pack,id} per banner widget (widget-shape@1, framework/core/engines/bannerwidgets.ts) and a Change icon… dialog. Reuse one IconPicker component (framework/react/components/IconPicker.tsx) and one per-widget icon key; whichever lands second adopts the first.",
+     "at": "2026-11-17T22:13:20.545Z"
     }
    ],
+   "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "allows me to select icons for all the widgets in the banner; some don't even have icons, just big long strings of text; and the settings too",
