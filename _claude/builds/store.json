@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7814,
- "updatedAt": "2026-11-17T20:30:48.616Z",
+ "rev": 7815,
+ "updatedAt": "2026-11-17T20:30:58.723Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275729,7 +275729,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:30:39.890Z",
+   "updatedAt": "2026-11-17T20:30:53.819Z",
    "builtAt": "",
    "notes": [
     {
@@ -275743,6 +275743,10 @@
     {
      "text": "Dispatch gate: rebuild-every-toolbar-page-specific still has axf-rebuild-every-toolbar-page-specific--lenny alive: not launched again, tracking that session.",
      "at": "2026-11-17T19:36:42.128Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-every-toolbar-page-specific--lenny: brief only · start 20.3K tokens ($0.16) · cost $18.81 · 94 turns · 6 tools, MCP none",
+     "at": "2026-11-17T20:30:53.819Z"
     }
    ],
    "approvals": [],
@@ -275793,17 +275797,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T20:30:39.890Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-rebuild-every-toolbar-page-specific--lenny",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -276522,7 +276516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

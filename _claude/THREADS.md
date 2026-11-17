@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:09 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `data-container-axf-data-holds-all` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `gate-rules-plugin-in-the-console` note (all) · foreign-write
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:30 UTC · `separate-settings-per-plugin-reset` s15 done (all) · orchestrator
 - 2026-11-17 20:30 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 - 2026-11-17 20:30 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
+- 2026-11-17 20:30 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
 
 ## Token passes (log)
 
