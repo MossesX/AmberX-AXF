@@ -831,19 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:52 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
-- 2026-11-17 20:53 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:53 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:53 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:53 UTC · `rebuild-every-toolbar-page-specific` s9 done (all) · orchestrator
-- 2026-11-17 20:53 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-17 20:53 UTC · `rebuild-every-toolbar-page-specific` s9 done, → running (all) · foreign-write
-- 2026-11-17 20:54 UTC · `rebuild-every-toolbar-page-specific` s10 done (all) · orchestrator
-- 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` → fixing, note (all) · pipeline
-- 2026-11-17 20:54 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:54 UTC · `guided-live-demo-test-watch-orchestrator` s19 done (all) · orchestrator
-- 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` → pending, note (all) · pipeline
 - 2026-11-17 20:55 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
 - 2026-11-17 20:55 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 20:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
@@ -1231,6 +1218,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:25 UTC · `flagship-professional-skin-covering-2` s6 done (all) · orchestrator
 - 2026-11-17 22:26 UTC · `banner-widget-shapes-plus-change-icon` s11 done (all) · orchestrator
 - 2026-11-17 22:26 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:26 UTC · `plan-blueprints` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `blueprint-notes-tasks` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `pass-approval-hook-deep-link-amberx-notification` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `orchestrator-settings-collapsible-split` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `console-app-part-2-native-floating` note (all) · builds-live
+- 2026-11-17 22:26 UTC · `group-chat-audio-hear-agents-talk-while` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `picker-dialog-plugin-replaces-all` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · builds-live
+- 2026-11-17 22:26 UTC · `separate-settings-per-plugin-reset` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `rebuild-every-toolbar-page-specific` note (all) · builds-live
+- 2026-11-17 22:26 UTC · `terminal-main-tab-streaming-console-s` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `land-pr-730-reset-all-button-far-right` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · builds-live
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:26:18.319Z",
+ "updatedAt": "2026-11-17T22:26:30.057Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -75397,7 +75397,7 @@
    "title": "Plan Studio: Blueprints",
    "category": "Plan Studio",
    "detail": "Blueprints = named packages of plans (blueprint@1), one active at a time; Plan Studio shows the active one. Blueprints section (list/create/rename/duplicate/delete/move plans, bulk), context-menu Blueprints submenu + control@1 planner.blueprints + MCP/CLI/voice switch; migration of every current plan into \"Existing\"; UI from assets; tests; UI Review with 3 options. Supersedes plan-archive.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -75405,7 +75405,7 @@
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
    "updatedAt": "2026-11-17T19:11:35.654Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Built on claude/plan-blueprints (committed, not pushed). UI Review r-20261107-9e6acb75 waits for Brett's pick (tab / rail / bar). Hub migrated: 58 plans in blueprint Existing, archived stamps from plan-archive removed. Report _claude/builds/reports/plan-blueprints.md",
@@ -76023,7 +76023,7 @@
    "title": "Blueprints switch notes, tasks and to-dos too (+ permanent Global group)",
    "category": "Plan Studio",
    "detail": "Switching the active blueprint (blueprint@1, build plan-blueprints) also switches the notes-tasks plugin's notes, tasks, to-dos and lists (amberx.items, amberx.lists). Optional `blueprint` field on items/lists; existing ones go to the blueprint the plans went to. Permanent Global group in Plan Studio and the notes/tasks manager (can't be deleted or moved); any plan/note/task/to-do/list can be set Global; Quick notes lives in Global. Voice/control@1/MCP/CLI; active-blueprint chip in AmberX and the console; UI Review 3 options; tests; Shipped features. Based on claude/plan-blueprints.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -76031,7 +76031,7 @@
    "pr": "",
    "createdAt": "2026-11-07T14:45:07.894Z",
    "updatedAt": "2026-11-17T19:11:35.654Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Built on claude/blueprint-notes-tasks (on top of claude/plan-blueprints, both local, not pushed). UI Review r-20261107-b05bba4e (3 options). Hub notes migrated with backup. Report _claude/builds/reports/blueprint-notes-tasks.md",
@@ -101729,7 +101729,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -101738,7 +101738,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
    "updatedAt": "2026-11-17T19:22:24.004Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131172,7 +131172,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131181,7 +131181,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
    "updatedAt": "2026-11-17T19:29:07.332Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131636,6 +131636,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: The build is complete (not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T22:25:15.677Z"
+    },
+    {
+     "text": "Refused pending → landed (asked by pending): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T22:26:13.280Z"
     }
    ],
    "approvals": [
@@ -142824,7 +142828,7 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -142832,7 +142836,7 @@
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
    "updatedAt": "2026-11-17T19:45:29.921Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--lenny.",
@@ -144791,7 +144795,7 @@
    "title": "Picker dialog plugin replaces all dropdowns",
    "category": "",
    "detail": "New removable plugin: replaces EVERY dropdown/select in the console and framework (native <select>, custom dropdowns, comboboxes) with a tap-to-open picker dialog. The field shows the current value; tapping opens a themed dialog listing the options (search box when many, grouped sections, icons/descriptions if available, multi-select with checkboxes where the select is multiple, keyboard and screen-reader accessible). Fully token-driven: register its own token family (dialog surface, backdrop, option row, selected, hover, focus, search, header, every state, light and dark) in the token registry; no literal colours/sizes (CI gate); every skin can style it and the skin upgrader adds defaults matching today's look. One shared component used everywhere; plugin off = original dropdowns come back. Works on desktop and phone (bottom sheet style on phone). Full API and voice control (open picker, choose option by name). Tests desktop and phone, help entry, Shipped features.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -144800,7 +144804,7 @@
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
    "updatedAt": "2026-11-17T19:11:35.654Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -175373,7 +175377,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:26:07.810Z",
+   "updatedAt": "2026-11-17T22:26:17.698Z",
    "builtAt": "",
    "notes": [
     {
@@ -175695,6 +175699,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 2 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T22:26:07.810Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T22:26:17.698Z"
     }
    ],
    "approvals": [
@@ -181192,7 +181200,7 @@
    "title": "Separate settings per plugin + reset confirm dialog",
    "category": "",
    "detail": "1) Every plugin gets its OWN settings interface showing only that plugin's settings; stop opening the console settings and jumping to the plugin's tab. The console keeps its own separate settings interface. Settings interfaces are not shared. 2) Sweep every page/plugin so each opens its correct default settings interface. 3) Clicking Reset in any settings interface opens a confirmation dialog with an 'Include assets' switch (on = also reset assets/skins to default; off = settings only) and a scrollable table listing every changed asset, same as the table in the settings panel.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181201,7 +181209,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
    "updatedAt": "2026-11-17T20:57:47.020Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Split by Claude into 18 steps (3 Fable).",
@@ -181987,6 +181995,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: The build is complete (build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T22:25:15.677Z"
+    },
+    {
+     "text": "Refused pending → landed (asked by pending): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T22:26:13.280Z"
     }
    ],
    "approvals": [
@@ -185117,7 +185129,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -185126,7 +185138,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
    "updatedAt": "2026-11-17T21:07:49.775Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -187354,7 +187366,7 @@
    "title": "Land PR #730 Reset all button (far right)",
    "category": "",
    "detail": "Branch claude/reset-all-button-every-asset-override (PR #730). Brett picked UI Review option: button far right. Merge origin/main: clashes only in generated files apps/axhub-web/axf.lock.json, apps/molly/axf.lock.json, apps/console-web/src/control/inventory.json; take main's lock files (molly is removed, drop if gone), regenerate inventory.json, run checks, land. Console only. At most 3 steps.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -187363,7 +187375,7 @@
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
    "updatedAt": "2026-11-17T21:52:09.673Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -189376,6 +189388,37 @@
      "createdAt": "2026-11-17T21:58:19.850Z"
     }
    ]
+  },
+  {
+   "id": "settings-fix-part-2-blank-toolbars",
+   "title": "Settings fix part 2: blank toolbars, locked settings layout",
+   "category": "",
+   "detail": "Follow-up to PR #822 (fix-banner-settings-interface-tab), which finished before Brett's later notes. 1) Strip EVERY page toolbar in the console to blank: remove all buttons (New, Open, Save, Undo, Redo, Cut, Theme, etc. from PR #817); each keeps only one small gear that opens its settings. 2) Gizmo X AI Studio is the one fixed interface for every settings window: remove the settings-interface picker, the 'This settings window' fold and any way to edit the settings window's own layout or look. 3) Each toolbar's settings: Override switch next to the settings row, OFF by default (locked to Gizmo X AI Studio, greyed, sections collapsed); ON makes it editable and sections expandable; turning it OFF resets to defaults; a toolbar shows as edited in main Settings only while Override is on. 4) Console toolbars use the same shared toolbar asset axHub uses. 5) Owner must be allowed every chrome reset (fix 'Permission denied ... reset a chrome piece'). Everything token-driven. Console only. Skins must not restyle toolbars.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "settings-fix-part-2-blank-toolbars",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T22:26:09.371Z",
+   "updatedAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make every toolbar blank and just all it has is a settings hook. A little gear with a settings hook. That's it. Every toolbar, we'll edit them later. Don't even allow editing or changing the fucking settings layout.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
