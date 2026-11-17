@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:02:45.012Z",
+ "updatedAt": "2026-11-17T22:03:00.427Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -173411,7 +173411,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:36:28.245Z",
+   "updatedAt": "2026-11-17T21:38:46.433Z",
    "builtAt": "",
    "notes": [
     {
@@ -173797,8 +173797,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:38:46.433Z",
      "note": "",
      "uid": "st-mwkt94860ejwmq",
      "createdAt": "2026-11-17T14:51:42.630Z"
@@ -187160,7 +187160,7 @@
    "title": "Land PR #730 Reset all button (far right)",
    "category": "",
    "detail": "Branch claude/reset-all-button-every-asset-override (PR #730). Brett picked UI Review option: button far right. Merge origin/main: clashes only in generated files apps/axhub-web/axf.lock.json, apps/molly/axf.lock.json, apps/console-web/src/control/inventory.json; take main's lock files (molly is removed, drop if gone), regenerate inventory.json, run checks, land. Console only. At most 3 steps.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -187169,7 +187169,7 @@
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
    "updatedAt": "2026-11-17T21:52:09.673Z",
-   "builtAt": "2026-11-17T21:36:44.501Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
