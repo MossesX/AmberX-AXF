@@ -237,7 +237,7 @@
         "kind": "control"
       },
       {
-        "target": "tab:gate.auto-lander.tabs=server",
+        "target": "auto-lander-server",
         "title": "Server auto-lander",
         "text": "The VPS fixes and lands finished builds by itself, every minute: merges main into a clash, starts a fix session for red CI, sends green PRs to the merge queue. After 3 failed tries of one kind it stops and puts a red item in the systems check with Fix.",
         "kind": "screen"
