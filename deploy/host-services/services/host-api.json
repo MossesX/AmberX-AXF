@@ -22,8 +22,8 @@
       "why": "unit actions: restart a service (the Auto fix of host-service:<id>)"
     },
     {
-      "cmd": "/usr/bin/journalctl -u axf-* *",
-      "why": "the Logs route"
+      "cmd": "/usr/bin/journalctl -u axf-* -n 500 -o short-iso --no-pager",
+      "why": "the Logs route when the journal group read is refused"
     }
   ],
   "health": {

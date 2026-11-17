@@ -72,10 +72,15 @@ Rules:
   state folder, the log and the console-control addresses (`host:<id>`, `host:<id>/action:<action>`,
   `host:<id>/setting:<key>`, `host:<id>/unit:<start|stop|restart|run>`). A manifest may name another unit or socket
   path; it may not change the prefix (`axf-`, `/run/axf-host/`).
-- `sudo` is the whole whitelist. Every line is an absolute program with fixed arguments (a trailing ` *` allows
-  arguments). The service calls `sudo -n <cmd>`; anything else is `forbidden_command`, logged with the line asked for.
-  The installer writes the union of every manifest's lines to `/etc/sudoers.d/axf-<id>` (one file per service, so
-  removing a service removes its rights). The unit runs as `axf-host`; it never runs as root.
+- `sudo` is the whole whitelist. Every line is an absolute program with fixed arguments; the only wildcard is a unit
+  name `axf-*`, which `deploy/host-services/gen-sudoers.mjs` expands to every unit and timer the manifests name (so the
+  file never holds a pattern). The generator refuses `ALL`, shell syntax, any other `*` and programs that hand out a
+  shell or write arbitrary files (sh, bash, env, node, tee, cp, chmod, editors…), and checks the file with
+  `visudo -c -f`. It writes one file, `deploy/host-services/sudoers.d/axf-host` (committed, `--check` in CI), which the
+  installer copies to `/etc/sudoers.d/axf-host` (`--only` regenerates it for the installed services, so removing a
+  service removes its rights). The service calls `sudo -n <cmd>` through the runner's `ctx.sudo`, which refuses
+  anything else with `forbidden_command` before sudo sees it and logs the line asked for. The unit runs as `axf-host`;
+  it never runs as root.
 - `actions` and `settings` are the service's whole API. An action with `confirm: true` needs the console-control confirm
   token; `modes` says in which migration modes it may run (default `shadow` and `host`). Settings are plain JSON kept in
   `<dataDir>/settings.json`, merged key by key, last save wins (the editor rule), read by the runner on every tick or on

@@ -296,7 +296,7 @@ export const HOST_API_MANIFEST = Object.freeze({
     { cmd: '/usr/bin/systemctl start axf-*', why: 'unit actions: start a service or run a tick now' },
     { cmd: '/usr/bin/systemctl stop axf-*', why: 'unit actions: stop a service' },
     { cmd: '/usr/bin/systemctl restart axf-*', why: 'unit actions: restart a service (the Auto fix of host-service:<id>)' },
-    { cmd: '/usr/bin/journalctl -u axf-* *', why: 'the Logs route' },
+    { cmd: '/usr/bin/journalctl -u axf-* -n 500 -o short-iso --no-pager', why: 'the Logs route when the journal group read is refused' },
   ],
   health: { path: '/health' },
   actions: [{ id: 'reload', title: 'Reload manifests', description: 'Re-read deploy/host-services/services/*.json without a restart (SIGHUP).' }],

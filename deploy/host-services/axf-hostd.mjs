@@ -435,7 +435,7 @@ export function makeHostApi(apiManifest, { manifestsFn = () => loadManifests(), 
   async function logs(m, lines = 200) {
     const n = Math.min(H.LIMITS.logLinesMax, Math.max(1, Number(lines) || 200));
     let r = await exec(JOURNALCTL, ['-u', m.unit, '-n', String(n), '-o', 'short-iso', '--no-pager'], { timeoutMs: 10000 });
-    if (!r.ok) r = await sudo([JOURNALCTL_ROOT, '-u', m.unit, '-n', String(n), '-o', 'short-iso', '--no-pager'], { timeoutMs: 10000 });
+    if (!r.ok) r = await sudo([JOURNALCTL_ROOT, '-u', m.unit, '-n', '500', '-o', 'short-iso', '--no-pager'], { timeoutMs: 10000 }); // fixed form: the whitelist has no wildcard arguments
     return { lines: r.stdout.split('\n').filter((l) => l && !l.startsWith('-- ')).map((l) => { const i = l.indexOf(' '); return { at: l.slice(0, i), line: l.slice(i + 1) }; }) };
   }
   async function setMode(id, body) {
