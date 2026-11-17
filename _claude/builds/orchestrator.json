@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:29:48.424Z",
+ "updatedAt": "2026-11-17T04:30:17.360Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -167392,7 +167392,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-17T04:13:45.179Z",
+   "updatedAt": "2026-11-17T04:30:14.358Z",
    "builtAt": "",
    "notes": [
     {
@@ -167908,6 +167908,27 @@
      "note": "",
      "uid": "st-mwk5znq901bunl",
      "createdAt": "2026-11-17T04:00:29.687Z"
+    },
+    {
+     "id": "s22",
+     "text": "UI Review for the Groups panel: shoot the three views (grid, compact, cards; layout assets in plugins/build-orchestrator/assets/layout) desktop and phone on a console that renders the orchestrator view, submit them as ui-choices@1 options with review.mjs submit --choices. Blocked in s19: the scratch console rebuild-shots.mjs starts (AXF_APPEARANCE_HUB=off) opens Build profiles instead of the orchestrator view, and its build search hits never load",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets/layout"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk71wqo01kie8",
+     "createdAt": "2026-11-17T04:30:14.360Z"
     }
    ]
   },
