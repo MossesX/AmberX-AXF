@@ -12,6 +12,7 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { SwatchFan } from './Swatches';
 import { Icon } from './Icon';
+import { SettingsSection, useSectionsScope } from './SettingsSections';
 import { paramBool, paramDefaultText, paramError, type LibraryParam } from '../../core';
 
 /* ---------------- Switch ---------------- */
@@ -296,11 +297,23 @@ export interface SectionProps {
   aside?: ReactNode;
   children: ReactNode;
   className?: string;
+  /** Inside a settings interface (settings-sections) the section folds: its saved id (default: the panel's id + the
+   *  title), `collapsible={false}` keeps it a plain heading, `collapsed` starts it closed. */
+  id?: string;
+  collapsible?: boolean;
+  collapsed?: boolean;
 }
 
-/** A titled block of a form or page (lighter than a Container: no card chrome). */
-export function Section({ title, aside, children, className }: SectionProps) {
+/** A titled block of a form or page (lighter than a Container: no card chrome). Inside a settings interface it is a
+ *  collapsible settings section (header + chevron, remembered per user), so every settings panel gets sections. */
+export function Section({ title, aside, children, className, id: own, collapsible, collapsed }: SectionProps) {
   const id = useId();
+  const scope = useSectionsScope();
+  const slug = typeof title === 'string' ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : '';
+  const sectionId = own ?? (scope.prefix && slug ? `${scope.prefix}/${slug}` : undefined);
+  if (scope.ui && sectionId && collapsible !== false) {
+    return <SettingsSection id={sectionId} title={title} aside={aside} collapsed={collapsed} className={`fx-section ${className ?? ''}`}>{children}</SettingsSection>;
+  }
   return (
     <section className={`fx-section ${className ?? ''}`} aria-labelledby={id}>
       <header className="fx-section__head"><h3 className="fx-section__title" id={id}>{title}</h3>{aside}</header>

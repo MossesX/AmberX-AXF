@@ -8,7 +8,7 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { arrangeSettingsTabs, filterSettingsGroup, mergeSettingsVisible, normalizeSettingsUi, normalizeSettingsVisible, SETTINGS_LEVELS, setSettingsVisible, settingMatches, settingsLevel, settingsUiErrors, settingsUiGroups, shownAtLevel, splitSettingsGroup, withSettingsVisible, type SettingsLevel } from '../core/engines/settingsui';
+import { normalizeSectionState, sectionOpen, setSectionsOpen, arrangeSettingsTabs, filterSettingsGroup, mergeSettingsVisible, normalizeSettingsUi, normalizeSettingsVisible, SETTINGS_LEVELS, setSettingsVisible, settingMatches, settingsLevel, settingsUiErrors, settingsUiGroups, shownAtLevel, splitSettingsGroup, withSettingsVisible, type SettingsLevel } from '../core/engines/settingsui';
 import { validateAsset } from '../core/validate';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -73,6 +73,14 @@ const CASES: { name: string; fn: string; input: unknown }[] = [
   { name: 'match: every word must hit', fn: 'match', input: 'reduces anim' },
   { name: 'match: option labels', fn: 'match', input: 'xyz' },
   { name: 'match: empty query', fn: 'match', input: '  ' },
+  { name: 'sections: default collapsible + all open; flat; first; bad values fall back', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, sections: 'flat', sectionsOpen: 'first' } },
+  { name: 'sections: bad values are errors', fn: 'errors', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, sections: 'folded', sectionsOpen: 'some' } },
+  { name: 'sections: state (JSON string, bad ids dropped), open per id > all > own collapsed > sectionsOpen, flat never folds', fn: 'sections', input: {
+    stored: '{"all":false,"open":{"settings-group:a":true,"bad id":true,"settings-group:b":"yes"}}',
+    cases: [[{}, 'settings-group:a', {}], [{}, 'settings-group:c', {}], [{}, 'settings-group:c', { collapsible: false }], [{ sections: 'flat' }, 'settings-group:c', {}]],
+    plain: [[{ sectionsOpen: 'first' }, 'x', { index: 0 }], [{ sectionsOpen: 'first' }, 'x', { index: 2 }], [{ sectionsOpen: 'none' }, 'x', {}], [{}, 'x', { collapsed: true }]],
+    moves: [[['settings-group:a', 'settings-group:c'], false], ['*', true], [['settings-group:a'], false]],
+  } },
 ];
 const run: Record<string, (i: never) => unknown> = {
   normalize: (i) => normalizeSettingsUi(i),
@@ -85,6 +93,11 @@ const run: Record<string, (i: never) => unknown> = {
   level: (i: { ui: unknown; stored: unknown[] }) => i.stored.map((s) => settingsLevel(normalizeSettingsUi(i.ui), s)),
   shown: (i: { ui: unknown; ids: string[] }) => { const ui = normalizeSettingsUi(i.ui); return Object.fromEntries(SETTINGS_LEVELS.map((l) => [l, i.ids.map((x) => shownAtLevel(ui, x, l))])); },
   split: (i: { ui: unknown; at: (SettingsLevel | undefined)[] }) => i.at.map((at) => ({ at: at ?? null, ...splitSettingsGroup(GROUP as never, normalizeSettingsUi(i.ui), at) })),
+  sections: (i: { stored: unknown; cases: [unknown, string, Record<string, unknown>][]; plain: [unknown, string, Record<string, unknown>][]; moves: [string[] | '*', boolean][] }) => {
+    const state = normalizeSectionState(i.stored);
+    let st = state;
+    return { state, open: i.cases.map(([ui, id, own]) => sectionOpen(normalizeSettingsUi(ui), state, id, own)), plain: i.plain.map(([ui, id, own]) => sectionOpen(normalizeSettingsUi(ui), normalizeSectionState(null), id, own)), moves: i.moves.map(([ids, on]) => (st = setSectionsOpen(st, ids, on))) };
+  },
   set: (i: { ui: unknown; moves: [SettingsLevel, string[], boolean][] }) => { const ui = normalizeSettingsUi(i.ui); let stored: unknown = null; return i.moves.map(([at, ids, on]) => { stored = JSON.stringify(setSettingsVisible(ui, stored, at, ids, on)); return JSON.parse(stored as string); }); },
 };
 let ok = 0;

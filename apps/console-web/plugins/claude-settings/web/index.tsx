@@ -5,7 +5,7 @@
  * otherwise and the message shows under the row).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Container, Icon, Note, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
+import { Button, Container, Icon, Note, SectionsBar, SelectField, SettingsSection, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import { CHROME_INSTANCE_KEY, type AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { ownerFetch, pluginFetch } from '@console/plugins';
@@ -211,7 +211,9 @@ function TabBody({ view, tab }: { view: View; tab: ReturnType<typeof tabsFor<Gro
   return (
     <div className="fx-stack">
       {tab.description && <p className="axp-cs-group__desc">{tab.description}</p>}
-      {tab.groups.map((g) => (tab.groups.length > 1 ? <section key={g.id} className="fx-stack"><h3 className="axp-cs-group__title">{g.label}</h3><GroupBody view={view} group={g} /></section> : <GroupBody key={g.id} view={view} group={g} />))}
+      {/* settings-sections: each group of a tab is a collapsible section, remembered per user; Expand all / Collapse all */}
+      {tab.groups.length > 1 && <SectionsBar ids={tab.groups.map((g) => `axp-claude-settings:${g.id}`)} label={`${tab.label} sections`} />}
+      {tab.groups.map((g) => (tab.groups.length > 1 ? <SettingsSection key={g.id} id={`axp-claude-settings:${g.id}`} title={g.label}><GroupBody view={view} group={g} /></SettingsSection> : <GroupBody key={g.id} view={view} group={g} />))}
       {tab.id === 'approvals' && <ApprovalsPanel />}
     </div>
   );

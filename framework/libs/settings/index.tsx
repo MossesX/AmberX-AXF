@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, SectionsBar, SectionsScope, sectionState, setSections, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime, useSettingsSection } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -269,20 +269,21 @@ function AssetSlotCard({ spec }: { spec: SettingSpec }) {
   );
 }
 
-/** A flat settings section: a small heading over a hairline list (no nested cards). Collapsible ones fold from the heading. */
-function FlatSection({ title, icon, collapsible = false, defaultOpen = true, anchor, className, children }: { title: ReactNode; icon?: string; collapsible?: boolean; defaultOpen?: boolean; anchor?: string; className?: string; children: ReactNode }) {
-  const [open, setOpen] = useState(defaultOpen);
-  const shown = open || !collapsible;
+/** A settings section (settings-sections): header with chevron, folds unless the interface is `flat` or the caller says
+ *  `collapsible={false}`; the open / closed state is remembered per user (react/components/SettingsSections.tsx). */
+function FlatSection({ title, icon, collapsible, defaultOpen, anchor, className, children }: { title: ReactNode; icon?: string; collapsible?: boolean; defaultOpen?: boolean; anchor: string; className?: string; children: ReactNode }) {
+  const [open, folds, toggle] = useSettingsSection(anchor, { collapsible, ...(defaultOpen === undefined ? {} : { collapsed: !defaultOpen }) });
+  const shown = open || !folds;
   return (
-    <section className={`axf-settings__group ${className ?? ''}`} data-axf-anchor={anchor} data-open={shown ? 'true' : 'false'}>
-      {collapsible ? (
-        <button type="button" data-fx-row className="axf-settings__ghead axf-settings__gtoggle" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-          {icon && <Icon name={icon} size={13} />}<span className="axf-settings__gtitle">{title}</span><Icon name="chevron-down" size={13} className={open ? '' : 'fx-rot--90'} />
+    <section className={`axf-settings__group ${className ?? ''}`} data-axf-anchor={anchor} data-axf-section={anchor} data-open={shown ? 'true' : 'false'}>
+      {folds ? (
+        <button type="button" data-fx-row className="axf-settings__ghead axf-settings__gtoggle" aria-expanded={shown} data-axf-target={`section:${anchor}`} onClick={toggle}>
+          {icon && <Icon name={icon} size={13} />}<span className="axf-settings__gtitle">{title}</span><Icon name="chevron-down" size={13} className={shown ? 'axf-settings__gchev' : 'axf-settings__gchev fx-rot--90'} />
         </button>
       ) : (
         <div className="axf-settings__ghead">{icon && <Icon name={icon} size={13} />}<span className="axf-settings__gtitle">{title}</span></div>
       )}
-      {shown && <div className="axf-settings__gbody">{children}</div>}
+      <div className="axf-settings__gbody" hidden={!shown}>{children}</div>
     </section>
   );
 }
@@ -564,7 +565,7 @@ function SearchResults({ query, tabs, ui }: { query: string; tabs: SettingsTabLi
   if (!hits.length) return <p className="fx-muted">No setting matches “{query.trim()}”.</p>;
   return (
     <div className="fx-stack">
-      {hits.map(({ tab, group }) => <GroupCard key={`${tab.id}:${group.id}`} group={{ ...group, label: `${tab.label} · ${group.label}` }} />)}
+      <SectionsScope force>{hits.map(({ tab, group }) => <GroupCard key={`${tab.id}:${group.id}`} group={{ ...group, label: `${tab.label} · ${group.label}` }} />)}</SectionsScope>
     </div>
   );
 }
@@ -876,7 +877,7 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const allPanels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id));
   const panels = allPanels.filter((p) => !at || shownAtLevel(ui, p.id, at));
   const restPanels = at ? allPanels.filter((p) => !panels.includes(p)) : [];
-  const panelNode = (p: SettingsPanel, icon: string) => <FlatSection anchor={`settings-panel:${p.id}`} title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id)} defaultOpen={!COLLAPSIBLE_PANELS.has(p.id)}><div className="axf-settings__panel">{p.render() as ReactNode}</div></FlatSection>;
+  const panelNode = (p: SettingsPanel, icon: string) => <FlatSection anchor={`settings-panel:${p.id}`} title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id) ? true : undefined} defaultOpen={COLLAPSIBLE_PANELS.has(p.id) ? false : undefined}><div className="axf-settings__panel"><SectionsScope prefix={`settings-panel:${p.id}`}>{p.render() as ReactNode}</SectionsScope></div></FlatSection>;
   const ordered = (ps: SettingsPanel[], gs: SettingsGroup[]) => [...ps.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: panelNode(p, 'settings') })),
     ...gs.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
     .sort((a, b) => a.order - b.order || a.tie - b.tie)
@@ -897,16 +898,23 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
     </>
   ) : hubSkin ? <><GroupCard group={hubSkin} />{items}</> : items;
   const empty = !panels.length && !groups.length;
+  // Expand all / Collapse all (settings-sections): every section this tab shows, by its saved id
+  const sectionIds = [...(at ? [`settings-level:${id}:available`, ...(restPanels.length || restGroups.length ? [`settings-level:${id}:more`] : [])] : []),
+    ...(design && items.length ? ['settings-panel:axf.appearance.rest'] : []),
+    ...panels.map((p) => `settings-panel:${p.id}`), ...groups.map((g) => `settings-group:${g.id}`)];
+  const bar = <SectionsBar ids={sectionIds} label={`${tab?.label ?? 'Settings'} sections`} className="axf-settings__sectbar" />;
   if (!at) return (
-    <>
+    <SectionsScope ui={ui}>
+      {bar}
       {shown}
       {empty && <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>}
-    </>
+    </SectionsScope>
   );
   // With levels: what this level has in one collapsible container, what it leaves out in another (greyed, readable, not editable).
   const rest = ordered(restPanels, restGroups);
   return (
-    <>
+    <SectionsScope ui={ui}>
+      {bar}
       <FlatSection anchor={`settings-level:${id}:available`} title={`Available at ${SETTINGS_LEVEL_LABEL[level]}`} collapsible className="axf-settings__available axf-settings__nest">
           {empty ? <p className="fx-muted axf-settings__desc">{id === 'connections' && !rest.length ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : rest.length ? `Nothing at ${SETTINGS_LEVEL_LABEL[level]} here. Pick a higher level above, or add settings to this level with Edit levels.` : 'Nothing here yet.'}</p> : <div className="axf-settings__nested">{shown}</div>}
       </FlatSection>
@@ -916,7 +924,7 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
             <div className="axf-settings__nested axf-settings__restbody" aria-disabled="true">{rest}</div>
         </FlatSection>
       )}
-    </>
+    </SectionsScope>
   );
 }
 
@@ -1036,6 +1044,9 @@ const CSS = `
 .axf-settings__gtoggle{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--fx-dens-gap-lg);font-size:var(--fx-type-scale-xs);font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--fx-muted);padding:var(--fx-dens-gap-xs)}
 .axf-settings__gtoggle:hover{color:var(--fx-text)}
 .axf-settings__gtitle{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.axf-settings__gchev{flex:none;margin-left:auto}
+.axf-settings__gbody[hidden]{display:none}
+.axf-settings__sectbar{margin-bottom:calc(var(--fx-dens-gap-2xl)*-0.5)}
 .axf-settings__gbody{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-panel) * 100%), transparent);min-width:0}
 .axf-settings__nest>.axf-settings__gbody{border:0;background:transparent;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__nested{display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xl)}
@@ -1126,6 +1137,22 @@ export const library: AxfWebLibrary = {
     // A tab (or the whole interface without one) in a floating dialog by default; a plugin's own "Opens in" = dialog
     // still forces the dialog for its tab even when the person keeps the page (window-resize-fix, Nov 3 2026).
     rt.actions.register('settings.open', ([tab]) => openSettings(tab || undefined), { label: 'Open a settings tab', params: true });
+    // settings-sections: the same moves as the chevrons and Expand all / Collapse all, without the UI (REST, MCP, CLI, voice).
+    // settings.sections:expand-all[:<tab>] | collapse-all[:<tab>] | open:<section> | close:<section> | toggle:<section> | reveal:<setting key>
+    rt.actions.register('settings.sections', ([verb = '', ...rest]) => {
+      const arg = rest.join(':');
+      const tabIds = (t: string) => [...rt.settings.panelsIn(t).map((p) => `settings-panel:${p.id}`), ...rt.settings.groupsIn(t).map((g) => `settings-group:${g.id}`)];
+      if (verb === 'expand-all' || verb === 'collapse-all') return setSections(rt, arg ? tabIds(arg) : '*', verb === 'expand-all');
+      const sec = arg.includes(':') ? arg : `settings-group:${arg}`;
+      if (verb === 'open' || verb === 'close') return setSections(rt, [sec], verb === 'open');
+      if (verb === 'toggle') return setSections(rt, [sec], sectionState(rt).open[sec] === false);
+      if (verb === 'reveal') {
+        const hit = rt.settings.listTabs().flatMap((t) => rt.settings.groupsIn(t.id).map((g) => ({ t, g }))).find((x) => x.g.settings.some((k) => k.key === arg));
+        if (!hit) return false;
+        setSections(rt, [`settings-group:${hit.g.id}`], true); openSettings(hit.t.id); return true;
+      }
+      return false;
+    }, { label: 'Open or close settings sections (expand-all / collapse-all [tab], open / close / toggle <section>, reveal <setting key>)', params: true });
     // One setting by key, for voice, MCP, REST and the CLI (build full-voice-and-ai-control, Nov 13 2026):
     // `settings.set:<key>:<value>` (the value may hold colons). The setting's own `requires` still applies.
     rt.actions.register('settings.set', ([key, ...rest]) => {

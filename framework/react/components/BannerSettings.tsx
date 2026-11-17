@@ -36,7 +36,8 @@ import type { MenuEntry } from '../../core/engines/windows';
 import { FRAMEWORK_MODULE } from '../../core/engines/actions';
 import type { DialogMap } from './Overlays';
 import { Button, Container } from './Controls';
-import { Checkbox, Section, SelectField, Switch } from './Forms';
+import { Checkbox, SelectField, Switch } from './Forms';
+import { SectionsBar, SettingsSection } from './SettingsSections';
 import {
   BANNER_HIDE_KEY, QUICK_HIDE_MINUTES, TIMER_DEFAULT, allBannersHidden, hideBannerFor, hideEndsAt, bannerHidden, minutesFrom, minutesInput, nextHideEnd, parseBannerHide,
   setAllBannersHidden, setBannerHidden, setBannerTimer, showAllBanners, anyBannerHide, type BannerHideState,
@@ -509,10 +510,11 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
       <TabGroup id="banner-settings.banners" label="Banners" className="fx-banner-settings__tabs" value={tab} onChange={setTab} tabs={list.map((x) => ({ value: x.id, label: bannerLabel(x), icon: x.icon ?? 'bell' }))} />
       {b && (
         <div className="fx-stack">
-          <Section title="Hide">
+          <SectionsBar ids={['banner-settings:hide', 'banner-settings:look', 'banner-settings:behaviour', ...(b.settingsTab && ownSettings ? ['banner-settings:own'] : [])]} label="Banner settings sections" />
+          <SettingsSection id="banner-settings:hide" title="Hide" icon="eye">
             <HideControls id={b.id} label={bannerLabel(b)} list={list} hide={hide} />
-          </Section>
-          <Section title="Look">
+          </SettingsSection>
+          <SettingsSection id="banner-settings:look" title="Look" icon="palette">
             <fieldset disabled={rt.lockedByAppearance('assets.swap')} aria-disabled={rt.lockedByAppearance('assets.swap') || undefined} style={{ border: 0, margin: 0, padding: 0, minWidth: 0, display: 'contents' }}>
             <SelectField label="Colour" value={p.tone} options={TONES.map((t) => ({ value: t, label: TONE_LABEL[t] }))} onChange={(v) => set({ tone: v as BannerTone })} />
             <SelectField label="Density" value={p.density} options={DENSITIES.map((d) => ({ value: d, label: d[0]!.toUpperCase() + d.slice(1) }))} onChange={(v) => set({ density: v as BannerDensity })} />
@@ -521,8 +523,8 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
             <SelectField label="Working animation" value={p.workAnim} options={[{ value: '', label: `Its own (${WORK_ANIM_LABEL[b.workAnim ?? 'spin']})` }, ...WORK_ANIMS.map((a) => ({ value: a, label: WORK_ANIM_LABEL[a] }))]} onChange={(v) => set({ workAnim: v as BannerWorkAnim | '' })} />
             <SelectField label="Maximum height" value={String(p.maxRows)} options={[0, 4, 6, 8, 12, 18].map((n) => ({ value: String(n), label: n === 0 ? 'Its own' : `${n} rows (scrolls past that)` }))} onChange={(v) => set({ maxRows: Number(v) })} />
             </fieldset>
-          </Section>
-          <Section title="Behaviour">
+          </SettingsSection>
+          <SettingsSection id="banner-settings:behaviour" title="Behaviour" icon="sliders">
             <SelectField label="When it appears" value={p.launch} options={[{ value: 'expanded', label: 'Open, with its list' }, { value: 'minimized', label: 'Minimized to one line' }]} onChange={(v) => set({ launch: v === 'minimized' ? 'minimized' : 'expanded' })} />
             <SelectField label="Hide itself" value={String(p.autoHide)} options={AUTO_HIDE.map((s) => ({ value: String(s), label: autoHideLabel(s) }))} onChange={(v) => set({ autoHide: Number(v) })} />
             <div className="fx-row fx-row--wrap">
@@ -531,9 +533,9 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
               <Button tone="ghost" icon="chevron-down" disabled={at >= shownOrder.length - 1} onClick={() => move(1)}>Down</Button>
             </div>
             <Switch label="Hide it inside a host app" checked={p.hideInHost} onChange={(v) => set({ hideInHost: v })} />
-          </Section>
+          </SettingsSection>
           {b.settingsTab && ownSettings && (
-            <Section title={`${bannerLabel(b)} settings`}>{ownSettings(b.settingsTab)}</Section>
+            <SettingsSection id="banner-settings:own" title={`${bannerLabel(b)} settings`} icon={b.icon ?? 'bell'}>{ownSettings(b.settingsTab)}</SettingsSection>
           )}
           <div className="fx-row fx-row--wrap">
             <Button tone="ghost" icon="refresh" onClick={() => resetBannerPrefs(rt, tab)}>Look and behaviour back to defaults</Button>

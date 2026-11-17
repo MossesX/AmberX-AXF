@@ -79,7 +79,16 @@ export interface SettingsUi {
   levelOf: Record<string, SettingsLevel>;
   /** per-level visible sets on top of the rank rule (the interface's own; a user's saved sets merge over them) */
   visible: SettingsVisible;
+  /** settings-sections (Nov 16 2026, Brett: "Why don't these settings interfaces have collapsible sections?"): every
+   *  group and panel is a collapsible section (header + chevron) unless the asset says `flat`. */
+  sections: SettingsSections;
+  /** which sections start open before the user opens or closes any: all | first | none */
+  sectionsOpen: SettingsSectionsOpen;
 }
+export type SettingsSections = 'collapsible' | 'flat';
+export type SettingsSectionsOpen = 'all' | 'first' | 'none';
+export const SETTINGS_SECTIONS: readonly SettingsSections[] = ['collapsible', 'flat'];
+export const SETTINGS_SECTIONS_OPEN: readonly SettingsSectionsOpen[] = ['all', 'first', 'none'];
 
 export const SETTINGS_LAYOUTS: readonly SettingsLayout[] = ['tabs-top', 'tabs-side', 'list'];
 export const SETTINGS_HEADERS: readonly SettingsHeader[] = ['full', 'compact', 'none'];
@@ -87,7 +96,7 @@ export const SETTINGS_HEADERS: readonly SettingsHeader[] = ['full', 'compact', '
 export const ASSET_SETTING_KINDS: readonly SettingKind[] = ['toggle', 'text', 'number', 'slider', 'choice', 'multi_choice', 'color', 'link', 'section'];
 export const SETTINGS_UI_LIMITS = { tabs: 40, hide: 200, groups: 40, settings: 60, options: 50, text: 200, id: 120 } as const;
 
-export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {}, visible: {} };
+export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {}, visible: {}, sections: 'collapsible', sectionsOpen: 'all' };
 /** The level the settings page shows (per browser, like every setting). Older saved names are migrated on read. */
 export const SETTINGS_LEVEL_KEY = 'axf.settings.level';
 /** The user's own visible sets (JSON of SettingsVisible), merged over the interface's; the level editor writes it. */
@@ -195,7 +204,56 @@ export function normalizeSettingsUi(raw: unknown): SettingsUi {
     defaultLevel: level(d.defaultLevel) ?? SETTINGS_UI_DEFAULTS.defaultLevel,
     levelOf: Object.fromEntries(Object.entries(isObj(d.levelOf) ? d.levelOf : {}).filter(([k, v]) => id(k) && level(v)).slice(0, SETTINGS_UI_LIMITS.hide).map(([k, v]) => [k, level(v)!])) as Record<string, SettingsLevel>,
     visible: normalizeSettingsVisible(d.visible),
+    sections: pick(d.sections, SETTINGS_SECTIONS, SETTINGS_UI_DEFAULTS.sections),
+    sectionsOpen: pick(d.sectionsOpen, SETTINGS_SECTIONS_OPEN, SETTINGS_UI_DEFAULTS.sectionsOpen),
   };
+}
+
+/* ---------------- collapsible sections (settings-sections) ---------------- */
+
+/** The user's open / closed sections (per user, like every setting): JSON of SettingsSectionState. */
+export const SETTINGS_SECTIONS_KEY = 'axf.settings.sections';
+/** `all` = an Expand all / Collapse all with no tab (every section everywhere); `open` = per section id, wins over `all`. */
+export interface SettingsSectionState { all?: boolean; open: Record<string, boolean> }
+const SECTION_LIMIT = 500;
+
+/** A saved value (object or JSON string) → a section state; anything else = nothing remembered. Bad ids dropped. */
+export function normalizeSectionState(raw: unknown): SettingsSectionState {
+  let v = raw;
+  if (typeof v === 'string') { try { v = JSON.parse(v); } catch { v = null; } }
+  if (!isObj(v)) return { open: {} };
+  const open = Object.fromEntries(Object.entries(isObj(v.open) ? v.open : {}).filter(([k, b]) => id(k) && typeof b === 'boolean').slice(-SECTION_LIMIT)) as Record<string, boolean>;
+  return { ...(typeof v.all === 'boolean' ? { all: v.all } : {}), open };
+}
+
+/**
+ * Whether one section shows open. Order: the section can't fold (flat interface, or the section says so) → open; the
+ * user's own pick for this id; their last Expand all / Collapse all; the section's own `collapsed`; the interface's
+ * `sectionsOpen` (first = only the first section of a tab). `index` is the section's place in its tab.
+ */
+export function sectionOpen(ui: SettingsUi, state: SettingsSectionState, sectionId: string, own: { collapsible?: boolean; collapsed?: boolean; index?: number } = {}): boolean {
+  if (!sectionCollapsible(ui, own)) return true;
+  if (typeof state.open[sectionId] === 'boolean') return state.open[sectionId];
+  if (typeof state.all === 'boolean') return state.all;
+  if (typeof own.collapsed === 'boolean') return !own.collapsed;
+  return ui.sectionsOpen === 'all' || (ui.sectionsOpen === 'first' && (own.index ?? 0) === 0);
+}
+
+/** Whether a section folds: the interface's `sections` unless the section itself says (`collapsible: false` keeps it flat). */
+export function sectionCollapsible(ui: SettingsUi, own: { collapsible?: boolean } = {}): boolean {
+  return typeof own.collapsible === 'boolean' ? own.collapsible : ui.sections === 'collapsible';
+}
+
+/**
+ * Opens or closes sections. `ids` = the sections of one tab (Expand all / Collapse all on a tab, or one section);
+ * `'*'` = every section everywhere (per-id picks are cleared so the new choice shows). Returns the new state.
+ */
+export function setSectionsOpen(state: SettingsSectionState, ids: readonly string[] | '*', open: boolean): SettingsSectionState {
+  if (ids === '*') return { all: open, open: {} };
+  const next = { ...state.open };
+  for (const k of ids) if (id(k)) { delete next[k]; next[k] = open; }
+  const keys = Object.keys(next);
+  return { ...(typeof state.all === 'boolean' ? { all: state.all } : {}), open: Object.fromEntries(keys.slice(-SECTION_LIMIT).map((k) => [k, next[k] === true])) };
 }
 
 /* ---------------- visible sets ---------------- */
@@ -300,6 +358,8 @@ export function settingsUiErrors(raw: unknown): string[] {
   if ('hide' in raw && !Array.isArray(raw.hide)) errors.push('data.hide must be a list');
   if ('groups' in raw && !Array.isArray(raw.groups)) errors.push('data.groups must be a list');
   if ('toolbar' in raw && !n.toolbar) errors.push('data.toolbar must be a toolbar asset id');
+  if ('sections' in raw && raw.sections !== n.sections) errors.push(`data.sections must be one of ${SETTINGS_SECTIONS.join(', ')}`);
+  if ('sectionsOpen' in raw && raw.sectionsOpen !== n.sectionsOpen) errors.push(`data.sectionsOpen must be one of ${SETTINGS_SECTIONS_OPEN.join(', ')}`);
   if (count('tabs') !== n.tabs.length) errors.push(`data.tabs: ${count('tabs') - n.tabs.length} entr${count('tabs') - n.tabs.length === 1 ? 'y' : 'ies'} dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.tabs})`);
   if (count('hide') !== n.hide.length) errors.push(`data.hide: ${count('hide') - n.hide.length} entr${count('hide') - n.hide.length === 1 ? 'y' : 'ies'} dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.hide})`);
   if (count('groups') !== n.groups.length) errors.push(`data.groups: ${count('groups') - n.groups.length} group(s) dropped (needs id, label, tab and at least one valid setting)`);

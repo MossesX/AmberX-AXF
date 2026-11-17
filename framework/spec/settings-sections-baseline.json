@@ -1,0 +1,10 @@
+{
+  "note": "settings-sections ratchet (check-settings-sections.mjs): hand-built settings UIs without collapsible sections; only comes down",
+  "files": [
+    "apps/console-web/plugins/glossary-index/web/index.tsx",
+    "apps/console-web/plugins/plugin-manager/web/LazyLoader.tsx",
+    "apps/console-web/plugins/push-banner/web/queue.tsx",
+    "apps/console-web/plugins/push-banner/web/ui.tsx",
+    "framework/libs/ashes/index.tsx"
+  ]
+}

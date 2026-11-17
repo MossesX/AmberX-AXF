@@ -1178,7 +1178,9 @@
         "levels": "true = the level toolbar (Simple / Basic / Developer / Administrator) is on and every tab, group, panel and setting shows from its level up; Administrator shows all",
         "defaultLevel": "level of anything levelOf doesn't name (simple | basic | developer | administrator; older pro = administrator, advanced = developer)",
         "levelOf": "tab, group, panel or setting id → its level",
-        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)"
+        "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)",
+        "sections": "settings-sections: collapsible (default) = every group and panel is a section with a header and chevron, remembered open / closed per user (axf.settings.sections), Expand all / Collapse all, search opens the matching section; flat = plain headings (CI check-settings-sections.mjs needs a reason)",
+        "sectionsOpen": "which sections start open before the user picks: all (default) | first | none"
       },
       "required": [
         "layout",
@@ -1195,6 +1197,15 @@
         "header": [
           "full",
           "compact",
+          "none"
+        ],
+        "sections": [
+          "collapsible",
+          "flat"
+        ],
+        "sectionsOpen": [
+          "all",
+          "first",
           "none"
         ]
       },
