@@ -286,15 +286,19 @@ export function planToolbarOverflow(buttons: readonly ResolvedToolbarButton[], r
   const visible = buttons.filter((b) => b.visible);
   const inMore = new Set<string>();
   for (const b of visible) if (b.overflow === 'always') inMore.add(b.key);
+  // Fold order: lowest priority first; at a tie a live provider button folds before a button the asset placed, and
+  // the later button on the bar folds before the earlier one (the end of the bar gives way first).
+  const pos = new Map(visible.map((b, i) => [b.key, i]));
+  const foldFirst = (a: ResolvedToolbarButton, b: ResolvedToolbarButton) => a.priority - b.priority || Number(b.origin !== 'asset') - Number(a.origin !== 'asset') || (pos.get(b.key) ?? 0) - (pos.get(a.key) ?? 0);
   if (when === 'always') {
-    // only `keep` buttons stay (highest priority first, bar order kept); `never` buttons always stay
-    const candidates = visible.filter((b) => !inMore.has(b.key) && b.overflow !== 'never').sort((a, b) => b.priority - a.priority);
-    candidates.slice(keep).forEach((b) => inMore.add(b.key));
+    // only `keep` buttons stay (the last to fold); `never` buttons always stay
+    const candidates = visible.filter((b) => !inMore.has(b.key) && b.overflow !== 'never').sort(foldFirst);
+    candidates.slice(0, Math.max(0, candidates.length - keep)).forEach((b) => inMore.add(b.key));
   } else if (when === 'auto' && typeof fit === 'number' && Number.isFinite(fit)) {
     const staying = visible.filter((b) => !inMore.has(b.key));
     const room = Math.max(keep, Math.floor(fit));
     if (staying.length > room) {
-      const foldable = staying.filter((b) => b.overflow !== 'never').sort((a, b) => a.priority - b.priority); // lowest priority folds first
+      const foldable = staying.filter((b) => b.overflow !== 'never').sort(foldFirst);
       let excess = staying.length - room;
       for (const b of foldable) { if (excess <= 0) break; inMore.add(b.key); excess--; }
     }

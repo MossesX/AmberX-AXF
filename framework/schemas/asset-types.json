@@ -280,11 +280,6 @@
           "flat",
           "raised",
           "glass"
-        ],
-        "overflow": [
-          "auto",
-          "never",
-          "always"
         ]
       },
       "optional_fields": {

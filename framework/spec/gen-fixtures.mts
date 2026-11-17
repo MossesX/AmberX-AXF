@@ -51,6 +51,7 @@ import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, na
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
 import { isPageToolbar, parseActionRef, parseBadge, parseToolbarScope, parseWhen, toolbarErrors, toolbarStateKeys, whenHolds } from '../core/engines/toolbar-rules.mjs';
 import { migrateToolbar, needsToolbarMigration, toolbarMigrationErrors, toolbarMigrationRecord, toolbarSignature } from '../core/engines/toolbar-migrate.mjs';
+import { TOOLBAR_FIXTURE_CASES, toolbarFixtureOutputs } from './toolbar-actions-cases';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
@@ -2593,3 +2594,8 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     ].map(([w, s]) => [`${JSON.stringify(w)} on ${JSON.stringify(s)}`, whenHolds(parseWhen(w), s)])),
   });
 }
+
+// Page toolbar engine (page-toolbar@1; core/engines/toolbar-actions.ts): migration of every starter, scope + slot match
+// and the pick, state gating (enabled / visible / badges / toggles / args), overflow plans, invocations, settings ids,
+// readable state. Inputs live in spec/toolbar-actions-cases.ts so the checker replays the same cases.
+write('toolbar-actions.json', toolbarFixtureOutputs(TOOLBAR_FIXTURE_CASES, load('toolbar')));
