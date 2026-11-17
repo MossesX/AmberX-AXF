@@ -1,0 +1,6027 @@
+{
+  "registry": {
+    "$axf": "live-change@1",
+    "note": "Snapshot of the live-change@1 contract (spec/LIVE-CHANGES.md): the one change event every row store emits and every grid consumes. Generated from framework/core/engines/live-rows.ts; spec/check-live-rows.mts fails when they drift.",
+    "frames": [
+      "live-change@1",
+      "live-change-batch@1",
+      "live-change-resync@1",
+      "live-rows@1",
+      "optimistic@1"
+    ],
+    "ops": [
+      "upsert",
+      "delete",
+      "reorder"
+    ],
+    "surfaces": [
+      "console",
+      "cli",
+      "mcp",
+      "voice",
+      "api",
+      "orchestrator",
+      "hub",
+      "plugin",
+      "server"
+    ],
+    "surfacesOpen": true,
+    "resyncReasons": [
+      "gap",
+      "epoch",
+      "history",
+      "behind"
+    ],
+    "rollbackReasons": [
+      "rejected",
+      "timeout",
+      "resync",
+      "superseded"
+    ],
+    "keepOnChange": [
+      "scroll",
+      "selection",
+      "sort",
+      "filters",
+      "expanded",
+      "columns",
+      "dialogs",
+      "focus"
+    ],
+    "limits": {
+      "ns": 160,
+      "key": 128,
+      "session": 64,
+      "batch": 1000,
+      "pending": 256
+    },
+    "patterns": {
+      "ns": "^[a-z0-9_-]+(\\/[A-Za-z0-9._:-]+)*$",
+      "key": "^[^/]{1,128}$"
+    },
+    "optimisticTimeoutMs": 8000,
+    "logLimit": 4000,
+    "capability": "axf.live-changes@1",
+    "dataStoreMap": {
+      "ns": "ns",
+      "path": "key",
+      "put": "upsert",
+      "delete": "delete",
+      "cursor": "rev",
+      "by": "origin",
+      "at": "ts"
+    }
+  },
+  "jsonSchemas": {
+    "live-change.schema.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "axf/live-change.schema.json",
+      "title": "AmberX AXF live change (live-change@1)",
+      "description": "Generated from framework/core/engines/live-rows.ts (spec/LIVE-CHANGES.md). One change to one row of one keyed, ordered row set; revs are contiguous per namespace.",
+      "type": "object",
+      "required": [
+        "ns",
+        "key",
+        "op",
+        "rev",
+        "origin",
+        "ts"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "live-change@1"
+        },
+        "ns": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]+(\\/[A-Za-z0-9._:-]+)*$",
+          "maxLength": 160
+        },
+        "key": {
+          "type": "string",
+          "pattern": "^[^/]{1,128}$"
+        },
+        "op": {
+          "enum": [
+            "upsert",
+            "delete",
+            "reorder"
+          ]
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "epoch": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "row": {
+          "type": "object"
+        },
+        "before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "origin": {
+          "type": "object",
+          "required": [
+            "session",
+            "surface"
+          ],
+          "properties": {
+            "session": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "surface": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "client": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "opId": {
+              "type": "string",
+              "maxLength": 64
+            }
+          }
+        },
+        "ts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "upsert"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "row"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "reorder"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "before"
+            ]
+          }
+        }
+      ]
+    },
+    "live-change-batch.schema.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "axf/live-change-batch.schema.json",
+      "title": "AmberX AXF live change batch and resync (live-change-batch@1, live-change-resync@1)",
+      "description": "Generated from framework/core/engines/live-rows.ts (spec/LIVE-CHANGES.md). What a store answers to since(ns, rev): a batch of contiguous events, or the whole row set when the consumer must resync.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "$axf",
+            "ns",
+            "events",
+            "rev"
+          ],
+          "properties": {
+            "$axf": {
+              "const": "live-change-batch@1"
+            },
+            "ns": {
+              "type": "string"
+            },
+            "events": {
+              "type": "array",
+              "maxItems": 1000,
+              "items": {
+                "$ref": "axf/live-change.schema.json"
+              }
+            },
+            "rev": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "epoch": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "$axf",
+            "ns",
+            "reason",
+            "rev",
+            "rows",
+            "order"
+          ],
+          "properties": {
+            "$axf": {
+              "const": "live-change-resync@1"
+            },
+            "ns": {
+              "type": "string"
+            },
+            "reason": {
+              "enum": [
+                "gap",
+                "epoch",
+                "history",
+                "behind"
+              ]
+            },
+            "rev": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "epoch": {
+              "type": "string"
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "order": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "log": {
+    "ns": "builds",
+    "limit": 4,
+    "epoch": "e1",
+    "appends": [
+      {
+        "key": "b1",
+        "op": "upsert",
+        "row": {
+          "id": "b1",
+          "title": "First",
+          "status": "queued"
+        },
+        "origin": {
+          "session": "s-brett",
+          "surface": "console",
+          "client": "c-tab1"
+        },
+        "ts": 1000
+      },
+      {
+        "key": "b2",
+        "op": "upsert",
+        "row": {
+          "id": "b2",
+          "title": "Second",
+          "status": "queued"
+        },
+        "origin": {
+          "session": "s-orch",
+          "surface": "orchestrator"
+        },
+        "ts": 1001
+      },
+      {
+        "key": "b3",
+        "op": "upsert",
+        "row": {
+          "id": "b3",
+          "title": "Third",
+          "status": "running"
+        },
+        "origin": {
+          "session": "s-orch",
+          "surface": "orchestrator"
+        },
+        "ts": 1002
+      },
+      {
+        "key": "b3",
+        "op": "reorder",
+        "before": "b1",
+        "origin": {
+          "session": "s-brett",
+          "surface": "console",
+          "client": "c-tab1"
+        },
+        "ts": 1003
+      },
+      {
+        "key": "b2",
+        "op": "upsert",
+        "row": {
+          "id": "b2",
+          "title": "Second",
+          "status": "built"
+        },
+        "origin": {
+          "session": "s-orch",
+          "surface": "orchestrator"
+        },
+        "ts": 1004
+      },
+      {
+        "key": "b1",
+        "op": "delete",
+        "origin": {
+          "session": "s-brett",
+          "surface": "console",
+          "client": "c-tab1"
+        },
+        "ts": 1005
+      }
+    ],
+    "events": [
+      {
+        "$axf": "live-change@1",
+        "ns": "builds",
+        "key": "b1",
+        "op": "upsert",
+        "rev": 1,
+        "epoch": "e1",
+        "row": {
+          "id": "b1",
+          "title": "First",
+          "status": "queued"
+        },
+        "origin": {
+          "session": "s-brett",
+          "surface": "console",
+          "client": "c-tab1"
+        },
+        "ts": 1000
+      },
+      {
+        "$axf": "live-change@1",
+        "ns": "builds",
+        "key": "b2",
+        "op": "upsert",
+        "rev": 2,
+        "epoch": "e1",
+        "row": {
+          "id": "b2",
+          "title": "Second",
+          "status": "queued"
+        },
+        "origin": {
+          "session": "s-orch",
+          "surface": "orchestrator"
+        },
+        "ts": 1001
+      },
+      {
+        "$axf": "live-change@1",
+        "ns": "builds",
+        "key": "b3",
+        "op": "upsert",
+        "rev": 3,
+        "epoch": "e1",
+        "row": {
+          "id": "b3",
+          "title": "Third",
+          "status": "running"
+        },
+        "origin": {
+          "session": "s-orch",
+          "surface": "orchestrator"
+        },
+        "ts": 1002
+      },
+      {
+        "$axf": "live-change@1",
+        "ns": "builds",
+        "key": "b3",
+        "op": "reorder",
+        "rev": 4,
+        "epoch": "e1",
+        "before": "b1",
+        "origin": {
+          "session": "s-brett",
+          "surface": "console",
+          "client": "c-tab1"
+        },
+        "ts": 1003
+      },
+      {
+        "$axf": "live-change@1",
+        "ns": "builds",
+        "key": "b2",
+        "op": "upsert",
+        "rev": 5,
+        "epoch": "e1",
+        "row": {
+          "id": "b2",
+          "title": "Second",
+          "status": "built"
+        },
+        "origin": {
+          "session": "s-orch",
+          "surface": "orchestrator"
+        },
+        "ts": 1004
+      },
+      {
+        "$axf": "live-change@1",
+        "ns": "builds",
+        "key": "b1",
+        "op": "delete",
+        "rev": 6,
+        "epoch": "e1",
+        "origin": {
+          "session": "s-brett",
+          "surface": "console",
+          "client": "c-tab1"
+        },
+        "ts": 1005
+      }
+    ],
+    "rev": 6,
+    "firstRev": 2,
+    "rows": {
+      "ns": "builds",
+      "rev": 6,
+      "epoch": "e1",
+      "order": [
+        "b3",
+        "b2"
+      ],
+      "rows": {
+        "b2": {
+          "id": "b2",
+          "title": "Second",
+          "status": "built"
+        },
+        "b3": {
+          "id": "b3",
+          "title": "Third",
+          "status": "running"
+        }
+      }
+    },
+    "snapshot": {
+      "$axf": "live-change-resync@1",
+      "ns": "builds",
+      "reason": "history",
+      "rev": 6,
+      "epoch": "e1",
+      "rows": [
+        {
+          "id": "b3",
+          "title": "Third",
+          "status": "running"
+        },
+        {
+          "id": "b2",
+          "title": "Second",
+          "status": "built"
+        }
+      ],
+      "order": [
+        "b3",
+        "b2"
+      ]
+    },
+    "since": [
+      {
+        "rev": 0,
+        "result": {
+          "$axf": "live-change-resync@1",
+          "ns": "builds",
+          "reason": "history",
+          "rev": 6,
+          "epoch": "e1",
+          "rows": [
+            {
+              "id": "b3",
+              "title": "Third",
+              "status": "running"
+            },
+            {
+              "id": "b2",
+              "title": "Second",
+              "status": "built"
+            }
+          ],
+          "order": [
+            "b3",
+            "b2"
+          ]
+        }
+      },
+      {
+        "rev": 1,
+        "result": {
+          "$axf": "live-change-resync@1",
+          "ns": "builds",
+          "reason": "history",
+          "rev": 6,
+          "epoch": "e1",
+          "rows": [
+            {
+              "id": "b3",
+              "title": "Third",
+              "status": "running"
+            },
+            {
+              "id": "b2",
+              "title": "Second",
+              "status": "built"
+            }
+          ],
+          "order": [
+            "b3",
+            "b2"
+          ]
+        }
+      },
+      {
+        "rev": 2,
+        "result": {
+          "$axf": "live-change-batch@1",
+          "ns": "builds",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b3",
+              "op": "upsert",
+              "rev": 3,
+              "epoch": "e1",
+              "row": {
+                "id": "b3",
+                "title": "Third",
+                "status": "running"
+              },
+              "origin": {
+                "session": "s-orch",
+                "surface": "orchestrator"
+              },
+              "ts": 1002
+            },
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b3",
+              "op": "reorder",
+              "rev": 4,
+              "epoch": "e1",
+              "before": "b1",
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1"
+              },
+              "ts": 1003
+            },
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b2",
+              "op": "upsert",
+              "rev": 5,
+              "epoch": "e1",
+              "row": {
+                "id": "b2",
+                "title": "Second",
+                "status": "built"
+              },
+              "origin": {
+                "session": "s-orch",
+                "surface": "orchestrator"
+              },
+              "ts": 1004
+            },
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b1",
+              "op": "delete",
+              "rev": 6,
+              "epoch": "e1",
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1"
+              },
+              "ts": 1005
+            }
+          ],
+          "rev": 6,
+          "epoch": "e1"
+        }
+      },
+      {
+        "rev": 4,
+        "max": 1,
+        "result": {
+          "$axf": "live-change-batch@1",
+          "ns": "builds",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b2",
+              "op": "upsert",
+              "rev": 5,
+              "epoch": "e1",
+              "row": {
+                "id": "b2",
+                "title": "Second",
+                "status": "built"
+              },
+              "origin": {
+                "session": "s-orch",
+                "surface": "orchestrator"
+              },
+              "ts": 1004
+            }
+          ],
+          "rev": 5,
+          "epoch": "e1"
+        }
+      },
+      {
+        "rev": 6,
+        "result": {
+          "$axf": "live-change-batch@1",
+          "ns": "builds",
+          "events": [],
+          "rev": 6,
+          "epoch": "e1"
+        }
+      },
+      {
+        "rev": 9,
+        "result": {
+          "$axf": "live-change-resync@1",
+          "ns": "builds",
+          "reason": "behind",
+          "rev": 6,
+          "epoch": "e1",
+          "rows": [
+            {
+              "id": "b3",
+              "title": "Third",
+              "status": "running"
+            },
+            {
+              "id": "b2",
+              "title": "Second",
+              "status": "built"
+            }
+          ],
+          "order": [
+            "b3",
+            "b2"
+          ]
+        }
+      },
+      {
+        "rev": 3,
+        "epoch": "e0",
+        "result": {
+          "$axf": "live-change-resync@1",
+          "ns": "builds",
+          "reason": "epoch",
+          "rev": 6,
+          "epoch": "e1",
+          "rows": [
+            {
+              "id": "b3",
+              "title": "Third",
+              "status": "running"
+            },
+            {
+              "id": "b2",
+              "title": "Second",
+              "status": "built"
+            }
+          ],
+          "order": [
+            "b3",
+            "b2"
+          ]
+        }
+      },
+      {
+        "rev": 3,
+        "epoch": "e1",
+        "result": {
+          "$axf": "live-change-batch@1",
+          "ns": "builds",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b3",
+              "op": "reorder",
+              "rev": 4,
+              "epoch": "e1",
+              "before": "b1",
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1"
+              },
+              "ts": 1003
+            },
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b2",
+              "op": "upsert",
+              "rev": 5,
+              "epoch": "e1",
+              "row": {
+                "id": "b2",
+                "title": "Second",
+                "status": "built"
+              },
+              "origin": {
+                "session": "s-orch",
+                "surface": "orchestrator"
+              },
+              "ts": 1004
+            },
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b1",
+              "op": "delete",
+              "rev": 6,
+              "epoch": "e1",
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1"
+              },
+              "ts": 1005
+            }
+          ],
+          "rev": 6,
+          "epoch": "e1"
+        }
+      }
+    ]
+  },
+  "apply": [
+    {
+      "name": "upsert-new-and-changed",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "e",
+          "op": "upsert",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "row": {
+            "id": "e",
+            "title": "E",
+            "status": "queued"
+          }
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "b",
+          "op": "upsert",
+          "rev": 12,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2012,
+          "row": {
+            "id": "b",
+            "title": "B",
+            "status": "running"
+          }
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 12,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "running"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            },
+            "e": {
+              "id": "e",
+              "title": "E",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [
+          "b",
+          "e"
+        ],
+        "removed": [],
+        "moved": [],
+        "applied": 2,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 12
+      }
+    },
+    {
+      "name": "upsert-same-row-ignored",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "a",
+          "op": "upsert",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "row": {
+            "status": "queued",
+            "title": "A",
+            "id": "a"
+          }
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [],
+        "applied": 1,
+        "skipped": 0,
+        "ignored": 1,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "reorder-to-top",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "d",
+          "op": "reorder",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "before": "a"
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "d",
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [
+          "d"
+        ],
+        "applied": 1,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "reorder-to-end",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "a",
+          "op": "reorder",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "before": null
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "b",
+            "c",
+            "d",
+            "a"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [
+          "a"
+        ],
+        "applied": 1,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "reorder-unknown-before-goes-last",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "b",
+          "op": "reorder",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "before": "zz"
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "a",
+            "c",
+            "d",
+            "b"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [
+          "b"
+        ],
+        "applied": 1,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "reorder-same-place-ignored",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "b",
+          "op": "reorder",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "before": "c"
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [],
+        "applied": 1,
+        "skipped": 0,
+        "ignored": 1,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "reorder-unknown-key-ignored",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "zz",
+          "op": "reorder",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "before": "a"
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [],
+        "applied": 1,
+        "skipped": 0,
+        "ignored": 1,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "delete",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "c",
+          "op": "delete",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "a",
+            "b",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [
+          "c"
+        ],
+        "moved": [],
+        "applied": 1,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "delete-unknown-ignored",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "zz",
+          "op": "delete",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [],
+        "applied": 1,
+        "skipped": 0,
+        "ignored": 1,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "duplicates-skipped",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "a",
+          "op": "delete",
+          "rev": 9,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2009
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "b",
+          "op": "delete",
+          "rev": 10,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2010
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "c",
+          "op": "delete",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 11,
+          "order": [
+            "a",
+            "b",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [
+          "c"
+        ],
+        "moved": [],
+        "applied": 1,
+        "skipped": 2,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 11
+      }
+    },
+    {
+      "name": "gap-applies-nothing",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "c",
+          "op": "delete",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "a",
+          "op": "delete",
+          "rev": 13,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2013
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 10,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [],
+        "applied": 0,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": {
+          "reason": "gap",
+          "have": 11,
+          "saw": 13
+        }
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 10
+      }
+    },
+    {
+      "name": "epoch-applies-nothing",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        },
+        "epoch": "e1"
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "c",
+          "op": "delete",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "epoch": "e2"
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 10,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          },
+          "epoch": "e1"
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [],
+        "applied": 0,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": {
+          "reason": "epoch",
+          "have": 10,
+          "saw": 11
+        }
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 10,
+        "epoch": "e1"
+      }
+    },
+    {
+      "name": "other-namespace-ignored",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "planner",
+          "key": "c",
+          "op": "delete",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 10,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [],
+        "applied": 0,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 10
+      }
+    },
+    {
+      "name": "empty-batch",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 10,
+          "order": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            }
+          }
+        },
+        "changed": [],
+        "removed": [],
+        "moved": [],
+        "applied": 0,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 10
+      }
+    },
+    {
+      "name": "fresh-set-from-log",
+      "set": {
+        "ns": "builds",
+        "rev": 0,
+        "epoch": "e1",
+        "order": [],
+        "rows": {}
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "b1",
+          "op": "upsert",
+          "rev": 1,
+          "epoch": "e1",
+          "row": {
+            "id": "b1",
+            "title": "First",
+            "status": "queued"
+          },
+          "origin": {
+            "session": "s-brett",
+            "surface": "console",
+            "client": "c-tab1"
+          },
+          "ts": 1000
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "b2",
+          "op": "upsert",
+          "rev": 2,
+          "epoch": "e1",
+          "row": {
+            "id": "b2",
+            "title": "Second",
+            "status": "queued"
+          },
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 1001
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "b3",
+          "op": "upsert",
+          "rev": 3,
+          "epoch": "e1",
+          "row": {
+            "id": "b3",
+            "title": "Third",
+            "status": "running"
+          },
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 1002
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 3,
+          "epoch": "e1",
+          "order": [
+            "b1",
+            "b2",
+            "b3"
+          ],
+          "rows": {
+            "b1": {
+              "id": "b1",
+              "title": "First",
+              "status": "queued"
+            },
+            "b2": {
+              "id": "b2",
+              "title": "Second",
+              "status": "queued"
+            },
+            "b3": {
+              "id": "b3",
+              "title": "Third",
+              "status": "running"
+            }
+          }
+        },
+        "changed": [
+          "b1",
+          "b2",
+          "b3"
+        ],
+        "removed": [],
+        "moved": [],
+        "applied": 3,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 3,
+        "epoch": "e1"
+      }
+    },
+    {
+      "name": "mixed-batch",
+      "set": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "events": [
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "e",
+          "op": "upsert",
+          "rev": 11,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2011,
+          "row": {
+            "id": "e",
+            "title": "E",
+            "status": "queued"
+          }
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "d",
+          "op": "reorder",
+          "rev": 12,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2012,
+          "before": "a"
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "a",
+          "op": "delete",
+          "rev": 13,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2013
+        },
+        {
+          "$axf": "live-change@1",
+          "ns": "builds",
+          "key": "e",
+          "op": "upsert",
+          "rev": 14,
+          "origin": {
+            "session": "s-orch",
+            "surface": "orchestrator"
+          },
+          "ts": 2014,
+          "row": {
+            "id": "e",
+            "title": "E",
+            "status": "built"
+          }
+        }
+      ],
+      "result": {
+        "set": {
+          "ns": "builds",
+          "rev": 14,
+          "order": [
+            "d",
+            "b",
+            "c",
+            "e"
+          ],
+          "rows": {
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            },
+            "d": {
+              "id": "d",
+              "title": "D",
+              "status": "queued"
+            },
+            "e": {
+              "id": "e",
+              "title": "E",
+              "status": "built"
+            }
+          }
+        },
+        "changed": [
+          "e"
+        ],
+        "removed": [
+          "a"
+        ],
+        "moved": [
+          "d"
+        ],
+        "applied": 4,
+        "skipped": 0,
+        "ignored": 0,
+        "resync": null
+      },
+      "resume": {
+        "ns": "builds",
+        "since": 14
+      }
+    }
+  ],
+  "diff": [
+    {
+      "name": "insert-middle-moves-nothing",
+      "before": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "after": {
+        "ns": "builds",
+        "rev": 11,
+        "order": [
+          "a",
+          "b",
+          "x",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "x": {
+            "id": "x",
+            "title": "X",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "result": {
+        "changed": [
+          "x"
+        ],
+        "removed": [],
+        "moved": []
+      }
+    },
+    {
+      "name": "delete-first-moves-nothing",
+      "before": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "after": {
+        "ns": "builds",
+        "rev": 11,
+        "order": [
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "result": {
+        "changed": [],
+        "removed": [
+          "a"
+        ],
+        "moved": []
+      }
+    },
+    {
+      "name": "swap-two",
+      "before": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "after": {
+        "ns": "builds",
+        "rev": 11,
+        "order": [
+          "b",
+          "a",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "result": {
+        "changed": [],
+        "removed": [],
+        "moved": [
+          "a"
+        ]
+      }
+    },
+    {
+      "name": "reverse-all",
+      "before": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "after": {
+        "ns": "builds",
+        "rev": 11,
+        "order": [
+          "d",
+          "c",
+          "b",
+          "a"
+        ],
+        "rows": {
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          }
+        }
+      },
+      "result": {
+        "changed": [],
+        "removed": [],
+        "moved": [
+          "c",
+          "b",
+          "a"
+        ]
+      }
+    },
+    {
+      "name": "content-and-order",
+      "before": {
+        "ns": "builds",
+        "rev": 10,
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "rows": {
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          },
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "queued"
+          }
+        }
+      },
+      "after": {
+        "ns": "builds",
+        "rev": 11,
+        "order": [
+          "d",
+          "a",
+          "b",
+          "c"
+        ],
+        "rows": {
+          "d": {
+            "id": "d",
+            "title": "D",
+            "status": "built"
+          },
+          "a": {
+            "id": "a",
+            "title": "A",
+            "status": "queued"
+          },
+          "b": {
+            "id": "b",
+            "title": "B",
+            "status": "queued"
+          },
+          "c": {
+            "id": "c",
+            "title": "C",
+            "status": "queued"
+          }
+        }
+      },
+      "result": {
+        "changed": [
+          "d"
+        ],
+        "removed": [],
+        "moved": [
+          "d"
+        ]
+      }
+    }
+  ],
+  "rowSets": {
+    "from-rows-default-key": {
+      "ns": "planner",
+      "rev": 7,
+      "order": [
+        "p1",
+        "p2"
+      ],
+      "rows": {
+        "p1": {
+          "id": "p1"
+        },
+        "p2": {
+          "key": "p2"
+        }
+      }
+    },
+    "from-rows-key-of": {
+      "ns": "planner",
+      "rev": 2,
+      "order": [
+        "x",
+        "y"
+      ],
+      "rows": {
+        "x": {
+          "slug": "x"
+        },
+        "y": {
+          "slug": "y"
+        }
+      }
+    },
+    "from-resync-order-wins": {
+      "ns": "planner",
+      "rev": 9,
+      "epoch": "e3",
+      "order": [
+        "p3",
+        "p1",
+        "p2"
+      ],
+      "rows": {
+        "p3": {
+          "id": "p3"
+        },
+        "p1": {
+          "id": "p1"
+        },
+        "p2": {
+          "id": "p2"
+        }
+      }
+    }
+  },
+  "own": {
+    "mine": true,
+    "theirs": false,
+    "noClient": false
+  },
+  "optimistic": {
+    "confirm-drag": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        }
+      },
+      "steps": [
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "c",
+            "op": "reorder",
+            "before": "a",
+            "at": 100
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "c",
+                  "op": "reorder",
+                  "before": "a",
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "c",
+                  "a",
+                  "b"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [
+              "c"
+            ],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "c"
+          ]
+        },
+        {
+          "do": "reconcile",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "c",
+              "op": "reorder",
+              "rev": 21,
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1",
+                "opId": "op1"
+              },
+              "ts": 2021,
+              "before": "a"
+            }
+          ],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "c",
+                  "a",
+                  "b"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "c",
+                  "a",
+                  "b"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [
+              "op1"
+            ],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": []
+        }
+      ]
+    },
+    "confirm-edit-with-server-change": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        }
+      },
+      "steps": [
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "b",
+            "op": "upsert",
+            "row": {
+              "id": "b",
+              "title": "B",
+              "status": "running",
+              "note": "typed"
+            },
+            "at": 100
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "b",
+                  "op": "upsert",
+                  "row": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running",
+                    "note": "typed"
+                  },
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running",
+                    "note": "typed"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "b"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "b"
+          ]
+        },
+        {
+          "do": "reconcile",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b",
+              "op": "upsert",
+              "rev": 21,
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1",
+                "opId": "op1"
+              },
+              "ts": 2021,
+              "row": {
+                "id": "b",
+                "title": "B",
+                "status": "running",
+                "note": "typed",
+                "savedAt": 1
+              }
+            }
+          ],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running",
+                    "note": "typed",
+                    "savedAt": 1
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running",
+                    "note": "typed",
+                    "savedAt": 1
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "b"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [
+              "op1"
+            ],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": []
+        }
+      ]
+    },
+    "reject-rolls-back": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        }
+      },
+      "steps": [
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "a",
+            "op": "delete",
+            "at": 100
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "a",
+                  "op": "delete",
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [
+              "a"
+            ],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        },
+        {
+          "do": "reject",
+          "opId": "op1",
+          "reason": "rejected",
+          "detail": "conflict: someone changed it first",
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "a"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [
+              {
+                "opId": "op1",
+                "key": "a",
+                "reason": "rejected",
+                "detail": "conflict: someone changed it first"
+              }
+            ],
+            "resync": null
+          },
+          "pendingKeys": []
+        },
+        {
+          "do": "reject",
+          "opId": "op-unknown",
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": []
+        }
+      ]
+    },
+    "timeout-rolls-back": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        }
+      },
+      "steps": [
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "b",
+            "op": "reorder",
+            "before": null,
+            "at": 100
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "b",
+                  "op": "reorder",
+                  "before": null,
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "c",
+                  "b"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [
+              "b"
+            ],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "b"
+          ]
+        },
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op2",
+            "key": "a",
+            "op": "upsert",
+            "row": {
+              "id": "a",
+              "title": "A",
+              "status": "built"
+            },
+            "at": 5000
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "b",
+                  "op": "reorder",
+                  "before": null,
+                  "at": 100
+                },
+                {
+                  "opId": "op2",
+                  "key": "a",
+                  "op": "upsert",
+                  "row": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "at": 5000
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "c",
+                  "b"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "a"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "b",
+            "a"
+          ]
+        },
+        {
+          "do": "expire",
+          "now": 8099,
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "b",
+                  "op": "reorder",
+                  "before": null,
+                  "at": 100
+                },
+                {
+                  "opId": "op2",
+                  "key": "a",
+                  "op": "upsert",
+                  "row": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "at": 5000
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "c",
+                  "b"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "b",
+            "a"
+          ]
+        },
+        {
+          "do": "expire",
+          "now": 8100,
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op2",
+                  "key": "a",
+                  "op": "upsert",
+                  "row": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "at": 5000
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [
+              "c"
+            ],
+            "confirmed": [],
+            "rolledBack": [
+              {
+                "opId": "op1",
+                "key": "b",
+                "reason": "timeout",
+                "detail": "no echo after 8000 ms"
+              }
+            ],
+            "resync": null
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        },
+        {
+          "do": "expire",
+          "now": 20000,
+          "timeoutMs": 1000,
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "a"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [
+              {
+                "opId": "op2",
+                "key": "a",
+                "reason": "timeout",
+                "detail": "no echo after 1000 ms"
+              }
+            ],
+            "resync": null
+          },
+          "pendingKeys": []
+        }
+      ]
+    },
+    "others-change-keeps-pending": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        }
+      },
+      "steps": [
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "b",
+            "op": "upsert",
+            "row": {
+              "id": "b",
+              "title": "B",
+              "status": "running"
+            },
+            "at": 100
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "b",
+                  "op": "upsert",
+                  "row": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running"
+                  },
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "b"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "b"
+          ]
+        },
+        {
+          "do": "reconcile",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "c",
+              "op": "upsert",
+              "rev": 21,
+              "origin": {
+                "session": "s-orch",
+                "surface": "orchestrator"
+              },
+              "ts": 2021,
+              "row": {
+                "id": "c",
+                "title": "C",
+                "status": "built"
+              }
+            }
+          ],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "built"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "b",
+                  "op": "upsert",
+                  "row": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running"
+                  },
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "built"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "c"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "b"
+          ]
+        },
+        {
+          "do": "reconcile",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "c",
+              "op": "upsert",
+              "rev": 21,
+              "origin": {
+                "session": "s-orch",
+                "surface": "orchestrator"
+              },
+              "ts": 2021,
+              "row": {
+                "id": "c",
+                "title": "C",
+                "status": "built"
+              }
+            }
+          ],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "built"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "b",
+                  "op": "upsert",
+                  "row": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running"
+                  },
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "built"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "b"
+          ]
+        },
+        {
+          "do": "reconcile",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "b",
+              "op": "upsert",
+              "rev": 22,
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1",
+                "opId": "op1"
+              },
+              "ts": 2022,
+              "row": {
+                "id": "b",
+                "title": "B",
+                "status": "running"
+              }
+            }
+          ],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 22,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "built"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 22,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "running"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "built"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [
+              "op1"
+            ],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": []
+        }
+      ]
+    },
+    "gap-then-resync-rolls-back": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        }
+      },
+      "steps": [
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "a",
+            "op": "delete",
+            "at": 100
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "a",
+                  "op": "delete",
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [
+              "a"
+            ],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        },
+        {
+          "do": "reconcile",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "c",
+              "op": "delete",
+              "rev": 25,
+              "origin": {
+                "session": "s-orch",
+                "surface": "orchestrator"
+              },
+              "ts": 2025
+            }
+          ],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "a",
+                  "op": "delete",
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": {
+              "reason": "gap",
+              "have": 20,
+              "saw": 25
+            }
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        },
+        {
+          "do": "resync",
+          "frame": {
+            "$axf": "live-change-resync@1",
+            "ns": "builds",
+            "reason": "gap",
+            "rev": 25,
+            "rows": [
+              {
+                "id": "b",
+                "title": "B",
+                "status": "queued"
+              },
+              {
+                "id": "a",
+                "title": "A",
+                "status": "built"
+              }
+            ],
+            "order": [
+              "b",
+              "a"
+            ]
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 25,
+                "order": [
+                  "b",
+                  "a"
+                ],
+                "rows": {
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 25,
+                "order": [
+                  "b",
+                  "a"
+                ],
+                "rows": {
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "a"
+            ],
+            "removed": [
+              "c"
+            ],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [
+              {
+                "opId": "op1",
+                "key": "a",
+                "reason": "resync",
+                "detail": "gap"
+              }
+            ],
+            "resync": null
+          },
+          "pendingKeys": []
+        }
+      ]
+    },
+    "superseded-resubmit": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        }
+      },
+      "steps": [
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "a",
+            "op": "upsert",
+            "row": {
+              "id": "a",
+              "title": "A",
+              "status": "running"
+            },
+            "at": 100
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "a",
+                  "op": "upsert",
+                  "row": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "running"
+                  },
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "running"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "a"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        },
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "a",
+            "op": "upsert",
+            "row": {
+              "id": "a",
+              "title": "A",
+              "status": "built"
+            },
+            "at": 200
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "a",
+                  "op": "upsert",
+                  "row": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "at": 200
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "a"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [
+              {
+                "opId": "op1",
+                "key": "a",
+                "reason": "superseded",
+                "detail": "submitted again"
+              }
+            ],
+            "resync": null
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        }
+      ]
+    },
+    "stacked-ops-same-key": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 20,
+          "order": [
+            "a",
+            "b",
+            "c"
+          ],
+          "rows": {
+            "a": {
+              "id": "a",
+              "title": "A",
+              "status": "queued"
+            },
+            "b": {
+              "id": "b",
+              "title": "B",
+              "status": "queued"
+            },
+            "c": {
+              "id": "c",
+              "title": "C",
+              "status": "queued"
+            }
+          }
+        }
+      },
+      "steps": [
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op1",
+            "key": "a",
+            "op": "reorder",
+            "before": null,
+            "at": 100
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "a",
+                  "op": "reorder",
+                  "before": null,
+                  "at": 100
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "b",
+                  "c",
+                  "a"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [
+              "a"
+            ],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        },
+        {
+          "do": "optimistic",
+          "op": {
+            "opId": "op2",
+            "key": "a",
+            "op": "upsert",
+            "row": {
+              "id": "a",
+              "title": "A",
+              "status": "built"
+            },
+            "at": 101
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op1",
+                  "key": "a",
+                  "op": "reorder",
+                  "before": null,
+                  "at": 100
+                },
+                {
+                  "opId": "op2",
+                  "key": "a",
+                  "op": "upsert",
+                  "row": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "at": 101
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 20,
+                "order": [
+                  "b",
+                  "c",
+                  "a"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "a"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        },
+        {
+          "do": "reconcile",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "a",
+              "op": "reorder",
+              "rev": 21,
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1",
+                "opId": "op1"
+              },
+              "ts": 2021,
+              "before": null
+            }
+          ],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "b",
+                  "c",
+                  "a"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "queued"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [
+                {
+                  "opId": "op2",
+                  "key": "a",
+                  "op": "upsert",
+                  "row": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "at": 101
+                }
+              ],
+              "view": {
+                "ns": "builds",
+                "rev": 21,
+                "order": [
+                  "b",
+                  "c",
+                  "a"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [
+              "op1"
+            ],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": [
+            "a"
+          ]
+        },
+        {
+          "do": "reconcile",
+          "events": [
+            {
+              "$axf": "live-change@1",
+              "ns": "builds",
+              "key": "a",
+              "op": "upsert",
+              "rev": 22,
+              "origin": {
+                "session": "s-brett",
+                "surface": "console",
+                "client": "c-tab1",
+                "opId": "op2"
+              },
+              "ts": 2022,
+              "row": {
+                "id": "a",
+                "title": "A",
+                "status": "built"
+              }
+            }
+          ],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 22,
+                "order": [
+                  "b",
+                  "c",
+                  "a"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 22,
+                "order": [
+                  "b",
+                  "c",
+                  "a"
+                ],
+                "rows": {
+                  "a": {
+                    "id": "a",
+                    "title": "A",
+                    "status": "built"
+                  },
+                  "b": {
+                    "id": "b",
+                    "title": "B",
+                    "status": "queued"
+                  },
+                  "c": {
+                    "id": "c",
+                    "title": "C",
+                    "status": "queued"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [
+              "op2"
+            ],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": []
+        }
+      ]
+    },
+    "fresh-grid-first-paint": {
+      "start": {
+        "base": {
+          "ns": "builds",
+          "rev": 0,
+          "order": [],
+          "rows": {}
+        },
+        "pending": [],
+        "view": {
+          "ns": "builds",
+          "rev": 0,
+          "order": [],
+          "rows": {}
+        }
+      },
+      "steps": [
+        {
+          "do": "resync",
+          "frame": {
+            "$axf": "live-change-resync@1",
+            "ns": "builds",
+            "reason": "history",
+            "rev": 6,
+            "epoch": "e1",
+            "rows": [
+              {
+                "id": "b3",
+                "title": "Third",
+                "status": "running"
+              },
+              {
+                "id": "b2",
+                "title": "Second",
+                "status": "built"
+              }
+            ],
+            "order": [
+              "b3",
+              "b2"
+            ]
+          },
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 6,
+                "epoch": "e1",
+                "order": [
+                  "b3",
+                  "b2"
+                ],
+                "rows": {
+                  "b3": {
+                    "id": "b3",
+                    "title": "Third",
+                    "status": "running"
+                  },
+                  "b2": {
+                    "id": "b2",
+                    "title": "Second",
+                    "status": "built"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 6,
+                "epoch": "e1",
+                "order": [
+                  "b3",
+                  "b2"
+                ],
+                "rows": {
+                  "b3": {
+                    "id": "b3",
+                    "title": "Third",
+                    "status": "running"
+                  },
+                  "b2": {
+                    "id": "b2",
+                    "title": "Second",
+                    "status": "built"
+                  }
+                }
+              }
+            },
+            "changed": [
+              "b3",
+              "b2"
+            ],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": []
+        },
+        {
+          "do": "reconcile",
+          "events": [],
+          "result": {
+            "state": {
+              "base": {
+                "ns": "builds",
+                "rev": 6,
+                "epoch": "e1",
+                "order": [
+                  "b3",
+                  "b2"
+                ],
+                "rows": {
+                  "b3": {
+                    "id": "b3",
+                    "title": "Third",
+                    "status": "running"
+                  },
+                  "b2": {
+                    "id": "b2",
+                    "title": "Second",
+                    "status": "built"
+                  }
+                }
+              },
+              "pending": [],
+              "view": {
+                "ns": "builds",
+                "rev": 6,
+                "epoch": "e1",
+                "order": [
+                  "b3",
+                  "b2"
+                ],
+                "rows": {
+                  "b3": {
+                    "id": "b3",
+                    "title": "Third",
+                    "status": "running"
+                  },
+                  "b2": {
+                    "id": "b2",
+                    "title": "Second",
+                    "status": "built"
+                  }
+                }
+              }
+            },
+            "changed": [],
+            "removed": [],
+            "moved": [],
+            "confirmed": [],
+            "rolledBack": [],
+            "resync": null
+          },
+          "pendingKeys": []
+        }
+      ]
+    }
+  },
+  "errors": {
+    "events": {
+      "not-an-object": {
+        "input": "nope",
+        "errors": [
+          "a live change is an object"
+        ]
+      },
+      "empty": {
+        "input": {},
+        "errors": [
+          "ns: a data-store namespace, optionally /<path>, at most 160 chars",
+          "key: 1–128 chars, no /",
+          "op: one of upsert | delete | reorder",
+          "rev: an integer ≥ 1",
+          "origin: { session, surface } required",
+          "ts: ms since the epoch, an integer ≥ 0"
+        ]
+      },
+      "bad-fields": {
+        "input": {
+          "$axf": "other@1",
+          "ns": "Builds",
+          "key": "a/b",
+          "op": "patch",
+          "rev": 0,
+          "epoch": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "origin": {
+            "session": "",
+            "surface": "Console",
+            "client": "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "opId": 1
+          },
+          "ts": -1
+        },
+        "errors": [
+          "$axf must be live-change@1",
+          "ns: a data-store namespace, optionally /<path>, at most 160 chars",
+          "key: 1–128 chars, no /",
+          "op: one of upsert | delete | reorder",
+          "rev: an integer ≥ 1",
+          "epoch: a string of at most 64 chars",
+          "origin.session: 1–64 chars",
+          "origin.surface: a lower-case word (console, cli, mcp, voice, api, orchestrator, hub, plugin, server, …)",
+          "origin.client: a string of at most 64 chars",
+          "origin.opId: a string of at most 64 chars",
+          "ts: ms since the epoch, an integer ≥ 0"
+        ]
+      },
+      "upsert-without-row": {
+        "input": {
+          "ns": "builds",
+          "key": "a",
+          "op": "upsert",
+          "rev": 1,
+          "origin": {
+            "session": "s-brett",
+            "surface": "console",
+            "client": "c-tab1"
+          },
+          "ts": 1
+        },
+        "errors": [
+          "row: required with upsert, the whole row as an object"
+        ]
+      },
+      "delete-with-row": {
+        "input": {
+          "ns": "builds",
+          "key": "a",
+          "op": "delete",
+          "rev": 1,
+          "row": {},
+          "origin": {
+            "session": "s-brett",
+            "surface": "console",
+            "client": "c-tab1"
+          },
+          "ts": 1
+        },
+        "errors": [
+          "row: only with upsert"
+        ]
+      },
+      "reorder-without-before": {
+        "input": {
+          "ns": "builds",
+          "key": "a",
+          "op": "reorder",
+          "rev": 1,
+          "origin": {
+            "session": "s-brett",
+            "surface": "console",
+            "client": "c-tab1"
+          },
+          "ts": 1
+        },
+        "errors": [
+          "before: required with reorder, a key or null"
+        ]
+      },
+      "upsert-with-before": {
+        "input": {
+          "ns": "builds",
+          "key": "a",
+          "op": "upsert",
+          "rev": 1,
+          "row": {},
+          "before": null,
+          "origin": {
+            "session": "s-brett",
+            "surface": "console",
+            "client": "c-tab1"
+          },
+          "ts": 1
+        },
+        "errors": [
+          "before: only with reorder"
+        ]
+      },
+      "ok-minimal": {
+        "input": {
+          "ns": "builds",
+          "key": "a",
+          "op": "delete",
+          "rev": 1,
+          "origin": {
+            "session": "s",
+            "surface": "cli"
+          },
+          "ts": 0
+        },
+        "errors": []
+      },
+      "ok-sub-set-and-new-surface": {
+        "input": {
+          "$axf": "live-change@1",
+          "ns": "builds/b1/steps",
+          "key": "s1",
+          "op": "upsert",
+          "rev": 3,
+          "row": {
+            "id": "s1"
+          },
+          "origin": {
+            "session": "s",
+            "surface": "watch-os",
+            "client": "w1",
+            "opId": "o1"
+          },
+          "ts": 5
+        },
+        "errors": []
+      }
+    },
+    "batches": {
+      "ok": [],
+      "not-an-object": [
+        "a batch is an object"
+      ],
+      "wrong-frame": [
+        "$axf must be live-change-batch@1"
+      ],
+      "rev-not-last": [
+        "rev 99 is not the last event's rev 6"
+      ],
+      "not-contiguous": [
+        "events[1]: rev 5 does not follow 3"
+      ],
+      "foreign-ns": [
+        "events[0]: ns differs from the batch"
+      ],
+      "bad-event": [
+        "events[0]: key: 1–128 chars, no /; op: one of upsert | delete | reorder; rev: an integer ≥ 1; origin: { session, surface } required; ts: ms since the epoch, an integer ≥ 0"
+      ]
+    }
+  },
+  "dataChange": [
+    {
+      "change": {
+        "cursor": 7,
+        "ns": "planner",
+        "path": "p1",
+        "op": "put",
+        "by": "console",
+        "at": "2026-11-17T15:05:47.233Z"
+      },
+      "row": {
+        "id": "p1",
+        "title": "Plan"
+      },
+      "event": {
+        "$axf": "live-change@1",
+        "ns": "planner",
+        "key": "p1",
+        "op": "upsert",
+        "rev": 7,
+        "row": {
+          "id": "p1",
+          "title": "Plan"
+        },
+        "origin": {
+          "session": "console",
+          "surface": "console"
+        },
+        "ts": 1794927947233
+      }
+    },
+    {
+      "change": {
+        "cursor": 8,
+        "ns": "planner",
+        "path": "p1",
+        "op": "delete",
+        "by": "axf-data",
+        "at": 1763392341233
+      },
+      "event": {
+        "$axf": "live-change@1",
+        "ns": "planner",
+        "key": "p1",
+        "op": "delete",
+        "rev": 8,
+        "origin": {
+          "session": "axf-data",
+          "surface": "server"
+        },
+        "ts": 1763392341233
+      }
+    },
+    {
+      "change": {
+        "cursor": 9,
+        "ns": "notes",
+        "path": "n1",
+        "op": "append",
+        "by": "cli",
+        "at": "junk"
+      },
+      "event": {
+        "$axf": "live-change@1",
+        "ns": "notes",
+        "key": "n1",
+        "op": "upsert",
+        "rev": 9,
+        "row": {},
+        "origin": {
+          "session": "cli",
+          "surface": "cli"
+        },
+        "ts": 0
+      }
+    },
+    {
+      "change": {
+        "cursor": 10,
+        "ns": "notes",
+        "path": "n1",
+        "op": "snapshot"
+      },
+      "event": null
+    }
+  ]
+}

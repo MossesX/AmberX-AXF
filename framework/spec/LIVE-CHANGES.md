@@ -132,9 +132,13 @@ A drag and drop, an inline edit or a delete shows at once and is confirmed by th
 4. **Timeout**: a pending op not echoed within `OPTIMISTIC_TIMEOUT_MS` (8 000 ms default, a setting) is rolled back
    with reason `timeout`.
 5. **Resync** rolls back every pending op (reason `resync`): the store's truth wins; the grid may re-submit.
+6. **Superseded**: the same `opId` submitted again replaces the earlier pending op, and more than `limits.pending`
+   (256) ops in flight roll back the oldest, both with reason `superseded`, so a store that stopped answering cannot
+   pile ops up forever.
 
 Pending ops stay in order; a later op on the same key is applied on top of the earlier one. An echo that matches no
-pending op is just a change from someone else (it may be the same session on another surface).
+pending op is just a change from someone else (it may be the same session on another surface). Every rollback names
+one of `rejected`, `timeout`, `resync`, `superseded` and the grid shows the reason by the row it took back.
 
 ## Where the events come from
 

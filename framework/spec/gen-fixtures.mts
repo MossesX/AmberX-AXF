@@ -56,6 +56,7 @@ import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAn
 import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
+import { LIVE_CHANGE_REGISTRY, LiveChangeLog, applyLiveChanges, diffRowSets, emptyLiveRows, emptyRowSet, expirePending, fromDataChange, isOwnChange, liveBatchErrors, liveChangeErrors, liveChangeJsonSchemas, optimisticApply, pendingKeys, reconcileLiveChanges, rejectPending, resumeQuery, resyncLiveRows, rowSetFrom, rowSetFromResync, type LiveChange, type LiveRowsResult, type LiveRowsState, type LiveRowSet } from '../core/engines/live-rows';
 
 const root = new URL('..', import.meta.url).pathname;
 const assetsDir = join(root, 'assets');
@@ -2552,5 +2553,165 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
       sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
+  });
+}
+
+// Live rows (live-change@1 + optimistic@1; core/engines/live-rows.ts): the registry snapshot, a store log numbering
+// changes and answering since(rev) (batch / history / behind / epoch), batches applied to a row set with only the
+// changed keys back (apply, reorder, delete, same-row upsert, duplicates, gap → resync, epoch → resync), the view
+// diff, the optimistic layer (show at once, confirm by echo, reject, timeout, superseded, resync rollback), the
+// validators and the data-change@1 mapping. Brett, Nov 17 2026: every grid hot-renders on every change.
+{
+  const origin = (session: string, surface = 'console', extra: Record<string, string> = {}) => ({ session, surface, ...extra });
+  const me = origin('s-brett', 'console', { client: 'c-tab1' });
+  const other = origin('s-orch', 'orchestrator');
+  const log = new LiveChangeLog('builds', { limit: 4, epoch: 'e1' });
+  const appends = [
+    { key: 'b1', op: 'upsert' as const, row: { id: 'b1', title: 'First', status: 'queued' }, origin: me, ts: 1000 },
+    { key: 'b2', op: 'upsert' as const, row: { id: 'b2', title: 'Second', status: 'queued' }, origin: other, ts: 1001 },
+    { key: 'b3', op: 'upsert' as const, row: { id: 'b3', title: 'Third', status: 'running' }, origin: other, ts: 1002 },
+    { key: 'b3', op: 'reorder' as const, before: 'b1', origin: me, ts: 1003 },
+    { key: 'b2', op: 'upsert' as const, row: { id: 'b2', title: 'Second', status: 'built' }, origin: other, ts: 1004 },
+    { key: 'b1', op: 'delete' as const, origin: me, ts: 1005 },
+  ];
+  const events = appends.map((a) => log.append(a));
+  const sinceQueries = [{ rev: 0 }, { rev: 1 }, { rev: 2 }, { rev: 4, max: 1 }, { rev: 6 }, { rev: 9 }, { rev: 3, epoch: 'e0' }, { rev: 3, epoch: 'e1' }];
+  const row = (id: string, status = 'queued', extra: Record<string, unknown> = {}) => ({ id, title: id.toUpperCase(), status, ...extra });
+  const base: LiveRowSet = rowSetFrom('builds', [row('a'), row('b'), row('c'), row('d')], 10);
+  const ev = (rev: number, key: string, op: LiveChange['op'], extra: Partial<LiveChange> = {}): LiveChange => ({ $axf: 'live-change@1', ns: 'builds', key, op, rev, origin: other, ts: 2000 + rev, ...extra });
+  const applyCases: { name: string; set: LiveRowSet; events: LiveChange[] }[] = [
+    { name: 'upsert-new-and-changed', set: base, events: [ev(11, 'e', 'upsert', { row: row('e') }), ev(12, 'b', 'upsert', { row: row('b', 'running') })] },
+    { name: 'upsert-same-row-ignored', set: base, events: [ev(11, 'a', 'upsert', { row: { status: 'queued', title: 'A', id: 'a' } })] },
+    { name: 'reorder-to-top', set: base, events: [ev(11, 'd', 'reorder', { before: 'a' })] },
+    { name: 'reorder-to-end', set: base, events: [ev(11, 'a', 'reorder', { before: null })] },
+    { name: 'reorder-unknown-before-goes-last', set: base, events: [ev(11, 'b', 'reorder', { before: 'zz' })] },
+    { name: 'reorder-same-place-ignored', set: base, events: [ev(11, 'b', 'reorder', { before: 'c' })] },
+    { name: 'reorder-unknown-key-ignored', set: base, events: [ev(11, 'zz', 'reorder', { before: 'a' })] },
+    { name: 'delete', set: base, events: [ev(11, 'c', 'delete')] },
+    { name: 'delete-unknown-ignored', set: base, events: [ev(11, 'zz', 'delete')] },
+    { name: 'duplicates-skipped', set: base, events: [ev(9, 'a', 'delete'), ev(10, 'b', 'delete'), ev(11, 'c', 'delete')] },
+    { name: 'gap-applies-nothing', set: base, events: [ev(11, 'c', 'delete'), ev(13, 'a', 'delete')] },
+    { name: 'epoch-applies-nothing', set: { ...base, epoch: 'e1' }, events: [ev(11, 'c', 'delete', { epoch: 'e2' })] },
+    { name: 'other-namespace-ignored', set: base, events: [{ ...ev(11, 'c', 'delete'), ns: 'planner' }] },
+    { name: 'empty-batch', set: base, events: [] },
+    { name: 'fresh-set-from-log', set: emptyRowSet('builds', 'e1'), events: events.slice(0, 3) },
+    { name: 'mixed-batch', set: base, events: [ev(11, 'e', 'upsert', { row: row('e') }), ev(12, 'd', 'reorder', { before: 'a' }), ev(13, 'a', 'delete'), ev(14, 'e', 'upsert', { row: row('e', 'built') })] },
+  ];
+  const diffCases = [
+    { name: 'insert-middle-moves-nothing', before: base, after: rowSetFrom('builds', [row('a'), row('b'), row('x'), row('c'), row('d')], 11) },
+    { name: 'delete-first-moves-nothing', before: base, after: rowSetFrom('builds', [row('b'), row('c'), row('d')], 11) },
+    { name: 'swap-two', before: base, after: rowSetFrom('builds', [row('b'), row('a'), row('c'), row('d')], 11) },
+    { name: 'reverse-all', before: base, after: rowSetFrom('builds', [row('d'), row('c'), row('b'), row('a')], 11) },
+    { name: 'content-and-order', before: base, after: rowSetFrom('builds', [row('d', 'built'), row('a'), row('b'), row('c')], 11) },
+  ];
+  // the optimistic layer as scripted scenarios: every step carries the result (state + what changed) a port must reproduce
+  type Step = { do: string; [k: string]: unknown };
+  const run = (start: LiveRowsState, steps: Step[]) => {
+    let state = start;
+    return { start, steps: steps.map((s) => {
+      let r: LiveRowsResult;
+      if (s.do === 'optimistic') r = optimisticApply(state, s.op as never);
+      else if (s.do === 'reconcile') r = reconcileLiveChanges(state, s.events as LiveChange[]);
+      else if (s.do === 'reject') r = rejectPending(state, s.opId as string, (s.reason as never) ?? 'rejected', s.detail as string | undefined);
+      else if (s.do === 'expire') r = expirePending(state, s.now as number, s.timeoutMs as number | undefined);
+      else if (s.do === 'resync') r = resyncLiveRows(state, s.frame as never);
+      else throw new Error(`unknown step ${s.do}`);
+      state = r.state;
+      return { ...s, result: r, pendingKeys: pendingKeys(r.state) };
+    }) };
+  };
+  const confirmedSet = rowSetFrom('builds', [row('a'), row('b'), row('c')], 20);
+  const start = emptyLiveRows('builds');
+  const mine = (rev: number, key: string, op: LiveChange['op'], opId: string, extra: Partial<LiveChange> = {}): LiveChange => ({ ...ev(rev, key, op, extra), origin: { ...me, opId } });
+  const scenarios = {
+    'confirm-drag': run({ ...start, base: confirmedSet, view: confirmedSet }, [
+      { do: 'optimistic', op: { opId: 'op1', key: 'c', op: 'reorder', before: 'a', at: 100 } },
+      { do: 'reconcile', events: [mine(21, 'c', 'reorder', 'op1', { before: 'a' })] },
+    ]),
+    'confirm-edit-with-server-change': run({ ...start, base: confirmedSet, view: confirmedSet }, [
+      { do: 'optimistic', op: { opId: 'op1', key: 'b', op: 'upsert', row: row('b', 'running', { note: 'typed' }), at: 100 } },
+      { do: 'reconcile', events: [mine(21, 'b', 'upsert', 'op1', { row: row('b', 'running', { note: 'typed', savedAt: 1 }) })] },
+    ]),
+    'reject-rolls-back': run({ ...start, base: confirmedSet, view: confirmedSet }, [
+      { do: 'optimistic', op: { opId: 'op1', key: 'a', op: 'delete', at: 100 } },
+      { do: 'reject', opId: 'op1', reason: 'rejected', detail: 'conflict: someone changed it first' },
+      { do: 'reject', opId: 'op-unknown' },
+    ]),
+    'timeout-rolls-back': run({ ...start, base: confirmedSet, view: confirmedSet }, [
+      { do: 'optimistic', op: { opId: 'op1', key: 'b', op: 'reorder', before: null, at: 100 } },
+      { do: 'optimistic', op: { opId: 'op2', key: 'a', op: 'upsert', row: row('a', 'built'), at: 5000 } },
+      { do: 'expire', now: 8099 },
+      { do: 'expire', now: 8100 },
+      { do: 'expire', now: 20000, timeoutMs: 1000 },
+    ]),
+    'others-change-keeps-pending': run({ ...start, base: confirmedSet, view: confirmedSet }, [
+      { do: 'optimistic', op: { opId: 'op1', key: 'b', op: 'upsert', row: row('b', 'running'), at: 100 } },
+      { do: 'reconcile', events: [ev(21, 'c', 'upsert', { row: row('c', 'built') })] },
+      { do: 'reconcile', events: [ev(21, 'c', 'upsert', { row: row('c', 'built') })] },
+      { do: 'reconcile', events: [mine(22, 'b', 'upsert', 'op1', { row: row('b', 'running') })] },
+    ]),
+    'gap-then-resync-rolls-back': run({ ...start, base: confirmedSet, view: confirmedSet }, [
+      { do: 'optimistic', op: { opId: 'op1', key: 'a', op: 'delete', at: 100 } },
+      { do: 'reconcile', events: [ev(25, 'c', 'delete')] },
+      { do: 'resync', frame: { $axf: 'live-change-resync@1', ns: 'builds', reason: 'gap', rev: 25, rows: [row('b'), row('a', 'built')], order: ['b', 'a'] } },
+    ]),
+    'superseded-resubmit': run({ ...start, base: confirmedSet, view: confirmedSet }, [
+      { do: 'optimistic', op: { opId: 'op1', key: 'a', op: 'upsert', row: row('a', 'running'), at: 100 } },
+      { do: 'optimistic', op: { opId: 'op1', key: 'a', op: 'upsert', row: row('a', 'built'), at: 200 } },
+    ]),
+    'stacked-ops-same-key': run({ ...start, base: confirmedSet, view: confirmedSet }, [
+      { do: 'optimistic', op: { opId: 'op1', key: 'a', op: 'reorder', before: null, at: 100 } },
+      { do: 'optimistic', op: { opId: 'op2', key: 'a', op: 'upsert', row: row('a', 'built'), at: 101 } },
+      { do: 'reconcile', events: [mine(21, 'a', 'reorder', 'op1', { before: null })] },
+      { do: 'reconcile', events: [mine(22, 'a', 'upsert', 'op2', { row: row('a', 'built') })] },
+    ]),
+    'fresh-grid-first-paint': run(start, [
+      { do: 'resync', frame: log.snapshot('history') },
+      { do: 'reconcile', events: [] },
+    ]),
+  };
+  const badEvents = {
+    'not-an-object': 'nope',
+    'empty': {},
+    'bad-fields': { $axf: 'other@1', ns: 'Builds', key: 'a/b', op: 'patch', rev: 0, epoch: 'x'.repeat(65), origin: { session: '', surface: 'Console', client: 'c'.repeat(65), opId: 1 }, ts: -1 },
+    'upsert-without-row': { ns: 'builds', key: 'a', op: 'upsert', rev: 1, origin: me, ts: 1 },
+    'delete-with-row': { ns: 'builds', key: 'a', op: 'delete', rev: 1, row: {}, origin: me, ts: 1 },
+    'reorder-without-before': { ns: 'builds', key: 'a', op: 'reorder', rev: 1, origin: me, ts: 1 },
+    'upsert-with-before': { ns: 'builds', key: 'a', op: 'upsert', rev: 1, row: {}, before: null, origin: me, ts: 1 },
+    'ok-minimal': { ns: 'builds', key: 'a', op: 'delete', rev: 1, origin: { session: 's', surface: 'cli' }, ts: 0 },
+    'ok-sub-set-and-new-surface': { $axf: 'live-change@1', ns: 'builds/b1/steps', key: 's1', op: 'upsert', rev: 3, row: { id: 's1' }, origin: { session: 's', surface: 'watch-os', client: 'w1', opId: 'o1' }, ts: 5 },
+  };
+  const okBatch = log.since(2);
+  const badBatches = {
+    'not-an-object': [],
+    'wrong-frame': { $axf: 'live-change@1', ns: 'builds', events: [], rev: 0 },
+    'rev-not-last': { ...okBatch, rev: 99 },
+    'not-contiguous': { ...okBatch, events: [events[2], events[4]], rev: 5 },
+    'foreign-ns': { ...okBatch, events: [{ ...events[2]!, ns: 'planner' }], rev: 3 },
+    'bad-event': { ...okBatch, events: [{ ns: 'builds' }], rev: 3 },
+  };
+  write('live-rows.json', {
+    registry: LIVE_CHANGE_REGISTRY,
+    jsonSchemas: liveChangeJsonSchemas(),
+    log: { ns: log.ns, limit: log.limit, epoch: log.epoch, appends, events, rev: log.rev, firstRev: log.firstRev, rows: log.rows(), snapshot: log.snapshot('history'), since: sinceQueries.map((q) => ({ ...q, result: log.since(q.rev, q) })) },
+    apply: applyCases.map((c) => ({ ...c, result: applyLiveChanges(c.set, c.events), resume: resumeQuery(applyLiveChanges(c.set, c.events).set) })),
+    diff: diffCases.map((c) => ({ ...c, result: diffRowSets(c.before, c.after) })),
+    rowSets: {
+      'from-rows-default-key': rowSetFrom('planner', [{ id: 'p1' }, { key: 'p2' }, { id: 'p1', dup: true }, { noKey: true }], 7),
+      'from-rows-key-of': rowSetFrom('planner', [{ slug: 'x' }, { slug: 'y' }], 2, (r) => String(r.slug)),
+      'from-resync-order-wins': rowSetFromResync({ $axf: 'live-change-resync@1', ns: 'planner', reason: 'history', rev: 9, epoch: 'e3', rows: [{ id: 'p1' }, { id: 'p2' }, { id: 'p3' }], order: ['p3', 'p1', 'ghost'] }),
+    },
+    own: { mine: isOwnChange(events[0]!, 'c-tab1'), theirs: isOwnChange(events[1]!, 'c-tab1'), noClient: isOwnChange(events[0]!, undefined) },
+    optimistic: scenarios,
+    errors: {
+      events: Object.fromEntries(Object.entries(badEvents).map(([k, v]) => [k, { input: v, errors: liveChangeErrors(v) }])),
+      batches: { ok: liveBatchErrors(okBatch), ...Object.fromEntries(Object.entries(badBatches).map(([k, v]) => [k, liveBatchErrors(v)])) },
+    },
+    dataChange: [
+      { change: { cursor: 7, ns: 'planner', path: 'p1', op: 'put', by: 'console', at: '2026-11-17T15:05:47.233Z' }, row: { id: 'p1', title: 'Plan' } },
+      { change: { cursor: 8, ns: 'planner', path: 'p1', op: 'delete', by: 'axf-data', at: 1763392341233 } },
+      { change: { cursor: 9, ns: 'notes', path: 'n1', op: 'append', by: 'cli', at: 'junk' } },
+      { change: { cursor: 10, ns: 'notes', path: 'n1', op: 'snapshot' } },
+    ].map((c) => ({ ...c, event: fromDataChange(c.change, c.row) })),
   });
 }
