@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:07:22.607Z",
+ "updatedAt": "2026-11-17T15:07:35.158Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122580,7 +122580,7 @@
    "pr": "#776",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T12:39:27.078Z",
+   "updatedAt": "2026-11-17T15:07:31.747Z",
    "builtAt": "2026-11-17T04:52:40.322Z",
    "notes": [
     {
@@ -122626,6 +122626,10 @@
     {
      "text": "Reconciler: PR #776; PR #776 names s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21 done",
      "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:07:31.747Z"
     }
    ],
    "approvals": [
@@ -159238,7 +159242,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-17T13:19:16.232Z",
+   "updatedAt": "2026-11-17T15:07:21.790Z",
    "builtAt": "2026-11-17T13:18:55.298Z",
    "notes": [
     {
@@ -159292,6 +159296,10 @@
     {
      "text": "Session axf-fix-console-deep-links-open-page-lands--gina on hulu0241 ended (exit 0); the build was already built.",
      "at": "2026-11-17T13:19:16.232Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:07:21.790Z"
     }
    ],
    "approvals": [],
@@ -172910,15 +172918,15 @@
    "title": "Live hot refresh: every grid and list re-renders instantly when its data changes",
    "category": "",
    "detail": "Every grid, list and table in the console (Auto-lander, orchestrator tabs, Pending, Plan Studio, UI Review, etc.) updates live without a reload whenever its data changes: server pushes change events (SSE/WebSocket from the data store / axf-data change feed), the framework DataGrid subscribes and re-renders only changed rows, keeping scroll, selection, sort, filters and open dialogs. Local actions (drag and drop, reorder, edit, archive) re-render instantly (optimistic) and reconcile with the server. Changes made from REST/MCP/CLI/voice or by the VPS lander show up live too. Reconnects automatically. Add a live indicator. Framework-level so every app gets it.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/live-hot-refresh-every-grid-list-re",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T15:05:47.233Z",
-   "updatedAt": "2026-11-17T15:07:16.924Z",
+   "updatedAt": "2026-11-17T15:07:28.321Z",
    "builtAt": "",
    "notes": [
     {
@@ -172928,6 +172936,14 @@
     {
      "text": "Split by Claude into 20 steps (4 Fable).",
      "at": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-live-hot-refresh-every-grid-list-re--earl.",
+     "at": "2026-11-17T15:07:24.081Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-live-hot-refresh-every-grid-list-re--earl, shared account login)",
+     "at": "2026-11-17T15:07:28.321Z"
     }
    ],
    "approvals": [],
