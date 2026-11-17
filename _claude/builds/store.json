@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7253,
- "updatedAt": "2026-11-17T03:31:43.850Z",
+ "rev": 7254,
+ "updatedAt": "2026-11-17T03:32:04.805Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -181819,7 +181819,7 @@
    "title": "Drag anything by API and voice (follow-up to full API control, start only after PR #556 lands): every draggable thing (banner widgets, toolbar items, tabs, dock panes, grid columns/rows, list items, layout slots) gets a move command with drop zones, incl. add/remove/reorder banner widgets; REST, MCP",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181828,7 +181828,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T00:04:54.401Z",
+   "updatedAt": "2026-11-17T03:31:50.817Z",
    "builtAt": "",
    "notes": [
     {
@@ -182441,7 +182441,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -203710,7 +203710,7 @@
    "title": "Prompting engine: control panel to create events that pop decisions and run tools, macros or pipelines",
    "category": "",
    "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones (UI Review, veto, model upgrade).\n- Everything reachable by REST/MCP/CLI/voice/control@1 ('when a build fails, ask me to retry or archive').\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203718,7 +203718,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-17T00:42:38.951Z",
+   "updatedAt": "2026-11-17T03:31:55.010Z",
    "builtAt": "",
    "notes": [
     {
@@ -203989,7 +203989,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206312,7 +206312,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build. If the contract isn't there yet, define the overlay side against the names in the parent's detail and note them.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206320,7 +206320,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T00:40:24.600Z",
+   "updatedAt": "2026-11-17T03:31:58.636Z",
    "builtAt": "",
    "notes": [
     {
@@ -206565,7 +206565,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {

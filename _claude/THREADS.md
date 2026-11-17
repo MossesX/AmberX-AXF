@@ -819,9 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:14 UTC · `per-instance-settings-small-live-preview` → archived, note (all) · cli
-- 2026-11-16 23:15 UTC · `re-sync-stuck-branches-lander-can-push` → archived, note (all) · cli
-- 2026-11-16 23:15 UTC · `remove-old-molly-app-project-keep-axf` → archived, note (all) · cli
 - 2026-11-16 23:15 UTC · `server-gate-one-session-per-build-no` → archived, note (all) · cli
 - 2026-11-16 23:15 UTC · `token-registry-skin-editor-live-sandbox` → archived, note (all) · cli
 - 2026-11-16 23:16 UTC · `ui-directory-plugin-self-updating-data` → archived, note (all) · cli
@@ -1219,6 +1216,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` → running, note (all) · pipeline
 - 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-17 03:31 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
+- 2026-11-17 03:31 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → queued (all) · mcp
+- 2026-11-17 03:31 UTC · `prompting-engine-control-panel-to-create` → queued (all) · mcp
+- 2026-11-17 03:31 UTC · `console-app-part-2-native-floating` → queued (all) · mcp
 
 ## Token passes (log)
 
