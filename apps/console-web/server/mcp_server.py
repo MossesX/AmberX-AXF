@@ -130,7 +130,8 @@ CALLER: contextvars.ContextVar[str] = contextvars.ContextVar("axf_mcp_caller", d
 def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] | None = None, control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
                  console: Callable[[dict[str, Any]], dict[str, Any]] | None = None, notes: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
                  on_call: Callable[[str, str, dict[str, Any], bool, str, int], None] | None = None,
-                 console_control: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
+                 console_control: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
+                 drag: Callable[[str, dict[str, Any]], dict[str, Any]] | None = None) -> MCPServer:
     """Create the MCP server. `call(op, **args)` runs one engine op and returns its result dict; `control(command)` runs
     one control@1 command (framework/spec/CONTROL.md) and returns its answer (None = no control tools); `console(command)`
     runs one command of the console domain in the caller's open console (None = no console_* tools); `notes(line)` posts
@@ -561,6 +562,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     if console is not None:
         _register_console_tools(mcp, console)
         _register_console_control_tools(mcp, console_control or console_control_runner())
+        _register_drag_tools(mcp, drag or drag_runner())
 
     # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
 
@@ -1225,6 +1227,113 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         if not r.get("ok") and r.get("code") not in ("confirmation_required", "unavailable", "not_found", "invalid"):
             raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
         return r
+
+
+# ---------------------------------------------------------------------- drag (drag-move@1, framework/spec/DRAG-MOVE.md)
+
+DRAG_TOOLS = ("console_drag_list", "console_drag_zones", "console_drag_move", "console_drag_add", "console_drag_remove")
+
+
+def drag_runner() -> Callable[[str, dict[str, Any]], dict[str, Any]]:
+    """drag requests: in the console process through drag_api.command (same checks, grants and relay as REST); in stdio
+    mode (a local clone) through the console's REST API /api/drag/* (AXF_CONSOLE_URL + AXF_TOKEN)."""
+
+    def remote(verb: str, body: dict[str, Any]) -> dict[str, Any]:
+        import urllib.error
+        import urllib.parse
+        import urllib.request
+        base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/drag"
+        auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
+        if verb in ("hosts", "zones"):
+            req = urllib.request.Request(f"{base}/{verb}?{urllib.parse.urlencode({k: v for k, v in body.items() if v})}", headers=auth)
+        else:
+            req = urllib.request.Request(f"{base}/{verb}", data=json.dumps(body).encode(), method="POST", headers={"content-type": "application/json", **auth})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as res:
+                return json.loads(res.read().decode() or "{}")
+        except urllib.error.HTTPError as e:
+            try:
+                return json.loads(e.read().decode() or "{}")
+            except ValueError:
+                return {"ok": False, "code": "failed", "message": f"{e.code} from {base}"}
+        except (OSError, ValueError) as e:
+            return {"ok": False, "code": "unavailable", "message": f"could not reach {base}: {str(e)[:200]}"}
+
+    def run(verb: str, body: dict[str, Any]) -> dict[str, Any]:
+        try:
+            import plugin_services  # noqa: F401 — present only inside the console process
+            import drag_api
+        except ImportError:
+            return remote(verb, body)
+        return drag_api.command(verb, body, str(body.get("by") or "mcp"))
+
+    return run
+
+
+def _register_drag_tools(mcp: MCPServer, run: Callable[[str, dict[str, Any]], dict[str, Any]]) -> None:
+    """console_drag_* (= DRAG_TOOLS): read and move every draggable thing on the open console (banner widgets, toolbar
+    items, tabs, dock panes, grid columns and rows, list items, layout slots). The reads are read-only; every move, add
+    and remove is a write (a veto call on axHub) and must say why (`reason`), which the activity log keeps."""
+
+    async def go(verb: str, body: dict[str, Any]) -> dict[str, Any]:
+        body = {k: v for k, v in body.items() if v not in (None, "", {}, [])}
+        body.setdefault("by", "mcp")
+        r = await anyio.to_thread.run_sync(lambda: run(verb, body))
+        if not r.get("ok") and r.get("code") not in ("confirmation_required", "unavailable", "no_change"):
+            raise ToolError(f"{r.get('code', 'failed')}: {r.get('message', 'failed')}" + (f" (nearest: {', '.join(r['nearest'][:8])})" if r.get("nearest") else ""))
+        return r
+
+    def why(reason: str) -> str:
+        r = (reason or "").strip()
+        if not r:
+            raise ToolError("invalid: say why (reason): every drag move is a veto call that tells Brett what it is for")
+        return r[:300]
+
+    def target(container: str, zone: str, ref: str, side: str, index: int | None) -> dict[str, Any]:
+        t: dict[str, Any] = {"container": container}
+        for k, v in (("zone", zone), ("ref", ref), ("side", side)):
+            if v:
+                t[k] = v
+        if index is not None and index >= 0:
+            t["index"] = index
+        return t
+
+    @mcp.tool(annotations=READ)
+    async def console_drag_list(kind: str = "", container: str = "", to: str = "recent") -> dict[str, Any]:
+        """Every draggable host on the page open in the console, with its items in order: kind (banner-widget,
+        toolbar-item, tab, dock-pane, grid-column, grid-row, list-item, layout-slot), container id, label, sides, items
+        (id, label, side, locked). Use the ids in console_drag_move. `kind` / `container` narrow it."""
+        return await go("hosts", {"kind": kind, "container": container, "to": to})
+
+    @mcp.tool(annotations=READ)
+    async def console_drag_zones(kind: str, container: str, id: str, to: str = "recent") -> dict[str, Any]:  # noqa: A002 — the item id
+        """Where one item may land: every target the engine accepts (before / after another item, into a container at
+        the end, a side of a sided host), each ready to pass to console_drag_move."""
+        return await go("zones", {"kind": kind, "container": container, "id": id, "to": to})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_drag_move(kind: str, container: str, id: str, reason: str, to_container: str = "", zone: Literal["", "before", "after", "into", "side"] = "",  # noqa: A002
+                                ref: str = "", side: str = "", index: int = -1, to: str = "recent") -> dict[str, Any]:
+        """Move an item, exactly like dragging it: reorder (zone before / after `ref`, or into at `index`), to another
+        container (`to_container`, default the same) or to a side ("left", "center", "right" on the banner). Answers
+        drag-move-result@1 with the new order of every touched container. `reason` is required."""
+        cmd = {"kind": kind, "source": {"container": container, "id": id}, "target": target(to_container or container, zone, ref, side, index), "reason": why(reason), "to": to}
+        return await go("move", cmd)
+
+    @mcp.tool(annotations=WRITE)
+    async def console_drag_add(kind: str, id: str, to_container: str, reason: str, zone: Literal["", "before", "after", "into", "side"] = "", ref: str = "", side: str = "",  # noqa: A002
+                               index: int = -1, from_container: str = "", type: str = "", to: str = "recent") -> dict[str, Any]:  # noqa: A002
+        """Add an item to a host: a hidden banner widget back onto the banner, a command onto a workspace toolbar, a
+        hidden grid column, a hidden layout slot. `reason` is required."""
+        src: dict[str, Any] = {"id": id, **({"container": from_container} if from_container else {}), **({"type": type} if type else {})}
+        return await go("add", {"kind": kind, "source": src, "target": target(to_container, zone, ref, side, index), "reason": why(reason), "to": to})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_drag_remove(kind: str, container: str, id: str, reason: str, confirm: bool = False, to: str = "recent") -> dict[str, Any]:  # noqa: A002
+        """Remove an item from a host (hide a banner widget, a grid column or a layout slot; take a command off a
+        toolbar; close a dock pane). A remove that loses something answers confirmation_required: tell Brett, then send
+        again with confirm=true. `reason` is required."""
+        return await go("remove", {"kind": kind, "source": {"container": container, "id": id}, "reason": why(reason), **({"confirm": True} if confirm else {}), "to": to})
 
 
 def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:

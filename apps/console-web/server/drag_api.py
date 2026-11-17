@@ -77,6 +77,29 @@ def move_request(op: str, body: dict[str, Any], by: str) -> dict[str, Any]:
     return {"verb": f"drag.{op}", "command": cmd, "by": cmd["by"]}
 
 
+def command(verb: str, body: dict[str, Any], by: str = "", audience: str = "owner", grants: set[str] | None = None) -> dict[str, Any]:
+    """One drag request without HTTP (the MCP tools in the console process, tests): verb = hosts | zones | move | add |
+    remove | preview, body = the query fields or the command. Same checks, grants and relay as the routes."""
+    g = grants if grants is not None else {"*"}
+    who = str(body.get("by") or by or "api")[:80]
+    to = str(body.get("to") or "recent")
+    if verb == "hosts":
+        req = {"verb": "drag.list", **{k: body[k] for k in ("kind", "container") if body.get(k)}, "by": who}
+        return guarded(req, READ_PERM, False, who, audience, g, to)
+    if verb == "zones":
+        if not (body.get("kind") and body.get("container") and body.get("id")):
+            return {"$axf": "drag-zones@1", "ok": False, "code": "invalid", "message": "zones needs kind, container and id"}
+        return guarded({"verb": "drag.zones", "kind": body["kind"], "container": body["container"], "id": body["id"], "by": who}, READ_PERM, False, who, audience, g, to)
+    if verb not in (*WRITE_VERBS, "preview"):
+        return {"$axf": dm.RESULT_FRAME, "ok": False, "code": "invalid", "message": f"verb must be hosts, zones, move, add, remove or preview, not {verb}"}
+    try:
+        req = move_request(verb, body, who)
+    except dm.DragMoveError as e:
+        return e.envelope()
+    perm, is_write = (NAV_PERM, False) if verb == "preview" else (WRITE_PERM, True)
+    return guarded(req, perm, is_write, who, audience, g, to)
+
+
 def router_for(auth: Any) -> APIRouter:
     from fastapi import Depends
     r = APIRouter(prefix="/api/drag", dependencies=[Depends(auth)])
