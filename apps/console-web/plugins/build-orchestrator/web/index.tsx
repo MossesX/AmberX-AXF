@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { setPriorityHost, type PriorityHost } from '@console/axf/react';
+import { flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
@@ -60,6 +60,9 @@ export const plugin: AxfWebLibrary = {
       if (!id) return;
       const tab = tabOf(id);
       if (tab) { openTab(tab); return; }
+      // a step group (step-groups@1): <build>/group:<gid> or row:<build>/group:<gid> opens the build and flashes the group's row
+      const grp = /^(?:row:)?([a-z0-9][a-z0-9._-]{0,79})\/group:([a-z0-9][a-z0-9-]{0,39})$/.exec(id);
+      if (grp) { await open(grp[1]); flashWhenReady(() => document.querySelector(`[data-axf-target="row:${grp[1]}/group:${grp[2]}"]`), 6000); return; }
       // the build: its tab opens and the row there scrolls into view, expands and stays highlighted
       focusBuild(id);
       try { const b = (await loadRows(true)).find((x) => x.id === id); openTab(b?.tab || 'builds'); if (!b) rt.toast(`No open build "${id}" in the tabs: showing All builds.`, 'warning'); }
@@ -77,6 +80,14 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('build-orchestrator.group-add', ([arg]) => { const a = splitArg(arg); groupCall('groups', { op: 'assign', groups: [a.group], builds: a.list, mode: 'add' }, `${a.list.join(', ')} → ${a.group}`); }, { label: 'Build orchestrator: put builds in a group (<group>|<build>,<build>)' });
     rt.actions.register('build-orchestrator.group-remove', ([arg]) => { const a = splitArg(arg); groupCall('groups', { op: 'assign', groups: [a.group], builds: a.list, mode: 'remove' }, `${a.list.join(', ')} out of ${a.group}`); }, { label: 'Build orchestrator: take builds out of a group (<group>|<build>,<build>)' });
     rt.actions.register('build-orchestrator.group-action', ([arg]) => { const a = splitArg(arg); const [action = '', priority = ''] = (a.list[0] ?? '').split(':'); groupCall(`groups/${encodeURIComponent(a.group)}/action`, { action, priority }, `${a.group}: ${action}`); }, { label: 'Build orchestrator: a group action (<group>|queue, land, archive or priority:P0)' });
+    // step groups (step-groups@1): groups.show:<build>[/group:<gid>] opens the build's Groups panel; the actions call the
+    // same REST routes as the panel's buttons (POST step-groups/…), so voice, MCP console actions and the UI do one thing
+    const stepGroupCall = (path: string, done: string) => void pipeApi.post<{ ok: boolean; error?: string; note?: string }>(`step-groups/${path}`, {})
+      .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(r.note || done, 'success'); }).catch((e: Error) => rt.toast(e.message, 'danger'));
+    const buildGroup = (arg?: string) => { const [b = '', g = ''] = decodeURIComponent(arg ?? '').replace(/^row:/, '').split(/\/group:|\s+/); return { b: b.trim(), g: g.trim() }; };
+    rt.actions.register('groups.show', ([arg]) => { const { b, g } = buildGroup(arg); void open(g ? `${b}/group:${g}` : b); }, { label: 'Step groups: show a build\'s groups (<build> or <build>/group:<gid>)', effect: 'navigate' });
+    rt.actions.register('groups.start', ([arg]) => { const { b, g } = buildGroup(arg); if (!b || !g) { rt.toast('Name the group: groups.start:<build>/group:<gid>', 'warning'); return; } stepGroupCall(`${encodeURIComponent(b)}/${g}/start`, `${b} ${g} started`); }, { label: 'Step groups: start a group now (<build>/group:<gid>)' });
+    rt.actions.register('groups.merge', ([arg]) => { const { b, g } = buildGroup(arg); if (!b || !g) { rt.toast('Name the group: groups.merge:<build>/group:<gid>', 'warning'); return; } stepGroupCall(`${encodeURIComponent(b)}/${g}/merge`, `${b} ${g} merged`); }, { label: 'Step groups: merge a finished group now (<build>/group:<gid>)' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
       const id = decodeURIComponent(arg ?? '');
       if (!id) { void open('pending'); return; }
