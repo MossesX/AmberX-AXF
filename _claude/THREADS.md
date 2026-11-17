@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:38 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · cli
 - 2026-11-17 03:38 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · cli
 - 2026-11-17 03:38 UTC · `gate-auto-lander-tab-and-controls` note (all) · cli
 - 2026-11-17 03:38 UTC · `builds-keep-their-slot-across-phases` added (0 steps) (all) · console
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 18:25 UTC · `rebuild-fresh-main-collapsible-sections` added (0 steps) (all) · console
 - 2026-11-17 18:26 UTC · `rebuild-fresh-main-collapsible-sections` note (all) · orchestrator
 - 2026-11-17 18:28 UTC · `nothing-saved-browser-all-console` added (0 steps) (all) · console
+- 2026-11-17 18:28 UTC · `nothing-saved-browser-all-console` note (all) · mcp
 
 ## Token passes (log)
 
