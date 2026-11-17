@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7956,
- "updatedAt": "2026-11-17T21:15:17.035Z",
+ "rev": 7957,
+ "updatedAt": "2026-11-17T21:15:28.351Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207268,7 +207268,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T21:10:23.565Z",
+   "updatedAt": "2026-11-17T21:15:16.753Z",
    "builtAt": "",
    "notes": [
     {
@@ -207354,6 +207354,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); on main by squash 07f9873c59b8; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T21:10:23.565Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); on main by squash 07f9873c59b8; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T21:15:16.753Z"
     }
    ],
    "approvals": [
@@ -207588,7 +207592,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -268229,7 +268233,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:15:14.379Z",
+   "updatedAt": "2026-11-17T21:15:20.592Z",
    "builtAt": "",
    "notes": [
     {
@@ -268339,6 +268343,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T21:15:14.379Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s7): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:15:20.592Z"
     }
    ],
    "approvals": [
@@ -268419,6 +268427,22 @@
      "phase": "Phase 1"
     }
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T21:15:11.470Z",
+     "buildId": "rebuild-fresh-main-phone-connect-small",
+     "phase": "Phase 1",
+     "step": "s7",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "hulu0241",
+     "notified": "",
+     "session": "",
+     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -269100,7 +269124,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
