@@ -830,9 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:00 UTC · `console-app-part-2-native-floating` PR #813, note (all) · reconciler
-- 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` PR #814, note (all) · reconciler
 - 2026-11-17 20:00 UTC · `terminal-main-tab-streaming-console-s` s5 done (all) · orchestrator
 - 2026-11-17 20:01 UTC · `terminal-main-tab-streaming-console-s` s5 done (all) · foreign-write
 - 2026-11-17 20:01 UTC · `terminal-main-tab-streaming-console-s` s6 done (all) · orchestrator
@@ -1230,6 +1227,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:43 UTC · `rebuild-fresh-main-phone-connect-small` s19 done (all) · orchestrator
 - 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` → running, note (all) · pipeline
 - 2026-11-17 21:43 UTC · `rebuild-fresh-main-phone-connect-small` s19 done (all) · foreign-write
+- 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` branch claude/fix-refreshing-console-jumps-back (all) · pipeline
+- 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
 
 ## Token passes (log)
 
