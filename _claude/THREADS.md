@@ -829,9 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `land-rename-long-builds-resolve-clash` → fixing, note (all) · pipeline
-- 2026-11-17 19:11 UTC · `land-overlay-preview-ui-review-resolve` → fixing, note (all) · pipeline
-- 2026-11-17 19:11 UTC · `full-voice-control-merge-main-and-land` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `context-menus-plugin-one-true-source` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `group-chat-audio-hear-agents-talk-while` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `picker-dialog-plugin-replaces-all` → fixing, note (all) · pipeline
@@ -1229,6 +1226,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:54 UTC · `guided-live-demo-test-watch-orchestrator` s19 done (all) · orchestrator
 - 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` → pending, note (all) · pipeline
 - 2026-11-17 20:55 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
+- 2026-11-17 20:55 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 20:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 20:55 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 
 ## Token passes (log)
 
