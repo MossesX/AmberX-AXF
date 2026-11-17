@@ -15,7 +15,7 @@
  */
 import type { AxfRuntime } from '../axf/core';
 import { controlRegistry } from '../axf/react';
-import { capturePlace, PLACE_FRAME, readPlace, viewIdOf } from './placeState';
+import { capturePlace, PLACE_FRAME, readPlace, savePlaceNow, viewIdOf } from './placeState';
 import { currentRestore, restorePlace } from './placeRestore';
 import { releaseScrollLock } from './scrollLock';
 
@@ -60,5 +60,9 @@ export function installPlaceApi(rt: AxfRuntime): () => void {
     state: () => placeApiState(rt),
     invoke: () => restoreSavedPlace(rt),
   }));
+  // the same three for scripts and end-to-end checks in the page (scripts/place-refresh.e2e.mjs)
+  const w = globalThis as unknown as { axfConsolePlace?: unknown };
+  w.axfConsolePlace = { state: () => placeApiState(rt), restore: () => restoreSavedPlace(rt), save: (by = 'api') => savePlaceNow(by, rt) };
+  offs.push(() => { delete w.axfConsolePlace; });
   return () => offs.forEach((f) => f());
 }
