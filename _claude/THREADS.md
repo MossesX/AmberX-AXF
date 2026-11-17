@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:55 UTC · `amberx-open-url-must-open-page-even-when` note (all) · orchestrator
 - 2026-11-16 23:56 UTC · `icon-packs-with-drag-drop-pack-designer` s11 done (all) · orchestrator
 - 2026-11-16 23:56 UTC · `amberx-open-url-must-open-page-even-when` PR #763 (all) · builds-live
 - 2026-11-16 23:55 UTC · `axhub-veto-countdown-setting-read-only` → pending, note (all) · pipeline
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 04:40 UTC · `server-auto-lander-fixes-lands` s25 done, → built (all) · orchestrator
 - 2026-11-17 04:47 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s19 done (all) · orchestrator
 - 2026-11-17 04:50 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s20 done (all) · orchestrator
+- 2026-11-17 04:52 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s21 done, → complete (all) · orchestrator
 
 ## Token passes (log)
 
