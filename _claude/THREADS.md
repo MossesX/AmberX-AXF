@@ -819,14 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:15 UTC · `server-gate-one-session-per-build-no` → archived, note (all) · cli
-- 2026-11-16 23:15 UTC · `token-registry-skin-editor-live-sandbox` → archived, note (all) · cli
-- 2026-11-16 23:16 UTC · `ui-directory-plugin-self-updating-data` → archived, note (all) · cli
-- 2026-11-16 23:16 UTC · `ui-review-filter-and-search-by-pr` → archived, note (all) · cli
-- 2026-11-16 23:16 UTC · `icon-pack-studio-fable` note, removed (all) · cli
-- 2026-11-16 23:16 UTC · `icon-pack-studio-on-fable` note, removed (all) · cli
-- 2026-11-16 23:16 UTC · `urgent-land-lazy-loader` → archived, note (all) · cli
-- 2026-11-16 23:16 UTC · `fable-icon-map-icon-packs-icon-pack` note, removed (all) · cli
 - 2026-11-16 23:16 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
 - 2026-11-16 23:16 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
 - 2026-11-16 23:16 UTC · `banner-widget-shapes-and-change-icon` note, removed (all) · cli
@@ -1219,6 +1211,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:31 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → queued (all) · mcp
 - 2026-11-17 03:31 UTC · `prompting-engine-control-panel-to-create` → queued (all) · mcp
 - 2026-11-17 03:31 UTC · `console-app-part-2-native-floating` → queued (all) · mcp
+- 2026-11-17 03:32 UTC · `land-project-create-mcp-resolve-clash` → queued (all) · mcp
+- 2026-11-17 03:32 UTC · `skin-animations-animated-colour-swatches` → queued (all) · mcp
+- 2026-11-17 03:32 UTC · `grid-token-set-colours-hover-selected` → queued (all) · mcp
+- 2026-11-17 03:32 UTC · `orchestrator-stale-row-watchdog-vps` → queued (all) · mcp
+- 2026-11-17 03:32 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running, note (all) · orchestrator
+- 2026-11-17 03:32 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · pipeline
+- 2026-11-17 03:32 UTC · `icon-packs-with-drag-drop-pack-designer` → queued (all) · mcp
+- 2026-11-17 03:32 UTC · `gate-auto-lander-tab-and-controls` → queued (all) · mcp
 
 ## Token passes (log)
 
