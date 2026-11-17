@@ -821,9 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:39 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
-- 2026-11-17 00:39 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
-- 2026-11-17 00:39 UTC · `merge-main-land-console-app-part-2` note (all) · orchestrator
 - 2026-11-17 00:39 UTC · `stop-auto-lander-committing-tracking` s10 done (all) · foreign-write
 - 2026-11-17 00:40 UTC · `stop-auto-lander-committing-tracking` s11 done (all) · orchestrator
 - 2026-11-17 00:40 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
@@ -1221,6 +1218,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:09 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `rebuild-fresh-main-hide-any-asset` s5 done (all) · orchestrator
+- 2026-11-17 15:09 UTC · `amberx-open-url-must-open-page-even-when` note (all) · orchestrator
+- 2026-11-17 15:09 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
+- 2026-11-17 15:09 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 
 ## Token passes (log)
 
