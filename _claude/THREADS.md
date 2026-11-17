@@ -832,19 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:00 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
-- 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` s19 done (all) · foreign-write
-- 2026-11-17 23:00 UTC · `banner-widget-shapes-plus-change-icon` s18 done (all) · orchestrator
-- 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` s19 done (all) · orchestrator
-- 2026-11-17 23:01 UTC · `banner-widget-shapes-plus-change-icon` s18 done (all) · foreign-write
-- 2026-11-17 23:01 UTC · `banner-widget-shapes-plus-change-icon` s18 done (all) · foreign-write
-- 2026-11-17 23:01 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · pipeline
-- 2026-11-17 23:01 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
-- 2026-11-17 23:01 UTC · `flagship-professional-skin-covering-2` s19 done, note (all) · foreign-write
-- 2026-11-17 23:02 UTC · `flagship-professional-skin-covering-2` s20 done (all) · orchestrator
-- 2026-11-17 23:02 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
-- 2026-11-17 23:03 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-17 23:03 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` s19 done, → landing (all) · orchestrator
 - 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` s19 done, → complete (all) · foreign-write
 - 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
@@ -1232,6 +1219,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:46 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
 - 2026-11-17 23:46 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
 - 2026-11-17 23:46 UTC · `context-menus-plugin-one-true-source` → fixing, note (all) · pipeline
+- 2026-11-17 23:46 UTC · `molly-console-commands` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `profile-filter-tables` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `fix-step-splitter-claude-exit-1-input` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `move-server-side-console-parts-onto-vps` s8 done, s9 done (all) · foreign-write
+- 2026-11-17 23:46 UTC · `settings-fix-part-2-blank-toolbars` s1 done, s2 done, note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `move-everything-axhub-web-console` s6 done (all) · foreign-write
 
 ## Token passes (log)
 
