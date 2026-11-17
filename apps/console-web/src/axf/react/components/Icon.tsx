@@ -96,6 +96,14 @@ export function Icon({ name, size = 16, className }: { name?: string; size?: num
   const rt = useOptionalRuntime();
   useSyncExternalStore(rt ? rt.subscribe : noStore.subscribe, rt ? rt.getState : noStore.get, rt ? rt.getState : noStore.get);
   if (!name) return null;
+  // `<pack>/<glyph>` (widget-icons@1 icon ref): that glyph of that icon-pack asset, whichever pack is in force
+  const slash = name.indexOf('/');
+  if (slash > 0 && rt) {
+    const pack = rt.registry.get('icon-pack' as never, name.slice(0, slash)) as { data: unknown } | undefined;
+    const svg = pack ? glyphSvg(pack.data, name.slice(slash + 1), size) : null;
+    if (svg) return <span className={`fx-icon fx-icon--pack ${className ?? ''}`} style={{ width: size, height: size }} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
+    name = name.slice(slash + 1);
+  }
   const packed = rt?.brandGlyph(name);
   if (packed) {
     const svg = glyphSvg(packed.pack, name, size);

@@ -288,6 +288,13 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner-widgets__check { min-width: 0; }
 .fx-banner-widgets__grip { display: inline-flex; flex: none; padding: var(--fx-dens-gap-sm); color: var(--fx-muted); cursor: grab; touch-action: none; }
 .fx-banner-widgets__wide { grid-column: 1 / -1; }
+/* Iconic banner widgets (widget-icons@1, Banner.tsx): icon, then the text under the --fx-size-widget-text-max cap; the full text is the tooltip. */
+.fx-widget-iconic { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; max-width: 100%; color: inherit; font: inherit; background: none; border: 0; padding: 0; }
+.fx-widget-iconic.is-tap { cursor: pointer; }
+.fx-widget-iconic__glyph { display: inline-flex; flex: none; }
+.fx-widget-iconic__text { min-width: 0; max-width: calc(var(--fx-size-widget-text-max) * 1ch); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-widget-iconic.is-text .fx-widget-iconic__glyph { display: none; }
+[data-fx-wsize] > .fx-widget-iconic { min-width: 0; max-width: 100%; }
 /* Icon picker (widget-icons@1, components/IconPicker.tsx): preview, search, the glyph grid per source, actions. */
 .fx-icon-picker { gap: var(--fx-dens-gap-lg); min-width: 0; }
 .fx-icon-picker__preview { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); min-width: 0; }
@@ -299,10 +306,8 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-icon-picker__section { gap: var(--fx-dens-gap-sm); }
 .fx-icon-picker__heading { font-weight: 600; }
 .fx-icon-picker__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-row-h) + var(--fx-dens-gap-sm)), 1fr)); gap: var(--fx-dens-gap-xs); }
-.fx-icon-picker__cell { position: relative; display: inline-flex; justify-content: center; border: var(--fx-border-w) solid transparent; border-radius: var(--fx-radius-sm); }
+.fx-icon-picker__cell { display: inline-flex; justify-content: center; border: var(--fx-border-w) solid transparent; border-radius: var(--fx-radius-sm); }
 .fx-icon-picker__cell.is-on { border-color: var(--fx-accent); background: var(--fx-accent-soft); }
-.fx-icon-picker__cell:has(.fx-icon-picker__packed) .fx-icon { visibility: hidden; }
-.fx-icon-picker__packed { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
 .fx-icon-picker__list { gap: var(--fx-dens-gap-xs); max-height: 60vh; overflow-y: auto; }
 .fx-icon-picker__list > .fx-btn { justify-content: flex-start; }
 .fx-icon-picker__actions { justify-content: flex-end; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; }
@@ -375,10 +380,10 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .is-tap:focus-visible, .fx-widget-theme:focus-visible, .fx-widget-link:focus-visible { outline: 2px solid var(--fx-accent); outline-offset: 1px; }
 .fx-widget-label.is-bold { font-weight: 700; }
 .fx-widget-label.is-mono { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; }
-.fx-widget-label[data-tone='success'], .fx-widget-status [data-tone='success'], .fx-widget-counter__num[data-tone='success'], .fx-widget-progress[data-tone='success'] { color: var(--fx-success); }
-.fx-widget-label[data-tone='warning'], .fx-widget-status [data-tone='warning'], .fx-widget-counter__num[data-tone='warning'], .fx-widget-progress[data-tone='warning'] { color: var(--fx-warning); }
-.fx-widget-label[data-tone='danger'], .fx-widget-status [data-tone='danger'], .fx-widget-counter__num[data-tone='danger'], .fx-widget-progress[data-tone='danger'] { color: var(--fx-danger); }
-.fx-widget-label[data-tone='accent'], .fx-widget-status [data-tone='accent'], .fx-widget-counter__num[data-tone='accent'], .fx-widget-progress[data-tone='accent'] { color: var(--fx-accent); }
+.fx-widget-iconic [data-tone='success'], .fx-widget-label[data-tone='success'], .fx-widget-status [data-tone='success'], .fx-widget-counter__num[data-tone='success'], .fx-widget-progress[data-tone='success'] { color: var(--fx-success); }
+.fx-widget-iconic [data-tone='warning'], .fx-widget-label[data-tone='warning'], .fx-widget-status [data-tone='warning'], .fx-widget-counter__num[data-tone='warning'], .fx-widget-progress[data-tone='warning'] { color: var(--fx-warning); }
+.fx-widget-iconic [data-tone='danger'], .fx-widget-label[data-tone='danger'], .fx-widget-status [data-tone='danger'], .fx-widget-counter__num[data-tone='danger'], .fx-widget-progress[data-tone='danger'] { color: var(--fx-danger); }
+.fx-widget-iconic [data-tone='accent'], .fx-widget-label[data-tone='accent'], .fx-widget-status [data-tone='accent'], .fx-widget-counter__num[data-tone='accent'], .fx-widget-progress[data-tone='accent'] { color: var(--fx-accent); }
 .fx-widget-label[data-tone='muted'], .fx-widget-status [data-tone='muted'], .fx-widget-counter__num[data-tone='muted'], .fx-widget-progress[data-tone='muted'] { color: var(--fx-muted); }
 .fx-widget-status__dot { width: 0.55em; height: 0.55em; border-radius: 999px; background: currentColor; }
 .fx-widget-status.is-on .fx-widget-status__dot { box-shadow: 0 0 0 calc(var(--fx-border-w) * 2) color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 100%), transparent); }

@@ -9,7 +9,7 @@
  *   widgetIconsSeen(rt)              every widget a host resolved in this session (widget.icons.list)
  *   WidgetGlyph                      draws a ref: `<glyph>` through Icon, `<pack>/<glyph>` from that pack
  */
-import { glyphSvg, normalizeIconPack } from '../core/engines/brand';
+import { normalizeIconPack } from '../core/engines/brand';
 import { widgetDefaultIcon, widgetDefaultRows } from '../core/engines/widget-icon-defaults';
 import {
   WIDGET_ICON_MODES, WIDGET_TEXT_MAX_TOKEN, parseIconRef, parseWidgetIconId, resolveWidgetIcon, widgetIconKey, widgetIconSettings, widgetModeKey,
@@ -91,12 +91,5 @@ export function resetWidgetIcon(rt: AxfRuntime, id: string): void {
 
 /** Draws a resolved ref: `<glyph>` through Icon (the pack in force applies), `<pack>/<glyph>` from that pack. */
 export function WidgetGlyph({ icon, size = 14 }: { icon: string; size?: number }) {
-  const rt = useRuntime();
-  const ref = parseIconRef(icon);
-  if (ref?.pack) {
-    const pack = rt.registry.get('icon-pack' as never, ref.pack) as { data: unknown } | undefined;
-    const svg = pack ? glyphSvg(pack.data, ref.glyph, size) : null;
-    if (svg) return <span className="fx-icon fx-icon--pack" style={{ width: size, height: size }} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
-  }
-  return <Icon name={ref?.glyph ?? icon} size={size} />;
+  return <Icon name={icon} size={size} />;
 }

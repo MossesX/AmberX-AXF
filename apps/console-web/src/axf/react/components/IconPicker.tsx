@@ -60,8 +60,7 @@ export function IconPicker({ widget, label }: { widget: string; label?: string }
               <div className="fx-icon-picker__grid" role="toolbar" aria-label={`${s.label} icons`}>
                 {s.refs.map((ref) => (
                   <span key={ref} className={`fx-icon-picker__cell${ref === r.icon ? ' is-on' : ''}`}>
-                    <IconButton id={`icon-picker.${ref.replace('/', '.')}`} icon={ref.includes('/') ? 'box' : ref} label={`Use ${ref}`} title={ref} aria-pressed={ref === r.icon} onClick={() => pick(ref)} />
-                    {ref.includes('/') && <span className="fx-icon-picker__packed" aria-hidden="true"><WidgetGlyph icon={ref} size={14} /></span>}
+                    <IconButton id={`icon-picker.${ref.replace('/', '.')}`} icon={ref} label={`Use ${ref}`} title={ref} aria-pressed={ref === r.icon} onClick={() => pick(ref)} />
                   </span>
                 ))}
               </div>
@@ -87,7 +86,7 @@ function WidgetIconList() {
       <Note icon="info">Pick the icon of any banner or settings widget. Right-click a widget for the same.</Note>
       <div className="fx-stack fx-icon-picker__list" role="toolbar" aria-label="Widgets">
         {widgetIconsSeen(rt).map((w) => (
-          <Button key={w.id} id={`icon-picker.widget.${w.id}`} tone="ghost" icon={w.resolved.icon.includes('/') ? 'box' : w.resolved.icon} onClick={() => rt.openDialog(WIDGET_ICONS_DIALOG, { widget: w.id, label: w.label })}>{w.label}</Button>
+          <Button key={w.id} id={`icon-picker.widget.${w.id}`} tone="ghost" icon={w.resolved.icon} onClick={() => rt.openDialog(WIDGET_ICONS_DIALOG, { widget: w.id, label: w.label })}>{w.label}</Button>
         ))}
       </div>
     </div>
