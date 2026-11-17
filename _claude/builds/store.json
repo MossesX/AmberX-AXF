@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7933,
- "updatedAt": "2026-11-17T21:07:06.308Z",
+ "rev": 7934,
+ "updatedAt": "2026-11-17T21:07:15.669Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268319,10 +268319,10 @@
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T17:05:12.329Z",
+     "at": "2026-11-17T21:07:04.402Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -269022,7 +269022,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -275808,7 +275808,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:07:04.050Z",
+   "updatedAt": "2026-11-17T21:07:07.630Z",
    "builtAt": "",
    "notes": [
     {
@@ -275918,6 +275918,10 @@
     {
      "text": "Session stopped on its own with 6 steps left: back in Pending for Brett.",
      "at": "2026-11-17T21:07:04.050Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s20): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:07:07.630Z"
     }
    ],
    "approvals": [
@@ -275988,6 +275992,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T21:07:03.181Z",
+     "buildId": "rebuild-every-toolbar-page-specific",
+     "phase": "",
+     "step": "s20",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-17T21:07:09.371Z",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -276705,7 +276725,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

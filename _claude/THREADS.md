@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
 - 2026-11-17 19:27 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
-- 2026-11-17 19:27 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
 - 2026-11-17 19:27 UTC · `separate-settings-per-plugin-reset` branch claude/separate-settings-per-plugin-reset (all) · pipeline
 - 2026-11-17 19:27 UTC · `rebuild-every-toolbar-page-specific` → running, note (all) · pipeline
 - 2026-11-17 19:27 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:06 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 - 2026-11-17 21:06 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · pipeline
 - 2026-11-17 21:07 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
+- 2026-11-17 21:07 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 
 ## Token passes (log)
 
