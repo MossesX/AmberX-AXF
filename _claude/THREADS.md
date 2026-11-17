@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:39 UTC · `orchestrator-runs-long-builds-across` s6 done (all) · orchestrator
 - 2026-11-17 03:38 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s6 done (all) · orchestrator
 - 2026-11-17 03:41 UTC · `builds-keep-their-slot-across-phases` note (all) · orchestrator
 - 2026-11-17 03:41 UTC · `land-project-create-mcp-resolve-clash` → pending, note (all) · cli
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 18:34 UTC · `merge-queue-view-every-build-s-fully` → archived, note (all) · console
 - 2026-11-17 18:35 UTC · `grid-filter-plugin-one-filter-search` note (all) · orchestrator
 - 2026-11-17 18:35 UTC · `merge-queue-view-every-build-s-fully` → pending, note (all) · console
+- 2026-11-17 18:35 UTC · `grid-filter-plugin-one-filter-search` note (all) · mcp
 
 ## Token passes (log)
 

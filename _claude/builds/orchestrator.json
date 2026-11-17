@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:35:33.459Z",
+ "updatedAt": "2026-11-17T18:35:41.519Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -178336,12 +178336,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:34:36.995Z",
-   "updatedAt": "2026-11-17T18:35:22.774Z",
+   "updatedAt": "2026-11-17T18:35:33.947Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 1 steps (1 Fable).",
      "at": "2026-11-17T18:35:22.774Z"
+    },
+    {
+     "text": "Brett: the Merge queue tab stays as its own tab (separate build merge-queue-view-every-build-s-fully). In the orchestrator, the filter dialog ties only to the All builds tab (every build regardless of state); don't replace the Merge queue tab with a preset.",
+     "at": "2026-11-17T18:35:33.947Z"
     }
    ],
    "approvals": [],
