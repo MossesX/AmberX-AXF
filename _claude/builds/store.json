@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8379,
- "updatedAt": "2026-11-17T23:26:27.502Z",
+ "rev": 8380,
+ "updatedAt": "2026-11-17T23:26:40.621Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268712,7 +268712,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:25:52.378Z"
+     "updatedAt": "2026-11-17T23:26:04.618Z"
     },
     {
      "id": "s6",
@@ -433207,9 +433207,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:25:30.509Z",
-   "updatedAt": "2026-11-17T23:25:34.787Z",
+   "updatedAt": "2026-11-17T23:26:10.921Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Also fix every subgrid and nested grid in the orchestrator so columns line up; CI check covers subgrids.",
+     "at": "2026-11-17T23:26:10.921Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -433233,7 +433238,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

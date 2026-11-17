@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:26:27.502Z",
+ "updatedAt": "2026-11-17T23:26:40.621Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -309328,9 +309328,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:25:30.509Z",
-   "updatedAt": "2026-11-17T23:25:34.787Z",
+   "updatedAt": "2026-11-17T23:26:10.921Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Also fix every subgrid and nested grid in the orchestrator so columns line up; CI check covers subgrids.",
+     "at": "2026-11-17T23:26:10.921Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
