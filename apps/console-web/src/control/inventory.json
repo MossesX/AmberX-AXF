@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 275,
+    "functions": 278,
     "buttons": 62,
     "plugins": 71
   },
@@ -4482,6 +4482,49 @@
         "orchestrator",
         "group",
         "action"
+      ],
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:groups.show",
+      "kind": "function",
+      "id": "groups.show",
+      "label": "Step groups: show a build's groups (<build> or <build>/group:<gid>)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "groups.show",
+        "groups",
+        "show"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:groups.start",
+      "kind": "function",
+      "id": "groups.start",
+      "label": "Step groups: start a group now (<build>/group:<gid>)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "groups.start",
+        "groups",
+        "start"
+      ],
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:groups.merge",
+      "kind": "function",
+      "id": "groups.merge",
+      "label": "Step groups: merge a finished group now (<build>/group:<gid>)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "groups.merge",
+        "groups",
+        "merge"
       ],
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"

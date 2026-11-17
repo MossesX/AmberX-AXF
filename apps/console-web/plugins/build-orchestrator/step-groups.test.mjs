@@ -69,6 +69,9 @@ const build = () => JSON.parse(readFileSync(storeFile, 'utf8')).builds.find((b) 
 const group = (gid) => build().groups.find((g) => g.id === gid);
 const endSession = (gid, exit = 0, kind = 'phase-done') => appendFileSync(join(hdir, 'events.jsonl'), `${JSON.stringify({ event: 'session-end', session: group(gid).session, exit, kind, at: new Date().toISOString() })}\n`);
 const tick = (gid) => orch('act', 'step', 'gamma', gid, 'done');
+// the gate's fixer, found by capability (service:axf.build-rules@1), never by folder name
+const { buildRulesProvider } = await import('./pipeline.mjs');
+const gateFixer = () => { const p = buildRulesProvider(ROOT); assert.ok(p, 'a plugin provides service:axf.build-rules@1'); return join(p.dir, 'fixers', 'parallel-groups.mjs'); };
 
 console.log('step-groups (end to end)');
 try {
@@ -122,7 +125,7 @@ try {
     assert.ok(r.alertsSent.some((a) => a.kind === 'group-conflict' && a.key === 'pipeline:group-conflict:gamma:g3'));
     assert.deepEqual(pipe('groups', 'conflicts').conflicts.map((c) => `${c.id}/${c.group}`), ['gamma/g3'], 'the banner item reads this list');
     assert.equal(build().status, 'running');
-    const held = spawnSync(process.execPath, [join(ROOT, 'apps/console-web/plugins/gate/fixers/parallel-groups.mjs'), 'check', '--build', 'gamma'], { cwd: ROOT, env, encoding: 'utf8' });
+    const held = spawnSync(process.execPath, [gateFixer(), 'check', '--build', 'gamma'], { cwd: ROOT, env, encoding: 'utf8' });
     assert.equal(held.status, 3, `the gate holds the PR: ${held.stdout}`); assert.match(held.stdout, /g3/);
   });
 
@@ -134,7 +137,7 @@ try {
     endSession('g3');
     pipe('tick');
     assert.equal(group('g3').state, 'merged'); assert.equal(build().status, 'built');
-    const ok = spawnSync(process.execPath, [join(ROOT, 'apps/console-web/plugins/gate/fixers/parallel-groups.mjs'), 'check', '--build', 'gamma'], { cwd: ROOT, env, encoding: 'utf8' });
+    const ok = spawnSync(process.execPath, [gateFixer(), 'check', '--build', 'gamma'], { cwd: ROOT, env, encoding: 'utf8' });
     assert.equal(ok.status, 0, ok.stdout);
   });
 

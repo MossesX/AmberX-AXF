@@ -363,3 +363,8 @@ and makes a group wait across groups, topological merge order, cycles refused, a
 golden cases in `spec/fixtures/build-groups.json` (`check-build-groups.mjs`). Kotlin twin deferred (no new Android work):
 the Android console reads `groups[]` as opaque data until a `BuildGroups.kt` replays the fixture; nothing on Android
 plans or runs groups, so builds there stay one sequential group.
+Phase 2 of the same build (Opus) added only web / host pieces, so the deferred twin grows by these, all still deferred
+(no new Android work): the Groups panel (three views: grid, compact, cards) and its actions (Start now, Re-run, Merge
+now, Up / Down, Plan again, Ungroup) have no Compose screen; the settings `splitOverMin`, `maxParallelGroups`,
+`parallelGroups` have no Android settings rows; the group address `row:<build>/group:<gid>` waits for the console-control@1
+`group` segment kind (step s21, Fable) on every port. The dispatcher, merge-back and gate rule run on the VPS host only.
