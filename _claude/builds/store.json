@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7751,
- "updatedAt": "2026-11-17T20:10:32.789Z",
+ "rev": 7752,
+ "updatedAt": "2026-11-17T20:10:41.945Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276981,15 +276981,15 @@
    "title": "Live build status: real-time grids, 15-second VPS liveness check, animated running rows, red alert + dialog when a build breaks",
    "category": "",
    "detail": "1) Live updates: the console updates in real time whenever a build changes (push over the console's live channel, no refresh), on every grid and tab (Active, Queue, Pending, Incomplete, etc.). 2) The VPS checks every 15 seconds that each running job is really alive (session, pid, heartbeat) and pushes the result to the console. 3) Every running/building row in any grid shows an animated indicator: a spinning/animated icon next to it, and the row itself slowly flashes or pulses. Configurable in settings: animation type (flash, pulse, glow, other), colors, speed, as a hot-swappable asset with tokens only. 4) When a running job stops or breaks: the animation stops, the row turns red/pink, a pop-up alert says it broke, and a dialog shows what happened (cause, exit code, last step, what the watchdog is doing about it), with a link to the build. 5) Full API: deep link, state read, REST, MCP, CLI, voice for the settings and the alert. Coordinate with both watchdogs (#772 recovery, #780 stale-row) instead of duplicating their checks.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/live-build-status-real-time-grids-15",
-   "pr": "",
+   "pr": "#815",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T20:10:15.228Z",
+   "updatedAt": "2026-11-17T20:10:27.932Z",
    "builtAt": "",
    "notes": [
     {
@@ -277050,16 +277050,7 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-17T20:10:12.128Z",
-     "exit": 0,
-     "outcome": "requeued",
-     "reason": "phase-done",
-     "stepsLeft": 18,
-     "account": "",
-     "session": "",
-     "phase": "Phase 1"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-17T19:38:27.971Z",
      "by": "orchestrator",
@@ -277068,7 +277059,7 @@
      "note": "Split by Claude into 22 steps (4 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 18 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
