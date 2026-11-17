@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7580,
- "updatedAt": "2026-11-17T18:29:53.256Z",
+ "rev": 7581,
+ "updatedAt": "2026-11-17T18:30:04.099Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -269270,12 +269270,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:11:55.610Z",
-   "updatedAt": "2026-11-17T18:14:01.858Z",
+   "updatedAt": "2026-11-17T18:29:57.824Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 33 steps (33 Fable).",
      "at": "2026-11-17T18:14:01.858Z"
+    },
+    {
+     "text": "Brett: right-click any container, dataset or header/window gets 'Make collapsible' (toggle): adds a caret to its header that collapses/expands it; state saved on axHub. Same by voice/API.",
+     "at": "2026-11-17T18:29:57.824Z"
     }
    ],
    "approvals": [],
@@ -270158,7 +270162,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

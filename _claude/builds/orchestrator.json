@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:29:53.256Z",
+ "updatedAt": "2026-11-17T18:30:04.099Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175835,12 +175835,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:11:55.610Z",
-   "updatedAt": "2026-11-17T18:14:01.858Z",
+   "updatedAt": "2026-11-17T18:29:57.824Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 33 steps (33 Fable).",
      "at": "2026-11-17T18:14:01.858Z"
+    },
+    {
+     "text": "Brett: right-click any container, dataset or header/window gets 'Make collapsible' (toggle): adds a caret to its header that collapses/expands it; state saved on axHub. Same by voice/API.",
+     "at": "2026-11-17T18:29:57.824Z"
     }
    ],
    "approvals": [],
