@@ -1,6 +1,19 @@
 # Get main green, unblock the lander, land axf-data and Postgres
 
-Build: `get-main-green-unblock-lander-land-axf` · Phase 1 (Opus) · status: **draft**
+Build: `get-main-green-unblock-lander-land-axf` · Phase 1 (Opus) · status: **done** (2026-11-17)
+
+## Result
+
+- **Main is green.** It was red from 11-15 11:45 to 11-16 21:01 (33 h), and nothing landed in that time. #724 carried 10 CI fixes. Since then main has had five green CI runs in a row.
+- **The auto-lander is fixed, and it lands on its own again:** #724, #685, #723 (this build), #704, #713. That's one at a time, each after a green queue run.
+  - Five lander bugs fixed: lost queue moves, a stray worktree standing in for a build, builds-store files committed into branches, queue removals lapsing, and the GitHub auto-merge bypass (guarded by a banner item).
+  - Two new health items: `lander-idle` and "PRs land through the merge queue only".
+- **axf-data (#704) and Postgres (#713) landed through the merge queue.** axf-data runs on Postgres 16 in its own container.
+  - The console's data is copied into it and verified: builds 985 = 985, UI reviews 227 = 227, settings 9 = 9, notes 40 = 40, ledger tables equal.
+  - 43 of 47 namespaces are in shadow. builds, console and activity are still local: disk space and hot files. The exact next steps are under s17.
+- **#769 is queued:** the axf-data image build plus two data-migrate fixes for live data.
+- **Disk is at 99%.** I freed about 30 GB. The remaining weight is the Docker build cache (98 GB) and old build worktrees, and the systems-check disk item is red.
+- **Branches:** four were already level with GitHub. The stray merge-main branch's worktree was removed and held in auto-land. A stale checkout of `auto-lander-controls` was saved to the report and dropped.
 
 Brett said (2026-11-16 16:22):
 > We gotta migrate to Postgres to get this going, finish the migration for Postgres. Is the auto-lander fixed?
@@ -278,3 +291,106 @@ Not changed, but noted: a lander round takes 7–8 min, because auto-land walks 
 **Earlier on #704:**
 - After main's merge, main's per-device views in claude-settings wrote with `fs` functions this branch no longer imports. Views now save through `data-files` (eedb82421).
 - With these fixes the full light list (24 commands) and the Alerts/MCP list pass locally. The only exceptions are host ones.
+
+## data-container (#704) landed (s14 done, 02:07)
+
+**Merged by the merge queue at 02:07** (7015af4b8), on its own, after a green queue run (43998136507): sweep, Web Dev Console + Python API, AmberX and Gradle. No manual merge.
+- **Main CI on 7015af4b8:** success (Gradle ran; the rest was already run by the queue on the same code).
+- **Console redeploy:** the console's own 5-minute updater redeployed at 02:15 on 7015af4b8. `install-console.sh` now passes `conf/env/console.env` (`AXF_DATA_URL` and the console's service token) and attaches the console to the `axf-data` network.
+- **Check:** `GET /api/plugins/data-store/state` → `configured: true, reachable: true`, 47 namespaces, all `local` (nothing has moved yet; that is s17).
+
+**What it took after s13, in order:**
+
+| # | Problem | Fix |
+|---|---|---|
+| 1 | Merge conflicts with main (android.yml, glossary, catalog, status, inventory); help coverage fell to 99.5% | 4801426fa |
+| 2 | Light checks: `data_store` import path in a test; `tarfile filter='data'` missing on Python 3.11.2; a 5 s backup wait in a test | 72cfbbb1a |
+| 3 | After main's merge: claude-settings device views wrote with `fs` functions this branch no longer imports | eedb82421 |
+| 4 | menu-reach (no `web/menu.ts`); the ui-review submit-API pattern matched a seeded data path in a spec | cc26430ef |
+| 5 | The data-store mode cache keyed on mtime alone, so a write right after a cutover could still go local (Node + Python) | 892eb4fc6 |
+| 6 | plugin-lifecycle flagged the whole data-store path-map family as stale plugin references | 03c64f002 |
+| 7 | data-store notify types used a group (`system`) the notify registry doesn't have | b4a29e7ec |
+| 8 | auto-land kept committing the worktree's builds-store files into the branch. GitHub has no builds-live merge driver, so the PR showed as conflicting and no PR checks ran | 7fdd046e0 takes main's builds files; the lander fix is in f385fd615. Also: an auto-land hold also blocks the PR in the merge queue, so I held the build briefly and released it before it could land |
+
+**Lander fixes made along the way** (this build, f385fd615):
+- auto-land never commits builds-live files into a build branch;
+- `queue remove` pins the head GitHub reports, so a removal doesn't lapse at once.
+
+Also noted for later:
+- `merge=union` (THREADS.md, STATUS.md, decisions.md) and the builds-live driver don't exist on GitHub, so PRs touching those files show as conflicting whenever main moves.
+- My local "full sweep" runs early in this build covered only single-line `- run:` steps. From s14 on, every step is run from the workflow YAML (`/tmp/runjob.py`).
+
+## Postgres (#713) landed (s16 done, 02:53)
+
+**Merged by the merge queue at 02:53** (765ca6b51), on its own, after #704. The queue run was green: sweep, Web Dev Console + Python API, AmberX, Gradle.
+- Before it went in, I merged #704 and then main into it. The lifecycle exemption was extended to the data-store's own code (its mirror map names `chats.db` and the ledger by key).
+- Until #704 was in, #713 was held out of the queue by removal pinned to its real head, plus an auto-land hold. The hold was released afterwards.
+
+**Main CI on 765ca6b51:** the first attempt failed on Gradle, `lib-hub` `HubAppearanceSourceTest` ("first run, save, conflict re-merge…", line 72). That test is unchanged since Oct 21: it waits up to 5 s for a background save on real threads. #713 touches no Kotlin. **The re-run of the failed job passed**, so main is green.
+
+Follow-up worth doing: make that test's wait deterministic, because it can go red on a loaded runner.
+
+## Postgres migration on the VPS (s17)
+
+**axf-data now runs on Postgres.**
+- `deploy/install-data.sh` (main @ 765ca6b51, plus the Dockerfile fix below) started `axf-data-db` (postgres:16-alpine, volume `axf-data-pg`, never published).
+- It copied the empty s13 SQLite store across: backup first, counts and manifests checked.
+- It started axf-data on the DSN in `shadow`, and `axf data engine postgres` cut it over: `reads from postgres … drift 0; next: done`.
+
+**Console data copied in.** `data-migrate apply --all` ran inside the console with the `cli` token. Every namespace got a backup first; the backups are in `.axf-console/migration/backups/`, and the full pre-migration tarball is in `~/hub/data/amberx-axf/backups/pre-postgres-20261116/`. Then `verify`.
+
+**Before / after row counts**
+
+| Table (Postgres) | After | Source (before) | |
+|---|---|---|---|
+| builds | 985 | 985 builds in `store.json` | equal |
+| build_steps | 5951 | 5953 | builds is still `local`: 2 steps added since the copy |
+| journal (builds `journal/*.jsonl`) | 12803 | 12865 lines (+2 unparseable) | 62 lines appended since the copy |
+| journal (all namespaces) | 63389 | — | builds 58588, plugins 4345, console 402, … |
+| ui_review_items | 227 | 227 | equal |
+| settings | 9 | 9 | equal |
+| notes | 40 | 40 | equal |
+| planner_items | 5 | — | |
+| changes (change feed) | 16355 | — | |
+| keys / records / blobs | 15991 / 9663 / 5594 | 15790 keys (M0) | extra keys on axf-data: activity reports since rotated away locally, large-entry records |
+| ledger_features / _history / _feature_builds / _prs / _builds / _prompts / _deploys / _events_seen / _edits / _manifests | 2962 / 26253 / 6049 / 614 / 955 / 735 / 387 / 6535 / 369 / 398 | identical counts in `ledger.sqlite` | equal (SQLite mirrored table for table) |
+
+**Verify and modes**
+- `verify`: 36 of 47 namespaces equal at once. The other 11 were the hot ones, different only by writes made after the copy.
+- Topped up and moved to **shadow: 43 of 47 namespaces**. Writes now go to the files *and* axf-data, with drift logged.
+- Still `local`:
+  - `console`: agent-slots state, crew chat and plan projections are rewritten every few seconds;
+  - `plugins/activity`: rotating reports;
+  - `builds`: its backup plus snapshot needs about 4 GB the disk doesn't have.
+
+**Spot checks**
+- `settings/claude/settings.json` on axf-data equals the hub file.
+- This build's changes entry on axf-data equals the source, except the live heartbeat fields.
+- builds: 985 = 985.
+- Console API: `/api/plugins/data-store/state` → `configured: true, reachable: true`; `data.mjs engine` → postgres.
+- Systems check: the `axf-data` item is ok ("up; last backup … verified").
+
+**Fixes this needed** (all in **#769**, queued first):
+1. **Dockerfile:** `python:3.12-slim` is now Debian trixie but the PGDG apt line said `bookworm-pgdg`. apt failed (exit 100) and axf-data couldn't be built.
+2. **`data-migrate` backup:** a file rotated away between scan and tarball aborted the whole run. Now `tar --ignore-failed-read`.
+3. **`data-migrate` read:** a file gone between the walk and the read raised ENOENT. Such files are now left out of M0.
+
+**Found and noted, not fixed here:**
+- **Node heap:** `data-migrate` holds a whole namespace in memory. builds (2 GB) crashed the default heap (exit 134, plus a 5.5 GB core dump, which I deleted). Re-run with `NODE_OPTIONS=--max-old-space-size=12288`. It should stream.
+- **Snapshots:** every `apply` snapshots each namespace on axf-data and writes a backup per namespace. Three runs made about 5 GB of snapshots and 3 backup sets. I kept one backup set and removed the snapshots of partial axf-data state.
+- **Host writers don't mirror:** session hooks, the builds CLI and the orchestrator run on the VPS host and can't reach axf-data (internal network, no published port). In `shadow` they keep writing the local files without mirroring, and log no drift. `cutover` stays safe, because it requires equal manifests at that moment and will refuse. But changes, builds and sessions can't cut over until host writers reach axf-data: publish it on 127.0.0.1 only, or route host writes through the console.
+- **Disk:** it hit 100% during the migration. I freed about 30 GB:
+  - 646 stale `/tmp/axf-shots-*` folders (15 GB, since Nov 10)
+  - the core dump
+  - duplicate snapshots and backups
+  - my scratch worktrees
+
+  Still 99%. The rest is Docker's 98 GB build cache (mostly shared with images) and 150 GB of build worktrees under `/root/axf-builds`. The systems-check **disk** item is red with this, and its Auto fix (via Mosses) didn't clear it.
+
+**Next steps for the last four namespaces** (exact):
+```
+# inside axf-console, after #769 lands; builds needs ~4 GB free and the bigger heap
+docker exec -e AXF_DATA_TOKEN=<cli token> -e NODE_OPTIONS=--max-old-space-size=12288 axf-console sh -c 'cd /axf && node framework/cli/data-migrate.mjs apply builds && node framework/cli/data-mode.mjs shadow builds'
+# console and plugins/activity: same, in a quiet minute (or after host writers mirror)
+# cutover per namespace once `data-mode status` says ready (30 min without drift; settings first, builds last)
+```

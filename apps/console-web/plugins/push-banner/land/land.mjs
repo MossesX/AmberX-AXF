@@ -13,9 +13,12 @@
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
  *   … merge-main <build|branch> [--dry-run] [--json]   merge main into one build's branch now (same rules as a round)
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
+ *   … tracking [<build>] [--json] | tracking-show on|off   what the lander did with each build's tracking files (last reset,
+ *                                        take-main, regenerate); shown on the merge queue rows or not (landShowTracking)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
- *   1. its worktree: synced files committed on its own branch, scratch files skipped, untracked copies of hub files
+ *   1. its worktree: tracking files (framework/core/tracking-paths.mjs) reset to the branch's merge-base copy with
+ *      main, never committed (PR 733); other synced files committed on its own branch; scratch files skipped, untracked copies of hub files
  *      moved to /root/archive/auto-land/<build>/, `.claude-sync-hold` written so claude-sync stops dropping files in;
  *      code changes never committed stop it (reason `code`); the branch is pushed when it is ahead of GitHub;
  *   2. main merged in (a temporary worktree, never the build's): only when main moved in code (status-only `[skip ci]`
@@ -44,6 +47,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
+import * as tracking from '../../../../../framework/core/tracking-paths.mjs';
 import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -158,6 +162,17 @@ export function control(s, cmd, build, opts = {}) {
   return d;
 }
 
+/**
+ * What the lander did with each build's tracking files (tracking-paths@1), from land.json: { $axf, show, at, items:
+ * [{ build, pr, branch, tracking: { reset?, takeMain?, regenerate? }, show }] }. `show` is the console_show target of
+ * the merge queue view. The same shape as the push banner's GET /land/tracking.
+ */
+export function trackingState(s, build = '') {
+  const st = readState(s); const cfg = readJson(join(s.dataDir, 'config.json'), {}) || {};
+  const items = (st.items || []).filter((x) => !build || x.id === build).map((x) => ({ build: x.id, pr: x.pr || null, branch: x.branch || '', tracking: x.tracking || {}, show: 'function:push-banner.queue' }));
+  return { $axf: 'auto-land-tracking@1', show: cfg.landShowTracking === true, at: st.at || null, items };
+}
+
 // ------------------------------------------------------------------ the build's worktree
 
 /**
@@ -193,18 +208,57 @@ export function hubPath(s, wt, p) {
   return '';
 }
 
-/** Step 1: clean a finished build's worktree. Returns { code: [files], committed: [files], archived: [files], pushError }. */
+/** Files bigger than this are not backed up before a reset (journal parts: append-only, kept on main and the hub). */
+const BACKUP_MAX = 8 << 20;
+
+/**
+ * Put tracking files (tracking-paths@1) back to the branch's merge-base copy with main, in the
+ * build's worktree `wt`, instead of committing them: the dirty ones in `paths`, and any the branch itself committed
+ * since it left main (a session's commit, an old auto-land commit). A file main's base lacks is dropped from the
+ * index (the copy on disk stays, untracked). When the branch's commits carried any, one commit puts them back
+ * ("Reset tracking files to main's base copy"), so the build's diff never shows them. Returns { reset, commit, base }.
+ */
+export function resetTracking({ s, git, b, wt, paths = [], dry = false }) {
+  const g = (a, o = {}) => git(a, { ...o, cwd: wt });
+  const base = g(['merge-base', 'HEAD', `${s.remote}/${s.base}`]).out;
+  if (!base) return { reset: [], commit: '', base: '', error: 'no merge-base with main' };
+  const committed = g(['diff', '--name-only', base, 'HEAD', '--', ...trackingSpecs()]).out.split('\n').filter(Boolean);
+  const all = [...new Set([...paths, ...committed])];
+  if (dry || !all.length) return { reset: all, commit: '', base };
+  const inBase = (p) => g(['cat-file', '-e', `${base}:${p}`]).code === 0;
+  const out = [];
+  for (const p of all) {
+    const f = join(wt, p);
+    try { if (existsSync(f) && statSync(f).size <= BACKUP_MAX) { const to = join(s.archive, b.id, 'tracking', p); mkdirSync(dirname(to), { recursive: true }); copyFileSync(f, to); } } catch { /* backup is best effort */ }
+    const r = inBase(p) ? g(['checkout', base, '--', p]) : g(['rm', '-q', '--cached', '--ignore-unmatch', '--', p]);
+    if (!r.code) out.push(p);
+  }
+  let commit = '';
+  const staged = g(['diff', '--cached', '--name-only', 'HEAD', '--', ...out]).out.split('\n').filter(Boolean);
+  if (staged.length) {
+    const c = g(['-c', 'user.name=AXF auto-land', '-c', 'user.email=auto-land@amberxai.com', 'commit', '-q', '-m', `${b.id}: reset tracking files to main's base copy (auto-land; they live on main and the hub)`, '--', ...staged]);
+    if (!c.code) commit = g(['rev-parse', 'HEAD']).out;
+  }
+  return { reset: out, commit, base };
+}
+const trackingSpecs = () => tracking.trackingPathspecs();
+
+/**
+ * Step 1: clean a finished build's worktree. Returns { code: [files], reset: [files], archived: [files], pushError }.
+ * Tracking files are reset to the merge-base copy (resetTracking), never committed; other synced data is committed.
+ */
 export function cleanWorktree({ s, git, b, wt, dry, now = Date.now() }) {
   const g = (a, o = {}) => git(a, { ...o, cwd: wt });
-  const res = { committed: [], archived: [], skipped: [], code: [], settling: false, pushError: '' };
+  const res = { committed: [], reset: [], resetCommit: '', archived: [], skipped: [], code: [], settling: false, pushError: '' };
   if (!dry) { try { writeFileSync(join(wt, '.claude-sync-hold'), `auto-land: ${b.id} is finished; claude-sync leaves this checkout alone.\n`); } catch { /* read-only checkout */ } }
   const hubHas = (p) => { const h = hubPath(s, wt, p); if (!h || !existsSync(h)) return false; try { return readFileSync(h).equals(readFileSync(join(wt, p))); } catch { return false; } };
   const plan = core.strayPlan(g(['status', '--porcelain', '--untracked-files=all']).out, hubHas);
   res.skipped = plan.skip; res.code = plan.code;
-  // a session that wrote here in the last 10 minutes may still be finishing: leave it this round
+  // a session that wrote code here in the last 10 minutes may still be finishing: leave it this round (tracking files
+  // are rewritten by builds-live all the time and never hold a landing)
   const fresh = [...plan.commit, ...plan.code].some((p) => { try { return now - statSync(join(wt, p)).mtimeMs < 10 * 60000; } catch { return false; } });
   if (fresh) { res.settling = true; return res; }
-  if (dry) return { ...res, committed: plan.commit, archived: [...plan.archive, ...plan.restore] };
+  if (dry) { const t = resetTracking({ s, git, b, wt, paths: plan.reset, dry: true }); return { ...res, committed: plan.commit, reset: t.reset, archived: [...plan.archive, ...plan.restore] }; }
   for (const p of [...plan.archive, ...plan.restore]) {
     const to = join(s.archive, b.id, p);
     try {
@@ -215,9 +269,11 @@ export function cleanWorktree({ s, git, b, wt, dry, now = Date.now() }) {
   }
   if (plan.commit.length) {
     g(['add', '--', ...plan.commit]);
-    const c = g(['-c', 'user.name=AXF auto-land', '-c', 'user.email=auto-land@amberxai.com', 'commit', '-q', '-m', `${b.id}: commit synced files left in the worktree (auto-land)`, '--', ...plan.commit]);
+    const c = g(['-c', 'user.name=AXF auto-land', '-c', 'user.email=auto-land@amberxai.com', 'commit', '-q', '-m', `${b.id}: commit synced files left in the worktree (auto-land; tracking files excluded)`, '--', ...plan.commit]);
     if (!c.code) res.committed = plan.commit;
   }
+  const t = resetTracking({ s, git, b, wt, paths: plan.reset });
+  res.reset = t.reset; res.resetCommit = t.commit;
   if (plan.code.length) return res;
   // push the branch when the worktree is ahead of GitHub (never forced; a branch that moved on GitHub is left alone)
   const ahead = g(['rev-list', '--count', `${s.remote}/${b.branch}..HEAD`]);
@@ -242,6 +298,7 @@ export function codeBehind({ s, git, br }) {
 
 /**
  * Resolve a stopped merge's conflicted files in worktree `wt` by land-core's rules (generated-files@1 manifest):
+ *   tracking     main's side (`mainSide`; a file main deleted is removed): tracking-paths@1, never a build's
  *   builds       the side `buildsSide` names (the builds-live merge driver did the rest)
  *   union        both sides' lines (git merge-file --union): THREADS, STATUS, logs, PORTING.md
  *   union-json   both sides' keys (land-core mergeJson3, main wins a scalar clash): help packs, catalog status
@@ -255,8 +312,15 @@ export function codeBehind({ s, git, br }) {
 export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', buildsSide = 'theirs', log = () => {} }) {
   const plan = core.planConflicts(left);
   if (plan.code.length) return { conflicts: plan.code };
-  const resolved = [];
+  const resolved = []; const tracked = [];
   const stage = (p, n) => { const x = g(['show', `:${n}:${p}`]); return x.code ? '' : `${x.out}\n`; };
+  // tracking files (tracking-paths@1): main's copy, whichever side main is; main deleted it = it goes (s6)
+  const mainStage = mainSide === 'ours' ? 2 : 3;
+  for (const p of plan.tracking) {
+    const has = g(['cat-file', '-e', `:${mainStage}:${p}`]).code === 0;
+    const r = has ? g(['checkout', `--${mainSide}`, '--', p]) : g(['rm', '-q', '--cached', '--ignore-unmatch', '--', p]);
+    if (r.code === 0) { if (has) g(['add', '--', p]); resolved.push(p); tracked.push(p); log(`${p}: main's copy taken (tracking file)`); }
+  }
   for (const p of plan.builds) { if (g(['checkout', `--${buildsSide}`, '--', p]).code === 0) { g(['add', '--', p]); resolved.push(p); } }
   for (const p of plan.union) {
     const f = (n, t) => { const q = join(dir, `${n}.txt`); writeFileSync(q, t); return q; };
@@ -278,7 +342,7 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
   const regenerated = [];
   const run = (cmd, timeout) => { const r = spawnSync(cmd[0], cmd.slice(1), { cwd: wt, encoding: 'utf8', timeout, maxBuffer: 16 << 20, env: { ...process.env, CI: '1' } }); return { code: r.status ?? 1, text: `${r.stderr || ''}${r.stdout || ''}`.trim().slice(-400) }; };
   const skipped = [];
-  for (const gen of core.regenPlan(plan.generated)) {
+  for (const gen of core.regenPlan([...plan.generated, ...plan.unionJson, ...plan.union])) {
     const r = run(gen.run, gen.timeoutMs);
     if (r.code) {
       // an optional generator that refuses (rebake: the app's baked files were edited in place) leaves main's copy, which main's CI passed
@@ -293,7 +357,7 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
     for (const t of core.landTests()) { const c = run(t, 180000); if (c.code) return { error: `tests after regenerating failed (${t.join(' ')}): ${c.text}` }; }
   }
   if (regenerated.length) log(`regenerated ${regenerated.join(', ')} after the merge`);
-  return { resolved, regenerated, skipped };
+  return { resolved, regenerated, skipped, tracking: tracked };
 }
 
 /**
@@ -310,7 +374,7 @@ export function mergeMain({ s, git, b, dry, log = () => {} }) {
     let r = git(['worktree', 'add', '-q', '--detach', wt, `${s.remote}/${b.branch}`]);
     if (r.code) return { merged: false, conflicts: [], pushError: `worktree: ${r.err.slice(-200)}` };
     const m = g([...drv, 'merge', '--no-edit', '-m', `Merge main into ${b.branch} (auto-land: builds files newer-wins, logs unioned, generated files regenerated)`, `${s.remote}/${s.base}`], { timeout: 180000 });
-    let resolved = []; let regenerated = [];
+    let resolved = []; let regenerated = []; let trackingTaken = [];
     if (m.code) {
       const left = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
       if (!left.length) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${m.err.slice(-200) || m.out.slice(-200)}` }; }
@@ -318,14 +382,14 @@ export function mergeMain({ s, git, b, dry, log = () => {} }) {
       const res = resolveConflicts({ g, wt, dir, left, mainSide: 'theirs', buildsSide: 'theirs', log });
       if (res.conflicts) { g(['merge', '--abort']); return { merged: false, conflicts: res.conflicts }; }
       if (res.error) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${res.error.slice(-300)}` }; }
-      resolved = res.resolved; regenerated = res.regenerated;
+      resolved = res.resolved; regenerated = res.regenerated; trackingTaken = res.tracking || [];
       const c = g([...drv, 'commit', '-q', '--no-edit']);
       if (c.code) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `commit: ${c.err.slice(-200)}` }; }
     }
     const sha = g(['rev-parse', 'HEAD']).out;
-    if (dry) return { merged: true, sha, conflicts: [], resolved, regenerated, dry: true };
+    if (dry) return { merged: true, sha, conflicts: [], resolved, regenerated, tracking: trackingTaken, dry: true };
     const p = g(['push', '-q', s.remote, `HEAD:refs/heads/${b.branch}`], { timeout: 90000 });
-    return p.code ? { merged: false, conflicts: [], resolved, regenerated, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved, regenerated };
+    return p.code ? { merged: false, conflicts: [], resolved, regenerated, tracking: trackingTaken, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved, regenerated, tracking: trackingTaken };
   } finally { git(['worktree', 'remove', '--force', wt]); rmSync(dir, { recursive: true, force: true }); }
 }
 
@@ -386,8 +450,10 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
           if (c.settling) { it.state = 'settling'; it.reason = { kind: 'running', text: `${b.id}: its worktree changed in the last 10 minutes; lands once it settles.`, quiet: true }; items.push(it); continue; }
           if (c.code.length) facts.code = c.code;
           if (c.pushError) facts.pushError = c.pushError;
-          it.cleaned = { committed: c.committed, archived: c.archived, skipped: c.skipped.length };
-          if (c.committed.length || !remoteHas(b.branch)) git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]);
+          it.cleaned = { committed: c.committed, reset: c.reset, ...(c.resetCommit ? { resetCommit: c.resetCommit } : {}), archived: c.archived, skipped: c.skipped.length };
+          if (c.reset.length || c.resetCommit) it.tracking = { ...(old.tracking || {}), reset: { at, files: c.reset.slice(0, 40), commit: c.resetCommit || '' } };
+          else if (old.tracking) it.tracking = old.tracking;
+          if (c.committed.length || c.resetCommit || !remoteHas(b.branch)) git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]);
         }
         if (!remoteHas(b.branch) && !facts.pushError) facts.pushError = `${b.branch} is not on GitHub and has no worktree here`;
         let pr = prOf(b.branch);
@@ -407,7 +473,10 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
             const m = mergeMain({ s, git, b, dry });
             if (m.conflicts?.length) facts.conflicts = m.conflicts;
             else if (m.pushError) facts.pushError = m.pushError;
-            else if (m.merged) { it.mergedMain = { sha: m.sha, resolved: m.resolved || [], regenerated: m.regenerated || [] }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]); }
+            else if (m.merged) {
+              it.mergedMain = { sha: m.sha, resolved: m.resolved || [], regenerated: m.regenerated || [] };
+              if (m.tracking?.length || m.regenerated?.length) it.tracking = { ...(it.tracking || old.tracking || {}), ...(m.tracking?.length ? { takeMain: { at, files: m.tracking.slice(0, 40), sha: m.sha } } : {}), ...(m.regenerated?.length ? { regenerate: { at, generators: m.regenerated, sha: m.sha } } : {}) }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]);
+            }
           }
           if (!pr && !facts.conflicts && !dry) {
             try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head and UI Review doesn't hold it.\n\n${String(b.detail || '').slice(0, 1500)}` }); if (pr?.number) crewSay('landing', 'start', `${b.id} is finished. Opened PR #${pr.number} and CI is on it.`, { ref: b.id, repo: s.repo }); }
@@ -550,6 +619,17 @@ export async function main(argv) {
     if (!m.merged) process.exitCode = 1;
     return print({ build: b.id, branch: b.branch, ...m }, text);
   }
+  if (cmd === 'tracking') {
+    // what the lander did with each build's tracking files (item.tracking in land.json): REST GET /land/tracking, MCP land-tracking
+    const t = trackingState(s, rest[0] && !rest[0].startsWith('--') ? rest[0] : '');
+    const when = (x) => (x ? `${x.at.slice(0, 16).replace('T', ' ')} (${(x.files || x.generators || []).length})` : '-');
+    return print(t, t.items.map((x) => `${x.build}${x.pr ? ` #${x.pr}` : ''}: reset ${when(x.tracking.reset)} · take-main ${when(x.tracking.takeMain)} · regenerate ${when(x.tracking.regenerate)}`).join('\n') || 'no finished builds to land');
+  }
+  if (cmd === 'tracking-show') {
+    const v = rest[0]; if (!['on', 'off', 'true', 'false'].includes(v)) throw new Error('tracking-show on|off');
+    const f = join(s.dataDir, 'config.json'); writeJson(f, { ...(readJson(f, {}) || {}), landShowTracking: v === 'on' || v === 'true' });
+    return print(trackingState(s), `tracking-file handling on the merge queue rows: ${v === 'on' || v === 'true' ? 'shown' : 'hidden'}`);
+  }
   if (cmd === 'list' || cmd === 'blocked') {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');
     return print({ ...st, items }, items.map(line).join('\n') || (cmd === 'blocked' ? 'nothing blocked' : 'no finished builds to land'));
@@ -559,7 +639,7 @@ export async function main(argv) {
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other> | merge-main <build> [--dry-run]');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | tracking [<build>] | tracking-show on|off | now <build> | hold <build> [--why …] | release <build> | after <build> <other> | merge-main <build> [--dry-run]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
