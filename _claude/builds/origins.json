@@ -6507,6 +6507,18 @@
    "from": "notes",
    "addenda": []
   },
+  "pending-optimizer-ai-finds-pending": {
+   "said": "It'd have to be AI that will optimize pending. It will take all the jobs that should be made one and combine them. It will go through all the pending builds, figure out which ones can be combined or should be, and optimize that and merge them all into their own build with the same steps that existed in the individual builds.",
+   "at": "2026-11-17T18:47:36.225Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "pending-tab-one-collapsed-row-per-2": {
    "said": "Why are pending builds not 1 expandable row. Wanna just rebuild it",
    "at": "2026-11-15T11:52:18.052Z",

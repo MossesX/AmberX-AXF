@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:44:48.296Z",
+ "updatedAt": "2026-11-17T18:47:38.243Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -178747,6 +178747,37 @@
      "createdAt": "2026-11-17T18:44:38.551Z"
     }
    ]
+  },
+  {
+   "id": "pending-optimizer-ai-finds-pending",
+   "title": "Pending optimizer: AI finds pending builds that should be one and combines them",
+   "category": "",
+   "detail": "An AI pass (on demand, plus automatically when a build is filed) goes through every Pending build, finds the ones that touch the same files, features or contracts (or would clash / redo each other) and proposes combining them. Combining makes one new build that keeps every step of the originals (done steps stay done, in order, with Brett's original words for each), and archives the originals with a link to the combined one. Builds that already have done steps on separate branches are only combined after their branches are merged together cleanly; otherwise they're flagged, not combined. Shows its reasoning per group; Brett can approve all, approve per group, or switch it to auto. Full API parity (deep link, state read, REST, MCP, CLI, voice). Tests + UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:47:36.225Z",
+   "updatedAt": "2026-11-17T18:47:36.225Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "It'd have to be AI that will optimize pending. It will take all the jobs that should be made one and combine them. It will go through all the pending builds, figure out which ones can be combined or should be, and optimize that and merge them all into their own build with the same steps that existed in the individual builds.",
+    "at": "2026-11-17T18:47:36.225Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
