@@ -7,9 +7,9 @@
  * Framework controls and theme tokens only (axp-cl prefix).
  */
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { Chip, Icon } from '@console/axf/react';
+import { Chip, ControlScope, Icon } from '@console/axf/react';
 import { KIND_LABEL, KIND_TONE, markSeen, pause, resume, toggleOpen, useClaudeLink, visible, type LinkEvent } from './claude-link';
-import { ClaudeLinkToolbar } from './claudeLinkToolbar';
+import { ClaudeLinkToolbar, LINK_ADDRESS } from './claudeLinkToolbar';
 
 const P = 'axp-cl';
 const time = (ts: number) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -34,9 +34,10 @@ export function ClaudeLinkTab({ active }: { active: boolean }) {
   const conn = st.conn === 'live' ? { tone: 'success' as const, text: 'Live' } : st.conn === 'connecting' ? { tone: 'warning' as const, text: 'Connecting…' } : { tone: 'danger' as const, text: 'Disconnected: reconnecting' };
   const hub = st.hub === null ? null : st.hub ? { tone: 'success' as const, text: 'axHub answers' } : { tone: 'danger' as const, text: 'axHub unreachable' };
   return (
-    <div className={P} hidden={!active} data-axf-target="view:terminal/tab:claude-link" aria-label="Claude link">
+    <div className={P} hidden={!active} aria-label="Claude link">
+      <ControlScope address={LINK_ADDRESS}>
       <ClaudeLinkToolbar status={<>
-        <span title={st.conn === 'live' ? 'The live stream is connected' : 'The stream dropped; it reconnects by itself and resumes after the last line'} data-axf-target="view:terminal/tab:claude-link/status"><Chip tone={conn.tone}>{conn.text}</Chip></span>
+        <span title={st.conn === 'live' ? 'The live stream is connected' : 'The stream dropped; it reconnects by itself and resumes after the last line'} data-axf-target="panel:status"><Chip tone={conn.tone}>{conn.text}</Chip></span>
         {hub && <span title={st.hubWhy}><Chip tone={hub.tone}>{hub.text}</Chip></span>}
       </>} />
       <div ref={list} className={`${P}__list`} role="log" aria-live={st.view.paused ? 'off' : 'polite'} aria-label="Claude link events" onScroll={onScroll}>
@@ -51,7 +52,7 @@ export function ClaudeLinkTab({ active }: { active: boolean }) {
           const hasDetail = Object.keys(e.detail ?? {}).length > 0;
           return (
             <div key={e.id} className={`${P}__row is-${e.level}`}>
-              <button type="button" data-fx-row className={`${P}__line`} aria-expanded={hasDetail ? open : undefined} disabled={!hasDetail} onClick={() => toggleOpen(e.id)}
+              <button type="button" data-fx-row data-axf-target={`button:event-${e.id}`} className={`${P}__line`} aria-expanded={hasDetail ? open : undefined} disabled={!hasDetail} onClick={() => toggleOpen(e.id)}
                 title={hasDetail ? (open ? 'Hide the detail' : 'Show the detail') : undefined}>
                 <span className={`${P}__time`}>{time(e.ts)}</span>
                 <span className={`${P}__kind`}><Chip tone={KIND_TONE[e.kind]}>{KIND_LABEL[e.kind] ?? e.kind}</Chip></span>
@@ -66,10 +67,11 @@ export function ClaudeLinkTab({ active }: { active: boolean }) {
         })}
       </div>
       {st.view.paused && st.unseen > 0 && (
-        <button type="button" className={`fx-btn fx-btn--primary ${P}__jump`} onClick={jump} data-axf-target="view:terminal/tab:claude-link/action:jump">
+        <button type="button" className={`fx-btn fx-btn--primary ${P}__jump`} onClick={jump} data-axf-target="button:jump">
           <Icon name="chevron-down" size={13} /> {st.unseen} new
         </button>
       )}
+      </ControlScope>
     </div>
   );
 }
