@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:21:27.502Z",
+ "updatedAt": "2026-11-17T15:26:11.668Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171535,7 +171535,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T15:08:12.622Z",
+   "updatedAt": "2026-11-17T15:26:09.604Z",
    "builtAt": "",
    "notes": [
     {
@@ -171574,25 +171574,6 @@
     "addenda": []
    },
    "steps": [
-    {
-     "id": "s13",
-     "text": "Bring back the 'Open in' choice that #628 dropped: every settings interface (and a global default in Settings) lets Brett pick where it opens: floating window (default), main area, or new tab. Each entry point (banner, nav, toolbar, tab group, plugin gear, app menu) honours it. Shown in the settings interface itself and reachable via REST, MCP, CLI, voice.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwktucdv01v4h4",
-     "createdAt": "2026-11-17T15:08:12.623Z"
-    },
     {
      "id": "s1",
      "text": "Find the floating settings window that #628 (all-settings-interfaces-open-floating) added: run git show on the #628 merge to get its open function and route. Then list every chrome entry point that still opens settings in the main area: right-click and long-press Settings… on banner, nav menu, toolbar, tab group and menu bar; the axf.chrome.settings dialog; and plugin settings gears reached from those menus. Write the list to _claude/builds/reports/settings-opened-banners-nav-menu.md (inventory section).",
@@ -171655,8 +171636,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:26:09.604Z",
      "note": "",
      "uid": "st-mwkt5lq4039an6",
      "createdAt": "2026-11-17T14:48:58.684Z"

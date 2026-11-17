@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7528,
- "updatedAt": "2026-11-17T15:21:27.502Z",
+ "rev": 7529,
+ "updatedAt": "2026-11-17T15:26:11.668Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -263945,7 +263945,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T15:08:12.622Z",
+   "updatedAt": "2026-11-17T15:26:09.604Z",
    "builtAt": "",
    "notes": [
     {
@@ -264021,28 +264021,6 @@
    },
    "steps": [
     {
-     "id": "s13",
-     "uid": "st-mwktucdv01v4h4",
-     "title": "",
-     "text": "Bring back the 'Open in' choice that #628 dropped: every settings interface (and a global default in Settings) lets Brett pick where it opens: floating window (default), main area, or new tab. Each entry point (banner, nav, toolbar, tab group, plugin gear, app menu) honours it. Shown in the settings interface itself and reachable via REST, MCP, CLI, voice.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-17T15:08:12.623Z",
-     "updatedAt": "2026-11-17T15:08:12.982Z"
-    },
-    {
      "id": "s1",
      "uid": "st-mwkt5lq401tjwn",
      "title": "",
@@ -264112,12 +264090,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:26:09.604Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:48:58.684Z",
-     "updatedAt": "2026-11-17T14:48:58.684Z"
+     "updatedAt": "2026-11-17T15:26:09.879Z"
     },
     {
      "id": "s4",
