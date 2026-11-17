@@ -39,11 +39,15 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import health, nav, sessions, store
+from . import claude_link, health, nav, sessions, store
 
 router = APIRouter()
 health.ensure()
 plugin_services.provide("axf.session-feed@1", nav.SessionFeed(), "console-terminal")
+# Claude link (terminal-main-tab-streaming-console-s): the console's connection to Claude and axHub as one live log
+BUS = claude_link.make_bus(store.data_dir, int(store.settings().get("claudeLinkBuffer") or claude_link.DEFAULT_SIZE))
+LINK = claude_link.ClaudeLinkService(BUS)
+plugin_services.provide("axf.claude-link@1", LINK, "console-terminal")
 
 
 def _err(e: Exception) -> HTTPException:
