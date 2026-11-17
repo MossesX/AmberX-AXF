@@ -35,6 +35,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Thread | State | Branch | PR | Queued / next | Updated |
 | axf-data on Postgres: real tables in its own container (`axf-data-postgres-real-tables-own`, Fable + Opus; Brett Nov 15: "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres."): Postgres 16 in `axf-data-db` (private volume), builds/steps, UI Review, planner, settings, notes, control registry as real tables, ledger + chats mirrored, SQLite → shadow → postgres engine move, pg_dump backups; data-store@1 unchanged | review | `claude/axf-data-postgres-real-tables-own` | #713 | lands after #704; then `sudo bash deploy/install-data.sh` on the VPS (fresh install starts on Postgres), migrate + shadow one namespace at a time; ledger + chat viewer onto rows is a follow-up | Nov 17 2026 |
 | Data container: axf-data holds all console data (`data-container-axf-data-holds-all`, Fable contract + Opus; Brett Nov 15: "the console goes down, all the data is still available, all the notes are available, and the builds keep running."): `services/axf-data` (data-store@1, backups, MCP for axHub), data layer on every writer, data-migrate + data-mode (staged: shadow, then cutover at zero drift), Settings → Plugins → Data store, console-down drill passed | review (UI Review waiting: 3 layouts) | `claude/data-container-axf-data-holds-all` | #704 | VPS install after merge; axHub repo registers the downstream; migrate + shadow one namespace at a time | Nov 15 2026 |
+| Land duplicate projects and templates (`land-project-duplicate-boilerplate`, Opus; Brett Nov 13: "land duplicate projects and templates"): main merged into #621 clean (status.json / PORTING.md clash already settled, checked: no duplicate keys, one PORTING entry); project-templates 45 checks, project-wizard test, theme, controls, tracker, fixtures green | done | `claude/project-duplicate-boilerplate` | #621 | Lands through the merge queue. Report `_claude/builds/reports/land-project-duplicate-boilerplate.md` | 2026-11-14 |
 | Get main green, unblock the lander, land axf-data and Postgres (`get-main-green-unblock-lander-land-axf`) | in-pr | `claude/get-main-green-unblock-lander-land-axf` |  |  | 2026-11-16 |
 | Build rules tab in Gate & rules: the VPS owns and enforces the builder rules (Opus; Brett Nov 15: "Will the VPS make sure it builds the home card instead of Claude? … put them all in that plugin."): Builds → Gate & rules → Build rules, 118 rules (46 VPS, 72 session), runner + 7 fixers, dispatcher/lander wiring, REST/MCP/CLI/voice, VPS rules out of CLAUDE.md and briefs (`build-rules-tab-gate-rules-vps-owns`) | in-pr | `claude/build-rules-tab-gate-rules-vps-owns` | #715 | UI Review r-20261115-0969e483 waiting (3 list views); then the merge queue; claude-sync sync from main after landing | 2026-11-15 |
 | Molly gap: axHub CORS with credentials on /auth/api/* (`molly-gap-axhub-cors`, Opus; Brett Nov 10: "Standalone apps keep working until Molly covers them; list gaps as pending builds."): hub answers an allow-list (`AXHUB_API_ORIGINS`, default Molly) with the origin echoed, credentials true, Vary Origin, 204 preflight allowing content-type / accept / x-axhub-csrf; unlisted origins unchanged; writes still need CSRF | phase 1 done (s1–s3); axHub PR open | `claude/molly-gap-axhub-cors` (AXF + axHub) | [axHub#45](https://github.com/MossesX/axHub/pull/45) | Merge + redeploy the hub, then pending build `molly-gap-axhub-cors-live`. Report `_claude/builds/reports/molly-gap-axhub-cors.md` | 2026-11-15 |
@@ -818,38 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 22:55 UTC · `own-look-per-grid-and-tab-group` → running, note (all) · pipeline
-- 2026-11-16 22:56 UTC · `own-look-per-grid-and-tab-group` s1 done (all) · orchestrator
-- 2026-11-16 22:57 UTC · `icon-pack-studio-fable` note (all) · orchestrator
-- 2026-11-16 22:57 UTC · `icon-pack-studio-fable` note (all) · builds-live
-- 2026-11-16 22:58 UTC · `banner-widget-shapes-and-change-icon` note (all) · orchestrator
-- 2026-11-16 22:59 UTC · `icon-packs-with-drag-drop-pack-designer` added (0 steps) (all) · console
-- 2026-11-16 22:59 UTC · `icon-packs-with-drag-drop-pack-designer` → queued, note (all) · console
-- 2026-11-16 22:59 UTC · `banner-widget-shapes-plus-change-icon` added (0 steps) (all) · console
-- 2026-11-16 22:59 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · console
-- 2026-11-16 23:00 UTC · `attach-widgets-to-any-toolbar-banner` s1 done, → running (all) · orchestrator
-- 2026-11-16 23:01 UTC · `toolbar-widgets-in-any-banner-style` branch claude/attach-widgets-to-any-toolbar-banner (all) · orchestrator
-- 2026-11-16 23:01 UTC · `toolbar-widgets-in-any-banner-style` note (all) · orchestrator
-- 2026-11-16 23:01 UTC · `toolbar-widgets-in-any-banner-style` → complete (all) · orchestrator
-- 2026-11-16 23:01 UTC · `banner-widget-shapes-and-change-icon` note (all) · orchestrator
-- 2026-11-16 23:02 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · orchestrator
-- 2026-11-16 23:03 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · builds-live
-- 2026-11-16 23:03 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
-- 2026-11-16 23:04 UTC · `own-look-per-grid-and-tab-group` s2 done (all) · orchestrator
-- 2026-11-16 23:04 UTC · `attach-widgets-to-any-toolbar-banner` s2 done (all) · orchestrator
-- 2026-11-16 23:04 UTC · `icon-packs-with-drag-drop-pack-designer` → running, note (all) · pipeline
-- 2026-11-16 23:04 UTC · `icon-packs-with-drag-drop-pack-designer` branch claude/icon-packs-with-drag-drop-pack-designer (all) · pipeline
-- 2026-11-16 23:04 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · orchestrator
-- 2026-11-16 23:04 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · pipeline
-- 2026-11-16 23:04 UTC · `banner-widget-shapes-plus-change-icon` branch claude/banner-widget-shapes-plus-change-icon (all) · pipeline
-- 2026-11-16 23:04 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
-- 2026-11-16 23:05 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · pipeline
-- 2026-11-16 23:07 UTC · `own-look-per-grid-and-tab-group` s3 done (all) · orchestrator
-- 2026-11-16 23:10 UTC · `attach-widgets-to-any-toolbar-banner` s3 done (all) · orchestrator
-- 2026-11-16 23:11 UTC · `own-look-per-grid-and-tab-group` s4 done (all) · orchestrator
-- 2026-11-16 23:12 UTC · `banner-widget-shapes-plus-change-icon` s1 done, → running (all) · orchestrator
-- 2026-11-16 23:13 UTC · `auto-lander-controls-in-the-gate-plugin` → archived, note (all) · cli
-- 2026-11-16 23:13 UTC · `fable-rebuild-plan-studio-cleared-out` → queued, note (all) · brett
 - 2026-11-16 23:13 UTC · `always-fill-every-slot-when-slots-are` → queued, note (all) · brett
 - 2026-11-16 23:13 UTC · `icon-packs-with-drag-drop-pack-designer` s1 done, → running (all) · orchestrator
 - 2026-11-16 23:14 UTC · `icon-packs-with-drag-drop-pack-designer` s1 done (all) · foreign-write
@@ -1218,6 +1187,38 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:44 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` branch claude/axhub-raise-per-project-memory-file-cap-from-500-to-750 (all) · pipeline
 - 2026-11-17 00:44 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` note (all) · orchestrator
 - 2026-11-17 00:44 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
+- 2026-11-17 00:45 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` → running, note (all) · pipeline
+- 2026-11-17 00:45 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` branch claude/every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field (all) · pipeline
+- 2026-11-17 00:45 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` note (all) · orchestrator
+- 2026-11-17 00:46 UTC · `stop-auto-lander-committing-tracking` s13 done (all) · orchestrator
+- 2026-11-17 00:46 UTC · `server-rule-done-means-merged-working` s3 done (all) · orchestrator
+- 2026-11-17 00:47 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
+- 2026-11-17 00:48 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` → running, note (all) · pipeline
+- 2026-11-17 00:48 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` branch claude/rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou (all) · pipeline
+- 2026-11-17 00:48 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
+- 2026-11-17 00:48 UTC · `stop-auto-lander-committing-tracking` s14 done, → built (all) · orchestrator
+- 2026-11-17 00:48 UTC · `every-plugin-screen-gets-a-settings-gear` s19 done (all) · orchestrator
+- 2026-11-17 00:49 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
+- 2026-11-17 00:49 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` s1 done, → running (all) · orchestrator
+- 2026-11-17 00:51 UTC · `land-per-instance-settings-picker` s1 done (all) · orchestrator
+- 2026-11-17 00:51 UTC · `land-per-instance-settings-picker` s2 done (all) · orchestrator
+- 2026-11-17 00:52 UTC · `land-per-instance-settings-picker` s3 done, → complete (all) · orchestrator
+- 2026-11-17 00:53 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
+- 2026-11-17 00:53 UTC · `land-per-instance-settings-picker` → pending, note (all) · pipeline
+- 2026-11-17 00:55 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` s1 done, → running (all) · orchestrator
+- 2026-11-17 00:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` s2 done, → complete (all) · orchestrator
+- 2026-11-17 00:56 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` s1 done, → running (all) · orchestrator
+- 2026-11-17 00:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` note (all) · orchestrator
+- 2026-11-17 00:56 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` s2 done (all) · orchestrator
+- 2026-11-17 00:57 UTC · `every-plugin-screen-gets-a-settings-gear` s20 done, → complete (all) · orchestrator
+- 2026-11-17 00:57 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
+- 2026-11-17 00:58 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` s3 done, → complete (all) · orchestrator
+- 2026-11-17 00:59 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` note (all) · orchestrator
+- 2026-11-17 00:58 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` note (all) · orchestrator
+- 2026-11-17 00:59 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` s2 done (all) · orchestrator
+- 2026-11-17 01:00 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` s2 done (all) · foreign-write
+- 2026-11-17 01:00 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` s3 done, → complete (all) · orchestrator
+- 2026-11-17 01:01 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
 
 ## Token passes (log)
 
