@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { Button } from './Controls';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
@@ -121,6 +122,7 @@ export function ToastHost() {
             {t.title && <strong>{t.title}</strong>}
             <span>{t.message}</span>
           </div>
+          {t.act && <Button size="sm" tone="neutral" onClick={() => { rt.dismissToast(t.id); rt.dispatch(t.act!.action); }}>{t.act.label}</Button>}
           <button type="button" className="fx-iconbtn" onClick={() => rt.dismissToast(t.id)} aria-label="Dismiss">
             <Icon name="x" size={14} />
           </button>
@@ -147,6 +149,9 @@ export function ContextMenuHost() {
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       // which banner widget was hit: its menu offers Widget settings for that one
       rt.contextBannerWidget = target?.closest('[data-axf-banner-item]')?.getAttribute('data-axf-banner-item') ?? null;
+      // any widget host (banner, toolbar): the widget under the pointer, for its Hide (hidden-assets@1)
+      const wEl = target?.closest('[data-axf-banner-item], [data-axf-toolbar-widget]');
+      rt.contextWidget = wEl ? { host: wEl.hasAttribute('data-axf-banner-item') ? 'banner' : 'toolbar', key: wEl.getAttribute('data-axf-banner-item') ?? wEl.getAttribute('data-axf-toolbar-widget') ?? '' } : null;
       // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
       // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
       // an implicit target's instance id: its settings id, else its accessible name as a slug (hidden.tsx, shared with

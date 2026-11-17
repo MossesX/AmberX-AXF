@@ -284,5 +284,15 @@ console.log(`check-hidden-assets: ${n} checks passed`);
   ok(/export function useHidden\(/.test(shell) && /export function Hideable\(/.test(shell) && /installHiddenChrome/.test(readFileSync(join(root, 'react/AxfProvider.tsx'), 'utf8')), 'useHidden, Hideable and the DOM pass are installed');
   for (const [f, re] of [['react/components/TabGroup.tsx', /useHidden\('tab-group', id\)/], ['react/components/Chrome.tsx', /useHidden\('toolbar', id\)/], ['react/components/BannerSettings.tsx', /useHidden\('banner', id\)/]] as const) ok(re.test(readFileSync(join(root, f), 'utf8')), `${f} draws nothing while hidden`);
   ok(/\[data-axf-hidden-piece\] \{ display: none !important; \}/.test(readFileSync(join(root, 'ui/axf.css'), 'utf8')), 'a hand-drawn hidden piece takes no room');
+
+  // s7 right-click Hide: the shared chrome block offers Hide on every kind, the action toasts with Undo
+  const cc = readFileSync(join(root, 'react/components/ChromeContext.tsx'), 'utf8');
+  ok(/rt\.hideableKinds\(\)\.includes\(type\)\) items\.push\(\{ id: `chrome-hide-\$\{type\}`/.test(cc), 'chromeMenu has Hide <kind> for every hideable kind');
+  ok(/register\('chrome\.hide'/.test(cc) && /register\('chrome\.unhide'/.test(cc) && /\{ label: 'Undo', action: `chrome\.unhide:\$\{kind\}:\$\{id\}` \}/.test(cc), 'chrome.hide / chrome.unhide, with an Undo toast');
+  ok(/t\.act && <Button/.test(readFileSync(join(root, 'react/components/Overlays.tsx'), 'utf8')), 'a toast draws its action button');
+  const t0 = flow.getState().toasts.length;
+  flow.toast('x', 'info', 'Hidden', { label: 'Undo', action: 'chrome.unhide:toolbar:app' });
+  eq(flow.getState().toasts.at(-1)!.act, { label: 'Undo', action: 'chrome.unhide:toolbar:app' }, 'a toast keeps its action');
+  ok(flow.getState().toasts.length === t0 + 1, 'one toast');
   console.log(`check-hidden-assets (runtime): ${n} checks passed`);
 }

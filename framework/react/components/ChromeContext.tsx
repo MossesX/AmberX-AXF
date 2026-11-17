@@ -29,6 +29,9 @@
  *                                                per-instance-settings-window-picker)
  *   chrome.unset:<type>:<instance>:<field>       reset one field: it inherits from the app's asset again
  *   chrome.edits                                 open Settings → Appearance at the "Assets with edits" list
+ *   chrome.hide:<kind>:<instance>                hide one piece in this app (hidden-assets@1; widget ids are <type>:<id>);
+ *                                                the toast offers Undo
+ *   chrome.unhide:<kind>:<instance>              show it again
  *   settings.controlled-colour:<warning|accent|info|success|danger>   the colour that marks overridden settings
  *   tapconfirm.item:<type>:<instance>:<inherit|on|off>    one item's Tap to confirm (= chrome.set …:tapConfirm:…)
  *   tapconfirm.kind:<type>:<on|off>               Tap to confirm for a whole kind (every toolbar, tab group, nav, …)
@@ -157,6 +160,12 @@ export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, a
   return rt.swap(type as AssetType, id);
 }
 
+/** A hidden piece in words: "Toolbar page.tools", "Menu bar", "Widget clock:main". */
+export function hiddenPieceLabel(kind: string, id: string): string {
+  const name = kind === 'widget' ? 'Widget' : kind === 'app-menu' ? 'Menu bar' : isChromeType(kind) ? chromeLabel(kind) : kind;
+  return id === CHROME_APP_INSTANCE ? `${name} (whole app)` : `${name} ${id}`;
+}
+
 /** The context-menu block every chrome kind shares. */
 export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): MenuEntry[] {
   const label = chromeLabel(type);
@@ -169,6 +178,11 @@ export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): 
     const cur = m.via === 'instance' ? chromeFieldValue(type, baseDataOf(rt, type, instance), rt.settings.get(CHROME_INSTANCE_KEY(type, instance)), m.field) : (rt.asset('layout').data as unknown as Record<string, unknown>)[m.field];
     items.push({ id: `chrome-move-${type}`, label: 'Move', icon: 'move', items: m.positions.map((p) => ({ id: `chrome-move-${type}-${p}`, label: `${POSITION_LABELS[p]}${cur === p ? ' ✓' : ''}`, action: `chrome.move:${type}:${instance}:${p}` })) });
   }
+  // hidden-assets@1: hide this one piece in this app (Settings → Appearance → Hidden, the Assets menu bring it back)
+  if (rt.hideableKinds().includes(type)) items.push({ id: `chrome-hide-${type}`, label: `Hide ${type === 'app-menu' ? 'menu bar' : label.toLowerCase()}`, icon: 'eye', action: `chrome.hide:${type}:${instance}` });
+  // a toolbar widget under the pointer: hide just that widget (banner widgets carry their own Hide, banner.widgets host)
+  const w = rt.contextWidget;
+  if (type === 'toolbar' && w && w.host === 'toolbar') items.push({ id: 'chrome-hide-widget', label: `Hide widget ${w.key.slice(w.key.indexOf(':') + 1)}`, icon: 'eye', action: `chrome.hide:widget:${w.key}` });
   // every chrome kind leads to this app's own look; the action asks first (lib-settings)
   if (rt.actions.list().some(({ id }) => id === 'skin.restore.ask')) items.push({ id: `chrome-restore-${type}`, label: 'Restore to default…', icon: 'refresh', action: 'skin.restore.ask' });
   return items;
@@ -194,6 +208,17 @@ export function installChrome(rt: AxfRuntime): void {
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.unset', ([type, instance, key = ''], ctx) => { const ty = t(type); if (ty && key) setChromeField(rt, ty, inst(ty, instance, ctx), key, null); }, { label: 'Reset one chrome setting to the app (chrome.unset:<type>:<instance>:<field>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.edits', () => rt.dispatch('settings.open:appearance'), { label: 'Assets with edits (Settings → Appearance)' });
+    // hidden-assets@1: one piece at a time; the id is everything after the kind (a widget's is <type>:<id>)
+    rt.actions.register('chrome.hide', ([kind = '', ...rest], ctx) => {
+      const id = rest.join(':') || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE;
+      if (rt.isHidden({ kind, id })) return;
+      if (!rt.hide({ kind, id })) return;
+      rt.toast(`${hiddenPieceLabel(kind, id)} is hidden. Settings → Appearance → Hidden brings it back.`, 'info', 'Hidden', { label: 'Undo', action: `chrome.unhide:${kind}:${id}` });
+    }, { label: 'Hide one tab group, toolbar, banner, nav, menu bar or widget in this app (chrome.hide:<kind>:<id>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.unhide', ([kind = '', ...rest], ctx) => {
+      const id = rest.join(':') || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE;
+      if (rt.isHidden({ kind, id }) && rt.unhide({ kind, id })) rt.toast(`${hiddenPieceLabel(kind, id)} is back.`, 'success', 'Shown');
+    }, { label: 'Show a hidden piece again (chrome.unhide:<kind>:<id>)', params: true, requires: 'assets.swap' });
     // component-tokens@1: one tab row's (or grid's) own token values; the same three moves as the settings dialog's panel
     const fam = (v: unknown): ComponentTokenFamily | null => (isComponentTokenFamily(v) ? v : null);
     rt.actions.register('chrome.token', ([family, instance, key = '', ...rest], ctx) => {
@@ -507,7 +532,7 @@ export const chromeDialogs: DialogMap = {
 };
 
 /** Every chrome type's settings reachable by voice: the catalog lists these ids (console.actions). */
-export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits'] as const;
+export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits', 'chrome.hide', 'chrome.unhide'] as const;
 export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS_LABELS };
 
 /**

@@ -45,7 +45,7 @@ import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppear
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
-import { hide as hideAsset, hiddenAssetKinds, hiddenAssetTarget, hiddenAssetTargetError, hiddenCount, isHidden as isAssetHidden, listHidden, unhide as unhideAsset, unhideAll as unhideAllAssets, type HiddenAsset, type HiddenAssetRef } from './engines/hidden-assets';
+import { hide as hideAsset, hiddenAssetKinds, hiddenAssetTarget, isHiddenAssetId, hiddenAssetTargetError, hiddenCount, isHidden as isAssetHidden, listHidden, unhide as unhideAsset, unhideAll as unhideAllAssets, type HiddenAsset, type HiddenAssetRef } from './engines/hidden-assets';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -1547,6 +1547,8 @@ export class AxfRuntime {
   /** Everything that ever attached itself to the banner while this page ran. */
   /** The widget under the last right-click or long-press on the banner (`type:id`), set by the context menu host. */
   contextBannerWidget: string | null = null;
+  /** The widget under the last right-click on any widget host (`{ host, key }`), for its Hide (hidden-assets@1). */
+  contextWidget: { host: string; key: string } | null = null;
   private readonly bannerSeen = new Map<string, { type: string; id: string; origin: string; at: string; order: number; hint?: BannerWidgetHint }>();
 
   /** The setting holding the widget choices: one per app and form factor. A look setting, so it syncs through axHub. */
@@ -2530,9 +2532,9 @@ export class AxfRuntime {
     this.set({ dialog: null });
   }
 
-  toast(message: string, kind: Toast['kind'] = 'info', title?: string) {
+  toast(message: string, kind: Toast['kind'] = 'info', title?: string, act?: Toast['act']) {
     const popup = this.asset('popup').data;
-    const t: Toast = { id: ++this.toastSeq, kind, title, message, scope: this.uiScope };
+    const t: Toast = { id: ++this.toastSeq, kind, title, message, scope: this.uiScope, ...(act ? { act } : {}) };
     const toasts = [...this.state.toasts, t].slice(-popup.maxVisible);
     this.set({ toasts });
     // the behaviour theme's toast time wins when it sets one (0 = the pop-up asset's); 0 on the asset = stay until closed
@@ -3406,7 +3408,8 @@ export class AxfRuntime {
         const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) : null;
         if (hit) items.push(
           { id: 'banner-widget-settings', label: `Widget settings: ${hit.label}`, icon: 'settings', action: `banner.widgets:${hit.key}` },
-          { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: `banner.widget:${hit.key}:hide` },
+          // hidden-assets@1: listed under Hidden with the rest (the Widgets dialog keeps its own per-device switch)
+          { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: isHiddenAssetId(hit.key) ? `chrome.hide:widget:${hit.key}` : `banner.widget:${hit.key}:hide` },
         );
       }
       items.push({ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` });
