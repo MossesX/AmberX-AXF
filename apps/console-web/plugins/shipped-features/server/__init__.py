@@ -20,6 +20,12 @@ only); every write goes through the Node side (ledger/ledger.mjs), so the refere
     POST /ship/{build}        gather and send one build's manifest now
     POST /link                link a build to its branch / PR / merge time (builds store write, hooks fire)
     POST /backfill            { since, dry }: landed builds with no manifest since the date get one
+    GET  /features/{id}/open-target   where the feature opens in the console (console-control@1 address) or why not
+    GET  /features/open-targets           every feature's open target (the grid's Open buttons)
+    GET  /builds/{build}/open-targets     the open targets of a build's features (Gate's Pending features rows)
+    GET  /features/find?q=    a feature named in words (or its id): best match + close alternatives when ambiguous
+    GET  /features/open-target?feature=<id or words> · POST /features/open { feature, to?, by? }: the same, by name
+    POST /features/{id}/open  { to?, by? }: open it in the live console (console-control open); 409 + reason when it can't
 
 Manifest writes run framework/cli/shipped.mjs (Node), so the builds store stays the one writer and every listener
 hears the change; the ledger takes the manifest on the next sync (started right after each write).
@@ -37,7 +43,9 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
+
+from . import open_target as ot
 
 import data_store
 
@@ -323,6 +331,156 @@ def link(body: dict[str, Any]) -> dict[str, Any]:
     return r
 
 
+# ------------------------------------------------------------------ open a feature in the live console (console-control@1)
+
+
+def _feature_doc(fid: str) -> dict[str, Any] | None:
+    c = _connect()
+    if c is None:
+        raise HTTPException(404, "the ledger isn't built yet")
+    try:
+        rows = _docs(c, "SELECT doc FROM features WHERE id = ?", fid)
+        return rows[0] if rows else None
+    finally:
+        c.close()
+
+
+def _control(body: dict[str, Any]) -> dict[str, Any]:
+    """One console-control@1 command through the console's own runner (same guards, policy and audit as /do)."""
+    try:
+        import console_control_api  # the console server's module (absent outside the console)
+    except ImportError:
+        return {"ok": False, "code": "unavailable", "message": "no console server here to send it through"}
+    return console_control_api.command(body, str(body.get("by") or "api"))
+
+
+def resolve(fid: str) -> dict[str, Any]:
+    """The open target of one feature by id (404 when there is no such feature)."""
+    if not ID.match(fid):
+        raise HTTPException(400, "bad feature id")
+    f = _feature_doc(fid)
+    if f is None:
+        raise HTTPException(404, "no such feature")
+    return ot.open_target(f, ot.load_registry())
+
+
+class NoTarget(Exception):
+    """A feature with no screen: answered as 409 with the reason at the top level (voice and the CLI read `message`)."""
+
+    def __init__(self, body: dict[str, Any]):
+        super().__init__(body.get("message", ""))
+        self.body = body
+
+
+def say_target(t: dict[str, Any]) -> str:
+    """One spoken line: where it opens, or why it can't."""
+    name = t.get("name") or t.get("feature") or "That feature"
+    return f"{name} opens at {t.get('label')}." if t.get("target") else f"{name} can't be opened: {t.get('reason')}."
+
+
+def open_feature(t: dict[str, Any], body: dict[str, Any]) -> dict[str, Any]:
+    """Open a resolved target in the console the person used last (or `to`); no target → NoTarget (409) with the reason."""
+    name = t.get("name") or t.get("feature")
+    if not t.get("target"):
+        raise NoTarget({"ok": False, "code": t.get("code"), "message": say_target(t), "openTarget": t})
+    cmd = {"verb": "open", "address": t["target"], "by": str(body.get("by") or "shipped-features")[:80], "to": str(body.get("to") or "recent")[:80],
+           "reason": f"Open {name} from Shipped features"}
+    r = _control(cmd)
+    status = "delivered" if r.get("ok") else ("pending" if r.get("code") == "unavailable" else "failed")
+    msg = {"delivered": f"Opened {name}: {t.get('label')}.", "pending": f"No console is open. {name} opens at {t.get('label')} when one is."}.get(status, f"Couldn't open {name}: {r.get('message') or 'the console said no'}.")
+    return {**r, "ok": status != "failed", "status": status, "message": msg, "openTarget": t}
+
+
+def _no_target(e: NoTarget) -> JSONResponse:
+    return JSONResponse(e.body, status_code=409)
+
+
+def _all_features() -> list[dict[str, Any]]:
+    c = _connect()
+    if c is None:
+        raise HTTPException(404, "the ledger isn't built yet")
+    try:
+        return _docs(c, "SELECT doc FROM features")
+    finally:
+        c.close()
+
+
+def lookup(ref: str) -> tuple[str, dict[str, Any]]:
+    """A feature named by id or in words → (its id, the find answer). 404 when nothing fits."""
+    ref = ref.strip()[:200]
+    if not ref:
+        raise HTTPException(400, "say which feature: an id or a few words of its name")
+    if ID.match(ref) and _feature_doc(ref) is not None:
+        return ref, {"q": ref, "match": {"id": ref}, "alternatives": [], "ambiguous": False}
+    r = ot.find(_all_features(), ref)
+    if not r["match"]:
+        raise HTTPException(404, f"no feature matches '{ref}'")
+    return r["match"]["id"], r
+
+
+@router.get("/features/find")
+def feature_find(q: str = "", limit: int = 5) -> dict[str, Any]:
+    """A feature named in words (or its id): the best match, and close alternatives when it's ambiguous."""
+    if not q.strip():
+        raise HTTPException(400, "q is the feature's id or a few words of its name")
+    return ot.find(_all_features(), q, max(2, min(limit, 20)))
+
+
+@router.get("/features/open-target")
+def feature_open_target_by(feature: str = "") -> dict[str, Any]:
+    """open-target for a feature named by id or in words; carries the lookup (alternatives when ambiguous)."""
+    fid, found = lookup(feature)
+    t = resolve(fid)
+    return {**t, "message": say_target(t), "lookup": found}
+
+
+@router.post("/features/open", response_model=None)
+def feature_open_by(body: dict[str, Any]) -> dict[str, Any] | JSONResponse:
+    """Open a feature named by id or in words: { feature, to?, by? }. The best match opens; alternatives come back."""
+    fid, found = lookup(str(body.get("feature") or body.get("id") or body.get("q") or ""))
+    try:
+        r = open_feature(resolve(fid), body)
+    except NoTarget as e:
+        return _no_target(NoTarget({**e.body, "lookup": found}))
+    if found.get("ambiguous"):
+        r["message"] += " Also close: " + "; ".join(a["name"] for a in found["alternatives"][:3]) + "."
+    return {**r, "lookup": found}
+
+
+@router.get("/features/open-targets")
+def feature_open_targets() -> dict[str, Any]:
+    """Every feature's open target in one answer (the grid draws its Open buttons from it): {targets: {id: target}}."""
+    reg = ot.load_registry()
+    out = {}
+    for f in _all_features():
+        t = ot.open_target(f, reg)
+        out[f["id"]] = {k: t[k] for k in ("target", "label", "via", "code", "reason") if t.get(k) is not None}
+    return {"targets": out, "count": len(out), "openable": sum(1 for t in out.values() if t.get("target"))}
+
+
+@router.get("/builds/{build}/open-targets")
+def build_open_targets(build: str) -> dict[str, Any]:
+    """The open targets of every feature a build added or changed (the Gate's Pending features rows use this)."""
+    if not BUILD_ID.match(build):
+        raise HTTPException(400, "bad build id")
+    return {"build": build, "features": ShippedFeaturesService().open_targets_for_build(build)}
+
+
+@router.get("/features/{fid}/open-target")
+def feature_open_target(fid: str) -> dict[str, Any]:
+    """Where this feature opens in the console: {target, label, via} or {target: null, code, reason}."""
+    return resolve(fid)
+
+
+@router.post("/features/{fid}/open", response_model=None)
+def feature_open(fid: str, body: dict[str, Any] | None = None) -> dict[str, Any] | JSONResponse:
+    """Open the feature's screen in the live console (console-control open); 409 with the reason when it has none."""
+    try:
+        return open_feature(resolve(fid), body or {})
+    except NoTarget as e:
+        return _no_target(e)
+
+
 @router.post("/backfill")
 def backfill(body: dict[str, Any]) -> dict[str, Any]:
     """Landed builds since a date with no manifest (store builds and build_land merges on main) get one."""
@@ -335,3 +493,48 @@ def backfill(body: dict[str, Any]) -> dict[str, Any]:
     if not body.get("dry"):
         _after_write()
     return r
+
+
+# ------------------------------------------------------------------ capability service (axf.shipped-features@1)
+
+
+class ShippedFeaturesService:
+    """What other plugins (the Gate's Pending features rows) use instead of this plugin's folder name."""
+
+    def open_target(self, feature_id: str) -> dict[str, Any]:
+        """Where one feature opens, or why it can't (same answer as GET features/{id}/open-target)."""
+        try:
+            return resolve(feature_id)
+        except HTTPException as e:
+            return {"feature": feature_id, "target": None, "code": "not-found", "reason": str(e.detail)}
+
+    def open_targets_for_build(self, build_id: str) -> list[dict[str, Any]]:
+        """Every feature a build added or changed, each with where it opens (a build that hasn't landed: not-live)."""
+        if not BUILD_ID.match(build_id or ""):
+            return []
+        c = _connect()
+        if c is None:
+            return []
+        try:
+            feats = [f for f in _docs(c, "SELECT doc FROM features") if any(b.get("id") == build_id for b in f.get("builds") or [])]
+        finally:
+            c.close()
+        reg = ot.load_registry()
+        return [ot.open_target(f, reg) for f in feats]
+
+    def open(self, feature_id: str, to: str = "recent", by: str = "plugin") -> dict[str, Any]:
+        """Open one feature in the live console (as POST features/{id}/open); no target → {ok: false, code, reason}."""
+        try:
+            return open_feature(resolve(feature_id), {"to": to, "by": by})
+        except NoTarget as e:
+            return e.body
+        except HTTPException as e:
+            d = e.detail if isinstance(e.detail, dict) else {"message": str(e.detail)}
+            return {"ok": False, **d}
+
+
+try:
+    import plugin_services  # the console's capability registry (absent when the server part runs outside the console)
+    plugin_services.provide("axf.shipped-features@1", ShippedFeaturesService(), FOLDER)
+except ImportError:
+    pass

@@ -51,6 +51,8 @@
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
+ *   axf feature open|target|find <id or words…>   open a shipped feature in the live console, or where it opens
+ *                               (needs a plugin providing service:axf.shipped-features@1, the Shipped features plugin)  <!-- axf-plugin:shipped-features -->
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
@@ -112,6 +114,25 @@ if (cmd === 'voice') {
   });
   if (!dir) { console.error('no plugin provides the voice listener (service:axf.wake-listener@1)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'cli.mjs')).href);
+  process.exit(await main(rest));
+}
+// `axf feature open|target|find …` goes to the plugin that provides service:axf.shipped-features@1 and names a cli
+// script in its plugin.json (never by folder name).
+if (cmd === 'feature') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  let script = '';
+  for (const d of (exists(plugins) ? readdirSync(plugins) : []).sort()) {
+    try {
+      const m = JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8'));
+      const own = m.provides?.includes('service:axf.shipped-features@1') ? m.cli?.[d] || '' : '';
+      if (own && /^[\w./-]+\.mjs$/.test(own) && !own.includes('..') && exists(joinPath(plugins, d, own))) { script = joinPath(plugins, d, own); break; }
+    } catch { /* not a plugin */ }
+  }
+  if (!script) { console.error('no plugin provides shipped features (service:axf.shipped-features@1)'); process.exit(1); }
+  const { main } = await import(pathToFileURL(script).href);
   process.exit(await main(rest));
 }
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and

@@ -1,0 +1,23 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "shipped-features-open-bu-mwi1annt-button-icon",
+ "name": "shipped-features-open-bu-mwi1annt: Button + icon",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Open with the external-link icon (the default): the clearest on desktop.",
+ "tags": [
+  "ui-choice",
+  "choice-set:shipped-features-open-bu-mwi1annt",
+  "choice-option:button-icon"
+ ],
+ "data": {
+  "settingKey": "shipped-features.openButton",
+  "value": "button-icon",
+  "view": "button-icon",
+  "appliesTo": [
+   "shipped-features.rows",
+   "gate.build-features"
+  ]
+ }
+}

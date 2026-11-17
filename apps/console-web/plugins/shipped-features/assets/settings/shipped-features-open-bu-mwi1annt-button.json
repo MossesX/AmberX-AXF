@@ -1,0 +1,23 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "shipped-features-open-bu-mwi1annt-button",
+ "name": "shipped-features-open-bu-mwi1annt: Button only",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The word Open on a small framework button, before the feature's name. Greyed out with the reason as its tooltip when the feature can't open.",
+ "tags": [
+  "ui-choice",
+  "choice-set:shipped-features-open-bu-mwi1annt",
+  "choice-option:button"
+ ],
+ "data": {
+  "settingKey": "shipped-features.openButton",
+  "value": "button",
+  "view": "button",
+  "appliesTo": [
+   "shipped-features.rows",
+   "gate.build-features"
+  ]
+ }
+}

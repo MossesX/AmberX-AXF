@@ -3,11 +3,14 @@
  * paused / idle / off, since when, the PR landing now, the line), the PRs waiting (`grid:gate.waiting`, one row a PR:
  * which rule holds it and why), the last runs (`grid:gate.runs`) and the toolbar (role="toolbar", settings id
  * gate.lander): Land now (the selected PR; asks first), Pause / Resume (`button:gate-land-now | gate-pause | gate-resume`).
+ * Waiting rows and runs expand to the build's features with their Open buttons (BuildFeatures: disabled "not landed
+ * yet" until the build lands).
  * Every press is the REST route the CLI (`axf gate lander …`), MCP (lander_*) and voice use.
  */
 import { useMemo, useState } from 'react';
 import { Button, Chip, Container, Switch, TextField, useControlTargets, useRuntime, type ControlTargetDef } from '@console/axf/react';
 import type { GridColumn } from '@console/axf/libs/datagrid';
+import { BuildFeatures } from './BuildFeatures';
 import { GateList } from './GateList';
 import { confirmed, gateCall, type LanderStatus, type Run, type Waiting } from './api';
 import { useGridRows } from './rows';
@@ -25,6 +28,8 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
   const wt = usePoll<{ items: Waiting[] }>('lander/waiting', refreshSec);
   const rn = usePoll<{ items: Run[] }>('lander/runs?limit=30', refreshSec);
   const [selected, setSelected] = useState<number | null>(null);
+  const [open, setOpen] = useState<string[]>([]);
+  const toggle = (id: string) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]));
   const [why, setWhy] = useState('');
   const [busy, setBusy] = useState('');
   const s = st.data;
@@ -91,12 +96,16 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
         id="gate.waiting" label="Waiting to land" title={`Waiting (${waiting.length})`} rows={waiting} columns={waitCols}
         rowId={(w) => String(w.pr)} rowLabel={(w) => `#${w.pr} ${w.title}`} hidden={rows === 1 ? ['build'] : []}
         selected={selected ? String(selected) : null} onRowClick={(w) => setSelected((cur) => (cur === w.pr ? null : w.pr))} rowTone={(w) => stateTone(w.state)}
+        expanded={open} onToggleExpand={toggle}
+        renderDetail={(w) => <div className="axp-gate__detail"><BuildFeatures build={w.build} landed={false} /></div>}
         empty={<p className="axp-gate__sub">{wt.data ? 'Nothing waits to land.' : 'Loading…'}</p>}
       />
       <GateList<Run>
         id="gate.runs" label="Last runs" title={`Last runs (${runs.length})`} rows={runs} columns={runCols}
         rowId={(r) => `${r.startedAt}-${r.landing?.pr ?? ''}-${r.result}`} rowLabel={(r) => `${r.result} ${r.landing ? `#${r.landing.pr}` : ''}`}
         rowTone={(r) => resultTone(r.result)}
+        expanded={open} onToggleExpand={toggle}
+        renderDetail={(r) => <div className="axp-gate__detail">{r.landing ? <BuildFeatures build={r.landing.build} landed={r.result === 'landed'} /> : <span className="axp-gate__sub">Nothing landed in this run.</span>}</div>}
         empty={<p className="axp-gate__sub">{rn.data ? 'No runs yet.' : 'Loading…'}</p>}
       />
     </>

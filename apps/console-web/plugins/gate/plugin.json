@@ -19,7 +19,8 @@
   "optional": [
     "service:axf.merge-queue@1",
     "service:axf.health@1",
-    "service:axf.alerts@1"
+    "service:axf.alerts@1",
+    "service:axf.shipped-features@1"
   ],
   "scopes": [
     "ROUTES"
@@ -110,7 +111,7 @@
         "title": "Auto-lander: waiting PRs",
         "readOnly": true,
         "tool": "lander_waiting",
-        "description": "PRs waiting to land, in order, each with the gate rule that holds it and why in plain words."
+        "description": "PRs waiting to land, in order, each with the gate rule that holds it and why in plain words. With Shipped features installed, each carries features: its build's features, each with target null and reason 'not landed yet'."
       },
       {
         "id": "lander-runs",
@@ -118,7 +119,7 @@
         "title": "Auto-lander: last runs",
         "readOnly": true,
         "tool": "lander_runs",
-        "description": "The lander's last runs, newest first (auto-lander-run@1): result, PR, mode, reason."
+        "description": "The lander's last runs, newest first (auto-lander-run@1): result, PR, mode, reason. A run that landed a build carries features: each with target (the console-control address it opens at) and label, or the reason it can't open."
       },
       {
         "id": "lander-mode",

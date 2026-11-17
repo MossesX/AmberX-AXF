@@ -68,6 +68,7 @@ try:
     ok(s["mergeQueue"] is True and s["counts"]["waiting"] == 1, "GET lander")
     ok(c.get(f"{B}/lander/waiting?rule=ui-review").json()["items"][0]["pr"] == 702, "GET lander/waiting")
     ok(c.get(f"{B}/lander/runs?limit=5").json()["items"] == [], "GET lander/runs")
+    ok("features" not in c.get(f"{B}/lander/waiting").json()["items"][0], "GET lander/waiting: no feature store installed → no features field")
     ok(c.get(f"{B}/lander/mode").json()["mergeQueue"] is True, "GET lander/mode")
     ok(c.post(f"{B}/lander/mode", json={"mergeQueue": False}).json()["mode"] == "serial", "POST lander/mode")
     ok(c.post(f"{B}/lander/mode", json={"mergeQueue": True}).json()["mergeQueue"] is True, "and back")
@@ -95,4 +96,21 @@ try:
 finally:
     import shutil
     shutil.rmtree(TMP, ignore_errors=True)
+
+# a build's features with their open targets (service axf.shipped-features@1), as GET lander/waiting and runs add them
+class FakeFeatures:
+    def open_targets_for_build(self, build: str) -> list[dict]:
+        return [{"feature": "f-x", "name": "Choices tab", "status": "live", "target": "view:ui-review", "label": "UI Review", "via": "plugin"}] if build == "b1" else []
+
+
+fs = routes.features_of("b1", True, FakeFeatures())
+ok(fs == [{"feature": "f-x", "name": "Choices tab", "status": "live", "target": "view:ui-review", "label": "UI Review", "via": "plugin"}], "features_of: a landed build's features carry their open target")
+nl = routes.features_of("b1", False, FakeFeatures())[0]
+ok(nl["target"] is None and nl["reason"] == "not landed yet" and nl["code"] == "not-live" and "label" not in nl, "features_of: before it lands, target null with 'not landed yet'")
+ok(routes.features_of("b1", True, None) is None or routes._feature_service() is not None, "features_of: no store → None (field left out)")
+wr = routes.with_features({"ok": True, "items": [{"pr": 1, "build": "b1"}, {"pr": 2, "build": ""}]}, lambda it: False, lambda it: it.get("build"), FakeFeatures())
+ok(wr["items"][0]["features"][0]["reason"] == "not landed yet" and "features" not in wr["items"][1], "with_features: waiting items get features; an item with no build gets none")
+rr = routes.with_features({"ok": True, "items": [{"result": "landed", "landing": {"build": "b1"}}]}, lambda it: it.get("result") == "landed", lambda it: (it.get("landing") or {}).get("build"), FakeFeatures())
+ok(rr["items"][0]["features"][0]["target"] == "view:ui-review", "with_features: a landed run's features open")
+ok(routes.with_features({"ok": False, "code": "failed"}, lambda it: True, lambda it: "b1", FakeFeatures()) == {"ok": False, "code": "failed"}, "with_features: an error answer is passed through")
 print(f"✓ gate routes — {n} checks")

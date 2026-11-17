@@ -1,0 +1,23 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "shipped-features-open-bu-mwi1annt-icon",
+ "name": "shipped-features-open-bu-mwi1annt: Icon in the row toolbar",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Just the external-link icon button, before the name: the smallest, best on a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:shipped-features-open-bu-mwi1annt",
+  "choice-option:icon"
+ ],
+ "data": {
+  "settingKey": "shipped-features.openButton",
+  "value": "icon",
+  "view": "icon",
+  "appliesTo": [
+   "shipped-features.rows",
+   "gate.build-features"
+  ]
+ }
+}

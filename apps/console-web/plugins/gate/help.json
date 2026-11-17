@@ -154,6 +154,11 @@
         "text": "How the gate's lists are drawn: a grid with two lines a row, cards (best on a phone), or a compact one-line grid. Unset, it follows the skin."
       },
       {
+        "target": "gate-build-features",
+        "title": "Features",
+        "text": "The features this build added, each with its Open button from Shipped features. Before the build lands the button is greyed out: not landed yet. Once it lands, Open shows the feature in the app. Shows only when Shipped features is installed."
+      },
+      {
         "target": "build-rules",
         "title": "Build rules",
         "text": "Every rule a build has to follow, in one list: who does it (the VPS or the build session), when, its check and fixer, on or off, and how it went last time. VPS rules are done by the VPS and never reach a session's brief, so nothing is done twice. Same as `axf gate build-rules …`, the gate_build_rules_* MCP tools and voice (gate.build-rules.*).",

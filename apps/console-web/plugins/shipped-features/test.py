@@ -99,4 +99,111 @@ ok(c.post(f"{base}/link", json={"build": "direct-launch"}).status_code == 400, "
 bf = c.post(f"{base}/backfill", json={"since": "2000-01-01", "dry": True})
 ok(bf.status_code == 200 and bf.json()["dry"] is True and bf.json()["found"] == 0, f"backfill dry: nothing landed without a manifest ({bf.text[:200]})")
 ok(c.post(f"{base}/backfill", json={}).status_code == 400, "backfill needs since")
+
+# open target: where a feature lives in the console, checked against the console-control registry
+OT = sys.modules["axf_console_plugins.shipped_features_test.open_target"]
+REG = OT.Registry([
+    {"address": "view:ui-review", "kind": "view", "label": "UI Review"},
+    {"address": "view:gate", "kind": "view", "label": "Gate & rules"},
+    {"address": "plugin:ai.amberx.axf.console.ui-review", "kind": "plugin", "folder": "ui-review", "label": "UI Review", "view": "view:ui-review"},  # test data, axf-not-plugin:ui-review
+    {"address": "plugin:ai.amberx.axf.console.push-banner", "kind": "plugin", "folder": "push-banner", "label": "Push banner",
+     "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner"},
+    {"address": "plugin:ai.amberx.axf.console.gone", "kind": "plugin", "folder": "gone", "label": "Gone", "view": "view:gone"},
+])
+live = {"id": "f-x", "name": "Choices tab", "status": "live", "plugin": "ui-review", "app": "console", "files": []}
+t = OT.open_target(live, REG)
+ok(t["target"] == "view:ui-review" and t["label"] == "UI Review" and t["via"] == "plugin", f"open target: a plugin's feature opens its view ({t})")
+t = OT.open_target({**live, "plugin": "", "files": ["apps/console-web/plugins/push-banner/web/index.tsx", "CLAUDE.md"]}, REG)
+ok(t["target"].endswith("subtab:settings.subtabs=push-banner") and t["via"] == "files" and "Push banner" in t["label"], "open target: files point at a plugin with no view → its Settings sub-tab")
+t = OT.open_target({**live, "plugin": "", "name": "Gate & rules: Pending tab"}, REG)
+ok(t["target"] == "view:gate" and t["via"] == "name", "open target: the name's 'Area:' prefix matches a view label")
+t = OT.open_target({**live, "status": "merged"}, REG)
+ok(t["target"] == "view:ui-review", "open target: merged opens (the console runs main)")
+for st, code in (("planned", "not-live"), ("in-pr", "not-live"), ("cancelled", "cancelled"), ("removed", "removed")):
+    t = OT.open_target({**live, "status": st}, REG)
+    ok(t["target"] is None and t["code"] == code and t["reason"], f"open target: {st} → {code}")
+ok(OT.open_target({**live, "status": "planned"}, REG)["reason"] == "not landed yet", "open target: not-live reads 'not landed yet'")
+t = OT.open_target({**live, "plugin": "gone"}, REG)
+ok(t["target"] is None and t["code"] == "unknown-address" and "view:gone" in t["reason"], f"open target: an address the registry lacks is refused ({t})")
+t = OT.open_target({**live, "plugin": "never-was"}, REG)
+ok(t["code"] == "unknown-address" and "plugin:never-was" in t["reason"], "open target: a plugin the registry never had is unknown-address")
+t = OT.open_target({**live, "plugin": "", "app": "amberx-droid"}, REG)
+ok(t["code"] == "no-screen" and "AmberX phone app" in t["reason"], "open target: another app's feature names the app")
+t = OT.open_target({**live, "plugin": "", "app": "framework", "files": ["framework/core/x.mjs"]}, REG)
+ok(t["code"] == "no-screen", "open target: framework work has no screen")
+ok(OT.open_target(None, REG)["code"] == "not-found", "open target: no record → not-found")
+ok(len(OT.load_registry().addresses) > 0, "open target: the console's registry loads (inventory)")
+
+# REST: open-target (state) and open (console-control open through the console's runner)
+OT.load_registry = lambda: OT.Registry([*REG.addresses.values(), {"address": "view:banners", "kind": "view", "label": "Banners"},
+                                        {"address": "plugin:ai.amberx.axf.console.example-banner", "kind": "plugin", "folder": "example-banner", "label": "Example banner", "view": "view:banners"}])
+sent: list = []
+mod._control = lambda body: sent.append(body) or {"ok": True, "verb": "open", "address": body["address"]}
+vt = c.get(f"{base}/features/{vf['id']}/open-target").json()
+ok(vt["target"] == "view:banners" and vt["label"] == "Banners", f"GET open-target: a merged feature opens its plugin screen ({vt})")
+st = c.get(f"{base}/features/{f['id']}/open-target").json()
+ok(st["target"] is None and st["code"] == "not-live" and st["reason"] == "not landed yet", "GET open-target: a planned feature says why")
+ok(c.get(f"{base}/features/f-nope/open-target").status_code == 404 and c.get(f"{base}/features/BAD!/open-target").status_code == 400, "GET open-target: unknown 404, bad id 400")
+op = c.post(f"{base}/features/{vf['id']}/open", json={"by": "test"})
+ok(op.status_code == 200 and op.json()["status"] == "delivered" and op.json()["message"] == "Opened Veto notice alarm too loud: Banners." and sent[-1]["verb"] == "open" and sent[-1]["address"] == "view:banners" and sent[-1]["by"] == "test", f"POST open: console-control open on the target ({op.text[:200]})")
+no = c.post(f"{base}/features/{f['id']}/open", json={})
+ok(no.status_code == 409 and no.json()["code"] == "not-live" and "not landed yet" in no.json()["message"] and len(sent) == 1, "POST open: no target → 409 with the reason, nothing sent")
+mod._control = lambda body: {"ok": False, "code": "unavailable", "message": "no relay", "openUrl": "https://console.example/"}
+ok(c.post(f"{base}/features/{vf['id']}/open").json()["status"] == "pending", "POST open: no console open → pending with the open link")
+
+# fuzzy lookup: by id, title or keywords; alternatives when it's ambiguous
+FS = [{"id": "f-ui-review-choices-tab", "name": "Choices tab", "status": "live", "plugin": "ui-review", "app": "console"},
+      {"id": "f-gate-pending-tab", "name": "Pending features tab", "status": "live", "plugin": "gate", "app": "console"},
+      {"id": "f-gate-history-tab", "name": "History tab", "status": "live", "plugin": "gate", "app": "console"},
+      {"id": "f-shipped-open", "name": "Open button for shipped features", "status": "in-pr", "plugin": "shipped-features", "app": "console", "tags": ["deep-link"]}]
+ok(OT.find(FS, "f-gate-history-tab")["match"]["id"] == "f-gate-history-tab", "find: by id")
+ok(OT.find(FS, "choices tab")["match"]["id"] == "f-ui-review-choices-tab" and not OT.find(FS, "choices tab")["ambiguous"], "find: by exact title, not ambiguous")
+ok(OT.find(FS, "the pending features")["match"]["id"] == "f-gate-pending-tab", "find: by words of the title (filler words dropped)")
+ok(OT.find(FS, "deep link")["match"]["id"] == "f-shipped-open", "find: by keywords (tags, plugin)")
+amb = OT.find(FS, "gate tab")
+ok(amb["ambiguous"] and {amb["match"]["id"], amb["alternatives"][0]["id"]} == {"f-gate-pending-tab", "f-gate-history-tab"}, f"find: ambiguous → best plus close alternatives ({amb})")
+ok(OT.find(FS, "zebra crossing")["match"] is None, "find: nothing fits → no match")
+fr = c.get(f"{base}/features/find", params={"q": "veto alarm"}).json()
+ok(fr["match"]["id"] == vf["id"], "GET features/find: by words")
+ok(c.get(f"{base}/features/find").status_code == 400 and c.get(f"{base}/features/open-target", params={"feature": "zebra crossing"}).status_code == 404, "find needs q; nothing fits → 404")
+bt = c.get(f"{base}/features/open-target", params={"feature": "veto alarm"}).json()
+ok(bt["target"] == "view:banners" and bt["lookup"]["match"]["id"] == vf["id"], "GET features/open-target?feature=<words>")
+mod._control = lambda body: {"ok": True, "verb": "open", "address": body["address"]}
+bo = c.post(f"{base}/features/open", json={"feature": vf["id"]}).json()
+ok(bo["status"] == "delivered" and bo["openTarget"]["target"] == "view:banners", "POST features/open {feature: id}")
+
+al = c.get(f"{base}/features/open-targets").json()
+ok(al["count"] == 2 and al["targets"][vf["id"]]["target"] == "view:banners" and al["targets"][f["id"]]["code"] == "not-live" and al["openable"] == 1, "GET features/open-targets: every row's target in one answer")
+bo2 = c.get(f"{base}/builds/veto/open-targets").json()
+ok(bo2["features"][0]["target"] == "view:banners" and c.get(f"{base}/builds/BAD!/open-targets").status_code == 400, "GET builds/{build}/open-targets")
+
+# capability service (what the Gate uses) and the CLI smoke test against a real server
+svc = mod.ShippedFeaturesService()
+ok(svc.open_target(vf["id"])["target"] == "view:banners" and svc.open_target("f-nope")["code"] == "not-found", "service: open_target by id, unknown → not-found")
+bt = svc.open_targets_for_build("veto")
+ok(len(bt) == 1 and bt[0]["target"] == "view:banners", f"service: open targets of a build's features ({bt})")
+ok(svc.open(f["id"])["ok"] is False and svc.open(f["id"])["code"] == "not-live", "service: open with no target says why")
+
+import socket, threading as _th, uvicorn  # noqa: E401,E402
+sock = socket.socket(); sock.bind(("127.0.0.1", 0)); port = sock.getsockname()[1]; sock.close()
+srv = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="error"))
+_th.Thread(target=srv.run, daemon=True).start()
+import time as _t  # noqa: E402
+for _ in range(100):
+    if srv.started:
+        break
+    _t.sleep(0.05)
+AXF = str(HERE.parents[3] / "framework" / "cli" / "axf.mjs")
+def cli(*a: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["node", AXF, "feature", *a, "--remote", f"http://127.0.0.1:{port}"], capture_output=True, text=True, timeout=60)
+p1 = cli("target", "veto", "alarm")
+ok(p1.returncode == 0 and "view:banners" in p1.stdout, f"cli: axf feature target <words> ({p1.stdout}{p1.stderr})")
+p2 = cli("open", vf["id"], "--json")
+ok(p2.returncode == 0 and json.loads(p2.stdout)["status"] == "delivered", f"cli: axf feature open <id> ({p2.stdout[:200]}{p2.stderr})")
+p3 = cli("open", "status", "chips")
+ok(p3.returncode == 3 and "not landed yet" in p3.stderr, f"cli: no screen → exit 3 with the reason ({p3.returncode} {p3.stderr})")
+p4 = cli("find", "veto")
+ok(p4.returncode == 0 and vf["id"] in p4.stdout, "cli: axf feature find")
+ok(cli("open").returncode == 2, "cli: usage → exit 2")
+srv.should_exit = True
 print(f"shipped-features server: {n} checks passed")
