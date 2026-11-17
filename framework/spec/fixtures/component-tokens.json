@@ -10,6 +10,11 @@
       "label": "Tab group",
       "prefix": "--fx-tab-",
       "tokens": 58
+    },
+    "widget": {
+      "label": "Widget shape",
+      "prefix": "--fx-widget-",
+      "tokens": 4
     }
   },
   "tokens": [
@@ -912,6 +917,46 @@
       "description": "Transparency of the tab row's backgrounds (1 = opaque).",
       "path": "tabs.opacity",
       "var": "--fx-tab-opacity"
+    },
+    {
+      "family": "widget",
+      "key": "shapeCircle",
+      "kind": "length",
+      "default": "50%",
+      "level": "basic",
+      "description": "Corner radius of a circle widget (50% = round on a square body).",
+      "path": "widget.shapeCircle",
+      "var": "--fx-widget-shape-circle"
+    },
+    {
+      "family": "widget",
+      "key": "shapeRounded",
+      "kind": "length",
+      "default": "var(--fx-radius-md)",
+      "level": "basic",
+      "description": "Corner radius of a rounded widget.",
+      "path": "widget.shapeRounded",
+      "var": "--fx-widget-shape-rounded"
+    },
+    {
+      "family": "widget",
+      "key": "shapePill",
+      "kind": "length",
+      "default": "999px",
+      "level": "pro",
+      "description": "Corner radius of a pill widget (fully rounded ends).",
+      "path": "widget.shapePill",
+      "var": "--fx-widget-shape-pill"
+    },
+    {
+      "family": "widget",
+      "key": "shapeSquare",
+      "kind": "length",
+      "default": "0",
+      "level": "advanced",
+      "description": "Corner radius of a square widget.",
+      "path": "widget.shapeSquare",
+      "var": "--fx-widget-shape-square"
     }
   ],
   "defaults": {
@@ -1004,7 +1049,11 @@
     "--fx-tab-chips-border": "var(--fx-border)",
     "--fx-tab-chips-active-bg": "var(--fx-accent-soft)",
     "--fx-tab-chips-active-border": "var(--fx-accent)",
-    "--fx-tab-opacity": "1"
+    "--fx-tab-opacity": "1",
+    "--fx-widget-shape-circle": "50%",
+    "--fx-widget-shape-rounded": "var(--fx-radius-md)",
+    "--fx-widget-shape-pill": "999px",
+    "--fx-widget-shape-square": "0"
   },
   "paths": [
     {
@@ -1816,6 +1865,42 @@
       "level": "basic",
       "description": "Transparency of the tab row's backgrounds (1 = opaque).",
       "family": "tabs"
+    },
+    {
+      "id": "widget.shapeCircle",
+      "token": "--fx-widget-shape-circle",
+      "kind": "string",
+      "default": "50%",
+      "level": "basic",
+      "description": "Corner radius of a circle widget (50% = round on a square body).",
+      "family": "widget"
+    },
+    {
+      "id": "widget.shapeRounded",
+      "token": "--fx-widget-shape-rounded",
+      "kind": "string",
+      "default": "var(--fx-radius-md)",
+      "level": "basic",
+      "description": "Corner radius of a rounded widget.",
+      "family": "widget"
+    },
+    {
+      "id": "widget.shapePill",
+      "token": "--fx-widget-shape-pill",
+      "kind": "string",
+      "default": "999px",
+      "level": "pro",
+      "description": "Corner radius of a pill widget (fully rounded ends).",
+      "family": "widget"
+    },
+    {
+      "id": "widget.shapeSquare",
+      "token": "--fx-widget-shape-square",
+      "kind": "string",
+      "default": "0",
+      "level": "advanced",
+      "description": "Corner radius of a square widget.",
+      "family": "widget"
     }
   ],
   "fields": {
@@ -1908,7 +1993,11 @@
     "tabs.chipsBorder": "string",
     "tabs.chipsActiveBg": "string",
     "tabs.chipsActiveBorder": "string",
-    "tabs.opacity": "number"
+    "tabs.opacity": "number",
+    "widget.shapeCircle": "string",
+    "widget.shapeRounded": "string",
+    "widget.shapePill": "string",
+    "widget.shapeSquare": "string"
   },
   "themeCases": {
     "none": {

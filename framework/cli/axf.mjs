@@ -61,6 +61,8 @@
  *   axf console chrome get|set|reset|open <type> <id> [key] [value]   one chrome instance's Interface settings
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
  *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
+ *   axf banner widget list | get <widget> | shape <widget> <shape>|--path "<svg>" | icon <widget> <pack>/<glyph>|own | reset <widget> | open [<widget>] [settings|shape|icon]
+ *                               a banner widget's shape and icon (widget-shape@1; framework/cli/banner-widget.mjs → /api/console-control/banner-widgets)
  */
 import { join, relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
@@ -89,6 +91,11 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
+// banner widget shape and icon (widget-shape@1): axf banner widget list|get|shape|icon|reset|open → framework/cli/banner-widget.mjs
+if (cmd === 'banner' && rest[0] === 'widget') {
+  const { main } = await import('./banner-widget.mjs');
+  process.exit(await main(rest.slice(1)));
+}
 if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome'].includes(rest[0] ?? '')) {
   const { main } = await import('./console-control.mjs');
   process.exit(await main(rest));

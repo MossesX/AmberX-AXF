@@ -341,6 +341,47 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
     return {**ans, "heard": text, "intent": intent, "command": {k: v for k, v in cmd.items() if k != "$axf"}, "say": cc.voice_reply(intent, ans, (hit or {}).get("label", ""))}
 
 
+def banner_widgets(by: str = "api", audience: str = OWNER, grants: set[str] | None = None, widget: str = "") -> dict[str, Any]:
+    """widget-shape@1: every banner widget's shape, icon and custom outline from the open console (one widget with
+    widget=<type>:<id>), with the addresses that change them and the deep link of the Banners settings."""
+    r = targets("", ["setting"], "console", by, audience, grants)
+    if not r.get("ok"):
+        return r
+    rows = cc.banner_widgets_from_targets(r.get("targets") or [])
+    if widget:
+        rows = [x for x in rows if x["widget"] == widget or x["widget"].split(":", 1)[0] == widget or x["widget"].endswith(f":{widget}") or x["label"].lower() == widget.lower()]
+        if not rows:
+            return cc.ControlError("not_found", f"no banner widget {widget!r} in the open console").envelope()
+    return {"ok": True, "$axf": "banner-widgets@1", "client": r.get("client"), "widgets": rows, "open": cc.BANNERS_SETTINGS_ADDRESS, "shapes": list(cc.BANNER_WIDGET_SHAPES)}
+
+
+def banner_widget_command(widget: str, what: str, value: Any = None, by: str = "api", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent", reason: str = "") -> dict[str, Any]:
+    """One change to one banner widget, the same for REST, MCP, the CLI and voice: what = shape (value = a shape name, or
+    {path}), path (value = an SVG outline), icon (value = <pack>/<glyph> | own), reset, or open (value = settings | shape | icon)."""
+    try:
+        if widget and ":" not in widget:
+            found = banner_widgets(by, audience, grants, widget)
+            if not found.get("ok"):
+                return found
+            widget = found["widgets"][0]["widget"]
+        if what == "shape":
+            body = cc.banner_widget_shape_command(widget, **({"path": value["path"]} if isinstance(value, dict) and value.get("path") else {"shape": str(value or "")}))
+        elif what == "path":
+            body = cc.banner_widget_shape_command(widget, path=str(value or ""))
+        elif what == "icon":
+            body = cc.banner_widget_icon_command(widget, str(value or ""))
+        elif what == "reset":
+            body = {"verb": "press", "address": cc.banner_widget_address(widget, "reset")}
+        elif what == "open":
+            addr = cc.banner_widget_open_address(widget, str(value or "settings"))
+            body = {"verb": "press" if addr.startswith("function:") else "open", "address": addr}
+        else:
+            raise cc.ControlError("invalid", "what is shape, path, icon, reset or open", field="what")
+    except cc.ControlError as e:
+        return e.envelope()
+    return command({**body, **({"reason": reason} if reason else {}), "to": to}, by, audience, grants)
+
+
 def _kinds(v: str | None) -> list[str] | None:
     ks = [k.strip() for k in (v or "").split(",") if k.strip()]
     return ks or None
@@ -431,6 +472,27 @@ def router_for(auth: Any) -> APIRouter:
         except cc.ControlError as e:
             return fail(e)
         return await from_body(request, {**{k: v for k, v in b.items() if k not in ("button",)}, "verb": "press", "address": address})
+
+    # widget-shape@1 (build banner-widget-shapes-plus-change-icon): every banner widget's shape and icon, read and changed
+    @r.get("/banner-widgets")
+    async def banner_widgets_list(request: Request) -> JSONResponse:
+        """Every banner widget with its shape, icon and custom outline (from the open console; 503 when none is open)."""
+        audience, name = audience_of(request)
+        return answer(await run_in_threadpool(banner_widgets, name, audience, grants_of(request)))
+
+    @r.get("/banner-widgets/{widget}")
+    async def banner_widget_get(request: Request, widget: str) -> JSONResponse:
+        """One widget (<type>:<id>, or its type / id / label) with its shape, icon, outline and addresses."""
+        audience, name = audience_of(request)
+        return answer(await run_in_threadpool(banner_widgets, name, audience, grants_of(request), widget))
+
+    @r.post("/banner-widgets/{widget}/{what}")
+    async def banner_widget_set(request: Request, widget: str, what: str) -> JSONResponse:
+        """what = shape {shape | path}, path {path}, icon {icon: <pack>/<glyph> | own}, reset {}, open {what: settings | shape | icon}; reason?, to?."""
+        b = await _body(request)
+        audience, name = audience_of(request)
+        value: Any = {"path": b["path"]} if what == "shape" and b.get("path") else b.get("shape") if what == "shape" else b.get("path") if what == "path" else b.get("icon") if what == "icon" else b.get("what") if what == "open" else None
+        return answer(await run_in_threadpool(banner_widget_command, widget, what, value, str(b.get("by") or name)[:80], audience, grants_of(request), str(b.get("to") or "recent"), str(b.get("reason") or "")))
 
     @r.get("/plugins/{ref}/settings")
     async def plugin_settings(request: Request, ref: str, live: int = 0) -> JSONResponse:

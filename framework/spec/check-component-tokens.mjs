@@ -40,7 +40,7 @@ const list = componentTokenList();
 ok(list.length >= 80, `at least 80 tokens across the families (${list.length})`);
 const vars = list.map((x) => x.var);
 eq(vars.length, new Set(vars).size, 'every token has its own variable');
-const DEFAULT_OK = /^(var\(--fx-[a-z0-9-]+\)|transparent|currentColor|inherit|auto|none|0|1|600|2px|999px|color-mix\(in srgb, var\(--fx-[a-z0-9-]+\) calc\(var\(--fx-opacity-[a-z]+\) \* 100%\), transparent\))$/;
+const DEFAULT_OK = /^(var\(--fx-[a-z0-9-]+\)|transparent|currentColor|inherit|auto|none|0|1|600|2px|999px|50%|color-mix\(in srgb, var\(--fx-[a-z0-9-]+\) calc\(var\(--fx-opacity-[a-z]+\) \* 100%\), transparent\))$/;
 for (const x of list) {
   ok(COMPONENT_TOKEN_KINDS.includes(x.kind), `${x.path}: known kind (${x.kind})`);
   ok(COMPONENT_TOKEN_LEVELS.includes(x.level), `${x.path}: known level (${x.level})`);
@@ -196,4 +196,4 @@ for (const [name, c] of Object.entries(fixture.themeCases)) eq(componentTokenVar
 for (const [name, c] of Object.entries(fixture.instanceCases)) eq(c.saved, c.replay, `fixture instance case ${name}`);
 
 if (problems.length) { console.error(`component tokens: ${problems.length} problem(s)\n  ${problems.join('\n  ')}`); process.exit(1); }
-console.log(`component tokens: ok (${list.length} tokens: ${list.filter((x) => x.family === 'grid').length} grid, ${list.filter((x) => x.family === 'tabs').length} tabs)`);
+console.log(`component tokens: ok (${list.length} tokens: ${list.filter((x) => x.family === 'grid').length} grid, ${list.filter((x) => x.family === 'tabs').length} tabs, ${list.filter((x) => x.family === 'widget').length} widget)`);

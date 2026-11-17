@@ -25,7 +25,7 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
-import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
+import { BANNER_FIXED_SHAPE, BANNER_WIDGET_SHAPES, WIDGET_ICON_OWN, WIDGET_SHAPE_FRAME, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, flattenCustomPath, migrateBannerWidgetPrefs, normalizeBannerWidgetPrefs, patchBannerWidget, resolveWidgetShape, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetShape, type BannerWidgetSize, type BannerWidgetView, type ResolvedWidgetShape } from './engines/bannerwidgets';
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
@@ -107,6 +107,11 @@ export const NAV_OPEN_KEY = 'axf.nav.open';
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Dialog id of the banner's Widgets picker (react/components/BannerWidgets.tsx). */
 export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
+/** widget-shape@1 dialogs: Change icon… (the icon picker for one widget) and the custom outline editor. Payload { key }. */
+export const WIDGET_ICON_DIALOG = 'axf.banner.widget-icon';
+export const WIDGET_SHAPE_DIALOG = 'axf.banner.widget-shape';
+/** The context contribution that puts Shape ▸ and Change icon… on every banner widget's right-click / long-press menu. */
+export const WIDGET_SHAPE_CTX_ID = 'axf.banner.widget-shape';
 
 /** One widget the banner knows about: on the bar now or not. */
 export interface BannerWidget {
@@ -202,6 +207,12 @@ export interface ContextContribution {
   /** Context target (`data-fx-ctx-target`); default `default`. */
   target?: string;
   order?: number;
+  /**
+   * `banner-widget`: only when the menu opened on a banner widget (rt.contextBannerWidget); `{widget}` in an item's
+   * action and `{label}` in its label become that widget's key and label, so one data-only contribution serves every
+   * widget (portable: no callback). Absent = always.
+   */
+  scope?: 'banner-widget';
   items: import('./engines/windows').MenuEntry[];
 }
 
@@ -1359,10 +1370,19 @@ export class AxfRuntime {
 
   /** Contributed items for a target (`default` = the menu shown where no element names a target), by order. */
   contributedContext(target: string): import('./engines/windows').MenuEntry[] {
+    const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) ?? null : null;
+    type Entry = import('./engines/windows').MenuEntry;
+    const fill = (e: Entry, w: BannerWidget): Entry => ({
+      ...e,
+      ...(e.label ? { label: e.label.split('{label}').join(w.label) } : {}),
+      ...(e.action ? { action: e.action.split('{widget}').join(w.key) } : {}),
+      ...(e.id ? { id: e.id.split('{widget}').join(w.key) } : {}),
+      ...(e.items ? { items: e.items.map((x) => fill(x, w)) } : {}),
+    });
     return [...this.contextContributions.values()]
-      .filter((c) => (c.target ?? 'default') === target)
+      .filter((c) => (c.target ?? 'default') === target && (c.scope !== 'banner-widget' || hit))
       .sort((a, b) => (a.order ?? 100) - (b.order ?? 100))
-      .flatMap((c) => c.items);
+      .flatMap((c) => (c.scope === 'banner-widget' && hit ? c.items.map((e) => fill(e, hit)) : c.items));
   }
 
   /**
@@ -1488,8 +1508,24 @@ export class AxfRuntime {
     return `axf.banners.widgets.${app}.${g.matchMedia?.('(max-width: 640px)').matches ? 'phone' : 'desktop'}`;
   }
 
-  /** The person's widget choices on this app and form factor. */
-  bannerWidgetPrefs(): BannerWidgetPrefs { return normalizeBannerWidgetPrefs(this.settings.get(this.bannerWidgetsKey())); }
+  /** Settings keys already run through the widget-shape@1 migration this session (once per app + form factor). */
+  private readonly bannerWidgetsMigrated = new Set<string>();
+
+  /** The person's widget choices on this app and form factor; the first read migrates them to widget-shape@1 (engines/bannerwidgets.ts). */
+  bannerWidgetPrefs(): BannerWidgetPrefs {
+    const key = this.bannerWidgetsKey();
+    const raw = this.settings.get(key);
+    if (!this.bannerWidgetsMigrated.has(key)) {
+      this.bannerWidgetsMigrated.add(key);
+      const r = migrateBannerWidgetPrefs(raw);
+      if (r.changed) {
+        this.settings.set(key, r.prefs as never);
+        this.terminal.ok('widgets', `banner: ${r.migrated.length} widget choice(s) now say shape circle (${WIDGET_SHAPE_FRAME}): ${r.migrated.join(', ')}`);
+        return r.prefs;
+      }
+    }
+    return normalizeBannerWidgetPrefs(raw);
+  }
 
   private bannerWidgetHint(key: string): BannerWidgetHint | undefined {
     const seen = this.bannerSeen.get(key);
@@ -1501,6 +1537,19 @@ export class AxfRuntime {
   /** How one widget is drawn (`type:id`). */
   bannerWidgetView(key: string): BannerWidgetView {
     return bannerWidgetView(key.split(':')[0] ?? '', this.bannerWidgetHint(key), this.bannerWidgetPrefs()[key]);
+  }
+
+  /** One widget's shape and icon as compiled (widget-shape@1): token values, and what fell back to the default and why. */
+  bannerWidgetShape(key: string): ResolvedWidgetShape {
+    return resolveWidgetShape(this.bannerWidgetView(key), (pack, id) => this.packGlyph(pack, id) !== null);
+  }
+
+  /** A glyph of a named icon pack (widget-shape@1 icon overrides); null when the pack or the glyph doesn't exist. */
+  packGlyph(packId: string, name: string): { glyph: Glyph; pack: unknown } | null {
+    const pack = this.registry.get('icon-pack' as AssetType, packId);
+    if (!pack) return null;
+    const glyph = glyphFor(pack.data, name);
+    return glyph ? { glyph, pack: pack.data } : null;
   }
 
   /** Does this widget get drawn: not hidden, and not empty with hide-when-empty on? */
@@ -3184,17 +3233,55 @@ export class AxfRuntime {
     a.register('widgets.arrange', ([host]) => { const h = host || 'banner'; this.setArranging(this.arranging(h) ? null : h); }, { label: 'Arrange widgets (drag to move)', requires: 'assets.swap', params: true });
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
-    // Banner widgets: the picker, and what voice and the API say (`banner.widget:<clock|ticker|…>:hide|show|<size>`).
+    // Banner widgets: the picker, and what voice and the API say (`banner.widget:<clock|ticker|…>:hide|show|<size>|<shape>|path=<svg>|icon=<pack>/<glyph>|icon=own|reset`).
     a.register('banner.widgets', (args) => this.openDialog(BANNER_WIDGETS_DIALOG, args.length ? { key: args.join(':') } : {}), { label: 'Banner widgets…', requires: 'assets.swap' });
     a.register('banner.widgets.reset', () => this.resetBannerWidgets(), { label: 'Reset the banner widgets', requires: 'assets.swap' });
+    // widget-shape@1 dialogs for one widget: banner.widget.icon-picker:<widget> · banner.widget.custom-shape:<widget>
+    const widgetDialog = (dialog: string) => (args: string[]) => {
+      const w = this.findBannerWidget(args.join(':'));
+      if (w) this.openDialog(dialog, { key: w.key });
+      else this.toast(`No banner widget "${args.join(':')}"`, 'warning', 'Banner widgets');
+    };
+    // The named forms REST, MCP, the CLI and voice document (same semantics as banner.widget):
+    // banner.widget.shape:<widget>:<shape|path=<svg>> · banner.widget.icon:<widget>:<pack>/<glyph>|own · banner.widget.reset:<widget>
+    const widgetPart = (args: string[], prefix = '') => { const last = args[args.length - 1] ?? ''; return [...args.slice(0, -1), `${prefix}${last}`].join(':'); };
+    a.register('banner.widget.shape', (args) => { if (args.length > 1) this.dispatch(`banner.widget:${widgetPart(args)}`); }, { label: 'Banner widget shape (banner.widget.shape:<widget>:<shape>|path=<svg>)', requires: 'assets.swap', params: true });
+    a.register('banner.widget.icon', (args) => { if (args.length > 1) this.dispatch(`banner.widget:${widgetPart(args, 'icon=')}`); }, { label: 'Banner widget icon (banner.widget.icon:<widget>:<pack>/<glyph>|own)', requires: 'assets.swap', params: true });
+    a.register('banner.widget.reset', (args) => { if (args.length) this.dispatch(`banner.widget:${args.join(':')}:reset`); }, { label: 'Put a banner widget back to its defaults', requires: 'assets.swap', params: true });
+    a.register('banner.widget.icon-picker', widgetDialog(WIDGET_ICON_DIALOG), { label: 'Change a banner widget\'s icon…', requires: 'assets.swap', params: true });
+    a.register('banner.widget.custom-shape', widgetDialog(WIDGET_SHAPE_DIALOG), { label: 'Custom shape for a banner widget…', requires: 'assets.swap', params: true });
+    // Right-click / long-press a banner widget: Shape ▸ (every shape, Custom… opens the editor) and Change icon…
+    this.addContextItems({
+      id: WIDGET_SHAPE_CTX_ID, module: 'axf', target: 'banner', scope: 'banner-widget', order: 5,
+      items: [
+        { id: 'banner-widget-shape-{widget}', label: 'Shape', icon: 'box', items: [
+          ...BANNER_WIDGET_SHAPES.filter((x) => x !== 'custom').map((x) => ({ id: `banner-widget-shape-${x}`, label: x[0]!.toUpperCase() + x.slice(1), action: `banner.widget:{widget}:${x}` })),
+          { id: 'banner-widget-shape-custom', label: 'Custom…', action: 'banner.widget.custom-shape:{widget}' },
+        ] },
+        { id: 'banner-widget-icon-{widget}', label: 'Change icon…', icon: 'palette', action: 'banner.widget.icon-picker:{widget}' },
+      ],
+    });
     a.register('banner.widget', (args) => {
       const what = args[args.length - 1] ?? '';
       const w = this.findBannerWidget(args.slice(0, -1).join(':'));
       if (!w) { this.toast(`No banner widget "${args.slice(0, -1).join(':')}"`, 'warning', 'Banner widgets'); return; }
       if (what === 'hide' || what === 'show') this.setBannerWidget(w.key, { hidden: what === 'hide' });
       else if ((BANNER_WIDGET_SIZES as readonly string[]).includes(what)) this.setBannerWidget(w.key, { size: what as BannerWidgetSize });
-      else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
-      else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
+      // widget-shape@1: a named shape, a custom outline, another pack's glyph, or back to its own icon
+      else if ((BANNER_WIDGET_SHAPES as readonly string[]).includes(what) && what !== 'custom') this.setBannerWidget(w.key, { shape: what as BannerWidgetShape, customPath: null });
+      else if (what.startsWith('path=')) {
+        const d = what.slice(5).trim();
+        if (flattenCustomPath(d)) this.setBannerWidget(w.key, { shape: 'custom', customPath: d });
+        else this.toast('A custom shape is one closed SVG outline (M L H V C S Q T Z) inside a 0..100 square, e.g. M50 0 L100 50 L50 100 L0 50 Z', 'warning', 'Banner widgets');
+      } else if (what.startsWith('icon=')) {
+        const v = what.slice(5).trim();
+        const [pack, id] = v.split('/');
+        if (v === WIDGET_ICON_OWN) this.setBannerWidget(w.key, { iconOverride: null });
+        else if (pack && id && this.packGlyph(pack, id)) this.setBannerWidget(w.key, { iconOverride: { pack, id } });
+        else this.toast(`"${v}": use icon=<icon pack id>/<glyph name> of a registered pack, or icon=own`, 'warning', 'Banner widgets');
+      }
+      else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null, shape: null, customPath: null, iconOverride: null });
+      else this.toast(`"${what}": use hide, show, reset, a size (${BANNER_WIDGET_SIZES.join(', ')}), a shape (${BANNER_WIDGET_SHAPES.filter((s) => s !== 'custom').join(', ')}), path=<svg outline>, icon=<pack>/<glyph> or icon=own`, 'warning', 'Banner widgets');
     }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one

@@ -13,6 +13,7 @@
  */
 import spec from '../../schemas/customize.json';
 import iconSpec from '../../schemas/icon-sets.json';
+import { hostWidgetShapeTokens } from './bannerwidgets';
 
 export type CustomValue = string | number | boolean;
 export type CustomValues = Record<string, CustomValue>;
@@ -38,6 +39,8 @@ export interface CustomTarget {
   root: string;
   /** Its items (hover / click / item padding); absent = the root reacts itself. */
   item?: string;
+  /** The widgets it hosts (widget-shape@1: the `widgetShape` token lands here); absent = not a widget host. */
+  widget?: string;
 }
 
 export interface IconSet {
@@ -201,6 +204,8 @@ export const CUSTOM_KEYFRAMES = [
   '@keyframes axf-cu-flash{from{background:var(--axf-cu-click)}}',
 ].join('\n');
 
+/** The host items a widget sits in (banner items, toolbar widget slots): where its widget-shape@1 tokens live. */
+const WIDGET_HOST_ITEMS = '.fx-banner__item, .fx-toolbar__widget';
 const split = (sel: string) => sel.split(',').map((s) => s.trim()).filter(Boolean);
 /** Raised specificity so a choice beats the engine's own rules without !important. */
 const scoped = (sels: string[], suffix = '') => sels.map((s) => `:root body ${s}${suffix}`).join(', ');
@@ -267,6 +272,15 @@ export function customizeCss(type: string, values: CustomValues): string {
       case 'itemPadding': item.push(`padding:calc(${space(s)} * 0.5) ${space(s)}`); break;
       case 'gap': root.push(`gap:${space(s)}`); break;
       case 'radius': root.push(`border-radius:${RADIUS[s]}`); if (items.length) item.push(`border-radius:${RADIUS[s]}`); break;
+      // widget-shape@1: the host's shape for every widget without one of its own (a widget's inline tokens beat it)
+      // on a host (banner, toolbar) every widget item under it; on a widget type the host items that hold one of its kind
+      // (the item carries the shape tokens, so a widget's own inline choice still beats both)
+      case 'widgetShape': {
+        const decls = Object.entries(hostWidgetShapeTokens(s)).map(([k, val2]) => `${k}:${val2}`).join(';');
+        if (target.widget) rules.push(`${under(roots, target.widget)}{${decls}}`);
+        else rules.push(`${roots.flatMap((r) => split(WIDGET_HOST_ITEMS).map((h) => `:root body ${h}:has(> ${r})`)).join(', ')}{${decls}}`);
+        break;
+      }
       case 'borderWidth': root.push(`border-width:calc(var(--fx-border-w) * ${s})`, s === '0' ? 'border-style:none' : 'border-style:solid'); break;
       case 'shadow': root.push(`box-shadow:${SHADOW[s]}`); break;
       case 'iconSet': { const set = iconSet(s); if (set) icon.push(...iconSetDecls(set)); break; }

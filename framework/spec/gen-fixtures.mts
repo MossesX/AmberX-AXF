@@ -27,6 +27,7 @@ import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, merge
 import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
+import { BANNER_WIDGET_CUSTOM_PATH, BANNER_WIDGET_SHAPES, BANNER_WIDGET_SHAPE_DEFAULT, BANNER_WIDGET_SHAPE_TOKENS, WIDGET_ICON_OWN, WIDGET_SHAPE_CURVE_STEPS, WIDGET_SHAPE_FRAME, WIDGET_SHAPE_HEXAGON_CLIP, WIDGET_SHAPE_RADIUS, bannerWidgetView, customPathClip, flattenCustomPath, hostWidgetShapeTokens, migrateBannerWidgetPrefs, normalizeBannerWidgetPrefs, resolveWidgetShape, widgetShapeTokens } from '../core/engines/bannerwidgets';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { MCP_PERMISSIONS, MCP_PROTOCOL_VERSION, MCP_SESSION_HEADER, MCP_SUPPORTED_VERSIONS, MCP_VERSION_HEADER, SseParser, argumentSkeleton, callGate, classifyResponse, contentText, errorFromHttp, errorFromRpc, errorFromTransport, initializeParams, mcpHeaders, mergePages, negotiate, offers, pageParams, parseMessages, parseSse, rpcNotification, rpcRequest, serverIdFor, toolEffect, validateServerInput } from '../core/engines/mcp';
@@ -668,6 +669,93 @@ write('spacing.json', {
     exists: [...exists].sort(),
     toolbar: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { toolbar: c.toolbar, extra: c.extra, placed: placeToolbarWidgets(c.toolbar as never, c.extra as never, has) }])),
     kinds,
+  });
+}
+// widget-shape@1 (Nov 16 2026, build banner-widget-shapes-plus-change-icon): shapes, custom outlines, invalid input, icon
+// overrides, the host's own shape token, the migration and the view fold. Every port must compile the same tokens.
+{
+  // the icon packs the cases see (pure: no registry); a port replays `packs` as its hasGlyph
+  const packs: Record<string, string[]> = { 'pack-021': ['bell', 'star'], 'amberx-outline': ['home'] };
+  const hasGlyph = (pack: string, id: string) => (packs[pack] ?? []).includes(id);
+  const view = (pref: Record<string, unknown> | null, hint: Record<string, unknown> | null = null) => bannerWidgetView('status', hint as never, pref as never);
+  const resolved = (pref: Record<string, unknown> | null, hint: Record<string, unknown> | null = null) => { const v = view(pref, hint); const r = resolveWidgetShape(v, hasGlyph); return { view: { shape: v.shape, customPath: v.customPath, iconOverride: v.iconOverride, shapeSource: v.shapeSource }, resolved: r, tokens: widgetShapeTokens(r) }; };
+  const paths: Record<string, string | number | null> = {
+    diamond: 'M50 0 L100 50 L50 100 L0 50 Z',
+    'relative-square': 'm0 0 h100 v100 h-100 z',
+    'rounded-leaf': 'M50 0 C100 0 100 100 50 100 S0 0 50 0 Z',
+    'quadratic-drop': 'M50 0 Q100 50 50 100 Q0 50 50 0 Z',
+    'smooth-quadratic': 'M0 50 Q25 0 50 50 T100 50 L100 100 L0 100 Z',
+    'triangle-decimals': 'M 50.5,0.25 L 99.75,100 L .5,100 Z',
+    'out-of-box': 'M0 0 L100 0 L50 150 Z',
+    'two-points': 'M0 0 L100 0 Z',
+    'two-subpaths': 'M0 0 L100 0 L50 100 Z M5 5 L6 6 L7 5 Z',
+    arc: 'M0 0 A50 50 0 0 1 100 100 L0 100 Z',
+    unclosed: 'M0 0 L100 0 L50 100',
+    'no-move': 'L0 0 L100 0 L50 100 Z',
+    'odd-numbers': 'M0 0 L 100 Z',
+    'bad-chars': 'M0 0 L100 0 L50 100 Z; color: red',
+    'too-long': `M0 0 ${'L50 50 '.repeat(80)}Z`,
+    empty: '   ',
+    'not-text': 7,
+    null: null,
+  };
+  write('widget-shape.json', {
+    frame: WIDGET_SHAPE_FRAME,
+    shapes: BANNER_WIDGET_SHAPES,
+    default: BANNER_WIDGET_SHAPE_DEFAULT,
+    tokens: BANNER_WIDGET_SHAPE_TOKENS,
+    radius: WIDGET_SHAPE_RADIUS,
+    hexagonClip: WIDGET_SHAPE_HEXAGON_CLIP,
+    iconOwn: WIDGET_ICON_OWN,
+    customPath: { ...BANNER_WIDGET_CUSTOM_PATH, curveSteps: WIDGET_SHAPE_CURVE_STEPS },
+    packs,
+    // every named shape picked on a widget
+    shape: Object.fromEntries(BANNER_WIDGET_SHAPES.filter((s) => s !== 'custom').map((s) => [s, resolved({ shape: s })])),
+    // custom outlines: the flattened polygon (null = refused) and the clip
+    paths: Object.fromEntries(Object.entries(paths).map(([k, d]) => [k, { path: d, points: flattenCustomPath(d), clip: customPathClip(d) }])),
+    custom: {
+      'with-path': resolved({ shape: 'custom', customPath: paths.diamond }),
+      'bad-path': resolved({ shape: 'custom', customPath: paths['out-of-box'] }),
+      'no-path': resolved({ shape: 'custom' }),
+      'path-from-hint': resolved({ shape: 'custom' }, { shape: 'custom', customPath: paths['relative-square'] }),
+      'pick-ignores-hint-path-when-not-custom': resolved({ shape: 'square' }, { shape: 'custom', customPath: paths.diamond }),
+    },
+    invalid: {
+      'unknown-shape': resolved({ shape: 'blob' }),
+      'shape-not-text': resolved({ shape: 4 }),
+      'unknown-shape-resolved-directly': resolveWidgetShape({ shape: 'blob' as never, customPath: undefined, iconOverride: null, shapeSource: 'pick' }, hasGlyph),
+      'override-malformed': resolveWidgetShape({ shape: 'circle', customPath: undefined, iconOverride: { pack: 'Bad Id', id: 'bell' } as never, shapeSource: 'default' }, hasGlyph),
+    },
+    icon: {
+      'pack-and-glyph': resolved({ iconOverride: { pack: 'pack-021', id: 'bell' } }),
+      'glyph-missing': resolved({ iconOverride: { pack: 'pack-021', id: 'nope' } }),
+      'pack-missing': resolved({ iconOverride: { pack: 'pack-999', id: 'bell' } }),
+      'from-hint': resolved(null, { iconOverride: { pack: 'amberx-outline', id: 'home' } }),
+      'pick-beats-hint': resolved({ iconOverride: { pack: 'pack-021', id: 'star' } }, { iconOverride: { pack: 'amberx-outline', id: 'home' } }),
+      'with-hexagon': resolved({ shape: 'hexagon', iconOverride: { pack: 'pack-021', id: 'bell' } }),
+    },
+    // the host's own shape (customize `widgetShape`): no custom there, anything else is the default
+    host: Object.fromEntries([...BANNER_WIDGET_SHAPES, 'blob', ''].map((s) => [s || 'empty', hostWidgetShapeTokens(s)])),
+    // the view fold: where the shape came from
+    fold: {
+      default: resolved(null),
+      hint: resolved(null, { shape: 'pill' }),
+      pick: resolved({ shape: 'rounded' }, { shape: 'pill' }),
+      'bad-pick-falls-to-hint': resolved({ shape: 'blob' }, { shape: 'pill' }),
+    },
+    // the saved setting: normalization of the new fields and the one-shot migration
+    normalize: {
+      in: { 'status:a': { shape: 'hexagon', customPath: '  M0 0 L100 0 L50 100 Z  ', iconOverride: { pack: 'pack-021', id: 'bell' } }, 'status:b': { shape: 'blob', customPath: 'x'.repeat(BANNER_WIDGET_CUSTOM_PATH.max + 1), iconOverride: { pack: 'Bad', id: 'bell' } }, 'status:c': { iconOverride: { pack: 'pack-021' } } },
+      out: normalizeBannerWidgetPrefs({ 'status:a': { shape: 'hexagon', customPath: '  M0 0 L100 0 L50 100 Z  ', iconOverride: { pack: 'pack-021', id: 'bell' } }, 'status:b': { shape: 'blob', customPath: 'x'.repeat(BANNER_WIDGET_CUSTOM_PATH.max + 1), iconOverride: { pack: 'Bad', id: 'bell' } }, 'status:c': { iconOverride: { pack: 'pack-021' } } }),
+    },
+    migrate: Object.fromEntries(Object.entries({
+      'old-choices': { 'status:a': { size: 'wide' }, 'clock:c': { hidden: true, priority: 2 } },
+      'already-shaped': { 'status:a': { size: 'wide', shape: 'pill' } },
+      mixed: { 'status:a': { size: 'wide' }, 'clock:c': { shape: 'hexagon' }, 'bad key': { hidden: true }, 'status:d': 'junk' },
+      empty: {},
+      junk: [1, 2],
+      nothing: null,
+    }).map(([k, raw]) => [k, { in: raw, ...migrateBannerWidgetPrefs(raw) }])),
   });
 }
 // chrome-settings@1 (Nov 4 2026): registry, ids, inherit@1 chain, picks, instance overrides, custom copies
@@ -2511,7 +2599,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
     'press run now on the auto-lander toolbar', 'tap the retry button in the auto lander toolbar', "what's on the auto-lander toolbar", 'list the gate rules toolbar', 'show me the builds toolbar',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'make the clock a hexagon', 'Make the clock widget into a pill shape', "change the clock's icon", 'change the build widget icon', 'reset the clock widget', 'what time is it', ''];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {

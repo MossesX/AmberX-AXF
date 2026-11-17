@@ -43,6 +43,8 @@ import {
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
 import { TabGroup } from './TabGroup';
+import { BannerWidgetShapeRows } from './BannerWidgetShapeRows';
+import { installWidgetShapeTargets } from './widgetShape';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -214,6 +216,8 @@ function applyBannerLook(rt: AxfRuntime): void {
 }
 
 function installActions(rt: AxfRuntime): void {
+  // console-control@1: every banner widget's shape, icon and custom outline (components/widgetShape.ts)
+  installWidgetShapeTargets(rt);
   rt.actions.register('banners.settings', ([id], ctx) => {
     const pick = id || (typeof ctx?.payload === 'string' ? ctx.payload : '');
     // Shown as a page on its own (a host's Banners settings tab, embed@1 page `banners`): switch the page's tab instead.
@@ -505,6 +509,7 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
       <div className="fx-row fx-row--wrap">
         <Button tone="ghost" icon="layers" onClick={() => rt.dispatch('banner.widgets')}>Widgets on the top bar…</Button>
       </div>
+      <BannerWidgetShapeRows />
       <ApplyToAllLook />
       <TabGroup id="banner-settings.banners" label="Banners" className="fx-banner-settings__tabs" value={tab} onChange={setTab} tabs={list.map((x) => ({ value: x.id, label: bannerLabel(x), icon: x.icon ?? 'bell' }))} />
       {b && (

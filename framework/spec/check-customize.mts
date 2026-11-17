@@ -30,6 +30,12 @@ ok(effectiveCustom(slot, 'a').fontSize === 120 && effectiveCustom(slot, 'b').fon
 slot = setApplyAll(slot, ids, true);
 ok(effectiveCustom(slot, 'b').fontSize === 120, 're-tick takes the first asset');
 ok(customizeCss('toolbar', {}) === '', 'no values, no css');
+// widget-shape@1: the banner's own widget shape compiles to the shape tokens on its widgets; only the banner gets the token
+ok(['banner', 'toolbar', 'clock', 'action-button', 'status', 'divider'].every((ty) => customTokensFor(ty).some((t) => t.key === 'widgetShape')) && !customTokensFor('dialog').some((t) => t.key === 'widgetShape'), 'widgetShape reaches the widget hosts and every widget type (skin parts box), nothing else');
+ok(customizeCss('toolbar', { widgetShape: 'square' }).includes('.fx-toolbar .fx-toolbar__widget{--fx-widget-shape-radius:var(--fx-widget-shape-square)'), 'toolbar widget shape → tokens on its widget slots');
+ok(customizeCss('action-button', { widgetShape: 'pill' }).includes('.fx-banner__item:has(> .fx-widget-button), :root body .fx-toolbar__widget:has(> .fx-widget-button){--fx-widget-shape-radius:var(--fx-widget-shape-pill)'), 'a widget type\'s shape → tokens on the host items holding it');
+ok(customizeCss('banner', { widgetShape: 'hexagon' }).includes('.fx-banner .fx-banner__item{--fx-widget-shape-radius:0;--fx-widget-shape-clip:polygon('), 'banner widget shape → tokens on its items');
+ok(customizeCss('banner', { widgetShape: 'circle' }) === '', 'circle is the default: no css');
 const css = customizeCss('toolbar', { fontSize: 120, textColor: 'accent', iconSet: 'badge-bold', hover: 'lift', click: 'press', location: 'pinned-top', animation: 'fade' });
 for (const frag of ['.fx-toolbar', 'var(--fx-accent)', '.fx-toolbtn:hover', ':active', '.fx-icon', 'position:sticky', 'axf-cu-fade', 'stroke-width:2.7']) ok(css.includes(frag), `css has ${frag}`);
 ok(!/#[0-9a-f]{3,6}\b|rgb\(/i.test(customizeSheet({ toolbar: { background: 'surface2', hover: 'glow' }, 'tab-group': { iconSet: 'duotone-thin' } })), 'no hard-coded colours');
