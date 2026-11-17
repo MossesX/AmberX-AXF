@@ -227,7 +227,9 @@ function backupSource(dataDir, p, at) {
   const file = join(dir, `${p.ns.replace('/', '__')}-${at.replace(/[^0-9]/g, '').slice(0, 14)}.tar.gz`);
   const list = join(dir, `.${process.pid}.list`);
   writeFileSync(list, p.items.map((i) => i.file).join('\n'));
-  try { execFileSync('tar', ['-czf', file, '--absolute-names', '-T', list], { stdio: ['ignore', 'ignore', 'pipe'] }); } finally { rmSync(list, { force: true }); }
+  // live data: a file can vanish between the scan and the backup (rotated reports); the copy uses the bytes read at the
+  // scan, so a vanished file is not lost from the copy, only from this tarball: tar notes it and goes on
+  try { execFileSync('tar', ['-czf', file, '--absolute-names', '--ignore-failed-read', '-T', list], { stdio: ['ignore', 'ignore', 'pipe'] }); } finally { rmSync(list, { force: true }); }
   return file;
 }
 
