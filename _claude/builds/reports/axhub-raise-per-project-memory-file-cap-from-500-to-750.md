@@ -19,3 +19,13 @@
   amberx-axf (`memory/cap-probe.md`) succeeded, then the probe was removed.
 - Follow-up: builds/shipped will hit 2000 in roughly two months at the current rate; it should be archived or rolled
   up (one file per month) rather than the cap raised again.
+- **Correction:** the build record says Brett set 750 on purpose ("We'll keep that at 750. Yeah, 750.", a safety limit).
+  The 2000 change overrode him, so it was reverted (axHub b150460) and redeployed: live hub on b150460, cap 750, healthy.
+  Result: edits and appends to existing amberx-axf files work; **new files are refused** until the project is under 750
+  (761 now). Trimming needs Brett's pick (deleting hub files is a veto call): archive builds/shipped (398) and old
+  builds/reports (197) into rolled-up files, or move them to the data area (cap 2000).
+
+## s3: rules
+- Appended to amberx-axf `_claude/rules/RULES.md` on the hub (append, version b7a403800cd26934):
+  1. Explain every build: one plain sentence on what it does whenever a build is mentioned to Brett.
+  2. Framework work is web + Android only for now; Python and other stacks get placeholders only.
