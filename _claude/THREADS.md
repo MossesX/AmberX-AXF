@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:12 UTC · `rebuild-every-toolbar-page-specific` → queued (all) · Brett
 - 2026-11-17 19:16 UTC · `every-plugin-screen-gets-a-settings-gear` s21 done (all) · orchestrator
 - 2026-11-17 19:17 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
 - 2026-11-17 19:18 UTC · `rebuild-every-context-menu-toolbar-nav` added (0 steps) (all) · console
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:00 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 21:00 UTC · `terminal-main-tab-streaming-console-s` s13 done (all) · orchestrator
 - 2026-11-17 21:01 UTC · `rebuild-every-toolbar-page-specific` s15 done (all) · orchestrator
+- 2026-11-17 21:01 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
