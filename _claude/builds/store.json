@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8047,
- "updatedAt": "2026-11-17T21:38:31.975Z",
+ "rev": 8048,
+ "updatedAt": "2026-11-17T21:38:38.872Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268238,7 +268238,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -268246,7 +268246,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:38:04.205Z",
+   "updatedAt": "2026-11-17T21:38:25.149Z",
    "builtAt": "",
    "notes": [
     {
@@ -268424,6 +268424,14 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s14): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:36:15.954Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 13 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T21:38:11.809Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:38:25.149Z"
     }
    ],
    "approvals": [
@@ -268461,13 +268469,13 @@
     "runs": 2,
     "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T21:06:39.726Z",
+     "at": "2026-11-17T21:38:06.543Z",
      "exit": 0,
      "outcome": "requeued",
      "reason": "phase-done",
-     "stepsLeft": 23,
+     "stepsLeft": 13,
      "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
+     "session": "",
      "phase": "Phase 1"
     },
     "split": {
@@ -268478,7 +268486,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "requeued after phase Phase 1: next phase Opus waits for a slot and an account",
+    "note": "Session on hulu0241 finished phase Phase 1 with 13 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
@@ -268871,12 +268879,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T21:38:04.205Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:38:05.114Z"
+     "updatedAt": "2026-11-17T21:38:32.397Z"
     },
     {
      "id": "s16",
@@ -269185,7 +269193,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -282427,7 +282435,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T21:37:31.908Z",
+   "updatedAt": "2026-11-17T21:38:17.497Z",
    "builtAt": "",
    "notes": [
     {
@@ -282461,6 +282469,10 @@
     {
      "text": "URGENT regression (Brett, 21:38Z): the toolbar Settings dialog lost its tab group entirely; no Interface/Behavior/Assets tabs, just one page. Likely from PR #817 (page toolbars) landing at 8cbff5a. Restore the tab group in every chrome settings dialog first, before anything else in this build, and add a test that each settings dialog renders its tab row.",
      "at": "2026-11-17T21:37:31.908Z"
+    },
+    {
+     "text": "Brett: only ONE toolbar settings interface. Every toolbar uses the shared default (with its full tab group restored); delete every other toolbar settings asset (per-app copies settings/chrome-toolbar-<app> and any variants), move any picks pointing at them back to the shared one, and change the chrome-settings check/backfill so it no longer requires per-app toolbar copies. Controls still apply to the toolbar it was opened from.",
+     "at": "2026-11-17T21:38:17.497Z"
     }
    ],
    "approvals": [],
@@ -282858,7 +282870,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -284795,12 +284807,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-17T21:37:07.527Z",
+   "updatedAt": "2026-11-17T21:38:35.623Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T21:37:07.527Z"
+    },
+    {
+     "text": "Split by Claude into 11 steps (0 Fable).",
+     "at": "2026-11-17T21:38:35.623Z"
     }
    ],
    "approvals": [],
@@ -284829,9 +284845,15 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-17T21:38:35.623Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 11,
+     "note": "Split by Claude into 11 steps (0 Fable)."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -284841,7 +284863,290 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwl7sdev01k0v1",
+     "title": "",
+     "text": "Reproduce and find the cause: trace how the console restores its place on load (view/route state in apps/console-web/src, URL hash/query, sessionStorage/localStorage keys, console.refresh handler, service worker/hot reload, pull-to-refresh). Write findings (which state is lost: view, tab, scroll, selection; and the scroll-lock cause after an update) to _claude/builds/reports/fix-refreshing-console-jumps-back.md as a draft",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src",
+      "apps/console-web/src/axf/react",
+      "_claude/builds/reports/fix-refreshing-console-jumps-back.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwl7sdev0219vc",
+     "title": "",
+     "text": "Check the scroll lock after an update: find what leaves body/root overflow hidden or a scrim/pointer-events overlay after an update or refresh banner (update toast, dialog close, pull-to-refresh handler, overscroll-behavior) and note the exact file:line in the draft report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src",
+      "apps/console-web/src/console.css",
+      "framework/react",
+      "_claude/builds/reports/fix-refreshing-console-jumps-back.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwl7sdev03dcug",
+     "title": "",
+     "text": "Add a console place store: one small module (apps/console-web/src/place/placeState.ts) that saves the current view address, active tab per tab group, selection and scroll offsets of the main scroller and named panes to sessionStorage (debounced, on pagehide/visibilitychange too), keyed by console-control addresses (view:/tab:/row:)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/place/placeState.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwl7sdev046hwh",
+     "title": "",
+     "text": "Restore view + tab on load: wire the place store into the console's router/app shell so a reload reopens the saved view and tabs before the first paint, and URL deep links still win over the saved place",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/App.tsx",
+      "apps/console-web/src/place/placeState.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwl7sdev05yk7a",
+     "title": "",
+     "text": "Restore scroll + selection: after the restored view mounts and its data loads, reapply scroll offsets (retry until content is tall enough, give up after a short timeout) and the selected row/item; stop any default scroll-to-top or default-tab reset that fires after load",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/place/placeState.ts",
+      "apps/console-web/src/views"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwl7sdev069b56",
+     "title": "",
+     "text": "Server-pushed console.refresh keeps the place: make the refresh handler (soft and --hard) save the place right before reloading and the soft refresh re-render without resetting view/tab/scroll",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src",
+      "apps/console-web/plugins",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwl7sdev07jt43",
+     "title": "",
+     "text": "Pull-down refresh keeps the place: make the pull-to-refresh path save and restore the same state as reload, and leave scroll unlocked when it finishes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src",
+      "framework/react"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwl7sdev08d0mj",
+     "title": "",
+     "text": "Fix the scroll lock after an update: clear any leftover overflow/pointer-events lock or stale overlay when the update/refresh flow ends (and on load as a safety net), using the cause found in step 2",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src",
+      "apps/console-web/src/console.css",
+      "framework/react"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwl7sdev09fzi3",
+     "title": "",
+     "text": "API part: expose the saved place read-only and the restore action through the console API, keeping all four drivers the same: REST GET/POST /api/console-control place (read state, restore), MCP console tool, axf console place [get|restore], and an AmberX voice action; register targets with control@1 (append-only)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server",
+      "apps/console-web/src",
+      "framework/cli",
+      "_claude/memory/docs/console-control.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwl7sdev0a4wlo",
+     "title": "",
+     "text": "Tests: a unit test for placeState save/restore/deep-link precedence and a Playwright check against vite preview: open a tab deep in a view, scroll, select a row, reload, pull-refresh and server-push refresh; assert the same place is restored and the page still scrolls",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/place",
+      "apps/console-web/scripts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwl7sdev0bwa7c",
+     "title": "",
+     "text": "Run the checks (typecheck, check-theme, check-controls, check-console-control, check-toolbars), finish the report _claude/builds/reports/fix-refreshing-console-jumps-back.md (cause, fix, before/after), update the THREADS row and open the PR naming how each part is reached (REST, MCP, CLI, voice)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-refreshing-console-jumps-back.md",
+      "_claude/THREADS.md",
+      "apps/console-web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:38:35.623Z",
+     "updatedAt": "2026-11-17T21:38:35.623Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -284850,12 +285155,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-17T21:38:35.623Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

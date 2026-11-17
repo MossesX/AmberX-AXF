@@ -830,11 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:56 UTC · `land-drive-live-console-first-resolve` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `land-rename-long-builds-resolve-clash` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `land-overlay-preview-ui-review-resolve` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `full-voice-control-merge-main-and-land` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `separate-settings-per-plugin-reset` s4 done (all) · foreign-write
 - 2026-11-17 19:56 UTC · `guided-live-demo-test-watch-orchestrator` s2 done (all) · foreign-write
 - 2026-11-17 19:56 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `prompting-engine-control-panel-to-create` note (all) · watchdog
@@ -1230,6 +1225,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` s15 done (all) · orchestrator
 - 2026-11-17 21:38 UTC · `rebuild-every-toolbar-page-specific` merged, note (all) · reconciler
 - 2026-11-17 21:38 UTC · `icon-picker-every-banner-settings-widget` s2 done (all) · orchestrator
+- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:38 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` s15 undone, → queued, note (all) · foreign-write
+- 2026-11-17 21:38 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
 
 ## Token passes (log)
 
