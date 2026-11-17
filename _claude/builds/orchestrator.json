@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:23:29.278Z",
+ "updatedAt": "2026-11-17T23:25:01.539Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -308062,6 +308062,37 @@
      "createdAt": "2026-11-17T23:21:46.506Z"
     }
    ]
+  },
+  {
+   "id": "active-tab-add-stop-button-per-running",
+   "title": "Active tab: add Stop button per running build and fix grid alignment",
+   "category": "",
+   "detail": "In the Build orchestrator Active tab there is no way for Brett to stop a running build. Add a Stop button on every running build row (stops the tmux session on the VPS through the VPS, marks it Hold, never relaunches). Also the Active tab grid columns are out of alignment; fix the layout so headers and cells line up at all widths. Add a CI check.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T23:24:57.257Z",
+   "updatedAt": "2026-11-17T23:24:57.257Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "There's no button to stop it, and the grid is all out of alignment.",
+    "at": "2026-11-17T23:24:57.257Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
