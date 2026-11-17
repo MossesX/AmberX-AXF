@@ -5,7 +5,7 @@
 #
 #   bash deploy/claude-headless.sh --name <slug> --brief <file> --log <file> -- <claude args…>
 #
-# Runs `claude -p <args> --output-format stream-json --verbose "$(cat <brief>)"` inside a detached tmux session named
+# Runs `claude -p <args> --output-format stream-json --verbose < <brief file>` (the prompt on stdin, never argv: E2BIG over 128 KB) inside a detached tmux session named
 # `axf-<slug>` in the current folder. The console's Terminal plugin lists `axf-*` tmux sessions on the VPS and opens
 # each new one in a VPS tab attached to it, in the terminal window brought to the front. The stream is printed as
 # readable lines (deploy/claude-stream.mjs) and kept: <log> = what you see, <log minus .log>.jsonl = the raw stream.
@@ -409,13 +409,18 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   # killed from outside (tmux kill-session = HUP, kill = TERM): leave the evidence, then go
   [[ -n "$gate_ok" ]] && trap 'record_run_end 129 HUP; exit 129' HUP && trap 'record_run_end 143 TERM; exit 143' TERM
+  # The prompt reaches claude on stdin from a file, never as one argv string: Linux refuses a single argument over
+  # 128 KB (MAX_ARG_STRLEN) with E2BIG, and a big brief crashed the launch before claude started (Nov 17 2026).
+  prompt_file="$(mktemp "${TMPDIR:-/tmp}/axf-brief.XXXXXX")"
+  trap 'rm -f "$prompt_file"' EXIT
   while [[ -n "$gate_ok" ]]; do
+    printf '%s' "$prompt" > "$prompt_file"   # again each round: an account switch adds a line
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
       hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model" --build "${run_build:-}")
-      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; [[ -n "$ctx_line" ]] && printf '%s\n' "$ctx_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
+      claude -p "$@" --output-format stream-json --verbose < "$prompt_file" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; [[ -n "$ctx_line" ]] && printf '%s\n' "$ctx_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
     else
-      claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
+      claude -p "$@" < "$prompt_file" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
     fi
     st=${PIPESTATUS[0]}
     (( switches < max_switches )) || break
@@ -557,8 +562,10 @@ if ! command -v tmux >/dev/null; then
   login_session="$session"; own_login "${account:-active}"
   ctx_plan "$session"; [[ -n "$brief_only" ]] && set -- "$@" "${ctx_args[@]}"
   fb_prompt="$(cat "$brief")"; [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && fb_prompt="$fb_prompt"$'\n\n'"$(cat "$ctx_rules")"
-  # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
-  nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$fb_prompt" &
+  # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it); the prompt
+  # goes on stdin from a file (an argv string over 128 KB is E2BIG), removed when claude exits
+  fb_file="$(mktemp "${TMPDIR:-/tmp}/axf-brief.XXXXXX")"; printf '%s' "$fb_prompt" > "$fb_file"
+  nohup bash -c 'claude -p "${@:4}" < "$3" > "$2" 2>&1; st=$?; rm -f "$3"; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$fb_file" "$@" &
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" bind "$slot" --pid "$!" >/dev/null 2>&1
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
   exit 0
