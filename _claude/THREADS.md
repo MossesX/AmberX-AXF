@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:28 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `main-gate-nothing-reaches-main-without-passing` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → complete, note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:52 UTC · `flagship-professional-skin-covering-2` s15 done (all) · orchestrator
 - 2026-11-17 22:52 UTC · `flagship-professional-skin-covering-2` s11 done, s12 done, s13 done, s14 done, s15 done, note (all) · foreign-write
 - 2026-11-17 22:52 UTC · `move-everything-axhub-web-console` s1 done (all) · foreign-write
+- 2026-11-17 22:52 UTC · `flagship-professional-skin-covering-2` s15 done (all) · foreign-write
 
 ## Token passes (log)
 
