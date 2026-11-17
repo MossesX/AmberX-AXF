@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7404,
- "updatedAt": "2026-11-17T12:35:41.858Z",
+ "rev": 7405,
+ "updatedAt": "2026-11-17T12:36:13.780Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248745,15 +248745,15 @@
    "title": "Auto-lander grid: one row per build, behind-main count, archive",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-lander-grid-one-row-per-build",
-   "pr": "",
+   "pr": "#778",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-17T12:35:01.131Z",
+   "updatedAt": "2026-11-17T12:35:42.773Z",
    "builtAt": "2026-11-17T12:35:01.131Z",
    "notes": [
     {
@@ -248974,7 +248974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
