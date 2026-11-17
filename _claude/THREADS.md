@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:48 UTC · `icon-packs-with-drag-drop-pack-designer` s10 done (all) · orchestrator
 - 2026-11-16 23:48 UTC · `land-project-create-mcp-resolve-clash` s1 done, → running (all) · orchestrator
 - 2026-11-16 23:48 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s2 done (all) · orchestrator
 - 2026-11-16 23:49 UTC · `axhub-veto-countdown-setting-read-only` s10 done (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 04:30 UTC · `server-auto-lander-fixes-lands` s22 done (all) · orchestrator
 - 2026-11-17 04:31 UTC · `orchestrator-runs-long-builds-across` s19 done (all) · orchestrator
 - 2026-11-17 04:32 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s18 done (all) · orchestrator
+- 2026-11-17 04:33 UTC · `orchestrator-runs-long-builds-across` PR #773 (all) · builds-live
 
 ## Token passes (log)
 
