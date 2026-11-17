@@ -13,7 +13,7 @@ export const MIN_GAP_S = 30;
 
 export const api = pluginApi(FOLDER, 'Orchestrator demo', { unavailable: 'The Orchestrator demo is switched off or its server part is not running.' });
 
-export interface Focus { address: string; highlight?: string; say?: string }
+export interface Focus { app: string; route: string; selector: string; address: string; note: string }
 export interface OutlineAct { id: string; title: string }
 export interface OutlinePart { part: number; title: string; acts: OutlineAct[] }
 export interface CheckItem { actId: string; title: string; mark: string; result: '' | 'pass' | 'fail' | 'skipped'; observed: string; error: string }
@@ -47,15 +47,16 @@ export const demo = {
   summary: () => api.call<{ ok: boolean; summary: Summary | null; cleanup: unknown }>('summary'),
 };
 
-/** The run, polled every `ms` while mounted (1 s keeps the countdown honest). */
-export function useDemoState(ms = 1000) {
+/** The run, polled every `ms` while a run is live (1 s keeps the countdown honest), every `idleMs` otherwise. */
+export function useDemoState(ms = 1000, idleMs = ms) {
   const [state, setState] = useState<DemoState | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [error, setError] = useState('');
   const refresh = useCallback(async () => {
     try { const r = await demo.state(); setState(r.state); if (r.settings) setSettings(r.settings); setError(''); } catch (e) { setError(e instanceof Error ? e.message : String(e)); }
   }, []);
-  useEffect(() => { void refresh(); const t = setInterval(() => void refresh(), ms); return () => clearInterval(t); }, [refresh, ms]);
+  const every = isLive(state) ? ms : idleMs;
+  useEffect(() => { void refresh(); const t = setInterval(() => void refresh(), every); return () => clearInterval(t); }, [refresh, every]);
   return { state, settings, error, refresh, setState };
 }
 
