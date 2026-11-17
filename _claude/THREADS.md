@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 - 2026-11-17 22:34 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 - 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 - 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:58 UTC · `move-everything-axhub-web-console` added (31 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `auto-lander-never-wait-missing-ui-review` added (187 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `one-true-source-for-every-setting` added (80 steps) (all) · foreign-write
+- 2026-11-17 22:59 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 
 ## Token passes (log)
 
