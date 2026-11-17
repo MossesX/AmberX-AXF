@@ -10,8 +10,9 @@
  * Each of them is mergeStores(): per build and per step, the NEWER copy wins (updatedAt, then rev, then done), so a
  * stale copy can never undo a step another session ticked, and a status never regresses because a branch merged late.
  *
- * Build status after a merge is derived again from the merged steps (liveStatus): explicit blocked / failed / archived
- * stay; all steps done = complete, or `built` (built, awaiting merge) while the build's PR is open and not merged.
+ * Build status after a merge is derived again from the merged steps (liveStatus): explicit blocked / failed / archived /
+ * fixing / escalated stay; all steps done = `landing` until the PR is merged, `landed` once merged (done-means-merged@1;
+ * `complete` only through the verify runner).
  */
 import { STATUSES, normBuild, normalizeStore } from './builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
@@ -32,13 +33,19 @@ export function newer(a, b) {
  * 2026: built-awaiting-merge until the PR merges, complete once merged). A build without a PR stays complete.
  */
 export function liveStatus(b) {
-  if (['blocked', 'failed', 'archived'].includes(b.status)) return b.status;
-  if (b.status === 'complete' && str(b.mergedAt)) return 'complete'; // its PR merged: done, even with steps left unticked
+  // done-means-merged@1: fixing, escalated and landed are set by the pipeline / lander with their records; steps never override them
+  if (['blocked', 'failed', 'archived', 'fixing', 'escalated'].includes(b.status)) return b.status;
+  if (b.status === 'complete' && str(b.mergedAt)) return 'complete'; // its PR merged and verified: done, even with steps left unticked
+  if (b.status === 'landed' && str(b.mergedAt)) return 'landed';
   const steps = (b.steps ?? []).filter((s) => !s.skip);
-  if (!steps.length) return b.status === 'built' && str(b.mergedAt) ? 'complete' : b.status;
+  const settled = ['built', 'landing', 'landed', 'complete'].includes(b.status);
+  // a complete record with no PR, no branch and no merge is unprovable (pre-pipeline): left as it is, like migrateDone does
+  const unprovable = b.status === 'complete' && !str(b.mergedAt) && !str(b.pr) && !str(b.branch);
+  if (!steps.length) return settled && str(b.mergedAt) && b.status !== 'complete' ? 'landed' : settled && !str(b.mergedAt) && !unprovable ? 'landing' : b.status;
   const done = steps.filter((s) => s.done).length;
-  if (done === steps.length) return str(b.pr) && !str(b.mergedAt) ? 'built' : 'complete';
-  if (!done && (b.status === 'complete' || b.status === 'built')) return b.status; // built without ticking its steps
+  // every step done: landed once merged (complete only through the verify), else landing (the auto-lander's), never built
+  if (done === steps.length) return str(b.mergedAt) ? 'landed' : unprovable ? 'complete' : 'landing';
+  if (!done && settled) return str(b.mergedAt) || unprovable ? b.status : 'landing'; // built without ticking its steps: still not proven merged
   if (b.status === 'waiting') return 'waiting';
   if (b.status === 'queued') return done > 0 ? 'running' : 'queued'; // in the Queue until the dispatcher's session ticks a step
   // a pending build with ticked steps stays pending (paused: nothing is running it); a tick through the Builds page or
@@ -51,8 +58,9 @@ export function settleStatus(b, now = new Date().toISOString()) {
   const st = liveStatus(b);
   if (st === b.status || !STATUSES.includes(st)) return false;
   b.status = st;
-  if ((st === 'complete' || st === 'built') && !b.builtAt) b.builtAt = now;
-  if (st !== 'complete' && st !== 'built') b.builtAt = '';
+  const finished = ['complete', 'built', 'landing', 'landed'].includes(st);
+  if (finished && !b.builtAt) b.builtAt = now;
+  if (!finished) b.builtAt = '';
   return true;
 }
 

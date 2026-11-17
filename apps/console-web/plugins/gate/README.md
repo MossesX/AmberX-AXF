@@ -35,8 +35,20 @@ Contract: `framework/spec/GATE.md`. Engine: `framework/core/gate-rules.mjs` (pur
 - Voice / console actions: `gate.open[:tab]`, `gate.rule:<id>[:on|off]`, `lander.land-now:<pr>` (confirms first),
   `lander.pause[:why]`, `lander.resume`.
 
+## Server auto-lander (auto-lander@1)
+The VPS runner that fixes and lands finished builds by itself (Brett, Nov 16 2026: "Make the server do it automatically
+without the console"). Code: `deploy/auto-lander/` (runner, attempt log, clash resolver, red-CI reader, fix-session
+launcher, reconcile, escalation), `deploy/systemd/axf-auto-lander.{service,timer}`. In this plugin:
+`server/routes.py` (`/auto-lander…` routes), `server/auto_lander_health.py` (systems check item `gate-auto-lander`,
+Reset and fix now), `notify.json` (`gate.auto-lander-escalated`, one push per escalated build),
+`web/AutoLanderTab.tsx` (Gate → Auto-lander → Server), `web/AutoLanderSettings.tsx` (Settings → Plugins → Gate),
+`test_auto_lander.py`. MCP `gate_auto_lander_*`, CLI `axf gate auto-lander …`, voice `gate.auto-lander.*`.
+Doc: `_claude/memory/docs/auto-lander.md`.
+
 ## Lifecycle (plugin-lifecycle@1)
 Data: `.axf-console/plugins/gate/` (`rules.json`, `history.jsonl`, `lander.json`, `confirms.json`, `settings.json`).
+The server auto-lander's data (`<shared data>/auto-lander/`: state, attempt logs, control, escalations) belongs to the
+VPS service and stays on uninstall; `systemctl disable --now axf-auto-lander.timer` stops it.
 The lander keys mirrored into the merge-queue provider's `config.json` belong to that plugin and stay on uninstall.
 ```bash
 node apps/console-web/plugins/gate/install.mjs

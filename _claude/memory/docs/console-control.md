@@ -63,3 +63,12 @@ REST, MCP, CLI and voice are one code path (`console_control_api.command` / `voi
 in-process inside the console, or over REST from a local clone; the CLI calls REST. `console-control-parity.mjs`
 proves it: the same 14 commands through all four give the same answer, the same command at the console and the
 same state.
+
+## Page toolbars (Nov 17 2026, build rebuild-every-toolbar-page-specific)
+
+A toolbar drawn from a page toolbar asset (page-toolbar@1) is `toolbar:<settings id>` (`gate.auto-lander`), its buttons
+`toolbar:<settings id>/button:<id>`. `state` reads the look and every button (enabled, visible, pressed, badge, action, inMore);
+`press` runs a button through the same engine the click uses; a destructive button needs `confirm`. Shortcuts on every
+transport: REST `GET /api/console-control/toolbars`, `GET …/toolbars/<id>`, `POST …/toolbars/<id>/press {button}`; MCP
+`console_control_toolbar`; control@1 `console.toolbars`; CLI `axf console toolbar list|get|press`; voice "press <button> on
+the <x> toolbar", "what's on the <x> toolbar".

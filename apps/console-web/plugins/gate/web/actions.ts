@@ -11,10 +11,17 @@
  *   gate.build-rules.who:<id>             say who does a rule (the VPS or the session) and when
  *   gate.build-rules.add:<id>:<title>     add a session rule (judgement, dispatch, Rules block); edit it in the tab
  *   gate.build-rules.run:<build>:<phase>  run a phase's rules for a build now (before | after | gate)
+ *   gate.auto-lander.status                 say what the server auto-lander is doing (auto-lander@1)
+ *   gate.auto-lander.open[:build]           open Gate → Auto-lander (and one build's attempt log)
+ *   gate.auto-lander.run                    ask the service for a tick now
+ *   gate.auto-lander.retry:<build> · gate.auto-lander.fix:<build>   reset a build (fix = and start a fix session)
+ *   gate.auto-lander.pause · gate.auto-lander.resume
+ *   gate.auto-lander.set:<key>:<value>      one setting (enabled, maxAttempts, backoffBaseMin, …, pushOnEscalation)
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { confirmed, gateCall, isTab, showTab, type BuildRule, type BuildRuleList, type GateRule, type LanderStatus } from './api';
 import { showBuildRule } from './buildRulesState';
+import { autoLanderPath, showAutoLanderBuild, type AutoLanderStatus } from './autoLanderState';
 
 const fail = (rt: AxfRuntime) => (e: Error) => rt.toast(e.message, 'danger', 'Gate & rules');
 
@@ -64,4 +71,33 @@ export function registerGateActions(rt: AxfRuntime): void {
     void gateCall<{ pass: boolean; counts: Record<string, number> }>('build-rules/run', 'POST', { build, phase, by: 'voice' })
       .then((r) => rt.toast(`${build} ${phase}: ${Object.entries(r.counts).map(([k, v]) => `${v} ${k}`).join(', ')}.`, r.pass ? 'success' : 'warning', BR), fail(rt));
   }, { label: 'Run the build rules for a build', params: true, effect: 'write' });
+
+  // ---------------------------------------------------------------- the server auto-lander (auto-lander@1): the same REST as MCP and the CLI
+  const AL = 'Auto-lander';
+  rt.actions.register('gate.auto-lander.status', () => {
+    void gateCall<AutoLanderStatus>(autoLanderPath()).then((s) => {
+      const esc = s.escalations.length ? ` ${s.escalations.length} gave up: ${s.escalations.map((e) => e.build).join(', ')}.` : '';
+      rt.toast(`The server auto-lander is ${s.service.paused ? 'paused' : s.service.up ? 'up' : 'down'}${s.current ? `, working on ${s.current}` : ''}; ${s.builds.length} builds tracked.${esc}`, s.escalations.length || !s.service.up ? 'warning' : 'info', AL);
+    }, fail(rt));
+  }, { label: 'What the server auto-lander is doing', effect: 'read' });
+  rt.actions.register('gate.auto-lander.open', ([build = '']) => { rt.navigate('gate'); showTab('auto-lander'); if (build) showAutoLanderBuild(build); }, { label: 'Open the server auto-lander', params: true, effect: 'navigate' });
+  rt.actions.register('gate.auto-lander.run', () => {
+    void gateCall(autoLanderPath('run'), 'POST', { by: 'voice' }).then(() => rt.toast('The auto-lander runs within a minute.', 'success', AL), fail(rt));
+  }, { label: 'Run the server auto-lander now', effect: 'write' });
+  for (const [verb, label, done] of [['retry', 'Retry a build in the auto-lander', 'tries again'], ['fix', 'Fix a build now (auto-lander)', 'gets a fix session within a minute']] as const) {
+    rt.actions.register(`gate.auto-lander.${verb}`, ([build = '']) => {
+      if (!build) { rt.toast(`Say which build, for example gate.auto-lander.${verb}:my-build.`, 'warning', AL); return; }
+      void gateCall(autoLanderPath(`${verb}/${encodeURIComponent(build)}`), 'POST', { by: 'voice' }).then(() => rt.toast(`${build} ${done}.`, 'success', AL), fail(rt));
+    }, { label, params: true, effect: 'write' });
+  }
+  rt.actions.register('gate.auto-lander.pause', () => {
+    void gateCall(autoLanderPath('pause'), 'POST', { by: 'voice' }).then(() => rt.toast('The server auto-lander is paused.', 'success', AL), fail(rt));
+  }, { label: 'Pause the server auto-lander', effect: 'write' });
+  rt.actions.register('gate.auto-lander.resume', () => {
+    void gateCall(autoLanderPath('resume'), 'POST', { by: 'voice' }).then(() => rt.toast('The server auto-lander is back on.', 'success', AL), fail(rt));
+  }, { label: 'Resume the server auto-lander', effect: 'write' });
+  rt.actions.register('gate.auto-lander.set', ([key = '', value = '']) => {
+    if (!key || !value) { rt.toast('Say a setting and a value, for example gate.auto-lander.set:maxAttempts:5.', 'warning', AL); return; }
+    void gateCall<{ settings: Record<string, unknown> }>(autoLanderPath('settings'), 'POST', { key, value, by: 'voice' }).then((r) => rt.toast(`${key} is ${String(r.settings[key])}.`, 'success', AL), fail(rt));
+  }, { label: 'Change a server auto-lander setting', params: true, effect: 'write' });
 }

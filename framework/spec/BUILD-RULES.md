@@ -88,6 +88,20 @@ VPS rules never reach the brief: that is the "not twice" guarantee.
 Rule #1 of the seed is `home-card`: *every plugin gets a home card, made by the VPS* (`doer: vps`, `phase: after`,
 `kind: mechanical`, `check: store:home-card`, `autofix: home-card`). It is not in any brief.
 
+### `done-means-merged` (Nov 17 2026, build `server-rule-done-means-merged-working`)
+
+Brett, Nov 17 2026: *"We asked you to build it. You should do whatever you have to do to build it, period. Why should we
+say build it and then it fails and you don't say anything and we find out days later?"* One rule, two sides:
+
+| Side | What | Where |
+| --- | --- | --- |
+| the brief (`doer: session`, `phase: gate`, `briefBlock: rules`, `applies: builds`, no `when`) | every build brief carries it: never stop on a failure, fix and retry with a different approach, never mark a build built or complete (every step ticked = `landing`), a build note when truly stuck | `briefBlocks` → `## Rules for this job` |
+| the VPS (enforced whatever the session does) | the builds store refuses `landed` / `built` / `complete` without a merged PR, CI green on the merge commit and (for `complete`) the verify, and notes the refusal; the dispatcher classifies failures and retries on the ladder; the auto-lander and the verify runner set `landing` → `landed` → `complete`; escalation goes to the systems check banner and one phone push | `guardStatus` / `enforceDoneGuard` (builds-store), `pipeline.mjs`, `retry-ladder.mjs`, health@1 + `axf.notify@1` |
+
+`check: node framework/spec/check-done-means-merged.mjs` (also in CI). It is one of the migration's native rules
+(`VPS_RULES` in `build-rules-migrate.mjs`), so the seed carries it and a fresh store starts with it. Its settings are the
+retry-policy@1 defaults until build-rule@1 grows a settings field. Contract: `DONE-MEANS-MERGED.md`.
+
 ## Store, path and history
 
 The store lives in one folder behind one function, `storeDir()` in the engine: `AXF_BUILD_RULES_DIR` when set, else
@@ -134,4 +148,5 @@ removal is Phase 2 of this build; this phase changes no rule file.
 - `rules-briefs@1` (`framework/core/rules-brief.mjs`): today's saved briefs. `briefBlocks` replaces the `core`, `ui` and `plugins` seed briefs' builder lines; what is left in them is Amber's voice and the non-builder lines.
 - `build-pipeline@1` (`framework/core/build-pipeline.mjs`): the dispatcher that calls `briefBlocks` at `launch` and runs the before / after phases.
 - `build-origin@1`: the verbatim words block the brief starts with; rule `build-origin-verbatim` is the VPS's.
+- `done-means-merged@1` (DONE-MEANS-MERGED.md): the status guard, failure kinds, attempts and retry ladder behind rule `done-means-merged`.
 - `control@1` (CONTROL.md): read / write / confirm and the deep-link grammar above.

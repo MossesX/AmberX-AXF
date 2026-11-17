@@ -12,6 +12,8 @@ import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navsty
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
+import { toolbarErrors, toolbarItemSchema, toolbarSchemaProperties } from '../core/engines/toolbar-rules.mjs';
+import { toolbarMigrationErrors } from '../core/engines/toolbar-migrate.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { appLookSchema, skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
@@ -23,9 +25,12 @@ import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-ru
 import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '../core/feature-ledger.mjs';
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
+import { REGISTRY as RETRY_LADDER_REGISTRY } from '../core/retry-ladder.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
 import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
+import { REGISTRY as AUTO_LANDER_REGISTRY, jsonSchemas as autoLanderJsonSchemas } from '../core/auto-lander.mjs';
 import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
+import { jsonSchema as buildWatchdogJsonSchema } from '../core/build-watchdog.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
 import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
@@ -193,6 +198,10 @@ export function validateAsset(raw) {
   errors.push(...jobTypeErrors(raw.type, raw.data));
   // card@1: ONE validator shared with core (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, raw.data));
+  // page-toolbar@1: ONE validator shared with core (core/engines/toolbar-rules.mjs); both toolbar shapes
+  errors.push(...toolbarErrors(raw.type, raw.data));
+  // toolbar-list@1 → page-toolbar@1 (core/engines/toolbar-migrate.mjs): the migrated asset is valid and draws the same
+  errors.push(...toolbarMigrationErrors(raw.type, raw.data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with core (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
@@ -873,11 +882,13 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
+    // page-toolbar@1: scope, groups (items through $defs.toolbarItem) and overflow
+    if (type === 'toolbar') Object.assign(props, toolbarSchemaProperties());
     if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
     // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
     const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
     if (type === 'skin') Object.assign(props, skinSchemaProperties());
-    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
+    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : type === 'toolbar' ? { toolbarItem: toolbarItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
       $schema: 'https://json-schema.org/draft/2020-12/schema',
@@ -921,12 +932,18 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // build-hook@1: the one event every build creator fires (builds store writes → listeners)
   for (const [n, schema] of Object.entries(buildHookJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const hreg = join(FRAMEWORK_DIR, 'schemas/build-hook.json'); writeFileSync(hreg, JSON.stringify(BUILD_HOOK_REGISTRY, null, 2) + '\n'); written.push(hreg);
+  const rlreg = join(FRAMEWORK_DIR, 'schemas/retry-ladder.json'); writeFileSync(rlreg, JSON.stringify(RETRY_LADDER_REGISTRY, null, 2) + '\n'); written.push(rlreg); // done-means-merged@1 retry ladder
+  // build-watchdog@1: the stuck-build recovery record on builds@1 (recoveries[]), the probe, the decision and the settings
+  const wreg = join(FRAMEWORK_DIR, 'schemas/build-watchdog.json'); writeFileSync(wreg, JSON.stringify(buildWatchdogJsonSchema(), null, 2) + '\n'); written.push(wreg);
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
   // gate-rules@1: the gate a PR passes before it lands (gate-rule@1, gate-rule-set@1) and the lander's state (lander-state@1) + the registry snapshot
   for (const [n, schema] of Object.entries(gateRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const greg = join(FRAMEWORK_DIR, 'schemas/gate-rules.json'); writeFileSync(greg, JSON.stringify(GATE_RULES_REGISTRY, null, 2) + '\n'); written.push(greg);
+  // auto-lander@1: the server fixes and lands every build on its own (attempt, build, policy, action, state) + the registry snapshot
+  for (const [n, schema] of Object.entries(autoLanderJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const alreg = join(FRAMEWORK_DIR, 'schemas/auto-lander.json'); writeFileSync(alreg, JSON.stringify(AUTO_LANDER_REGISTRY, null, 2) + '\n'); written.push(alreg);
   // build-rules@1: every builder rule as one store the VPS owns (build-rule@1, build-rules-store@1, build-rule-history@1) + the registry snapshot
   for (const [n, schema] of Object.entries(buildRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const breg = join(FRAMEWORK_DIR, 'schemas/build-rules.json'); writeFileSync(breg, JSON.stringify(BUILD_RULES_REGISTRY, null, 2) + '\n'); written.push(breg);

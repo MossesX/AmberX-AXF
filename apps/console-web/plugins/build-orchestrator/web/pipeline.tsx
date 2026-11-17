@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, flashWhenReady, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, Note, PageToolbar, PriorityTag, Switch, flashWhenReady, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { PRIORITIES, effectivePriority } from '@console/axf/core/build-priority.mjs';
+import { focusBuild } from './focus';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
+import { BuildDetail, StatusChip, type AttemptsData } from './attempts';
 import { WatchLiveFor } from '@console/watchLive';
+import { RecoveriesList } from './watchdog';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 
@@ -29,7 +33,7 @@ type Planned = { model: string; account: string; kind: string; at: string; why: 
 type Health = { at: string; startedAt: string; line: string; problems: string[]; accounts: { name: string; kind: string; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; error: string; skipped?: boolean; at: string }[] } | null;
 type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; reason?: string; phase?: string; stepsLeft: number; account: string } | null } | null;
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
-type Row = { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string; requeue?: { reason: string; phase: string; next: string; at: string } | null; stuck?: { id: string; phase: string; next: string; why: string } | null };
+type Row = AttemptsData & { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string; requeue?: { reason: string; phase: string; next: string; at: string } | null; stuck?: { id: string; phase: string; next: string; why: string } | null };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
@@ -108,6 +112,38 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     finally { setBusy(''); }
   };
   const toggle = (id: string, on: boolean) => setSel((cur) => { const n = new Set(cur); if (on) n.add(id); else n.delete(id); return n; });
+  // the Builds toolbar (page-toolbar@1, assets/toolbar/build-orchestrator-pipeline.json): what it reads, what it runs
+  const [statusFilter, setStatusFilter] = useState('');
+  const tabRows = view === 'accounts' ? [] : (s?.tabs?.[view] ?? []);
+  const picked = tabRows.filter((r) => sel.has(r.id));
+  const one = picked.length === 1 ? picked[0] : undefined;
+  const statuses = [...new Set(tabRows.map((r) => r.status))].sort();
+  const nextPriority = (() => { const cur = picked.length ? effectivePriority(picked[0]) : 'P2'; const i = PRIORITIES.indexOf(cur); return PRIORITIES[(i + PRIORITIES.length - 1) % PRIORITIES.length] ?? 'P2'; })();
+  usePublishPageState('build-orchestrator', {
+    tab: view,
+    selection: {
+      count: picked.length, id: one?.id ?? '', ids: picked.map((r) => r.id), pr: one?.pr ?? '', nextPriority,
+      canQueue: picked.filter((r) => r.tab === 'pending').length,
+      canSplit: !!one && (one.tab === 'pending' || one.tab === 'queue') && !one.pipeline?.splitRequested,
+      canRaise: !!one && !!one.stepList.find((x) => !x.done && !x.skip && x.model !== 'Fable'),
+      canRelaunch: !!one && (one.tab === 'incomplete' || one.tab === 'errors'),
+    },
+    statuses: statuses.length, statusFilter, statusFilterCount: statusFilter ? tabRows.filter((r) => r.status === statusFilter).length : 0,
+  });
+  useToolbarHandlers('build-orchestrator', {
+    'builds.queue-selected': async () => {
+      for (const r of picked.filter((x) => x.tab === 'pending')) await act('pipeline/queue', { id: r.id }, `${r.id} → Queue`);
+      setSel(new Set());
+    },
+    'builds.raise-fable': async () => {
+      const st = one?.stepList.find((x) => !x.done && !x.skip && x.model !== 'Fable');
+      if (!one || !st) throw new Error('no open step below Fable');
+      await act('act', { action: 'edit-step', id: one.id, step: st.id, stepData: { model: 'Fable' } }, `${one.id} ${st.id} → Fable`);
+    },
+    'builds.show-said': () => { if (one) focusBuild(one.id); return one ? { id: one.id, said: one.said } : null; },
+    'builds.open-pr': () => { if (one?.pr) window.open(one.pr, '_blank', 'noopener'); return one?.pr ?? null; },
+    'builds.filter-status': () => { const i = statuses.indexOf(statusFilter); const next = i + 1 < statuses.length ? statuses[i + 1] ?? '' : ''; setStatusFilter(next); return { statusFilter: next }; },
+  });
   // a build asked for (console command, search, menu): once this tab lists it, scroll it into view and flash it; the
   // card stays expanded (its steps) and marked as the current one
   const focusId = useFocusedBuild();
@@ -192,7 +228,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
         )}
       </section>}
       {view !== 'accounts' && (() => {
-        const rows = s.tabs?.[view] ?? [];
+        const rows = (s.tabs?.[view] ?? []).filter((r) => !statusFilter || r.status === statusFilter);
         const chosen = rows.filter((r) => sel.has(r.id));
         const offered = ACTION_ORDER.filter((a) => rows.some((r) => r.actions?.includes(a)));
         return (
@@ -205,6 +241,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               {view === 'archive' && <span className="fx-muted fx-small"> · every completed and archived build</span>}
               {view === 'deleted' && <span className="fx-muted fx-small"> · kept saved for good · Restore brings one back</span>}
             </h2>
+            <PageToolbar view="build-orchestrator" slot="pipeline" label={`${TAB_LABEL[view]}: builds`} />
             {rows.length > 0 && offered.length > 0 && (
               <div className="pl-bulk" role="toolbar" aria-label={`${TAB_LABEL[view]}: bulk actions`}>
                 <Checkbox label={chosen.length ? `${chosen.length} selected` : 'Select all'} checked={chosen.length === rows.length} indeterminate={chosen.length > 0 && chosen.length < rows.length} disabled={busy === 'bulk'} onChange={(on) => setSel(on ? new Set(rows.map((r) => r.id)) : new Set())} />
@@ -216,7 +253,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
             )}
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
               : <PipelineTable view={view} rows={rows} sel={sel} toggle={toggle} focusId={focusId}
-                  detail={(r) => <PipelineCard embedded r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps focused={r.id === focusId} />} />}
+                  detail={(r) => <><PipelineCard embedded r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps focused={r.id === focusId} /><RecoveriesList id={r.id} /></>} />}
           </section>
         );
       })()}
@@ -259,7 +296,7 @@ function PipelineTable({ view, rows, sel, toggle, focusId, detail }: { view: Bui
       render: (r) => <span className="pl-row-title" title={r.said ? `“${r.said}”` : r.id}><strong>{r.title}</strong> <span className="fx-small fx-muted fx-mono">{r.id}</span></span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 8)', render: (r) => (r.deleted ? <Chip tone="danger">Deleted</Chip> : <PriorityTag build={r.id} />) },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => r.status,
-      render: (r) => (r.held ? <Chip tone="warning">On hold</Chip> : <span className={`pd-badge oc-badge is-${r.status}`}>{r.status}</span>) },
+      render: (r) => <StatusChip status={r.status} data={r} held={!!r.held} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (r) => r.steps.total ? r.steps.done / r.steps.total : 0,
       render: (r) => <span className="fx-small" title={r.nextStep}>{r.steps.done}/{r.steps.total}</span> },
     { id: 'account', label: 'Account', width: 'calc(var(--fx-font-size) * 8)', sortable: true, sortValue: rowAccount,
@@ -273,7 +310,7 @@ function PipelineTable({ view, rows, sel, toggle, focusId, detail }: { view: Bui
   return (
     <DataGrid<Row> id={`build-orchestrator.${view}`} label={TAB_LABEL[view]} groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title} hidden={[]}
       expanded={open} onToggleExpand={flip} selected={focusId || null} onRowClick={(r, e) => { if (e.detail <= 1) flip(r.id); }}
-      rowTone={(r) => (r.deleted ? 'danger' : r.held ? 'warning' : r.status === 'running' ? 'accent' : r.status === 'failed' ? 'danger' : 'muted')}
+      rowTone={(r) => (r.deleted ? 'danger' : r.held ? 'warning' : r.status === 'running' || r.status === 'landing' ? 'accent' : r.status === 'fixing' ? 'warning' : r.status === 'failed' || r.status === 'escalated' ? 'danger' : 'muted')}
       rowRef={(r) => ({ kind: 'build', id: r.id })}
       renderDetail={detail} empty={<p className="fx-muted">{EMPTY[view]}</p>} />
   );
@@ -293,13 +330,13 @@ function StepsGrid({ r }: { r: Row }) {
 
 function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, embedded, focused = false }: { embedded?: boolean; focused?: boolean; r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {
   const p = r.pipeline;
-  const table = r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' ? 'building' : r.status === 'pending' ? 'pending' : 'done';
+  const table = r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' || r.status === 'fixing' ? 'building' : r.status === 'pending' ? 'pending' : 'done';
   const pl = p?.planned ?? null;
   return (
     <article className={`${embedded ? 'pl-detail fx-stack' : `pd-card is-${table === 'building' ? 'running' : 'pending'}`}${focused ? ' is-focused' : ''}`} aria-current={focused ? 'true' : undefined} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
       {!embedded && <div className="pd-card__top">
         <h3 className="pd-card__title">{r.title}<span className="fx-muted fx-small fx-mono"> {r.id}</span></h3>
-        {r.held && <Chip tone="warning">On hold</Chip>}
+        <StatusChip status={r.status} data={r} held={!!r.held} />
         {r.deleted ? <Chip tone="danger">Deleted</Chip> : <PriorityTag build={r.id} />}
         {(r.actions?.length ?? 0) > 0 && <Checkbox label="Select" checked={selected} onChange={onSelect} />}
       </div>}
@@ -318,7 +355,8 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
       {pl && table !== 'building' && table !== 'done' && <p className="fx-small" title={pl.why}><Icon name="layers" size={13} /> Planned: <b>{pl.model}</b> on <b>{pl.account || 'no account yet'}</b>{pl.kind === 'api' ? ' (API key)' : ''}</p>}
       {p?.account && p.pickedAt && (table === 'building' || table === 'done') && <p className="fx-small" title={`Picked ${fmtTime(p.pickedAt)}`}><Icon name="user" size={13} /> Taken by <b>{p.account}</b>{pl && pl.account && pl.account !== p.account ? ` (planned ${pl.account})` : ''}{p.tried?.length ? ` · refused: ${p.tried.join(', ')}` : ''}</p>}
       {table === 'done' && p?.tried?.length ? <p className="fx-small oc-flag"><Icon name="alert" size={13} /> Refused by {p.tried.join(', ')}</p> : null}
-      {embedded && r.stepList.length > 0 && <StepsGrid r={r} />}
+      {embedded && <BuildDetail id={r.id} data={r} busy={busy} steps={r.stepList.length > 0 ? <StepsGrid r={r} /> : <p className="fx-muted fx-small">No steps yet.</p>}
+        onRetry={(strategy) => void act(`retry/${encodeURIComponent(r.id)}`, { id: r.id, ...(strategy ? { strategy } : {}) }, `${r.id}: retry${strategy ? ` (${strategy})` : ''}`)} />}
       {!embedded && showSteps && r.stepList.length > 0 && (
         <ol className="pl-steps" aria-label={`${r.id} steps`}>
           {r.stepList.map((x) => <li key={x.id} className={x.done || x.skip ? 'oc-done' : ''}><span className={`oc-model is-${x.model.toLowerCase()}`}>{x.model}</span> <span className="fx-small">{x.id} · {x.text}{x.estimate ? ` · ${x.estimate}` : ''}</span></li>)}

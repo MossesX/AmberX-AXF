@@ -1,7 +1,6 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
-import { toolbarStyle } from '../../core/engines/components';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { useHidden } from '../hidden';
 import { Icon } from './Icon';
@@ -16,6 +15,7 @@ import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
 import { controlSlug } from '../controlTargets';
+import { PageToolbar } from './Toolbar';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -220,27 +220,19 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
 
 /**
  * A toolbar drawn from a named toolbar asset rather than the app's active one: a page's own toolbar (the settings
- * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no widgets or fold.
- * `search` fills the asset's search spot when it has `showSearch`. Null when the asset isn't registered.
+ * interface names one in its `toolbar` field). Since page-toolbar@1 it renders through the engine (PageToolbar in
+ * Toolbar.tsx): the same items, look, gating, overrides and context menu, plus state gating, badges from the page,
+ * confirm and the More overflow; no widgets or fold. `search` fills the asset's search spot when it has `showSearch`.
+ * Nothing when the asset isn't registered.
  */
 export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: string; search?: ReactNode; label?: string }) {
   const rt = useRuntime();
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
+  // hidden-assets@1: a page toolbar hidden as a piece (its asset id) draws nothing
   const hidden = useHidden('toolbar', id);
   if (!tb || hidden) return null;
-  // chrome-settings@1: a page toolbar is its own instance (its asset id): its overrides apply to it alone, through the
-  // same style engine as the app toolbar, scoped by a layout-free wrapper carrying the attributes and vars
-  const data = (rt.chromeData('toolbar', tb.id, tb.data) ?? tb.data) as ToolbarData;
-  const out = toolbarStyle(data);
-  return (
-    <div className="fx-toolbar-scope" style={out.vars as CSSProperties} {...out.attrs}>
-      <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id} data-fx-ctx-target="toolbar" data-fx-ctx-payload={tb.id}>
-        {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g as ToolbarGroup} variant={data.variant} />)}
-        {data.showSearch && search}
-      </div>
-    </div>
-  );
+  return <PageToolbar assetId={id} label={label}>{(tb.data as ToolbarData).showSearch ? search : null}</PageToolbar>;
 }
 
 /* ---------------- NavMenu (nav-menu asset, oriented by the layout asset) ---------------- */

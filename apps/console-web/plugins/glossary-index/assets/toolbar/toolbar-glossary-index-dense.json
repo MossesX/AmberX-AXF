@@ -1,0 +1,86 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-glossary-index-dense",
+  "name": "Glossary: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-glossary-index",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:glossary-index",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "find",
+        "label": "Find",
+        "items": [
+          {
+            "id": "search",
+            "icon": "search",
+            "label": "Search",
+            "action": "handler:glossary-index.search",
+            "checked": "state:searching",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "undescribed",
+            "icon": "alert",
+            "label": "Undescribed",
+            "action": "handler:glossary-index.undescribed",
+            "checked": "state:undescribed",
+            "priority": 240
+          },
+          {
+            "id": "drafts",
+            "icon": "edit",
+            "label": "Drafts",
+            "action": "handler:glossary-index.drafts",
+            "checked": "state:drafts",
+            "priority": 200
+          }
+        ]
+      },
+      {
+        "id": "index",
+        "label": "Index",
+        "items": [
+          {
+            "id": "rebuild",
+            "icon": "refresh",
+            "label": "Rebuild index",
+            "action": "command:glossary-index/rebuild",
+            "args": {
+              "reason": "rebuilt from the Glossary toolbar"
+            },
+            "priority": 220
+          },
+          {
+            "id": "demo",
+            "icon": "play",
+            "label": "Make a demo",
+            "action": "command:glossary-index/demo-generate",
+            "args": {
+              "entry": "$selection.id",
+              "save": true
+            },
+            "enabledWhen": "selection.id",
+            "priority": 180
+          }
+        ]
+      }
+    ]
+  }
+}
