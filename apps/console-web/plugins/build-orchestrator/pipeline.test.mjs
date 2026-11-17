@@ -14,6 +14,9 @@ import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-g
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
+import * as RL from '../../../../framework/core/retry-ladder.mjs';
+import * as SC from '../../../../framework/plan/builds-store-core.mjs';
+import { verifyPlan } from './verify.mjs';
 process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -425,6 +428,100 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
   assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: null }).why, /not dispatched by the orchestrator/);
   assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: { ...rec, hash: 'f'.repeat(64) } }).why, /not alpha's/);
 });
+
+// ---------------- done-means-merged@1: a dispatcher tick simulation (detector → ladder → relaunch), with its own clock
+{
+  const T0 = Date.parse('2026-11-17T01:00:00Z');
+  const iso = (min) => new Date(T0 + min * 60e3).toISOString();
+  const accounts = ['w-max', 'w-two'];
+  /** One tick at minute `min`: classify, record, ask the ladder; a launch opens an attempt on the account / model it picked. */
+  const tick = (b, min, ctx = {}) => {
+    const now = T0 + min * 60e3; const at = iso(min);
+    const f = P.classifyFailure(b, { now, ...ctx });
+    if (f) P.recordFailure(b, f, { at });
+    if (b.status !== 'fixing') return { f, d: null };
+    const fail = BP.normFailure(b.failure);
+    if (P.landerOwns(b, fail, ctx.land ?? null, { now })) return { f, d: null, lander: true };
+    const d = RL.nextStrategy(b.attempts, fail, {}, { at, pinnedModel: 'Fable', model: b.pipeline.model, account: b.pipeline.account, accounts });
+    if (d.escalate) { b.status = 'escalated'; b.escalation = RL.escalationOf(b.attempts, fail, { at, head: fail.head }); return { f, d }; }
+    if (d.inFlight || (d.notBefore && Date.parse(d.notBefore) > now)) return { f, d, wait: true };
+    const model = d.model || b.pipeline.model; const account = d.account || b.pipeline.account;
+    b.attempts = BP.normAttempts([...b.attempts, P.attemptOf(d, fail, { at, account, model, session: `axf-${b.id}--a${b.attempts.length + 1}` })]);
+    b.pipeline = { ...b.pipeline, model, account, session: `axf-${b.id}--a${b.attempts.length}`, launchedAt: at };
+    return { f, d };
+  };
+  const fresh = () => ({ id: 'sim', title: 'Sim', status: 'running', branch: 'claude/sim', pr: '', steps: [{ id: 's1', done: true }, { id: 's2', model: 'Fable' }], attempts: [], notes: [], pipeline: { model: 'Fable', account: 'w-max', session: 'axf-sim--fake', launchedAt: iso(0) }, updatedAt: iso(0) });
+
+  t('done-means-merged sim: a crash is retried the same way once, then a fresh session, then on another account', () => {
+    const b = fresh();
+    let r = tick(b, 1, { ended: { reason: 'crash', exit: 1 } });
+    assert.equal(r.f.kind, 'crash'); assert.equal(b.status, 'fixing'); assert.equal(r.d.strategy, 'retry');
+    assert.deepEqual(b.attempts.map((a) => [a.n, a.kind, a.strategy, a.result]), [[1, 'crash', 'retry', 'started']]);
+    assert.match(P.retryAddendum(r.d, b.failure, b.attempts), /## Retry: attempt 1[\s\S]*the session crashed/);
+    r = tick(b, 3, { ended: { reason: 'crash', exit: 1 } });
+    assert.equal(b.attempts[0].result, 'failed', 'the run that failed again closes its attempt');
+    // backoff after the first failure (2 min from its end at minute 3): a wait, nothing launched
+    assert.ok(r.wait && r.d.strategy === 'fresh-session' && r.d.notBefore === iso(5), JSON.stringify(r.d));
+    r = tick(b, 6);
+    assert.equal(r.d.strategy, 'fresh-session'); assert.equal(b.attempts.at(-1).result, 'started');
+    r = tick(b, 7, { ended: { reason: 'crash', exit: 1 } });
+    r = tick(b, 12);
+    assert.equal(r.d.strategy, 'switch-account'); assert.equal(b.attempts.at(-1).account, 'w-two', 'another account');
+    assert.equal(new Set(b.attempts.map((a) => RL.rungOf(a))).size, b.attempts.length, 'every attempt a different strategy');
+  });
+
+  t('done-means-merged sim: crash, then red CI on the PR (the lander first), then a different strategy, then escalation', () => {
+    const b = fresh();
+    tick(b, 1, { ended: { reason: 'crash', exit: 1 } });
+    // the retry run gets the phase done: the attempt closes ok, the failure clears, every step done, a PR opens
+    b.attempts[0].result = 'ok'; b.attempts[0].endedAt = iso(4); b.failure = null; b.status = 'landing'; b.steps[1].done = true; b.pr = '#77'; b.builtAt = iso(4);
+    assert.equal(P.classifyFailure(b, { now: T0 + 5 * 60e3 }), null, 'landing with a PR is not a failure');
+    // red CI on the PR head: the lander's (it hands a fix agent); the build's ladder waits for it
+    const land = { id: 'sim', head: 'h1', state: 'blocked', reason: { kind: 'ci', text: 'sim: CI is red (android / check-theme).' } };
+    let r = tick(b, 6, { land });
+    assert.equal(b.failure.kind, 'ci-red'); assert.equal(b.failure.head, 'h1'); assert.ok(r.lander, 'the auto-lander owns red CI first');
+    b.attempts = BP.normAttempts([...b.attempts, { kind: 'ci-red', strategy: 'fix', fixStrategy: 'targeted', head: 'h1', pr: 77, startedAt: iso(6), result: 'started', source: 'auto-lander' }]);
+    r = tick(b, 8, { land });
+    assert.equal(r.f, null, 'the same failure (kind, head) is not raised twice');
+    // the lander's fix did not clear it: its attempt failed, the build's ladder takes over with a different strategy
+    b.attempts.at(-1).result = 'failed'; b.attempts.at(-1).endedAt = iso(20);
+    r = tick(b, 30, { land });
+    assert.ok(!r.lander); assert.notEqual(RL.rungOf(r.d), 'fix:targeted', 'never the strategy that already failed'); assert.equal(RL.rungOf(r.d), 'fix:regenerate');
+    // every later try fails too: the ladder walks on and escalates only when it runs out, after N different attempts
+    let min = 31; let guard = 0;
+    while (b.status === 'fixing' && guard++ < 20) {
+      const open = b.attempts.find((a) => a.result === 'started'); if (open) { open.result = 'failed'; open.endedAt = iso(min); }
+      min += 60; tick(b, min, { land });
+    }
+    assert.equal(b.status, 'escalated');
+    const tried = b.attempts.filter((a) => a.kind === 'ci-red').map((a) => RL.rungOf(a));
+    assert.equal(new Set(tried).size, tried.length, `every ci-red attempt a different strategy (${tried.join(', ')})`);
+    assert.ok(tried.length >= 3, 'at least three different tries before escalating');
+    assert.equal(b.escalation.kind, 'ci-red'); assert.ok(b.escalation.tried.length >= 3 && b.escalation.why.length > 10);
+    assert.equal(P.classifyFailure(b, { now: T0 + (min + 60) * 60e3, land }), null, 'an escalated build is not classified again (no second push)');
+    const a = P.alertFor('escalated', { id: 'sim', title: 'Sim', at: b.escalation.at, why: b.escalation.why, tried: b.escalation.tried });
+    assert.equal(a.key, `pipeline:escalated:sim:${b.escalation.at}`); assert.equal(a.severity, 'error'); assert.match(a.body, /Tried: /);
+  });
+
+  t('done-means-merged sim: the merged + green + verified path is the only way to complete', () => {
+    const at = iso(0);
+    const base = { id: 'ok', title: 'Ok', status: 'landing', branch: 'claude/ok', pr: '#9', profiles: ['all'], order: { all: 0 }, steps: [{ id: 's1', text: 'Run `node framework/spec/check-done-means-merged.mjs`', done: true }] };
+    const store = (b) => SC.normalizeStore({ $axf: 'builds@1', rev: 1, builds: [b] });
+    const step = (before, patch) => { const after = store({ ...before.builds[0], ...patch }); return SC.enforceDoneGuard(before, after, { at, by: 'sim' }); };
+    let s = store(base);
+    let r = step(s, { status: 'complete' });
+    assert.equal(r.store.builds[0].status, 'landing', 'complete straight from landing is refused'); assert.equal(r.refused[0].to, 'complete');
+    r = step(s, { status: 'landed', mergedAt: at });
+    assert.equal(r.store.builds[0].status, 'landing', 'merged but no CI on the merge commit: refused');
+    r = step(s, { status: 'landed', mergedAt: at, landed: { pr: 9, sha: 'm1', mergedAt: at, ci: 'success', ciAt: at } });
+    assert.equal(r.store.builds[0].status, 'landed', 'merged + CI green on the merge commit = landed'); s = r.store;
+    r = step(s, { status: 'complete' });
+    assert.equal(r.store.builds[0].status, 'landed', 'landed is not complete without the verify');
+    assert.deepEqual(verifyPlan(s.builds[0]).commands, ['node framework/spec/check-done-means-merged.mjs'], 'the verify comes from the step');
+    r = step(s, { status: 'complete', landed: { ...s.builds[0].landed, verifiedAt: at, verifyHow: 'check', verifyLog: 'ok' } });
+    assert.equal(r.store.builds[0].status, 'complete', 'merged + green + verified = complete'); assert.deepEqual(r.refused, []);
+  });
+}
 
 // ---------------- the CLI end to end (scratch store, fake accounts, fake launcher, fake splitter)
 const e2e = process.env.AXF_PIPELINE_TEST_E2E !== 'off' && existsSync(join(HERE, 'pipeline.mjs'));
