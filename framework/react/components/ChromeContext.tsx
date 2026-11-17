@@ -219,6 +219,10 @@ export function installChrome(rt: AxfRuntime): void {
       const id = rest.join(':') || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE;
       if (rt.isHidden({ kind, id }) && rt.unhide({ kind, id })) rt.toast(`${hiddenPieceLabel(kind, id)} is back.`, 'success', 'Shown');
     }, { label: 'Show a hidden piece again (chrome.unhide:<kind>:<id>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.unhideAll', () => {
+      const n = rt.hiddenCount();
+      if (n && rt.unhideAll()) rt.toast(`${n} hidden piece${n === 1 ? ' is' : 's are'} back.`, 'success', 'Shown');
+    }, { label: 'Show every hidden piece in this app again', requires: 'assets.swap' });
     // component-tokens@1: one tab row's (or grid's) own token values; the same three moves as the settings dialog's panel
     const fam = (v: unknown): ComponentTokenFamily | null => (isComponentTokenFamily(v) ? v : null);
     rt.actions.register('chrome.token', ([family, instance, key = '', ...rest], ctx) => {
@@ -532,7 +536,7 @@ export const chromeDialogs: DialogMap = {
 };
 
 /** Every chrome type's settings reachable by voice: the catalog lists these ids (console.actions). */
-export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits', 'chrome.hide', 'chrome.unhide'] as const;
+export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits', 'chrome.hide', 'chrome.unhide', 'chrome.unhideAll'] as const;
 export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS_LABELS };
 
 /**

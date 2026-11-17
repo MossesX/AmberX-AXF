@@ -294,5 +294,12 @@ console.log(`check-hidden-assets: ${n} checks passed`);
   flow.toast('x', 'info', 'Hidden', { label: 'Undo', action: 'chrome.unhide:toolbar:app' });
   eq(flow.getState().toasts.at(-1)!.act, { label: 'Undo', action: 'chrome.unhide:toolbar:app' }, 'a toast keeps its action');
   ok(flow.getState().toasts.length === t0 + 1, 'one toast');
+
+  // s8 the Hidden list: grouped by kind, Unhide per row, Unhide all with confirm, empty state; in Appearance and as a dialog
+  const panel = readFileSync(join(root, 'libs/settings/HiddenAssetsPanel.tsx'), 'utf8');
+  const lib = readFileSync(join(root, 'libs/settings/index.tsx'), 'utf8');
+  ok(/export function groupHidden/.test(panel) && /chrome\.unhide:\$\{key\}/.test(panel) && /chrome\.unhideAll/.test(panel) && /Tap again to unhide all/.test(panel) && /Nothing is hidden in this app/.test(panel), 'panel: groups, Unhide, Unhide all with confirm, empty state');
+  ok(!/#[0-9a-f]{3,8}\b|\d+px/.test(panel.replace(/\/\*[\s\S]*?\*\//g, '')), 'panel: no literal colours or sizes');
+  ok(/\[HIDDEN_ASSETS_DIALOG\]: \{ title: 'Hidden items'/.test(lib) && /HIDDEN_ASSETS_PANEL_ID, tab: 'appearance'/.test(lib) && /HIDDEN_ASSETS_DIALOG = 'axf\.hidden-assets'/.test(panel), 'mounted in Settings → Appearance and as the dialog axf.hidden-assets');
   console.log(`check-hidden-assets (runtime): ${n} checks passed`);
 }

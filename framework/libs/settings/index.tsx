@@ -16,6 +16,7 @@ import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type Reac
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { HIDDEN_ASSETS_DIALOG, HiddenAssetsPanel } from './HiddenAssetsPanel';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -29,6 +30,9 @@ import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 import { RETIRED_SETTINGS_OPEN_KEYS, SETTINGS_ALL_DIALOG, SETTINGS_TAB_DIALOG, settingsOpenRoute } from '../../core/engines/settingsopen';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
+/** Settings → Appearance → Hidden (hidden-assets@1). */
+export const HIDDEN_ASSETS_PANEL_ID = 'axf.appearance.hidden';
+export { HIDDEN_ASSETS_ANCHOR, HIDDEN_ASSETS_DIALOG, HiddenAssetsPanel, groupHidden } from './HiddenAssetsPanel';
 const VIEW = 'settings';
 const TAB_KEY = 'axf.settings.lastTab';
 /** One settings tab, and the whole interface, in a floating dialog (the default: core/engines/settingsopen.ts). */
@@ -1149,6 +1153,8 @@ export const library: AxfWebLibrary = {
     [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
+    // hidden-assets@1: what is hidden in this app, Unhide one or all (the Assets menu's Hidden items…)
+    [HIDDEN_ASSETS_DIALOG]: { title: 'Hidden items', icon: 'eye', searchable: false, render: () => <HiddenAssetsPanel /> },
   },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [
@@ -1183,6 +1189,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
+    { id: HIDDEN_ASSETS_PANEL_ID, tab: 'appearance', title: 'Hidden', icon: 'eye', order: 5, render: () => <HiddenAssetsPanel /> },
     { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
