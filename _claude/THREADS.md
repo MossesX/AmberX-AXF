@@ -821,8 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:46 UTC · `stop-auto-lander-committing-tracking` s13 done (all) · orchestrator
-- 2026-11-17 00:46 UTC · `server-rule-done-means-merged-working` s3 done (all) · orchestrator
 - 2026-11-17 00:47 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
 - 2026-11-17 00:48 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` → running, note (all) · pipeline
 - 2026-11-17 00:48 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` branch claude/rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou (all) · pipeline
@@ -1221,6 +1219,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:11 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
 - 2026-11-17 15:11 UTC · `shipped-features-open-button-views-each` note (all) · orchestrator
 - 2026-11-17 15:11 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
+- 2026-11-17 15:11 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
+- 2026-11-17 15:11 UTC · `shipped-features-organized-sortable` note (all) · orchestrator
 
 ## Token passes (log)
 

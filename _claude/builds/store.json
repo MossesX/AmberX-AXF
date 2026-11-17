@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7513,
- "updatedAt": "2026-11-17T15:11:30.820Z",
+ "rev": 7514,
+ "updatedAt": "2026-11-17T15:11:41.046Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -236208,7 +236208,7 @@
    "pr": "#708",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-15T14:55:07.913Z",
+   "updatedAt": "2026-11-17T15:11:36.266Z",
    "builtAt": "2026-11-15T12:33:21.985Z",
    "notes": [
     {
@@ -236242,6 +236242,10 @@
     {
      "text": "TO THE RUNNING SESSION, re-read the build. Brett (09:56): every feature row in Shipped features gets an 'Open' button (and a context-menu item) that opens that feature in the live console app at the exact screen, tab or setting, using its console_show deep link. Features with no screen show the button disabled with the reason. The same button appears in the Gate plugin's Pending features expanded rows once the build has landed. Reachable by API/voice too ('open feature X').",
      "at": "2026-11-15T14:55:07.913Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:36.266Z"
     }
    ],
    "approvals": [],
@@ -236373,7 +236377,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -236397,7 +236401,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-16T14:29:14.787Z",
+   "updatedAt": "2026-11-17T15:11:32.865Z",
    "builtAt": "2026-11-16T14:29:14.787Z",
    "notes": [
     {
@@ -236471,6 +236475,10 @@
     {
      "text": "Reconciler: PR #709 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17 done",
      "at": "2026-11-16T14:29:14.787Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:32.865Z"
     }
    ],
    "approvals": [
@@ -236980,7 +236988,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
