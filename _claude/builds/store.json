@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7680,
- "updatedAt": "2026-11-17T19:37:19.587Z",
+ "rev": 7681,
+ "updatedAt": "2026-11-17T19:37:50.288Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276758,6 +276758,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "auto-lander-settings-log-placeholder",
+   "title": "Auto-lander settings: Log placeholder for the future Log plugin",
+   "category": "",
+   "detail": "In the auto-lander's settings (Gate plugin, AutoLanderSettings), add a 'Log' section placeholder: an empty slot/registry hook that a future Log plugin fills with the auto-lander's full log (every tick, decision, merge-main, fix attempt, land, error). For now it shows 'Log viewer coming with the Log plugin' plus a link to the existing Attempts list. Make the slot generic so the Log plugin can attach to any plugin's settings the same way.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T19:37:43.130Z",
+   "updatedAt": "2026-11-17T19:37:43.130Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a log for the auto-lander that I can view from its settings. We're gonna build a log plugin later, so just put a placeholder for it.",
+    "at": "2026-11-17T19:37:43.130Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 967
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

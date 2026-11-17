@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:37:19.587Z",
+ "updatedAt": "2026-11-17T19:37:50.288Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181888,6 +181888,37 @@
    "origin": {
     "said": "Give terminal a main tab that outputs in real time the console's connection to cloud.",
     "at": "2026-11-17T19:34:48.701Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "auto-lander-settings-log-placeholder",
+   "title": "Auto-lander settings: Log placeholder for the future Log plugin",
+   "category": "",
+   "detail": "In the auto-lander's settings (Gate plugin, AutoLanderSettings), add a 'Log' section placeholder: an empty slot/registry hook that a future Log plugin fills with the auto-lander's full log (every tick, decision, merge-main, fix attempt, land, error). For now it shows 'Log viewer coming with the Log plugin' plus a link to the existing Attempts list. Make the slot generic so the Log plugin can attach to any plugin's settings the same way.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T19:37:43.130Z",
+   "updatedAt": "2026-11-17T19:37:43.130Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a log for the auto-lander that I can view from its settings. We're gonna build a log plugin later, so just put a placeholder for it.",
+    "at": "2026-11-17T19:37:43.130Z",
     "source": "",
     "session": "",
     "link": "",

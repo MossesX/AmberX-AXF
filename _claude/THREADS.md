@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:09 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
 - 2026-11-17 15:09 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:36 UTC · `console-app-part-2-native-floating` s4 done (all) · orchestrator
 - 2026-11-17 19:36 UTC · `rebuild-every-toolbar-page-specific` note (all) · pipeline
 - 2026-11-17 19:37 UTC · `live-build-status-real-time-grids-15` note (all) · Brett
+- 2026-11-17 19:37 UTC · `auto-lander-settings-log-placeholder` added (0 steps) (all) · console
 
 ## Token passes (log)
 
