@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:35:06.287Z",
+ "updatedAt": "2026-11-17T21:35:24.238Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131490,7 +131490,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T21:30:25.011Z",
+   "updatedAt": "2026-11-17T21:35:18.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -131592,6 +131592,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its commits are on main (on main by squash 07f9873c59b8; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T21:30:25.011Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: The build is complete (not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T21:35:18.029Z"
     }
    ],
    "approvals": [
