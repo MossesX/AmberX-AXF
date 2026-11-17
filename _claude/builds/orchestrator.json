@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:25:01.539Z",
+ "updatedAt": "2026-11-17T23:25:30.300Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -182187,7 +182187,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T23:20:34.711Z",
+   "updatedAt": "2026-11-17T23:25:20.790Z",
    "builtAt": "",
    "notes": [
     {
@@ -182433,6 +182433,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T23:20:34.711Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T23:25:20.790Z"
     }
    ],
    "approvals": [
@@ -308074,8 +308078,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-17T23:24:57.257Z",
-   "updatedAt": "2026-11-17T23:24:57.257Z",
+   "updatedAt": "2026-11-17T23:25:01.473Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],

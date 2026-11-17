@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8375,
- "updatedAt": "2026-11-17T23:25:01.539Z",
+ "rev": 8376,
+ "updatedAt": "2026-11-17T23:25:30.300Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -280505,7 +280505,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T23:20:34.711Z",
+   "updatedAt": "2026-11-17T23:25:20.790Z",
    "builtAt": "",
    "notes": [
     {
@@ -280751,6 +280751,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T23:20:34.711Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T23:25:20.790Z"
     }
    ],
    "approvals": [
@@ -281538,7 +281542,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -431743,8 +431747,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-17T23:24:57.257Z",
-   "updatedAt": "2026-11-17T23:24:57.257Z",
+   "updatedAt": "2026-11-17T23:25:01.473Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -431770,7 +431775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
