@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7759,
- "updatedAt": "2026-11-17T20:13:04.300Z",
+ "rev": 7760,
+ "updatedAt": "2026-11-17T20:13:15.600Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -277084,10 +277084,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T19:40:59.409Z",
+     "at": "2026-11-17T20:13:07.233Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -277682,7 +277682,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277706,7 +277706,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:12:57.832Z",
+   "updatedAt": "2026-11-17T20:13:06.028Z",
    "builtAt": "",
    "notes": [
     {
@@ -277740,6 +277740,10 @@
     {
      "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
      "at": "2026-11-17T19:46:13.066Z"
+    },
+    {
+     "text": "Headless run axf-guided-live-demo-test-watch-orchestrator--joey: brief only · start 18.2K tokens ($0.13) · cost $14.98 · 128 turns · 6 tools, MCP none",
+     "at": "2026-11-17T20:13:06.028Z"
     },
     {
      "text": "Phase 1 (Fable, s1-s3) done on claude/guided-live-demo-test-watch-orchestrator (main merged in, all checks green). demo-run@1 / demo-act@1 / act-result@1: spec framework/spec/LIVE-DEMO.md, schema framework/schemas/live-demo.json (axf schemas), pure core framework/core/live-demo.mjs (step / advance / replay, pause on = wait for Next then >= 30 s, pause off = >= 30 s, gap never below 30 s, error codes invalid-transition / too-early / no-act / bad-result / bad-time / not-demo-build, summarize + checklist), fixture framework/spec/fixtures/live-demo.json (11 runs, 15 refused, 6 norm), CI check framework/spec/check-live-demo.mjs (419). demo-build@1 (framework/core/demo-build.mjs): demo: true tag derived from the demo- id on read (no migration), validateStore agreement, marks in orchestrator / Pending / queue projections, dispatcher plan (launch.demo, waits.demo, plan.demo), auto-lander build record + schema, alerts (meta.demo, [demo] title), builds-live commit lines, console + board rows; guard: withStore meta demo: true refuses the whole write on any non-demo build (DemoGuardError not-demo-build), CLI builds-store.mjs demo <build> and set-status --demo, verify counts demo builds. Also fixed check-ci-scope.mjs (merge queue switch off since today made it red). No UI in this phase: deep link view:build-orchestrator/demo:<id>, REST / MCP / CLI / voice events (begin, continue, toggle-pause, focused, start, finish, next, skip, stop, tick) are specified in LIVE-DEMO.md for the driver phase. Pre-existing, unrelated: shipped-features/test.mjs needs node:sqlite (Node 22, CI has it); check-shipped-manifest.mjs is not in CI and trips on the done-means-merged guard.",
@@ -278404,7 +278408,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
