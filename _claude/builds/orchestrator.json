@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:10:18.599Z",
+ "updatedAt": "2026-11-17T15:10:35.651Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131365,7 +131365,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-17T00:39:18.617Z",
+   "updatedAt": "2026-11-17T15:10:30.427Z",
    "builtAt": "",
    "notes": [
     {
@@ -131407,6 +131407,10 @@
     {
      "text": "Superseded: build console-app-part-2-native-floating (branch claude/console-app-part-2-native-floating) carries this branch's commits plus the type-check fix the lander needed. Land that one; PR #750 shrinks to nothing once it merges.",
      "at": "2026-11-17T00:39:18.616Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:30.427Z"
     }
    ],
    "approvals": [],
@@ -136720,7 +136724,7 @@
    "pr": "#662",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-17T15:08:44.372Z",
+   "updatedAt": "2026-11-17T15:10:18.596Z",
    "builtAt": "",
    "notes": [
     {
@@ -136754,6 +136758,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:44.372Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:18.596Z"
     }
    ],
    "approvals": [],
@@ -149174,7 +149182,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-16T23:13:05.011Z",
+   "updatedAt": "2026-11-17T15:10:26.507Z",
    "builtAt": "",
    "notes": [
     {
@@ -149260,6 +149268,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:13:05.011Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:26.507Z"
     }
    ],
    "approvals": [],
@@ -164340,7 +164352,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:33:18.736Z",
+   "updatedAt": "2026-11-17T15:10:22.915Z",
    "builtAt": "2026-11-17T00:32:45.876Z",
    "notes": [
     {
@@ -164414,6 +164426,10 @@
     {
      "text": "Session axf-own-look-per-grid-and-tab-group--lenny on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-17T00:33:18.736Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:22.915Z"
     }
    ],
    "approvals": [
@@ -171757,7 +171773,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T15:09:37.909Z",
+   "updatedAt": "2026-11-17T15:10:28.408Z",
    "builtAt": "",
    "notes": [
     {
@@ -171775,6 +171791,10 @@
     {
      "text": "Claude account: hulu0241 (axf-rebuild-fresh-main-hide-any-asset--rhonda, shared account login)",
      "at": "2026-11-17T14:52:05.272Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--rhonda: brief only · start 18.5K tokens ($0.13) · cost $9.66 · 103 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:10:28.408Z"
     }
    ],
    "approvals": [],

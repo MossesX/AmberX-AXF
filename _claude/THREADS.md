@@ -821,11 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:41 UTC · `land-per-instance-settings-picker` → running, note (all) · pipeline
-- 2026-11-17 00:41 UTC · `land-per-instance-settings-picker` note (all) · pipeline
-- 2026-11-17 00:41 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
-- 2026-11-17 00:41 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
-- 2026-11-17 00:41 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
 - 2026-11-17 00:41 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
 - 2026-11-17 00:42 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
 - 2026-11-17 00:42 UTC · `every-plugin-screen-gets-a-settings-gear` s18 done (all) · orchestrator
@@ -1221,6 +1216,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:10 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `ui-review-filter-and-search-by-pr` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `own-look-per-grid-and-tab-group` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
 
 ## Token passes (log)
 
