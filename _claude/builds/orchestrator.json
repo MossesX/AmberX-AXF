@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:15:50.035Z",
+ "updatedAt": "2026-11-17T18:16:15.527Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -176594,9 +176594,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:15:39.557Z",
-   "updatedAt": "2026-11-17T18:15:41.532Z",
+   "updatedAt": "2026-11-17T18:16:13.222Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: add a 'Reset every asset to default' setting in the main app settings (with confirm), same action over API/voice.",
+     "at": "2026-11-17T18:16:13.222Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
