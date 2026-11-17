@@ -1,7 +1,7 @@
 {
   "$axf": "token-registry@1",
   "version": 1,
-  "updatedAt": "2026-11-14",
+  "updatedAt": "2026-11-17",
   "tokens": [
     {
       "id": "--fx-accent",
@@ -3112,6 +3112,244 @@
       "sources": [
         "engine:framework/core/engines/theme.ts",
         "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-bg",
+      "element": "page",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: run background.",
+      "default": "var(--fx-run-running-bg)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-broke",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Run indicator: tone of a broke build row (red: danger by default).",
+      "default": "var(--fx-danger)",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-broke-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Run indicator: the pink background of a broke row (the broke tone at --fx-opacity-tint over the surface).",
+      "default": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-done",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Run indicator: tone of a finished row (success by default).",
+      "default": "var(--fx-success)",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-done-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Run indicator: background tint of a finished row.",
+      "default": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-duration",
+      "element": "grid",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Run indicator: one cycle of the row animation (durationMs scaled by speed; 0ms under reduced motion).",
+      "default": "2400ms",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-ease",
+      "element": "grid",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Run indicator: easing of the row animation (the theme easing).",
+      "default": "var(--fx-ease)",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-flash-min",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Run indicator: opacity at the low point of a flash (1 minus the intensity).",
+      "default": "0.650",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-glow",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Run indicator: glow colour of a running row (the running tone at the intensity over transparent).",
+      "default": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-icon-duration",
+      "element": "grid",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Run indicator: one turn of the running icon (half the row cycle).",
+      "default": "calc(var(--fx-run-duration) * 0.5)",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-intensity",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Run indicator: how deep the flash or pulse goes (0.05 to 1).",
+      "default": "0.350",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-running",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Run indicator: tone of a running build row (the colour-theme token the run-indicator asset names, accent by default).",
+      "default": "var(--fx-accent)",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-running-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Run indicator: background tint of a running row (the running tone at --fx-opacity-tint over the surface).",
+      "default": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-stale",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Run indicator: tone of a stale row (alive but silent; warning by default).",
+      "default": "var(--fx-warning)",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-stale-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Run indicator: background tint of a stale row.",
+      "default": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+      "source": "framework/core/engines/run-indicator-rules.mjs",
+      "sources": [
+        "framework/core/engines/run-indicator-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-run-tone",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: run tone.",
+      "default": "var(--fx-run-running)",
+      "source": "framework/ui/axf.css",
+      "sources": [
         "framework/ui/axf.css"
       ]
     },
