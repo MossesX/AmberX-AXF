@@ -16,6 +16,12 @@
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
+ *   … requeue-stuck [--apply]       Pending builds whose last run ended phase-done with steps left (parked by the old rule):
+ *                                  list them (dry run), --apply moves them back to the Queue, journalled
+ *   … exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p]   a session ended (claude-headless.sh
+ *                                  calls it): end the run now and, when it is back in the Queue, run one tick in-process so the
+ *                                  next phase starts at once. Under the dispatcher's lock (flock AXF_PIPELINE_LOCK, default
+ *                                  /run/axf-pipeline.lock, the cron tick's), so nothing launches twice.
  *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
  *   … selfcheck [--request] [--reason r] [--json]   check every account one by one, release stale claims / slots / builds,
  *                                  rebuild the account snapshot, alert AmberX on a fix or an unusable account. Off the host
@@ -200,11 +206,21 @@ export function accountsRead(store, settings = loadSettings(), env = process.env
 /** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
 export function accountsNow(store, settings = loadSettings()) { return accountsRead(store, settings).accounts; }
 
+/**
+ * Why a queued build is back in the Queue after a finished phase: { reason, phase, next, at } (lastRun.reason phase-done),
+ * else null. The Pipeline view shows "Next phase: <model>, waiting for slot/account"; REST / MCP read it on the row.
+ */
+export function requeueOf(b) {
+  const lr = b?.pipeline?.lastRun;
+  if (b?.status !== 'queued' || !lr || lr.reason !== 'phase-done') return null;
+  return { reason: 'phase-done', phase: lr.phase || '', next: BP.nextModel(b), at: lr.at || '' };
+}
+
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, alias: b.alias ?? '', title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
+    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', requeue: requeueOf(b), stuck: P.stuckAfterPhase(b), stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
 
 /** The whole picture for the console and the CLI. */
@@ -261,6 +277,31 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   logLine({ event: 'queued', build: b.id, by });
   return r;
 }
+/**
+ * Repair builds the old exit rule parked: every Pending build whose last run ended phase-done with steps left
+ * (pipeline-core stuckAfterPhase()) goes back to the Queue, keeping its place (queuedAt) when it had one, with a
+ * journalled note. Dry run unless apply. Returns { apply, found: [{ id, phase, next, why }], moved: [ids] }.
+ * The same function behind the CLI (requeue-stuck), REST, MCP and voice, and builds-reconcile.mjs --apply.
+ */
+export function requeueStuck({ apply = false, by = process.env.AXF_ACTOR || 'cli' } = {}) {
+  const found = live(loadStore()).map((b) => P.stuckAfterPhase(b)).filter(Boolean);
+  const moved = [];
+  if (apply) {
+    for (const f of found) {
+      const b = storeCore.findBuild(loadStore(), f.id);
+      if (!P.stuckAfterPhase(b)) continue; // changed meanwhile
+      const lr = b.pipeline?.lastRun ?? {};
+      const note = `phase ${f.phase || '?'} done, requeued for ${f.next || '?'}: back in the Queue (requeue-stuck by ${by}; ${f.why}).`;
+      setPipeline(b.id, { queuedAt: b.pipeline?.queuedAt || nowIso(), queuedBy: b.pipeline?.queuedBy || str(by, 80), note: `requeued after ${f.phase ? `phase ${f.phase}` : 'its phase'}: next phase ${f.next || '?'} waits for a slot and an account`, lastRun: { ...lr, outcome: 'requeued', reason: 'phase-done' } },
+        { status: 'queued', note, by, action: 'pipeline:requeue-stuck' });
+      logLine({ event: 'requeued-stuck', build: b.id, phase: f.phase, next: f.next, by });
+      moved.push(b.id);
+    }
+    if (moved.length) crewSay('dispatcher', 'done', `Moved ${moved.length} build(s) parked in Pending after a finished phase back to the Queue: ${moved.join(', ')}.`);
+  }
+  return { apply, found, moved };
+}
+
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
@@ -540,7 +581,7 @@ export function briefFor(b, rules, { account, model, kind = '' }, { blocks = sto
 }
 
 /** Start one headless session for a queued build on an account. */
-export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+export function launch(b, { account, model, kind = '', phase = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
   // the dispatch gate (build-lock@1): never a second session on a build or its worktree. Throws code 'live' (not a
   // launch failure) while a tmux session, a claude pid or a fresh lock says the build is still running.
@@ -553,7 +594,7 @@ export function launch(b, { account, model, kind = '' }, { rules, env = process.
   const token = issueDispatch(b.id, { account, model, env });
   const key = modelKey(model) || 'opus';
   const args = ['--name', b.id, '--account', account, '--brief', '.axf-brief.md', '--log', `${b.id}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
-  const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: slots.levelFor ? (['P0', 'P1', 'P2', 'P3'].includes(effectivePriority(b)) ? { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[effectivePriority(b)] : 'normal') : 'normal' };
+  const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_BUILD_PHASE: str(phase, 80), AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: slots.levelFor ? (['P0', 'P1', 'P2', 'P3'].includes(effectivePriority(b)) ? { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[effectivePriority(b)] : 'normal') : 'normal' };
   let r;
   try { r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 180e3, env: e }); }
   catch (err) { lock.release(b.id, { dir }); throw err; }
@@ -581,6 +622,51 @@ function tmuxHas(name) {
   return r.error ? null : r.status === 0;
 }
 
+/**
+ * One run's end, written through the builds store (journalled): the exit transition (build-pipeline@1 nextStatusOnExit()
+ * via pipeline-core endOutcome()) decides the status. A phase done with steps left goes back to the Queue at its place
+ * with the note "phase <n> done, requeued for <model>"; Pending only when Brett is needed. `kind` is what the headless
+ * wrapper reported (phase-done | crash | stopped, '' when only the exit code is known): a crash report is a crash
+ * whatever the exit code says. A run that stopped on a Claude sign-in failure is held in Pending until the account
+ * signs in again (authWaitsTick). `log` is the run's log file (for the failure reason), `vanished` = no end event at all.
+ * Returns { id, outcome, status, reason, exit, phase, next, auth? }.
+ */
+export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = false, alert = () => {}, settings = loadSettings(), env = process.env } = {}) {
+  const settled = b.status === 'built' || b.status === 'complete';
+  // the wrapper's kind wins over the bare code: a crash is never a clean end; phase-done / stopped are clean ends whose
+  // phase the store still has to confirm (a phase-done claim with its phase's steps open lands as 'stopped' in Pending)
+  const code = kind === 'crash' ? (exit || 1) : kind === 'phase-done' || kind === 'stopped' ? 0 : exit;
+  const r = P.endOutcome(phase && !b.pipeline?.phase ? { ...b, pipeline: { ...b.pipeline, phase } } : b, { exit: code, account: b.pipeline.account, session: b.pipeline.session }, settings);
+  // a run that stopped on a Claude sign-in failure: held in Pending (a relaunch would hit the same login) until the
+  // account signs in again, then re-queued once (authWaitsTick)
+  const auth = !settled && r.outcome !== 'finished' && r.reason !== 'phase-done' ? P.authFailureOf(tailOf(log)) : '';
+  if (auth) {
+    r.status = 'pending';
+    r.note = `${r.note} It stopped on a Claude login failure on ${b.pipeline.account || 'its account'}: ${auth}. Held in Pending: it goes back to the Queue by itself once the login works.`;
+  }
+  if (settled) { r.outcome = 'finished'; r.status = b.status; r.reason = 'all-done'; r.run = { ...r.run, outcome: 'finished', reason: 'all-done' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
+  const next = BP.nextModel(b);
+  const journal = r.reason === 'phase-done' && !auth ? `phase ${r.run.phase || '?'} done, requeued for ${next || '?'}: ${r.note}` : r.note;
+  // a run cut off by the login is not the build's fault: it does not count towards maxRuns
+  setPipeline(b.id, { ...r.patch, lastRun: r.run, note: r.outcome === 'finished' ? '' : r.note, ...(auth ? { runs: Math.max(0, (b.pipeline.runs || 1) - 1) } : {}) }, { status: r.status, note: journal, action: r.reason === 'phase-done' && !auth ? 'pipeline:requeue' : 'pipeline:end' });
+  lock.release(b.id, { dir: worktreeOf(b.id, env) });
+  // the build's end hook: the VPS's 'after' rules (home card, help stub, PR + link, THREADS, …) once a run ends
+  if (!auth) runBuildRules(b.id, 'after', { env });
+  if (auth) {
+    authWait(b.id, { account: b.pipeline.account, error: auth, session: b.pipeline.session });
+    alert('oauth', { id: b.id, title: b.title, account: b.pipeline.account, error: auth, everyMin: settings.healthEveryMin });
+  } else {
+    // a run that did not finish: the exact reason is the last error the run printed (a crash, a refused gate, a launcher error)
+    const why = r.outcome === 'finished' ? '' : P.lastReasonOf(tailOf(log));
+    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: why ? `${r.note}\nWhy: ${why}` : !vanished ? r.note : `${r.note}\nWhy: its session vanished without an end event (killed, or the VPS restarted).`, account: b.pipeline.account });
+  }
+  logLine({ event: 'ended', build: b.id, outcome: r.outcome, reason: r.reason, kind, exit, phase: r.run.phase, next, account: b.pipeline.account, session: b.pipeline.session, ...(auth ? { auth } : {}) });
+  if (r.outcome === 'failed') crewSay('dispatcher', 'failed', `${b.id} failed: ${r.note}`, { ref: b.id });
+  else if (r.outcome === 'returned' || auth) crewSay('dispatcher', 'waiting', `${b.id} stopped with steps left and is back in Pending. Brett, it needs you: ${r.note}`, { ref: b.id });
+  else crewSay('dispatcher', 'done', `${b.id}: ${r.note}`, { ref: b.id });
+  return { id: b.id, outcome: r.outcome, status: r.status, reason: r.reason, exit, phase: r.run.phase, next, ...(auth ? { auth } : {}) };
+}
+
 /** The build's worktree folder (where its lock lives). */
 export const worktreeOf = (id, env = process.env) => join(worktreesRoot(env), id);
 /** Anything alive for this build (build-lock@1: tmux axf-<id>*, claude pids in its worktree, a fresh lock). */
@@ -588,7 +674,7 @@ export function buildLive(id, { env = process.env, useLock = true } = {}) {
   return lock.liveness(id, { dir: worktreeOf(id, env), useLock, env: lockEnv(env) });
 }
 
-/** Running builds whose session ended: { id, outcome, status, exit }. */
+/** Running builds whose session ended: { id, outcome, status, reason, exit, auth? }. */
 export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   const store = loadStore(); const settings = loadSettings();
   const events = readEvents(env);
@@ -613,35 +699,37 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
       if (l.live) { logLine({ event: 'still-alive', build: b.id, session: b.pipeline.session, sessions: l.sessions, pids: l.pids }); continue; }
       exit = 1;
     }
-    const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
-    // a run that stopped on a Claude sign-in failure: held in Pending (a relaunch would hit the same login) until the
-    // account signs in again, then re-queued once (authWaitsTick)
-    const auth = !settled && r.outcome !== 'finished' ? P.authFailureOf(tailOf(end?.log)) : '';
-    if (auth) {
-      r.status = 'pending';
-      r.note = `${r.note} It stopped on a Claude login failure on ${b.pipeline.account || 'its account'}: ${auth}. Held in Pending: it goes back to the Queue by itself once the login works.`;
-    }
-    if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
-    // a run cut off by the login is not the build's fault: it does not count towards maxRuns
-    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note, ...(auth ? { runs: Math.max(0, (b.pipeline.runs || 1) - 1) } : {}) }, { status: r.status, note: r.note, action: 'pipeline:end' });
-    lock.release(b.id, { dir: worktreeOf(b.id, env) });
-    // the build's end hook: the VPS's 'after' rules (home card, help stub, PR + link, THREADS, …) once a run ends
-    if (!auth) runBuildRules(b.id, 'after', { env });
-    if (auth) {
-      authWait(b.id, { account: b.pipeline.account, error: auth, session: b.pipeline.session });
-      alert('oauth', { id: b.id, title: b.title, account: b.pipeline.account, error: auth, everyMin: settings.healthEveryMin });
-    } else {
-      // a run that did not finish: the exact reason is the last error the run printed (a crash, a refused gate, a launcher error)
-      const why = r.outcome === 'finished' ? '' : P.lastReasonOf(tailOf(end?.log));
-      alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: why ? `${r.note}\nWhy: ${why}` : end ? r.note : `${r.note}\nWhy: its session vanished without an end event (killed, or the VPS restarted).`, account: b.pipeline.account });
-    }
-    logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session, ...(auth ? { auth } : {}) });
-    if (r.outcome === 'failed') crewSay('dispatcher', 'failed', `${b.id} failed: ${r.note}`, { ref: b.id });
-    else if (r.outcome === 'returned') crewSay('dispatcher', 'waiting', `${b.id} stopped with steps left and is back in Pending. Brett, it needs you: ${r.note}`, { ref: b.id });
-    else crewSay('dispatcher', 'done', `${b.id}: ${r.note}`, { ref: b.id });
-    out.push({ id: b.id, outcome: r.outcome, status: r.status, exit, ...(auth ? { auth } : {}) });
+    out.push(endRun(b, { exit, kind: end?.kind || '', phase: end?.phase || '', log: end?.log || '', vanished: !end, alert, settings, env }));
   }
   return out;
+}
+
+/** The kinds of session end the headless wrapper reports (claude-headless.sh → pipeline.mjs exit --kind). */
+export const EXIT_KINDS = ['phase-done', 'crash', 'stopped'];
+/** The dispatcher's lock: the cron tick holds it (deploy/install-console.sh: flock -n /run/axf-pipeline.lock). */
+export const pipelineLock = (env = process.env) => env.AXF_PIPELINE_LOCK || '/run/axf-pipeline.lock';
+
+/**
+ * A session ended (the headless wrapper calls this on exit, after its agent slot is free): end the run at once, and when
+ * it went back to the Queue, run one dispatcher tick in-process so the next phase starts on a free slot and an account
+ * with its model now, not on the next 1-minute cron. Runs under the pipeline lock (main() re-execs under flock), so it
+ * never launches twice next to the cron tick; a run already ended (session cleared, another session) is left alone and
+ * no tick runs for it. Returns { ok, id, ended, tick }.
+ */
+export function onExit(id, { session = '', exit = 0, kind = '', phase = '', env = process.env, runTick = true } = {}) {
+  if (kind && !EXIT_KINDS.includes(kind)) throw Object.assign(new Error(`kind is one of ${EXIT_KINDS.join(', ')}`), { code: 2 });
+  const b = storeCore.findBuild(loadStore(), id);
+  if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const p = b.pipeline ?? {};
+  const open = p.session && (b.status === 'running' || b.status === 'waiting' || b.status === 'built' || b.status === 'complete');
+  if (!open || (session && p.session !== session)) return { ok: true, id, ended: null, tick: null, why: 'this run was already ended (or another session holds the build)' };
+  const ended = endRun(b, { exit: Number.isInteger(exit) ? exit : Number(exit) || 0, kind, phase, settings: loadSettings(env), env });
+  let t = null;
+  if (runTick && ended.status === 'queued') {
+    try { const r = tick({ env }); t = { at: r.at, launched: r.launched.map((l) => ({ id: l.id, account: l.account, model: l.model, phase: l.phase || '' })), waits: r.plan.waits.filter((w) => w.id === id) }; }
+    catch (e) { logLine({ event: 'exit-tick-failed', build: id, error: str(e.message, 300) }); t = { error: str(e.message, 300) }; }
+  }
+  return { ok: true, id, ended, tick: t };
 }
 
 /** The last 64 KB of a run's log ('' when it is gone). */
@@ -836,7 +924,7 @@ export function tick({ env = process.env } = {}) {
       if (!r) throw lastErr ?? new Error('no account accepted the launch');
       const runs = (b.pipeline?.runs ?? 0) + 1;
       const moved = tried.length ? ` after ${tried.join(', ')} refused` : '';
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, phase: l.phase || '', launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
@@ -1113,6 +1201,23 @@ async function main(argv) {
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
+  if (cmd === 'requeue-stuck') {
+    const r = requeueStuck({ apply: has('apply'), by });
+    return out({ ok: true, ...r }, r.found.length ? [...r.found.map((f) => `${r.apply ? (r.moved.includes(f.id) ? 'requeued' : 'left') : 'would requeue'} ${f.id}: ${f.why}, next ${f.next || '?'}`), r.apply ? '' : '(dry run: --apply moves them)'].filter(Boolean).join('\n') : 'no Pending build is parked after a finished phase');
+  }
+  if (cmd === 'exit') {
+    // the dispatcher's lock first: re-exec under flock (the cron tick's lock) unless already inside it or no flock here
+    const lock = pipelineLock();
+    if (process.env.AXF_PIPELINE_LOCKED !== '1' && spawnSync('flock', ['-V'], { encoding: 'utf8' }).status === 0) {
+      try { mkdirSync(dirname(lock), { recursive: true }); } catch { /* flock reports it */ }
+      const r = spawnSync('flock', ['-w', flag('wait', '120'), lock, process.execPath, fileURLToPath(import.meta.url), ...argv], { stdio: 'inherit', env: { ...process.env, AXF_PIPELINE_LOCKED: '1' } });
+      process.exitCode = r.status ?? 1; return undefined;
+    }
+    const r = onExit(rest[0], { session: flag('session'), exit: Number(flag('exit', '0')), kind: flag('kind'), phase: flag('phase') });
+    const e = r.ended;
+    return out(r, !e ? `${r.id}: ${r.why}` : [`${r.id}: ${e.outcome} → ${e.status}${e.reason ? ` (${e.reason})` : ''}${e.phase ? `, phase ${e.phase}` : ''}${e.next ? `, next ${e.next}` : ''}`,
+      r.tick ? (r.tick.error ? `tick failed: ${r.tick.error}` : `tick: launched ${r.tick.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'nothing'}${r.tick.waits.map((w) => ` · ${w.id} waits: ${w.why}`).join('')}`) : ''].filter(Boolean).join('\n'));
+  }
   if (cmd === 'tick') {
     const r = tick();
     return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
@@ -1150,7 +1255,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

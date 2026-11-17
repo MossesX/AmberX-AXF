@@ -7,10 +7,14 @@ export const OUTCOMES: Array<'finished' | 'requeued' | 'returned' | 'failed'>;
 export const SPLIT_PROVIDERS: Array<'claude' | 'rules' | 'hand'>;
 export const DEFAULT_MAX_RUNS: number;
 export const STATUS_AFTER: Readonly<Record<'finished' | 'requeued' | 'returned' | 'failed', string>>;
-export interface PipelineRun { at: string; exit: number | null; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; stepsLeft: number; account: string; session: string }
+export type ExitReason = 'all-done' | 'phase-done' | 'crash' | 'crash-limit' | 'upgrade-blocked' | 'needs-brett' | 'stopped';
+export const EXIT_REASONS: ExitReason[];
+export interface PipelineRun { at: string; exit: number | null; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; reason: ExitReason | ''; stepsLeft: number; account: string; session: string; phase: string }
 export interface PipelineSplit { at: string; by: string; provider: 'claude' | 'rules' | 'hand'; steps: number; note: string }
 export interface BuildPipeline {
-  queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; launchedAt: string; runs: number;
+  queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; phase: string; launchedAt: string; runs: number;
+  /** Failed exits so far: the crash limit counts these, never a clean phase end. */
+  crashes: number;
   lastRun: PipelineRun | null; split: PipelineSplit | null; splitRequested: string; note: string;
   route: '' | 'api' | 'subscription'; dispatchedAt: string;
   /** The orchestrator's plan, made at split time; the final pick (account, pickedAt) can differ. */
@@ -42,5 +46,9 @@ export function canUnqueue(b: unknown): boolean;
 export function queueOrder<T extends { status: string; createdAt?: string; pipeline?: { queuedAt?: string } | null }>(builds: T[], priorityOf?: (b: T) => string): T[];
 export function openSteps<T extends { done?: boolean; skip?: boolean }>(b: { steps?: T[] } | null | undefined): T[];
 export function nextModel(b: { steps?: Array<{ done?: boolean; skip?: boolean; model?: string }> } | null | undefined): string;
-export function outcomeOf(run: { exit: number | null; stepsLeft: number; runs: number }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';
+export interface ExitInput { exit: number | null; stepsLeft: number; runs?: number; crashes?: number; phaseDone?: boolean; upgradeBlocked?: boolean; needsBrett?: boolean }
+export interface ExitResult { status: 'built' | 'queued' | 'pending'; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; reason: ExitReason; crashes: number; keepQueue: boolean }
+/** The exit transition, pure: a phase done with steps left is queued again ('phase-done'); Pending only for a real stop. */
+export function nextStatusOnExit(run: ExitInput, maxRuns?: number): ExitResult;
+export function outcomeOf(run: ExitInput & { phaseSwitch?: boolean }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';
 export function outcomeLine(b: { pipeline?: { runs?: number } | null }, run: PipelineRun): string;
