@@ -69,6 +69,39 @@ t('items only in git history come back archived, off the Pending list', () => {
   assert.equal(report.recovered.length, 1);
 });
 t('an unknown orchestrator status is kept as a note', () => assert.ok(M.builds.find((x) => x.id === 'odd').notes.some((x) => x.text.includes('"bogus"'))));
+// ------------------------------------------------------------------ build-watchdog@1: recoveries[] on a build
+const recovery = { at: '2026-11-16T12:00:00.000Z', buildId: 'shared', phase: 'Phase 1', step: 's2', cause: 'exit-killed', exit: 143, action: 'retry', attempt: 1, account: 'hulu0241', notified: '', session: 'axf-shared--a', note: 'killed (exit 143): back in the Queue (retry 1 of 3).' };
+t('a build without recoveries loads unchanged: no key invented, nothing to migrate', () => {
+  assert.ok(M.builds.every((b) => !('recoveries' in b)));
+  assert.ok(!('recoveries' in c.normBuild({ id: 'r0', title: 'R0', recoveries: [] })));
+  assert.ok(!('recoveries' in c.normBuild({ id: 'r1', title: 'R1', recoveries: [{ action: 'none' }, { at: 'bad', action: 'retry' }] })));
+});
+t('normBuild keeps recoveries in shape and normalizeStore round-trips them', () => {
+  const b = c.normBuild({ id: 'r2', title: 'R2', status: 'queued', recoveries: [recovery] });
+  assert.deepEqual(b.recoveries, [recovery]);
+  const s = c.normalizeStore({ ...M, builds: [...M.builds, b] });
+  assert.deepEqual(s.builds.find((x) => x.id === 'r2').recoveries, [recovery]);
+  assert.deepEqual(c.normalizeStore(JSON.parse(JSON.stringify(s))).builds.find((x) => x.id === 'r2').recoveries, [recovery]);
+  assert.deepEqual(c.validateStore(s).errors, []);
+});
+t('recoveries are sorted oldest first and capped at the newest 50', () => {
+  const many = Array.from({ length: 60 }, (_, i) => ({ ...recovery, at: `2026-11-16T${String(10 + Math.floor(i / 60)).padStart(2, '0')}:${String(i).padStart(2, '0')}:00.000Z`, attempt: i }));
+  const b = c.normBuild({ id: 'r3', title: 'R3', recoveries: [...many].reverse() });
+  assert.equal(b.recoveries.length, 50); assert.equal(b.recoveries[0].attempt, 10); assert.equal(b.recoveries[49].attempt, 59);
+});
+t('validateStore names a bad recovery', () => {
+  const bad = JSON.parse(JSON.stringify(M)); bad.builds[0].recoveries = [{ ...recovery, action: 'explode' }]; bad.builds[1].recoveries = []; bad.builds[2].recoveries = [{ ...recovery, cause: 'gremlins' }];
+  const e = c.validateStore(bad).errors.map((x) => x.path);
+  assert.ok(e.some((p) => p.endsWith('.recoveries[0]')), e.join(', ')); assert.ok(e.some((p) => p.endsWith('(' + bad.builds[1].id + ').recoveries'))); assert.ok(e.some((p) => p.endsWith('.recoveries[0].cause')));
+});
+t('a recovery write changes the record (rev bump) and the orchestrator projection → absorb keeps it', () => {
+  const before = c.normalizeStore(JSON.parse(JSON.stringify(M))); const after = c.normalizeStore(JSON.parse(JSON.stringify(M)));
+  const b = after.builds.find((x) => x.id === 'shared'); b.recoveries = [recovery]; b.status = 'queued';
+  const ch = c.diffStores(before, after, at); assert.deepEqual(ch.map((x) => x.id), ['shared']); assert.equal(ch[0].after.rev, before.builds.find((x) => x.id === 'shared').rev + 1);
+  const back = c.absorbOrchestrator(after, 'all', c.projectOrchestrator(after, 'all'), { now: at });
+  assert.deepEqual(back.builds.find((x) => x.id === 'shared').recoveries, [recovery]);
+});
+
 t('verifyNothingLost passes on the migrated store', () => { const v = c.verifyNothingLost(sources, M); assert.ok(v.length > 10); assert.deepEqual(v.filter((x) => !x.ok), []); });
 t('verifyNothingLost catches a lost step', () => {
   const broken = JSON.parse(JSON.stringify(M)); const b = broken.builds.find((x) => x.id === 'p-only'); b.steps = b.steps.slice(1); b.copies = []; b.defaultSteps = [];

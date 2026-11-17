@@ -3,6 +3,7 @@ import { Button, Checkbox, Chip, Icon, Note, PriorityTag, SelectField, Switch, f
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import { BuildDetail, StatusChip, type AttemptsData } from './attempts';
 import { WatchLiveFor } from '@console/watchLive';
+import { RecoveriesList } from './watchdog';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { splitFamilies } from './family';
 import { familyLine, type ParallelFamily } from './orchestrator-core.mjs';
@@ -219,7 +220,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
             )}
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
               : <PipelineTable view={view} rows={rows} all={Object.values(s.tabs ?? {}).flat()} sel={sel} toggle={toggle} focusId={focusId}
-                  detail={(r) => <PipelineCard embedded r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps focused={r.id === focusId} />} />}
+                  detail={(r) => <><PipelineCard embedded r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps focused={r.id === focusId} /><RecoveriesList id={r.id} /></>} />}
           </section>
         );
       })()}

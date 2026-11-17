@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Orchestrator Split section + parallel split (`orchestrator-settings-collapsible-split`, Fable s1, Opus s2–s8; Brett Nov 13: "a collapsible section for split, with all the splitting options, and one option splits it so it runs multiple parallel builds"): one collapsible Split section with every split option; parallel split files independent parts as builds that run at the same time, linked to the lead (combined progress, land together or in order); per-build "split into N parallel"; REST/MCP/CLI/voice <!-- axf-plugin:build-orchestrator --> | PR open, UI Review owed (shots could not be taken headless) | `claude/orchestrator-settings-collapsible-split` | #636 | merge queue | 2026-11-15 |
+| Server watchdog: the orchestrator auto-recovers stuck or killed builds (`server-watchdog-orchestrator-auto-recovers-stuck`, Fable → Opus; Brett Nov 13: "Never wait for Brett to notice."): run ends recorded on the build, `agent-slots alive`, `watchdog.mjs` (cron `axf-watchdog`) resets / requeues / retries (other account on a limit, cap → Pending + banner), fills idle slots, phone FYI per fix; Watchdog tab + settings, systems check items, REST / MCP / `axf watchdog` / voice / deep link | in-pr | `claude/server-watchdog-orchestrator-auto-recovers-stuck` | (see build) | UI Review: pick the Watchdog layout; merge queue; the cron goes live with the next console deploy. Report `_claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md` | 2026-11-17 |
 | Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control (`fable-rebuild-plan-studio-cleared-out`): new plugin Plan Studio 2.0 (`plan-studio-2`) beside the untouched original, starts empty; layouts nav menu / tabs / IDE dockable panes (dock-layout@1); every action via REST, MCP, CLI, voice | in-pr | `claude/fable-rebuild-plan-studio-cleared-out` | (VPS opens it) | Live shots of each layout to UI Review → Screenshots; Brett decides whether the original Plan Studio retires. Report `_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md` | 2026-11-16 |
 | Stop the auto-lander committing tracking files into builds (`stop-auto-lander-committing-tracking`) | in-pr | `claude/stop-auto-lander-committing-tracking` |  |  | 2026-11-17 |
 | Get main green, unblock the lander, land axf-data and Postgres (`get-main-green-unblock-lander-land-axf`, Opus; Brett Nov 16: "We gotta migrate to Postgres to get this going … Is the auto-lander fixed?"): main green since 11-16 21:01 (#724: 10 CI fixes; 33 h red before); the lander lands again (#724, #685, #723, #704, #713 on their own) with 5 lander fixes and 2 new health items (lander-idle, GitHub auto-merge bypass); axf-data (#704) and Postgres (#713) landed through the queue; axf-data runs on Postgres, console data copied and verified, 43/47 namespaces in shadow (builds/console/activity local: disk, hot files); #769 (axf-data image + data-migrate live-data fixes) queued. Disk 99%: Docker build cache + build worktrees, red disk item. Report `_claude/builds/reports/get-main-green-unblock-lander-land-axf.md` | phase 1 done | `claude/get-main-green-unblock-lander-land-axf` | #723 (merged), #724, #704, #713, #769 | cutover per namespace after the shadow window; builds → shadow once disk allows; host writers → axf-data | 2026-11-17 |
@@ -826,68 +827,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 04:10 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s19 done (all) · orchestrator
-- 2026-11-17 04:10 UTC · `builds-keep-their-slot-across-phases` s3 done (all) · orchestrator
-- 2026-11-17 04:10 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s14 done (all) · foreign-write
-- 2026-11-17 04:11 UTC · `orchestrator-runs-long-builds-across` s17 done (all) · orchestrator
-- 2026-11-17 04:11 UTC · `server-rule-done-means-merged-working` s14 done (all) · orchestrator
-- 2026-11-17 04:12 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s15 done (all) · orchestrator
-- 2026-11-17 04:13 UTC · `server-rule-done-means-merged-working` s15 done (all) · orchestrator
-- 2026-11-17 04:13 UTC · `orchestrator-runs-long-builds-across` s18 done (all) · orchestrator
-- 2026-11-17 04:15 UTC · `server-rule-done-means-merged-working` PR #771 (all) · builds-live
-- 2026-11-17 04:16 UTC · `builds-keep-their-slot-across-phases` s4 done (all) · orchestrator
-- 2026-11-17 04:16 UTC · `server-rule-done-means-merged-working` s16 done, → landing (all) · orchestrator
-- 2026-11-17 04:16 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
-- 2026-11-17 04:17 UTC · `builds-keep-their-slot-across-phases` note (all) · orchestrator
-- 2026-11-17 04:16 UTC · `builds-keep-their-slot-across-phases` note (all) · orchestrator
-- 2026-11-17 04:18 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s16 done (all) · orchestrator
-- 2026-11-17 04:21 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s17 done (all) · orchestrator
-- 2026-11-17 04:25 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s20 done (all) · orchestrator
-- 2026-11-17 04:28 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` PR #772 (all) · builds-live
-- 2026-11-17 04:28 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s21 done, → built (all) · orchestrator
-- 2026-11-17 04:28 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · orchestrator
-- 2026-11-17 04:29 UTC · `server-auto-lander-fixes-lands` s21 done (all) · orchestrator
-- 2026-11-17 04:30 UTC · `server-auto-lander-fixes-lands` s22 done (all) · orchestrator
-- 2026-11-17 04:31 UTC · `orchestrator-runs-long-builds-across` s19 done (all) · orchestrator
-- 2026-11-17 04:32 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s18 done (all) · orchestrator
-- 2026-11-17 04:33 UTC · `orchestrator-runs-long-builds-across` PR #773 (all) · builds-live
-- 2026-11-17 04:33 UTC · `server-auto-lander-fixes-lands` PR #774 (all) · builds-live
-- 2026-11-17 04:33 UTC · `orchestrator-runs-long-builds-across` s20 done (all) · orchestrator
-- 2026-11-17 04:33 UTC · `orchestrator-runs-long-builds-across` note (all) · orchestrator
-- 2026-11-17 04:34 UTC · `orchestrator-runs-long-builds-across` PR #773 (all) · foreign-write
-- 2026-11-17 04:34 UTC · `orchestrator-runs-long-builds-across` note (all) · orchestrator
-- 2026-11-17 04:33 UTC · `server-auto-lander-fixes-lands` s23 done (all) · orchestrator
-- 2026-11-17 04:35 UTC · `get-main-green-unblock-lander-land-axf` s17 done (all) · orchestrator
-- 2026-11-17 04:37 UTC · `get-main-green-unblock-lander-land-axf` PR #775 (all) · builds-live
-- 2026-11-17 04:37 UTC · `get-main-green-unblock-lander-land-axf` s19 done, → complete (all) · orchestrator
-- 2026-11-17 04:37 UTC · `get-main-green-unblock-lander-land-axf` PR #775 (all) · foreign-write
-- 2026-11-17 04:37 UTC · `get-main-green-unblock-lander-land-axf` note (all) · orchestrator
-- 2026-11-17 04:39 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
-- 2026-11-17 04:39 UTC · `server-auto-lander-fixes-lands` s24 done (all) · orchestrator
-- 2026-11-17 04:40 UTC · `server-auto-lander-fixes-lands` note (all) · foreign-write
-- 2026-11-17 04:40 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
-- 2026-11-17 04:40 UTC · `server-auto-lander-fixes-lands` s25 done, → built (all) · orchestrator
-- 2026-11-17 04:47 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s19 done (all) · orchestrator
-- 2026-11-17 04:50 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s20 done (all) · orchestrator
-- 2026-11-17 04:52 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s21 done, → complete (all) · orchestrator
-- 2026-11-17 04:52 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
-- 2026-11-17 12:22 UTC · `maintenance-plugin-clear-docker-cache` added (0 steps) (all) · console
-- 2026-11-17 12:22 UTC · `maintenance-plugin-clear-docker-cache` → queued, note (all) · console
-- 2026-11-17 12:23 UTC · `maintenance-plugin-clear-docker-cache` → running, note (all) · pipeline
-- 2026-11-17 12:23 UTC · `maintenance-plugin-clear-docker-cache` branch claude/maintenance-plugin-clear-docker-cache (all) · pipeline
-- 2026-11-17 12:23 UTC · `maintenance-plugin-clear-docker-cache` note (all) · orchestrator
-- 2026-11-17 12:23 UTC · `maintenance-plugin-clear-docker-cache` note (all) · orchestrator
-- 2026-11-17 12:26 UTC · `move-server-side-console-parts-onto-vps` added (0 steps) (all) · console
-- 2026-11-17 12:26 UTC · `move-server-side-console-parts-onto-vps` → queued, note (all) · console
-- 2026-11-17 12:27 UTC · `move-server-side-console-parts-onto-vps` → queued, note (all) · builds-live
-- 2026-11-17 12:28 UTC · `orchestrator-stale-row-watchdog-vps` → queued (all) · mcp
-- 2026-11-17 12:28 UTC · `auto-lander-grid-one-row-per-build` → queued (all) · mcp
-- 2026-11-17 12:28 UTC · `fix-console-deep-links-open-page-lands` → queued (all) · mcp
-- 2026-11-17 12:28 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
-- 2026-11-17 12:28 UTC · `fix-console-deep-links-open-page-lands` → running, note (all) · pipeline
-- 2026-11-17 12:28 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
-- 2026-11-17 12:28 UTC · `auto-lander-grid-one-row-per-build` → running, note (all) · pipeline
-- 2026-11-17 12:29 UTC · `auto-lander-grid-one-row-per-build` note (all) · orchestrator
 - 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · pipeline
 - 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` branch claude/move-server-side-console-parts-onto-vps (all) · pipeline
 - 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
@@ -1226,6 +1165,68 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:07 UTC · `fable-rebuild-plan-studio-cleared-out` → complete, merged, note (all) · reconciler
 - 2026-11-17 19:07 UTC · `server-auto-lander-fixes-lands` → complete, merged, note (all) · reconciler
 - 2026-11-17 19:07 UTC · `server-rule-done-means-merged-working` merged, note (all) · reconciler
+- 2026-11-17 19:07 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-17 19:07 UTC · `every-plugin-screen-gets-a-settings-gear` → running (all) · auto-lander
+- 2026-11-17 19:07 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · auto-lander
+- 2026-11-17 19:07 UTC · `every-plugin-screen-gets-a-settings-gear` → queued, note (all) · auto-lander
+- 2026-11-17 19:08 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
+- 2026-11-17 19:08 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
+- 2026-11-17 19:08 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
+- 2026-11-17 19:08 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-17 19:08 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-17 19:08 UTC · `every-plugin-screen-gets-a-settings-gear` → running, note (all) · pipeline
+- 2026-11-17 19:08 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
+- 2026-11-17 19:09 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
+- 2026-11-17 19:09 UTC · `notify-phone-when-queue-starts-building` added (0 steps) (all) · console
+- 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · pipeline
+- 2026-11-17 19:09 UTC · `x.engine.dev` → archived, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `molly-one-shell` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `molly-native-expenses` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `server-gate-one-session-per-build-no` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `prompting-engine-control-panel-events` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `console-app-part-3-native-bridge-mic` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `console-app-part-4-console-side-safe` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `console-app-part-2-native-floating-2` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `token-registry-skin-editor-live-sandbox` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `context-menus-plugin-one-true-source` → running, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `banner-widget-shapes-more-than-circle` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `ui-review-filter-and-search-by-pr` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `orchestrator-stale-row-watchdog-vps` merged, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `merge-main-land-console-axhub-retry` → archived, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `data-container-axf-data-holds-all` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `gate-rules-plugin-in-the-console` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `phone-connect-small-android-companion` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `shipped-features-open-button-views-each` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `every-plugin-screen-gets-a-settings-gear` → running, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `settings-interface-gear-every-plugin` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `amberx-open-url-must-open-page-even-when` → archived, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `reset-all-button-every-asset-override` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `fable-rebuild-plan-studio-cleared-out` → complete, merged, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `own-look-per-grid-and-tab-group` note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `server-auto-lander-fixes-lands` → complete, merged, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `orchestrator-runs-long-builds-across` → archived, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `server-rule-done-means-merged-working` merged, note (all) · foreign-write
+- 2026-11-17 19:09 UTC · `notify-phone-when-queue-starts-building` added (0 steps) (all) · foreign-write
+- 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · orchestrator
+- 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
 
 ## Token passes (log)
 

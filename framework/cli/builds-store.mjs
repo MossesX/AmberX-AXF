@@ -791,7 +791,10 @@ async function main(argv) {
     if (!jv.ok) process.exitCode = 1;
     const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`), ...jv.failed.map((f) => `✗ journal ${f}`)];
     const jtext = jv.warning ? `; ${jv.warning}` : jv.checked ? `; journal: ${jv.checked} part(s) on the hub match the pointer` : '';
-    return out({ ok: !bad.length && v.ok && jv.ok, store: v, total: checks.length, failed: bad, journal: jv }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store${jtext}`);
+    // build-watchdog@1: recoveries[] is optional on a build
+    const recovered = store.builds.filter((b) => Array.isArray(b.recoveries) && b.recoveries.length);
+    const recoveries = { builds: recovered.length, records: recovered.reduce((n, b) => n + b.recoveries.length, 0), without: store.builds.length - recovered.length };
+    return out({ ok: !bad.length && v.ok && jv.ok, store: v, total: checks.length, failed: bad, journal: jv, recoveries }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store${jtext}; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without`);
   }
   const s = loadStore();
   if (cmd === 'status') {

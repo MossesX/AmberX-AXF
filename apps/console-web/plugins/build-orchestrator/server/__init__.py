@@ -440,6 +440,91 @@ router.include_router(_watchdog.router_for(FOLDER, brett_click))
 _watchdog.ensure_health(FOLDER)
 
 
+# The build watchdog (build-watchdog@1): its systems check items ('Build watchdog', 'Builds the watchdog gave up on')
+from . import recovery_watchdog as watchdog_mod  # noqa: E402
+
+watchdog_mod.ensure_health()
+
+
+def _watchdog(*args: str, who: str = "", timeout: int = 120) -> dict[str, Any]:
+    res = watchdog_mod.run_cli(*args, actor=who, timeout=timeout)
+    if res.get("ok") is False:
+        err = str(res.get("error") or "watchdog failed")
+        raise HTTPException(400 if "unknown setting" in err or "key=value" in err else 500, err[:400])
+    return res
+
+
+# REST (Brett, Nov 8 2026: "Everything comes with an API"): the same calls as the Watchdog tab, the watchdog_* MCP
+# commands, `axf watchdog …` and voice. In the console container (AXF_WATCHDOG_HOST=request) the host does the work:
+# scan answers with the host's last scan, run asks the host's cron for a pass (it runs within a minute).
+
+
+@router.get("/recovery-watchdog/status")
+def recovery_watchdog_status() -> dict[str, Any]:
+    """watchdog-status@1: on/off, cron, last pass + age (stale after 3 min), the host's last scan, recent fixes, gave-up builds."""
+    return {**_watchdog("status"), "host": watchdog_mod.on_host()}
+
+
+@router.get("/recovery-watchdog/scan")
+def recovery_watchdog_scan() -> dict[str, Any]:
+    """The dry run: every build marked running, what the probe saw, its cause and the planned action. Nothing changes."""
+    if watchdog_mod.on_host():
+        return {**_watchdog("scan"), "ok": True, "source": "live"}
+    st = _watchdog("status")
+    scan = st.get("lastScan") or {"at": "", "builds": []}
+    return {"ok": True, "source": "host-last-pass", "at": scan.get("at", ""), "builds": scan.get("builds", []), "stuck": [b for b in scan.get("builds", []) if b.get("stuck")],
+            "note": "The console can't see the VPS's processes: this is what the host's last watchdog pass saw."}
+
+
+@router.post("/recovery-watchdog/run")
+async def recovery_watchdog_run(request: Request) -> dict[str, Any]:
+    """One pass now ({build?} limits it to one build). On the host it runs here; from the container the host runs it."""
+    body = await _json_body(request)
+    build = _build_id(body["build"]) if body.get("build") else ""
+    who = brett_click(request) or "console"
+    if not watchdog_mod.on_host():
+        r = _watchdog("request", "--by", who, *(["--build", build] if build else []), who=who)
+        return {**r, "ok": True, "requested": True}
+    r = _watchdog("run", *(["--build", build] if build else []), who=who, timeout=300)
+    return {**r, "ok": True, "requested": False}
+
+
+@router.post("/recovery-watchdog/requeue")
+async def recovery_watchdog_requeue(request: Request) -> dict[str, Any]:
+    """Fix (requeue): builds the watchdog gave up on back to the Queue with a fresh retry count ({builds?: [id…]}; none = all)."""
+    body = await _json_body(request)
+    ids = [_build_id(x) for x in (body.get("builds") or [])]
+    who = brett_click(request) or "console"
+    return _watchdog("requeue", *ids, who=who)
+
+
+@router.get("/builds/{build_id}/recoveries")
+def build_recoveries(build_id: str) -> dict[str, Any]:
+    """One build's recoveries[] (watchdog-recovery@1, oldest first) and the retries it has used since its last progress."""
+    try:
+        return _watchdog("recoveries", _build_id(build_id))
+    except HTTPException as e:
+        if "no build" in str(e.detail):
+            raise HTTPException(404, str(e.detail)) from e
+        raise
+
+
+@router.get("/recovery-watchdog/settings")
+def recovery_watchdog_settings() -> dict[str, Any]:
+    """The Watchdog settings (Settings → Plugins → Build orchestrator → Watchdog): {settings, keys, defaults}."""
+    return _watchdog("settings")
+
+
+@router.put("/recovery-watchdog/settings")
+async def recovery_watchdog_settings_set(request: Request) -> dict[str, Any]:
+    """Save a patch of the Watchdog settings ({key: value}; unknown keys → 400). Hot: the next pass reads them."""
+    body = await _json_body(request)
+    if not body:
+        raise HTTPException(400, "send {key: value} (keys: enabled, intervalMin, staleMin, graceMin, maxRetries, retryOtherAccount, fyi, cooldownMin)")
+    who = brett_click(request) or "console"
+    return _watchdog("set", "--patch", json.dumps(body), "--by", who, who=who)
+
+
 
 # ---- the build pipeline (Brett, Nov 8 2026): Pending → Queue → Building, run by pipeline.mjs on the VPS host
 

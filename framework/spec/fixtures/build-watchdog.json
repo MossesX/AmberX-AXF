@@ -1,0 +1,1727 @@
+{
+  "$axf": "build-watchdog-cases@1",
+  "note": "Golden cases for the build-watchdog@1 decision table (framework/core/build-watchdog.mjs). `decisions` replays decide() on a build record (through builds@1 normBuild) and a probe at `now`; `records` replays recoveryRecord() + recoveryLine() + normRecovery(); `settings` replays normSettings(). Default settings unless a case says. Regenerate the `out` blocks with: node framework/spec/check-build-watchdog.mjs --write",
+  "now": "2026-11-16T12:00:00.000Z",
+  "settings": [
+    {
+      "name": "defaults",
+      "in": {},
+      "out": {
+        "enabled": true,
+        "staleMin": 20,
+        "graceMin": 3,
+        "maxRetries": 3
+      }
+    },
+    {
+      "name": "every field set",
+      "in": {
+        "enabled": false,
+        "staleMin": 30,
+        "graceMin": 5,
+        "maxRetries": 5
+      },
+      "out": {
+        "enabled": false,
+        "staleMin": 30,
+        "graceMin": 5,
+        "maxRetries": 5
+      }
+    },
+    {
+      "name": "clamped to the ranges",
+      "in": {
+        "staleMin": 0,
+        "graceMin": 999,
+        "maxRetries": -1
+      },
+      "out": {
+        "enabled": true,
+        "staleMin": 1,
+        "graceMin": 60,
+        "maxRetries": 0
+      }
+    },
+    {
+      "name": "junk reads as the default",
+      "in": {
+        "enabled": "yes",
+        "staleMin": "soon",
+        "graceMin": null,
+        "maxRetries": {}
+      },
+      "out": {
+        "enabled": true,
+        "staleMin": 20,
+        "graceMin": 3,
+        "maxRetries": 3
+      }
+    },
+    {
+      "name": "strings of numbers are numbers",
+      "in": {
+        "staleMin": "45",
+        "maxRetries": "2"
+      },
+      "out": {
+        "enabled": true,
+        "staleMin": 45,
+        "graceMin": 3,
+        "maxRetries": 2
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "name": "killed 143: step reset, slot released, back in the Queue (retry 1)",
+      "build": {
+        "id": "wd-killed",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "schema",
+            "model": "Fable",
+            "phase": "Phase 1",
+            "done": true,
+            "doneAt": "2026-11-16T11:20:00.000Z"
+          },
+          {
+            "id": "s2",
+            "text": "fixtures",
+            "model": "Fable",
+            "phase": "Phase 1"
+          },
+          {
+            "id": "s3",
+            "text": "wire",
+            "model": "Opus",
+            "phase": "Phase 2"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-killed--amber",
+          "slot": "hl-1",
+          "phase": "Phase 1",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "exit": 143,
+        "exitKind": "crash",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-killed",
+        "exit": 143,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s2",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "session on hulu0241 was killed (exit 143): step s2 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "exit 1 (claude failed): retried on the same account",
+      "build": {
+        "id": "wd-exit1",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "mossesx-max",
+          "session": "axf-wd-exit1--joey",
+          "phase": "Phase 1",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "exit": 1,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-failed",
+        "exit": 1,
+        "action": "retry",
+        "attempt": 1,
+        "account": "mossesx-max",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "session on mossesx-max failed (exit 1): step s1 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "exit 137 (OOM): retried",
+      "build": {
+        "id": "wd-oom",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-oom",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "exit": 137,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-oom",
+        "exit": 137,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "session on hulu0241 was killed by the kernel (exit 137, out of memory): step s1 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "stale heartbeat, nothing probed alive: reset and requeued",
+      "build": {
+        "id": "wd-stale",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1",
+            "done": true,
+            "doneAt": "2026-11-16T11:10:00.000Z"
+          },
+          {
+            "id": "s2",
+            "text": "b",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-stale",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": null,
+        "tmux": null,
+        "lastSeenAt": "2026-11-16T11:30:00.000Z",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "stale-heartbeat",
+        "exit": null,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s2",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "no heartbeat for 30 min (limit 20): step s2 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "stale heartbeat with the process still alive: hung, killed then retried",
+      "build": {
+        "id": "wd-hung",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-hung",
+          "launchedAt": "2026-11-16T10:30:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": true,
+        "tmux": true,
+        "lastSeenAt": "2026-11-16T11:00:00.000Z",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "stale-heartbeat",
+        "exit": null,
+        "action": "kill-retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "no heartbeat for 60 min (limit 20), pid and tmux still alive: hung: session killed, step s1 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "tmux gone, pid gone, heartbeat fresh a minute ago: just died, requeued (no grace left)",
+      "build": {
+        "id": "wd-gone",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-gone",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "lastSeenAt": "2026-11-16T11:59:00.000Z",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "tmux-missing",
+        "exit": null,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "its tmux session on hulu0241 is gone: step s1 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "pid gone, tmux not probed: retried",
+      "build": {
+        "id": "wd-pid",
+        "status": "waiting",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-pid",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": null,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "pid-gone",
+        "exit": null,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "its claude process on hulu0241 is gone: step s1 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "live session: left alone",
+      "build": {
+        "id": "wd-live",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-live--gina",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": true,
+        "tmux": true,
+        "lastSeenAt": "2026-11-16T11:58:00.000Z",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": false,
+        "cause": "live",
+        "exit": null,
+        "action": "none",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "",
+        "note": "alive: pid, tmux, heartbeat"
+      }
+    },
+    {
+      "name": "tmux alive, pid not seen (between claude calls): left alone",
+      "build": {
+        "id": "wd-between",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-between",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": true,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": false,
+        "cause": "live",
+        "exit": null,
+        "action": "none",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "",
+        "note": "alive: tmux"
+      }
+    },
+    {
+      "name": "only a fresh heartbeat known: left alone",
+      "build": {
+        "id": "wd-beat",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-beat",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "lastSeenAt": "2026-11-16T11:50:00.000Z",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": false,
+        "cause": "live",
+        "exit": null,
+        "action": "none",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "",
+        "note": "alive: heartbeat"
+      }
+    },
+    {
+      "name": "retry cap reached (3 retries since the last progress): give up, Pending + banner",
+      "build": {
+        "id": "wd-cap",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1",
+            "done": true,
+            "doneAt": "2026-11-16T09:00:00.000Z"
+          },
+          {
+            "id": "s2",
+            "text": "b",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T08:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-cap",
+          "launchedAt": "2026-11-16T11:40:00.000Z",
+          "runs": 4,
+          "crashes": 3
+        },
+        "recoveries": [
+          {
+            "at": "2026-11-16T09:30:00.000Z",
+            "buildId": "wd-cap",
+            "phase": "Phase 1",
+            "step": "s2",
+            "cause": "exit-killed",
+            "exit": 143,
+            "action": "retry",
+            "attempt": 1,
+            "account": "hulu0241",
+            "notified": "2026-11-16T09:30:01.000Z"
+          },
+          {
+            "at": "2026-11-16T10:20:00.000Z",
+            "buildId": "wd-cap",
+            "phase": "Phase 1",
+            "step": "s2",
+            "cause": "exit-failed",
+            "exit": 1,
+            "action": "retry",
+            "attempt": 2,
+            "account": "hulu0241",
+            "notified": "2026-11-16T10:20:01.000Z"
+          },
+          {
+            "at": "2026-11-16T11:30:00.000Z",
+            "buildId": "wd-cap",
+            "phase": "Phase 1",
+            "step": "s2",
+            "cause": "stale-heartbeat",
+            "exit": null,
+            "action": "kill-retry",
+            "attempt": 3,
+            "account": "hulu0241",
+            "notified": "2026-11-16T11:30:01.000Z"
+          }
+        ]
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "exit": 143,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-killed",
+        "exit": 143,
+        "action": "give-up",
+        "attempt": 4,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": true,
+        "requeue": false,
+        "status": "pending",
+        "step": "s2",
+        "phase": "Phase 1",
+        "banner": true,
+        "notify": "watchdog.gave-up",
+        "note": "session on hulu0241 was killed (exit 143): retry 3 of 3 was the last one, giving up: back in Pending for Brett."
+      }
+    },
+    {
+      "name": "three old retries, then a step ticked: the count starts over, retried",
+      "build": {
+        "id": "wd-progress",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1",
+            "done": true,
+            "doneAt": "2026-11-16T11:45:00.000Z"
+          },
+          {
+            "id": "s2",
+            "text": "b",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T08:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-progress",
+          "launchedAt": "2026-11-16T11:40:00.000Z",
+          "runs": 4,
+          "crashes": 3
+        },
+        "recoveries": [
+          {
+            "at": "2026-11-16T09:30:00.000Z",
+            "buildId": "wd-progress",
+            "step": "s1",
+            "cause": "exit-killed",
+            "exit": 143,
+            "action": "retry",
+            "attempt": 1,
+            "account": "hulu0241"
+          },
+          {
+            "at": "2026-11-16T10:20:00.000Z",
+            "buildId": "wd-progress",
+            "step": "s1",
+            "cause": "exit-killed",
+            "exit": 143,
+            "action": "retry",
+            "attempt": 2,
+            "account": "hulu0241"
+          },
+          {
+            "at": "2026-11-16T11:30:00.000Z",
+            "buildId": "wd-progress",
+            "step": "s1",
+            "cause": "exit-killed",
+            "exit": 143,
+            "action": "retry",
+            "attempt": 3,
+            "account": "hulu0241"
+          }
+        ]
+      },
+      "probe": {
+        "exit": 143,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-killed",
+        "exit": 143,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s2",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "session on hulu0241 was killed (exit 143): step s2 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "usage limit: moves to another account, no retry counted, the limited account excluded",
+      "build": {
+        "id": "wd-limit",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Fable",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-limit--amber",
+          "phase": "Phase 1",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "exit": 1,
+        "limit": "usage",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "accounts": [
+        "hulu0241",
+        "mossesx-max",
+        "hulu-api"
+      ],
+      "out": {
+        "stuck": true,
+        "cause": "usage-limit",
+        "exit": 1,
+        "action": "retry-other-account",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [
+          "hulu0241"
+        ],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "hulu0241 hit its usage limit: the build is fine, it goes back to the Queue for another account (mossesx-max, hulu-api free)."
+      }
+    },
+    {
+      "name": "usage limit, no account list at hand: still moves on, the dispatcher picks",
+      "build": {
+        "id": "wd-limit2",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "mossesx-max",
+          "session": "axf-wd-limit2",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1,
+          "tried": [
+            "hulu0241"
+          ]
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "limit": "usage",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "usage-limit",
+        "exit": 0,
+        "action": "retry-other-account",
+        "attempt": 0,
+        "account": "mossesx-max",
+        "excludeAccounts": [
+          "hulu0241",
+          "mossesx-max"
+        ],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "mossesx-max hit its usage limit: the build is fine, it goes back to the Queue for another account."
+      }
+    },
+    {
+      "name": "usage limit and every usable account tried: give up",
+      "build": {
+        "id": "wd-limit3",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "mossesx-max",
+          "session": "axf-wd-limit3",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 2,
+          "tried": [
+            "hulu0241"
+          ]
+        }
+      },
+      "probe": {
+        "exit": 1,
+        "limit": "usage",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "accounts": [
+        "hulu0241",
+        "mossesx-max"
+      ],
+      "out": {
+        "stuck": true,
+        "cause": "usage-limit",
+        "exit": 1,
+        "action": "give-up",
+        "attempt": 1,
+        "account": "mossesx-max",
+        "excludeAccounts": [
+          "hulu0241",
+          "mossesx-max"
+        ],
+        "resetStep": false,
+        "releaseSlot": true,
+        "requeue": false,
+        "status": "pending",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": true,
+        "notify": "watchdog.gave-up",
+        "note": "mossesx-max hit its usage limit and every usable account (hulu0241, mossesx-max) was tried: back in Pending for Brett."
+      }
+    },
+    {
+      "name": "dead login: another account, like a usage limit",
+      "build": {
+        "id": "wd-auth",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-auth",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "exit": 1,
+        "limit": "auth",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "accounts": [
+        "hulu0241",
+        "mossesx-max"
+      ],
+      "out": {
+        "stuck": true,
+        "cause": "auth-failed",
+        "exit": 1,
+        "action": "retry-other-account",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [
+          "hulu0241"
+        ],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "hulu0241 lost its login: the build is fine, it goes back to the Queue for another account (mossesx-max free)."
+      }
+    },
+    {
+      "name": "exit 0 recorded, build still marked running: the end was missed, requeued without a retry",
+      "build": {
+        "id": "wd-missed",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Fable",
+            "phase": "Phase 1",
+            "done": true,
+            "doneAt": "2026-11-16T11:50:00.000Z"
+          },
+          {
+            "id": "s2",
+            "text": "b",
+            "model": "Opus",
+            "phase": "Phase 2"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-missed",
+          "phase": "Phase 1",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "exit": 0,
+        "exitKind": "phase-done",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-clean",
+        "exit": 0,
+        "action": "requeue",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s2",
+        "phase": "Phase 2",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+      }
+    },
+    {
+      "name": "wrapper says crash with exit 0: a crash, retried",
+      "build": {
+        "id": "wd-crash0",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-crash0",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "exitKind": "crash",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-failed",
+        "exit": 0,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "session on hulu0241 failed (exit 0): step s1 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "launched a minute ago, nothing probed alive yet: starting, left alone",
+      "build": {
+        "id": "wd-start",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-start",
+          "launchedAt": "2026-11-16T11:59:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": null,
+        "tmux": null,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": false,
+        "cause": "starting",
+        "exit": null,
+        "action": "none",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "",
+        "note": "launched 1 min ago, inside the 3 min grace"
+      }
+    },
+    {
+      "name": "launched a minute ago but tmux already gone: the launch failed, retried (no grace for a dead one)",
+      "build": {
+        "id": "wd-start-dead",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-start-dead",
+          "launchedAt": "2026-11-16T11:59:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "tmux-missing",
+        "exit": null,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "its tmux session on hulu0241 is gone: step s1 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "nothing probed at all: unknown, left alone",
+      "build": {
+        "id": "wd-unknown",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-unknown",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": false,
+        "cause": "unknown",
+        "exit": null,
+        "action": "none",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "",
+        "note": "nothing probed yet"
+      }
+    },
+    {
+      "name": "queued-running (dispatched, never moved to running) with its session gone: retried",
+      "build": {
+        "id": "wd-queued",
+        "status": "queued",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-queued",
+          "dispatchedAt": "2026-11-16T11:30:00.000Z",
+          "launchedAt": "2026-11-16T11:30:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": true,
+        "cause": "tmux-missing",
+        "exit": null,
+        "action": "retry",
+        "attempt": 1,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": true,
+        "releaseSlot": true,
+        "requeue": true,
+        "status": "queued",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "watchdog.fix",
+        "note": "its tmux session on hulu0241 is gone: step s1 reset, slot released, back in the Queue (retry 1 of 3)."
+      }
+    },
+    {
+      "name": "queued, waiting for its turn (no session): not running, left alone",
+      "build": {
+        "id": "wd-waiting-turn",
+        "status": "queued",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z"
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": false,
+        "cause": "tmux-missing",
+        "exit": null,
+        "action": "none",
+        "attempt": 0,
+        "account": "",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "",
+        "note": "not marked running (queued)"
+      }
+    },
+    {
+      "name": "pending build with an old killed exit on file: not marked running, left alone",
+      "build": {
+        "id": "wd-pending",
+        "status": "pending",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "runs": 1,
+          "lastRun": {
+            "at": "2026-11-16T11:00:00.000Z",
+            "exit": 143,
+            "outcome": "failed",
+            "reason": "crash-limit",
+            "stepsLeft": 1
+          }
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "exit": 143,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": false,
+        "cause": "exit-killed",
+        "exit": 143,
+        "action": "none",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "",
+        "note": "not marked running (pending)"
+      }
+    },
+    {
+      "name": "built build whose session ended: not running, left alone",
+      "build": {
+        "id": "wd-built",
+        "status": "built",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1",
+            "done": true,
+            "doneAt": "2026-11-16T11:50:00.000Z"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-built",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "exit": 0,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "stuck": false,
+        "cause": "exit-clean",
+        "exit": 0,
+        "action": "none",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "",
+        "phase": "",
+        "banner": false,
+        "notify": "",
+        "note": "not marked running (built)"
+      }
+    },
+    {
+      "name": "watchdog switched off: nothing, whatever the probe says",
+      "build": {
+        "id": "wd-off",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-off",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "exit": 143,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "settings": {
+        "enabled": false
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-killed",
+        "exit": 143,
+        "action": "none",
+        "attempt": 0,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": false,
+        "requeue": false,
+        "status": "",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": false,
+        "notify": "",
+        "note": "stuck, but the watchdog is off: nothing done"
+      }
+    },
+    {
+      "name": "maxRetries 1: the second kill gives up",
+      "build": {
+        "id": "wd-max1",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-max1",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 2,
+          "crashes": 1
+        },
+        "recoveries": [
+          {
+            "at": "2026-11-16T10:30:00.000Z",
+            "buildId": "wd-max1",
+            "step": "s1",
+            "cause": "exit-killed",
+            "exit": 143,
+            "action": "retry",
+            "attempt": 1,
+            "account": "hulu0241"
+          }
+        ]
+      },
+      "probe": {
+        "exit": 143,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "settings": {
+        "maxRetries": 1
+      },
+      "out": {
+        "stuck": true,
+        "cause": "exit-killed",
+        "exit": 143,
+        "action": "give-up",
+        "attempt": 2,
+        "account": "hulu0241",
+        "excludeAccounts": [],
+        "resetStep": false,
+        "releaseSlot": true,
+        "requeue": false,
+        "status": "pending",
+        "step": "s1",
+        "phase": "Phase 1",
+        "banner": true,
+        "notify": "watchdog.gave-up",
+        "note": "session on hulu0241 was killed (exit 143): retry 1 of 1 was the last one, giving up: back in Pending for Brett."
+      }
+    }
+  ],
+  "records": [
+    {
+      "name": "killed 143 → retry record, FYI not yet sent",
+      "build": {
+        "id": "wd-killed",
+        "title": "Server watchdog",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "schema",
+            "model": "Fable",
+            "phase": "Phase 1",
+            "done": true,
+            "doneAt": "2026-11-16T11:20:00.000Z"
+          },
+          {
+            "id": "s2",
+            "text": "fixtures",
+            "model": "Fable",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-killed--amber",
+          "phase": "Phase 1",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": false,
+        "tmux": false,
+        "exit": 143,
+        "exitKind": "crash",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "record": {
+          "at": "2026-11-16T12:00:00.000Z",
+          "buildId": "wd-killed",
+          "phase": "Phase 1",
+          "step": "s2",
+          "cause": "exit-killed",
+          "exit": 143,
+          "action": "retry",
+          "attempt": 1,
+          "account": "hulu0241",
+          "notified": "",
+          "session": "axf-wd-killed--amber",
+          "note": "session on hulu0241 was killed (exit 143): step s2 reset, slot released, back in the Queue (retry 1 of 3)."
+        },
+        "line": "Watchdog fixed Server watchdog (step s2): session on hulu0241 was killed (exit 143): step s2 reset, slot released, back in the Queue (retry 1 of 3).",
+        "normAgain": {
+          "at": "2026-11-16T12:00:00.000Z",
+          "buildId": "wd-killed",
+          "phase": "Phase 1",
+          "step": "s2",
+          "cause": "exit-killed",
+          "exit": 143,
+          "action": "retry",
+          "attempt": 1,
+          "account": "hulu0241",
+          "notified": "",
+          "session": "axf-wd-killed--amber",
+          "note": "session on hulu0241 was killed (exit 143): step s2 reset, slot released, back in the Queue (retry 1 of 3)."
+        }
+      }
+    },
+    {
+      "name": "give-up record with the FYI time",
+      "build": {
+        "id": "wd-cap",
+        "title": "Keeps dying",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T08:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-cap",
+          "launchedAt": "2026-11-16T11:40:00.000Z",
+          "runs": 4,
+          "crashes": 3
+        },
+        "recoveries": [
+          {
+            "at": "2026-11-16T09:30:00.000Z",
+            "buildId": "wd-cap",
+            "step": "s1",
+            "cause": "exit-killed",
+            "exit": 143,
+            "action": "retry",
+            "attempt": 1,
+            "account": "hulu0241"
+          },
+          {
+            "at": "2026-11-16T10:20:00.000Z",
+            "buildId": "wd-cap",
+            "step": "s1",
+            "cause": "exit-failed",
+            "exit": 1,
+            "action": "retry",
+            "attempt": 2,
+            "account": "hulu0241"
+          },
+          {
+            "at": "2026-11-16T11:30:00.000Z",
+            "buildId": "wd-cap",
+            "step": "s1",
+            "cause": "pid-gone",
+            "exit": null,
+            "action": "retry",
+            "attempt": 3,
+            "account": "hulu0241"
+          }
+        ]
+      },
+      "probe": {
+        "exit": 1,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "notified": "2026-11-16T12:00:02.000Z",
+      "out": {
+        "record": {
+          "at": "2026-11-16T12:00:00.000Z",
+          "buildId": "wd-cap",
+          "phase": "Phase 1",
+          "step": "s1",
+          "cause": "exit-failed",
+          "exit": 1,
+          "action": "give-up",
+          "attempt": 4,
+          "account": "hulu0241",
+          "notified": "2026-11-16T12:00:02.000Z",
+          "session": "axf-wd-cap",
+          "note": "session on hulu0241 failed (exit 1): retry 3 of 3 was the last one, giving up: back in Pending for Brett."
+        },
+        "line": "Watchdog gave up on Keeps dying (step s1): session on hulu0241 failed (exit 1): retry 3 of 3 was the last one, giving up: back in Pending for Brett.",
+        "normAgain": {
+          "at": "2026-11-16T12:00:00.000Z",
+          "buildId": "wd-cap",
+          "phase": "Phase 1",
+          "step": "s1",
+          "cause": "exit-failed",
+          "exit": 1,
+          "action": "give-up",
+          "attempt": 4,
+          "account": "hulu0241",
+          "notified": "2026-11-16T12:00:02.000Z",
+          "session": "axf-wd-cap",
+          "note": "session on hulu0241 failed (exit 1): retry 3 of 3 was the last one, giving up: back in Pending for Brett."
+        }
+      }
+    },
+    {
+      "name": "usage limit → retry-other-account record",
+      "build": {
+        "id": "wd-limit",
+        "title": "Limited",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Fable",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-limit--amber",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "exit": 1,
+        "limit": "usage",
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "record": {
+          "at": "2026-11-16T12:00:00.000Z",
+          "buildId": "wd-limit",
+          "phase": "Phase 1",
+          "step": "s1",
+          "cause": "usage-limit",
+          "exit": 1,
+          "action": "retry-other-account",
+          "attempt": 0,
+          "account": "hulu0241",
+          "notified": "",
+          "session": "axf-wd-limit--amber",
+          "note": "hulu0241 hit its usage limit: the build is fine, it goes back to the Queue for another account."
+        },
+        "line": "Watchdog fixed Limited (step s1): hulu0241 hit its usage limit: the build is fine, it goes back to the Queue for another account.",
+        "normAgain": {
+          "at": "2026-11-16T12:00:00.000Z",
+          "buildId": "wd-limit",
+          "phase": "Phase 1",
+          "step": "s1",
+          "cause": "usage-limit",
+          "exit": 1,
+          "action": "retry-other-account",
+          "attempt": 0,
+          "account": "hulu0241",
+          "notified": "",
+          "session": "axf-wd-limit--amber",
+          "note": "hulu0241 hit its usage limit: the build is fine, it goes back to the Queue for another account."
+        }
+      }
+    },
+    {
+      "name": "live session → no record",
+      "build": {
+        "id": "wd-live",
+        "title": "Alive",
+        "status": "running",
+        "steps": [
+          {
+            "id": "s1",
+            "text": "a",
+            "model": "Opus",
+            "phase": "Phase 1"
+          }
+        ],
+        "pipeline": {
+          "queuedAt": "2026-11-16T10:00:00.000Z",
+          "account": "hulu0241",
+          "session": "axf-wd-live",
+          "launchedAt": "2026-11-16T11:00:00.000Z",
+          "runs": 1
+        }
+      },
+      "probe": {
+        "pid": true,
+        "tmux": true,
+        "at": "2026-11-16T12:00:00.000Z"
+      },
+      "out": {
+        "record": null,
+        "line": "",
+        "normAgain": null
+      }
+    }
+  ]
+}
