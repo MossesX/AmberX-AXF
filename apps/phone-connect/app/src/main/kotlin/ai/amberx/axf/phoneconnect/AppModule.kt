@@ -11,7 +11,7 @@ class AppModule : BaseModule("ai.amberx.axf.phoneconnect", "Phone Connect") {
     override val dependsOn: List<String> = listOf("ai.amberx.axf.settings", "ai.amberx.axf.logging")
 
     override fun register(ctx: ModuleContext) {
-        ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(RouteSpec("home", "Home", icon = "home", module = id)))
+        ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(RouteSpec("home", "Phone", icon = "smartphone", module = id)))
         // About comes from lib-settings (name + version from axf.manifest.json, plus `app.about`). Override any standard
         // action by contributing it here, e.g. ActionContribution("help.about", ActionMeta("About")) { _, _ -> … }.
     }

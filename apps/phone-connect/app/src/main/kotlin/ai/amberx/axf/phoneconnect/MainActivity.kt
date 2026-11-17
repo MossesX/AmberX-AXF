@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import ai.amberx.axf.platform.AxfActivity
 import ai.amberx.axf.devtools.PluginManagerScreen
 import ai.amberx.axf.ui.shell.AppShell
-import ai.amberx.axf.phoneconnect.views.HomeView
+import ai.amberx.axf.phoneconnect.views.PairView
 
 /**
  * The single activity. AxfActivity provides AxfRoot (theme, overlays, locals); the shell renders the active layout asset.
@@ -16,7 +16,7 @@ class MainActivity : AxfActivity() {
     @Composable
     override fun Content() {
         AppShell(
-            views = mapOf("home" to { HomeView() }, "plugin-manager" to { PluginManagerScreen() }),
+            views = mapOf("home" to { PairView() }, "plugin-manager" to { PluginManagerScreen() }),
             viewTitles = mapOf("plugin-manager" to "Plugin Manager"),
         )
     }

@@ -39,5 +39,10 @@ dependencies {
     implementation("ai.amberx.axf:lib-hub:$axf")
     implementation("ai.amberx.axf:lib-logging:$axf")
     implementation("ai.amberx.axf:axf-devtools:$axf")
+    // Phone Connect: the link (OkHttp, org.json), the device token at rest (EncryptedSharedPreferences), the watch loop.
+    implementation(libs.okhttp)
+    implementation(libs.androidx.security.crypto)
+    implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.junit)
     // axf:modules []
 }
