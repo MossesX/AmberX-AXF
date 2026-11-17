@@ -815,9 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:38 UTC · `fable-rebuild-to-do-manager-unlimited` s2 done (all) · orchestrator
-- 2026-11-16 20:38 UTC · `to-do-manager-fully-voice-mcp-controlled` s2 done (all) · orchestrator
-- 2026-11-16 20:39 UTC · `fable-rebuild-plan-studio-cleared-out` → queued, note (all) · pipeline
 - 2026-11-16 20:39 UTC · `plan-studio-collapse-all-expand-all` s1 done, → running (all) · orchestrator
 - 2026-11-16 20:39 UTC · `fable-rebuild-plan-studio-cleared-out` → running, note (all) · pipeline
 - 2026-11-16 20:39 UTC · `to-do-manager-fully-voice-mcp-controlled` s3 done, → complete (all) · orchestrator
@@ -1215,6 +1212,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:14 UTC · `own-look-per-grid-and-tab-group` s10 done (all) · orchestrator
 - 2026-11-17 00:14 UTC · `axf-data-postgres-real-tables-own` → running, note (all) · pipeline
 - 2026-11-17 00:14 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
+- 2026-11-17 00:15 UTC · `server-rule-done-means-merged-working` → running, note (all) · pipeline
+- 2026-11-17 00:15 UTC · `server-rule-done-means-merged-working` branch claude/server-rule-done-means-merged-working (all) · pipeline
+- 2026-11-17 00:15 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
 
 ## Token passes (log)
 
