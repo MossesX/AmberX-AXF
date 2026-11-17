@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `console-app-part-2-native-floating` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `console-app-part-3-native-bridge-mic` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `console-app-part-4-console-side-safe` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `console-app-part-2-native-floating-2` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:52 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · foreign-write
 - 2026-11-17 23:51 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
 - 2026-11-17 23:51 UTC · `move-server-side-console-parts-onto-vps` s13 done (all) · orchestrator
+- 2026-11-17 23:53 UTC · `move-server-side-console-parts-onto-vps` s14 done (all) · orchestrator
 
 ## Token passes (log)
 
