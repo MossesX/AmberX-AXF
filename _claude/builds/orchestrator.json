@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:05:15.545Z",
+ "updatedAt": "2026-11-17T22:05:25.109Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168113,7 +168113,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -168159,6 +168159,10 @@
     {
      "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T21:42:15.589Z"
+    },
+    {
+     "text": "Phase 1 done (s1-s4, Fable). widget-shape@1: per-widget shape circle|square|rounded|pill|hexagon|custom (customPath, one closed SVG outline in a 0..100 square → percent polygon), iconOverride {pack, id}; tokens --fx-widget-shape-radius / --fx-widget-shape-clip / --fx-widget-icon; default circle = today's look, saved choices migrated once to shape circle. API: UI = right-click banner → Banner widgets… → Shape / Custom outline / Icon / Glyph fields (deep link action banner.widgets:<type>:<id>); state = rt.bannerWidgets()[].view.shape|customPath|iconOverride + rt.bannerWidgetShape(key) tokens and fallbacks; actions = banner.widget:<widget>:<shape> | path=<svg> | icon=<pack>/<glyph> | icon=own | reset, one action for REST /api/console-control, console_control MCP tools, axf console and AmberX voice through the command catalog; banner-wide default = customize token widgetShape on the banner (Settings → Appearance → Assets → Banner). Android twin deferred in PORTING.md. No console build or screenshot this session (engine + framework only).",
+     "at": "2026-11-16T23:29:07.821Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8132,
- "updatedAt": "2026-11-17T22:05:15.545Z",
+ "rev": 8133,
+ "updatedAt": "2026-11-17T22:05:25.109Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259431,7 +259431,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -259477,6 +259477,10 @@
     {
      "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T21:42:15.589Z"
+    },
+    {
+     "text": "Phase 1 done (s1-s4, Fable). widget-shape@1: per-widget shape circle|square|rounded|pill|hexagon|custom (customPath, one closed SVG outline in a 0..100 square → percent polygon), iconOverride {pack, id}; tokens --fx-widget-shape-radius / --fx-widget-shape-clip / --fx-widget-icon; default circle = today's look, saved choices migrated once to shape circle. API: UI = right-click banner → Banner widgets… → Shape / Custom outline / Icon / Glyph fields (deep link action banner.widgets:<type>:<id>); state = rt.bannerWidgets()[].view.shape|customPath|iconOverride + rt.bannerWidgetShape(key) tokens and fallbacks; actions = banner.widget:<widget>:<shape> | path=<svg> | icon=<pack>/<glyph> | icon=own | reset, one action for REST /api/console-control, console_control MCP tools, axf console and AmberX voice through the command catalog; banner-wide default = customize token widgetShape on the banner (Settings → Appearance → Assets → Banner). Android twin deferred in PORTING.md. No console build or screenshot this session (engine + framework only).",
+     "at": "2026-11-16T23:29:07.821Z"
     }
    ],
    "approvals": [],
@@ -278661,48 +278665,8 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T20:29:29.227Z",
-     "exit": 143,
-     "signal": "TERM",
-     "kind": "stopped",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--earl",
-     "phase": "Phase 2"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T20:16:06.062Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s4",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    },
-    {
-     "at": "2026-11-17T20:32:04.340Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s12",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
