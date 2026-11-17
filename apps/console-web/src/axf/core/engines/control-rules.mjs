@@ -139,6 +139,10 @@ export const CONTROL_TARGETS = {
     acts: { press: { button: 'string', value: 'any' }, open: {} },
     actEffect: { press: 'write', open: 'navigate' },
     doc: `Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press.` },
+  // widget-icons@1 (Nov 17 2026, build icon-picker-every-banner-settings-widget, appended last)
+  'console.widgeticons': { domain: 'console', label: 'Widget icons (banner and settings widgets)', ops: ['list', 'get', 'act'], paths: 'host', select: { q: 'string', app: 'string' },
+    acts: { open: {}, set: { icon: 'string', mode: 'string' }, reset: {} }, actEffect: { open: 'navigate', set: 'write', reset: 'write' },
+    doc: `The icon and display mode of every banner and settings widget (spec/WIDGET-ICONS.md). path = a widget id <host>:<kind>:<id> (banner:status:project, settings:tab:appearance). list = every widget with its icon, where it came from (pick or default), mode and pick; get = one; act set (input {icon?: <glyph> | <pack>/<glyph> | own, mode?: auto | icon | icon+text | text}) picks; act reset puts it back to its default (path "*" = every widget); act open opens the picker on it in the open console. Saved in the app's look document on axHub (input.app, default the Dev Console), the same as REST /api/widget-icons, the MCP tools widget_icons_*, the CLI axf widget-icon and the console actions widget.icon / widget.mode / widget.icons.reset.` },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 

@@ -316,6 +316,18 @@
               "description": "number"
             }
           }
+        },
+        "widget": {
+          "type": "object",
+          "properties": {
+            "textMax": {
+              "type": "integer",
+              "minimum": 6,
+              "maximum": 80,
+              "default": 24,
+              "description": "number"
+            }
+          }
         }
       }
     }

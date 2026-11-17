@@ -322,6 +322,12 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
     """A spoken phrase → its command (console_control.voice_intent), words resolved by the same search, then run with the
     same guards. The answer carries `heard`, `intent`, `command` and `say` (the line to speak back)."""
     g = grants if grants is not None else {"*"}
+    # widget-icons@1 phrases first ("set the project widget icon to rocket" would otherwise read as a setting)
+    if granted(g, "control.console.write"):
+        import widget_icons
+        w = widget_icons.voice(text, by=by)
+        if w is not None:
+            return w
     intent = cc.voice_intent(text)
     if intent is None:
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}

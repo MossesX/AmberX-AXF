@@ -45,6 +45,10 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
+
+control@1 host targets answered here: console.control, console.pluginsettings, console.toolbars and console.widgeticons
+(widget-icons@1: every banner and settings widget's icon and mode; list / get / act set, reset, open through
+server/widget_icons.py, the same code as REST /api/widget-icons).
 """
 from __future__ import annotations
 
@@ -605,6 +609,8 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
         return plugin_settings_target(command, grants, by, audience)
     if command.get("target") == "console.toolbars":
         return toolbars_target(command, grants, by, audience)
+    if command.get("target") == "console.widgeticons":
+        return widget_icons_target(command, grants, by, audience)
     command = focus_rewrite(command, audience)
     _late_prune()
     r = _runner(command, grants, by, ready_clients(audience))
@@ -878,6 +884,43 @@ def toolbars_target(command: dict[str, Any], grants: list[str], by: str, audienc
     if not r.get("ok"):
         out.update({k: r[k] for k in ("code", "message", "openUrl") if k in r})
     _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.toolbars", "path": path, "action": command.get("action") or op, "ok": out["ok"],
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
+    return out
+
+
+def widget_icons_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+    """control@1 `console.widgeticons` (widget-icons@1): list / get answer from the app's look document; act set / reset
+    write it (control.console.write); act open opens the picker in the open console (control.console.navigate). The
+    same code as REST /api/widget-icons (server/widget_icons.py)."""
+    import console_control_api as api
+    import widget_icons as wi
+    op, path = str(command.get("op") or ""), str(command.get("path") or "")
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+    sel = command.get("select") if isinstance(command.get("select"), dict) else {}
+    app = str(inp.get("app") or sel.get("app") or wi.DEFAULT_APP)
+    action = str(command.get("action") or "")
+    need = "control.console.navigate" if op == "act" and action == "open" else "control.console.write" if op == "act" else "control.console.read"
+    try:
+        if not api.granted(set(grants), need):
+            raise wi.WidgetIconError("denied", f"needs {need}", 403)
+        if op == "list":
+            r: dict[str, Any] = wi.list_widgets(app, str(sel.get("q") or ""))
+        elif op == "get":
+            r = wi.get_widget(path, app)
+        elif op == "act" and action == "set":
+            r = wi.set_widget(path, inp.get("icon"), inp.get("mode"), app, by or "control")
+        elif op == "act" and action == "reset":
+            r = wi.reset_widget("" if path in ("", "*") else path, app, by or "control")
+        elif op == "act" and action == "open":
+            r = wi.open_picker(path, str(inp.get("to") or "recent"), by or "control")
+        else:
+            raise wi.WidgetIconError("invalid", "console.widgeticons takes list, get or act open / set / reset")
+    except wi.WidgetIconError as e:
+        r = {"ok": False, "code": e.code, "message": e.message}
+    out = {"$axf": "control@1", "ok": bool(r.get("ok")), "target": "console.widgeticons", "op": op, **({"path": path} if path else {}), "data": r}
+    if not r.get("ok"):
+        out.update({k: r[k] for k in ("code", "message") if k in r})
+    _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.widgeticons", "path": path, "action": action or op, "ok": out["ok"],
                         "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
     return out
 

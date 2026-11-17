@@ -15,7 +15,8 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, resolveWidget, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime, useWidgetIcon } from '../../react';
+import { settingsWidgetIconId } from '../../core/engines/widget-icons';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -124,6 +125,10 @@ function SettingRow({ spec }: { spec: SettingSpec }) {
   useSettingsRevision(rt);
   // console-control@1: the rendered row is `setting:<key>` under its tab's scope (state / set / focus; react/controlTargets.ts)
   useControlTarget(settingTargetDef(rt, spec, `setting:${spec.key}`, 'Settings'));
+  // widget-icons@1: a setting row acts as a widget: right-click → Choose icon…; its icon shows once picked
+  const rowId = settingsWidgetIconId('setting', spec.key);
+  const rowRes = useWidgetIcon({ id: rowId, kind: 'setting', text: spec.label, name: spec.label, defaultMode: 'icon+text' });
+  const rowIcon = { id: rowId, icon: rowRes.icon, picked: rowRes.via === 'pick' };
   // Inside a host app (embed@1), settings about chrome the host owns aren't shown at all (never greyed out).
   if ((spec.slot && rt.slotOwnedByHost(spec.slot as AssetType)) || (spec.kind === 'asset_slot' && spec.target && rt.slotOwnedByHost(spec.target as AssetType))) return null;
   // A setting about a slot the user hid is greyed out (and its control disabled) until the slot is shown again.
@@ -131,7 +136,8 @@ function SettingRow({ spec }: { spec: SettingSpec }) {
   // the look is locked: every look setting greys out (its control is disabled below through `requires`)
   const grey = off || (!!spec.requires && rt.lockedByAppearance(spec.requires));
   return (
-    <div data-axf-anchor={`setting:${spec.key}`} className={grey ? 'axf-settings__off' : undefined} aria-disabled={grey || undefined}>
+    <div data-axf-anchor={`setting:${spec.key}`} data-axf-widget-icon-id={rowIcon.id} className={`${grey ? 'axf-settings__off' : ''}${rowIcon.picked ? ' axf-settings__row--icon' : ''}`.trim() || undefined} aria-disabled={grey || undefined}>
+      {rowIcon.picked && <span className="axf-settings__rowicon" aria-hidden="true"><Icon name={rowIcon.icon} size={14} /></span>}
       <SettingControl spec={spec} off={off} />
       {off && <p className="fx-muted axf-settings__hint axf-settings__offnote">{assetTypeSpecs[spec.slot as AssetType]?.label ?? spec.slot} is hidden (Assets above).</p>}
     </div>
@@ -288,9 +294,16 @@ function FlatSection({ title, icon, collapsible = false, defaultOpen = true, anc
 }
 
 function GroupCard({ group }: { group: SettingsGroup }) {
+  // widget-icons@1: a group's icon is pickable (right-click its header → Choose icon…)
+  const wid = settingsWidgetIconId('group', group.id);
+  const gi = useWidgetIcon({ id: wid, kind: 'group', text: group.label, icon: group.icon ?? 'settings', name: group.label, defaultMode: 'icon+text' });
+  return <div className="axf-settings__group" data-axf-widget-icon-id={wid}><GroupBody group={group} icon={gi.icon} /></div>;
+}
+
+function GroupBody({ group, icon }: { group: SettingsGroup; icon: string }) {
   if (group.id === 'axf.appearance') {
     return (
-      <FlatSection anchor={`settings-group:${group.id}`} title={group.label} icon={group.icon ?? 'settings'}>
+      <FlatSection anchor={`settings-group:${group.id}`} title={group.label} icon={icon}>
         {group.description && <p className="fx-muted axf-settings__desc">{group.description}</p>}
         <div className="axf-settings__rows">{group.settings.map((s) => s.kind === 'asset_slot' ? <AssetSlotCard key={s.key} spec={s} /> : <SettingRow key={s.key} spec={s} />)}</div>
       </FlatSection>
@@ -298,7 +311,7 @@ function GroupCard({ group }: { group: SettingsGroup }) {
   }
   const g = group as SettingsGroup & { collapsible?: boolean; collapsed?: boolean };
   return (
-    <FlatSection anchor={`settings-group:${group.id}`} title={group.label} icon={group.icon ?? 'settings'} collapsible={g.collapsible} defaultOpen={!g.collapsed}>
+    <FlatSection anchor={`settings-group:${group.id}`} title={group.label} icon={icon} collapsible={g.collapsible} defaultOpen={!g.collapsed}>
       {group.description && <p className="fx-muted axf-settings__desc">{group.description}</p>}
       <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
     </FlatSection>
@@ -435,7 +448,7 @@ function useWide(): boolean {
 /** One line of the settings list: icon, label, a one-line description, chevron. */
 function NavRow({ id, icon, label, desc, active, onClick }: { id?: string; icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
   return (
-    <button type="button" data-fx-row {...(id ? { 'data-axf-settings-nav': id } : {})} className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
+    <button type="button" data-fx-row {...(id ? { 'data-axf-settings-nav': id, 'data-axf-widget-icon-id': settingsWidgetIconId('tab', id) } : {})} className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
       {icon && <Icon name={icon} size={15} />}
       <span className="axf-settings__navtext"><span className="axf-settings__navlabel">{label}</span>{desc && <span className="axf-settings__navdesc">{desc}</span>}</span>
       <Icon name="chevron-right" size={14} className="axf-settings__navchev" />
@@ -448,6 +461,13 @@ const SUB_LIST_FROM = 5;
 export function SettingsView() {
   const rt = useRuntime();
   useSettingsRevision(rt);
+  // widget-icons@1: every tab and sub-tab resolves its icon (the pick, its own, the default) and its mode (a long label
+  // becomes the icon alone with the label as the tooltip)
+  const tabIcon = (t: { id: string; label: string; icon?: string }) => resolveWidget(rt, { id: settingsWidgetIconId('tab', t.id), kind: 'tab', text: t.label, icon: t.icon, name: t.label });
+  const tabDef = (t: { id: string; label: string; icon?: string }) => {
+    const r = tabIcon(t);
+    return { value: t.id, label: t.label, icon: r.mode === 'text' ? undefined : r.icon, iconOnly: r.mode === 'icon', title: r.tooltip || undefined, widgetIcon: settingsWidgetIconId('tab', t.id) };
+  };
   const ui = useSettingsUi();
   const wide = useWide();
   const isList = ui.layout === 'list';
@@ -497,11 +517,11 @@ export function SettingsView() {
   // the settings tab bar is a tab group (tab-group@1): tabs-side lays it down the side (the side-rail starter) unless the row picked its own asset
   const tabBar = ui.layout === 'list' ? null : (
     <TabGroup id="settings.tabs" label="Settings sections" className="axf-settings__tabs" value={current?.id ?? ''} onChange={(id) => { setQuery(''); choose(id); }} asset={ui.layout === 'tabs-side' ? 'side-rail' : undefined}
-      tabs={tabs.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
+      tabs={tabs.map(tabDef)} />
   );
   const navList = (
     <nav className="axf-settings__navlist" aria-label="Settings sections" data-axf-not-nav="the settings page's section list (settings-ui@1 layout list), not a navigation menu">
-      {tabs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
+      {tabs.map((t) => <NavRow key={t.id} id={t.id} icon={tabIcon(t).icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
     </nav>
   );
   const inSub = !!shown && !!current && shown.id !== current.id;
@@ -515,7 +535,7 @@ export function SettingsView() {
       )}
       {subs.length > 0 && !subList && (
         <TabGroup id="settings.subtabs" label={`${current.label} sections`} className="axf-settings__subtabs" size="sm" value={shown?.id ?? current.id} onChange={(id) => (id === current.id ? choose(current.id) : choose(current.id, id))}
-          tabs={[...(noOverview ? [] : [{ value: current.id, label: current.id === 'plugins' ? 'All plugins' : 'Overview', icon: current.icon }]), ...subs.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))]} />
+          tabs={[...(noOverview ? [] : [{ value: current.id, label: current.id === 'plugins' ? 'All plugins' : 'Overview', icon: current.icon }]), ...subs.map(tabDef)]} />
       )}
       {shown?.description && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{shown.description}</p>}
       {subList && !inSub && (
@@ -973,6 +993,10 @@ const CSS = `
 .axf-settings__control.axf-skin__action{flex:0 0 auto;min-width:0;display:flex;gap:var(--fx-dens-gap-xs)}
 .axf-skin__dot{display:inline-block;width:calc(var(--fx-space)*.75);height:calc(var(--fx-space)*.75);margin-left:var(--fx-dens-gap-xs);border-radius:999px;background:var(--fx-accent)}
 .axf-settings__rows{display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xl)}
+.axf-settings__group{display:contents}
+.axf-settings__row--icon{display:flex;align-items:flex-start;gap:var(--fx-dens-gap-md)}
+.axf-settings__row--icon>:last-child{flex:1;min-width:0}
+.axf-settings__rowicon{display:inline-flex;flex:none;padding-top:var(--fx-dens-gap-xs);color:var(--fx-muted)}
 .axf-settings__row{display:flex;gap:var(--fx-dens-gap-2xl);align-items:center;justify-content:space-between;flex-wrap:wrap}
 .axf-settings__row--wide{flex-direction:column;align-items:stretch}
 .axf-settings__label{display:flex;flex-direction:column;gap:var(--fx-dens-gap-xs);min-width:180px;flex:1}

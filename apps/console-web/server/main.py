@@ -1791,6 +1791,11 @@ app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 import console_control_api  # noqa: E402
 
 app.include_router(console_control_api.router_for(auth))
+
+# ---- Widget icons (widget-icons@1, framework/spec/WIDGET-ICONS.md): /api/widget-icons (widget_icons.py)
+import widget_icons  # noqa: E402
+
+app.include_router(widget_icons.router_for(auth))
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch)
 
 

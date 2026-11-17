@@ -139,7 +139,7 @@ if (cmd === 'voice') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'watchdog']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'watchdog', 'widget-icon']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
@@ -430,6 +430,12 @@ try {
       // UI Review → Screenshots (not the approve / reject queue): framework/cli/shot.mjs, raw arguments passed through
       const { main: shot } = await import('./shot.mjs');
       await shot(process.argv.slice(3));
+      break;
+    }
+    case 'widget-icon': {
+      // widget-icons@1: list / get / set / reset a widget's icon and mode (framework/cli/widget-icon.mjs)
+      const { main: widgetIcon } = await import('./widget-icon.mjs');
+      process.exitCode = await widgetIcon(process.argv.slice(3));
       break;
     }
     case 'schemas': {

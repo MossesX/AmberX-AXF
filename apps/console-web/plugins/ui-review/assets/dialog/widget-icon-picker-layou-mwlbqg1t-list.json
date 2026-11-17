@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "widget-icon-picker-layou-mwlbqg1t-list",
+ "name": "widget-icon-picker-layou-mwlbqg1t: List with names (side drawer)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Each icon with its name, in columns. Easier when you know the word (rocket, bell). Opens as a drawer so the banner stays visible. widget.icons.layout:list.",
+ "tags": [
+  "ui-choice",
+  "choice-set:widget-icon-picker-layou-mwlbqg1t",
+  "choice-option:list"
+ ],
+ "data": {
+  "variant": "drawer",
+  "width": 480,
+  "backdrop": "dim",
+  "animation": "slide",
+  "header": "plain",
+  "closeOnBackdrop": true
+ }
+}

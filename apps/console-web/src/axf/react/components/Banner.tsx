@@ -16,6 +16,8 @@ import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { Icon } from './Icon';
 import { BannerMore, bannerItemAttrs, useBannerOverflow } from './BannerWidgets';
 import { Tap, WidgetView } from './Widgets';
+import { useWidgetIcon } from '../widgetIcons';
+import { bannerWidgetIconId, modeFromBannerShow, type ResolvedWidgetIcon } from '../../core/engines/widget-icons';
 import { controlSlug } from '../controlTargets';
 import { CHROME_INSTANCE_KEY } from '../../core/engines/chrome-settings-rules.mjs';
 
@@ -79,16 +81,60 @@ function WidgetNumber({ type, data }: { type: string; data: Partial<StatusData &
   return <Tap action={data.link} className="fx-widget-counter" title={type === 'status' ? (on ? data.onLabel : data.offLabel) : data.label}><span className="fx-widget-counter__num" data-tone={tone}>{text}</span></Tap>;
 }
 
+/** Widget kinds that draw words the icon rule can replace (widget-icons@1). The rest (clock, search bar, logo, …) draw as they are. */
+const ICONIC = new Set(['status', 'label', 'counter', 'action-button', 'link', 'badge']);
+
+/** The words a widget shows right now, for the long-text rule. */
+function widgetWords(rt: ReturnType<typeof useRuntime>, type: string, d: Record<string, unknown>): string {
+  const s = (v: unknown) => (typeof v === 'string' ? v : '');
+  if (type === 'status') return s(statusOn(rt.badge(s(d.counter))) ? d.onLabel : d.offLabel);
+  if (type === 'label') return s(d.text);
+  return s(d.label);
+}
+
+/** A widget drawn by the icon rule: its icon, its text (under the --fx-size-widget-text-max cap) unless it is icon only, the full text as the tooltip. */
+function IconicWidget({ type, d, r }: { type: string; d: Record<string, unknown>; r: ResolvedWidgetIcon }) {
+  const rt = useRuntime();
+  const on = type === 'status' && statusOn(rt.badge(String(d.counter ?? '')));
+  const tone = type === 'status' ? widgetTone((on ? d.onTone : d.offTone) as never) : widgetTone(d.tone as never);
+  const link = typeof d.link === 'string' ? d.link : undefined;
+  const tip = r.tooltip || r.label || undefined;
+  const cls = `fx-widget-iconic is-${r.mode.replace('+', '-')}`;
+  const body = (
+    <>
+      <span className="fx-widget-iconic__glyph" data-tone={tone}><Icon name={r.icon} size={14} /></span>
+      {r.mode !== 'icon' && r.label && <span className="fx-widget-iconic__text" data-tone={tone}>{r.label}</span>}
+    </>
+  );
+  // the words are never lost: the tooltip (title) and the accessible name carry the full text
+  return link
+    ? <Tap action={link} className={cls} title={tip}>{body}</Tap>
+    : <span className={cls} title={tip} aria-label={tip} role={r.mode === 'icon' ? 'img' : undefined}>{body}</span>;
+}
+
 /** One banner widget as the person set it up (bar, ⋯ menu, a host's banner strip). */
 export function BannerWidgetBody({ type, id }: { type: string; id: string }) {
   const rt = useRuntime();
   const asset = rt.registry.get(type as never, id) as { data: unknown } | undefined;
-  if (!asset) return null;
+  const d = (asset?.data ?? {}) as Record<string, unknown>;
   const { show } = rt.bannerWidgetView(`${type}:${id}`);
-  if (type === 'badge') return <BannerBadge data={asset.data as BadgeData} id={id} />;
+  // widget-icons@1: every widget that draws words gets an icon (its own, its default, or the person's pick)
+  const r = useWidgetIcon({ id: bannerWidgetIconId(`${type}:${id}`), kind: type, text: widgetWords(rt, type, d), icon: typeof d.icon === 'string' ? d.icon : undefined, tooltip: typeof d.tooltip === 'string' ? d.tooltip : undefined, defaultMode: modeFromBannerShow(show) });
+  if (!asset) return null;
   if (show === 'number' && (type === 'status' || type === 'counter')) return <WidgetNumber type={type} data={asset.data as StatusData} />;
-  // icon only: a status has no icon, its dot is what's left
-  return <WidgetView type={type} id={id} host="banner" patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;
+  if (!ICONIC.has(type)) return <WidgetView type={type} id={id} host="banner" />;
+  const tip = r.tooltip || undefined;
+  if (type === 'badge') {
+    const b = asset.data as BadgeData;
+    return <BannerBadge data={{ ...b, icon: r.icon, shape: r.mode === 'icon' && b.shape === 'pill' ? 'icon' : r.mode !== 'icon' && b.shape === 'icon' ? 'pill' : b.shape, tooltip: b.tooltip ?? tip }} id={id} />;
+  }
+  if (type === 'status' || type === 'label') return r.mode === 'text' ? <WidgetView type={type} id={id} host="banner" /> : <IconicWidget type={type} d={d} r={r} />;
+  // counter, action button, link: they draw their own icon; give them the resolved one and drop the words in icon mode
+  const words = r.mode === 'icon' ? { label: type === 'counter' ? undefined : '' } : {};
+  const patch = type === 'action-button'
+    ? { icon: r.icon, show: r.mode === 'icon' ? 'icon' : r.mode === 'text' ? 'label' : 'both', tooltip: (d.tooltip as string | undefined) ?? tip }
+    : { icon: r.mode === 'text' ? undefined : r.icon, ...words, tooltip: (d.tooltip as string | undefined) ?? tip };
+  return <WidgetView type={type} id={id} host="banner" patch={patch} />;
 }
 
 function Attached({ a }: { a: PlacedAttachment }) {

@@ -1117,6 +1117,27 @@
         "title": "Open in Plugin Manager",
         "text": "Opens this plugin in the Plugin Manager: its full details, dependencies, files and every log line.",
         "kind": "button"
+      },
+      {
+        "target": "widget-icon-picker",
+        "title": "Widget icon picker",
+        "text": "Pick the icon of one banner or settings widget, and whether it shows as an icon, icon and text, text, or automatically (an icon when its text is long). Every pick is saved at once and reaches your other devices through axHub.",
+        "more": "Search by name, pick from the framework set or any icon pack, see it live in the preview. Reset to default puts its own icon back. Same by API: REST /api/widget-icons, MCP widget_icons_set, CLI axf widget-icon set, or say \"use the rocket icon for the project widget\".",
+        "tryIt": "Right-click any banner widget or settings tab → Choose icon…",
+        "kind": "dialog",
+        "related": [
+          "choose-icon"
+        ]
+      },
+      {
+        "target": "choose-icon",
+        "title": "Choose icon…",
+        "text": "Opens the icon picker for this widget. Widgets that only showed text (project, Claude account, ticker, main build) now get an icon; long text moves into the tooltip.",
+        "more": "Show as on the same menu switches between icon only, icon and text, text only and automatic. The long-text limit is the sizing token widget.textMax (24 characters by default).",
+        "kind": "button",
+        "related": [
+          "widget-icon-picker"
+        ]
       }
     ],
     "intros": [

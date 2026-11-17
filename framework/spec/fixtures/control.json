@@ -379,6 +379,11 @@
       "console.toolbars": {
         "press": "write",
         "open": "navigate"
+      },
+      "console.widgeticons": {
+        "open": "navigate",
+        "set": "write",
+        "reset": "write"
       }
     },
     "permissions": {
@@ -429,7 +434,8 @@
       "console.control",
       "tokens.instances",
       "console.pluginsettings",
-      "console.toolbars"
+      "console.toolbars",
+      "console.widgeticons"
     ],
     "targetOps": {
       "tokens.theme": [
@@ -584,6 +590,11 @@
         "act"
       ],
       "console.toolbars": [
+        "list",
+        "get",
+        "act"
+      ],
+      "console.widgeticons": [
         "list",
         "get",
         "act"
@@ -833,6 +844,7 @@
       "table.font",
       "pageHead.descriptionFont",
       "pageHead.descriptionLines",
+      "widget.textMax",
       "chip.radius",
       "card.radius"
     ],
@@ -899,7 +911,8 @@
     "console.control": null,
     "tokens.instances": null,
     "console.pluginsettings": null,
-    "console.toolbars": null
+    "console.toolbars": null,
+    "console.widgeticons": null
   },
   "normalize": {
     "list-layout": {
@@ -1320,7 +1333,7 @@
       "op must be one of: list, get, set, reset, add, remove, act"
     ],
     "wrong-target": [
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control, tokens.instances, console.pluginsettings, console.toolbars"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control, tokens.instances, console.pluginsettings, console.toolbars, console.widgeticons"
     ],
     "token-op-on-entity": [
       "amberx.items does not take reset (it takes list, get, set, add, remove, act)"
@@ -1336,7 +1349,7 @@
     ],
     "not-an-object": [
       "op must be one of: list, get, set, reset, add, remove, act",
-      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control, tokens.instances, console.pluginsettings, console.toolbars"
+      "target must be one of: tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.look, tokens.custom, tokens.slots, amberx.items, amberx.lists, planner.plans, planner.builds, console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients, pass.scopes, plugins.commands, plugins.reads, tokens.nav, console.control, tokens.instances, console.pluginsettings, console.toolbars, console.widgeticons"
     ],
     "console-open-screen": [],
     "console-open-settings": [],

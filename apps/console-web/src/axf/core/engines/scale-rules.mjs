@@ -99,6 +99,9 @@ export const SCALE_FIELDS = {
     'table.font': [0.86, 0.6, 1.2, 'em'],
     'pageHead.descriptionFont': [0.88, 0.6, 1.2, 'em'],
     'pageHead.descriptionLines': [2, 1, 6, 'int'],
+    // widget-icons@1 (spec/WIDGET-ICONS.md): the most characters a banner or settings widget shows as text before it
+    // falls back to its icon with the text as a tooltip (engines/widget-icons.ts reads --fx-size-widget-text-max)
+    'widget.textMax': [24, 6, 80, 'int'],
   },
 };
 

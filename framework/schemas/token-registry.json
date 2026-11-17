@@ -1,7 +1,7 @@
 {
   "$axf": "token-registry@1",
   "version": 1,
-  "updatedAt": "2026-11-15",
+  "updatedAt": "2026-11-17",
   "tokens": [
     {
       "id": "--fx-accent",
@@ -3895,6 +3895,24 @@
       "set": {
         "target": "tokens.sizing",
         "path": "table.padY"
+      }
+    },
+    {
+      "id": "--fx-size-widget-text-max",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Sizing: the most characters a banner or settings widget shows as text before it falls back to its icon with the text as a tooltip (widget-icons@1).",
+      "default": "24",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "widget.textMax"
       }
     },
     {

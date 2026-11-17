@@ -78,3 +78,14 @@ A toolbar drawn from a page toolbar asset (page-toolbar@1) is `toolbar:<settings
 transport: REST `GET /api/console-control/toolbars`, `GET …/toolbars/<id>`, `POST …/toolbars/<id>/press {button}`; MCP
 `console_control_toolbar`; control@1 `console.toolbars`; CLI `axf console toolbar list|get|press`; voice "press <button> on
 the <x> toolbar", "what's on the <x> toolbar".
+
+## Widget icons (widget-icons@1, Nov 17 2026, build `icon-picker-every-banner-settings-widget`)
+
+Every banner and settings widget has an icon the person picks and a display mode (icon / icon+text / text / auto,
+where auto turns text longer than `--fx-size-widget-text-max` into the icon with the text as tooltip). Widget ids
+`<host>:<kind>:<id>` (`banner:status:project`, `settings:tab:appearance`); keys `axf.widget.<id>.icon` / `.mode` in the
+app's look document. UI: right-click a widget → Choose icon… / Show as. REST `/api/widget-icons` (list, get, PUT, DELETE,
+reset, `/<id>/open`); MCP `widget_icons_list|get|set|reset`; control@1 `console.widgeticons`; CLI `axf widget-icon
+list|get|set|reset|glyphs|open`; console actions `widget.icon:<id>:<ref>`, `widget.mode:<id>:<mode>`,
+`widget.icons.reset[:<id>]`, `widget.icon.set:<phrase>`; voice "use the rocket icon for the project widget". Deep link:
+`console_dialog("axf.widget.icons", arg="<id>")`. Contract `framework/spec/WIDGET-ICONS.md`.
