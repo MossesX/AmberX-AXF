@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:04:50.715Z",
+ "updatedAt": "2026-11-17T15:05:00.920Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123839,7 +123839,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -123847,8 +123847,8 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T04:28:58.424Z",
-   "builtAt": "2026-11-17T04:28:58.424Z",
+   "updatedAt": "2026-11-17T15:04:51.461Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
@@ -123907,6 +123907,25 @@
     "addenda": []
    },
    "steps": [
+    {
+     "id": "s22",
+     "text": "Merge origin/main into this branch (PR #772). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres; keep main's store path, keep this build's watchdog hooks on top), build-orchestrator/notify.json, glossary-index/terms.json, deploy/install-console.sh, framework/spec/PORTING.md (keep both sides), inventory.json (take main's, regenerate). Tests green, push, merge the PR directly (merge queue is off). Brett: VPS/auto-lander PRs land first.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktq15g01cflc",
+     "createdAt": "2026-11-17T15:04:51.462Z"
+    },
     {
      "id": "s1",
      "text": "Design the watchdog@1 contract in framework/core/build-watchdog.mjs. A build counts as stuck when it is marked running or queued-running and has no live session: the pid is gone, the tmux session is missing, the heartbeat (lastSeenAt) is older than staleMin, or an exit code is recorded (143 killed, 137 OOM, 1 failed, usage limit). For each case, define the action: reset the running step, release the slot, requeue, retry on the same or another account, or give up after maxRetries and go back to Pending with a banner item. Also define the recovery record shape { at, buildId, phase, step, cause, exit, action, attempt, account, notified }.",
@@ -169312,7 +169331,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -169320,7 +169339,7 @@
    "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T15:04:44.373Z",
+   "updatedAt": "2026-11-17T15:04:56.908Z",
    "builtAt": "",
    "notes": [
     {
