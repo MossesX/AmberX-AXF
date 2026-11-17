@@ -431,6 +431,21 @@ def router_for(auth: Any) -> APIRouter:
         b = await _body(request)
         return await from_body(request, {**b, "verb": "open", "address": st["tab"]["address"]})
 
+    @r.post("/plugins/{ref}/settings/set")
+    async def plugin_settings_set(request: Request, ref: str) -> JSONResponse:
+        """{key, value}: set one setting in a plugin's sub-tab (the `set` verb on its address, same guards)."""
+        try:
+            st = await run_in_threadpool(cc.plugin_settings_state, ref)
+        except cc.ControlError as e:
+            return fail(e)
+        b = await _body(request)
+        key = str(b.get("key") or "")
+        spec = next((x for x in st.get("settings") or [] if key and (x.get("key") == key or x.get("address") == key)), None)
+        if spec is None:
+            return fail(cc.ControlError("not_found", f"{st.get('label')} has no setting {key or '(no key)'}", field="key", nearest=[x.get("key") for x in st.get("settings") or []][:8]))
+        body = {k: v for k, v in b.items() if k not in ("key",)}
+        return await from_body(request, {**body, "verb": "set", "address": spec["address"], "value": b.get("value")})
+
     @r.post("/plugins/{ref}/{op}")
     async def plugin(request: Request, ref: str, op: str) -> JSONResponse:
         if op not in ("enable", "disable"):

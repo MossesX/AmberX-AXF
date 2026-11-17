@@ -105,3 +105,16 @@ default tab too.
   tab {address, id}, gear, view, settings[], open {action, address}, can}`;
   `POST /api/console-control/plugins/<id>/settings/open` opens it in the open console (console_open semantics);
   on/off stays `POST /api/console-control/plugins/<id>/enable|disable`.
+
+## MCP, CLI, voice, control@1 (s9)
+
+- MCP: `console_control_plugin_settings(plugin, open?, set?, enabled?)` (appended to `CONSOLE_CONTROL_TOOLS`);
+  without options it returns the same state as REST.
+- CLI: `axf console plugin-settings <plugin> [--get|--open|--set key=value|--enable|--disable]` (framework/cli/
+  console-control.mjs; `--set` goes to the new `POST /api/console-control/plugins/<id>/settings/set {key, value}`).
+- Voice (AmberX): "open <plugin> settings" already maps to `open` on a sub-tab within `view:settings`; the static
+  targets now carry every plugin sub-tab ("<plugin> settings"), so it resolves with no console open too. Checked:
+  gate, voice notes, ui review, mcp client, axhub sync.
+- control@1: `console.pluginsettings` appended as the last target (ids are `<domain>.<lowercase>`, so no hyphen):
+  list / get / act open|set|enable|disable, handled in the console-commands plugin server. CONTROL.md, the snapshot,
+  the fixture and check-control updated; Kotlin twin recorded as deferred in PORTING.md.
