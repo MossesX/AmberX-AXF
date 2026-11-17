@@ -107,6 +107,11 @@ export const NAV_OPEN_KEY = 'axf.nav.open';
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Dialog id of the banner's Widgets picker (react/components/BannerWidgets.tsx). */
 export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
+/** widget-shape@1 dialogs: Change icon… (the icon picker for one widget) and the custom outline editor. Payload { key }. */
+export const WIDGET_ICON_DIALOG = 'axf.banner.widget-icon';
+export const WIDGET_SHAPE_DIALOG = 'axf.banner.widget-shape';
+/** The context contribution that puts Shape ▸ and Change icon… on every banner widget's right-click / long-press menu. */
+export const WIDGET_SHAPE_CTX_ID = 'axf.banner.widget-shape';
 
 /** One widget the banner knows about: on the bar now or not. */
 export interface BannerWidget {
@@ -202,6 +207,12 @@ export interface ContextContribution {
   /** Context target (`data-fx-ctx-target`); default `default`. */
   target?: string;
   order?: number;
+  /**
+   * `banner-widget`: only when the menu opened on a banner widget (rt.contextBannerWidget); `{widget}` in an item's
+   * action and `{label}` in its label become that widget's key and label, so one data-only contribution serves every
+   * widget (portable: no callback). Absent = always.
+   */
+  scope?: 'banner-widget';
   items: import('./engines/windows').MenuEntry[];
 }
 
@@ -1359,10 +1370,19 @@ export class AxfRuntime {
 
   /** Contributed items for a target (`default` = the menu shown where no element names a target), by order. */
   contributedContext(target: string): import('./engines/windows').MenuEntry[] {
+    const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) ?? null : null;
+    type Entry = import('./engines/windows').MenuEntry;
+    const fill = (e: Entry, w: BannerWidget): Entry => ({
+      ...e,
+      ...(e.label ? { label: e.label.split('{label}').join(w.label) } : {}),
+      ...(e.action ? { action: e.action.split('{widget}').join(w.key) } : {}),
+      ...(e.id ? { id: e.id.split('{widget}').join(w.key) } : {}),
+      ...(e.items ? { items: e.items.map((x) => fill(x, w)) } : {}),
+    });
     return [...this.contextContributions.values()]
-      .filter((c) => (c.target ?? 'default') === target)
+      .filter((c) => (c.target ?? 'default') === target && (c.scope !== 'banner-widget' || hit))
       .sort((a, b) => (a.order ?? 100) - (b.order ?? 100))
-      .flatMap((c) => c.items);
+      .flatMap((c) => (c.scope === 'banner-widget' && hit ? c.items.map((e) => fill(e, hit)) : c.items));
   }
 
   /**
@@ -3216,6 +3236,25 @@ export class AxfRuntime {
     // Banner widgets: the picker, and what voice and the API say (`banner.widget:<clock|ticker|…>:hide|show|<size>|<shape>|path=<svg>|icon=<pack>/<glyph>|icon=own|reset`).
     a.register('banner.widgets', (args) => this.openDialog(BANNER_WIDGETS_DIALOG, args.length ? { key: args.join(':') } : {}), { label: 'Banner widgets…', requires: 'assets.swap' });
     a.register('banner.widgets.reset', () => this.resetBannerWidgets(), { label: 'Reset the banner widgets', requires: 'assets.swap' });
+    // widget-shape@1 dialogs for one widget: banner.widget.icon-picker:<widget> · banner.widget.custom-shape:<widget>
+    const widgetDialog = (dialog: string) => (args: string[]) => {
+      const w = this.findBannerWidget(args.join(':'));
+      if (w) this.openDialog(dialog, { key: w.key });
+      else this.toast(`No banner widget "${args.join(':')}"`, 'warning', 'Banner widgets');
+    };
+    a.register('banner.widget.icon-picker', widgetDialog(WIDGET_ICON_DIALOG), { label: 'Change a banner widget\'s icon…', requires: 'assets.swap', params: true });
+    a.register('banner.widget.custom-shape', widgetDialog(WIDGET_SHAPE_DIALOG), { label: 'Custom shape for a banner widget…', requires: 'assets.swap', params: true });
+    // Right-click / long-press a banner widget: Shape ▸ (every shape, Custom… opens the editor) and Change icon…
+    this.addContextItems({
+      id: WIDGET_SHAPE_CTX_ID, module: 'axf', target: 'banner', scope: 'banner-widget', order: 5,
+      items: [
+        { id: 'banner-widget-shape-{widget}', label: 'Shape', icon: 'box', items: [
+          ...BANNER_WIDGET_SHAPES.filter((x) => x !== 'custom').map((x) => ({ id: `banner-widget-shape-${x}`, label: x[0]!.toUpperCase() + x.slice(1), action: `banner.widget:{widget}:${x}` })),
+          { id: 'banner-widget-shape-custom', label: 'Custom…', action: 'banner.widget.custom-shape:{widget}' },
+        ] },
+        { id: 'banner-widget-icon-{widget}', label: 'Change icon…', icon: 'palette', action: 'banner.widget.icon-picker:{widget}' },
+      ],
+    });
     a.register('banner.widget', (args) => {
       const what = args[args.length - 1] ?? '';
       const w = this.findBannerWidget(args.slice(0, -1).join(':'));

@@ -282,4 +282,22 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   eq(rt.settings.get('axf.widgets.arrange.banner'), null, 'arrange rt: Reset to defaults clears arrangements');
 }
 
+// widget-shape@1 context menu: Shape ▸ and Change icon… only on a banner widget, filled with that widget's key
+{
+  const assets = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:widget-menu' });
+  rt.contextBannerWidget = null;
+  ok(!rt.contributedContext('banner').some((e) => e.label === 'Shape'), 'widget menu: not on the banner background');
+  rt.contextBannerWidget = 'clock:digital-12h';
+  const menu = rt.contributedContext('banner');
+  const shape = menu.find((e) => e.label === 'Shape');
+  eq(shape?.items?.map((e) => e.action), ['banner.widget:clock:digital-12h:circle', 'banner.widget:clock:digital-12h:square', 'banner.widget:clock:digital-12h:rounded', 'banner.widget:clock:digital-12h:pill', 'banner.widget:clock:digital-12h:hexagon', 'banner.widget.custom-shape:clock:digital-12h'], 'widget menu: every shape for the hit widget, Custom… opens the editor');
+  eq(menu.find((e) => e.label === 'Change icon…')?.action, 'banner.widget.icon-picker:clock:digital-12h', 'widget menu: Change icon… for the hit widget');
+  rt.dispatch(shape!.items![4]!.action!);
+  eq(rt.bannerWidgetShape('clock:digital-12h').shape, 'hexagon', 'widget menu: Hexagon sets the shape');
+  rt.contextBannerWidget = 'nope:x';
+  ok(!rt.contributedContext('banner').some((e) => e.label === 'Shape'), 'widget menu: an unknown widget gets none');
+}
+
 console.log(`check-widgets: ${checks} checks ok`);
