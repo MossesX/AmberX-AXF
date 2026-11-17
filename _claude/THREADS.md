@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:10 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:42 UTC · `live-build-status-real-time-grids-15` note (all) · orchestrator
 - 2026-11-17 19:43 UTC · `console-app-part-2-native-floating` s5 done (all) · orchestrator
 - 2026-11-17 19:43 UTC · `right-click-running-build-pop-open` note (all) · orchestrator
+- 2026-11-17 19:43 UTC · `right-click-running-build-pop-open` note (all) · builds-live
 
 ## Token passes (log)
 
