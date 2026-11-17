@@ -5655,6 +5655,18 @@
    "from": "",
    "addenda": []
   },
+  "move-everything-axhub-web-console": {
+   "said": "I really need to get this axHub and AmberX over the console. I really need that done. With the phone app.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "move-server-side-console-parts-onto-vps": {
    "said": "So shouldn't we move everything to the VPS except for the UI itself for the console? ... All right, do it.",
    "at": "2026-11-17T12:26:40.644Z",

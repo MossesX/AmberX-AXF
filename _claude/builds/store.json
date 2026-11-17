@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8200,
- "updatedAt": "2026-11-17T22:29:39.696Z",
+ "rev": 8201,
+ "updatedAt": "2026-11-17T22:29:48.982Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -64905,9 +64905,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 9,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-17T22:28:38.185Z"
     },
     {
      "id": "s107-106",
@@ -64927,9 +64927,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 9,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-17T22:28:38.185Z"
     },
     {
      "id": "s108-107",
@@ -64949,9 +64949,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 9,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-17T22:28:38.185Z"
     },
     {
      "id": "s109-108",
@@ -64971,9 +64971,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 9,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-17T22:28:38.185Z"
     },
     {
      "id": "s110-109",
@@ -64993,9 +64993,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 8,
+     "rev": 10,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-12T10:51:35.512Z"
+     "updatedAt": "2026-11-17T22:28:38.185Z"
     },
     {
      "id": "s111-110",
@@ -65015,9 +65015,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 8,
+     "rev": 10,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-12T10:51:35.512Z"
+     "updatedAt": "2026-11-17T22:28:38.185Z"
     },
     {
      "id": "s112-111",
@@ -65037,9 +65037,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 8,
+     "rev": 10,
      "createdAt": "2026-11-03T21:05:30.630Z",
-     "updatedAt": "2026-11-12T10:51:35.512Z"
+     "updatedAt": "2026-11-17T22:28:38.185Z"
     },
     {
      "id": "s8",
@@ -67360,7 +67360,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151813,7 +151813,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151823,7 +151823,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -151928,6 +151928,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:22:24.004Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:28:15.534Z"
     }
    ],
    "approvals": [
@@ -151991,6 +151995,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T22:28:15.534Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "4b5465ae5fc029e2e144e6a1025ac4bab256c3d4",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -152252,7 +152264,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 125,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152262,7 +152274,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-10T17:10:29.492Z",
-    "builtAt": "2026-11-17T22:28:27.285Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mwb00qda6gus4d": "2026-11-10T18:03:26.974Z",
@@ -166197,7 +166209,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -166834,7 +166846,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -166988,7 +167000,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167063,7 +167075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167138,7 +167150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167213,7 +167225,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167367,7 +167379,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167442,7 +167454,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167517,7 +167529,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167592,7 +167604,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167667,7 +167679,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167742,7 +167754,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167817,7 +167829,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167892,7 +167904,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167967,7 +167979,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168121,7 +168133,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168354,7 +168366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168429,7 +168441,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168504,7 +168516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168658,7 +168670,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169049,7 +169061,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169124,7 +169136,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169357,7 +169369,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169432,7 +169444,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169507,7 +169519,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169582,7 +169594,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169657,7 +169669,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169732,7 +169744,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169807,7 +169819,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169882,7 +169894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169957,7 +169969,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170032,7 +170044,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170107,7 +170119,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170182,7 +170194,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170257,7 +170269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170332,7 +170344,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170407,7 +170419,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170482,7 +170494,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170636,7 +170648,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170790,7 +170802,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170865,7 +170877,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170940,7 +170952,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171015,7 +171027,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171090,7 +171102,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171165,7 +171177,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171240,7 +171252,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171315,7 +171327,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171390,7 +171402,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171465,7 +171477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171619,7 +171631,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171694,7 +171706,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171769,7 +171781,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171844,7 +171856,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171919,7 +171931,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171994,7 +172006,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172069,7 +172081,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172144,7 +172156,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172219,7 +172231,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172294,7 +172306,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172369,7 +172381,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172523,7 +172535,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172598,7 +172610,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172673,7 +172685,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172827,7 +172839,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172902,7 +172914,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172977,7 +172989,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173052,7 +173064,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173127,7 +173139,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173439,7 +173451,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179162,7 +179174,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179952,7 +179964,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -207769,7 +207781,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -207778,7 +207790,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -207871,6 +207883,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:29:07.332Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:28:15.534Z"
     }
    ],
    "approvals": [
@@ -207931,6 +207947,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T22:28:15.534Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "59fab543d47e6678db17e83d0daaf8a77e594a95",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -208143,7 +208167,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208153,7 +208177,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-13T18:41:12.834Z",
-    "builtAt": "2026-11-17T22:28:27.285Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfbqn7f016rdh": "2026-11-13T18:42:36.411Z",
@@ -224181,7 +224205,7 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -224189,7 +224213,7 @@
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--lenny.",
@@ -224274,6 +224298,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:45:29.921Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:28:15.534Z"
     }
    ],
    "approvals": [],
@@ -224328,6 +224356,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T22:28:15.534Z",
+    "why": "pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).",
+    "head": "cdd9c788c14026ffce32b1e5780a11ca539e4a73",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -224449,7 +224485,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224459,7 +224495,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-14T04:20:23.886Z",
-    "builtAt": "2026-11-17T22:28:27.285Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfwdp4y04a733": "2026-11-14T04:20:23.888Z",
@@ -226050,7 +226086,7 @@
    "title": "Picker dialog plugin replaces all dropdowns",
    "category": "",
    "detail": "New removable plugin: replaces EVERY dropdown/select in the console and framework (native <select>, custom dropdowns, comboboxes) with a tap-to-open picker dialog. The field shows the current value; tapping opens a themed dialog listing the options (search box when many, grouped sections, icons/descriptions if available, multi-select with checkboxes where the select is multiple, keyboard and screen-reader accessible). Fully token-driven: register its own token family (dialog surface, backdrop, option row, selected, hover, focus, search, header, every state, light and dark) in the token registry; no literal colours/sizes (CI gate); every skin can style it and the skin upgrader adds defaults matching today's look. One shared component used everywhere; plugin off = original dropdowns come back. Works on desktop and phone (bottom sheet style on phone). Full API and voice control (open picker, choose option by name). Tests desktop and phone, help entry, Shipped features.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -226059,7 +226095,7 @@
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -226112,6 +226148,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:28:15.534Z"
     }
    ],
    "approvals": [
@@ -226172,6 +226212,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T22:28:15.534Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.",
+    "head": "2495e7c351502f3b4c2f2e8b751cbdce8a41f69d",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -226744,7 +226792,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -226754,7 +226802,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-14T18:13:15.368Z",
-    "builtAt": "2026-11-17T22:28:27.285Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mwgq79uk01ntsv": "2026-11-14T18:15:13.052Z",
@@ -244982,7 +245030,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245057,7 +245105,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245132,7 +245180,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245207,7 +245255,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245282,7 +245330,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245357,7 +245405,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245432,7 +245480,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245586,7 +245634,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245661,7 +245709,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291113,7 +291161,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291211,7 +291259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291221,6 +291269,65 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-17T22:27:03.346Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "move-everything-axhub-web-console",
+   "title": "Move everything from axHub web into the console",
+   "category": "",
+   "detail": "Bring every axHub web page and option into the Dev Console as console screens/plugins: approvals (incl. log, passes, veto/countdown), users, account, apps/connectors and services, handoff, auth admin, and their settings. Same API reach (REST, MCP, CLI, voice). The console becomes the only UI; axHub stays as the backend/MCP hub only. Then retire the axHub web UI. Works together with Phone Connect (replaces the AmberX phone app) and remove-amberx-app-code-once-phone. Token-driven, console only. Plan in Plan Studio first.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "move-everything-axhub-web-console",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T22:28:32.914Z",
+   "updatedAt": "2026-11-17T22:28:32.914Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I really need to get this axHub and AmberX over the console. I really need that done. With the phone app.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 983
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Fable",
+    "status": "pending",
+    "estimate": "",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-17T22:28:32.914Z",
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {}

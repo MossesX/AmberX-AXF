@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:29:39.696Z",
+ "updatedAt": "2026-11-17T22:29:48.982Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101729,7 +101729,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -101738,7 +101738,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -101843,6 +101843,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:22:24.004Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:28:15.534Z"
     }
    ],
    "approvals": [
@@ -131172,7 +131176,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131181,7 +131185,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131274,6 +131278,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:29:07.332Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:28:15.534Z"
     }
    ],
    "approvals": [
@@ -142828,7 +142836,7 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -142836,7 +142844,7 @@
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--lenny.",
@@ -142921,6 +142929,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:45:29.921Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:28:15.534Z"
     }
    ],
    "approvals": [],
@@ -144795,7 +144807,7 @@
    "title": "Picker dialog plugin replaces all dropdowns",
    "category": "",
    "detail": "New removable plugin: replaces EVERY dropdown/select in the console and framework (native <select>, custom dropdowns, comboboxes) with a tap-to-open picker dialog. The field shows the current value; tapping opens a themed dialog listing the options (search box when many, grouped sections, icons/descriptions if available, multi-select with checkboxes where the select is multiple, keyboard and screen-reader accessible). Fully token-driven: register its own token family (dialog surface, backdrop, option row, selected, hover, focus, search, header, every state, light and dark) in the token registry; no literal colours/sizes (CI gate); every skin can style it and the skin upgrader adds defaults matching today's look. One shared component used everywhere; plugin off = original dropdowns come back. Works on desktop and phone (bottom sheet style on phone). Full API and voice control (open picker, choose option by name). Tests desktop and phone, help entry, Shipped features.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -144804,7 +144816,7 @@
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -144857,6 +144869,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T22:28:15.534Z"
     }
    ],
    "approvals": [
@@ -190447,6 +190463,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "We need it to split evenly. One and one and one and one. Every other one. The same amount running on each account.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "move-everything-axhub-web-console",
+   "title": "Move everything from axHub web into the console",
+   "category": "",
+   "detail": "Bring every axHub web page and option into the Dev Console as console screens/plugins: approvals (incl. log, passes, veto/countdown), users, account, apps/connectors and services, handoff, auth admin, and their settings. Same API reach (REST, MCP, CLI, voice). The console becomes the only UI; axHub stays as the backend/MCP hub only. Then retire the axHub web UI. Works together with Phone Connect (replaces the AmberX phone app) and remove-amberx-app-code-once-phone. Token-driven, console only. Plan in Plan Studio first.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "move-everything-axhub-web-console",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T22:28:32.914Z",
+   "updatedAt": "2026-11-17T22:28:32.914Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I really need to get this axHub and AmberX over the console. I really need that done. With the phone app.",
     "at": "",
     "source": "",
     "session": "",

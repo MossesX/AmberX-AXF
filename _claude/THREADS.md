@@ -831,13 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:26 UTC · `fix-banner-settings-interface-tab` s1 done, → running (all) · orchestrator
-- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
-- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
-- 2026-11-17 21:27 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
 - 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` s12 done (all) · orchestrator
 - 2026-11-17 21:28 UTC · `fix-banner-settings-interface-tab` s2 done (all) · orchestrator
 - 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` → running, note (all) · pipeline
@@ -1231,6 +1224,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
 - 2026-11-17 22:29 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
 - 2026-11-17 22:29 UTC · `banner-widget-shapes-plus-change-icon` s12 done (all) · foreign-write
+- 2026-11-17 22:28 UTC · `settings-fix-part-2-blank-toolbars` note (all) · orchestrator
+- 2026-11-17 22:28 UTC · `dispatcher-split-builds-evenly-across` note (all) · pending
+- 2026-11-17 22:28 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · pipeline
+- 2026-11-17 22:28 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
+- 2026-11-17 22:28 UTC · `group-chat-audio-hear-agents-talk-while` → fixing, note (all) · pipeline
+- 2026-11-17 22:28 UTC · `picker-dialog-plugin-replaces-all` → fixing, note (all) · pipeline
+- 2026-11-17 22:28 UTC · `move-everything-axhub-web-console` added (0 steps) (all) · pending
 
 ## Token passes (log)
 
