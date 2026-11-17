@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7164,
- "updatedAt": "2026-11-17T00:24:31.629Z",
+ "rev": 7165,
+ "updatedAt": "2026-11-17T00:24:48.982Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259988,7 +259988,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:05:48.290Z",
-   "updatedAt": "2026-11-17T00:24:01.055Z",
+   "updatedAt": "2026-11-17T00:24:40.320Z",
    "builtAt": "",
    "notes": [
     {
@@ -260006,6 +260006,10 @@
     {
      "text": "Claude account: hulu0241 (axf-gate-auto-lander-tab-and-controls--paulie, shared account login)",
      "at": "2026-11-17T00:14:26.132Z"
+    },
+    {
+     "text": "Headless run axf-gate-auto-lander-tab-and-controls--paulie: brief only · start 18.5K tokens ($0.13) · cost $3.59 · 36 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:24:40.320Z"
     }
    ],
    "approvals": [],
@@ -260515,7 +260519,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
