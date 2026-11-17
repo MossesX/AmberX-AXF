@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:28 UTC · `land-project-duplicate-boilerplate` → landing, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `land-drive-live-console-first-resolve` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `land-rename-long-builds-resolve-clash` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `land-overlay-preview-ui-review-resolve` → complete, note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:56 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-17 22:57 UTC · `rebuild-fresh-main-phone-connect-small` → complete, note (all) · foreign-write
 - 2026-11-17 22:57 UTC · `flagship-professional-skin-covering-2` s18 done (all) · orchestrator
+- 2026-11-17 22:58 UTC · `flagship-professional-skin-covering-2` s18 done (all) · foreign-write
 
 ## Token passes (log)
 

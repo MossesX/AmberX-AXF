@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8302,
- "updatedAt": "2026-11-17T22:58:07.170Z",
+ "rev": 8303,
+ "updatedAt": "2026-11-17T22:58:28.096Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -290538,13 +290538,13 @@
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T21:58:22.524Z",
     "runs": 2,
-    "crashes": 2,
+    "crashes": 3,
     "lastRun": {
-     "at": "2026-11-17T22:44:09.502Z",
+     "at": "2026-11-17T22:54:14.803Z",
      "exit": 129,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 19,
+     "stepsLeft": 12,
      "account": "hulu0241",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "phase": "Phase 1"
@@ -290557,7 +290557,7 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
@@ -290597,6 +290597,20 @@
      "notified": "2026-11-17T22:44:32.474Z",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3)."
+    },
+    {
+     "at": "2026-11-17T22:54:14.803Z",
+     "buildId": "flagship-professional-skin-covering-2",
+     "phase": "Phase 1",
+     "step": "s17",
+     "cause": "exit-failed",
+     "exit": 129,
+     "action": "retry",
+     "attempt": 1,
+     "account": "hulu0241",
+     "notified": "2026-11-17T22:54:18.677Z",
+     "session": "axf-flagship-professional-skin-covering-2--earl",
+     "note": "session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -291058,7 +291072,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T22:57:18.629Z"
+     "updatedAt": "2026-11-17T22:58:21.220Z"
     },
     {
      "id": "s19",
@@ -291322,7 +291336,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
