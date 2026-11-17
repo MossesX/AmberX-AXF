@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8006,
- "updatedAt": "2026-11-17T21:28:25.387Z",
+ "rev": 8007,
+ "updatedAt": "2026-11-17T21:28:43.551Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -281986,7 +281986,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:22:59.192Z",
+   "updatedAt": "2026-11-17T21:28:41.109Z",
    "builtAt": "",
    "notes": [
     {
@@ -282004,6 +282004,10 @@
     {
      "text": "Claude account: hulu0241 (axf-icon-picker-every-banner-settings-widget--joey, shared account login)",
      "at": "2026-11-17T21:22:53.003Z"
+    },
+    {
+     "text": "Also fix (Brett): switching skins doesn't change the banner widgets. Find why (hard-coded styles, missing tokens, or per-widget overrides pinning them) and make every banner widget follow the active skin's tokens live, unless Brett set an override on that widget.",
+     "at": "2026-11-17T21:28:41.109Z"
     }
    ],
    "approvals": [],
@@ -282370,7 +282374,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
