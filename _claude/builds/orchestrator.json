@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:36:39.525Z",
+ "updatedAt": "2026-11-17T22:36:56.299Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194818,9 +194818,18 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:35:36.950Z",
-   "updatedAt": "2026-11-17T22:35:36.950Z",
+   "updatedAt": "2026-11-17T22:36:23.634Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: UI Review must NEVER block landing at all, posted or not. Auto-landing means no human step: land as soon as CI is green; UI Review picks happen after, as a follow-up that swaps the chosen asset in. Remove the UI Review hold from the lander entirely.",
+     "at": "2026-11-17T22:36:08.563Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:36:23.634Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

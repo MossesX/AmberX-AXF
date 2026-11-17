@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8224,
- "updatedAt": "2026-11-17T22:36:39.525Z",
+ "rev": 8225,
+ "updatedAt": "2026-11-17T22:36:56.299Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -296836,9 +296836,18 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:35:36.950Z",
-   "updatedAt": "2026-11-17T22:35:36.950Z",
+   "updatedAt": "2026-11-17T22:36:23.634Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: UI Review must NEVER block landing at all, posted or not. Auto-landing means no human step: land as soon as CI is green; UI Review picks happen after, as a follow-up that swaps the chosen asset in. Remove the UI Review hold from the lander entirely.",
+     "at": "2026-11-17T22:36:08.563Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:36:23.634Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -296862,7 +296871,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
