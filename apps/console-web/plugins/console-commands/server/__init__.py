@@ -603,6 +603,8 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
         return control_target(command, grants, by, audience)
     if command.get("target") == "console.pluginsettings":
         return plugin_settings_target(command, grants, by, audience)
+    if command.get("target") == "console.toolbars":
+        return toolbars_target(command, grants, by, audience)
     if command.get("target") == "console.widgeticons":
         return widget_icons_target(command, grants, by, audience)
     command = focus_rewrite(command, audience)
@@ -831,6 +833,53 @@ def plugin_settings_target(command: dict[str, Any], grants: list[str], by: str, 
     if not r.get("ok"):
         out.update({k: r[k] for k in ("code", "message", "openUrl") if k in r})
     _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.pluginsettings", "path": path, "action": command.get("action") or op, "ok": out["ok"],
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
+    return out
+
+
+def toolbars_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+    """control@1 `console.toolbars` (core/engines/control-rules.mjs; page-toolbar@1): the page toolbars the open console
+    shows. list = the live toolbar targets (select.view narrows), get = one toolbar's state (path = its settings id),
+    act press = one button (input.button, input.value, confirm), act open = bring it on screen. All through the
+    console-control guards like console.control, so REST, MCP, the CLI and voice take one path."""
+    import console_control as cc  # the console server's console-control half
+    import console_control_api as api
+    op, path = str(command.get("op") or ""), str(command.get("path") or "")
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+    sel = command.get("select") if isinstance(command.get("select"), dict) else {}
+    to = str(inp.get("to") or "recent")
+    try:
+        if op == "list":
+            view = str(sel.get("view") or "")
+            r = api.targets(f"view:{view}" if view else "", [cc.TOOLBAR_KIND], "console", by or "control", audience, set(grants))
+            lim = int(sel.get("limit") or 0)
+            if r.get("ok") and lim > 0 and isinstance(r.get("targets"), list):
+                r["targets"] = r["targets"][:lim]
+        elif op == "get":
+            r = api.command({"verb": "state", "address": cc.toolbar_address(path), "to": to}, by or "control", audience, set(grants))
+        elif op == "act":
+            action = str(command.get("action") or "")
+            if action == "press":
+                body: dict[str, Any] = {"verb": "press", "address": cc.toolbar_button_address(path, str(inp.get("button") or ""))}
+                if inp.get("value") is not None:
+                    body["value"] = inp["value"]
+                if command.get("confirm"):
+                    body["confirm"] = True
+            elif action == "open":
+                body = {"verb": "open", "address": cc.toolbar_address(path)}
+            else:
+                raise cc.ControlError("invalid", "console.toolbars act takes press or open")
+            if inp.get("reason") or command.get("reason"):
+                body["reason"] = inp.get("reason") or command.get("reason")
+            r = api.command({**body, "to": to}, by or "control", audience, set(grants))
+        else:
+            raise cc.ControlError("invalid", "console.toolbars takes list, get or act")
+    except cc.ControlError as e:
+        r = e.envelope()
+    out = {"$axf": "control@1", "ok": bool(r.get("ok")), "target": "console.toolbars", "op": op, **({"path": path} if path else {}), "data": r}
+    if not r.get("ok"):
+        out.update({k: r[k] for k in ("code", "message", "openUrl") if k in r})
+    _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.toolbars", "path": path, "action": command.get("action") or op, "ok": out["ok"],
                         "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
     return out
 

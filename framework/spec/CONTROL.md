@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` · `console.pluginsettings` · `console.widgeticons` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` · `console.pluginsettings` · `console.toolbars` · `console.widgeticons` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -79,6 +79,7 @@ plugin.enable / plugin.disable write). A plan's `links[]` entry (or any item) ma
 path = the plugin (id, folder or name); `get` its Settings → Plugins sub-tab, the gear on its screen (`view:<screen>/button:settings-gear`),
 on/off and its settings (= `GET /api/console-control/plugins/<id>/settings`); `act open` (navigate; = the gear, console action
 `plugin.settings.open:<plugin>`), `act set {key, value}`, `act enable` / `disable` (write).
+`console.toolbars` (appended Nov 17 2026, build `rebuild-every-toolbar-page-specific`) is every page toolbar the open console shows (page-toolbar@1), by settings id (`gate.auto-lander`). `list` = the live toolbars (select.view narrows), `get` = one toolbar's look and buttons (enabled, visible, pressed, badge, action, inMore), `act press` {button, value} runs one button through the same engine the click uses (a destructive one needs a confirm token), `act open` brings it on screen. The same as `GET /api/console-control/toolbars[/<id>]`, `POST …/toolbars/<id>/press`, MCP `console_control_toolbar`, `axf console toolbar list|get|press` and voice "press <button> on the <x> toolbar".
 A console inside a host says so (Nov 3 2026, build `molly-console-commands`): `app: molly/console-web`, `host: molly`, and `front` (its page is visible
 and the host shows its frame, embed@1 `shown`); before it runs a command while hidden it asks the host to bring it forward (embed@1 `show`), and
 Molly with xLayout opens the Console frame hidden at start (`warm`), so a command while Molly is open always lands in Molly.

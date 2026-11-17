@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { PageToolbar, Button, Checkbox, Chip, Icon, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
@@ -281,6 +281,7 @@ export function ShippedFeaturesPage() {
         <Segmented size="sm" label="View by" value={view.by} onChange={(by) => set({ by })} options={L.GROUPINGS.map((g) => ({ value: g, label: L.GROUPING_LABEL[g] }))} />
         <TextField label="Search" type="search" placeholder="Search names, prompts, PR #, builds…" value={view.search} onChange={(search) => set({ search })} />
       </div>
+      <PageToolbar view="shipped-features" />
       <Filters view={view} set={set} />
       {m.empty ? <EmptyState icon="clock">Building the ledger from history (builds journal, merged PRs, early commits)… this takes a minute the first time.</EmptyState> : (
         <DataGrid<L.Feature>

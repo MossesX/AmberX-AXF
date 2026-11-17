@@ -1,0 +1,58 @@
+{
+  "assetType": "dialog",
+  "owner": "orchestrator-demo",
+  "options": [
+    {
+      "id": "spotlight",
+      "label": "Spotlight modal",
+      "notes": "Centered modal with an accent bar header and a blurred backdrop: the demo feels like a moment, the grid behind is out of focus.",
+      "shots": [
+        "_claude/builds/reports/guided-live-demo-test-watch-orchestrator/shots/opt-spotlight--start-overlay-desktop.png",
+        "_claude/builds/reports/guided-live-demo-test-watch-orchestrator/shots/opt-spotlight--start-overlay-phone.png"
+      ],
+      "data": {
+        "variant": "modal",
+        "width": 560,
+        "backdrop": "blur",
+        "animation": "scale",
+        "header": "accent-bar",
+        "closeOnBackdrop": false
+      }
+    },
+    {
+      "id": "sheet",
+      "label": "Bottom sheet",
+      "notes": "Rises from the bottom with a filled header: thumb-reachable Continue / Pause on the phone, the grid stays visible above it.",
+      "shots": [
+        "_claude/builds/reports/guided-live-demo-test-watch-orchestrator/shots/opt-sheet--start-overlay-desktop.png",
+        "_claude/builds/reports/guided-live-demo-test-watch-orchestrator/shots/opt-sheet--start-overlay-phone.png"
+      ],
+      "data": {
+        "variant": "sheet",
+        "width": 680,
+        "backdrop": "dim",
+        "animation": "slide",
+        "header": "filled",
+        "closeOnBackdrop": false
+      }
+    },
+    {
+      "id": "compact",
+      "label": "Compact card",
+      "notes": "A narrow plain card: least in the way, the act list wraps more.",
+      "shots": [
+        "_claude/builds/reports/guided-live-demo-test-watch-orchestrator/shots/opt-compact--start-overlay-desktop.png",
+        "_claude/builds/reports/guided-live-demo-test-watch-orchestrator/shots/opt-compact--start-overlay-phone.png"
+      ],
+      "data": {
+        "variant": "modal",
+        "width": 440,
+        "backdrop": "dim",
+        "animation": "fade",
+        "header": "plain",
+        "closeOnBackdrop": false
+      }
+    }
+  ],
+  "set": "orchestrator-demo-start-overlay"
+}

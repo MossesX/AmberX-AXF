@@ -19,6 +19,17 @@ import { Tap, WidgetView } from './Widgets';
 import { useWidgetIcon } from '../widgetIcons';
 import { bannerWidgetIconId, modeFromBannerShow, type ResolvedWidgetIcon } from '../../core/engines/widget-icons';
 import { controlSlug } from '../controlTargets';
+import { CHROME_INSTANCE_KEY } from '../../core/engines/chrome-settings-rules.mjs';
+
+/**
+ * Re-render when this banner's own settings change (chrome-settings@1 `axf.chrome.banner.app`, written by its Settings…
+ * dialog, Look / Behaviour / Interface tabs, chrome.set): the frame re-reads them at once, never after a reload.
+ */
+function useBannerOverrides(): void {
+  const rt = useRuntime();
+  const [, tick] = useState(0);
+  useEffect(() => rt.settings.onChange(CHROME_INSTANCE_KEY('banner', 'app'), () => tick((n) => n + 1)), [rt]);
+}
 
 function clockParts(tz?: string): ClockParts {
   const now = new Date();
@@ -151,6 +162,7 @@ const BANNER_APP_NAME = '{app}';
 export function Banner({ preview = false }: { preview?: boolean }) {
   const rt = useRuntime();
   useAxfState();
+  useBannerOverrides();
   const { data, placed } = rt.banner();
   const arrange = useArrange('banner', placed);
   const root = useRef<HTMLDivElement>(null);

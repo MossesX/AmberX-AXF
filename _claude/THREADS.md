@@ -34,6 +34,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Icon picker for every banner and settings widget (`icon-picker-every-banner-settings-widget`) | in-pr | `claude/icon-picker-every-banner-settings-widget` |  |  | 2026-11-17 |
+| Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause (`guided-live-demo-test-watch-orchestrator`): plugin Orchestrator demo, 21 acts on throwaway demo-* builds, ≥30 s gaps, Next/Pause, stop cleanup; dry run 21/21 in both modes; report `_claude/builds/reports/guided-live-demo-test-watch-orchestrator.md` | review | `claude/guided-live-demo-test-watch-orchestrator` | #816 | UI Review hold (item saved in the worktree: post with --console); Start refuses until `live-build-status-real-time-grids-15` lands; Fable follow-up: demo-build@1 should require the tag, not the demo- prefix | 2026-11-17 |
+| Rebuild every toolbar with page-specific buttons (Fable) (`rebuild-every-toolbar-page-specific`) | in-progress | `claude/rebuild-every-toolbar-page-specific` |  | s27: option pictures + UI Review submit (headless capture needs an axHub session), then s28 PR | 2026-11-17 |
+| Fix: banner settings Interface tab changes the banner, not the settings window (`fix-banner-settings-interface-tab`, Opus; Brett Nov 17: "why does the settings interface tab of the banner change just the interface of the settings itself? what's the point of that") | review | `claude/fix-banner-settings-interface-tab` |  | s13: PR into the merge queue; UI Review r-20261117-c12zx01 (3 Interface tab layouts) waits on Brett | 2026-11-17 |
 | Server watchdog: the orchestrator auto-recovers stuck or killed builds (`server-watchdog-orchestrator-auto-recovers-stuck`, Fable → Opus; Brett Nov 13: "Never wait for Brett to notice."): run ends recorded on the build, `agent-slots alive`, `watchdog.mjs` (cron `axf-watchdog`) resets / requeues / retries (other account on a limit, cap → Pending + banner), fills idle slots, phone FYI per fix; Watchdog tab + settings, systems check items, REST / MCP / `axf watchdog` / voice / deep link | in-pr | `claude/server-watchdog-orchestrator-auto-recovers-stuck` | (see build) | UI Review: pick the Watchdog layout; merge queue; the cron goes live with the next console deploy. Report `_claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md` | 2026-11-17 |
 | Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control (`fable-rebuild-plan-studio-cleared-out`): new plugin Plan Studio 2.0 (`plan-studio-2`) beside the untouched original, starts empty; layouts nav menu / tabs / IDE dockable panes (dock-layout@1); every action via REST, MCP, CLI, voice | in-pr | `claude/fable-rebuild-plan-studio-cleared-out` | (VPS opens it) | Live shots of each layout to UI Review → Screenshots; Brett decides whether the original Plan Studio retires. Report `_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md` | 2026-11-16 |
 | Console app part 2: floating toolbar and approvals bar (`console-app-part-2-native-floating`, Fable s1 + Opus; Brett Nov 13: "split the console wrapper so it runs on four slots at the same time"): overlay-toolbar-v2 port (per-item countdowns, toolbar label, seen items, `overlayItems`), "Display over other apps" flow with explanation and return check, safe areas on every edge (`SafeArea`), help, main merged, four-part split map | PR open (s1–s7 done) | `claude/console-app-part-2-native-floating` | (see build) | New APK, then phone shots. Parts 3 (#791) and 4 (#792) land on their own. Report `_claude/builds/reports/console-app-part-2-native-floating.md` | 2026-11-17 |
@@ -830,406 +833,406 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:50 UTC · `land-project-duplicate-boilerplate` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `console-look-becomes-default-axhub-skin` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `merge-main-land-server-gate-one-session` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `merge-main-land-console-app-part-2` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `pending-tab-one-collapsed-row-per-2` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `shipped-features-organized-sortable` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `vps-sends-shipped-features-every-merge` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `phone-connect-small-android-companion` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `shipped-features-open-button-views-each` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `fix-console-deep-links-open-page-lands` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `orchestrator-on-hold-status-and-tab` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `axhub-veto-countdown-setting-read-only` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `settings-interface-gear-every-plugin` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `hotfix-orchestrator-grid-columns-don-t` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `reset-all-button-every-asset-override` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `alert-every-time-build-falls-back-to` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `auto-lander-grid-one-row-per-build` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `every-settings-interface-gets` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `to-do-manager-fully-voice-mcp-controlled` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `own-look-per-grid-and-tab-group` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `maintenance-plugin-clear-docker-cache` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` note (all) · watchdog
-- 2026-11-17 19:51 UTC · `live-build-status-real-time-grids-15` s1 done, → running (all) · orchestrator
-- 2026-11-17 19:51 UTC · `rebuild-every-toolbar-page-specific` s3 done (all) · orchestrator
-- 2026-11-17 19:51 UTC · `terminal-main-tab-streaming-console-s` s1 done, → running (all) · orchestrator
-- 2026-11-17 19:54 UTC · `terminal-main-tab-streaming-console-s` s2 done (all) · orchestrator
-- 2026-11-17 19:55 UTC · `terminal-main-tab-streaming-console-s` s3 done (all) · orchestrator
-- 2026-11-17 19:55 UTC · `separate-settings-per-plugin-reset` s4 done, → running (all) · orchestrator
-- 2026-11-17 19:55 UTC · `guided-live-demo-test-watch-orchestrator` s2 done (all) · orchestrator
-- 2026-11-17 19:56 UTC · `terminal-main-tab-streaming-console-s` s3 done (all) · foreign-write
-- 2026-11-17 19:56 UTC · `collapse-auto-collapse-buttons-every-tab` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `fix-merge-conflicts-pr-557-professional` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `fix-step-splitter-claude-exit-1-input` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `focus-every-screen-console-open-console` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `github-client-plugin-see-control-every` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `merges-are-only-merged-once-github` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `new-project-wizard-name-linked-repo` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `orchestrator-checks-shipped-features` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `plugin-review-map-what-each-plugin-does` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `professional-skins-rebuild-whole-app` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `server-every-failed-merge-alerts-brett` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `show-commits-behind-main-every-build` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `tap-to-confirm-follows-label-visibility` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `vps-badge-shows-shell-commands-work` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `full-voice-api-control-type-fields-press` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `chrome-settings-actually-apply-toolbars` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `vps-builds-get-console-token-ui-review` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `decision-dialog-ui-review-other` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `land-drive-live-console-first-resolve` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `land-rename-long-builds-resolve-clash` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `land-overlay-preview-ui-review-resolve` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `full-voice-control-merge-main-and-land` → archived, note (all) · watchdog
-- 2026-11-17 19:56 UTC · `separate-settings-per-plugin-reset` s4 done (all) · foreign-write
-- 2026-11-17 19:56 UTC · `guided-live-demo-test-watch-orchestrator` s2 done (all) · foreign-write
-- 2026-11-17 19:56 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `prompting-engine-control-panel-to-create` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `land-project-duplicate-boilerplate` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `land-overlay-preview-ui-review-resolve` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `console-look-becomes-default-axhub-skin` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `shipped-features-organized-sortable` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `vps-sends-shipped-features-every-merge` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `phone-connect-small-android-companion` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `shipped-features-open-button-views-each` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `fix-console-deep-links-open-page-lands` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `orchestrator-on-hold-status-and-tab` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `axhub-veto-countdown-setting-read-only` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `settings-interface-gear-every-plugin` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `alert-every-time-build-falls-back-to` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `auto-lander-grid-one-row-per-build` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `every-settings-interface-gets` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `own-look-per-grid-and-tab-group` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `maintenance-plugin-clear-docker-cache` note (all) · watchdog
-- 2026-11-17 19:57 UTC · `rebuild-every-toolbar-page-specific` s4 done (all) · orchestrator
-- 2026-11-17 19:57 UTC · `terminal-main-tab-streaming-console-s` s4 done (all) · orchestrator
-- 2026-11-17 19:58 UTC · `separate-settings-per-plugin-reset` s5 done (all) · orchestrator
-- 2026-11-17 19:59 UTC · `live-build-status-real-time-grids-15` s2 done (all) · orchestrator
-- 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` PR #814 (all) · builds-live
-- 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:00 UTC · `console-app-part-2-native-floating` PR #813, note (all) · reconciler
-- 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` PR #814, note (all) · reconciler
-- 2026-11-17 20:00 UTC · `terminal-main-tab-streaming-console-s` s5 done (all) · orchestrator
-- 2026-11-17 20:01 UTC · `terminal-main-tab-streaming-console-s` s5 done (all) · foreign-write
-- 2026-11-17 20:01 UTC · `terminal-main-tab-streaming-console-s` s6 done (all) · orchestrator
-- 2026-11-17 20:02 UTC · `live-build-status-real-time-grids-15` s3 done (all) · orchestrator
-- 2026-11-17 20:02 UTC · `separate-settings-per-plugin-reset` s6 done (all) · orchestrator
-- 2026-11-17 20:04 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:04 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:06 UTC · `separate-settings-per-plugin-reset` s7 done (all) · orchestrator
-- 2026-11-17 20:07 UTC · `live-build-status-real-time-grids-15` s4 done (all) · orchestrator
-- 2026-11-17 20:07 UTC · `separate-settings-per-plugin-reset` s8 done (all) · orchestrator
-- 2026-11-17 20:08 UTC · `live-build-status-real-time-grids-15` note (all) · orchestrator
-- 2026-11-17 20:08 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:08 UTC · `terminal-main-tab-streaming-console-s` s7 done (all) · orchestrator
-- 2026-11-17 20:08 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:08 UTC · `rebuild-every-toolbar-page-specific` s5 done (all) · orchestrator
-- 2026-11-17 20:10 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · pipeline
-- 2026-11-17 20:10 UTC · `terminal-main-tab-streaming-console-s` s8 done (all) · orchestrator
-- 2026-11-17 20:10 UTC · `live-build-status-real-time-grids-15` PR #815 (all) · builds-live
-- 2026-11-17 20:10 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
-- 2026-11-17 20:12 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · pipeline
-- 2026-11-17 20:12 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
-- 2026-11-17 20:12 UTC · `guided-live-demo-test-watch-orchestrator` s3 done (all) · orchestrator
-- 2026-11-17 20:12 UTC · `terminal-main-tab-streaming-console-s` s9 done (all) · orchestrator
-- 2026-11-17 20:12 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
-- 2026-11-17 20:13 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
-- 2026-11-17 20:14 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · pipeline
-- 2026-11-17 20:14 UTC · `guided-live-demo-test-watch-orchestrator` PR #816 (all) · builds-live
-- 2026-11-17 20:14 UTC · `rebuild-every-toolbar-page-specific` s6 done (all) · orchestrator
-- 2026-11-17 20:14 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-17 20:15 UTC · `separate-settings-per-plugin-reset` s9 done (all) · orchestrator
-- 2026-11-17 20:16 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · pipeline
-- 2026-11-17 20:16 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-17 20:16 UTC · `terminal-main-tab-streaming-console-s` s10 done (all) · orchestrator
-- 2026-11-17 20:16 UTC · `live-build-status-real-time-grids-15` → running, note (all) · pipeline
-- 2026-11-17 20:16 UTC · `live-build-status-real-time-grids-15` → running, note (all) · orchestrator
-- 2026-11-17 20:16 UTC · `live-build-status-real-time-grids-15` note (all) · orchestrator
-- 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
-- 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
-- 2026-11-17 20:18 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:18 UTC · `live-build-status-real-time-grids-15` s5 done (all) · orchestrator
-- 2026-11-17 20:18 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:18 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · pipeline
-- 2026-11-17 20:18 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
-- 2026-11-17 20:18 UTC · `guided-live-demo-test-watch-orchestrator` s4 done, → running (all) · orchestrator
-- 2026-11-17 20:19 UTC · `terminal-main-tab-streaming-console-s` s11 done (all) · orchestrator
-- 2026-11-17 20:20 UTC · `separate-settings-per-plugin-reset` s10 done (all) · orchestrator
-- 2026-11-17 20:20 UTC · `guided-live-demo-test-watch-orchestrator` s5 done (all) · orchestrator
-- 2026-11-17 20:21 UTC · `separate-settings-per-plugin-reset` s11 done (all) · orchestrator
-- 2026-11-17 20:21 UTC · `guided-live-demo-test-watch-orchestrator` s6 done (all) · orchestrator
-- 2026-11-17 20:22 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:22 UTC · `live-build-status-real-time-grids-15` s6 done (all) · orchestrator
-- 2026-11-17 20:22 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · pipeline
-- 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` s7 done (all) · orchestrator
-- 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-17 20:23 UTC · `guided-live-demo-test-watch-orchestrator` s8 done (all) · orchestrator
-- 2026-11-17 20:24 UTC · `guided-live-demo-test-watch-orchestrator` s8 done (all) · foreign-write
-- 2026-11-17 20:24 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · pipeline
-- 2026-11-17 20:24 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-17 20:25 UTC · `separate-settings-per-plugin-reset` s12 done (all) · orchestrator
-- 2026-11-17 20:25 UTC · `separate-settings-per-plugin-reset` s13 done (all) · orchestrator
-- 2026-11-17 20:25 UTC · `guided-live-demo-test-watch-orchestrator` s9 done (all) · orchestrator
-- 2026-11-17 20:26 UTC · `live-build-status-real-time-grids-15` s7 done (all) · orchestrator
-- 2026-11-17 20:26 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:26 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:26 UTC · `guided-live-demo-test-watch-orchestrator` s9 done, → running (all) · foreign-write
-- 2026-11-17 20:26 UTC · `context-menus-plugin-one-true-source` s9 done, → running (all) · orchestrator
-- 2026-11-17 20:26 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-17 20:27 UTC · `context-menus-plugin-one-true-source` → fixing, note (all) · pipeline
-- 2026-11-17 20:27 UTC · `separate-settings-per-plugin-reset` s14 done (all) · orchestrator
-- 2026-11-17 20:27 UTC · `live-build-status-real-time-grids-15` s8 done (all) · orchestrator
-- 2026-11-17 20:28 UTC · `guided-live-demo-test-watch-orchestrator` s10 done (all) · orchestrator
-- 2026-11-17 20:28 UTC · `guided-live-demo-test-watch-orchestrator` s11 done (all) · orchestrator
-- 2026-11-17 20:29 UTC · `live-build-status-real-time-grids-15` s9 done (all) · orchestrator
-- 2026-11-17 20:29 UTC · `guided-live-demo-test-watch-orchestrator` → pending (all) · Brett
-- 2026-11-17 20:29 UTC · `live-build-status-real-time-grids-15` → pending (all) · Brett
-- 2026-11-17 20:29 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · Brett
-- 2026-11-17 20:30 UTC · `rebuild-every-toolbar-page-specific` s7 done (all) · orchestrator
-- 2026-11-17 20:30 UTC · `separate-settings-per-plugin-reset` s15 done (all) · orchestrator
-- 2026-11-17 20:30 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:30 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:30 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
-- 2026-11-17 20:31 UTC · `rebuild-every-toolbar-page-specific` → pending (all) · Brett
-- 2026-11-17 20:32 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:32 UTC · `separate-settings-per-plugin-reset` s16 done (all) · orchestrator
-- 2026-11-17 20:32 UTC · `rebuild-every-toolbar-page-specific` → running (all) · Brett
-- 2026-11-17 20:33 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:33 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
-- 2026-11-17 20:34 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:34 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` → queued, note (all) · pipeline
-- 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` PR #817 (all) · builds-live
-- 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` → running, note (all) · pipeline
-- 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
-- 2026-11-17 20:35 UTC · `rebuild-every-toolbar-page-specific` note (all) · Brett
-- 2026-11-17 20:35 UTC · `guided-live-demo-test-watch-orchestrator` s12 done, → running (all) · orchestrator
-- 2026-11-17 20:37 UTC · `guided-live-demo-test-watch-orchestrator` s13 done (all) · orchestrator
-- 2026-11-17 20:37 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · Brett
-- 2026-11-17 20:37 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · Brett
-- 2026-11-17 20:37 UTC · `rebuild-fresh-main-phone-connect-small` → pending (all) · Brett
-- 2026-11-17 20:38 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · console
-- 2026-11-17 20:38 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:38 UTC · `guided-live-demo-test-watch-orchestrator` s14 done (all) · orchestrator
-- 2026-11-17 20:39 UTC · `guided-live-demo-test-watch-orchestrator` s15 done (all) · orchestrator
-- 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
-- 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 20:39 UTC · `toolbars-1-5-build-orchestrator-incl` added (0 steps) (all) · console
-- 2026-11-17 20:40 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 20:40 UTC · `toolbars-2-5-plan-studio-ui-review` added (0 steps) (all) · console
-- 2026-11-17 20:40 UTC · `rebuild-every-toolbar-page-specific` → queued, note (all) · pipeline
-- 2026-11-17 20:40 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 20:40 UTC · `toolbars-3-5-settings-appearance-systems` added (0 steps) (all) · console
-- 2026-11-17 20:40 UTC · `toolbars-4-5-chat-viewer-codebase` added (0 steps) (all) · console
-- 2026-11-17 20:40 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:40 UTC · `console-app-part-2-native-floating` merged, note (all) · reconciler
-- 2026-11-17 20:40 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
-- 2026-11-17 20:41 UTC · `toolbars-2-5-plan-studio-ui-review-2` added (0 steps) (all) · console
-- 2026-11-17 20:41 UTC · `toolbars-5-5-claude-accounts-glossary` added (0 steps) (all) · console
-- 2026-11-17 20:41 UTC · `toolbars-1-5-build-orchestrator-incl` → queued, note (all) · console
-- 2026-11-17 20:42 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · Brett
-- 2026-11-17 20:42 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · builds-live
-- 2026-11-17 20:42 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · orchestrator
-- 2026-11-17 20:42 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · builds-live
-- 2026-11-17 20:43 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · orchestrator
-- 2026-11-17 20:43 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · builds-live
-- 2026-11-17 20:44 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · orchestrator
-- 2026-11-17 20:44 UTC · `rebuild-every-toolbar-page-specific` → running, note (all) · pipeline
-- 2026-11-17 20:44 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
-- 2026-11-17 20:45 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 20:45 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · orchestrator
-- 2026-11-17 20:46 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · builds-live
-- 2026-11-17 20:46 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · orchestrator
-- 2026-11-17 20:46 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:47 UTC · `rebuild-every-toolbar-page-specific` → queued, note (all) · pipeline
-- 2026-11-17 20:47 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 20:47 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:47 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
-- 2026-11-17 20:47 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 20:48 UTC · `guided-live-demo-test-watch-orchestrator` s16 done (all) · orchestrator
-- 2026-11-17 20:48 UTC · `rebuild-every-toolbar-page-specific` s8 done (all) · orchestrator
-- 2026-11-17 20:49 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:50 UTC · `guided-live-demo-test-watch-orchestrator` s17 done (all) · orchestrator
-- 2026-11-17 20:51 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 20:51 UTC · `rebuild-fresh-main-phone-connect-small` s3 done, → running (all) · orchestrator
-- 2026-11-17 20:51 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 20:51 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:51 UTC · `guided-live-demo-test-watch-orchestrator` s18 done (all) · orchestrator
-- 2026-11-17 20:51 UTC · `separate-settings-per-plugin-reset` s17 done (all) · orchestrator
-- 2026-11-17 20:52 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
-- 2026-11-17 20:53 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:53 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:53 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:53 UTC · `rebuild-every-toolbar-page-specific` s9 done (all) · orchestrator
-- 2026-11-17 20:53 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-17 20:53 UTC · `rebuild-every-toolbar-page-specific` s9 done, → running (all) · foreign-write
-- 2026-11-17 20:54 UTC · `rebuild-every-toolbar-page-specific` s10 done (all) · orchestrator
-- 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` → fixing, note (all) · pipeline
-- 2026-11-17 20:54 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:54 UTC · `guided-live-demo-test-watch-orchestrator` s19 done (all) · orchestrator
-- 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` → pending, note (all) · pipeline
-- 2026-11-17 20:55 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 20:55 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 20:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 20:55 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` → running, note (all) · pipeline
-- 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
-- 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` branch claude/toolbars-1-5-build-orchestrator-incl (all) · pipeline
-- 2026-11-17 20:56 UTC · `guided-live-demo-test-watch-orchestrator` s20 done (all) · orchestrator
-- 2026-11-17 20:56 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
-- 2026-11-17 20:56 UTC · `toolbars-1-5-build-orchestrator-incl` → pending, note (all) · pipeline
-- 2026-11-17 20:57 UTC · `separate-settings-per-plugin-reset` s18 done, → landing (all) · orchestrator
-- 2026-11-17 20:57 UTC · `rebuild-every-toolbar-page-specific` s11 done (all) · orchestrator
-- 2026-11-17 20:57 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:57 UTC · `rebuild-every-toolbar-page-specific` s12 done (all) · orchestrator
-- 2026-11-17 20:57 UTC · `rebuild-every-toolbar-page-specific` s11 done, → running (all) · foreign-write
-- 2026-11-17 20:57 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
-- 2026-11-17 20:58 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:58 UTC · `rebuild-fresh-main-phone-connect-small` s4 done (all) · orchestrator
-- 2026-11-17 20:58 UTC · `terminal-main-tab-streaming-console-s` s12 done (all) · orchestrator
-- 2026-11-17 20:58 UTC · `rebuild-every-toolbar-page-specific` s13 done (all) · orchestrator
-- 2026-11-17 20:59 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 20:59 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 20:59 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:59 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:59 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
-- 2026-11-17 20:59 UTC · `rebuild-every-toolbar-page-specific` s14 done (all) · orchestrator
-- 2026-11-17 21:00 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:00 UTC · `terminal-main-tab-streaming-console-s` s13 done (all) · orchestrator
-- 2026-11-17 21:01 UTC · `rebuild-every-toolbar-page-specific` s15 done (all) · orchestrator
-- 2026-11-17 21:01 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 21:01 UTC · `terminal-main-tab-streaming-console-s` PR #819 (all) · builds-live
-- 2026-11-17 21:01 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:01 UTC · `terminal-main-tab-streaming-console-s` s14 done, → landing (all) · orchestrator
-- 2026-11-17 21:02 UTC · `rebuild-every-toolbar-page-specific` s16 done (all) · orchestrator
-- 2026-11-17 21:03 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 21:03 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:03 UTC · `rebuild-every-toolbar-page-specific` s17 done (all) · orchestrator
-- 2026-11-17 21:04 UTC · `rebuild-every-toolbar-page-specific` s18 done (all) · orchestrator
-- 2026-11-17 21:05 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 21:05 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:05 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:05 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 21:05 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 21:05 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 21:06 UTC · `rebuild-every-toolbar-page-specific` s19 done (all) · orchestrator
-- 2026-11-17 21:06 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-17 21:06 UTC · `rebuild-fresh-main-phone-connect-small` s5 done (all) · orchestrator
-- 2026-11-17 21:06 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 21:06 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · pipeline
-- 2026-11-17 21:07 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 21:07 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:07 UTC · `rebuild-every-toolbar-page-specific` s20 done (all) · orchestrator
-- 2026-11-17 21:07 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
-- 2026-11-17 21:08 UTC · `rebuild-every-toolbar-page-specific` s21 done (all) · orchestrator
-- 2026-11-17 21:09 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 21:09 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:09 UTC · `rebuild-every-toolbar-page-specific` s25 done (all) · orchestrator
-- 2026-11-17 21:10 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:10 UTC · `rebuild-fresh-main-hide-any-asset` → running, note (all) · Brett
-- 2026-11-17 21:10 UTC · `rebuild-every-toolbar-page-specific` s26 done (all) · orchestrator
-- 2026-11-17 21:10 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · reconciler
-- 2026-11-17 21:11 UTC · `rebuild-fresh-main-hide-any-asset` → queued, note (all) · watchdog
-- 2026-11-17 21:11 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 21:11 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:11 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 21:11 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
-- 2026-11-17 21:11 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 21:11 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 21:12 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 21:12 UTC · `rebuild-fresh-main-hide-any-asset` → running, note (all) · pipeline
-- 2026-11-17 21:12 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
-- 2026-11-17 21:13 UTC · `rebuild-fresh-main-phone-connect-small` s6 done, → running (all) · orchestrator
-- 2026-11-17 21:13 UTC · `guided-live-demo-test-watch-orchestrator` s21 done (all) · orchestrator
-- 2026-11-17 21:14 UTC · `guided-live-demo-test-watch-orchestrator` s21 done (all) · foreign-write
-- 2026-11-17 21:15 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 21:15 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:15 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-17 21:15 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
-- 2026-11-17 21:16 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
-- 2026-11-17 21:17 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 21:17 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:17 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 21:17 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 21:17 UTC · `rebuild-every-toolbar-page-specific` → running, note (all) · orchestrator
-- 2026-11-17 21:18 UTC · `rebuild-fresh-main-hide-any-asset` s6 done, → running (all) · orchestrator
-- 2026-11-17 21:18 UTC · `guided-live-demo-test-watch-orchestrator` s22 done (all) · orchestrator
-- 2026-11-17 21:19 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 21:19 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-17 21:19 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 21:19 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:19 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 21:19 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 21:19 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
-- 2026-11-17 21:19 UTC · `rebuild-fresh-main-phone-connect-small` s7 done (all) · orchestrator
-- 2026-11-17 21:20 UTC · `rebuild-fresh-main-hide-any-asset` s7 done (all) · orchestrator
-- 2026-11-17 21:20 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:20 UTC · `icon-picker-every-banner-settings-widget` added (0 steps) (all) · console
-- 2026-11-17 21:20 UTC · `rebuild-every-toolbar-page-specific` s27 done, s28 done, → landing, note (all) · reconciler
-- 2026-11-17 21:20 UTC · `icon-picker-every-banner-settings-widget` → queued, note (all) · console
-- 2026-11-17 21:21 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · builds-live
-- 2026-11-17 21:21 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 21:21 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-17 21:21 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 21:21 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
-- 2026-11-17 21:22 UTC · `rebuild-fresh-main-phone-connect-small` s8 done (all) · orchestrator
-- 2026-11-17 21:21 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 21:22 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
-- 2026-11-17 21:22 UTC · `rebuild-fresh-main-hide-any-asset` s8 done (all) · orchestrator
-- 2026-11-17 21:22 UTC · `rebuild-fresh-main-phone-connect-small` s8 done (all) · foreign-write
-- 2026-11-17 21:22 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
-- 2026-11-17 21:23 UTC · `rebuild-fresh-main-phone-connect-small` s9 done (all) · orchestrator
-- 2026-11-17 21:22 UTC · `icon-picker-every-banner-settings-widget` → running, note (all) · pipeline
-- 2026-11-17 21:23 UTC · `icon-picker-every-banner-settings-widget` branch claude/icon-picker-every-banner-settings-widget (all) · pipeline
-- 2026-11-17 21:23 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 21:23 UTC · `fix-banner-settings-interface-tab` added (0 steps) (all) · console
-- 2026-11-17 21:23 UTC · `fix-banner-settings-interface-tab` → queued, note (all) · console
-- 2026-11-17 21:24 UTC · `rebuild-fresh-main-hide-any-asset` s9 done (all) · orchestrator
-- 2026-11-17 21:24 UTC · `rebuild-fresh-main-phone-connect-small` s10 done (all) · orchestrator
-- 2026-11-17 21:24 UTC · `fix-banner-settings-interface-tab` note (all) · orchestrator
-- 2026-11-17 21:24 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:25 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 21:25 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` → running, note (all) · pipeline
-- 2026-11-17 21:25 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` branch claude/fix-banner-settings-interface-tab (all) · pipeline
-- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` note (all) · orchestrator
-- 2026-11-17 21:25 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 21:26 UTC · `rebuild-fresh-main-phone-connect-small` s11 done (all) · orchestrator
-- 2026-11-17 21:26 UTC · `fix-banner-settings-interface-tab` → running, note (all) · pipeline
-- 2026-11-17 21:26 UTC · `land-pr-730-reset-all-button-far-right` added (0 steps) (all) · console
-- 2026-11-17 21:26 UTC · `land-pr-730-reset-all-button-far-right` → queued, note (all) · console
-- 2026-11-17 21:26 UTC · `rebuild-fresh-main-hide-any-asset` s10 done (all) · orchestrator
-- 2026-11-17 21:26 UTC · `fix-banner-settings-interface-tab` s1 done, → running (all) · orchestrator
-- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
-- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
-- 2026-11-17 21:27 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
-- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` s12 done (all) · orchestrator
-- 2026-11-17 21:28 UTC · `fix-banner-settings-interface-tab` s2 done (all) · orchestrator
-- 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` → running, note (all) · pipeline
-- 2026-11-17 21:28 UTC · `land-pr-730-reset-all-button-far-right` branch claude/land-pr-730-reset-all-button-far-right (all) · pipeline
-- 2026-11-17 21:28 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
-- 2026-11-17 21:28 UTC · `icon-picker-every-banner-settings-widget` note (all) · mcp
-- 2026-11-17 21:29 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
-- 2026-11-17 21:29 UTC · `fix-banner-settings-interface-tab` s3 done (all) · orchestrator
-- 2026-11-17 21:29 UTC · `icon-picker-every-banner-settings-widget` note (all) · mcp
-- 2026-11-17 21:29 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-17 21:29 UTC · `land-pr-730-reset-all-button-far-right` s1 done (all) · orchestrator
-- 2026-11-17 21:29 UTC · `rebuild-fresh-main-hide-any-asset` s11 done (all) · orchestrator
+- 2026-11-17 21:40 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:40 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:42 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · watchdog
+- 2026-11-17 21:42 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:42 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
+- 2026-11-17 21:42 UTC · `rebuild-fresh-main-phone-connect-small` s18 done (all) · orchestrator
+- 2026-11-17 21:42 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:43 UTC · `rebuild-fresh-main-phone-connect-small` s19 done (all) · orchestrator
+- 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` → running, note (all) · pipeline
+- 2026-11-17 21:43 UTC · `rebuild-fresh-main-phone-connect-small` s19 done (all) · foreign-write
+- 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` branch claude/fix-refreshing-console-jumps-back (all) · pipeline
+- 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-17 21:44 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:44 UTC · `icon-picker-every-banner-settings-widget` PR #820, note (all) · reconciler
+- 2026-11-17 21:44 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:44 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:44 UTC · `icon-picker-every-banner-settings-widget` → queued, note (all) · pipeline
+- 2026-11-17 21:44 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
+- 2026-11-17 21:45 UTC · `rebuild-fresh-main-phone-connect-small` s20 done (all) · orchestrator
+- 2026-11-17 21:45 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:45 UTC · `fix-banner-settings-interface-tab` s11 done (all) · orchestrator
+- 2026-11-17 21:45 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 21:45 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 21:46 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:46 UTC · `flagship-professional-skin-covering-2` note (all) · mcp
+- 2026-11-17 21:46 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:46 UTC · `flagship-professional-skin-covering-2` note (all) · mcp
+- 2026-11-17 21:46 UTC · `flagship-professional-skin-covering-2` → queued (all) · mcp
+- 2026-11-17 21:46 UTC · `fix-refreshing-console-jumps-back` s1 done (all) · orchestrator
+- 2026-11-17 21:47 UTC · `reset-all-button-every-asset-override` note (all) · land-pr-730-reset-all-button-far-right
+- 2026-11-17 21:47 UTC · `fix-refreshing-console-jumps-back` s2 done (all) · orchestrator
+- 2026-11-17 21:47 UTC · `flagship-professional-skin-covering-2` note (all) · mcp
+- 2026-11-17 21:48 UTC · `rebuild-fresh-main-phone-connect-small` s21 done (all) · orchestrator
+- 2026-11-17 21:49 UTC · `rebuild-fresh-main-phone-connect-small` s22 done (all) · orchestrator
+- 2026-11-17 21:49 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:50 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:50 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 21:50 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 21:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:50 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
+- 2026-11-17 21:50 UTC · `icon-picker-every-banner-settings-widget` → queued, note (all) · pipeline
+- 2026-11-17 21:50 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
+- 2026-11-17 21:51 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
+- 2026-11-17 21:51 UTC · `rebuild-fresh-main-phone-connect-small` s23 done (all) · orchestrator
+- 2026-11-17 21:51 UTC · `land-pr-730-reset-all-button-far-right` note (all) · pipeline
+- 2026-11-17 21:52 UTC · `fix-refreshing-console-jumps-back` s3 done (all) · orchestrator
+- 2026-11-17 21:52 UTC · `land-pr-730-reset-all-button-far-right` note (all) · pipeline
+- 2026-11-17 21:52 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:52 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
+- 2026-11-17 21:52 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:52 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:53 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:53 UTC · `fix-refreshing-console-jumps-back` s4 done (all) · orchestrator
+- 2026-11-17 21:54 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` → running, note (all) · pipeline
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` branch claude/flagship-professional-skin-covering-2 (all) · pipeline
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
+- 2026-11-17 21:55 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 21:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 21:55 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
+- 2026-11-17 21:56 UTC · `fix-refreshing-console-jumps-back` s5 done (all) · orchestrator
+- 2026-11-17 21:57 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
+- 2026-11-17 21:58 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:58 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:58 UTC · `flagship-professional-skin-covering-2` → running, note (all) · pipeline
+- 2026-11-17 21:58 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-17 21:58 UTC · `remove-amberx-app-code-once-phone` added (7 steps) (all) · orchestrator
+- 2026-11-17 21:58 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 21:58 UTC · `rebuild-fresh-main-phone-connect-small` s24 done (all) · orchestrator
+- 2026-11-17 21:59 UTC · `fix-refreshing-console-jumps-back` s6 done (all) · orchestrator
+- 2026-11-17 21:59 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:59 UTC · `rebuild-fresh-main-phone-connect-small` s25 done (all) · orchestrator
+- 2026-11-17 22:00 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 22:00 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 22:00 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 22:00 UTC · `guided-live-demo-test-watch-orchestrator` s23 done (all) · orchestrator
+- 2026-11-17 22:00 UTC · `fix-refreshing-console-jumps-back` s7 done (all) · orchestrator
+- 2026-11-17 22:01 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:01 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 22:01 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 22:02 UTC · `fix-refreshing-console-jumps-back` s8 done (all) · orchestrator
+- 2026-11-17 21:38 UTC · `rebuild-fresh-main-hide-any-asset` s14 done (all) · orchestrator
+- 2026-11-17 22:03 UTC · `flagship-professional-skin-covering-2` s1 done (all) · orchestrator
+- 2026-11-17 22:03 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-17 22:03 UTC · `rebuild-fresh-main-hide-any-asset` s15 done (all) · orchestrator
+- 2026-11-17 22:03 UTC · `fix-banner-settings-interface-tab` s12 done (all) · orchestrator
+- 2026-11-17 22:04 UTC · `guided-live-demo-test-watch-orchestrator` s24 done, → landing (all) · orchestrator
+- 2026-11-17 22:04 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
+- 2026-11-17 22:05 UTC · `guided-live-demo-test-watch-orchestrator` s24 done, → running (all) · foreign-write
+- 2026-11-16 23:29 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
+- 2026-11-17 22:06 UTC · `banner-widget-shapes-plus-change-icon` PR #821 (all) · builds-live
+- 2026-11-17 22:06 UTC · `flagship-professional-skin-covering-2` s2 done (all) · orchestrator
+- 2026-11-17 22:05 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 22:05 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 22:05 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 22:05 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · pipeline
+- 2026-11-17 22:05 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
+- 2026-11-17 22:05 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
+- 2026-11-17 22:05 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · pipeline
+- 2026-11-17 22:07 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · pipeline
+- 2026-11-17 22:07 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
+- 2026-11-17 22:07 UTC · `flagship-professional-skin-covering-2` s3 done (all) · orchestrator
+- 2026-11-17 22:08 UTC · `fix-banner-settings-interface-tab` s13 done, → landing (all) · orchestrator
+- 2026-11-17 22:08 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 22:08 UTC · `fix-banner-settings-interface-tab` note (all) · orchestrator
+- 2026-11-17 22:09 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · watchdog
+- 2026-11-17 22:09 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:09 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 22:09 UTC · `icon-picker-every-banner-settings-widget` → running, note (all) · orchestrator
+- 2026-11-17 22:09 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-17 22:09 UTC · `fix-banner-settings-interface-tab` PR #823, note (all) · reconciler
+- 2026-11-17 22:10 UTC · `rebuild-fresh-main-hide-any-asset` s16 done, → landing (all) · orchestrator
+- 2026-11-17 22:10 UTC · `fix-banner-settings-interface-tab` PR #823, note (all) · foreign-write
+- 2026-11-17 22:10 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 22:10 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 22:10 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · orchestrator
+- 2026-11-17 22:10 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
+- 2026-11-17 22:10 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · pipeline
+- 2026-11-17 22:10 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
+- 2026-11-17 22:12 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 22:12 UTC · `icon-picker-every-banner-settings-widget` s3 done (all) · orchestrator
+- 2026-11-17 22:13 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
+- 2026-11-17 22:13 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
+- 2026-11-17 22:07 UTC · `fix-refreshing-console-jumps-back` s9 done (all) · orchestrator
+- 2026-11-17 22:14 UTC · `fix-refreshing-console-jumps-back` s10 done (all) · orchestrator
+- 2026-11-17 22:14 UTC · `flagship-professional-skin-covering-2` s4 done (all) · orchestrator
+- 2026-11-17 22:15 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:15 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 22:15 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 22:15 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 22:15 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 22:15 UTC · `fix-refreshing-console-jumps-back` s11 done, → landing (all) · orchestrator
+- 2026-11-17 22:15 UTC · `banner-widget-shapes-plus-change-icon` s5 done (all) · orchestrator
+- 2026-11-17 22:16 UTC · `icon-picker-every-banner-settings-widget` s4 done (all) · orchestrator
+- 2026-11-17 22:16 UTC · `banner-widget-shapes-plus-change-icon` s6 done (all) · orchestrator
+- 2026-11-17 22:16 UTC · `fix-refreshing-console-jumps-back` PR #825 (all) · builds-live
+- 2026-11-17 22:16 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-17 22:16 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-17 22:18 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
+- 2026-11-17 22:18 UTC · `banner-widget-shapes-plus-change-icon` s7 done (all) · orchestrator
+- 2026-11-17 22:19 UTC · `icon-picker-every-banner-settings-widget` s5 done (all) · orchestrator
+- 2026-11-17 22:20 UTC · `banner-widget-shapes-plus-change-icon` s8 done (all) · orchestrator
+- 2026-11-17 22:20 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:20 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 22:20 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 22:20 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 22:20 UTC · `banner-widget-shapes-plus-change-icon` note (all) · reconciler
+- 2026-11-17 22:20 UTC · `rebuild-fresh-main-hide-any-asset` PR #824, note (all) · reconciler
+- 2026-11-17 22:20 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 22:21 UTC · `icon-picker-every-banner-settings-widget` s6 done (all) · orchestrator
+- 2026-11-17 22:22 UTC · `banner-widget-shapes-plus-change-icon` s9 done (all) · orchestrator
+- 2026-11-17 22:23 UTC · `flagship-professional-skin-covering-2` s5 done (all) · orchestrator
+- 2026-11-17 22:24 UTC · `icon-picker-every-banner-settings-widget` s7 done (all) · orchestrator
+- 2026-11-17 22:24 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 22:24 UTC · `rebuild-fresh-main-phone-connect-small` s26 done (all) · orchestrator
+- 2026-11-17 22:24 UTC · `banner-widget-shapes-plus-change-icon` s10 done (all) · orchestrator
+- 2026-11-17 22:25 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 22:25 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 22:25 UTC · `flagship-professional-skin-covering-2` note (all) · mcp
+- 2026-11-17 22:25 UTC · `flagship-professional-skin-covering-2` s6 done (all) · orchestrator
+- 2026-11-17 22:26 UTC · `banner-widget-shapes-plus-change-icon` s11 done (all) · orchestrator
+- 2026-11-17 22:26 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:26 UTC · `plan-blueprints` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `blueprint-notes-tasks` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `pass-approval-hook-deep-link-amberx-notification` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `orchestrator-settings-collapsible-split` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `console-app-part-2-native-floating` note (all) · builds-live
+- 2026-11-17 22:26 UTC · `group-chat-audio-hear-agents-talk-while` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `picker-dialog-plugin-replaces-all` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · builds-live
+- 2026-11-17 22:26 UTC · `separate-settings-per-plugin-reset` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `rebuild-every-toolbar-page-specific` note (all) · builds-live
+- 2026-11-17 22:26 UTC · `terminal-main-tab-streaming-console-s` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `land-pr-730-reset-all-button-far-right` → landing (all) · builds-live
+- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · builds-live
+- 2026-11-17 22:26 UTC · `console-app-part-2-native-floating` → landed, note (all) · foreign-write
+- 2026-11-17 22:26 UTC · `banner-widget-shapes-plus-change-icon` s10 done, s11 done (all) · foreign-write
+- 2026-11-17 22:26 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:26 UTC · `rebuild-every-toolbar-page-specific` → landed, note (all) · foreign-write
+- 2026-11-17 22:26 UTC · `flagship-professional-skin-covering-2` s6 done, note (all) · foreign-write
+- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · builds-live
+- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · console
+- 2026-11-17 22:27 UTC · `console-app-part-2-native-floating` → landed, note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `banner-widget-shapes-plus-change-icon` s10 done, s11 done (all) · foreign-write
+- 2026-11-17 22:27 UTC · `rebuild-fresh-main-phone-connect-small` s26 done, note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `rebuild-every-toolbar-page-specific` → landed, note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `flagship-professional-skin-covering-2` s6 done, note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:27 UTC · `icon-picker-every-banner-settings-widget` s8 done (all) · orchestrator
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `icon-picker-every-banner-settings-widget` s8 done, note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · pending
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · pending
+- 2026-11-17 22:27 UTC · `icon-picker-every-banner-settings-widget` s8 done, note (all) · reconciler
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` → queued, note (all) · console
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · pending
+- 2026-11-17 22:28 UTC · `skins-as-packages-of-slices-every-section-its-ow` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `full-api-cli-control-of-everything-plus-an-offli` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `pass-approval-hook-deep-link-amberx-notification` → landing (all) · foreign-write
+- 2026-11-17 22:28 UTC · `open-any-website-by-voice-on-the-phone-optionall` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `amberx-build-notifications-for-every-stage-start` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `build-notifications-same-notification-per-build` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `merge-review-one-by-one-every-built-but-unmerged` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `main-gate-nothing-reaches-main-without-passing` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `all-banners-hide-when-empty` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `auto-recover-stuck-builds` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `ui-review-gate-switch-default-off` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `fix-toolbar-settings-doing-nothing` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `merge-all-ready-buttons-server-side` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `account-order-hulu-moses-x-api-account` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `assets-menu-hide-any-asset-visible` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `badge-shape-picker-banners-screen-pill` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `banners-page-focus-scroll-to-highlight` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `claude-badge-can-claude-build-green-when` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `collapse-auto-collapse-buttons-every-tab` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `fix-merge-conflicts-pr-557-professional` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `focus-every-screen-console-open-console` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `github-client-plugin-see-control-every` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `merges-are-only-merged-once-github` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `new-project-wizard-name-linked-repo` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `orchestrator-checks-shipped-features` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `pending-tab-one-collapsed-row-per-build` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `plugin-review-map-what-each-plugin-does` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `professional-skins-rebuild-whole-app` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `remove-console-s-own-notes-manager` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `remove-no-new-android-kotlin-work-rule` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `remove-ui-review-gate-no-screenshots` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `server-every-failed-merge-alerts-brett` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `show-commits-behind-main-every-build` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `tap-to-confirm-follows-label-visibility` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `unlink-plan-studio-builds-delete-all` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `vps-badge-shows-shell-commands-work` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `full-voice-api-control-type-fields-press` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `chrome-settings-actually-apply-toolbars` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `vps-builds-get-console-token-ui-review` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `decision-dialog-ui-review-other` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `prompting-engine-control-panel-to-create` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `orchestrator-settings-collapsible-split` → landing (all) · foreign-write
+- 2026-11-17 22:28 UTC · `console-app-part-2-native-floating` s6 done, s7 done, → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `land-project-duplicate-boilerplate` → landing, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `land-drive-live-console-first-resolve` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `land-rename-long-builds-resolve-clash` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `land-overlay-preview-ui-review-resolve` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `full-voice-control-merge-main-and-land` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `context-menus-plugin-one-true-source` s9 done, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `picker-dialog-plugin-replaces-all` → landing (all) · foreign-write
+- 2026-11-17 22:28 UTC · `console-look-becomes-default-axhub-skin` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `merge-main-land-server-gate-one-session` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `merge-main-land-console-app-part-2` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `pending-tab-one-collapsed-row-per-2` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `shipped-features-organized-sortable` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `vps-sends-shipped-features-every-merge` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `phone-connect-small-android-companion` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `shipped-features-open-button-views-each` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `fix-console-deep-links-open-page-lands` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `orchestrator-on-hold-status-and-tab` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `axhub-veto-countdown-setting-read-only` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `settings-interface-gear-every-plugin` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `hotfix-orchestrator-grid-columns-don-t` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `reset-all-button-every-asset-override` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `alert-every-time-build-falls-back-to` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `auto-lander-grid-one-row-per-build` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `every-settings-interface-gets` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `to-do-manager-fully-voice-mcp-controlled` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `own-look-per-grid-and-tab-group` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `banner-widget-shapes-plus-change-icon` s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `maintenance-plugin-clear-docker-cache` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `rebuild-fresh-main-hide-any-asset` s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `rebuild-fresh-main-phone-connect-small` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `separate-settings-per-plugin-reset` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `rebuild-every-toolbar-page-specific` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s25 done, s26 done, s27 done, s28 done, → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `live-build-status-real-time-grids-15` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `guided-live-demo-test-watch-orchestrator` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s24 done, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `terminal-main-tab-streaming-console-s` → complete, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `toolbars-1-5-build-orchestrator-incl` added (4 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `toolbars-3-5-settings-appearance-systems` added (4 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `toolbars-2-5-plan-studio-ui-review` added (4 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `toolbars-4-5-chat-viewer-codebase` added (4 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `toolbars-2-5-plan-studio-ui-review-2` added (4 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `toolbars-5-5-claude-accounts-glossary` added (4 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `icon-picker-every-banner-settings-widget` added (12 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `fix-banner-settings-interface-tab` added (13 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `land-pr-730-reset-all-button-far-right` added (5 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `flagship-professional-skin-covering` added (27 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `flagship-professional-skin-covering-2` added (28 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `fix-refreshing-console-jumps-back` added (11 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `remove-amberx-app-code-once-phone` added (7 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `settings-fix-part-2-blank-toolbars` added (21 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:28 UTC · `banner-widget-shapes-plus-change-icon` s12 done (all) · foreign-write
+- 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` → queued (all) · builds-live
+- 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 22:29 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:29 UTC · `banner-widget-shapes-plus-change-icon` s12 done (all) · foreign-write
+- 2026-11-17 22:28 UTC · `settings-fix-part-2-blank-toolbars` note (all) · orchestrator
+- 2026-11-17 22:28 UTC · `dispatcher-split-builds-evenly-across` note (all) · pending
+- 2026-11-17 22:28 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · pipeline
+- 2026-11-17 22:28 UTC · `orchestrator-settings-collapsible-split` → fixing, note (all) · pipeline
+- 2026-11-17 22:28 UTC · `group-chat-audio-hear-agents-talk-while` → fixing, note (all) · pipeline
+- 2026-11-17 22:28 UTC · `picker-dialog-plugin-replaces-all` → fixing, note (all) · pipeline
+- 2026-11-17 22:28 UTC · `move-everything-axhub-web-console` added (0 steps) (all) · pending
+- 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` → running, note (all) · pipeline
+- 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` note (all) · orchestrator
+- 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` branch claude/settings-fix-part-2-blank-toolbars (all) · pipeline
+- 2026-11-17 22:30 UTC · `settings-fix-part-2-blank-toolbars` → running, branch claude/settings-fix-part-2-blank-toolbars (all) · builds-live
+- 2026-11-17 22:30 UTC · `move-everything-axhub-web-console` → queued, note (all) · builds-live
+- 2026-11-17 22:30 UTC · `move-everything-axhub-web-console` → queued, note (all) · console
+- 2026-11-17 22:30 UTC · `banner-widget-shapes-plus-change-icon` s13 done (all) · foreign-write
+- 2026-11-17 22:30 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
+- 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` s27 done (all) · foreign-write
+- 2026-11-17 22:30 UTC · `rebuild-fresh-main-phone-connect-small` s27 done (all) · orchestrator
+- 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 22:31 UTC · `dispatcher-split-builds-evenly-across` note (all) · orchestrator
+- 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 22:31 UTC · `banner-widget-shapes-plus-change-icon` s13 done (all) · foreign-write
+- 2026-11-17 22:31 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 22:31 UTC · `move-everything-axhub-web-console` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:31 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:32 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
+- 2026-11-17 22:32 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete (all) · foreign-write
+- 2026-11-17 22:28 UTC · `orchestrator-settings-collapsible-split` → complete (all) · foreign-write
+- 2026-11-17 22:28 UTC · `group-chat-audio-hear-agents-talk-while` → complete (all) · foreign-write
+- 2026-11-17 22:28 UTC · `picker-dialog-plugin-replaces-all` → complete (all) · foreign-write
+- 2026-11-17 22:28 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `icon-picker-every-banner-settings-widget` s8 done, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `banner-widget-shapes-plus-change-icon` s12 done (all) · orchestrator
+- 2026-11-17 22:30 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 22:30 UTC · `move-everything-axhub-web-console` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:30 UTC · `banner-widget-shapes-plus-change-icon` s13 done (all) · orchestrator
+- 2026-11-17 22:32 UTC · `rebuild-fresh-main-phone-connect-small` s27 done, note (all) · foreign-write
+- 2026-11-17 22:32 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:32 UTC · `banner-widget-shapes-plus-change-icon` s14 done (all) · orchestrator
+- 2026-11-17 22:33 UTC · `banner-widget-shapes-plus-change-icon` s14 done (all) · foreign-write
+- 2026-11-17 22:33 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:33 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
+- 2026-11-17 22:33 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:34 UTC · `console-app-part-2-native-floating` → pending, note (all) · builds-live
+- 2026-11-17 22:34 UTC · `move-everything-axhub-web-console` → pending (all) · builds-live
+- 2026-11-17 22:33 UTC · `banner-widget-shapes-plus-change-icon` s15 done (all) · orchestrator
+- 2026-11-17 22:34 UTC · `banner-widget-shapes-plus-change-icon` s15 done (all) · foreign-write
+- 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` s15 done, → landing (all) · orchestrator
+- 2026-11-17 22:35 UTC · `banner-widget-shapes-plus-change-icon` s15 done (all) · foreign-write
+- 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` s15 done, → complete, note (all) · foreign-write
+- 2026-11-17 22:35 UTC · `auto-lander-never-wait-missing-ui-review` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:36 UTC · `rebuild-fresh-main-phone-connect-small` → landing (all) · builds-live
+- 2026-11-17 22:36 UTC · `rebuild-fresh-main-phone-connect-small` s15 done, → complete, note (all) · foreign-write
+- 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:36 UTC · `banner-widget-shapes-plus-change-icon` s16 done (all) · foreign-write
+- 2026-11-17 22:36 UTC · `banner-widget-shapes-plus-change-icon` s16 done (all) · orchestrator
+- 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-17 22:37 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `banner-widget-shapes-plus-change-icon` s12 done, s13 done, s14 done, s15 done, s16 done (all) · foreign-write
+- 2026-11-17 22:38 UTC · `rebuild-fresh-main-phone-connect-small` s15 done, s27 done, → complete, note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
+- 2026-11-17 22:38 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:38 UTC · `move-everything-axhub-web-console` added (93 steps) (all) · foreign-write
+- 2026-11-17 22:38 UTC · `auto-lander-never-wait-missing-ui-review` added (17 steps) (all) · foreign-write
+- 2026-11-17 22:38 UTC · `icon-picker-every-banner-settings-widget` s9 done (all) · foreign-write
+- 2026-11-17 22:38 UTC · `icon-picker-every-banner-settings-widget` s9 done (all) · orchestrator
+- 2026-11-17 22:32 UTC · `banner-widget-shapes-plus-change-icon` s14 done (all) · foreign-write
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 22:34 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 22:35 UTC · `auto-lander-never-wait-missing-ui-review` added (0 steps) (all) · pending
+- 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · pending
+- 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` → queued, note (all) · console
+- 2026-11-17 22:37 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · orchestrator
+- 2026-11-17 22:38 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · pending
+- 2026-11-17 22:38 UTC · `one-true-source-for-every-setting` → queued, note (all) · console
 
 ## Token passes (log)
 
@@ -1834,3 +1837,4 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - 2026-11-13 10:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` s1 + s2: every skin has light + dark (skin-modes@1), check-skin-modes in CI, CLI/REST/MCP/voice `mode` (all) · claude
 - 2026-11-17 05:00 UTC · `server-auto-lander-fixes-lands` phase 2 (Opus): the VPS auto-lander runner (systemd timer, attempt log, clash resolver, red-CI reader, fix sessions through the pipeline, reconcile/backoff, escalation to systems check + one push), Gate → Auto-lander → Server tab + settings, REST/MCP/CLI/voice; absorbed fix-red-ci-blocked-builds-they-land + get-main-green-unblock-lander-land-axf · claude
 - 2026-11-17 00:55 UTC · `stop-auto-lander-committing-tracking` s2–s14: tracking files never committed by the lander (reset to main's base copy, take-main on conflict), build worktrees keep the store on the hub, worktree guard, journal moved to the hub (916 MB untracked, pointer + sha256), CI guard check-tracking-files, API land-tracking (REST/MCP/CLI/voice), tests (all) · claude
+- 2026-11-17 UTC · `rebuild-every-toolbar-page-specific` phase 2 (Opus) s8–s26: re-bake; 19 page toolbar assets on 18 console plugins (97 buttons bound to plugin commands, actions or page handlers), check-page-toolbars + voice inventory (97 phrases) + per-plugin toolbar tests in CI, check-toolbars page-asset ratchet (21 plugins left); s27 option assets (57) committed, pictures blocked (no hub session for headless capture); report `_claude/builds/reports/rebuild-every-toolbar-page-specific.md` (all) · claude

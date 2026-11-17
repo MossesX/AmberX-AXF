@@ -16,6 +16,7 @@
  */
 import { STATUSES, normBuild, normalizeStore } from './builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
+import { markLine } from '../core/demo-build.mjs';
 
 const str = (v) => (typeof v === 'string' ? v : '');
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -179,7 +180,8 @@ export function changeLines(entry) {
       if (a.deleted && !b.deleted) what.push('removed');
     }
     if (!what.length) continue;
-    out.push(`- ${when} UTC · \`${c.id}\` ${what.join(', ')} (${(a.profiles ?? []).join(', ')}) · ${str(entry.by) || 'cli'}`);
+    // demo-build@1: a demo build's line carries the mark, so the builds-live commit says demo-only on main
+    out.push(`- ${when} UTC · ${markLine(c.id, `\`${c.id}\` ${what.join(', ')}`)} (${(a.profiles ?? []).join(', ')}) · ${str(entry.by) || 'cli'}`);
   }
   return out;
 }

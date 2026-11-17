@@ -1,5 +1,5 @@
 // Types for console-control-rules.mjs (console-control@1; shared by the TS engine, the build engine and the console server).
-export type ConsoleControlKind = 'view' | 'tab' | 'subtab' | 'setting' | 'button' | 'function' | 'plugin' | 'grid' | 'row' | 'step' | 'panel' | 'scroll';
+export type ConsoleControlKind = 'view' | 'tab' | 'subtab' | 'setting' | 'button' | 'function' | 'plugin' | 'grid' | 'row' | 'step' | 'panel' | 'scroll' | 'toolbar';
 export type ConsoleControlVerb = 'open' | 'state' | 'press' | 'set' | 'scroll' | 'focus' | 'search' | 'list' | 'plugin.enable' | 'plugin.disable';
 export type ConsoleControlEffect = 'read' | 'navigate' | 'write';
 export type ConsoleControlCode = 'invalid' | 'not_found' | 'ambiguous' | 'denied' | 'validation' | 'unavailable' | 'confirmation_required' | 'not_implemented' | 'unexpected';

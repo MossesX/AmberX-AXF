@@ -61,6 +61,10 @@
       "enable": "write",
       "disable": "write"
     },
+    "console.toolbars": {
+      "press": "write",
+      "open": "navigate"
+    },
     "console.widgeticons": {
       "open": "navigate",
       "set": "write",
@@ -3193,6 +3197,32 @@
       },
       "doc": "Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
+    "console.toolbars": {
+      "domain": "console",
+      "label": "Page toolbars (buttons by settings id)",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "limit": "number",
+        "view": "string"
+      },
+      "acts": {
+        "press": {
+          "button": "string",
+          "value": "any"
+        },
+        "open": {}
+      },
+      "actEffect": {
+        "press": "write",
+        "open": "navigate"
+      },
+      "doc": "Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press."
+    },
     "console.widgeticons": {
       "domain": "console",
       "label": "Widget icons (banner and settings widgets)",
@@ -3307,6 +3337,7 @@
               "console.control",
               "tokens.instances",
               "console.pluginsettings",
+              "console.toolbars",
               "console.widgeticons"
             ],
             "description": "what to control"
@@ -3365,6 +3396,7 @@
               "console.control",
               "tokens.instances",
               "console.pluginsettings",
+              "console.toolbars",
               "console.widgeticons"
             ],
             "description": "what to control"
@@ -3424,6 +3456,7 @@
               "console.control",
               "tokens.instances",
               "console.pluginsettings",
+              "console.toolbars",
               "console.widgeticons"
             ],
             "description": "what to control"
@@ -3490,6 +3523,7 @@
               "console.control",
               "tokens.instances",
               "console.pluginsettings",
+              "console.toolbars",
               "console.widgeticons"
             ],
             "description": "what to control"
@@ -3556,6 +3590,7 @@
               "console.control",
               "tokens.instances",
               "console.pluginsettings",
+              "console.toolbars",
               "console.widgeticons"
             ],
             "description": "what to control"
@@ -3622,6 +3657,7 @@
               "console.control",
               "tokens.instances",
               "console.pluginsettings",
+              "console.toolbars",
               "console.widgeticons"
             ],
             "description": "what to control"
@@ -3692,6 +3728,7 @@
               "console.control",
               "tokens.instances",
               "console.pluginsettings",
+              "console.toolbars",
               "console.widgeticons"
             ],
             "description": "what to control"
@@ -3827,6 +3864,7 @@
       "console.control",
       "tokens.instances",
       "console.pluginsettings",
+      "console.toolbars",
       "console.widgeticons"
     ]
   },
@@ -3882,6 +3920,7 @@
           "console.control",
           "tokens.instances",
           "console.pluginsettings",
+          "console.toolbars",
           "console.widgeticons"
         ]
       },
@@ -5192,6 +5231,32 @@
               "type": "object"
             }
           }
+        },
+        "paths": "host"
+      },
+      "console.toolbars": {
+        "description": "Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press.",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "limit": {
+            "type": "number"
+          },
+          "view": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "press": {
+            "button": {
+              "type": "string"
+            },
+            "value": {}
+          },
+          "open": {}
         },
         "paths": "host"
       },
