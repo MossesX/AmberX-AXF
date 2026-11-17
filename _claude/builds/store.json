@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7967,
- "updatedAt": "2026-11-17T21:19:10.260Z",
+ "rev": 7968,
+ "updatedAt": "2026-11-17T21:19:19.654Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268226,7 +268226,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:19:07.926Z",
+   "updatedAt": "2026-11-17T21:19:11.162Z",
    "builtAt": "",
    "notes": [
     {
@@ -268348,6 +268348,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T21:19:07.926Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s7): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:19:11.162Z"
     }
    ],
    "approvals": [
@@ -268418,6 +268422,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T21:19:06.166Z",
+     "buildId": "rebuild-fresh-main-phone-connect-small",
+     "phase": "Phase 1",
+     "step": "s7",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "hulu0241",
+     "notified": "",
+     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -269099,7 +269119,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -275877,7 +275897,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275885,7 +275905,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:17:40.278Z",
+   "updatedAt": "2026-11-17T21:19:14.735Z",
    "builtAt": "",
    "notes": [
     {
@@ -276031,6 +276051,14 @@
     {
      "text": "Headless run axf-rebuild-every-toolbar-page-specific--gina: brief only · start 19.9K tokens ($0.07) · cost $17.56 · 258 turns · 6 tools, MCP none",
      "at": "2026-11-17T21:17:40.278Z"
+    },
+    {
+     "text": "Session stopped on its own with 2 steps left: back in Pending for Brett.",
+     "at": "2026-11-17T21:19:13.036Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s27): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:19:14.735Z"
     }
    ],
    "approvals": [
@@ -276068,7 +276096,7 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-17T21:17:07.034Z",
+     "at": "2026-11-17T21:19:12.282Z",
      "exit": 0,
      "outcome": "returned",
      "reason": "stopped",
@@ -276101,6 +276129,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T21:19:12.257Z",
+     "buildId": "rebuild-every-toolbar-page-specific",
+     "phase": "",
+     "step": "s27",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -276818,7 +276862,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -278065,7 +278109,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -278073,7 +278117,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T21:18:08.483Z",
+   "updatedAt": "2026-11-17T21:19:16.854Z",
    "builtAt": "",
    "notes": [
     {
@@ -278255,6 +278299,10 @@
     {
      "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
      "at": "2026-11-17T21:17:18.001Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T21:19:16.854Z"
     }
    ],
    "approvals": [
@@ -278290,13 +278338,13 @@
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 1,
+    "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T20:32:04.340Z",
+     "at": "2026-11-17T21:19:15.913Z",
      "exit": 143,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 13,
+     "stepsLeft": 2,
      "account": "",
      "session": "",
      "phase": ""
@@ -278309,7 +278357,7 @@
      "note": "Split by Claude into 24 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -278363,6 +278411,20 @@
      "notified": "",
      "session": "",
      "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3)."
+    },
+    {
+     "at": "2026-11-17T21:19:15.913Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s23",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -278930,10 +278992,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T21:19:16.854Z",
+     "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T19:39:27.698Z"
+     "updatedAt": "2026-11-17T21:19:16.856Z"
     },
     {
      "id": "s24",
@@ -278969,7 +279031,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
