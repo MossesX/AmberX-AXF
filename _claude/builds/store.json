@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7108,
- "updatedAt": "2026-11-17T00:03:05.980Z",
+ "rev": 7109,
+ "updatedAt": "2026-11-17T00:03:23.749Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -230827,7 +230827,7 @@
    "title": "Merge main and land console-axhub-retry-failed-calls",
    "category": "",
    "detail": "Auto-land could not land `console-axhub-retry-failed-calls` (console-axhub-retry-failed-calls): merging main into it clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py.\n\nWork on its own branch `claude/console-axhub-retry-failed-calls` (PR #589); do not open a new PR.\n1. git fetch origin && git checkout claude/console-axhub-retry-failed-calls && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-axhub-retry-failed-calls. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -230835,7 +230835,7 @@
    "pr": "#589",
    "priority": "P0",
    "createdAt": "2026-11-15T00:07:23.857Z",
-   "updatedAt": "2026-11-16T23:32:34.817Z",
+   "updatedAt": "2026-11-17T00:02:44.120Z",
    "builtAt": "",
    "notes": [
     {
@@ -230881,6 +230881,10 @@
     {
      "text": "Stopped at s7: Brett archived PR #589 on 2026-11-16 22:53 UTC (\"more than 500 commits behind main. Branch kept.\"); it is now 1520 behind and the queue had already kicked it out for CI red on main. Did not re-merge or reopen, that would override the archive. To revive the retry-ladder work, rebuild it fresh on main. Report updated.",
      "at": "2026-11-16T23:32:25.914Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T00:02:44.120Z"
     }
    ],
    "approvals": [],
@@ -231150,7 +231154,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -242453,9 +242457,10 @@
    "pendingId": "",
    "branch": "claude/get-main-green-unblock-lander-land-axf",
    "pr": "#723",
+   "mergedAt": "2026-11-16T23:54:53Z",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-16T22:20:50.789Z",
+   "updatedAt": "2026-11-17T00:02:44.120Z",
    "builtAt": "",
    "notes": [
     {
@@ -242533,6 +242538,10 @@
     {
      "text": "Reconciler: PR #723 names s1, s2, s3, s4, s5, s6, s7, s9, s10, s11, s12, s13, s14, s15, s18 done",
      "at": "2026-11-16T22:20:50.789Z"
+    },
+    {
+     "text": "Reconciler: PR #723 merged",
+     "at": "2026-11-17T00:02:44.120Z"
     }
    ],
    "approvals": [],
@@ -243082,7 +243091,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244192,7 +244201,7 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244200,7 +244209,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-16T22:51:15.159Z",
+   "updatedAt": "2026-11-17T00:02:44.120Z",
    "builtAt": "",
    "notes": [
     {
@@ -244234,6 +244243,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-16T20:01:59.903Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T00:02:44.120Z"
     }
    ],
    "approvals": [],
@@ -244275,10 +244288,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-16T20:02:07.641Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-17T00:03:06.259Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -244409,7 +244422,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -248334,7 +248347,7 @@
    "title": "Auto-lander grid: one row per build, behind-main count, archive",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -248342,7 +248355,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-16T22:52:09.669Z",
+   "updatedAt": "2026-11-17T00:02:44.120Z",
    "builtAt": "",
    "notes": [
     {
@@ -248376,6 +248389,10 @@
     {
      "text": "Headless run axf-auto-lander-grid-one-row-per-build--gina: brief only · start 15.6K tokens ($0.05) · cost $3.07 · 71 turns · 6 tools, MCP none",
      "at": "2026-11-16T19:46:05.295Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T00:02:44.120Z"
     }
    ],
    "approvals": [],
@@ -248417,10 +248434,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-16T19:22:45.044Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-17T00:03:06.259Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -248551,7 +248568,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -250224,15 +250241,15 @@
    "title": "Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fable-rebuild-plan-studio-cleared-out",
-   "pr": "",
+   "pr": "#761",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-16T23:29:18.096Z",
+   "updatedAt": "2026-11-17T00:02:44.120Z",
    "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
@@ -250322,6 +250339,10 @@
     {
      "text": "Session axf-fable-rebuild-plan-studio-cleared-out--joey on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-16T23:29:18.096Z"
+    },
+    {
+     "text": "Reconciler: PR #761",
+     "at": "2026-11-17T00:02:44.120Z"
     }
    ],
    "approvals": [
@@ -250471,7 +250492,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -251255,7 +251276,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:02:27.222Z",
+   "updatedAt": "2026-11-17T00:03:11.885Z",
    "builtAt": "",
    "notes": [
     {
@@ -251299,8 +251320,16 @@
      "at": "2026-11-16T23:56:35.842Z"
     },
     {
+     "text": "Reconciler: PR #752 names s1, s3, s5, s6, s7 done",
+     "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
      "text": "Self-check: own-look-per-grid-and-tab-group had no session on record but axf-own-look-per-grid-and-tab-group--lenny is alive: kept running and tracking it.",
      "at": "2026-11-17T00:02:17.072Z"
+    },
+    {
+     "text": "Self-check: own-look-per-grid-and-tab-group had no session on record but axf-own-look-per-grid-and-tab-group--lenny is alive: kept running and tracking it.",
+     "at": "2026-11-17T00:03:11.885Z"
     }
    ],
    "approvals": [
@@ -251330,7 +251359,7 @@
     "queuedAt": "2026-11-16T22:44:25.286Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-own-look-per-grid-and-tab-group--lenny",
     "slot": "",
     "model": "Fable",
     "phase": "",
@@ -251542,11 +251571,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T00:02:27.222Z",
-     "note": "",
+     "doneAt": "2026-11-17T00:02:44.120Z",
+     "note": "PR #752 (claude/own-look-per-grid-and-tab-group)",
      "rev": 2,
      "createdAt": "2026-11-16T22:48:13.206Z",
-     "updatedAt": "2026-11-17T00:02:27.713Z"
+     "updatedAt": "2026-11-17T00:02:44.123Z"
     },
     {
      "id": "s8",
@@ -251790,7 +251819,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -252379,7 +252408,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -252387,7 +252416,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-16T23:24:55.740Z",
+   "updatedAt": "2026-11-17T00:02:44.120Z",
    "builtAt": "",
    "notes": [
     {
@@ -252409,6 +252438,10 @@
     {
      "text": "Headless run axf-attach-widgets-to-any-toolbar-banner--earl: brief only · start 17.7K tokens ($0.12) · cost $14.53 · 155 turns · 6 tools, MCP none",
      "at": "2026-11-16T23:24:55.740Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T00:02:44.120Z"
     }
    ],
    "approvals": [],
@@ -252449,11 +252482,11 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
+     "model": "Opus",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-16T22:49:24.822Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-17T00:03:06.259Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -252950,7 +252983,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -256175,11 +256208,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/icon-packs-with-drag-drop-pack-designer",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-16T23:58:17.172Z",
+   "updatedAt": "2026-11-17T00:02:44.120Z",
    "builtAt": "",
    "notes": [
     {
@@ -256209,6 +256242,10 @@
     {
      "text": "Phase 1 (Fable) done, s1-s11 on branch claude/icon-packs-with-drag-drop-pack-designer: icon-map@1 + extended icon-pack@1 types, icon-scope@1 chain (plugin > ui > app > global > brand), engines icon-pack / icon-map / icon-gen / icon-import, rules mirror icon-rules.mjs, validators, fixtures + check-icon-pack (CI), starter map (711 spots) and packs default / outline / filled / generated-ember baked into the 4 shared apps, <AxfIcon spot> + useIconSpot + rt.icon* facade. Every check green (skin, interface, appearance, brand, design-language, coverage, shared-assets). Supersedes the pending records fable-icon-map-icon-packs-icon-pack, icon-pack-studio-fable and icon-pack-studio-on-fable (same scope); they should be archived against this build. Kotlin twin deferred in PORTING.md. Next phase (Opus s12+) wraps rt.icon* in REST / CLI / MCP / voice and builds the designer.",
      "at": "2026-11-16T23:57:29.212Z"
+    },
+    {
+     "text": "Reconciler: branch claude/icon-packs-with-drag-drop-pack-designer (no PR yet)",
+     "at": "2026-11-17T00:02:44.120Z"
     }
    ],
    "approvals": [],
@@ -257036,7 +257073,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -257052,7 +257089,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -257060,7 +257097,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-16T23:29:45.897Z",
+   "updatedAt": "2026-11-17T00:02:44.120Z",
    "builtAt": "",
    "notes": [
     {
@@ -257086,6 +257123,10 @@
     {
      "text": "Headless run axf-banner-widget-shapes-plus-change-icon--rhonda: brief only · start 17.4K tokens ($0.12) · cost $9.80 · 112 turns · 6 tools, MCP none",
      "at": "2026-11-16T23:29:45.897Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T00:02:44.120Z"
     }
    ],
    "approvals": [],
@@ -257126,10 +257167,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
+     "at": "2026-11-17T00:03:06.259Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -257630,7 +257671,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -815,16 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:07 UTC · `settings-interface-gear-every-plugin` s21 done (all) · orchestrator
-- 2026-11-16 20:07 UTC · `hide-any-ui-asset-global-context-menu` note (all) · orchestrator
-- 2026-11-16 20:07 UTC · `hide-any-ui-asset-global-context-menu` s1 done, → running (all) · orchestrator
-- 2026-11-16 20:07 UTC · `hide-any-ui-asset-global-context-menu` s2 done (all) · orchestrator
-- 2026-11-16 20:07 UTC · `hide-any-ui-asset-global-context-menu` s3 done, → complete (all) · orchestrator
-- 2026-11-16 20:07 UTC · `assets-menu-hide-any-asset-hidden-list` s3 done, → complete (all) · orchestrator
-- 2026-11-16 20:07 UTC · `assets-menu-hide-any-asset-hidden-list` note (all) · orchestrator
-- 2026-11-16 20:08 UTC · `banner-widget-shapes-more-than-circle` s16 done (all) · orchestrator
-- 2026-11-16 20:08 UTC · `settings-interface-gear-every-plugin` s22 done (all) · orchestrator
-- 2026-11-16 20:09 UTC · `banner-widget-shapes-more-than-circle` s17 done (all) · orchestrator
 - 2026-11-16 20:09 UTC · `settings-interface-gear-every-plugin` s23 done (all) · orchestrator
 - 2026-11-16 20:10 UTC · `settings-interface-gear-every-plugin` s23 done (all) · foreign-write
 - 2026-11-16 20:10 UTC · `every-grid-1-2-rows-per-item-set-skin` → pending, note (all) · reconciler
@@ -1215,6 +1205,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:02 UTC · `own-look-per-grid-and-tab-group` s7 done (all) · orchestrator
 - 2026-11-17 00:02 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
 - 2026-11-17 00:01 UTC · `every-plugin-screen-gets-a-settings-gear` s2 done (all) · orchestrator
+- 2026-11-17 00:02 UTC · `merge-main-land-console-axhub-retry` → pending, note (all) · reconciler
+- 2026-11-17 00:02 UTC · `get-main-green-unblock-lander-land-axf` merged, note (all) · reconciler
+- 2026-11-17 00:02 UTC · `fix-console-deep-links-open-page-lands` → pending, note (all) · reconciler
+- 2026-11-17 00:02 UTC · `auto-lander-grid-one-row-per-build` → pending, note (all) · reconciler
+- 2026-11-17 00:02 UTC · `fable-rebuild-plan-studio-cleared-out` → built, PR #761, note (all) · reconciler
+- 2026-11-17 00:02 UTC · `own-look-per-grid-and-tab-group` s7 done, note (all) · reconciler
+- 2026-11-17 00:02 UTC · `attach-widgets-to-any-toolbar-banner` → pending, note (all) · reconciler
+- 2026-11-17 00:02 UTC · `icon-packs-with-drag-drop-pack-designer` branch claude/icon-packs-with-drag-drop-pack-designer, note (all) · reconciler
+- 2026-11-17 00:02 UTC · `banner-widget-shapes-plus-change-icon` → pending, note (all) · reconciler
+- 2026-11-17 00:03 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
 
 ## Token passes (log)
 
