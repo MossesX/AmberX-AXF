@@ -16,8 +16,8 @@
  *      tick starts it (→ status `queued`, nothing is left blocked);
  *   5. the pipeline's own launch (pipeline.mjs launch: dispatch token, build lock, brief, worktree) runs
  *      deploy/claude-headless.sh --account <a>, which takes an agent slot (agent-slots@1) before Claude starts;
- *   6. the run is recorded on the build (Running on that account) and a red-ci attempt is opened in the attempt log
- *      with the account and session. The loop ends it when the new head's CI is known.
+ *   6. the run is recorded on the build (Running on that account). The red-ci attempt is opened in the attempt log as
+ *      soon as the build is Queued (head = the red head), and gets the account and session once it launches. The loop ends it when the new head's CI is known.
  *
  *   node deploy/auto-lander/fix-session.mjs <build> [--summary-file f | --summary "…"] [--dry-run] [--json]
  */
@@ -84,7 +84,7 @@ export async function realDeps() {
  *   dry       say what would happen, change nothing
  * → { status: 'launched' | 'queued' | 'running' | 'refused' | 'dry', build, account, session, step, attempt, why }
  */
-export async function launchFix({ id, summary = '', n = 0, dry = false, deps = null, now = () => new Date().toISOString() } = {}) {
+export async function launchFix({ id, summary = '', n = 0, head = '', dry = false, deps = null, now = () => new Date().toISOString() } = {}) {
   const d = deps || await realDeps();
   const b = d.build(id);
   if (!b) return { status: 'refused', build: id, why: `no build "${id}"` };
@@ -109,9 +109,13 @@ export async function launchFix({ id, summary = '', n = 0, dry = false, deps = n
   // 3. into the Queue (only a Queued build may take a slot)
   d.setPipeline(id, { queuedAt: now(), queuedBy: 'auto-lander', note: `fix attempt ${num}` }, { status: 'queued', note: `Queued by auto-lander for fix attempt ${num}.`, by: 'auto-lander', action: 'pipeline:queue' });
 
+  // the attempt opens now (even when it only gets Queued), so the next tick waits for it instead of adding a second fix
+  const pr = Number(String(b.pr || '').replace(/\D/g, '')) || 0;
+  const opened = d.attempts.start(id, 'red-ci', { n: num, account: '', session: '', branch: b.branch || `claude/${id}`, head, pr, at: now() });
+
   // 4. an account
   const account = d.route();
-  if (!account) return { status: 'queued', build: id, attempt: num, step: stepId, why: 'no account is free: Queued, the dispatcher starts it when one frees' };
+  if (!account) return { status: 'queued', build: id, attempt: opened, step: stepId, why: 'no account is free: Queued, the dispatcher starts it when one frees' };
 
   // 5. the pipeline's launch (dispatch token, build lock, brief, claude-headless.sh --account, agent slot), in the
   //    build's worktree on its own branch
@@ -119,13 +123,13 @@ export async function launchFix({ id, summary = '', n = 0, dry = false, deps = n
   try { d.branchWorktree?.(id, b.branch || `claude/${id}`); l = d.launch(d.build(id), { account, model: FIX_MODEL, phase: `fix ${num}` }, { rules: d.rules() }); }
   catch (e) {
     if (e.code === 'live') return { status: 'running', build: id, why: e.message };
-    return { status: 'queued', build: id, attempt: num, step: stepId, account, why: `launch on ${account} failed (${clip(e.message, 200)}): left Queued for the dispatcher` };
+    return { status: 'queued', build: id, attempt: opened, step: stepId, account, why: `launch on ${account} failed (${clip(e.message, 200)}): left Queued for the dispatcher` };
   }
 
   // 6. recorded: Running on that account, and the attempt opened
   const runs = (b.pipeline?.runs ?? 0) + 1;
   d.setPipeline(id, { account, session: l.session, slot: l.slot, model: FIX_MODEL, phase: `fix ${num}`, launchedAt: now(), dispatchedAt: now(), runs }, { status: 'running', note: `Auto-lander started fix attempt ${num} on ${account}: ${l.session || 'queued in agent slots'}.`, by: 'auto-lander', action: 'pipeline:launch' });
-  const attempt = d.attempts.start(id, 'red-ci', { n: num, account, session: l.session || l.slot || '', branch: b.branch || `claude/${id}`, head: '', pr: Number(String(b.pr || '').replace(/\D/g, '')) || 0, at: now() });
+  const attempt = d.attempts.append({ ...opened, account, session: l.session || l.slot || '' });
   return { status: 'launched', build: id, account, session: l.session, slot: l.slot, attempt, step: stepId };
 }
 

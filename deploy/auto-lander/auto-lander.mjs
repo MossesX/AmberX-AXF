@@ -149,6 +149,7 @@ export async function realDeps() {
     launchFix: (o) => launchFix(o),
     queueAdd: (n) => { const r = spawnSync(process.execPath, [LAND_CLI, 'queue', 'add', String(n), '--json'], { encoding: 'utf8', timeout: 120000 }); return { ok: r.status === 0, out: `${r.stdout || ''}${r.stderr || ''}`.trim().slice(-600) }; },
     live: async (id) => { const lock = await import('../../framework/cli/build-lock.mjs'); return lock.liveness(id, { dir: join(process.env.AXF_PIPELINE_WORKTREES || '/root/axf-builds', id) }); },
+    startCi: ({ branch }) => gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow}/dispatches`, { ref: branch }),
     escalate: esc?.escalate || (() => ({ ok: false, why: 'escalate.mjs not installed' })),
     resolveEscalation: esc?.resolve || (() => ({ ok: false })),
   };
@@ -209,12 +210,12 @@ export async function stepBuild(b, d, ctx, { policy, dry = false, at = nowIso(),
     const r = await d.mergeMain({ build: b.id, branch: b.branch, pr: rec.pr });
     if (r.status === 'merged' || r.status === 'up-to-date') { state = 'ci-running'; reason = r.status === 'merged' ? `Merged main in (${r.sha.slice(0, 9)}); CI runs on the new head.` : 'Already has main; waiting for GitHub to see it.'; }
     else if (r.status === 'needs-fix') {
-      const f = await d.launchFix({ id: b.id, summary: `Merging main into ${b.branch} clashes in hand-written files:\n${r.conflicts.map((c) => `- ${c}`).join('\n')}\nMerge origin/main into the branch and resolve them by hand.` });
+      const f = await d.launchFix({ id: b.id, head: snap.head, summary: `Merging main into ${b.branch} clashes in hand-written files:\n${r.conflicts.map((c) => `- ${c}`).join('\n')}\nMerge origin/main into the branch and resolve them by hand.` });
       state = f.status === 'launched' || f.status === 'running' || f.status === 'queued' ? 'fixing' : 'waiting';
       reason = `Main clashes in ${r.conflicts.slice(0, 3).join(', ')}: ${f.status === 'launched' ? `fix session on ${f.account}` : f.why || f.status}.`;
     } else { state = 'waiting'; reason = `Merging main failed: ${String(r.error || r.log || '').split('\n').pop()}`; }
   } else if (act.action === 'fix-session') {
-    const f = await d.launchFix({ id: b.id, summary: snap.summary || `CI is red on ${snap.head.slice(0, 9)}${snap.failing.length ? `: ${snap.failing.join(', ')}` : ''}.`, n: act.attempt });
+    const f = await d.launchFix({ id: b.id, head: snap.head, summary: snap.summary || `CI is red on ${snap.head.slice(0, 9)}${snap.failing.length ? `: ${snap.failing.join(', ')}` : ''}.`, n: act.attempt });
     state = ['launched', 'running', 'queued'].includes(f.status) ? 'fixing' : 'waiting';
     reason = f.status === 'launched' ? `CI is red: fix attempt ${act.attempt} runs on ${f.account} (${f.session || 'starting'}).` : f.status === 'queued' ? `CI is red: fix attempt ${act.attempt} is Queued (${f.why}).` : f.status === 'running' ? `A fix session already runs: ${f.why}` : `Couldn't start a fix session: ${f.why}`;
   } else if (act.action === 'land') {

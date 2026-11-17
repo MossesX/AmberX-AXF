@@ -56,6 +56,9 @@ test('no account free, or the launch fails: left Queued for the dispatcher', asy
   let f = fakes({ account: '' });
   let r = await launchFix({ id: 'b1', deps: f.deps });
   assert.equal(r.status, 'queued'); assert.equal(f.b.status, 'queued');
+  assert.equal(r.attempt.result, 'started', 'the attempt is open while Queued');
+  assert.equal((await launchFix({ id: 'b1', deps: fakes({ account: '' }).deps })).status, 'running', 'no second fix step while Queued');
+  attempts.reset('b1', { by: 't' });
   f = fakes({ launchThrows: new Error('launcher exit 3') });
   r = await launchFix({ id: 'b1', deps: f.deps });
   assert.equal(r.status, 'queued'); assert.match(r.why, /launcher exit 3/);
