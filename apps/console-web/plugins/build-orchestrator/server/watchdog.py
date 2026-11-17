@@ -82,7 +82,7 @@ def gave_up_probe(st: dict[str, Any] | None = None) -> dict[str, Any]:
     return {"status": "error", "summary": f"The watchdog gave up on {len(gave)} build{'s' if len(gave) != 1 else ''}: {', '.join(g['id'] for g in gave[:4])}{'…' if len(gave) > 4 else ''}. They sit in Pending until requeued.",
             "details": [f"{g['id']}: {g.get('note') or g.get('cause')} (since {g.get('at')})" for g in gave[:10]]
             + ["Fix (requeue) puts them back in the Queue with a fresh retry count; or open Build orchestrator → Watchdog."],
-            "link": "#/build-orchestrator/watchdog"}
+            "link": "build-orchestrator.focus:watchdog"}
 
 
 def _reinstall(reg: Any) -> dict[str, Any]:
@@ -123,7 +123,7 @@ def ensure_health() -> bool:
                       "breaks": "Builds killed (exit 143) or failed (exit 1) stay marked running, their slots stay taken and nothing requeues or retries them.",
                       "fix": {"type": "action", "label": "Reinstall the cron and run a pass"},
                       "autoFix": {"label": "Reinstall the watchdog cron and run one pass", "run": lambda: _reinstall(reg)},
-                      "links": [{"label": "Watchdog", "url": "#/build-orchestrator/watchdog"}],
+                      "links": [{"label": "Watchdog", "url": "build-orchestrator.focus:watchdog"}],
                       "instructions": ["On the VPS: `node /opt/axf/apps/console-web/plugins/build-orchestrator/watchdog.mjs status`.",
                                        "Settings → Plugins → Build orchestrator → Watchdog: on/off, interval, retries."]}, FOLDER)
         reg.register({"id": GAVE_UP_ID, "label": "Builds the watchdog gave up on", "service": "console", "order": 58, "severity": "error", "interval": 120,
@@ -131,7 +131,7 @@ def ensure_health() -> bool:
                       "breaks": "These builds stopped after repeated crashes (or every Claude account was tried) and wait in Pending for you.",
                       "fix": {"type": "action", "label": "Requeue"},
                       "autoFix": {"label": "Requeue them with a fresh retry count", "run": _requeue, "mode": "ask"},
-                      "links": [{"label": "Watchdog", "url": "#/build-orchestrator/watchdog"}],
+                      "links": [{"label": "Watchdog", "url": "build-orchestrator.focus:watchdog"}],
                       "instructions": ["Requeue puts each back in the Queue; the watchdog counts its retries from zero again.",
                                        "Read the build's recoveries first (Build orchestrator → the build → Recoveries) if it keeps failing on the same step."]}, FOLDER)
     except Exception:  # noqa: BLE001 — the orchestrator works without its health items

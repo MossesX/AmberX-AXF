@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 275,
+    "functions": 277,
     "buttons": 62,
     "plugins": 71
   },
@@ -1360,7 +1360,7 @@
       "view": "build-orchestrator",
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/ui.tsx",
-      "line": 115,
+      "line": 116,
       "tabs": []
     },
     {
@@ -4402,6 +4402,34 @@
       ],
       "effect": "navigate",
       "params": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:watchdog.status",
+      "kind": "function",
+      "id": "watchdog.status",
+      "label": "Build watchdog: status (last pass, stuck builds, recent fixes)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "watchdog.status",
+        "watchdog",
+        "status"
+      ],
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:watchdog.run",
+      "kind": "function",
+      "id": "watchdog.run",
+      "label": "Build watchdog: run a pass now (optionally one build)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "watchdog.run",
+        "watchdog",
+        "run"
+      ],
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"
     },

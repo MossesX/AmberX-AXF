@@ -3,10 +3,11 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
+import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
-import { WatchdogSettingsPanel } from './watchdog';
+import { WatchdogSettingsPanel, watchdogApi, type WatchdogStatus } from './watchdog';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -18,6 +19,9 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * active|incomplete|complete|errors|archive|deleted|accounts|builds|approvals|rules>, build-orchestrator.start:<build> (Start
  * = Queue: the dispatcher starts it when its turn comes). Search: every build, by its tab. Context menu: Open / Queue on
  * build rows, plus the actions the build offers.
+ * Build watchdog (build-watchdog@1): watchdog.status (toast + the Watchdog tab), watchdog.run[:<build>] (POST watchdog/run);
+ * deep link build-orchestrator.focus:watchdog (console_open "build-orchestrator" focus "watchdog", console_show
+ * "build-orchestrator/watchdog"), with ?build=<id> for one build's row and fixes.
  * build-orchestrator.focus:<tab|build> (Nov 11 2026, console-commands-reliable): what a console command's `focus` runs
  * ("build-orchestrator pending", console_show "build:<id>"): a tab by id or label opens; a build opens its tab with its
  * row scrolled into view, expanded and highlighted. open / tab / focus only navigate (effect navigate), so Follow Amber's
@@ -57,7 +61,11 @@ export const plugin: AxfWebLibrary = {
       rt.navigate('build-orchestrator');
       let id = '';
       try { id = decodeURIComponent(arg).trim(); } catch { id = arg.trim(); }
+      id = id.replace(/^#?\/?build-orchestrator\/?/, '');
       if (!id) return;
+      // the Watchdog tab (deep link build-orchestrator/watchdog, optionally ?build=<id>: that build's row and its fixes)
+      const wd = /^watchdog(?:(?:\?build=|\/|:)([a-z0-9][a-z0-9._-]{0,79}))?$/i.exec(id);
+      if (wd) { consoleApi.writeLocal('orch-watchdog-build', wd[1] ?? ''); openTab('watchdog'); return; }
       const tab = tabOf(id);
       if (tab) { openTab(tab); return; }
       // the build: its tab opens and the row there scrolls into view, expands and stays highlighted
@@ -67,6 +75,22 @@ export const plugin: AxfWebLibrary = {
     };
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
+    // the build watchdog (build-watchdog@1) for voice and console actions: the same calls as REST / MCP / `axf watchdog`
+    rt.actions.register('watchdog.status', async () => {
+      void open('watchdog');
+      try {
+        const s = await watchdogApi.call<WatchdogStatus>('watchdog/status');
+        const running = s.lastScan?.builds.length ?? 0; const stuck = s.lastScan?.builds.filter((b) => b.stuck).length ?? 0;
+        rt.toast(`Watchdog ${s.settings.enabled ? 'on' : 'off'}: last pass ${s.ageMin != null ? `${s.ageMin} min ago` : 'never'}, ${running} running, ${stuck} stuck, ${s.recent.length} recent fixes${s.gaveUp.length ? `, gave up on ${s.gaveUp.length}` : ''}.`, s.stale || s.gaveUp.length ? 'warning' : 'success');
+      } catch (e) { rt.toast((e as Error).message, 'danger'); }
+    }, { label: 'Build watchdog: status (last pass, stuck builds, recent fixes)' });
+    rt.actions.register('watchdog.run', async ([arg]) => {
+      try {
+        const build = decodeURIComponent(arg ?? '').trim();
+        const r = await watchdogApi.post<{ requested?: boolean; fixes?: unknown[] }>('watchdog/run', build ? { build } : {});
+        rt.toast(r.requested ? 'Asked the VPS for a watchdog pass: it runs within a minute.' : `Watchdog pass done: ${r.fixes?.length ?? 0} fixed.`, 'success');
+      } catch (e) { rt.toast((e as Error).message, 'danger'); }
+    }, { label: 'Build watchdog: run a pass now (optionally one build)' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
     // custom groups (groups.tsx, groups.mjs): group:<id> is a custom tab; group-add / group-remove put builds in or out,
     // group-action runs queue | land | archive | priority:<P> on every build of a group (the same POST groups calls)

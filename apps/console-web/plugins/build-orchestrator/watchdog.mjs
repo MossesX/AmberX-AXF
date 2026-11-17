@@ -10,6 +10,7 @@
  * host (framework/cli/agent-slots.mjs alive: pid, tmux, heartbeat, the run-status file) plus the evidence the headless
  * wrapper left on the build (pipeline.runEnd, the session-end event), and let the decision table say what to do.
  *
+ * CLI: also `axf watchdog status|scan|run|set|settings|recoveries|requeue` (plugin.json "cli" names this file).
  *   node apps/console-web/plugins/build-orchestrator/watchdog.mjs scan [--json]     dry run: every stuck build, its cause and
  *                                                                                   the planned action; nothing changes
  *   … run [--build id] [--json]    one pass that applies the recoveries: a hung session is killed first, the build's agent
@@ -389,7 +390,8 @@ export function status({ env = process.env, now = Date.now() } = {}) {
 // ------------------------------------------------------------------ phone FYI (axf.notify@1)
 
 export const ALERT_SOURCE = 'watchdog';
-export const ALERT_LINK = '#/build-orchestrator/watchdog';
+/** The deep link (a console action: alerts dispatch their link): the Watchdog tab, `?build=<id>` for one build. */
+export const ALERT_LINK = 'build-orchestrator.focus:watchdog';
 const fixLine = (f) => `${f.title || f.buildId || 'Slots'}: ${f.cause}${f.exit != null ? ` (exit ${f.exit})` : ''} → ${f.action}${f.attempt ? `, attempt ${f.attempt}` : ''}${f.next ? `, next ${f.next}` : ''}`;
 
 /** The alerts for one pass's fixes: batched FYI (or one per fix) + one alert per give-up. */
@@ -491,6 +493,9 @@ function flags(argv) {
   }
   return out;
 }
+
+/** The words `axf watchdog <word>` runs (plugin.json "cli": { "watchdog": "watchdog.mjs" }). */
+export const cliWords = ['status', 'scan', 'run', 'set', 'settings', 'recoveries', 'requeue', 'request'];
 
 export async function main(argv = process.argv.slice(2)) {
   const [cmd = 'scan', ...rest] = argv;

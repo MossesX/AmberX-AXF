@@ -46,6 +46,8 @@
  *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
  *   axf pass grant [minutes] [--scope theme|style|layout|tokens]   timed veto pass, everything by default (Brett approves once)
  *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
+ *   axf <word> …                 a word a plugin's "cli" map names besides its folder (e.g. `axf watchdog status|scan|run|set`
+ *                               from the Build orchestrator): found by scanning plugin manifests, never by folder name
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
@@ -122,6 +124,20 @@ const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'v
   const { join: joinPath } = await import('node:path');
   const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
   const isPlugin = cmd && !AXF_COMMANDS.has(cmd) && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(joinPath(plugins, cmd, 'plugin.json'));
+  // a word no command or plugin folder has: the plugin whose "cli" map names it runs it (`axf watchdog status`)
+  if (cmd && !AXF_COMMANDS.has(cmd) && !isPlugin && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(plugins)) {
+    const { pathToFileURL } = await import('node:url');
+    for (const d of readdirSync(plugins).sort()) {
+      let own = '';
+      try { const m = JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')); own = d !== cmd && m.cli && typeof m.cli === 'object' ? m.cli[cmd] || '' : ''; } catch { continue; }
+      const file = own && /^[\w./-]+\.mjs$/.test(own) && !own.includes('..') ? joinPath(plugins, d, own) : '';
+      if (!file || !exists(file)) continue;
+      const words = await import(pathToFileURL(file).href);
+      if (!rest[0] || rest[0] === 'help' || rest[0] === '--help') { console.log(`axf ${cmd} ${(words.cliWords ?? []).join('|')} …`); process.exit(0); }
+      if (words.cliWords?.includes(rest[0])) process.exit((await words.main(rest)) ?? process.exitCode ?? 0);
+      console.error(`axf ${cmd}: ${rest[0]} is not one of ${(words.cliWords ?? []).join(', ')}`); process.exit(2);
+    }
+  }
   if (cmd === 'plugins' || cmd === 'plugin' || isPlugin) {
     const { pathToFileURL } = await import('node:url');
     const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
