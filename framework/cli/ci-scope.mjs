@@ -41,7 +41,7 @@ export const RULES = Object.freeze([
   { re: /^apps\/amberx-droid\//, needs: ['engine', 'console', 'amberxweb', 'amberx'] },
   { re: /^apps\/molly\//, needs: ['engine', 'console', 'molly'] },
   { re: /^apps\/walkthrough-studio\//, needs: ['engine', 'console', 'walkthrough'] },
-  { re: /^apps\/(console|voicevault|axhub-android)\//, needs: ['engine', 'android'] },
+  { re: /^apps\/(console|console-droid|voicevault|axhub-android)\//, needs: ['engine', 'android'] },
   { re: /^apps\/demo\//, needs: ['engine'] },
   { re: /^deploy\//, needs: ['engine', 'console'] },
   // data and docs: the builds store, tracker and manifests are checked by the engine sweep

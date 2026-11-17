@@ -1,0 +1,21 @@
+/** Types for nativeRules.mjs (the console side of the Android console app, pure part). */
+export declare const OPEN_PARAM: 'axf-open';
+export declare const OVERLAY_SETTING_PREFIX: 'approvals-banner.overlay.';
+export declare const OVERLAY_SETTINGS: readonly string[];
+export declare const WAITING_BADGE: 'approvals.waiting';
+export declare const PHONE_APP_ADDRESS: 'panel:phone-app';
+export declare const APPROVALS_TARGET: 'approvals.view';
+export declare const THEME_TOKENS: readonly string[];
+export declare const SAFE_TOKENS: readonly string[];
+export declare const OVERLAY_VERBS: readonly string[];
+export declare const PERMISSIONS: readonly string[];
+export declare const RECORDER_VERBS: readonly string[];
+export declare const UPDATE_VERBS: readonly string[];
+export declare function openTarget(href: string): { target: string; kind: 'address' | 'action' | 'none'; rest: string } | null;
+export declare function isAddress(s: string): boolean;
+export declare function overlayConfig(get: (key: string) => unknown): Record<string, unknown>;
+export declare function themeTokens(read: (token: string) => string): Record<string, string>;
+export declare function pageHandlesInsets(read: (token: string) => string): boolean;
+export declare function parseAnswer(s: unknown): { ok: boolean; error?: string; [k: string]: unknown };
+export declare function nativeCall(id: string, args: readonly string[] | undefined): { call: string; args: unknown[] } | { error: string };
+export declare const NATIVE_ACTIONS: ReadonlyArray<{ id: string; label: string; params: boolean }>;
