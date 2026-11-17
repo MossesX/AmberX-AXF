@@ -37,6 +37,7 @@ import * as P2 from './acts/crash-watchdog-retry.mjs';
 import * as P3 from './acts/ci-fix-land.mjs';
 import * as P4 from './acts/die-cleanup-notify.mjs';
 import { FOLDER, demoBuildId, findBuild } from './sandbox.mjs';
+import { checkDeps } from './deps.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '../../../..');
@@ -364,6 +365,8 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
   const clock = makeClock(env);
   try {
     if (cmd === 'new') {
+      const deps = checkDeps({ env });
+      if (!deps.ok) return out({ ok: false, code: 'missing-deps', error: deps.reason, deps });
       const old = loadRun(files, id);
       if (old && !core.TERMINAL_STATES.includes(old.run.state)) return out({ ok: false, code: 'busy', error: `run ${old.run.id} is still ${old.run.state}: stop it first`, state: view(old) });
       const pause = argv.includes('--pause') ? true : argv.includes('--no-pause') ? false : readSettings(files).pauseBetweenSteps;
@@ -372,6 +375,8 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       return out({ ok: true, state: view(rec) });
     }
     if (cmd === 'start') {
+      const deps = checkDeps({ env });
+      if (!deps.ok) return out({ ok: false, code: 'missing-deps', error: deps.reason, deps });
       // Open a run and play it at once (the overlay's Continue): reuses a run still in its overlay, refuses a playing one.
       const p = argv.includes('--pause') ? true : argv.includes('--no-pause') ? false : readSettings(files).pauseBetweenSteps;
       const old = loadRun(files, id);
@@ -403,9 +408,10 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       return out({ ok: true, state: view(end) });
     }
     if (cmd === 'ensure') return out({ ok: true, ...ensureDriver(files, id) });
-    if (cmd === 'state') return out({ ok: true, state: view(loadRun(files, id)) });
+    if (cmd === 'state') return out({ ok: true, state: view(loadRun(files, id)), deps: checkDeps({ env }) });
+    if (cmd === 'deps') return out({ ok: true, deps: checkDeps({ env }) });
     if (cmd === 'summary') { const rec = loadRun(files, id); return out({ ok: !!rec, summary: rec ? (rec.driver.summary ?? summaryRecord(rec.run)) : null, checklist: rec ? core.checklist(rec.run) : [], cleanup: rec?.driver.cleanup ?? null, ...(rec ? {} : { code: 'no-run', error: 'no demo run' }) }); }
-    return out({ ok: false, code: 'usage', error: 'usage: runner.mjs new|start [--pause|--no-pause] | event <type> | drive | ensure | state | summary | settings [--pause true|false] [--id <run>]' });
+    return out({ ok: false, code: 'usage', error: 'usage: runner.mjs new|start [--pause|--no-pause] | event <type> | drive | ensure | state | summary | deps | settings [--pause true|false] [--id <run>]' });
   } catch (e) {
     process.exitCode = 1;
     return out({ ok: false, code: e?.code || 'error', error: e?.message || String(e) });

@@ -47,3 +47,4 @@
 .axp-orchestrator-demo__check.is-skipped .axp-orchestrator-demo__check-title { color: var(--fx-muted); }
 .axp-orchestrator-demo__mark { flex: none; width: var(--fx-dens-gap-3xl); text-align: center; font-weight: 600; }
 .axp-orchestrator-demo__check-title { flex: 1 1 auto; min-width: 0; }
+.axp-orchestrator-demo__missing { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-danger); border-radius: var(--fx-radius-md); }

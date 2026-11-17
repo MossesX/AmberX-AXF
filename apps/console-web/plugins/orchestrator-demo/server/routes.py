@@ -21,7 +21,7 @@ RUNNER = HERE / "runner.mjs"
 ROOT = HERE.parents[3]  # the repo root (/axf in the console image)
 TIMEOUT_S = 30
 # Refusal code -> HTTP status. Anything not listed is a 400 (a bad request) or a 500 (the runner failed).
-STATUS = {"busy": 409, "invalid-transition": 409, "no-act": 409, "no-run": 404, "usage": 400, "bad-result": 400}
+STATUS = {"missing-deps": 409, "busy": 409, "invalid-transition": 409, "no-act": 409, "no-run": 404, "usage": 400, "bad-result": 400}
 
 
 def run_runner(*args: str) -> dict[str, Any]:
@@ -132,6 +132,12 @@ async def set_pause_between_steps(request: Request) -> dict[str, Any]:
     settings = answer(run_runner("settings", "--pause", on)).get("settings")
     res = run_runner("event", "set-pause", "--pause", on)
     return {"ok": True, "settings": settings, "state": res.get("state") if res.get("ok") else None}
+
+
+@router.get("/deps")
+def deps() -> dict[str, Any]:
+    """What the demo needs from the live build status build (real-time grids, break alert, broke dialog) and what is missing."""
+    return answer(run_runner("deps"))
 
 
 @router.get("/settings")

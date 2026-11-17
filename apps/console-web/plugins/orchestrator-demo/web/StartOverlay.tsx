@@ -11,7 +11,7 @@ import './orchestrator-demo.css';
 
 export function StartOverlay({ close }: { close: () => void }) {
   const rt = useRuntime();
-  const { state, settings, error, setState } = useDemoState(1500);
+  const { state, settings, deps, error, setState } = useDemoState(1500);
   const [pause, setPause] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
@@ -19,6 +19,7 @@ export function StartOverlay({ close }: { close: () => void }) {
   const run = state?.run ?? null;
   const inOverlay = run?.state === 'overlay';
   const playing = isLive(state) && !inOverlay;
+  const blocked = !!deps && !deps.ok;
 
   // a run that is already playing has nothing to start: show where it is instead
   useEffect(() => { if (playing) setMsg(`The demo is already running (${run?.state}). Use the caption bar to pause, skip or stop it.`); }, [playing, run?.state]);
@@ -64,11 +65,20 @@ export function StartOverlay({ close }: { close: () => void }) {
         disabled={busy || playing}
         hint={pauseOn ? 'After each act it waits on what to watch until you press Next, then 30 s, then focuses the next.' : `It plays on by itself, ${MIN_GAP_S} s between acts.`}
       />
+      {blocked && (
+        <div className="axp-orchestrator-demo__missing" role="alert">
+          <p className="axp-orchestrator-demo__error">{deps.reason}</p>
+          <ul className="axp-orchestrator-demo__parts">
+            {deps.missing.map((m) => <li key={m.id}><b>{m.what}</b> <span className="axp-orchestrator-demo__muted">({m.for})</span></li>)}
+          </ul>
+        </div>
+      )}
+      {deps?.skipped && <p className="axp-orchestrator-demo__note">{deps.skipped}</p>}
       {state?.held && inOverlay && <p className="axp-orchestrator-demo__note" role="status">Paused before the first act. Continue when you are ready.</p>}
       {(msg || error) && <p className="axp-orchestrator-demo__error" role="alert">{msg || error}</p>}
       <div className="axp-orchestrator-demo__toolbar" role="toolbar" aria-label="Start the orchestrator demo">
-        <Button tone="primary" icon="play" disabled={busy || playing} onClick={() => void onContinue()}>Continue</Button>
-        <Button icon="pause" disabled={busy || playing || (inOverlay && state?.held)} onClick={() => void onPause()}>Pause</Button>
+        <Button tone="primary" icon="play" disabled={busy || playing || blocked} onClick={() => void onContinue()}>Continue</Button>
+        <Button icon="pause" disabled={busy || playing || blocked || (inOverlay && state?.held)} onClick={() => void onPause()}>Pause</Button>
         <span className="axp-orchestrator-demo__spacer" />
         <Button tone="danger" icon="x-circle" disabled={busy} onClick={() => void onStop()}>{run && isLive(state) ? 'Stop' : 'Close'}</Button>
       </div>

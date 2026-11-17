@@ -157,6 +157,13 @@
         "description": "Pause between steps default and the minimum gap between acts (30 s)."
       },
       {
+        "id": "deps",
+        "route": "GET /deps",
+        "title": "Orchestrator demo: dependency check",
+        "readOnly": true,
+        "description": "What the demo needs from the live build status build (real-time grids, the break alert, the broke dialog) and what is missing; start refuses while anything is."
+      },
+      {
         "id": "summary",
         "route": "GET /summary",
         "title": "Orchestrator demo: summary",

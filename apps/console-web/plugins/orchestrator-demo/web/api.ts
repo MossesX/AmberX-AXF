@@ -27,7 +27,8 @@ export interface DemoState {
   run: Run | null; summary: Summary | null; checklist: CheckItem[]; caption: Caption | null; held: boolean;
   allowed?: string[]; outline: OutlinePart[]; driverAlive?: boolean; testClock?: boolean;
 }
-interface StateRes { ok: boolean; state: DemoState; settings?: Settings }
+export interface Deps { ok: boolean; missing: { id: string; what: string; for: string }[]; reason: string; skipped: string; source: string }
+interface StateRes { ok: boolean; state: DemoState; settings?: Settings; deps?: Deps }
 
 export const TERMINAL = ['done', 'stopped'];
 export const isLive = (s: DemoState | null) => !!s?.run && !TERMINAL.includes(s.run.state);
@@ -45,19 +46,21 @@ export const demo = {
   setPause: (pause: boolean) => api.put<{ ok: boolean; settings: Settings; state: DemoState | null }>('pause-between-steps', { pause }),
   settings: () => api.call<{ ok: boolean; settings: Settings }>('settings'),
   summary: () => api.call<{ ok: boolean; summary: Summary | null; cleanup: unknown }>('summary'),
+  deps: () => api.call<{ ok: boolean; deps: Deps }>('deps'),
 };
 
 /** The run, polled every `ms` while a run is live (1 s keeps the countdown honest), every `idleMs` otherwise. */
 export function useDemoState(ms = 1000, idleMs = ms) {
   const [state, setState] = useState<DemoState | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
+  const [deps, setDeps] = useState<Deps | null>(null);
   const [error, setError] = useState('');
   const refresh = useCallback(async () => {
-    try { const r = await demo.state(); setState(r.state); if (r.settings) setSettings(r.settings); setError(''); } catch (e) { setError(e instanceof Error ? e.message : String(e)); }
+    try { const r = await demo.state(); setState(r.state); if (r.settings) setSettings(r.settings); if (r.deps) setDeps(r.deps); setError(''); } catch (e) { setError(e instanceof Error ? e.message : String(e)); }
   }, []);
   const every = isLive(state) ? ms : idleMs;
   useEffect(() => { void refresh(); const t = setInterval(() => void refresh(), every); return () => clearInterval(t); }, [refresh, every]);
-  return { state, settings, error, refresh, setState };
+  return { state, settings, deps, error, refresh, setState };
 }
 
 /** Run one action, then take its answer as the new state; the error (a plain reason) is returned for the UI to show. */

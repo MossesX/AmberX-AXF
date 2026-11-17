@@ -21,6 +21,7 @@ export function requestFor(word, argv = []) {
     case 'state': return ['GET', '/state'];
     case 'summary': return ['GET', '/summary'];
     case 'settings': return ['GET', '/settings'];
+    case 'deps': return ['GET', '/deps'];
     case 'start': return ['POST', '/start', has('--pause') ? { pause: true } : has('--no-pause') ? { pause: false } : {}];
     case 'open': return ['POST', '/open', has('--pause') ? { pause: true } : has('--no-pause') ? { pause: false } : {}];
     case 'pause': return ['POST', '/pause', {}];
@@ -37,7 +38,7 @@ export function requestFor(word, argv = []) {
   }
 }
 
-export const USAGE = 'axf demo orchestrator start [--pause|--no-pause] | open | pause | resume | next | skip [--why …] | stop [--why …] | state | summary | pause-between-steps on|off | settings  [--json] [--url <console>]';
+export const USAGE = 'axf demo orchestrator start [--pause|--no-pause] | open | pause | resume | next | skip [--why …] | stop [--why …] | state | summary | deps | pause-between-steps on|off | settings  [--json] [--url <console>]';
 
 /** One plain line for a person (the --json flag prints the whole answer instead). */
 export function describe(word, r) {
@@ -48,6 +49,7 @@ export function describe(word, r) {
     for (const a of s.acts ?? []) lines.push(`  ${({ pass: '✓', fail: '✗', skipped: '–' })[a.result] ?? '·'} ${a.title}${a.error ? `: ${a.error}` : ''}`);
     return lines.join('\n');
   }
+  if (word === 'deps') return r.deps?.ok ? `All there${r.deps.skipped ? ` (${r.deps.skipped})` : ''}.` : `${r.deps?.reason ?? ''}`;
   if (r.settings && !r.state) return `Pause between steps: ${r.settings.pauseBetweenSteps ? 'on' : 'off'} · minimum gap ${Math.round(r.settings.minGapMs / 1000)} s`;
   const st = r.state;
   if (!st?.run) return 'No demo run.';
