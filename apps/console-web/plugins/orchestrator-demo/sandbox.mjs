@@ -8,7 +8,7 @@
  *
  *   - every write goes through the builds store with `demo: true`, so the store's guard refuses a write that touches a
  *     build without the tag (DemoGuardError, not-demo-build) and the whole write is dropped;
- *   - removal deletes only ids that pass `isDemoId` AND are in the ledger (or, with `sweep`, any `demo-*` build left
+ *   - removal deletes only our fixture builds (isFixture: demo-<key>-<suffix> AND source orchestrator-demo) that are in the ledger (or, with `sweep`, any left
  *     behind by a run that died before it could clean up).
  *
  * The builds store and the data folder are injected (`store`, `data`) so tests run on memory; the defaults are the real
@@ -65,6 +65,14 @@ export const FIXTURES = Object.freeze([
 ]);
 
 export const fixture = (key) => FIXTURES.find((f) => f.key === key) ?? null;
+/** The source every fixture build carries; the store keeps it. */
+export const SOURCE = 'orchestrator-demo';
+const FIXTURE_ID = new RegExp(`^${DEMO_PREFIX}(${FIXTURES.map((f) => f.key).join('|')})-[a-z0-9]{1,12}$`);
+/**
+ * Is this build one of ours? A demo-* id alone is not enough: real builds can be named demo-something (Brett has
+ * several). Ours are exactly `demo-<fixture key>-<suffix>` AND carry source orchestrator-demo.
+ */
+export const isFixture = (b) => !!b && isDemoId(b.id) && FIXTURE_ID.test(b.id) && b.source === SOURCE;
 
 /** The demo build id for a fixture in a run: demo-<key>-<suffix> (suffix = the run's short tag, [a-z0-9]). */
 export function demoBuildId(key, suffix) {
@@ -79,7 +87,7 @@ export function fixtureBuild(key, suffix, { now = new Date().toISOString(), runI
   const f = fixture(key);
   if (!f) throw new Error(`no demo fixture "${key}"`);
   return {
-    id: demoBuildId(key, suffix), title: f.title, category: f.category, detail: f.detail, status: 'pending', source: 'orchestrator-demo',
+    id: demoBuildId(key, suffix), title: f.title, category: f.category, detail: f.detail, status: 'pending', source: SOURCE,
     branch: '', createdAt: now, updatedAt: now,
     notes: [{ text: `Created by the guided live demo${runId ? ` (run ${runId})` : ''}; removed when the run ends.`, at: now }],
     steps: f.steps.map((s) => ({ ...s, text: s.title, model: 'Opus', createdAt: now, updatedAt: now })),
@@ -153,19 +161,22 @@ export async function createFixtures({ store, data, suffix, runId = '', keys = F
 }
 
 /**
- * Remove demo builds: every ledger entry (optionally only one run's), plus with `sweep` any `demo-*` build still in the
+ * Remove demo builds: every ledger entry (optionally only one run's), plus with `sweep` any fixture build (isFixture) still in the
  * store; `only` limits it to those ids. Ids without the demo prefix are never removed, whatever the ledger says. Returns { removed, kept }.
  */
 export async function removeFixtures({ store, data, runId = '', sweep = false, only = null }) {
   const ledger = readLedger(data);
   const mine = ledger.builds.filter((b) => (!runId || b.runId === runId) && (!only || only.includes(b.id))).map((b) => b.id).filter(isDemoId);
   const want = new Set(mine);
-  if (sweep) for (const b of store.read().builds ?? []) if (isDemoId(b.id)) want.add(b.id);
+  const live = (store.read().builds ?? []).filter((b) => !b.deleted);
+  if (sweep) for (const b of live) if (isFixture(b)) want.add(b.id);
+  // only our own fixtures are ever removed, whatever the ledger or the sweep asked for (a real build may be named demo-*)
+  const gone = (b) => want.has(b.id) && isFixture(b) && !b.deleted;
   let removed = [];
-  if (want.size) {
+  if (live.some(gone)) {
     await store.write((s) => {
-      removed = s.builds.filter((b) => want.has(b.id) && isDemoId(b.id)).map((b) => b.id);
-      s.builds = s.builds.filter((b) => !(want.has(b.id) && isDemoId(b.id)));
+      removed = s.builds.filter(gone).map((b) => b.id);
+      s.builds = s.builds.filter((b) => !gone(b));
       return s;
     }, 'demo-remove');
   }
@@ -180,8 +191,9 @@ export async function updateDemoBuild(store, id, fn, action = 'demo-update') {
   let out = null;
   await store.write((s) => {
     const b = s.builds.find((x) => x.id === id);
-    if (!b) throw new Error(`no demo build ${id}`);
+    if (!b || b.deleted) throw new Error(`no demo build ${id}`);
     assertDemo(b, action);
+    if (!isFixture(b)) throw Object.assign(new Error(`demo action refused: ${id} is not one of the demo's own builds`), { code: 'not-demo-build' });
     fn(b);
     b.updatedAt = new Date().toISOString();
     out = b;
@@ -190,4 +202,5 @@ export async function updateDemoBuild(store, id, fn, action = 'demo-update') {
   return out;
 }
 
-export const findBuild = (store, id) => (store.read().builds ?? []).find((b) => b.id === id) ?? null;
+/** A build as the grids show it: a soft-deleted record (the store never drops one) counts as gone. */
+export const findBuild = (store, id) => (store.read().builds ?? []).find((b) => b.id === id && !b.deleted) ?? null;

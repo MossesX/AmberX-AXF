@@ -61,14 +61,21 @@ export const outline = (ids) => PARTS.map((p) => ({ part: p.PART, title: p.TITLE
 
 // ── clock ───────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-/** Real clock, or the test-only scaled clock (AXF_DEMO_GAP_MS_TEST). */
-export function makeClock(env = process.env, real = () => Date.now()) {
+/**
+ * Real clock, or the test-only scaled clock (AXF_DEMO_GAP_MS_TEST). The scaled clock is anchored on the run
+ * (driver.clock = { real, virt }), so the driver and every process that sends an event (REST, CLI) read the same
+ * virtual time; without an anchor (a new run) it starts at the real time now.
+ */
+export function makeClock(env = process.env, real = () => Date.now(), anchor = null) {
   const test = Number(env.AXF_DEMO_GAP_MS_TEST) || 0;
   const factor = test > 0 ? core.MIN_GAP_MS / Math.max(50, test) : 1;
-  const t0 = real();
-  const nowMs = () => (factor === 1 ? real() : t0 + (real() - t0) * factor);
-  return { factor, test: factor !== 1, nowMs, now: () => new Date(nowMs()).toISOString(), realMs: (virtualMs) => Math.max(1, Math.round(virtualMs / factor)) };
+  const t0 = Number(anchor?.real) || real();
+  const v0 = Number(anchor?.virt) || t0;
+  const nowMs = () => (factor === 1 ? real() : v0 + (real() - t0) * factor);
+  return { factor, test: factor !== 1, anchor: { real: t0, virt: v0 }, nowMs, now: () => new Date(nowMs()).toISOString(), realMs: (virtualMs) => Math.max(1, Math.round(virtualMs / factor)) };
 }
+/** The clock for a stored run (its anchor), or a fresh one. */
+export const clockFor = (rec, env = process.env) => makeClock(env, undefined, rec?.driver?.clock ?? null);
 
 // ── persistence (data-store@1, the plugin data folder) ──────────────────────────────────────────────────────────────
 
@@ -96,7 +103,7 @@ export function saveRun(files, rec) {
   files.write('current.json', { id: rec.run.id });
   return rec;
 }
-const defaultDriver = () => ({ held: false, heldAt: '', suffix: '', ids: {}, log: [], pid: 0, beatAt: '', testClock: false, cleaned: false, cleanup: null, summary: null });
+const defaultDriver = () => ({ clock: null, held: false, heldAt: '', suffix: '', ids: {}, log: [], pid: 0, beatAt: '', testClock: false, cleaned: false, cleanup: null, summary: null });
 
 /** A cross-process lock on the run (the driver and every event take it). Stale after 30 s. */
 export function withLock(files, id, fn) {
@@ -117,14 +124,14 @@ export function withLock(files, id, fn) {
 // ── runs and events ─────────────────────────────────────────────────────────────────────────────────────────────────
 
 /** A new run: in the overlay, fixture ids chosen, nothing created yet. */
-export function newDemoRun({ pause = true, now = new Date().toISOString(), suffix = Math.random().toString(36).slice(2, 8), testClock = false } = {}) {
+export function newDemoRun({ pause = true, now = new Date().toISOString(), suffix = Math.random().toString(36).slice(2, 8), testClock = false, clock = null } = {}) {
   const ids = idsFor(suffix);
   const id = `demo-run-${now.slice(0, 10).replace(/-/g, '')}-${suffix}`;
   let run = core.newRun({ id, title: TITLE, acts: catalog(ids), pause, now });
   const bad = core.validateRun(run);
   if (bad.length) throw new Error(`demo run invalid: ${bad.map((b) => b.message).join('; ')}`);
   run = core.step(run, { type: 'begin', at: now });
-  return { run, driver: { ...defaultDriver(), suffix, ids, testClock } };
+  return { run, driver: { ...defaultDriver(), suffix, ids, testClock, clock } };
 }
 
 /** Apply one of Brett's events (or the driver's) to the stored run. Returns the new record. */
@@ -141,7 +148,7 @@ export function applyEvent(rec, type, { at, pause, why = '', by = 'brett' } = {}
 }
 
 /** State for every surface: the record, the summary, the check-list, what the caption bar shows. */
-export function view(rec, nowMs = Date.now()) {
+export function view(rec, nowMs = rec ? clockFor(rec).nowMs() : Date.now()) {
   if (!rec) return { $axf: 'orchestrator-demo-state@1', run: null, summary: null, checklist: [], caption: null, held: false, outline: [] };
   const { run, driver } = rec;
   const act = core.currentAct(run);
@@ -301,7 +308,7 @@ export async function realContext({ files, rec, env = process.env } = {}) {
   const sandbox = await import('./sandbox.mjs');
   const { fakeSessions } = await import('./fake-session.mjs');
   const { dryLander } = await import('./dry-lander.mjs');
-  const clock = makeClock(env);
+  const clock = clockFor(rec, env);
   const data = await sandbox.realData();
   const raised = [];
   const ctx = {
@@ -318,7 +325,7 @@ export async function realContext({ files, rec, env = process.env } = {}) {
     notify: async (a) => { raised.push(a); const r = await consoleCall('POST', '/api/alerts', a, env); return r ? { sent: true, alert: r } : { sent: false, why: 'the console did not answer (the notice is recorded in the run only)' }; },
     focus: async (f) => {
       // watch-live follow, then the console's own focus with highlight
-      spawn(process.execPath, [join(REPO, 'framework/cli/axf.mjs'), 'focus', f.app, f.route || '', f.selector || '', '--note', f.note || 'orchestrator demo'], { stdio: 'ignore', detached: true }).unref();
+      if (env.AXF_DEMO_CONSOLE !== 'off') spawn(process.execPath, [join(REPO, 'framework/cli/axf.mjs'), 'focus', f.app, f.route || '', f.selector || '', '--note', f.note || 'orchestrator demo'], { stdio: 'ignore', detached: true }).unref();
       if (f.address) await consoleCall('POST', '/api/console-control/focus', { address: f.address, options: { highlightMs: 4000, expand: true }, by: 'orchestrator-demo', reason: f.note }, env);
     },
     action: async (a) => {
@@ -370,7 +377,7 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       const old = loadRun(files, id);
       if (old && !core.TERMINAL_STATES.includes(old.run.state)) return out({ ok: false, code: 'busy', error: `run ${old.run.id} is still ${old.run.state}: stop it first`, state: view(old) });
       const pause = argv.includes('--pause') ? true : argv.includes('--no-pause') ? false : readSettings(files).pauseBetweenSteps;
-      const rec = newDemoRun({ pause, now: clock.now(), testClock: clock.test });
+      const rec = newDemoRun({ pause, now: clock.now(), testClock: clock.test, clock: clock.test ? clock.anchor : null });
       saveRun(files, rec);
       return out({ ok: true, state: view(rec) });
     }
@@ -381,8 +388,8 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       const p = argv.includes('--pause') ? true : argv.includes('--no-pause') ? false : readSettings(files).pauseBetweenSteps;
       const old = loadRun(files, id);
       if (old && !core.TERMINAL_STATES.includes(old.run.state) && old.run.state !== 'overlay') return out({ ok: false, code: 'busy', error: `run ${old.run.id} is already ${old.run.state}: stop it first`, state: view(old) });
-      let rec = old && old.run.state === 'overlay' ? old : saveRun(files, newDemoRun({ pause: p, now: clock.now(), testClock: clock.test }));
-      rec = withLock(files, rec.run.id, () => saveRun(files, applyEvent(loadRun(files, rec.run.id), 'continue', { at: clock.now(), pause: p })));
+      let rec = old && old.run.state === 'overlay' ? old : saveRun(files, newDemoRun({ pause: p, now: clock.now(), testClock: clock.test, clock: clock.test ? clock.anchor : null }));
+      rec = withLock(files, rec.run.id, () => saveRun(files, applyEvent(loadRun(files, rec.run.id), 'continue', { at: clockFor(rec, env).now(), pause: p })));
       return out({ ok: true, state: view(rec), driver: ensureDriver(files, rec.run.id) });
     }
     if (cmd === 'settings') {
@@ -395,7 +402,7 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       if (![...BRETT_EVENTS, 'set-pause'].includes(type)) return out({ ok: false, code: 'invalid-transition', error: `unknown event ${type} (${[...BRETT_EVENTS, 'set-pause'].join(', ')})` });
       if (!id) return out({ ok: false, code: 'no-run', error: 'no demo run: start one first' });
       const p = arg(argv, '--pause');
-      const rec = withLock(files, id, () => saveRun(files, applyEvent(loadRun(files, id), type, { at: clock.now(), pause: p === undefined ? undefined : p === 'true', why: arg(argv, '--why') || '', by: arg(argv, '--by') || 'brett' })));
+      const rec = withLock(files, id, () => { const cur = loadRun(files, id); return saveRun(files, applyEvent(cur, type, { at: clockFor(cur, env).now(), pause: p === undefined ? undefined : p === 'true', why: arg(argv, '--why') || '', by: arg(argv, '--by') || 'brett' })); });
       const d = type === 'continue' || type === 'resume' || type === 'stop' ? ensureDriver(files, id) : null;
       return out({ ok: true, state: view(rec), driver: d });
     }

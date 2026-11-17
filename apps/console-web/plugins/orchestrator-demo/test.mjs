@@ -108,6 +108,17 @@ test('the sandbox guard refuses real builds', async () => {
   assert.deepEqual(findBuild(m.store, REAL.id), REAL);
 });
 
+test('a real build named demo-* is never removed or changed by the demo', async () => {
+  const named = { ...REAL, id: 'demo-sandbox-real-feature', source: 'console' };
+  const lookalike = { ...REAL, id: 'demo-grid-abc123', source: 'console' };
+  const m = memoryAdapters([named, lookalike]);
+  m.data.write('fixtures.json', { $axf: 'demo-fixtures@1', builds: [{ id: named.id, runId: 'x', at: T0 }, { id: lookalike.id, runId: 'x', at: T0 }] });
+  const r = await removeFixtures({ store: m.store, data: m.data, sweep: true });
+  assert.deepEqual(r.removed, []);
+  assert.deepEqual(m.store.read().builds.map((b) => b.id), [named.id, lookalike.id]);
+  await assert.rejects(() => updateDemoBuild(m.store, lookalike.id, (b) => { b.status = 'failed'; }), /not one of the demo's own builds/);
+});
+
 test('Stop ends the run at once and cleans up every demo build, branch and alert; real builds untouched', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'od-test-'));
   try {
