@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:45:45.486Z",
+ "updatedAt": "2026-11-17T23:45:56.568Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -26513,7 +26513,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T05:31:49.289Z",
-   "updatedAt": "2026-11-12T10:54:37.358Z",
+   "updatedAt": "2026-11-17T23:45:40.538Z",
    "builtAt": "",
    "notes": [
     {
@@ -26523,6 +26523,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 10 → 5 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:40.538Z"
     }
    ],
    "approvals": [],
@@ -73096,7 +73100,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:17:38.161Z",
-   "updatedAt": "2026-11-12T02:09:29.982Z",
+   "updatedAt": "2026-11-17T23:45:34.956Z",
    "builtAt": "",
    "notes": [
     {
@@ -73106,6 +73110,10 @@
     {
      "text": "Moved to the Archive from pending (console).",
      "at": "2026-11-12T02:09:29.982Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 8 → 4 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:34.956Z"
     }
    ],
    "approvals": [],
@@ -97363,7 +97371,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T23:08:04.661Z",
+   "updatedAt": "2026-11-17T23:45:42.762Z",
    "builtAt": "",
    "notes": [
     {
@@ -97485,6 +97493,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T23:08:04.661Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 11 → 10 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:42.762Z"
     }
    ],
    "approvals": [
@@ -108592,7 +108604,7 @@
    "pr": "#592",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-17T19:56:19.504Z",
+   "updatedAt": "2026-11-17T23:45:49.033Z",
    "builtAt": "",
    "notes": [
     {
@@ -108650,6 +108662,10 @@
     {
      "text": "Watchdog: Pending build fix-step-splitter-claude-exit-1-input → Remove: Its PR was closed without a merge (PR #592 closed; build fix-step-splitter-claude-exit-1-input: pending; branch claude/fix-step-splitter-claude-exit-1-input deleted) (pending → archived)",
      "at": "2026-11-17T19:56:19.504Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 8 → 4 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:49.033Z"
     }
    ],
    "approvals": [],
@@ -115896,7 +115912,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "updatedAt": "2026-11-17T23:45:47.175Z",
    "builtAt": "",
    "notes": [
     {
@@ -116062,6 +116078,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/always-fill-every-slot-when-slots-are has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 30 → 27 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:47.175Z"
     }
    ],
    "approvals": [
@@ -119985,7 +120005,7 @@
    "mergedAt": "2026-11-17T19:07:59Z",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T19:28:19Z",
+   "updatedAt": "2026-11-17T23:45:45.186Z",
    "builtAt": "",
    "notes": [
     {
@@ -120047,6 +120067,10 @@
     {
      "text": "Shipped manifest sm-server-watchdog-orchestrator-auto-recovers-stuck rev 1 sent to Shipped features (orchestrator): PR #772, 47 file(s), 0 test line(s), 7 open.",
      "at": "2026-11-17T19:28:19Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 25 → 22 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:45.186Z"
     }
    ],
    "approvals": [
@@ -126705,7 +126729,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T23:08:04.661Z",
+   "updatedAt": "2026-11-17T23:45:52.379Z",
    "builtAt": "",
    "notes": [
     {
@@ -126815,6 +126839,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T23:08:04.661Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 10 → 9 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:52.379Z"
     }
    ],
    "approvals": [

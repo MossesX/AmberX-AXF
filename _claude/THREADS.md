@@ -832,14 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:00 UTC · `move-everything-axhub-web-console` s2 done (all) · foreign-write
-- 2026-11-17 22:55 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-17 22:55 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-17 22:55 UTC · `icon-picker-every-banner-settings-widget` s9 done, s10 done (all) · foreign-write
-- 2026-11-17 22:55 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
-- 2026-11-17 22:55 UTC · `flagship-professional-skin-covering-2` s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, note (all) · foreign-write
-- 2026-11-17 22:55 UTC · `move-everything-axhub-web-console` s1 done, note (all) · foreign-write
-- 2026-11-17 22:55 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
 - 2026-11-17 22:55 UTC · `one-true-source-for-every-setting` added (80 steps) (all) · foreign-write
 - 2026-11-17 22:55 UTC · `vps-sets-every-build-status-manifest` added (120 steps) (all) · foreign-write
 - 2026-11-17 22:55 UTC · `api-fully-drives-every-field-type-forms` added (0 steps) (all) · foreign-write
@@ -1232,6 +1224,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:45 UTC · `headless-session-efficiency-shared-chain-control` note (all) · dedupe-steps
 - 2026-11-17 23:45 UTC · `amberx-open-any-url-apk` note (all) · dedupe-steps
 - 2026-11-17 23:45 UTC · `move-server-side-console-parts-onto-vps` s9 done (all) · orchestrator
+- 2026-11-17 23:45 UTC · `molly-ri-court-records` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `grindr-ai-wingman` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `new-app-wizard` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `always-fill-every-slot-when-slots-are` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `fix-step-splitter-claude-exit-1-input` note (all) · dedupe-steps
+- 2026-11-17 23:45 UTC · `orchestrator-settings-collapsible-split` note (all) · dedupe-steps
 
 ## Token passes (log)
 
