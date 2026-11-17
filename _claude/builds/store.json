@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7830,
- "updatedAt": "2026-11-17T20:35:01.186Z",
+ "rev": 7831,
+ "updatedAt": "2026-11-17T20:35:14.273Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275737,7 +275737,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:34:48.507Z",
+   "updatedAt": "2026-11-17T20:35:04.598Z",
    "builtAt": "",
    "notes": [
     {
@@ -275771,6 +275771,10 @@
     {
      "text": "Claude account: hulu0241 (axf-rebuild-every-toolbar-page-specific--gina, shared account login)",
      "at": "2026-11-17T20:34:48.507Z"
+    },
+    {
+     "text": "Brett: SPLIT. This build now = foundation only (s1-s7 done) + s8 (re-bake the CONSOLE only, run checks) + s28 (report, PR) and LAND it. Molly/AmberX/axHub/Expenses are out (console only). All per-plugin toolbar steps (s9-s21, s25-s27) move to 5 separate builds of ~3 plugins each that start after this one lands. Other console toolbars not in those builds get hidden.",
+     "at": "2026-11-17T20:35:04.598Z"
     }
    ],
    "approvals": [],
@@ -276565,7 +276569,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
