@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:26 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 - 2026-11-17 20:26 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 - 2026-11-17 20:26 UTC · `guided-live-demo-test-watch-orchestrator` s9 done, → running (all) · foreign-write
 - 2026-11-17 20:26 UTC · `context-menus-plugin-one-true-source` s9 done, → running (all) · orchestrator
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:00 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 22:00 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 22:00 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 22:00 UTC · `guided-live-demo-test-watch-orchestrator` s23 done (all) · orchestrator
 
 ## Token passes (log)
 
