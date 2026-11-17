@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7694,
- "updatedAt": "2026-11-17T19:42:18.962Z",
+ "rev": 7695,
+ "updatedAt": "2026-11-17T19:42:41.240Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276461,15 +276461,15 @@
    "title": "Live build status: real-time grids, 15-second VPS liveness check, animated running rows, red alert + dialog when a build breaks",
    "category": "",
    "detail": "1) Live updates: the console updates in real time whenever a build changes (push over the console's live channel, no refresh), on every grid and tab (Active, Queue, Pending, Incomplete, etc.). 2) The VPS checks every 15 seconds that each running job is really alive (session, pid, heartbeat) and pushes the result to the console. 3) Every running/building row in any grid shows an animated indicator: a spinning/animated icon next to it, and the row itself slowly flashes or pulses. Configurable in settings: animation type (flash, pulse, glow, other), colors, speed, as a hot-swappable asset with tokens only. 4) When a running job stops or breaks: the animation stops, the row turns red/pink, a pop-up alert says it broke, and a dialog shows what happened (cause, exit code, last step, what the watchdog is doing about it), with a link to the build. 5) Full API: deep link, state read, REST, MCP, CLI, voice for the settings and the alert. Coordinate with both watchdogs (#772 recovery, #780 stale-row) instead of duplicating their checks.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/live-build-status-real-time-grids-15",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T19:42:09.832Z",
+   "updatedAt": "2026-11-17T19:42:25.228Z",
    "builtAt": "",
    "notes": [
     {
@@ -276483,6 +276483,14 @@
     {
      "text": "Split by Claude into 22 steps (4 Fable).",
      "at": "2026-11-17T19:38:27.971Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-live-build-status-real-time-grids-15--gina.",
+     "at": "2026-11-17T19:42:20.162Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-live-build-status-real-time-grids-15--gina, shared account login)",
+     "at": "2026-11-17T19:42:25.228Z"
     }
    ],
    "approvals": [],
@@ -276502,13 +276510,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T19:33:33.597Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-live-build-status-real-time-grids-15--gina",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T19:42:18.665Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -276521,7 +276529,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T19:42:18.665Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -276530,7 +276538,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T19:42:18.665Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -277105,7 +277113,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

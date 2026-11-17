@@ -826,9 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:10 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
-- 2026-11-17 15:10 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
-- 2026-11-17 15:10 UTC · `own-look-per-grid-and-tab-group` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
@@ -1226,6 +1223,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:41 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
 - 2026-11-17 19:41 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 - 2026-11-17 19:41 UTC · `guided-live-demo-test-watch-orchestrator` branch claude/guided-live-demo-test-watch-orchestrator (all) · pipeline
+- 2026-11-17 19:42 UTC · `live-build-status-real-time-grids-15` → running, note (all) · pipeline
+- 2026-11-17 19:42 UTC · `live-build-status-real-time-grids-15` branch claude/live-build-status-real-time-grids-15 (all) · pipeline
+- 2026-11-17 19:42 UTC · `live-build-status-real-time-grids-15` note (all) · orchestrator
 
 ## Token passes (log)
 
