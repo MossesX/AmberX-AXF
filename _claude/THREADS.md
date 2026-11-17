@@ -822,7 +822,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:43 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s9 done (all) · orchestrator
 - 2026-11-17 03:40 UTC · `prompting-engine-control-panel-to-create` s4 done (all) · orchestrator
 - 2026-11-17 03:43 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s6 done (all) · orchestrator
 - 2026-11-17 03:44 UTC · `prompting-engine-control-panel-to-create` s5 done (all) · orchestrator
@@ -1222,6 +1221,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 18:56 UTC · `separate-settings-per-plugin-reset` added (0 steps) (all) · console
 - 2026-11-17 18:56 UTC · `rebuild-every-toolbar-page-specific` added (0 steps) (all) · console
 - 2026-11-17 18:57 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
+- 2026-11-17 18:57 UTC · `separate-settings-per-plugin-reset` note (all) · builds-live
 
 ## Token passes (log)
 
