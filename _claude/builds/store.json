@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8036,
- "updatedAt": "2026-11-17T21:35:55.570Z",
+ "rev": 8037,
+ "updatedAt": "2026-11-17T21:36:11.203Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282849,7 +282849,7 @@
    "title": "Land PR #730 Reset all button (far right)",
    "category": "",
    "detail": "Branch claude/reset-all-button-every-asset-override (PR #730). Brett picked UI Review option: button far right. Merge origin/main: clashes only in generated files apps/axhub-web/axf.lock.json, apps/molly/axf.lock.json, apps/console-web/src/control/inventory.json; take main's lock files (molly is removed, drop if gone), regenerate inventory.json, run checks, land. Console only. At most 3 steps.",
-   "status": "landing",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -282857,8 +282857,8 @@
    "pr": "#803",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:35:49.724Z",
-   "builtAt": "2026-11-17T21:35:49.725Z",
+   "updatedAt": "2026-11-17T21:35:58.659Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -282879,6 +282879,10 @@
     {
      "text": "PR #730 could not be reopened: the merge queue had already reopened the same branch as PR #803. Linked #803 to this build and queued it (land.mjs queue add 803). Inventory is gitignored on main now, so it was untracked in the merge and regenerated locally.",
      "at": "2026-11-17T21:34:31.014Z"
+    },
+    {
+     "text": "Split by Claude into 3 steps (0 Fable).",
+     "at": "2026-11-17T21:35:58.659Z"
     }
    ],
    "approvals": [],
@@ -282908,10 +282912,10 @@
     "crashes": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-17T21:27:38.182Z",
+     "at": "2026-11-17T21:35:58.659Z",
      "by": "orchestrator",
      "provider": "claude",
-     "steps": 3,
+     "steps": 5,
      "note": "Split by Claude into 3 steps (0 Fable)."
     },
     "splitRequested": "",
@@ -282972,25 +282976,79 @@
     },
     {
      "id": "s3",
-     "uid": "st-mwl7ojg201ur5j",
+     "uid": "st-mwl7p0ar017chk",
      "title": "",
-     "text": "Push the branch and write the report _claude/builds/reports/land-pr-730-reset-all-button-far-right.md: the merge, which lock files were taken or dropped, the inventory regeneration, check results before and after, how Reset all is reached (deep link, REST, MCP, CLI, voice), and Brett's words 'reset all on the right'. Update the PR #730 description to say how each API is reached, link the build with builds-live.mjs link land-pr-730-reset-all-button-far-right --branch claude/reset-all-button-every-asset-override --pr 730, and add PR #730 to the merge queue (land.mjs queue add 730). Never merge it directly.",
+     "text": "On branch claude/reset-all-button-every-asset-override (PR #730): git merge origin/main; resolve the clashes in generated files by taking main's apps/axhub-web/axf.lock.json, and main's apps/molly/axf.lock.json (or git rm it if apps/molly is gone on main); make sure the chosen UI Review option (Reset all button on the far right of the asset-override toolbar) is the one in the console code, and its API reach (console_show target, REST/MCP/CLI/voice action for reset-all) is still wired after the merge; commit the merge.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [],
+     "files": [
+      "apps/axhub-web/axf.lock.json",
+      "apps/molly/axf.lock.json",
+      "apps/console-web/src"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T21:35:49.724Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-17T21:35:36.211Z",
-     "updatedAt": "2026-11-17T21:35:50.789Z"
+     "rev": 1,
+     "createdAt": "2026-11-17T21:35:58.659Z",
+     "updatedAt": "2026-11-17T21:35:58.659Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwl7p0ar02c6tb",
+     "title": "",
+     "text": "Regenerate apps/console-web/src/control/inventory.json from the merged tree (console-control inventory generator), then run the console checks: node framework/cli/check-console-control.mjs, check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-chrome-assets.mjs, tracker.mjs --check, and the console typecheck/build; fix anything the merge broke and commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/inventory.json",
+      "apps/console-web"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:35:58.659Z",
+     "updatedAt": "2026-11-17T21:35:58.659Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwl7p0ar03wv18",
+     "title": "",
+     "text": "Push the branch, write _claude/builds/reports/land-pr-730-reset-all-button-far-right.md (merge resolution, Brett's pick 'reset all on the right', how Reset all is reached by deep link/REST/MCP/CLI/voice, checks run), add the THREADS row, update PR #730's description with the API reach and put it in the merge queue (land.mjs queue add 730); link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "_claude/builds/reports/land-pr-730-reset-all-button-far-right.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:35:58.659Z",
+     "updatedAt": "2026-11-17T21:35:58.659Z"
     }
    ],
    "profiles": [
@@ -283006,7 +283064,7 @@
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-17T21:35:27.910Z",
+   "defaultAt": "2026-11-17T21:35:58.659Z",
    "rearranged": false,
    "removedSteps": [
     {

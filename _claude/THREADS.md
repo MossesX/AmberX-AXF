@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:55 UTC · `guided-live-demo-test-watch-orchestrator` s2 done (all) · orchestrator
 - 2026-11-17 19:56 UTC · `terminal-main-tab-streaming-console-s` s3 done (all) · foreign-write
 - 2026-11-17 19:56 UTC · `collapse-auto-collapse-buttons-every-tab` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `fix-merge-conflicts-pr-557-professional` → archived, note (all) · watchdog
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:35 UTC · `land-pr-730-reset-all-button-far-right` s1 done, → running (all) · orchestrator
 - 2026-11-17 21:35 UTC · `land-pr-730-reset-all-button-far-right` s2 done (all) · orchestrator
 - 2026-11-17 21:35 UTC · `land-pr-730-reset-all-button-far-right` s3 done, → landing (all) · orchestrator
+- 2026-11-17 21:35 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
 
 ## Token passes (log)
 
