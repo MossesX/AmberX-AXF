@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:02 UTC · `server-gate-one-session-per-build-no` note (all) · cli
 - 2026-11-17 19:02 UTC · `prompting-engine-control-panel-events` note (all) · cli
 - 2026-11-17 19:02 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · cli
 - 2026-11-17 19:02 UTC · `console-app-part-3-native-bridge-mic` note (all) · cli
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:57 UTC · `terminal-main-tab-streaming-console-s` s4 done (all) · orchestrator
 - 2026-11-17 19:58 UTC · `separate-settings-per-plugin-reset` s5 done (all) · orchestrator
 - 2026-11-17 19:59 UTC · `live-build-status-real-time-grids-15` s2 done (all) · orchestrator
+- 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
