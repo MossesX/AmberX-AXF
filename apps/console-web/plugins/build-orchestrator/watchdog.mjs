@@ -308,12 +308,12 @@ export function runTick(env = process.env) {
  * Fill the free slots: tick while slots are free and Queue work waits (at most FILL_ROUNDS). Returns { rounds, launched,
  * idle: null | { at, cause: 'idle-slots', action: 'tick', free, queued, note } }.
  */
-export function fillSlots({ env = process.env, slotsOf = slotsNow, storeOf = loadStore } = {}) {
+export function fillSlots({ env = process.env, slotsOf = slotsNow, storeOf = loadStore, tickOf = runTick } = {}) {
   const launched = []; let rounds = 0; let last = null;
   for (; rounds < FILL_ROUNDS; rounds += 1) {
     const sl = slotsOf(); const work = queueWork(storeOf());
     if (sl.unavailable || !(sl.free > 0) || !work.length) break;
-    last = runTick(env);
+    last = tickOf(env);
     launched.push(...last.launched);
     if (!last.ran || !last.launched.length) { rounds += 1; break; }
   }
@@ -331,7 +331,7 @@ export function fillSlots({ env = process.env, slotsOf = slotsNow, storeOf = loa
  * One watchdog pass: scan, then recover every stuck build (per-build lock, cooldown). Writes build-watchdog.json (last pass,
  * recent fixes). Returns { at, fixes: [record…], skipped: [{ id, why }], scan }.
  */
-export function run({ env = process.env, only = '', settings = loadSettings(env) } = {}) {
+export function run({ env = process.env, only = '', settings = loadSettings(env), fill: fillOpts = {} } = {}) {
   const sc = scan({ env, settings });
   const fixes = []; const skipped = []; const errors = [];
   const store = loadStore();
@@ -352,7 +352,7 @@ export function run({ env = process.env, only = '', settings = loadSettings(env)
     } catch (e) { errors.push({ id: x.id, error: str(e.message, 300) }); } finally { unlock(); }
   }
   // keep every slot filled: after the recoveries (and on every pass, recoveries or not)
-  const fill = settings.enabled ? fillSlots({ env }) : { rounds: 0, launched: [], idle: null };
+  const fill = settings.enabled ? fillSlots({ env, ...fillOpts }) : { rounds: 0, launched: [], idle: null };
   const at = new Date().toISOString();
   // the phone hears about every fix (batched per pass, or one per fix), the idle-slots fix included
   const toSend = [...fixes, ...(fill.idle ? [fill.idle] : [])];
