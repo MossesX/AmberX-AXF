@@ -329,7 +329,7 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
   const regenerated = [];
   const run = (cmd, timeout) => { const r = spawnSync(cmd[0], cmd.slice(1), { cwd: wt, encoding: 'utf8', timeout, maxBuffer: 16 << 20, env: { ...process.env, CI: '1' } }); return { code: r.status ?? 1, text: `${r.stderr || ''}${r.stdout || ''}`.trim().slice(-400) }; };
   const skipped = [];
-  for (const gen of core.regenPlan(plan.generated)) {
+  for (const gen of core.regenPlan([...plan.generated, ...plan.unionJson, ...plan.union])) {
     const r = run(gen.run, gen.timeoutMs);
     if (r.code) {
       // an optional generator that refuses (rebake: the app's baked files were edited in place) leaves main's copy, which main's CI passed

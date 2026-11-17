@@ -86,10 +86,18 @@ export function regenFor(path) {
   return g ? g.run : null;
 }
 
-/** The generators a set of regenerated files needs, each once, in manifest order. */
+/**
+ * The generators a set of resolved files needs, each once, in manifest order: a regen file's own generator, and the
+ * `then` generator of a file merged by union (catalog status → tracker, so tracker.json never lags a unioned status).
+ */
 export function regenPlan(paths) {
   const out = new Map();
-  for (const p of paths || []) { const g = generatorFor(p); if (g && !out.has(g.id)) out.set(g.id, g); }
+  for (const p of paths || []) {
+    const g = generatorFor(p); if (g && !out.has(g.id)) out.set(g.id, g);
+    const r = rule(str(p, 400).replace(/^\.\//, ''));
+    const then = r?.then && GENERATORS[r.then];
+    if (then && !out.has(r.then)) out.set(r.then, { id: r.then, run: [...(then.run || [])], check: then.check ? [...then.check] : null, outputs: [...(then.outputs || [])], timeoutMs: then.timeoutMs || 120000, optional: then.optional === true });
+  }
   return [...out.values()];
 }
 

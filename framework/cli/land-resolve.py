@@ -281,11 +281,21 @@ def run(cmd, timeout):
 
 # the generators the regenerated files need, each once, on the merged tree; outputs are staged with the merge
 regenerated, skipped, failed = [], [], []
-if not unresolved and regen_files and not no_regen:
+def then_generator(path):
+    # a union-merged file's follow-up generator (`then` in generated-files@1: catalog status -> tracker)
+    f, _ = rule_for(path)
+    gid = f.get("then") if f else None
+    gen = GENERATORS.get(gid) if gid else None
+    if not gen: return None
+    return {"id": gid, "run": list(gen.get("run", [])), "check": list(gen["check"]) if gen.get("check") else None,
+            "outputs": list(gen.get("outputs", [])), "timeout": (gen.get("timeoutMs") or 120000) / 1000.0, "optional": gen.get("optional") is True}
+
+
+if not unresolved and (regen_files or touched_additive) and not no_regen:
     plan = {}
-    for f in regen_files:
-        g = generator_for(f)
-        if g and g["id"] not in plan: plan[g["id"]] = g
+    for f in regen_files + touched_additive:
+        for g in (generator_for(f), then_generator(f)):
+            if g and g["id"] not in plan: plan[g["id"]] = g
     for g in plan.values():
         code, text = run(g["run"], g["timeout"])
         if code:
