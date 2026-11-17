@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T03:34:39.054Z",
+ "updatedAt": "2026-11-17T04:33:51.926Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122576,7 +122576,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T03:32:57.432Z",
+   "updatedAt": "2026-11-17T04:21:59.284Z",
    "builtAt": "",
    "notes": [
     {
@@ -122612,7 +122612,16 @@
      "at": "2026-11-17T03:32:57.432Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:38:56.546Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I want to be able to drag anything on any page, anything that's draggable, I want to be able to drag it. The regular API build land first.",
@@ -122734,8 +122743,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:38:56.546Z",
      "note": "",
      "uid": "st-mwevu27e0pae5n",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122756,8 +122765,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:43:56.597Z",
      "note": "",
      "uid": "st-mwevu27e0qa702",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122779,8 +122788,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:47:29.751Z",
      "note": "",
      "uid": "st-mwevu27e0ry1z0",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122801,8 +122810,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:51:12.723Z",
      "note": "",
      "uid": "st-mwevu27e0sulpt",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122823,8 +122832,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:55:27.822Z",
      "note": "",
      "uid": "st-mwevu27e0tntsp",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122845,8 +122854,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:59:23.684Z",
      "note": "",
      "uid": "st-mwevu27e0utm3o",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122867,8 +122876,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:04:32.287Z",
      "note": "",
      "uid": "st-mwevu27e0v5b1e",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122889,8 +122898,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:06:31.577Z",
      "note": "",
      "uid": "st-mwevu27e0wkovk",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122910,8 +122919,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:08:06.769Z",
      "note": "",
      "uid": "st-mwevu27e0x4ftb",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122932,8 +122941,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:09:12.598Z",
      "note": "",
      "uid": "st-mwevu27e0yao86",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122954,8 +122963,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:12:55.615Z",
      "note": "",
      "uid": "st-mwevu27e0zxrtv",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122976,8 +122985,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:18:46.320Z",
      "note": "",
      "uid": "st-mwevu27e1086so",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -122998,8 +123007,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:21:59.284Z",
      "note": "",
      "uid": "st-mwevu27e11zi1v",
      "createdAt": "2026-11-13T11:17:21.962Z"
@@ -123814,16 +123823,16 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-watchdog-orchestrator-auto-recovers-stuck",
-   "pr": "",
+   "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T03:32:33.590Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T04:28:58.424Z",
+   "builtAt": "2026-11-17T04:28:58.424Z",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
@@ -123852,9 +123861,22 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-server-watchdog-orchestrator-auto-recovers-stuck--gina.",
      "at": "2026-11-17T03:32:33.590Z"
+    },
+    {
+     "text": "Headless run axf-server-watchdog-orchestrator-auto-recovers-stuck--gina: brief only · start 15.1K tokens ($0.05) · cost $20.76 · 256 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:28:58.424Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:35:23.157Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.",
@@ -123863,7 +123885,7 @@
     "session": "",
     "link": "",
     "by": "server-watchdog-orchestrator-auto-recovers-stuck",
-    "brief": "# Build: server-watchdog-orchestrator-auto-recovers-stuck\n\n## Brett said (verbatim)\nAt: 2026-11-13T11:45:00.916Z\n> Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.\n\n## What to build\nContinue build \"Server watchdog: orchestrator auto-recovers stuck or killed builds\" (server-watchdog-orchestrator-auto-recovers-stuck) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 11:45):\n\"Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/server-watchdog-orchestrator-auto-recovers-stuck\nSteps in this phase (18 left, ~3.0 h):\n[ ] s4 (~10 min) Have deploy/claude-headless.sh record each run's end: exit code, signal, account and the time it ended. It writes them to the build's run record through builds-live.mjs (and a run-status file under the slot dir), so killed (143) and failed (1) runs leave evidence the watchdog can read.\n[ ] s5 (~10 min) Add the liveness probe: framework/cli/agent-slots.mjs `alive <build>` checks pid, tmux session and slot heartbeat and returns JSON. Also free slots whose process is gone (orphan slot reaping).\n[ ] s6 (~10 min) Add watchdog.mjs `scan` (dry run) to the build-orchestrator plugin. It reads the store, finds every running build, probes liveness, applies the build-watchdog.mjs decisions and prints the stuck builds with cause and planned action (--json).\n[ ] s7 (~10 min) Add watchdog.mjs `run`, which applies the recoveries. It resets the stuck step to pending, releases the slot, sets the build back to queued through pipeline.mjs, appends a recoveries[] entry under the store lock and pushes it live with builds-live.mjs. It does this idempotently, using a per-build lock and a cooldown.\n[ ] s8 (~10 min) Retry failed sessions. Crashes and kills are retried up to maxRetries (default 3). A usage limit or account error retries on the next worker through deploy/claude-workers.mjs route. When the cap is hit, the build goes to Pending with a note. The retry count lives on the build, not in memory.\n[ ] s9 (~8 min) Keep every slot filled. After each recovery, and on every watchdog pass, call pipeline.mjs tick while free slots plus Queue work remain. If slots sit idle while the Queue is non-empty, record that as a recovery cause ('idle-slots') and fix it.\n[ ] s10 (~10 min) Schedule it: add an `axf-watchdog` cron every minute (with flock) to the plugin's install.mjs and remove it in uninstall.mjs. Mount and add the env in the deploy install script. Make the plugin-lifecycle check pass.\n[ ] s11 (~10 min) Send a phone FYI for every fix. Declare notify type `watchdog.fix` (FYI, low priority) and `watchdog.gave-up` (alert) in notify.json, and send each through axf.notify@1 to the AmberX app with build, cause, action and attempt. Set `notified` on the recovery record and batch several fixes in one pass into one push.\n[ ] s12 (~10 min) Add the health@1 check 'Build watchdog' in systems-check. It goes red when the last pass is older than 3 minutes or a build gave up. Its auto-fix reinstalls the cron and runs one pass. A gave-up build becomes a banner item with Fix (requeue).\n[ ] s13 (~10 min) Add Watchdog settings as a section of Settings → Plugins → Build orchestrator (level toolbar applies): on/off, interval, stale heartbeat minutes, max retries, retry on another account, FYI per fix or batched. Stored as plugin settings keys that watchdog.mjs reads.\n[ ] s14 (~10 min) Add a Watchdog panel in Build orchestrator, built from framework controls and tokens only, in a TabGroup tab. It shows last pass, running builds with liveness, recent fixes (cause → action, attempt, notified) and a Run now toolbar (role=toolbar, aria-label). Each build view shows its recoveries list.\n[ ] s15 (~10 min) Add the REST API: GET watchdog/status, GET watchdog/scan, POST watchdog/run, GET/PUT watchdog/settings, GET builds/<id>/recoveries on the build-orchestrator server routes.\n[ ] s16 (~10 min) Add the same API on MCP, the CLI and voice: plugin-commands for the routes (watchdog_status/scan/run/settings), CLI `axf watchdog status|scan|run|set`, the voice/console actions `watchdog.run` and `watchdog.status`, and a console_show / console_open deep link target `build-orchestrator/watchdog` (plus `?build=<id>`).\n[ ] s17 (~10 min) Write unit tests for watchdog.mjs against a temp store (AXF_DATA_DIR): killed 143 is requeued, exit 1 is retried, a stale heartbeat is reset, a live build is untouched, the cap sends the build to Pending, a usage limit goes to the next account, idle slots trigger a tick, one FYI per fix, and a second pass does nothing.\n[ ] s18 (~10 min) Add an end-to-end test with a fake claude in HOME/.local/bin: launch it through claude-headless.sh, kill it (SIGTERM, 143), run watchdog run, then assert the build was requeued, the slot freed and refilled, the recovery recorded and the notify sent. Run the notify-control registry test.\n[ ] s19 (~10 min) Write docs and the catalog: a Watchdog section in the plugin README, help entries, plugin.json/command/CLI-header descriptions for the glossary, and the _claude/builds/README.md recovery flow. Run glossary-index catalog.mjs --check, check-theme, check-controls, check-toolbars and check-chrome-assets.\n[ ] s20 (~10 min) Submit the Watchdog panel to UI Review with 3 options (layout variants as assets under plugins/build-orchestrator/assets/), each with desktop and phone shots, in group 'server-watchdog-orchestrator-auto-recovers-stuck - <date>'.\n[ ] s21 (~10 min) Finish: run all the checks (check-build-watchdog, builds-store verify, check-builds-store, plugin-lifecycle check, tracker --check, the unit and e2e tests). Write _claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md with before/after and how each feature is reached (REST, MCP, CLI, voice, deep link). Add a THREADS.md row, open the PR, link it with builds-live.mjs link and add it to the merge queue.\nRead first: deploy/claude-headless.sh, framework/cli/builds-live.mjs, framework/cli/agent-slots.mjs, apps/console-web/plugins/build-orchestrator/watchdog.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, deploy/claude-workers.mjs, apps/console-web/plugins/build-orchestrator/install.mjs, apps/console-web/plugins/build-orchestrator/uninstall.mjs, deploy/install-console.sh, apps/console-web/plugins/build-orchestrator/notify.json, apps/console-web/plugins/systems-check/, apps/console-web/plugins/build-orchestrator/server/, apps/console-web/plugins/build-orchestrator/web/, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/web/WatchdogPanel.tsx, apps/console-web/plugins/build-orchestrator/server/routes.py, framework/cli/axf.mjs, apps/console-web/plugins/build-orchestrator/commands.json, apps/console-web/plugins/follow-amber/, apps/console-web/plugins/build-orchestrator/test-watchdog.mjs, apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh, apps/console-web/plugins/notify-control/test.py, apps/console-web/plugins/build-orchestrator/README.md, _claude/builds/README.md, apps/console-web/plugins/glossary-index/, apps/console-web/plugins/build-orchestrator/assets/, apps/console-web/plugins/ui-review/review.mjs, _claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-watchdog-orchestrator-auto-recovers-stuck <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step server-watchdog-orchestrator-auto-recovers-stuck <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-watchdog-orchestrator-auto-recovers-stuck \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n",
+    "brief": "# Build: server-watchdog-orchestrator-auto-recovers-stuck\n\n## Brett said (verbatim)\nAt: 2026-11-13T11:45:00.916Z\n> Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.\n\n## What to build\nContinue build \"Server watchdog: orchestrator auto-recovers stuck or killed builds\" (server-watchdog-orchestrator-auto-recovers-stuck) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 11:45):\n\"Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Design the watchdog@1 contract in framework/core/build-watchdog.mjs. A build counts as stuck when it is marked running or queued-running and has no live session: the pid is gone, the tmux session is missing, the heartbeat (lastSeenAt) is older than staleMin, or an exit code is recorded (143 killed, 137 OOM, 1 failed, usage limit). For each case, define the action: reset the running step, release the slot, requeue, retry on the same or another account, or give up after maxRetries and go back to Pending with a banner item. Also define the recovery record shape { at, buildId, phase, step, cause, exit, action, attempt, account, notified }.\n[ ] s2 (~10 min) Add the JSON schema framework/schemas/build-watchdog.json and register recovery records on builds@1. This adds an optional `recoveries[]` on a build, which normBuild must keep, plus the journal kind `watchdog-recover`. Old records with no recoveries load unchanged, so no migration is needed. Show this in builds-store verify.\n[ ] s3 (~10 min) Add golden fixtures for the decision table (killed 143, exit 1, stale heartbeat, live session left alone, retry cap reached, usage limit moves to another account) and a check script. Wire the check into CI.\nRead first: framework/core/build-watchdog.mjs, framework/schemas/build-watchdog.json, framework/cli/builds-store.mjs, framework/core/build-pipeline.mjs, framework/spec/fixtures/build-watchdog.json, framework/spec/check-build-watchdog.mjs, .github/workflows/android.yml\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-watchdog-orchestrator-auto-recovers-stuck <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step server-watchdog-orchestrator-auto-recovers-stuck <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-watchdog-orchestrator-auto-recovers-stuck \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -123952,8 +123974,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:35:23.157Z",
      "note": "",
      "uid": "st-mwewwu9q04dv52",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -123973,8 +123995,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:36:35.298Z",
      "note": "",
      "uid": "st-mwewwu9q05104j",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -123994,8 +124016,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:38:04.506Z",
      "note": "",
      "uid": "st-mwewwu9q06pfdm",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124016,8 +124038,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:40:56.592Z",
      "note": "",
      "uid": "st-mwewwu9q07mcvo",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124038,8 +124060,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:41:57.146Z",
      "note": "",
      "uid": "st-mwewwu9q08es6z",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124060,8 +124082,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:43:15.420Z",
      "note": "",
      "uid": "st-mwewwu9q094et1",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124083,8 +124105,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:45:29.300Z",
      "note": "",
      "uid": "st-mwewwu9q0aao77",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124105,8 +124127,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:46:55.464Z",
      "note": "",
      "uid": "st-mwewwu9q0b5kj6",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124127,8 +124149,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:49:58.054Z",
      "note": "",
      "uid": "st-mwewwu9q0crvw5",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124149,8 +124171,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:53:35.993Z",
      "note": "",
      "uid": "st-mwewwu9q0d62ga",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124171,8 +124193,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:57:03.616Z",
      "note": "",
      "uid": "st-mwewwu9q0e9air",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124192,8 +124214,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:58:12.709Z",
      "note": "",
      "uid": "st-mwewwu9q0fet1u",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124216,8 +124238,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:03:07.637Z",
      "note": "",
      "uid": "st-mwewwu9q0g2e5h",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124237,8 +124259,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:04:26.083Z",
      "note": "",
      "uid": "st-mwewwu9q0he7lq",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124259,8 +124281,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:07:45.207Z",
      "note": "",
      "uid": "st-mwewwu9q0inufv",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124282,8 +124304,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:10:07.477Z",
      "note": "",
      "uid": "st-mwewwu9q0jacz5",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124304,8 +124326,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:25:33.055Z",
      "note": "",
      "uid": "st-mwewwu9q0khmcs",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -124326,8 +124348,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:28:34.297Z",
      "note": "",
      "uid": "st-mwewwu9q0lxhkk",
      "createdAt": "2026-11-13T11:47:31.261Z"
@@ -128682,7 +128704,7 @@
    "title": "Prompting engine: control panel to create events that pop decisions and run tools, macros or pipelines",
    "category": "",
    "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones (UI Review, veto, model upgrade).\n- Everything reachable by REST/MCP/CLI/voice/control@1 ('when a build fails, ask me to retry or archive').\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.",
-   "status": "queued",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128690,8 +128712,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-17T03:31:55.010Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T03:54:31.292Z",
+   "builtAt": "2026-11-17T03:54:31.292Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"70ed6722-9617-4cb4-9adc-a07533d9b22d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
@@ -128714,15 +128736,40 @@
      "at": "2026-11-17T00:27:44.051Z"
     },
     {
+     "text": "Fable phase (s1-s3) done on branch claude/prompting-engine-control-panel-to-create: the three Fable commits of the archived twin build prompting-engine-control-panel-events (PR #697, closed Nov 16 at 2500 behind main) were cherry-picked onto current main and re-verified there (tsc, check-prompt-engine 48, plugin tests 14 groups + 66 Python checks, theme / controls / toolbars / console-control / help / lifecycle / plugin-commands all green). The decision dialog it builds on (decision-dialog-ui-review-other, PR #635) is closed unmerged, so prompts go to the engine's own Waiting tab and the alert hub, and to the dialog through axf.decisions@1 when a plugin provides it. Next phase (Opus, s4-s8) continues from here.",
+     "at": "2026-11-17T00:41:40.854Z"
+    },
+    {
      "text": "Headless run axf-prompting-engine-control-panel-to-create--gina: brief only · start 18.7K tokens ($0.14) · cost $2.95 · 34 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:42:38.951Z"
     },
     {
-     "text": "Fable phase (s1-s3) done on branch claude/prompting-engine-control-panel-to-create: the three Fable commits of the archived twin build prompting-engine-control-panel-events (PR #697, closed Nov 16 at 2500 behind main) were cherry-picked onto current main and re-verified there (tsc, check-prompt-engine 48, plugin tests 14 groups + 66 Python checks, theme / controls / toolbars / console-control / help / lifecycle / plugin-commands all green). The decision dialog it builds on (decision-dialog-ui-review-other, PR #635) is closed unmerged, so prompts go to the engine's own Waiting tab and the alert hub, and to the dialog through axf.decisions@1 when a plugin provides it. Next phase (Opus, s4-s8) continues from here.",
-     "at": "2026-11-17T00:41:40.854Z"
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-prompting-engine-control-panel-to-create--lenny.",
+     "at": "2026-11-17T03:33:57.407Z"
+    },
+    {
+     "text": "Brief only: brief is 24726 characters (~6182 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T03:34:07.654Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-prompting-engine-control-panel-to-create--lenny, shared account login)",
+     "at": "2026-11-17T03:34:16.628Z"
+    },
+    {
+     "text": "Headless run axf-prompting-engine-control-panel-to-create--lenny: brief only · start 17.3K tokens ($0.06) · cost $4.15 · 95 turns · 6 tools, MCP none",
+     "at": "2026-11-17T03:54:31.292Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:40:25.430Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "like a veto approve control panel, we'll be able to create a prompting event, it could be for anything, a general prompting engine which will run set tools and maybe some macros or pipelines",
@@ -128807,8 +128854,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:40:25.430Z",
      "note": "",
      "uid": "st-mwfawi210dvni9",
      "createdAt": "2026-11-13T18:19:10.056Z"
@@ -128826,8 +128873,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:44:17.510Z",
      "note": "",
      "uid": "st-mwfawi210ees2l",
      "createdAt": "2026-11-13T18:19:10.056Z"
@@ -128845,8 +128892,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:47:25.126Z",
      "note": "",
      "uid": "st-mwfawi210f3hfe",
      "createdAt": "2026-11-13T18:19:10.056Z"
@@ -128864,8 +128911,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:52:01.710Z",
      "note": "",
      "uid": "st-mwfawi210g1phs",
      "createdAt": "2026-11-13T18:19:10.056Z"
@@ -128886,8 +128933,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:53:45.844Z",
      "note": "",
      "uid": "st-mwfawi210holoc",
      "createdAt": "2026-11-13T18:19:10.056Z"
@@ -130587,7 +130634,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build. If the contract isn't there yet, define the overlay side against the names in the parent's detail and note them.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130595,7 +130642,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T03:31:58.636Z",
+   "updatedAt": "2026-11-17T03:42:08.979Z",
    "builtAt": "",
    "notes": [
     {
@@ -130621,6 +130668,14 @@
     {
      "text": "Headless run axf-console-app-part-2-native-floating--joey: brief only · start 17.4K tokens ($0.12) · cost $3.56 · 41 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:40:24.600Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:37:49.586Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:42:08.979Z"
     }
    ],
    "approvals": [],
@@ -132280,7 +132335,7 @@
    "title": "Land project-create-mcp: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-create-mcp clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolving by keeping both sides' entries (catalog/status and porting notes are additive), run tests, push, then land it on main. No feature changes.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132288,7 +132343,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-17T03:32:07.739Z",
+   "updatedAt": "2026-11-17T03:41:40.958Z",
    "builtAt": "",
    "notes": [
     {
@@ -132318,6 +132373,14 @@
     {
      "text": "s1 done (Fable): PR #579's head 81fc47239 (branch deleted, PR closed unmerged) is merged into claude/land-project-create-mcp-resolve-clash on top of main, commit 3d1979e38, pushed. status.json: both sides. PORTING.md: main's rows plus the branch's Projects row. Main's framework/cli/project-seed.mjs (test-sandbox CLI) kept; the branch's seed writer is now framework/cli/project-seed-write.mjs (projects.mjs imports it). tracker.json and plan.json: main's snapshots kept (hub data already has cx.buildengine.projectcreate). Checks green: check-project-create, check-projects, test_mcp_projects, test_projects, check-theme, check-controls, tracker --check, console tsc. Note: hub status.json and the repo copy have drifted both ways (9 hub-only entries, 2 repo-only, 3 differ), pre-existing, not touched.",
      "at": "2026-11-16T23:51:59.685Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:37:51.811Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:40.958Z"
     }
    ],
    "approvals": [],
@@ -133738,7 +133801,7 @@
    "title": "Skin animations: animated colour swatches, skin-switch sweep, swatch picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -133746,7 +133809,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-17T03:32:13.974Z",
+   "updatedAt": "2026-11-17T03:41:58.620Z",
    "builtAt": "",
    "notes": [
     {
@@ -133776,6 +133839,14 @@
     {
      "text": "Headless run axf-skin-animations-animated-colour-swatches--rhonda: brief only · start 17.7K tokens ($0.06) · cost $0.74 · 22 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:27:11.576Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:37:54.442Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:58.620Z"
     }
    ],
    "approvals": [],
@@ -134853,7 +134924,7 @@
    "title": "Grid token set: colours, hover, selected, lines",
    "category": "",
    "detail": "Today grids/tables only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants) and borrow the general colour tokens, so hover/selected/striping can't be styled per grid. Add a dedicated grid token family in tokens.style, following skins and editable in Token Control, the UI Manager and per instance: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency per grid (default 100%). Wire every grid/table component to read them, and add a CI check against hard-coded grid colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134861,7 +134932,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:29.839Z",
-   "updatedAt": "2026-11-17T03:32:22.119Z",
+   "updatedAt": "2026-11-17T03:41:54.122Z",
    "builtAt": "",
    "notes": [
     {
@@ -134887,6 +134958,14 @@
     {
      "text": "s1: the grid token family was already on main (component-tokens@1, 32 tokens, style theme + tokens.style + per-instance Restore previous / Restore from axHub, CI check, Token Control). This step landed the unmerged rest from the archived branch: filter chip tokens, focusedBg, disabledText (39 grid tokens now). Duplicate build grids-get-their-own-full-token-set marked complete. Report in _claude/builds/reports/.",
      "at": "2026-11-17T00:08:55.976Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:00.231Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:54.122Z"
     }
    ],
    "approvals": [],
@@ -142831,14 +142910,14 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T03:32:28.943Z",
+   "updatedAt": "2026-11-17T03:42:11.631Z",
    "builtAt": "",
    "notes": [
     {
@@ -142864,6 +142943,14 @@
     {
      "text": "Headless run axf-orchestrator-stale-row-watchdog-vps--paulie: brief only · start 17.3K tokens ($0.12) · cost $4.09 · 33 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:44:34.661Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:03.346Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:42:11.631Z"
     }
    ],
    "approvals": [],
@@ -158180,7 +158267,7 @@
    "pr": "#726",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T22:53:41.846Z",
+   "updatedAt": "2026-11-17T03:34:11.720Z",
    "builtAt": "",
    "notes": [
     {
@@ -158246,6 +158333,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T22:53:41.846Z"
+    },
+    {
+     "text": "Absorbed into server-auto-lander-fixes-lands (Nov 17 2026): Brett's words are addenda there; open steps folded in as its s24/s25. Nothing left to build here.",
+     "at": "2026-11-17T03:34:11.720Z"
     }
    ],
    "approvals": [],
@@ -165400,7 +165491,7 @@
    "title": "Icon packs with drag-drop pack designer",
    "category": "",
    "detail": "FABLE build, fresh on current main, replacing the stale icon-map-icon-packs-every-icon-badge-app (archived). Icon map of every icon spot in every app (icons, badges, app icons). Icon packs swap any or all of them per app or hub-wide, with reset. Very powerful, polished, easy drag-and-drop Icon Pack Designer with live preview. Randomly generated icons and whole packs. Import icons from many sources (open icon libraries, SVG/PNG upload, URLs, other packs). Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -165408,7 +165499,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-17T03:32:35.960Z",
+   "updatedAt": "2026-11-17T03:41:49.159Z",
    "builtAt": "",
    "notes": [
     {
@@ -165442,6 +165533,14 @@
     {
      "text": "Reconciler: branch claude/icon-packs-with-drag-drop-pack-designer (no PR yet)",
      "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:05.627Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:49.159Z"
     }
    ],
    "approvals": [],
@@ -166636,10 +166735,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-auto-lander-fixes-lands",
-   "pr": "",
+   "pr": "#774",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T03:34:38.594Z",
+   "updatedAt": "2026-11-17T04:33:51.545Z",
    "builtAt": "",
    "notes": [
     {
@@ -166687,7 +166786,16 @@
      "at": "2026-11-17T03:34:38.594Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:35:14.008Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "We need the auto lander to bang shit out on its own. It needs to automatically fix it. We need a server rule to do that. Make the server do it automatically without the console.",
@@ -166821,8 +166929,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:35:14.008Z",
      "note": "",
      "uid": "st-mwjw4tkw05ix2f",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -166843,8 +166951,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:36:31.270Z",
      "note": "",
      "uid": "st-mwjw4tkw06u9vt",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -166865,8 +166973,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:38:39.474Z",
      "note": "",
      "uid": "st-mwjw4tkw071hjj",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -166886,8 +166994,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:39:25.401Z",
      "note": "",
      "uid": "st-mwjw4tkw0877ey",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -166907,8 +167015,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:40:40.965Z",
      "note": "",
      "uid": "st-mwjw4tkw09wf82",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -166929,8 +167037,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:42:45.257Z",
      "note": "",
      "uid": "st-mwjw4tkw0a233z",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -166951,8 +167059,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:45:39.275Z",
      "note": "",
      "uid": "st-mwjw4tkw0bdhif",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -166973,8 +167081,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:47:13.161Z",
      "note": "",
      "uid": "st-mwjw4tkx0comey",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -166998,8 +167106,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:48:28.266Z",
      "note": "",
      "uid": "st-mwjw4tkx0dxvr9",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167021,8 +167129,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:52:21.539Z",
      "note": "",
      "uid": "st-mwjw4tkx0ebtoh",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167042,8 +167150,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:53:24.608Z",
      "note": "",
      "uid": "st-mwjw4tkx0f53b7",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167065,8 +167173,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:55:51.572Z",
      "note": "",
      "uid": "st-mwjw4tkx0g9yyk",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167087,8 +167195,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:59:35.512Z",
      "note": "",
      "uid": "st-mwjw4tkx0hy5jc",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167110,8 +167218,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:02:00.505Z",
      "note": "",
      "uid": "st-mwjw4tkx0igk0c",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167132,8 +167240,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:04:02.236Z",
      "note": "",
      "uid": "st-mwjw4tkx0j043q",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167153,8 +167261,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:06:24.991Z",
      "note": "",
      "uid": "st-mwjw4tkx0kkctf",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167175,8 +167283,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:29:46.290Z",
      "note": "",
      "uid": "st-mwjw4tkx0lfgtv",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167198,8 +167306,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:30:52.879Z",
      "note": "",
      "uid": "st-mwjw4tkx0mcr6e",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167220,8 +167328,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:33:51.545Z",
      "note": "",
      "uid": "st-mwjw4tkx0nyylj",
      "createdAt": "2026-11-16T23:24:34.880Z"
@@ -167284,7 +167392,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-17T03:33:04.466Z",
+   "updatedAt": "2026-11-17T04:30:14.358Z",
    "builtAt": "",
    "notes": [
     {
@@ -167308,11 +167416,24 @@
      "at": "2026-11-17T00:11:45.454Z"
     },
     {
+     "text": "Claude account: hulu0241 (axf-orchestrator-runs-long-builds-across--sully, shared account login)",
+     "at": "2026-11-17T03:33:12.958Z"
+    },
+    {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-runs-long-builds-across--sully.",
      "at": "2026-11-17T03:33:04.466Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:37:23.257Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.",
@@ -167321,7 +167442,7 @@
     "session": "",
     "link": "",
     "by": "orchestrator-runs-long-builds-across",
-    "brief": "# Build: orchestrator-runs-long-builds-across\n\n## Brett said (verbatim)\nAt: 2026-11-16T23:25:33.721Z\n> We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.\n\n## What to build\nContinue build \"Orchestrator runs long builds across multiple slots\" (orchestrator-runs-long-builds-across) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 23:25):\n\"We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/orchestrator-runs-long-builds-across\nSteps in this phase (16 left, ~2.6 h):\n[ ] s5 (~10 min) Splitter prompt: pipeline.mjs intake asks the Opus split call to fill `files` and `dependsOn` per step, validates the answer, runs planGroups and stores `groups[]` on the build; hand-written steps get groups worked out from their files without a re-split\n[ ] s6 (~10 min) Group worktrees and sub-branches: helper apps/console-web/plugins/build-orchestrator/groups.mjs creates a worktree per group off the build branch at `<build-branch>--g<n>`, records it on the group, and removes it after merge; node_modules symlinked from a sibling worktree like today\n[ ] s7 (~10 min) Dispatcher fan-out: pipeline.mjs tick starts each ready group (all its dependsOn groups merged) in its own agent slot via agent-slots.mjs, picking any usable account through deploy/claude-workers.mjs route that runs the group's model, and still honours the step model pin and agent cap\n[ ] s8 (~10 min) Headless launch per group: deploy/claude-headless.sh takes `--group <n>` and `--worktree <path>`, the brief lists only that group's steps (Brett said block kept), session name `axf-<build>-g<n>`, and step ticks land on the shared build record under the store lock\n[ ] s9 (~10 min) Group lifecycle: a group whose steps are all done goes to `ready-to-merge`; a crashed group goes back to the queue (3 runs max, as builds do); a group waiting on another shows `waiting` with what it waits on; dependent groups start only after the merge\n[ ] s10 (~10 min) Merge back in order: groups.mjs merge merges each finished group's sub-branch onto the build branch in mergeOrder (merge, never rebase, store and THREADS merge drivers applied), a conflict marks the group `merge-conflict` with a banner item and a Fix with Claude action, and the build is `built` only once every group is merged\n[ ] s11 (~8 min) Landing through the orchestrator: the build opens one PR from the build branch only after the last merge-back and goes into the merge queue as one entry; sub-branches never get PRs (push banner auto-PR skips `--g<n>` branches)\n[ ] s12 (~8 min) Server gate rule: add build rule `parallel-groups` to the build-rules@1 store (builds over the threshold are split into groups, groups merge in order before landing, sessions never merge groups themselves) and the VPS check that holds a PR with unmerged groups\n[ ] s13 (~8 min) Settings: Settings → Plugins → Build orchestrator gets `Split builds over (min)` (default 30), `Max parallel groups per build` (default 3, within the agent cap) and `Parallel groups` on/off, in the settings registry with level tags\n[ ] s14 (~10 min) Per-group progress UI: the orchestrator build view shows a Groups panel (each group's steps done/total, state, slot, account, branch, merge order, waiting on) built from framework controls and tokens only, registered with data-axf-target addresses `row:<build>/group:g<n>`\n[ ] s15 (~10 min) Group actions in the UI: Start now, Re-run, Merge now, Move up/down in merge order and Ungroup (run sequential), destructive ones with confirm, wired to the same functions the dispatcher uses\n[ ] s16 (~10 min) REST API: routes under /api/plugins/build-orchestrator/groups: GET a build's groups and state, POST plan / start / rerun / merge / reorder / ungroup, GET and PUT the three settings; deep link view:builds/tab:orchestrator row:<build>/group:g<n> for console_show\n[ ] s17 (~10 min) MCP, CLI and voice: plugin commands `orchestrator-groups-*` (MCP through plugin-commands), `pipeline.mjs groups list|plan|start|rerun|merge|reorder|ungroup <id>`, console actions for AmberX voice (`groups.show`, `groups.start`, `groups.merge`), all calling the same functions as REST\n[ ] s18 (~10 min) Tests: pipeline group dispatch with a fake claude in HOME/.local/bin (two independent groups start in two slots, a dependent group waits, merge order holds, a conflict raises the banner item), plus REST/MCP/CLI parity test\n[ ] s19 (~10 min) UI Review: shoot the Groups panel desktop and phone, submit 3 options (ui-choices@1 assets under plugins/build-orchestrator/assets) with review.mjs submit; help stub and glossary descriptions for the new commands and settings\n[ ] s20 (~10 min) Run the checks (check-build-groups, check-builds-store, check-build-steps, check-theme, check-controls, check-console-control, plugin-lifecycle), write _claude/builds/reports/orchestrator-runs-long-builds-across.md (what's added, how each part is reached by REST/MCP/CLI/voice, deferred Kotlin twin noted in PORTING.md), THREADS row, push, link the build and open the PR\nRead first: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/groups.mjs, framework/cli/agent-slots.mjs, deploy/claude-workers.mjs, deploy/claude-headless.sh, apps/console-web/plugins/build-orchestrator/orchestrator.mjs, apps/console-web/plugins/push-banner, apps/console-web/plugins/gate, framework/spec/BUILD-RULES.md, apps/console-web/plugins/build-orchestrator/settings, apps/console-web/plugins/build-orchestrator/plugin.json, apps/console-web/plugins/build-orchestrator/web, apps/console-web/plugins/build-orchestrator/server, apps/console-web/plugins/build-orchestrator/commands.json, apps/console-web/plugins/build-orchestrator/actions, apps/console-web/plugins/build-orchestrator/test, apps/console-web/plugins/build-orchestrator/assets, apps/console-web/plugins/build-orchestrator/help, _claude/builds/reports/orchestrator-runs-long-builds-across.md, _claude/THREADS.md, framework/spec/PORTING.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-runs-long-builds-across <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step orchestrator-runs-long-builds-across <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-runs-long-builds-across \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n",
+    "brief": "# Build: orchestrator-runs-long-builds-across\n\n## Brett said (verbatim)\nAt: 2026-11-16T23:25:33.721Z\n> We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.\n\n## What to build\nContinue build \"Orchestrator runs long builds across multiple slots\" (orchestrator-runs-long-builds-across) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 23:25):\n\"We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~40 min):\n[ ] s1 (~10 min) Design the step-group contract: add optional `group`, `dependsOn` (step ids) and `files` to builds@1 steps and a `groups[]` record on the build (id, steps, state, slot, account, branch, worktree, mergedAt, mergeOrder) in framework/core/build-pipeline.mjs with a JSDoc spec block; unset = one sequential group, so old builds read the same\n[ ] s2 (~10 min) Migration + normalisation: builds store normBuild keeps the new step and group fields (it drops unknown fields today), a read-time migration gives every existing build a single implicit group, and the journal records group writes; extend framework/spec/check-builds-store.mjs so the migration loses nothing\n[ ] s3 (~10 min) Grouping engine: pure function planGroups(build) in framework/core/build-groups.mjs builds a dependency graph from step `files` overlap and explicit `dependsOn`, gives each group its steps in sequence, and returns parallel groups plus a merge order (topological, then step order); only builds with an estimate over 30 min (setting, default 30) are split\n[ ] s4 (~10 min) Fixtures for the grouping engine: framework/spec/fixtures/build-groups.json (independent steps, shared file chain, explicit dependsOn, cycle refused, build under 30 min stays one group) and framework/spec/check-build-groups.mjs that runs planGroups against them\nRead first: framework/core/build-pipeline.mjs, framework/spec/BUILD-GROUPS.md, framework/cli/builds-store.mjs, framework/spec/check-builds-store.mjs, framework/core/build-groups.mjs, framework/spec/fixtures/build-groups.json, framework/spec/check-build-groups.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-runs-long-builds-across <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step orchestrator-runs-long-builds-across <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-runs-long-builds-across \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -167430,8 +167551,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:37:23.257Z",
      "note": "",
      "uid": "st-mwjw9ltv05fmsl",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167451,8 +167572,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:39:36.614Z",
      "note": "",
      "uid": "st-mwjw9ltv06jbzy",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167474,8 +167595,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:42:56.677Z",
      "note": "",
      "uid": "st-mwjw9ltv07e57l",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167496,8 +167617,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:46:15.353Z",
      "note": "",
      "uid": "st-mwjw9ltv08cs6q",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167518,8 +167639,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:48:41.140Z",
      "note": "",
      "uid": "st-mwjw9ltv092vov",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167540,8 +167661,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:52:09.558Z",
      "note": "",
      "uid": "st-mwjw9ltv0a6w3h",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167562,8 +167683,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:53:55.468Z",
      "note": "",
      "uid": "st-mwjw9ltv0bep10",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167584,8 +167705,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:55:51.439Z",
      "note": "",
      "uid": "st-mwjw9ltv0cc5nw",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167606,8 +167727,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:59:22.628Z",
      "note": "",
      "uid": "st-mwjw9ltv0d5wnt",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167627,8 +167748,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:03:26.140Z",
      "note": "",
      "uid": "st-mwjw9ltv0ezsgm",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167649,8 +167770,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:07:23.754Z",
      "note": "",
      "uid": "st-mwjw9ltv0fxh8i",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167670,8 +167791,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:09:21.791Z",
      "note": "",
      "uid": "st-mwjw9ltv0ge8ui",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167693,8 +167814,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:11:00.655Z",
      "note": "",
      "uid": "st-mwjw9ltv0hl65d",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167714,8 +167835,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:13:45.179Z",
      "note": "",
      "uid": "st-mwjw9ltv0iaenc",
      "createdAt": "2026-11-16T23:28:18.115Z"
@@ -167764,6 +167885,50 @@
      "note": "",
      "uid": "st-mwjw9ltv0kdeoy",
      "createdAt": "2026-11-16T23:28:18.115Z"
+    },
+    {
+     "id": "s21",
+     "text": "console-control@1 grammar: append segment kind `group` (parent row; button may follow group) in framework/core/engines/console-control-rules.mjs, regenerate its fixture, record the Kotlin twin in PORTING.md, so the Groups panel targets row:<build>/group:g<n> (already rendered as data-axf-target and registered when the grammar accepts them) answer console_show / console_open",
+     "model": "Fable",
+     "why": "cross-app protocol (console-control@1 address grammar)",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/console-control-rules.mjs",
+      "framework/spec/fixtures/console-control.json",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5znq901bunl",
+     "createdAt": "2026-11-17T04:00:29.687Z"
+    },
+    {
+     "id": "s22",
+     "text": "UI Review for the Groups panel: shoot the three views (grid, compact, cards; layout assets in plugins/build-orchestrator/assets/layout) desktop and phone on a console that renders the orchestrator view, submit them as ui-choices@1 options with review.mjs submit --choices. Blocked in s19: the scratch console rebuild-shots.mjs starts (AXF_APPEARANCE_HUB=off) opens Build profiles instead of the orchestrator view, and its build search hits never load",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets/layout"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk71wqo01kie8",
+     "createdAt": "2026-11-17T04:30:14.360Z"
     }
    ]
   },
@@ -168501,7 +168666,7 @@
    "title": "Gate auto-lander tab and controls",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (steps s15-s18), built in parallel. REST in the gate plugin: GET /api/plugins/gate/auto-lander (service up, current build, queue, per-build state, attempts), POST run/retry/pause/resume/settings; same on MCP, CLI 'axf gate auto-lander', AmberX voice, console-control. Gate > Auto-lander tab: service status, current build, grid of builds keeping ALL existing columns plus commits behind main, attempts, last result, Retry/Pause/Fix. Settings under Settings > Plugins > Gate. Use the auto-lander@1 contract from claude/server-auto-lander-fixes-lands when present. Land through the orchestrator.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -168509,7 +168674,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:05:48.290Z",
-   "updatedAt": "2026-11-17T03:32:41.818Z",
+   "updatedAt": "2026-11-17T03:41:43.539Z",
    "builtAt": "",
    "notes": [
     {
@@ -168531,6 +168696,14 @@
     {
      "text": "Headless run axf-gate-auto-lander-tab-and-controls--paulie: brief only · start 18.5K tokens ($0.13) · cost $3.59 · 36 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:24:40.320Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:08.016Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:43.539Z"
     }
    ],
    "approvals": [],
@@ -168948,16 +169121,16 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-rule-done-means-merged-working",
-   "pr": "",
+   "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T03:30:33.807Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T04:16:42.077Z",
+   "builtAt": "2026-11-17T04:16:42.077Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -168982,9 +169155,34 @@
     {
      "text": "Headless run axf-server-rule-done-means-merged-working--earl: brief only · start 17.7K tokens ($0.12) · cost $12.73 · 140 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:47:55.547Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-server-rule-done-means-merged-working--earl.",
+     "at": "2026-11-17T03:33:26.306Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-server-rule-done-means-merged-working--earl, shared account login)",
+     "at": "2026-11-17T03:33:47.945Z"
+    },
+    {
+     "text": "Brief only: brief is 24397 characters (~6100 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T03:33:34.450Z"
+    },
+    {
+     "text": "Headless run axf-server-rule-done-means-merged-working--earl: brief only · start 17.7K tokens ($0.12) · cost $27.76 · 365 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:16:42.077Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:35:37.646Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?",
@@ -169082,8 +169280,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:35:37.646Z",
      "note": "",
      "uid": "st-mwjxw6550ze0pe",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169104,8 +169302,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:38:50.452Z",
      "note": "",
      "uid": "st-mwjxw65510qj34",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169127,8 +169325,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:41:13.736Z",
      "note": "",
      "uid": "st-mwjxw65511nzn2",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169148,8 +169346,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:43:53.575Z",
      "note": "",
      "uid": "st-mwjxw65512n3xu",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169170,8 +169368,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:49:09.262Z",
      "note": "",
      "uid": "st-mwjxw655139lcy",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169191,8 +169389,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:53:23.872Z",
      "note": "",
      "uid": "st-mwjxw65614zz51",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169213,8 +169411,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:55:23.008Z",
      "note": "",
      "uid": "st-mwjxw656157hj6",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169236,8 +169434,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:58:40.930Z",
      "note": "",
      "uid": "st-mwjxw65616uvaz",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169257,8 +169455,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:03:50.879Z",
      "note": "",
      "uid": "st-mwjxw65617t8il",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169279,8 +169477,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:07:10.216Z",
      "note": "",
      "uid": "st-mwjxw65618lf2p",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169301,8 +169499,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:11:37.655Z",
      "note": "",
      "uid": "st-mwjxw65619lo56",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169322,8 +169520,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:13:38.448Z",
      "note": "",
      "uid": "st-mwjxw6561au4lg",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169344,8 +169542,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:16:04.981Z",
      "note": "",
      "uid": "st-mwjxw6561bo38o",
      "createdAt": "2026-11-17T00:13:50.489Z"
@@ -169711,6 +169909,387 @@
      "note": "",
      "uid": "st-mwjy3g6o0f71wn",
      "createdAt": "2026-11-17T00:19:30.095Z"
+    }
+   ]
+  },
+  {
+   "id": "builds-keep-their-slot-across-phases",
+   "title": "Builds keep their slot across phases",
+   "category": "",
+   "detail": "When a build's phase finishes (e.g. Fable phase done, Opus phase next), it must NOT go back in line or release its slot. The next phase starts immediately in the same slot (same or new session, right model/account). A build holds its slot until it is merged and done. Builds already running always finish before any queued build starts. Server-side rule, enforced by the orchestrator on the VPS. Land through the orchestrator.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/builds-keep-their-slot-across-phases",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-17T03:38:28.564Z",
+   "updatedAt": "2026-11-17T04:17:16.857Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by Claude into 15 steps (4 Fable).",
+     "at": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-builds-keep-their-slot-across-phases--rhonda.",
+     "at": "2026-11-17T03:55:55.269Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-builds-keep-their-slot-across-phases--rhonda, shared account login)",
+     "at": "2026-11-17T03:56:07.128Z"
+    },
+    {
+     "text": "Headless run axf-builds-keep-their-slot-across-phases--rhonda: brief only · start 14.6K tokens ($0.12) · cost $8.24 · 92 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:17:16.857Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done: spec framework/spec/BUILD-PIPELINE.md, core in framework/core/build-pipeline.mjs, 395 checks in check-build-pipeline.mjs. Decisions for phase 2: phase-handoff is a build-pipeline@1 state (stateOf: status queued + slot.holder), not a new builds@1 status, so the store and every reader keep working. pipeline.slot is now { holder, account, model, since, entry, released }; a legacy string reads as the live entry with no hold. The dispatcher already takes the slot at launch (takeSlot) and keeps it at session end (slotAfterExit via endOutcome); the reaper keeps the hold. Still to wire (s5-s15): plan() should use pickNext(builds, { max }) for order and freeSlots; agent-slots hold/release; claude-headless.sh --held-slot; the lander releases on merge (releaseSlot why merged) and the Queue actions on cancel (actionReleasesSlot); run migrateSlots once through the builds store; built keeps the slot until merged and a stop for Brett keeps it too (release-slot action for Brett).",
+     "at": "2026-11-17T04:16:48.712Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "They didn't go back online. They finished. That is retarded. I want the 8 that are running to finish before the rest go.",
+    "at": "2026-11-17T03:38:28.564Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "builds-keep-their-slot-across-phases",
+    "brief": "# Build: builds-keep-their-slot-across-phases\n\n## Brett said (verbatim)\nAt: 2026-11-17T03:38:28.564Z\n> They didn't go back online. They finished. That is retarded. I want the 8 that are running to finish before the rest go.\n\n## What to build\nContinue build \"Builds keep their slot across phases\" (builds-keep-their-slot-across-phases) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-17 03:38):\n\"They didn't go back online. They finished. That is retarded. I want the 8 that are running to finish before the rest go.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~36 min):\n[ ] s1 (~10 min) Design the slot-hold rule in build-pipeline@1: a build keeps its slot from first launch until merged. Add a `slot` field to the record (holder, account, model, since), a `phase-handoff` state between phases, and a migration that gives every running build a held slot. Write the spec in framework/spec/BUILD-PIPELINE.md.\n[ ] s2 (~10 min) Implement the pure slot-hold transitions in framework/core/build-pipeline.mjs: phaseDone keeps the slot and moves the build to phase-handoff instead of queued or pending; the slot is released only on merged/complete, failed, or cancelled by Brett; add the migration function.\n[ ] s3 (~8 min) Add dispatch ordering to the core: pickNext returns handoff builds (holders) before any queued build, and a queued build never starts while a holder is waiting for its next phase. Free slots = max minus holders.\n[ ] s4 (~8 min) Add slot-hold cases to the build-pipeline fixture and checks: phase end keeps the slot, handoff goes before the queue, release on merge, crash retry keeps the slot, migration of running builds.\nRead first: framework/core/build-pipeline.mjs, framework/spec/BUILD-PIPELINE.md, framework/spec/fixtures/build-pipeline.json, framework/spec/check-build-pipeline.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step builds-keep-their-slot-across-phases <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step builds-keep-their-slot-across-phases <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note builds-keep-their-slot-across-phases \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the slot-hold rule in build-pipeline@1: a build keeps its slot from first launch until merged. Add a `slot` field to the record (holder, account, model, since), a `phase-handoff` state between phases, and a migration that gives every running build a held slot. Write the spec in framework/spec/BUILD-PIPELINE.md.",
+     "model": "Fable",
+     "why": "schema + migration design of the cross-surface build-pipeline@1 contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-pipeline.mjs",
+      "framework/spec/BUILD-PIPELINE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:02:19.635Z",
+     "note": "",
+     "uid": "st-mwk5be89014fsb",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s2",
+     "text": "Implement the pure slot-hold transitions in framework/core/build-pipeline.mjs: phaseDone keeps the slot and moves the build to phase-handoff instead of queued or pending; the slot is released only on merged/complete, failed, or cancelled by Brett; add the migration function.",
+     "model": "Fable",
+     "why": "engine internals of the pipeline state machine",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:08:57.179Z",
+     "note": "",
+     "uid": "st-mwk5be8902f2q1",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add dispatch ordering to the core: pickNext returns handoff builds (holders) before any queued build, and a queued build never starts while a holder is waiting for its next phase. Free slots = max minus holders.",
+     "model": "Fable",
+     "why": "engine internals of dispatch ordering shared by dispatcher, swarm and console",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/core/build-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:10:08.566Z",
+     "note": "",
+     "uid": "st-mwk5be89039fwr",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add slot-hold cases to the build-pipeline fixture and checks: phase end keeps the slot, handoff goes before the queue, release on merge, crash retry keeps the slot, migration of running builds.",
+     "model": "Fable",
+     "why": "conformance fixture for the changed contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/fixtures/build-pipeline.json",
+      "framework/spec/check-build-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T04:16:18.287Z",
+     "note": "",
+     "uid": "st-mwk5be8904e4eo",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s5",
+     "text": "Make agent-slots.mjs count held slots: add a `hold <build>` / `release <build>` API so a build's slot stays booked between sessions; status lists holders with their build ids.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/agent-slots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8905za5r",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s6",
+     "text": "Wire the dispatcher tick: on a session exit with steps left after a finished phase, start the next phase right away in the held slot (pick an account that runs that phase's model through claude-workers route) and don't re-queue it. Queued builds only get slots no holder needs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8906bj4p",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s7",
+     "text": "When no account for the next phase's model is free, the holder waits in phase-handoff and keeps its slot, so no queued build takes the slot. Raise one alert when it waits more than N minutes. Put N in the pipeline settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be89079w5r",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s8",
+     "text": "Have the launcher take a held slot: claude-headless.sh accepts --held-slot <build> and skips the agent-slots queue for that build's next phase; model-gate checks still run.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "framework/cli/model-gate.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8908ixea",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s9",
+     "text": "Release the slot on merge: when the reconciler or lander marks a build complete (PR merged), or a build fails or is cancelled, release its slot and run a dispatcher tick.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/builds-reconcile.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8909s7qs",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s10",
+     "text": "Run the migration on the live store through builds-store (journalled), so the builds running now hold their slots and finish before any queued build starts.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8a0aqbxb",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s11",
+     "text": "Pipeline tab UI: show a 'holds slot' chip and handoff state on running builds, plus a slots summary (held / free / queued waiting), using framework controls and tokens only, with control@1 targets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/PipelineTab.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8a0bj1tb",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s12",
+     "text": "API parity for the slot view: REST GET /pipeline/slots and the deep link view:builds/tab:pipeline=slots, MCP tool through plugin-commands, CLI `pipeline.mjs slots`, voice action `pipeline-slots`. Releasing a slot by hand is a confirm action that is Brett's only (personOnly).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/routes.py",
+      "apps/console-web/plugins/build-orchestrator/commands.json",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8a0c1nhf",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s13",
+     "text": "Tests for the dispatcher: a fake two-phase build hands off with no queued build starting in between, holders go before the queue, and the slot is released on merge. Add them to the plugin test and to CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/pipeline-slots.test.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8a0djbs4",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s14",
+     "text": "Docs and rule: update _claude/builds/README.md and the pipeline rule in _claude/rules/RULES.md with the slot-hold rule, quoting Brett verbatim; add a decision to memory/decisions.md; run claude-sync sync.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/README.md",
+      "_claude/rules/RULES.md",
+      "_claude/memory/decisions.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8a0easyb",
+     "createdAt": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "id": "s15",
+     "text": "Run the checks (check-build-pipeline, check-builds-store, check-build-steps, plugin tests, check-console-control, check-theme), write _claude/builds/reports/builds-keep-their-slot-across-phases.md (the API reach for each part goes in the PR too), add the THREADS row, push the branch and open the PR into the merge queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/builds-keep-their-slot-across-phases.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwk5be8a0fvfmb",
+     "createdAt": "2026-11-17T03:41:38.121Z"
     }
    ]
   }
