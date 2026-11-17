@@ -819,8 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:21 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → archived, note (all) · cli
-- 2026-11-16 23:21 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → archived, note (all) · cli
 - 2026-11-16 23:21 UTC · `icon-packs-with-drag-drop-pack-designer` s3 done (all) · orchestrator
 - 2026-11-16 23:21 UTC · `agent-manager-training-wizard-for-employee-agent` → archived, note (all) · cli
 - 2026-11-16 23:21 UTC · `landing-auto-resolves-generated-files-no` → archived, note (all) · cli
@@ -1219,6 +1217,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:42 UTC · `orchestrator-stale-row-watchdog-vps` → pending, note (all) · cli
 - 2026-11-17 03:42 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s6 done (all) · foreign-write
 - 2026-11-17 03:42 UTC · `orchestrator-runs-long-builds-across` s6 done (all) · foreign-write
+- 2026-11-17 03:40 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s7 done (all) · orchestrator
+- 2026-11-17 03:41 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
