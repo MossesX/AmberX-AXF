@@ -125,3 +125,43 @@ Pending list and queue, Nov 17: `every-banner-title-bar-and-toolbar-snappable-as
 touch toolbars as snappable assets, not hiding; `patches-settings-banner-hide-fable` is the retired Patches app;
 `molly-banner-match` hides an embedded app's own banner (embed@1 `forced`, a different mechanism). None overlaps this
 build's files. No item merged in.
+
+## Phase 2 (Opus): UI, API, re-bake, review
+
+| Step | What landed |
+| --- | --- |
+| s6 | `framework/react/hidden.tsx`: `useHidden(kind, id)`, `useHiddenList()`, `<Hideable kind id>`, and `installHiddenChrome` (one DOM pass stamps `data-axf-hidden-piece` on hand-drawn `role="toolbar"` / `role="tablist"` / nav strips; `axf.css` draws it as nothing). `TabGroup` drops its row (the panel stays), page toolbars (`AssetToolbar`) and banner frames render nothing. The app-wide toolbar, nav, menu bar and banner (`<kind>:app`) fold into `rt.hiddenSlots()` (read-only peek, never snapshots), so the layout grid drops their region exactly like a hidden slot; hidden widgets leave the banner / toolbar rows. The context menu's "which piece is this element" rule (`chromeTargetOf`) is shared by Overlays and the DOM pass, so right-click Hide names the same id the pass hides. |
+| s7 | Right-click **Hide <kind>** in the shared chrome block (ChromeContext) on every tab group, toolbar, banner, nav and menu bar; **Hide widget** for a toolbar widget under the pointer; the banner's own widget Hide now lands in the Hidden list. Actions `chrome.hide:<kind>:<id>` / `chrome.unhide:<kind>:<id>`. The hide toast carries **Undo** (new optional `Toast.act`, drawn by ToastHost). |
+| s8 | `framework/libs/settings/HiddenAssetsPanel.tsx`: grouped by kind, Unhide per row, Unhide all (tap twice), empty state; tokens and framework controls only. Mounted as Settings → Appearance → **Hidden** (anchor `#axf-hidden`) and the dialog **`axf.hidden-assets`**. `chrome.unhideAll`. |
+| s9 | **Assets** menu (menu-bar contribution every app on the framework gets; merges into an app's own Assets menu): Hidden items… with the live count badge (`hidden-assets.count`), Unhide all, **Hide ▸** (live list of every visible piece by name). Hidden items… also on the page's right-click menu, so the list is reachable with the menu bar hidden. Console-control targets: `panel:hidden-assets`, `grid:hidden-assets`, `row:<kind>:<id>`, `button:hidden.unhide.<kind>.<id>`, `button:hidden.unhide-all`. |
+| s10 | `framework/cli/hidden-assets.mjs` (the one writer outside a running app; reuses the look-document I/O of `skins.mjs`), `apps/console-web/server/hidden_assets.py`: `GET /api/hidden-assets?app=`, `POST /api/hidden-assets/hide | unhide | unhide-all` (writes behind the console token). `tests/test_hidden_assets.py` (CI line). |
+| s11 | MCP `hidden_assets_list` (read), `hidden_assets_hide`, `hidden_assets_unhide`, `hidden_assets_unhide_all` (write), pinned in `test_mcp_tools.py`. Console actions `chrome.hide`, `chrome.unhide`, `chrome.unhideAll`, `chrome.hidden`. The console-control executor takes `#anchor` deep links and `view:settings/tab:<tab>` (CONSOLE-CONTROL.md). |
+| s12 | `axf hidden list | hide <kind> <id> | unhide <kind> <id> | unhide-all [--app]`. Voice: "hide the toolbar / menu bar / navigation / banner", "unhide the …", "bring the … back", "what's hidden", "unhide everything" in `console-control-voice.mjs` + its Python twin (fixture regenerated); AmberX registers a voice router that runs the same actions on its own chrome. |
+| s13 | Re-baked the console, axHub web and AmberX (the console's copy was behind main, not locally edited: every line only it had is an older version of a line the framework since changed), shared assets baked, control inventory regenerated; tsc clean in all three. |
+| s14 | Help: Hide, Unhide, Unhide all, Hidden items (dialog + menu entry), synced into every app. Catalog `cx.hidden-assets` + status row (repo snapshot and the hub's live `status.json`); `tracker --check` green. There is no `catalog.mjs` in the repo; the catalog was checked by tracker. |
+| s15 | `apps/console-web/scripts/hidden-assets.e2e.mjs` (Playwright, desktop + phone, 24 checks, in-memory axHub for the look document). Shots in this folder; three Hidden-list options (side drawer, centred card, bottom sheet) as dialog assets in `apps/console-web/plugins/theme-manager/assets/dialog/hidden-list-three-ways-*` (ui-choices@1). |
+| s16 | Merged origin/main (two framework conflicts: `AssetToolbar` now renders through main's `PageToolbar` and still draws nothing while hidden; gen-fixtures keeps both blocks), re-baked, every check below green. |
+
+### How each feature is reached
+
+| Feature | UI | REST | MCP | CLI | Voice (console + AmberX) |
+| --- | --- | --- | --- | --- | --- |
+| Hide a piece | right-click / long-press → Hide <kind>; Assets ▸ Hide ▸ <name> | `POST /api/hidden-assets/hide {app?, kind, id}` | `hidden_assets_hide`; `console_action chrome.hide:<kind>:<id>` | `axf hidden hide <kind> <id> [--app]` | "hide the toolbar" |
+| Undo / unhide one | toast Undo; Hidden list → Unhide | `POST …/unhide` | `hidden_assets_unhide`; `chrome.unhide:<kind>:<id>` | `axf hidden unhide <kind> <id>` | "unhide the toolbar", "bring the banner back" |
+| Unhide all | Assets → Unhide all; Hidden list → Unhide all (twice) | `POST …/unhide-all` | `hidden_assets_unhide_all`; `chrome.unhideAll` | `axf hidden unhide-all` | "unhide everything" |
+| See what's hidden | Assets → Hidden items… (count badge); Settings → Appearance → Hidden; page right-click → Hidden items… | `GET /api/hidden-assets?app=` | `hidden_assets_list`; `chrome.hidden` | `axf hidden list` | "what's hidden" |
+| Deep link | — | `/api/console-control/focus` | `console_show view:settings/tab:appearance#hidden`, `console_show dialog:axf.hidden-assets` | `axf console …` | "open appearance settings" |
+
+### Checks (phase 2, after merging main)
+
+- `check-hidden-assets.mts`: 94 + 183 · `check-theme`, `check-controls`, `check-toolbars`, `check-chrome-assets`, `check-console-control`: green
+- `tests/test_hidden_assets.py` (5), `tests/test_console_control.py` (10), `test_mcp_tools.py` (235), `console-control-parity.mjs` (132 comparisons), theme-manager `test.py` (56), ui-review `test.mts` (30)
+- `check-skin` 500, `check-skin-switch` 392, `check-hub-look` 110, `check-chrome-settings` 304, `check-help` 276, `check-look-migration` 241, `check-done-means-merged` 417, `tracker --check`, `shared-assets check`, `help-coverage --check`
+- tsc clean in the console, axHub web and AmberX; `hidden-assets.e2e.mjs` 24 checks on desktop + phone
+
+### Known gaps
+
+- The UI Review item and the screenshots went to this worktree's local store: the session has no `AXF_TOKEN` / `AXF_CONSOLE_URL`. The option assets ship in the PR; a session with the token re-runs `review.mjs submit --console` with the same choices (build note left).
+- Window tab groups (WindowHost's `fx-tabgroup`) are hidden by the DOM pass, not by the window manager, so the window keeps its frame.
+- Kotlin twin deferred (PORTING.md), as in phase 1.
+- In the Hidden list on a phone, Unhide all sits next to the count rather than at the far right (`fx-row--between`); the three options in UI Review are where the layout gets picked.
