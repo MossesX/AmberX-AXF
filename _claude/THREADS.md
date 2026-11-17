@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:11 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
 - 2026-11-17 15:11 UTC · `shipped-features-open-button-views-each` note (all) · orchestrator
 - 2026-11-17 15:11 UTC · `phone-connect-small-android-companion` note (all) · orchestrator
 - 2026-11-17 15:11 UTC · `vps-sends-shipped-features-every-merge` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:46 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 - 2026-11-17 19:46 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
 - 2026-11-17 19:46 UTC · `console-app-part-2-native-floating` s6 done (all) · orchestrator
+- 2026-11-17 19:47 UTC · `guided-live-demo-test-watch-orchestrator` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
