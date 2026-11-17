@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:28:14.390Z",
+ "updatedAt": "2026-11-17T04:28:49.847Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123823,7 +123823,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -123831,8 +123831,8 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T04:28:11.332Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T04:28:34.297Z",
+   "builtAt": "2026-11-17T04:28:34.297Z",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
@@ -124344,8 +124344,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:28:34.297Z",
      "note": "",
      "uid": "st-mwewwu9q0lxhkk",
      "createdAt": "2026-11-13T11:47:31.261Z"
