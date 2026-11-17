@@ -35,6 +35,9 @@ export async function read({ store } = {}) {
 }
 
 /** Builds the watchdog never writes: a session may be on them (the orchestrator and the reconciler own those). */
+/** Statuses the store only accepts with proof (done-means-merged@1 guardStatus). */
+const PROVEN = Object.freeze(['landed', 'built', 'complete']);
+
 export const HANDS_OFF = Object.freeze(['running', 'waiting']);
 
 /**
@@ -48,6 +51,7 @@ export const HANDS_OFF = Object.freeze(['running', 'waiting']);
 export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {}) {
   const ws = withStore ?? (await import('../../../../../../framework/cli/builds-store.mjs')).withStore;
   const settleStatus = settle ?? (await import('../../../../../../framework/plan/builds-merge-core.mjs')).settleStatus;
+  const { guardStatus } = await import('../../../../../../framework/core/build-pipeline.mjs');
   const out = [];
   ws((s) => {
     const now = new Date().toISOString();
@@ -63,7 +67,12 @@ export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {
       if (v.action === 'complete') {
         if (v.row.pr) b.pr = `#${v.row.pr}`;
         if (!b.mergedAt) b.mergedAt = v.mergedAt || now;
+        // done-means-merged@1: record the merge as landing evidence; landed needs CI green on the merge commit, which
+        // the watchdog does not read, so a build the store would refuse as landed waits in landing for the auto-lander
+        const prev = b.landed && typeof b.landed === 'object' ? b.landed : {};
+        b.landed = { ...prev, pr: prev.pr || v.row.pr || 0, mergedAt: prev.mergedAt || b.mergedAt, sha: prev.sha || v.mergeCommit || '' };
         settleStatus(b, now);
+        if (b.status !== before && PROVEN.includes(b.status) && !guardStatus({ ...b, status: before }, b.status).ok) b.status = 'landing';
       } else if (v.action === 'remove') {
         b.status = 'archived';
       }
