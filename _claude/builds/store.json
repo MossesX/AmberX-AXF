@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8359,
- "updatedAt": "2026-11-17T23:19:35.250Z",
+ "rev": 8360,
+ "updatedAt": "2026-11-17T23:19:46.302Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -430136,6 +430136,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T22:55:59.492Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-launcher-crash-duplicate-steps-brief",
+   "title": "Fix launcher crash: duplicate steps + brief too big",
+   "category": "",
+   "detail": "auto-lander-never-wait-missing-ui-review died at launch: deploy/claude-headless.sh line 416 '/root/.local/bin/claude: Argument list too long' (brief ~54,579 tokens). Two causes: (1) the step splitter/re-split appends the same steps again and again (dispatcher-split had 897 steps, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63, all repeats of 13-15 real steps). Fix the splitter so a re-split replaces steps, dedupe by text, and clean every existing build's duplicate steps (keep done flags). (2) claude-headless.sh must pass the brief through a file/stdin, never as an argv string, and cap brief size with a trimmed step list. Also: a launch crash must be retried automatically by the VPS after the fix, and a land clash must send the build straight back to the queue with a merge-main fix step on its own (Phone Connect #787 sits with 27/27 steps done and a clash in framework/spec/check-ci-scope.mjs, so the dispatcher has nothing to run). Tests for each. Run on Opus now.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T23:19:42.353Z",
+   "updatedAt": "2026-11-17T23:19:42.353Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "That failed. Shouldn't the VPS be doing this on its own? Nothing should be sitting there.",
+    "at": "2026-11-17T23:19:42.353Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 988
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `console-app-part-2-native-floating` → complete, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `banner-widget-shapes-plus-change-icon` s17 done (all) · foreign-write
 - 2026-11-17 22:58 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:18 UTC · `flagship-professional-skin-covering-2` s22 done (all) · orchestrator
 - 2026-11-17 23:19 UTC · `flagship-professional-skin-covering-2` s23 done (all) · orchestrator
 - 2026-11-17 23:19 UTC · `flagship-professional-skin-covering-2` s22 done (all) · foreign-write
+- 2026-11-17 23:19 UTC · `fix-launcher-crash-duplicate-steps-brief` added (0 steps) (all) · console
 
 ## Token passes (log)
 
