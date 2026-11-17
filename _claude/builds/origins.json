@@ -4128,6 +4128,18 @@
    "from": "",
    "addenda": []
   },
+  "guided-live-demo-test-watch-orchestrator": {
+   "said": "I want to watch these grids in real time. I want to watch it die, fail, and show what failed. I want to see it cross off steps as it goes. Make a test so I can watch it in real time everything it can possibly do. Give it at least 30 seconds between each thing. Give me an overlay before it starts with a button to continue or pause. If I have pause between steps on, bring me to the focus of what I need to see and wait until I click next, then another 30 seconds, and bring me to focus again.",
+   "at": "2026-11-17T19:31:58.777Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "handoff-2": {
    "said": "Is there a way to have two sessions working on the project at the same time without building stuff that's gonna conflict with the other one? ... Doesn't it already exist in the handoff? ... Let's scratch the whole handoff system as we know it and create one based on spec. Here's what I want to do. I want to press the button in the console. It'll say prepare handoff to share a second account. And then it will open the browser tab in Claude, or then it'll give me a cut and paste prompt that I'll prompt into the new session from the other account, and run it. And then they'll both be working side by side and being able to talk to each other.",
    "at": "2026-11-04T00:00:00Z",

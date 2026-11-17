@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:31:19.578Z",
+ "updatedAt": "2026-11-17T19:32:06.280Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181717,6 +181717,37 @@
    "origin": {
     "said": "Every time something happens, I want the console to be updated in real time. The VPS checks every 15 seconds to make sure the jobs are running and updates the console. Every running job in any grid has a spinning or animated icon, and building rows flash slowly; configure the animation, flash, pulse, colors. When it stops it goes red, a pink background with a pop-up alert that says broke, and a dialog shows what happened.",
     "at": "2026-11-17T19:30:44.328Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "guided-live-demo-test-watch-orchestrator",
+   "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
+   "category": "",
+   "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T19:31:58.777Z",
+   "updatedAt": "2026-11-17T19:31:58.777Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to watch these grids in real time. I want to watch it die, fail, and show what failed. I want to see it cross off steps as it goes. Make a test so I can watch it in real time everything it can possibly do. Give it at least 30 seconds between each thing. Give me an overlay before it starts with a button to continue or pause. If I have pause between steps on, bring me to the focus of what I need to see and wait until I click next, then another 30 seconds, and bring me to focus again.",
+    "at": "2026-11-17T19:31:58.777Z",
     "source": "",
     "session": "",
     "link": "",
