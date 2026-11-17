@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:56:05.527Z",
+ "updatedAt": "2026-11-17T22:56:18.595Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77980,6 +77980,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -94680,6 +94681,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -133496,6 +133498,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -142150,6 +142153,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -212236,7 +212240,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T22:53:07.696Z",
-   "updatedAt": "2026-11-17T22:54:31.097Z",
+   "updatedAt": "2026-11-17T22:55:59.492Z",
    "builtAt": "",
    "notes": [
     {
@@ -212254,6 +212258,10 @@
     {
      "text": "Brett, full scope (Fable): the WHOLE app, every single piece, controllable by voice through the API, 'as if your mouth is a mouse'. Must include: scroll the screen and any pane; scroll tables and grids; select a row, multi-select rows, select all/none; right-click / open the context menu on any element or row; pick a context menu item by its spoken label; open submenus and pick submenu items; type into and read every field (inputs, notes, selects, switches, checkboxes, sliders); save/cancel/close dialogs; drag and drop, resize, reorder; hover-only and long-press actions; tabs, toolbars, banners, nav and app menus. Every result reports what actually changed on screen, not just 'delivered'. Same through REST, MCP, CLI and voice. CI check fails on any UI element with no voice/API address. Run after the axHub + AmberX move lands.",
      "at": "2026-11-17T22:54:31.097Z"
+    },
+    {
+     "text": "Split by Claude into 18 steps (4 Fable).",
+     "at": "2026-11-17T22:55:59.492Z"
     }
    ],
    "approvals": [],
@@ -212270,7 +212278,417 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the field address contract: add field:<dialog|screen>/<name> and dialog submit/cancel to console-control (get/set value semantics per control kind: text, textarea, select, switch, checkbox, number, radio; value coercion; error codes for unknown field or bad value; action-args fill-then-save rule for new:<title>). Update CONSOLE-CONTROL.md and the control address schema.",
+     "model": "Fable",
+     "why": "Cross-app contract: changes how every GUI form is addressed and driven",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/CONSOLE-CONTROL.md",
+      "framework/schemas/console-control.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn801xs0z",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s2",
+     "text": "Engine: add field address parsing, value coercion and validation to the console-control core engine (pure, no DOM), plus golden fixtures for every control kind and error case; record the Android twin as a deferred gap in PORTING.md.",
+     "model": "Fable",
+     "why": "Engine internals plus conformance fixtures for a cross-port contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/console-control.ts",
+      "framework/spec/fixtures/console-control-fields.json",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn802p0xm",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s3",
+     "text": "Framework controls register field targets by themselves: TextField, TextArea, SelectField, Switch, Checkbox, Segmented and NumberField take a name and emit data-axf-target=field:<scope>/<name>, with the scope taken from the enclosing Dialog/View context, so a plugin never wires it by hand.",
+     "model": "Fable",
+     "why": "Changes how every framework form control behaves across all apps",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/TextField.tsx",
+      "framework/react/components/SelectField.tsx",
+      "framework/react/components/Switch.tsx",
+      "framework/react/components/Checkbox.tsx",
+      "framework/react/consoleControlScope.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn8031xti",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s4",
+     "text": "Runtime field driver: set/get on a field target writes through React's value setter and fires the input/change events (controlled inputs update their state), reads the current value, and dialog submit/cancel presses the dialog's primary or cancel action. Unit test with jsdom.",
+     "model": "Fable",
+     "why": "Core runtime behaviour every app's forms rely on",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/consoleControlFields.ts",
+      "framework/react/AxfProvider.tsx",
+      "framework/spec/check-console-control-fields.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn804dbvw",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s5",
+     "text": "Console server: REST /api/console-control gets field.get, field.set (one or many fields in one call) and dialog.submit/cancel, routed to the open browser session with the same relay as press; refuses personOnly and owner-only settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/console_control.py",
+      "apps/console-web/server/tests/test_console_control_fields.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn805s5uj",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s6",
+     "text": "MCP tools console_control_field_get, console_control_field_set and console_control_dialog_submit in mcp_server.py, matching the REST shapes; add them to the console tools pin.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py",
+      "apps/console-web/server/console_tools.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn806u3dl",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s7",
+     "text": "CLI: axf console field get|set <address> [value] and axf console submit <dialog>, with --json for several fields at once.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "framework/cli/console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn807uqww",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s8",
+     "text": "Voice (AmberX): intents 'set <field> to <value>', 'type <text> into <field>', 'tick/untick <checkbox>', 'save' resolve to field addresses via the Ctrl+K search index.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/voice/consoleControlIntents.ts",
+      "apps/console-web/src/control/searchIndex.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn808vbl2",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s9",
+     "text": "Action args fill forms: a console action that opens a dialog with args (new:<title>, rename:<text>) fills the named fields from the args and saves. Add the generic args-to-fields map to the action registry.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src/control/actions.ts",
+      "framework/core/console-actions.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn809kq7z",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s10",
+     "text": "Plan Studio 2.0: the Plan item dialog's Title, Note, Kind, Priority, Model and checkbox fields get names. plan-studio-2.new and new-inside fill the title and note from args and save; rename takes text; note, priority and model are settable on an existing item.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio-2/web/PlanItemDialog.tsx",
+      "apps/console-web/plugins/plan-studio-2/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90a72ta",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s11",
+     "text": "Plan Studio 2.0 API parity: plugin commands new, new-inside, rename, note, priority, model and tick take values over REST, MCP (plugin-commands), CLI and voice, each with a deep link that opens the item; README section.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio-2/server/routes.py",
+      "apps/console-web/plugins/plan-studio-2/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90bv8jf",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s12",
+     "text": "CI check check-console-control-fields.mjs: statically finds every input, textarea, select, switch and checkbox (raw or framework control) in the console and plugins without a settable field address; ratchet baseline that only goes down. Wire it into CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/check-console-control-fields.mjs",
+      "framework/spec/control-fields-baseline.json",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90c3i9e",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s13",
+     "text": "Sweep 1: name the form controls in Settings and its plugin sub-tabs (setting: addresses get field aliases) and lower the baseline.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/views/settings",
+      "framework/libs/settings",
+      "framework/spec/control-fields-baseline.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90dlq6c",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s14",
+     "text": "Sweep 2: builds plugins (build-orchestrator, pipeline, gate, plan-studio, ui-review) dialogs and forms get named fields; lower the baseline.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web",
+      "apps/console-web/plugins/plan-studio/web",
+      "apps/console-web/plugins/gate/web",
+      "apps/console-web/plugins/ui-review/web",
+      "framework/spec/control-fields-baseline.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90en98i",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s15",
+     "text": "Sweep 3: agent-swarm, claude-settings, claude-session, notify-control, codebase-changes, theme-manager and the rest of the plugins; lower the baseline toward zero, recording any control that truly cannot be addressed with a reason.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins",
+      "framework/spec/control-fields-baseline.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90fp4v8",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s16",
+     "text": "Sweep 4: console core views (Terminal, Breakroom, Home, dialogs in framework/react such as chrome settings and asset pickers); re-bake src/axf; baseline at its final count.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/views",
+      "framework/react/components/ChromeContext.tsx",
+      "apps/console-web/src/axf",
+      "framework/spec/control-fields-baseline.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90gy0o6",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s17",
+     "text": "End-to-end test: with Playwright against a preview console, create a nested Plan Studio 2.0 plan (parent plus two children) with titles, notes, priority and ticked checkboxes entirely through REST, then MCP, then the CLI. Verify on screen via field.get and a screenshot to UI Review Screenshots (group named after the build).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/scripts/e2e-api-fields.mjs",
+      "apps/console-web/plugins/plan-studio-2/test"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90h85w4",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    },
+    {
+     "id": "s18",
+     "text": "Tests, report and PR: run check-console-control, check-console-control-fields, fixtures, the server tests and the e2e. Write _claude/builds/reports/api-fully-drives-every-field-type-forms.md (how each feature is reached via deep link, state, actions, REST, MCP, CLI and voice). Update the docs/console-control.md, add the THREADS row, push the branch and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/api-fully-drives-every-field-type-forms.md",
+      "_claude/memory/docs/console-control.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlajwn90iyl81",
+     "createdAt": "2026-11-17T22:55:59.492Z"
+    }
+   ]
   }
  ]
 }
