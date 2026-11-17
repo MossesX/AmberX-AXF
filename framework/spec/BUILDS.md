@@ -115,6 +115,32 @@ shared-data folder (`framework/plan/profiles/<id>/_claude/builds/orchestrator.js
 main: `check-profiles.mjs` fails CI for any unregistered folder, and builds-live takes such a folder off main on the next
 publish (Nov 13 2026, main-ci-red-test-sandbox-profile-export).
 
+## Demo builds (demo-build@1, the test-build sandbox, Nov 17 2026)
+
+The guided live demo (`framework/spec/LIVE-DEMO.md`) plays on throwaway builds. A demo build carries the tag `demo: true`
+and an id that starts with `demo-`; the two always agree (`framework/core/demo-build.mjs`):
+
+- **The tag comes from the id.** `normBuild` sets `demo: true` on every `demo-` id and leaves the field absent on every
+  other build; a record can never be made a demo build by writing the tag, nor a demo build made real by renaming (ids
+  never change). `validateStore` refuses a tag that disagrees with the id.
+- **Every surface marks them demo-only** from the id alone: the orchestrator and Pending projections carry `demo`
+  (read-only: an absorb never copies it), the queue projection's record carries `demo`, the dispatcher's plan marks
+  demo launches and waits and lists `demo` ids, the auto-lander's build record carries `demo`, every alert about a demo
+  build carries `meta.demo` and starts its title with `[demo]`, builds-live commit lines carry `[demo]`, and the console
+  rows (`pipeline.mjs row`, the board rows) carry `demo`.
+- **The guard.** A demo action is a store write made with `demo: true` in its meta (`withStore(fn, { demo: true })`,
+  `builds-store.mjs set-status … --demo`, every act of a demo run). It may touch demo builds only: if any added,
+  changed or removed build is not a demo build, the whole write is refused (`DemoGuardError`, code `not-demo-build`,
+  nothing saved). `builds-store.mjs demo <build>` answers the guard for one build (exit 1 when refused), and `verify`
+  counts the demo builds.
+- **The other way is open.** A demo build is an ordinary build to everything else (queue, dispatch, crash, watchdog,
+  lander, escalation), so the demo shows the real pipeline.
+
+**Migration:** none. Older records load unchanged: a `demo-` id gets its tag on read, anything else never does, and no
+build in the store carried the `demo-` prefix before this rule (new ids are made by the orchestrator from titles; a
+title starting with "demo" would have to be given on purpose). The store file is rewritten with the tag on the next
+write, as any other normalization.
+
 ## Versioning
 
 Every write: store `rev` + 1, changed records `rev` + 1, one line in the journal (`<YYYY-MM>.jsonl`) with each

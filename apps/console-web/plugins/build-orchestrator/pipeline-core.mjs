@@ -35,6 +35,7 @@
  */
 import { CLAIM_TTL_MS, claimLive, DEFAULT_MAX_RUNS, dependsOn as resolvedDeps, explicitAfter, fileClashes, isHeld, isParallelStep, nextModel, nextStatusOnExit, normAttempts, normFailure, openSteps, outcomeLine, outcomeOf, queueOrder, readySteps, releaseStep, STATUS_AFTER, stepFiles } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
+import { DEMO_MARK, isDemo } from '../../../../framework/core/demo-build.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
@@ -367,8 +368,10 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
     a.running += 1; a.free -= 1; free -= 1;
     if (a.kind === 'api' && a.api && a.free <= 0) a.api = { ...a.api, usable: false, why: `full (${a.running}/${a.parallel})` };
-    launches.push({ id: b.id, account: a.name, model, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)), kind: r.kind, rule: r.rule, why: r.why });
+    launches.push({ id: b.id, account: a.name, model, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)), kind: r.kind, rule: r.rule, why: r.why, ...(isDemo(b) ? { demo: true } : {}) });
   }
+  // demo-build@1: every launch and wait of a demo build is marked demo-only (the dispatcher runs them like any other)
+  for (const w of waits) if (isDemo(queue.find((b) => b.id === w.id))) w.demo = true;
   let idle = null;
   const nothingRunning = !running.length && !(Number(slots?.used) > 0);
   // (fill every slot: the dispatcher adds kind 'slots' when slots are free while ready steps wait, see fillIdle)
@@ -377,7 +380,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (active.length) idle = { reason: `${active.length} build${active.length === 1 ? '' : 's'} in the Queue, nothing running: ${firstWait?.why ?? 'no launch this tick'}`, kind: 'stuck' };
     else if (pending.length) idle = { reason: `Queue empty, nothing running: ${pending.length} build${pending.length === 1 ? '' : 's'} wait in Pending for you to queue them`, kind: 'empty' };
   }
-  return { launches, waits, queue: queue.map((b) => b.id), held: queue.filter(isHeld).map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, idle, at: new Date(now).toISOString() };
+  return { launches, waits, queue: queue.map((b) => b.id), held: queue.filter(isHeld).map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, demo: live.filter(isDemo).map((b) => b.id), idle, at: new Date(now).toISOString() };
 }
 
 // ------------------------------------------------------------------ session end
@@ -838,7 +841,13 @@ export function fillIdle(fillPlan, launchedCount = 0) {
 }
 
 export function alertFor(kind, d = {}) {
-  const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '' } };
+  // demo-build@1: an alert about a demo build is marked demo-only (meta.demo, the mark first in the title) from its id alone
+  const demo = d.demo === true || isDemo({ id: d.id });
+  const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '', ...(demo ? { demo: true } : {}) } };
+  const a = alertBody(kind, d, base);
+  return demo ? { ...a, title: `${DEMO_MARK} ${a.title}` } : a;
+}
+function alertBody(kind, d, base) {
   switch (kind) {
     case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : d.kind === 'slots' ? 'Agent slots free while ready steps wait' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };

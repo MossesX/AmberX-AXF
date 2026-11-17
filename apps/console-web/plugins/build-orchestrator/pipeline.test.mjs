@@ -965,4 +965,23 @@ echo "started axf-$name--r$n in $(pwd)"
   });
 }
 
+// ---------------- demo-build@1: the dispatcher and the alerts mark demo builds demo-only
+t('plan: a demo build runs like any other and is marked demo-only', () => {
+  const v = P.accountViews(rows, {}, { settings });
+  const dq = build('demo-crash', 'queued', [step('s1', 'Opus')], { demo: true, pipeline: { queuedAt: '2026-11-08T00:00:30Z' } });
+  const dw = build('demo-wait', 'queued', [], { demo: true, pipeline: { queuedAt: '2026-11-08T00:00:40Z' } });
+  const r = P.plan({ builds: [dq, dw, q2], accounts: v, slots: { free: 5, used: 0, cap: 5 }, settings });
+  assert.deepEqual(r.demo, ['demo-crash', 'demo-wait']);
+  assert.equal(r.launches.find((l) => l.id === 'demo-crash').demo, true);
+  assert.equal('demo' in r.launches.find((l) => l.id === 'q2'), false);
+  assert.equal(r.waits.find((w) => w.id === 'demo-wait').demo, true);
+});
+t('alertFor: an alert about a demo build is marked from its id alone', () => {
+  const a = P.alertFor('launched', { id: 'demo-crash', title: 'Demo crash', account: 'w-pro', model: 'Opus', phase: 'Phase 1', session: 's' });
+  assert.equal(a.meta.demo, true); assert.match(a.title, /^\[demo\] Building: Demo crash/);
+  const b = P.alertFor('launched', { id: 'q2', title: 'Real', account: 'w-pro', model: 'Opus', phase: '', session: 's' });
+  assert.equal('demo' in b.meta, false); assert.match(b.title, /^Building: Real/);
+  assert.equal(P.alertFor('failed', { id: 'demo-crash', title: 'Demo crash', note: 'exit 143' }).meta.demo, true);
+});
+
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);

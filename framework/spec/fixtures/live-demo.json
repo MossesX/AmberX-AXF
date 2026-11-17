@@ -1,0 +1,2917 @@
+{
+  "$axf": "live-demo-cases@1",
+  "note": "Golden transitions for demo-run@1 (framework/core/live-demo.mjs). `runs` replays event lists (at = seconds after `now`) on the seed run and records the trace, the final state, the summary and the check-list; `errors` replays sequences that must be refused; `norm` replays normRun + validateRun on raw records. Regenerate the `out` blocks with: node framework/spec/check-live-demo.mjs --write",
+  "now": "2026-11-17T20:00:00.000Z",
+  "seed": {
+    "id": "demo-tour",
+    "title": "Watch the orchestrator do everything",
+    "pause": true,
+    "minGapMs": 30000,
+    "acts": [
+      {
+        "id": "pending-appears",
+        "title": "A build appears in Pending",
+        "caption": "A throwaway build is created; watch its row appear in the Pending grid.",
+        "focus": {
+          "app": "console-web",
+          "route": "/build-orchestrator",
+          "address": "row:demo-crash",
+          "note": "Pending grid: a new row"
+        },
+        "run": {
+          "kind": "cli",
+          "cmd": "node",
+          "args": [
+            "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+            "act",
+            "add",
+            "demo-crash",
+            "--demo"
+          ]
+        },
+        "expect": {
+          "kind": "row",
+          "build": "demo-crash"
+        },
+        "cleanup": null,
+        "builds": [
+          "demo-crash"
+        ],
+        "tags": [
+          "grid"
+        ]
+      },
+      {
+        "id": "queue-it",
+        "title": "Queue it",
+        "caption": "The build moves from Pending to the Queue and takes its place.",
+        "focus": {
+          "app": "console-web",
+          "route": "/build-orchestrator",
+          "address": "row:demo-crash",
+          "note": "Queue grid"
+        },
+        "run": {
+          "kind": "rest",
+          "method": "POST",
+          "path": "/api/plugins/build-orchestrator/queue",
+          "body": {
+            "id": "demo-crash"
+          }
+        },
+        "expect": {
+          "kind": "status",
+          "build": "demo-crash",
+          "status": "queued"
+        },
+        "cleanup": null,
+        "builds": [
+          "demo-crash"
+        ],
+        "tags": [
+          "grid",
+          "queue"
+        ]
+      },
+      {
+        "id": "watch-it-die",
+        "title": "Watch it die",
+        "caption": "The session is killed on purpose (exit 143). The row goes red and the banner says what failed.",
+        "focus": {
+          "app": "console-web",
+          "route": "/build-orchestrator",
+          "address": "row:demo-crash/step:s1",
+          "note": "Building grid: the crash"
+        },
+        "run": {
+          "kind": "cli",
+          "cmd": "node",
+          "args": [
+            "framework/cli/builds-live.mjs",
+            "run-end",
+            "demo-crash",
+            "--exit",
+            "143"
+          ],
+          "timeoutMs": 90000
+        },
+        "expect": {
+          "kind": "banner",
+          "build": "demo-crash",
+          "text": "killed",
+          "fails": true
+        },
+        "cleanup": {
+          "kind": "cli",
+          "cmd": "node",
+          "args": [
+            "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+            "act",
+            "delete",
+            "demo-crash",
+            "--demo"
+          ]
+        },
+        "builds": [
+          "demo-crash"
+        ],
+        "tags": [
+          "failure",
+          "watchdog"
+        ]
+      }
+    ]
+  },
+  "runs": [
+    {
+      "name": "pause on: overlay → act 1 pass → Next → 30 s → act 2 pass → Next → 30 s → act 3 dies (pass: it was meant to) → Next → 30 s → done",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 5
+        },
+        {
+          "type": "focused",
+          "at": 6
+        },
+        {
+          "type": "start",
+          "at": 8
+        },
+        {
+          "type": "finish",
+          "at": 12,
+          "result": {
+            "result": "pass",
+            "observed": "row demo-crash appeared",
+            "evidence": [
+              {
+                "kind": "status",
+                "text": "pending",
+                "ref": "row:demo-crash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "tick",
+          "at": 20
+        },
+        {
+          "type": "next",
+          "at": 40
+        },
+        {
+          "type": "tick",
+          "at": 50
+        },
+        {
+          "type": "tick",
+          "at": 70
+        },
+        {
+          "type": "focused",
+          "at": 71
+        },
+        {
+          "type": "start",
+          "at": 72
+        },
+        {
+          "type": "finish",
+          "at": 75,
+          "result": {
+            "result": "pass",
+            "observed": "status queued"
+          }
+        },
+        {
+          "type": "next",
+          "at": 90
+        },
+        {
+          "type": "tick",
+          "at": 120
+        },
+        {
+          "type": "focused",
+          "at": 121
+        },
+        {
+          "type": "start",
+          "at": 122
+        },
+        {
+          "type": "finish",
+          "at": 130,
+          "result": {
+            "result": "pass",
+            "observed": "exit 143, banner: Build demo-crash killed",
+            "evidence": [
+              {
+                "kind": "banner",
+                "text": "Build demo-crash killed (exit 143)"
+              },
+              {
+                "kind": "log",
+                "text": "exit 143",
+                "ref": "logs/demo-crash.log"
+              }
+            ]
+          }
+        },
+        {
+          "type": "next",
+          "at": 140
+        },
+        {
+          "type": "tick",
+          "at": 169
+        },
+        {
+          "type": "tick",
+          "at": 170
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:05.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:06.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:08.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:12.000Z",
+            "state": "waiting-next",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:20.000Z",
+            "state": "waiting-next",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "next",
+            "at": "2026-11-17T20:00:40.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:01:10.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:50.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:01:10.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:01:10.000Z",
+            "state": "focusing",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:01:11.000Z",
+            "state": "captioned",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:01:12.000Z",
+            "state": "running",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:01:15.000Z",
+            "state": "waiting-next",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "next",
+            "at": "2026-11-17T20:01:30.000Z",
+            "state": "cooldown",
+            "cursor": 1,
+            "nextAt": "2026-11-17T20:02:00.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:02:00.000Z",
+            "state": "focusing",
+            "cursor": 2,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:02:01.000Z",
+            "state": "captioned",
+            "cursor": 2,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:02:02.000Z",
+            "state": "running",
+            "cursor": 2,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:02:10.000Z",
+            "state": "waiting-next",
+            "cursor": 2,
+            "nextAt": ""
+          },
+          {
+            "event": "next",
+            "at": "2026-11-17T20:02:20.000Z",
+            "state": "cooldown",
+            "cursor": 2,
+            "nextAt": "2026-11-17T20:02:50.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:02:49.000Z",
+            "state": "cooldown",
+            "cursor": 2,
+            "nextAt": "2026-11-17T20:02:50.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:02:50.000Z",
+            "state": "done",
+            "cursor": 2,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "done",
+          "cursor": 2,
+          "pause": true,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:05.000Z",
+          "endedAt": "2026-11-17T20:02:50.000Z",
+          "stopped": null,
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "pass",
+              "observed": "row demo-crash appeared",
+              "durationMs": 4000
+            },
+            {
+              "actId": "queue-it",
+              "result": "pass",
+              "observed": "status queued",
+              "durationMs": 3000
+            },
+            {
+              "actId": "watch-it-die",
+              "result": "pass",
+              "observed": "exit 143, banner: Build demo-crash killed",
+              "durationMs": 8000
+            }
+          ]
+        },
+        "summary": {
+          "state": "done",
+          "total": 3,
+          "done": 3,
+          "pass": 3,
+          "fail": 0,
+          "skipped": 0,
+          "remaining": 0,
+          "current": "",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:05.000Z",
+          "endedAt": "2026-11-17T20:02:50.000Z",
+          "durationMs": 165000,
+          "pause": true,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "✓ A build appears in Pending",
+          "✓ Queue it",
+          "✓ Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "pause off: every finish goes straight into the 30 s gap, no Next",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "toggle-pause",
+          "at": 2
+        },
+        {
+          "type": "continue",
+          "at": 5
+        },
+        {
+          "type": "focused",
+          "at": 6
+        },
+        {
+          "type": "start",
+          "at": 8
+        },
+        {
+          "type": "finish",
+          "at": 12,
+          "result": {
+            "result": "pass",
+            "observed": "row appeared"
+          }
+        },
+        {
+          "type": "tick",
+          "at": 41
+        },
+        {
+          "type": "tick",
+          "at": 42
+        },
+        {
+          "type": "focused",
+          "at": 43
+        },
+        {
+          "type": "start",
+          "at": 44
+        },
+        {
+          "type": "finish",
+          "at": 50,
+          "result": {
+            "result": "fail",
+            "observed": "status stayed pending",
+            "error": "queue refused: no slot"
+          }
+        },
+        {
+          "type": "tick",
+          "at": 80
+        },
+        {
+          "type": "focused",
+          "at": 81
+        },
+        {
+          "type": "start",
+          "at": 82
+        },
+        {
+          "type": "finish",
+          "at": 90,
+          "result": {
+            "result": "fail",
+            "observed": "exit 0: it did not die",
+            "error": "expected a kill, got a clean exit"
+          }
+        },
+        {
+          "type": "tick",
+          "at": 120
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "toggle-pause",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:05.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:06.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:08.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:12.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:42.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:41.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:42.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:42.000Z",
+            "state": "focusing",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:43.000Z",
+            "state": "captioned",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:44.000Z",
+            "state": "running",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:50.000Z",
+            "state": "cooldown",
+            "cursor": 1,
+            "nextAt": "2026-11-17T20:01:20.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:01:20.000Z",
+            "state": "focusing",
+            "cursor": 2,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:01:21.000Z",
+            "state": "captioned",
+            "cursor": 2,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:01:22.000Z",
+            "state": "running",
+            "cursor": 2,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:01:30.000Z",
+            "state": "cooldown",
+            "cursor": 2,
+            "nextAt": "2026-11-17T20:02:00.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:02:00.000Z",
+            "state": "done",
+            "cursor": 2,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "done",
+          "cursor": 2,
+          "pause": false,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:05.000Z",
+          "endedAt": "2026-11-17T20:02:00.000Z",
+          "stopped": null,
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "pass",
+              "observed": "row appeared",
+              "durationMs": 4000
+            },
+            {
+              "actId": "queue-it",
+              "result": "fail",
+              "observed": "status stayed pending",
+              "durationMs": 6000
+            },
+            {
+              "actId": "watch-it-die",
+              "result": "fail",
+              "observed": "exit 0: it did not die",
+              "durationMs": 8000
+            }
+          ]
+        },
+        "summary": {
+          "state": "done",
+          "total": 3,
+          "done": 3,
+          "pass": 1,
+          "fail": 2,
+          "skipped": 0,
+          "remaining": 0,
+          "current": "",
+          "failed": [
+            {
+              "actId": "queue-it",
+              "title": "Queue it",
+              "observed": "status stayed pending",
+              "error": "queue refused: no slot"
+            },
+            {
+              "actId": "watch-it-die",
+              "title": "Watch it die",
+              "observed": "exit 0: it did not die",
+              "error": "expected a kill, got a clean exit"
+            }
+          ],
+          "startedAt": "2026-11-17T20:00:05.000Z",
+          "endedAt": "2026-11-17T20:02:00.000Z",
+          "durationMs": 115000,
+          "pause": false,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "✓ A build appears in Pending",
+          "✗ Queue it",
+          "✗ Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "pause flipped on the Next bar: on for act 1, off from act 2",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 10,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "toggle-pause",
+          "at": 15
+        },
+        {
+          "type": "next",
+          "at": 20
+        },
+        {
+          "type": "tick",
+          "at": 50
+        },
+        {
+          "type": "focused",
+          "at": 51
+        },
+        {
+          "type": "start",
+          "at": 52
+        },
+        {
+          "type": "finish",
+          "at": 60,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "tick",
+          "at": 89
+        },
+        {
+          "type": "tick",
+          "at": 90
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:01.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:03.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:10.000Z",
+            "state": "waiting-next",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "toggle-pause",
+            "at": "2026-11-17T20:00:15.000Z",
+            "state": "waiting-next",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "next",
+            "at": "2026-11-17T20:00:20.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:50.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:50.000Z",
+            "state": "focusing",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:51.000Z",
+            "state": "captioned",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:52.000Z",
+            "state": "running",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:01:00.000Z",
+            "state": "cooldown",
+            "cursor": 1,
+            "nextAt": "2026-11-17T20:01:30.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:01:29.000Z",
+            "state": "cooldown",
+            "cursor": 1,
+            "nextAt": "2026-11-17T20:01:30.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:01:30.000Z",
+            "state": "focusing",
+            "cursor": 2,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "focusing",
+          "cursor": 2,
+          "pause": false,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "stopped": null,
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "pass",
+              "observed": "",
+              "durationMs": 7000
+            },
+            {
+              "actId": "queue-it",
+              "result": "pass",
+              "observed": "",
+              "durationMs": 8000
+            }
+          ]
+        },
+        "summary": {
+          "state": "focusing",
+          "total": 3,
+          "done": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0,
+          "remaining": 1,
+          "current": "watch-it-die",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "durationMs": 89000,
+          "pause": false,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "✓ A build appears in Pending",
+          "✓ Queue it",
+          "▶ Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "a longer gap (45 s) is honoured",
+      "seed": {
+        "minGapMs": 45000,
+        "pause": false
+      },
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 10,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "tick",
+          "at": 40
+        },
+        {
+          "type": "tick",
+          "at": 54
+        },
+        {
+          "type": "tick",
+          "at": 55
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:01.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:03.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:10.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:55.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:40.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:55.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:54.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:55.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:55.000Z",
+            "state": "focusing",
+            "cursor": 1,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "focusing",
+          "cursor": 1,
+          "pause": false,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "stopped": null,
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "pass",
+              "observed": "",
+              "durationMs": 7000
+            }
+          ]
+        },
+        "summary": {
+          "state": "focusing",
+          "total": 3,
+          "done": 1,
+          "pass": 1,
+          "fail": 0,
+          "skipped": 0,
+          "remaining": 2,
+          "current": "queue-it",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "durationMs": 54000,
+          "pause": false,
+          "minGapMs": 45000
+        },
+        "checklist": [
+          "✓ A build appears in Pending",
+          "▶ Queue it",
+          "· Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "a gap asked below 30 s runs at 30 s",
+      "seed": {
+        "minGapMs": 5000,
+        "pause": false
+      },
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 10,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "tick",
+          "at": 15
+        },
+        {
+          "type": "tick",
+          "at": 39
+        },
+        {
+          "type": "tick",
+          "at": 40
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:01.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:03.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:10.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:40.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:15.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:40.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:39.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:40.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:40.000Z",
+            "state": "focusing",
+            "cursor": 1,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "focusing",
+          "cursor": 1,
+          "pause": false,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "stopped": null,
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "pass",
+              "observed": "",
+              "durationMs": 7000
+            }
+          ]
+        },
+        "summary": {
+          "state": "focusing",
+          "total": 3,
+          "done": 1,
+          "pass": 1,
+          "fail": 0,
+          "skipped": 0,
+          "remaining": 2,
+          "current": "queue-it",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "durationMs": 39000,
+          "pause": false,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "✓ A build appears in Pending",
+          "▶ Queue it",
+          "· Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "skip in focusing: skipped, then the gap",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "skip",
+          "at": 2
+        },
+        {
+          "type": "tick",
+          "at": 32
+        },
+        {
+          "type": "focused",
+          "at": 33
+        },
+        {
+          "type": "skip",
+          "at": 34,
+          "why": "not today"
+        },
+        {
+          "type": "tick",
+          "at": 64
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:01.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "skip",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:32.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:32.000Z",
+            "state": "focusing",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:33.000Z",
+            "state": "captioned",
+            "cursor": 1,
+            "nextAt": ""
+          },
+          {
+            "event": "skip",
+            "at": "2026-11-17T20:00:34.000Z",
+            "state": "cooldown",
+            "cursor": 1,
+            "nextAt": "2026-11-17T20:01:04.000Z"
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:01:04.000Z",
+            "state": "focusing",
+            "cursor": 2,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "focusing",
+          "cursor": 2,
+          "pause": true,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "stopped": null,
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "skipped",
+              "observed": "skipped by brett",
+              "durationMs": 0
+            },
+            {
+              "actId": "queue-it",
+              "result": "skipped",
+              "observed": "not today",
+              "durationMs": 0
+            }
+          ]
+        },
+        "summary": {
+          "state": "focusing",
+          "total": 3,
+          "done": 2,
+          "pass": 0,
+          "fail": 0,
+          "skipped": 2,
+          "remaining": 1,
+          "current": "watch-it-die",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "durationMs": 63000,
+          "pause": true,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "– A build appears in Pending",
+          "– Queue it",
+          "▶ Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "stop while running: the act is skipped (stopped), the run is stopped by brett",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "stop",
+          "at": 9,
+          "by": "brett",
+          "why": "seen enough"
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:01.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:03.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "stop",
+            "at": "2026-11-17T20:00:09.000Z",
+            "state": "stopped",
+            "cursor": 0,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "stopped",
+          "cursor": 0,
+          "pause": true,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "2026-11-17T20:00:09.000Z",
+          "stopped": {
+            "at": "2026-11-17T20:00:09.000Z",
+            "by": "brett",
+            "why": "seen enough"
+          },
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "skipped",
+              "observed": "stopped: seen enough",
+              "durationMs": 6000
+            }
+          ]
+        },
+        "summary": {
+          "state": "stopped",
+          "total": 3,
+          "done": 1,
+          "pass": 0,
+          "fail": 0,
+          "skipped": 1,
+          "remaining": 2,
+          "current": "",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "2026-11-17T20:00:09.000Z",
+          "durationMs": 8000,
+          "pause": true,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "– A build appears in Pending",
+          "· Queue it",
+          "· Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "stop on the overlay: nothing started",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "stop",
+          "at": 3
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "stop",
+            "at": "2026-11-17T20:00:03.000Z",
+            "state": "stopped",
+            "cursor": -1,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "stopped",
+          "cursor": -1,
+          "pause": true,
+          "nextAt": "",
+          "startedAt": "",
+          "endedAt": "2026-11-17T20:00:03.000Z",
+          "stopped": {
+            "at": "2026-11-17T20:00:03.000Z",
+            "by": "brett",
+            "why": ""
+          },
+          "results": []
+        },
+        "summary": {
+          "state": "stopped",
+          "total": 3,
+          "done": 0,
+          "pass": 0,
+          "fail": 0,
+          "skipped": 0,
+          "remaining": 3,
+          "current": "",
+          "failed": [],
+          "startedAt": "",
+          "endedAt": "2026-11-17T20:00:03.000Z",
+          "durationMs": 0,
+          "pause": true,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "· A build appears in Pending",
+          "· Queue it",
+          "· Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "the driver stops on an error during the gap",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 5,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "next",
+          "at": 6
+        },
+        {
+          "type": "stop",
+          "at": 10,
+          "by": "error",
+          "why": "console unreachable"
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:01.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:03.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:05.000Z",
+            "state": "waiting-next",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "next",
+            "at": "2026-11-17T20:00:06.000Z",
+            "state": "cooldown",
+            "cursor": 0,
+            "nextAt": "2026-11-17T20:00:36.000Z"
+          },
+          {
+            "event": "stop",
+            "at": "2026-11-17T20:00:10.000Z",
+            "state": "stopped",
+            "cursor": 0,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "stopped",
+          "cursor": 0,
+          "pause": true,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "2026-11-17T20:00:10.000Z",
+          "stopped": {
+            "at": "2026-11-17T20:00:10.000Z",
+            "by": "error",
+            "why": "console unreachable"
+          },
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "pass",
+              "observed": "",
+              "durationMs": 2000
+            }
+          ]
+        },
+        "summary": {
+          "state": "stopped",
+          "total": 3,
+          "done": 1,
+          "pass": 1,
+          "fail": 0,
+          "skipped": 0,
+          "remaining": 2,
+          "current": "",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "2026-11-17T20:00:10.000Z",
+          "durationMs": 9000,
+          "pause": true,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "✓ A build appears in Pending",
+          "· Queue it",
+          "· Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "finish carries its own times: the duration is theirs",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 20,
+          "result": {
+            "result": "pass",
+            "startedAt": "2026-11-17T20:00:04.000Z",
+            "endedAt": "2026-11-17T20:00:19.500Z",
+            "observed": "15.5 s"
+          }
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:01.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:03.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:20.000Z",
+            "state": "waiting-next",
+            "cursor": 0,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "waiting-next",
+          "cursor": 0,
+          "pause": true,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "stopped": null,
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "pass",
+              "observed": "15.5 s",
+              "durationMs": 15500
+            }
+          ]
+        },
+        "summary": {
+          "state": "waiting-next",
+          "total": 3,
+          "done": 1,
+          "pass": 1,
+          "fail": 0,
+          "skipped": 0,
+          "remaining": 2,
+          "current": "pending-appears",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:01.000Z",
+          "endedAt": "",
+          "durationMs": 19000,
+          "pause": true,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "✓ A build appears in Pending",
+          "· Queue it",
+          "· Watch it die"
+        ]
+      }
+    },
+    {
+      "name": "ticks everywhere are harmless",
+      "events": [
+        {
+          "type": "tick",
+          "at": 0
+        },
+        {
+          "type": "begin",
+          "at": 1
+        },
+        {
+          "type": "tick",
+          "at": 2
+        },
+        {
+          "type": "continue",
+          "at": 3
+        },
+        {
+          "type": "tick",
+          "at": 4
+        },
+        {
+          "type": "focused",
+          "at": 5
+        },
+        {
+          "type": "tick",
+          "at": 6
+        },
+        {
+          "type": "start",
+          "at": 7
+        },
+        {
+          "type": "tick",
+          "at": 8
+        },
+        {
+          "type": "finish",
+          "at": 9,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "tick",
+          "at": 10
+        }
+      ],
+      "out": {
+        "trace": [
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:00.000Z",
+            "state": "idle",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "begin",
+            "at": "2026-11-17T20:00:01.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:02.000Z",
+            "state": "overlay",
+            "cursor": -1,
+            "nextAt": ""
+          },
+          {
+            "event": "continue",
+            "at": "2026-11-17T20:00:03.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:04.000Z",
+            "state": "focusing",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "focused",
+            "at": "2026-11-17T20:00:05.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:06.000Z",
+            "state": "captioned",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "start",
+            "at": "2026-11-17T20:00:07.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:08.000Z",
+            "state": "running",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "finish",
+            "at": "2026-11-17T20:00:09.000Z",
+            "state": "waiting-next",
+            "cursor": 0,
+            "nextAt": ""
+          },
+          {
+            "event": "tick",
+            "at": "2026-11-17T20:00:10.000Z",
+            "state": "waiting-next",
+            "cursor": 0,
+            "nextAt": ""
+          }
+        ],
+        "error": null,
+        "final": {
+          "state": "waiting-next",
+          "cursor": 0,
+          "pause": true,
+          "nextAt": "",
+          "startedAt": "2026-11-17T20:00:03.000Z",
+          "endedAt": "",
+          "stopped": null,
+          "results": [
+            {
+              "actId": "pending-appears",
+              "result": "pass",
+              "observed": "",
+              "durationMs": 2000
+            }
+          ]
+        },
+        "summary": {
+          "state": "waiting-next",
+          "total": 3,
+          "done": 1,
+          "pass": 1,
+          "fail": 0,
+          "skipped": 0,
+          "remaining": 2,
+          "current": "pending-appears",
+          "failed": [],
+          "startedAt": "2026-11-17T20:00:03.000Z",
+          "endedAt": "",
+          "durationMs": 6000,
+          "pause": true,
+          "minGapMs": 30000
+        },
+        "checklist": [
+          "✓ A build appears in Pending",
+          "· Queue it",
+          "· Watch it die"
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "name": "continue before begin",
+      "events": [
+        {
+          "type": "continue",
+          "at": 0
+        }
+      ],
+      "out": {
+        "reached": "idle",
+        "error": {
+          "code": "invalid-transition",
+          "message": "continue is not allowed in idle (allowed: begin)",
+          "state": "idle",
+          "event": "continue"
+        }
+      }
+    },
+    {
+      "name": "Next before the act finished",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "next",
+          "at": 4
+        }
+      ],
+      "out": {
+        "reached": "running",
+        "error": {
+          "code": "invalid-transition",
+          "message": "next is not allowed in running (allowed: finish, stop)",
+          "state": "running",
+          "event": "next"
+        }
+      }
+    },
+    {
+      "name": "start before focused",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "start",
+          "at": 2
+        }
+      ],
+      "out": {
+        "reached": "focusing",
+        "error": {
+          "code": "invalid-transition",
+          "message": "start is not allowed in focusing (allowed: focused, skip, stop)",
+          "state": "focusing",
+          "event": "start"
+        }
+      }
+    },
+    {
+      "name": "finish without a result",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 4
+        }
+      ],
+      "out": {
+        "reached": "running",
+        "error": {
+          "code": "bad-result",
+          "message": "finish needs a result of pass / fail / skipped",
+          "state": "running",
+          "event": "finish"
+        }
+      }
+    },
+    {
+      "name": "finish with an unknown result",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 4,
+          "result": {
+            "result": "meh"
+          }
+        }
+      ],
+      "out": {
+        "reached": "running",
+        "error": {
+          "code": "bad-result",
+          "message": "finish needs a result of pass / fail / skipped",
+          "state": "running",
+          "event": "finish"
+        }
+      }
+    },
+    {
+      "name": "Next during the gap (the gap cannot be cut short)",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 4,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "next",
+          "at": 5
+        },
+        {
+          "type": "next",
+          "at": 6
+        }
+      ],
+      "out": {
+        "reached": "cooldown",
+        "error": {
+          "code": "invalid-transition",
+          "message": "next is not allowed in cooldown (allowed: toggle-pause, stop)",
+          "state": "cooldown",
+          "event": "next"
+        }
+      }
+    },
+    {
+      "name": "focused during the gap",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 4,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "next",
+          "at": 5
+        },
+        {
+          "type": "focused",
+          "at": 6
+        }
+      ],
+      "out": {
+        "reached": "cooldown",
+        "error": {
+          "code": "invalid-transition",
+          "message": "focused is not allowed in cooldown (allowed: toggle-pause, stop)",
+          "state": "cooldown",
+          "event": "focused"
+        }
+      }
+    },
+    {
+      "name": "toggle-pause while running",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "toggle-pause",
+          "at": 4
+        }
+      ],
+      "out": {
+        "reached": "running",
+        "error": {
+          "code": "invalid-transition",
+          "message": "toggle-pause is not allowed in running (allowed: finish, stop)",
+          "state": "running",
+          "event": "toggle-pause"
+        }
+      }
+    },
+    {
+      "name": "begin twice",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "begin",
+          "at": 1
+        }
+      ],
+      "out": {
+        "reached": "overlay",
+        "error": {
+          "code": "invalid-transition",
+          "message": "begin is not allowed in overlay (allowed: continue, toggle-pause, stop)",
+          "state": "overlay",
+          "event": "begin"
+        }
+      }
+    },
+    {
+      "name": "anything after done",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        },
+        {
+          "type": "focused",
+          "at": 2
+        },
+        {
+          "type": "start",
+          "at": 3
+        },
+        {
+          "type": "finish",
+          "at": 4,
+          "result": {
+            "result": "pass"
+          }
+        },
+        {
+          "type": "next",
+          "at": 5
+        },
+        {
+          "type": "tick",
+          "at": 35
+        },
+        {
+          "type": "skip",
+          "at": 36
+        },
+        {
+          "type": "tick",
+          "at": 66
+        },
+        {
+          "type": "skip",
+          "at": 67
+        },
+        {
+          "type": "tick",
+          "at": 97
+        },
+        {
+          "type": "continue",
+          "at": 98
+        }
+      ],
+      "out": {
+        "reached": "done",
+        "error": {
+          "code": "invalid-transition",
+          "message": "continue is not allowed in done (allowed: nothing)",
+          "state": "done",
+          "event": "continue"
+        }
+      }
+    },
+    {
+      "name": "anything after stopped",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "stop",
+          "at": 1
+        },
+        {
+          "type": "continue",
+          "at": 2
+        }
+      ],
+      "out": {
+        "reached": "stopped",
+        "error": {
+          "code": "invalid-transition",
+          "message": "continue is not allowed in stopped (allowed: nothing)",
+          "state": "stopped",
+          "event": "continue"
+        }
+      }
+    },
+    {
+      "name": "an event without a time",
+      "events": [
+        {
+          "type": "begin"
+        }
+      ],
+      "out": {
+        "reached": "idle",
+        "error": {
+          "code": "bad-time",
+          "message": "event begin carries no ISO time",
+          "state": "idle",
+          "event": "begin"
+        }
+      }
+    },
+    {
+      "name": "an event earlier than the state entry",
+      "events": [
+        {
+          "type": "begin",
+          "at": 10
+        },
+        {
+          "type": "continue",
+          "at": 5
+        }
+      ],
+      "out": {
+        "reached": "overlay",
+        "error": {
+          "code": "bad-time",
+          "message": "event continue at 2026-11-17T20:00:05.000Z is earlier than the state was entered (2026-11-17T20:00:10.000Z)",
+          "state": "overlay",
+          "event": "continue"
+        }
+      }
+    },
+    {
+      "name": "an unknown event",
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "rewind",
+          "at": 1
+        }
+      ],
+      "out": {
+        "reached": "overlay",
+        "error": {
+          "code": "invalid-transition",
+          "message": "\"rewind\" is not a demo event (begin, continue, toggle-pause, focused, start, finish, next, skip, stop, tick)",
+          "state": "overlay",
+          "event": "rewind"
+        }
+      }
+    },
+    {
+      "name": "continue with no acts",
+      "seed": {
+        "acts": []
+      },
+      "events": [
+        {
+          "type": "begin",
+          "at": 0
+        },
+        {
+          "type": "continue",
+          "at": 1
+        }
+      ],
+      "out": {
+        "reached": "overlay",
+        "error": {
+          "code": "no-act",
+          "message": "the run has no acts to play",
+          "state": "overlay",
+          "event": "continue"
+        }
+      }
+    }
+  ],
+  "norm": [
+    {
+      "name": "empty record",
+      "in": {},
+      "out": {
+        "run": {
+          "$axf": "demo-run@1",
+          "id": "demo-run",
+          "title": "Guided live demo",
+          "state": "idle",
+          "pause": true,
+          "minGapMs": 30000,
+          "acts": [],
+          "cursor": -1,
+          "results": [],
+          "enteredAt": "2026-11-17T20:00:00.000Z",
+          "nextAt": "",
+          "startedAt": "",
+          "endedAt": "",
+          "stopped": null,
+          "createdAt": "2026-11-17T20:00:00.000Z",
+          "updatedAt": "2026-11-17T20:00:00.000Z"
+        },
+        "errors": [
+          {
+            "path": "acts",
+            "code": "no-act",
+            "message": "a run needs at least one act"
+          }
+        ]
+      }
+    },
+    {
+      "name": "junk fields read as defaults",
+      "in": {
+        "id": "Bad Id!",
+        "state": "limbo",
+        "pause": "yes",
+        "minGapMs": "2",
+        "cursor": 99,
+        "acts": [
+          {
+            "id": "A B",
+            "title": "",
+            "run": {
+              "kind": "teleport"
+            },
+            "expect": {
+              "kind": "status",
+              "build": "demo-x",
+              "status": "queued"
+            }
+          }
+        ],
+        "results": [
+          {
+            "actId": "nope",
+            "result": "pass"
+          },
+          {
+            "actId": "act-1",
+            "result": "pass",
+            "startedAt": "2026-11-17T19:00:00.000Z",
+            "endedAt": "2026-11-17T19:00:05.000Z"
+          }
+        ]
+      },
+      "out": {
+        "run": {
+          "$axf": "demo-run@1",
+          "id": "demo-run",
+          "title": "Guided live demo",
+          "state": "idle",
+          "pause": true,
+          "minGapMs": 30000,
+          "acts": [
+            {
+              "id": "act-1",
+              "title": "Act 1",
+              "caption": "",
+              "focus": {
+                "app": "",
+                "route": "",
+                "selector": "",
+                "address": "",
+                "note": ""
+              },
+              "run": {
+                "kind": "custom",
+                "cmd": "",
+                "args": [],
+                "method": "",
+                "path": "",
+                "body": null,
+                "timeoutMs": 60000
+              },
+              "expect": {
+                "kind": "status",
+                "build": "demo-x",
+                "step": "",
+                "status": "queued",
+                "text": "",
+                "within": 0,
+                "fails": false
+              },
+              "cleanup": null,
+              "builds": [
+                "demo-x"
+              ],
+              "tags": []
+            }
+          ],
+          "cursor": -1,
+          "results": [
+            {
+              "actId": "act-1",
+              "result": "pass",
+              "startedAt": "2026-11-17T19:00:00.000Z",
+              "endedAt": "2026-11-17T19:00:05.000Z",
+              "durationMs": 5000,
+              "observed": "",
+              "evidence": [],
+              "error": ""
+            }
+          ],
+          "enteredAt": "2026-11-17T20:00:00.000Z",
+          "nextAt": "",
+          "startedAt": "",
+          "endedAt": "",
+          "stopped": null,
+          "createdAt": "2026-11-17T20:00:00.000Z",
+          "updatedAt": "2026-11-17T20:00:00.000Z"
+        },
+        "errors": [
+          {
+            "path": "acts[0].focus.app",
+            "code": "invalid-transition",
+            "message": "act \"act-1\" says nothing about where to look"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a cooldown without nextAt gets one",
+      "in": {
+        "id": "demo-tour",
+        "state": "cooldown",
+        "cursor": 0,
+        "enteredAt": "2026-11-17T19:59:00.000Z",
+        "acts": [
+          {
+            "id": "a",
+            "title": "A",
+            "focus": {
+              "app": "console-web"
+            },
+            "run": {
+              "kind": "noop"
+            },
+            "expect": {
+              "kind": "none"
+            }
+          }
+        ],
+        "results": [
+          {
+            "actId": "a",
+            "result": "pass"
+          }
+        ]
+      },
+      "out": {
+        "run": {
+          "$axf": "demo-run@1",
+          "id": "demo-tour",
+          "title": "Guided live demo",
+          "state": "cooldown",
+          "pause": true,
+          "minGapMs": 30000,
+          "acts": [
+            {
+              "id": "a",
+              "title": "A",
+              "caption": "",
+              "focus": {
+                "app": "console-web",
+                "route": "",
+                "selector": "",
+                "address": "",
+                "note": ""
+              },
+              "run": {
+                "kind": "noop",
+                "cmd": "",
+                "args": [],
+                "method": "",
+                "path": "",
+                "body": null,
+                "timeoutMs": 60000
+              },
+              "expect": {
+                "kind": "none",
+                "build": "",
+                "step": "",
+                "status": "",
+                "text": "",
+                "within": 0,
+                "fails": false
+              },
+              "cleanup": null,
+              "builds": [],
+              "tags": []
+            }
+          ],
+          "cursor": 0,
+          "results": [
+            {
+              "actId": "a",
+              "result": "pass",
+              "startedAt": "",
+              "endedAt": "",
+              "durationMs": 0,
+              "observed": "",
+              "evidence": [],
+              "error": ""
+            }
+          ],
+          "enteredAt": "2026-11-17T19:59:00.000Z",
+          "nextAt": "2026-11-17T19:59:30.000Z",
+          "startedAt": "",
+          "endedAt": "",
+          "stopped": null,
+          "createdAt": "2026-11-17T20:00:00.000Z",
+          "updatedAt": "2026-11-17T20:00:00.000Z"
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "a stopped run without a stopped record gets one",
+      "in": {
+        "id": "demo-tour",
+        "state": "stopped",
+        "cursor": 0,
+        "enteredAt": "2026-11-17T19:59:00.000Z",
+        "acts": [
+          {
+            "id": "a",
+            "title": "A",
+            "focus": {
+              "app": "console-web"
+            },
+            "run": {
+              "kind": "noop"
+            },
+            "expect": {
+              "kind": "none"
+            }
+          }
+        ]
+      },
+      "out": {
+        "run": {
+          "$axf": "demo-run@1",
+          "id": "demo-tour",
+          "title": "Guided live demo",
+          "state": "stopped",
+          "pause": true,
+          "minGapMs": 30000,
+          "acts": [
+            {
+              "id": "a",
+              "title": "A",
+              "caption": "",
+              "focus": {
+                "app": "console-web",
+                "route": "",
+                "selector": "",
+                "address": "",
+                "note": ""
+              },
+              "run": {
+                "kind": "noop",
+                "cmd": "",
+                "args": [],
+                "method": "",
+                "path": "",
+                "body": null,
+                "timeoutMs": 60000
+              },
+              "expect": {
+                "kind": "none",
+                "build": "",
+                "step": "",
+                "status": "",
+                "text": "",
+                "within": 0,
+                "fails": false
+              },
+              "cleanup": null,
+              "builds": [],
+              "tags": []
+            }
+          ],
+          "cursor": 0,
+          "results": [],
+          "enteredAt": "2026-11-17T19:59:00.000Z",
+          "nextAt": "",
+          "startedAt": "",
+          "endedAt": "2026-11-17T19:59:00.000Z",
+          "stopped": {
+            "at": "2026-11-17T19:59:00.000Z",
+            "by": "driver",
+            "why": ""
+          },
+          "createdAt": "2026-11-17T20:00:00.000Z",
+          "updatedAt": "2026-11-17T20:00:00.000Z"
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "an act on a real build is kept but refused",
+      "in": {
+        "id": "demo-tour",
+        "acts": [
+          {
+            "id": "a",
+            "title": "A",
+            "focus": {
+              "app": "console-web"
+            },
+            "run": {
+              "kind": "noop"
+            },
+            "expect": {
+              "kind": "none"
+            },
+            "builds": [
+              "skins"
+            ]
+          }
+        ]
+      },
+      "out": {
+        "run": {
+          "$axf": "demo-run@1",
+          "id": "demo-tour",
+          "title": "Guided live demo",
+          "state": "idle",
+          "pause": true,
+          "minGapMs": 30000,
+          "acts": [
+            {
+              "id": "a",
+              "title": "A",
+              "caption": "",
+              "focus": {
+                "app": "console-web",
+                "route": "",
+                "selector": "",
+                "address": "",
+                "note": ""
+              },
+              "run": {
+                "kind": "noop",
+                "cmd": "",
+                "args": [],
+                "method": "",
+                "path": "",
+                "body": null,
+                "timeoutMs": 60000
+              },
+              "expect": {
+                "kind": "none",
+                "build": "",
+                "step": "",
+                "status": "",
+                "text": "",
+                "within": 0,
+                "fails": false
+              },
+              "cleanup": null,
+              "builds": [
+                "skins"
+              ],
+              "tags": []
+            }
+          ],
+          "cursor": -1,
+          "results": [],
+          "enteredAt": "2026-11-17T20:00:00.000Z",
+          "nextAt": "",
+          "startedAt": "",
+          "endedAt": "",
+          "stopped": null,
+          "createdAt": "2026-11-17T20:00:00.000Z",
+          "updatedAt": "2026-11-17T20:00:00.000Z"
+        },
+        "errors": [
+          {
+            "path": "acts[0].builds",
+            "code": "not-demo-build",
+            "message": "act \"a\" touches \"skins\", which is not a demo build (id prefix demo-)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "duplicate act ids are made unique",
+      "in": {
+        "id": "demo-tour",
+        "acts": [
+          {
+            "id": "a",
+            "title": "A",
+            "focus": {
+              "app": "console-web"
+            },
+            "run": {
+              "kind": "noop"
+            },
+            "expect": {
+              "kind": "none"
+            }
+          },
+          {
+            "id": "a",
+            "title": "A again",
+            "focus": {
+              "app": "console-web"
+            },
+            "run": {
+              "kind": "noop"
+            },
+            "expect": {
+              "kind": "none"
+            }
+          }
+        ]
+      },
+      "out": {
+        "run": {
+          "$axf": "demo-run@1",
+          "id": "demo-tour",
+          "title": "Guided live demo",
+          "state": "idle",
+          "pause": true,
+          "minGapMs": 30000,
+          "acts": [
+            {
+              "id": "a",
+              "title": "A",
+              "caption": "",
+              "focus": {
+                "app": "console-web",
+                "route": "",
+                "selector": "",
+                "address": "",
+                "note": ""
+              },
+              "run": {
+                "kind": "noop",
+                "cmd": "",
+                "args": [],
+                "method": "",
+                "path": "",
+                "body": null,
+                "timeoutMs": 60000
+              },
+              "expect": {
+                "kind": "none",
+                "build": "",
+                "step": "",
+                "status": "",
+                "text": "",
+                "within": 0,
+                "fails": false
+              },
+              "cleanup": null,
+              "builds": [],
+              "tags": []
+            },
+            {
+              "id": "a-2",
+              "title": "A again",
+              "caption": "",
+              "focus": {
+                "app": "console-web",
+                "route": "",
+                "selector": "",
+                "address": "",
+                "note": ""
+              },
+              "run": {
+                "kind": "noop",
+                "cmd": "",
+                "args": [],
+                "method": "",
+                "path": "",
+                "body": null,
+                "timeoutMs": 60000
+              },
+              "expect": {
+                "kind": "none",
+                "build": "",
+                "step": "",
+                "status": "",
+                "text": "",
+                "within": 0,
+                "fails": false
+              },
+              "cleanup": null,
+              "builds": [],
+              "tags": []
+            }
+          ],
+          "cursor": -1,
+          "results": [],
+          "enteredAt": "2026-11-17T20:00:00.000Z",
+          "nextAt": "",
+          "startedAt": "",
+          "endedAt": "",
+          "stopped": null,
+          "createdAt": "2026-11-17T20:00:00.000Z",
+          "updatedAt": "2026-11-17T20:00:00.000Z"
+        },
+        "errors": []
+      }
+    }
+  ]
+}
