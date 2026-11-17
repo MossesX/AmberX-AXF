@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7538,
- "updatedAt": "2026-11-17T16:53:35.772Z",
+ "rev": 7539,
+ "updatedAt": "2026-11-17T16:54:13.641Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266664,12 +266664,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T16:53:28.616Z",
+   "updatedAt": "2026-11-17T16:54:11.228Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T16:53:28.616Z"
+    },
+    {
+     "text": "Brett Nov 17: run this whole build on Fable, every step (contract, app, plugin, retire AmberX). Set all steps to Fable.",
+     "at": "2026-11-17T16:54:11.228Z"
     }
    ],
    "approvals": [],
@@ -266719,7 +266723,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

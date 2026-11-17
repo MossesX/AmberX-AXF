@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T16:53:35.772Z",
+ "updatedAt": "2026-11-17T16:54:13.641Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -173730,12 +173730,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T16:53:28.616Z",
+   "updatedAt": "2026-11-17T16:54:11.228Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T16:53:28.616Z"
+    },
+    {
+     "text": "Brett Nov 17: run this whole build on Fable, every step (contract, app, plugin, retire AmberX). Set all steps to Fable.",
+     "at": "2026-11-17T16:54:11.228Z"
     }
    ],
    "approvals": [],
