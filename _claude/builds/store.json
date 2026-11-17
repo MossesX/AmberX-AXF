@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7542,
- "updatedAt": "2026-11-17T16:55:17.159Z",
+ "rev": 7543,
+ "updatedAt": "2026-11-17T16:55:27.003Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266656,15 +266656,15 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/rebuild-fresh-main-phone-connect-small",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T16:55:11.530Z",
+   "updatedAt": "2026-11-17T16:55:24.593Z",
    "builtAt": "",
    "notes": [
     {
@@ -266678,6 +266678,14 @@
     {
      "text": "Split by Claude into 27 steps (5 Fable).",
      "at": "2026-11-17T16:54:55.110Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-rebuild-fresh-main-phone-connect-small--gina.",
+     "at": "2026-11-17T16:55:17.014Z"
+    },
+    {
+     "text": "Brief only: brief is 28225 characters (~7057 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T16:55:24.593Z"
     }
    ],
    "approvals": [],
@@ -266697,13 +266705,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T16:53:28.041Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-rebuild-fresh-main-phone-connect-small--gina",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T16:55:15.937Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -266716,10 +266724,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T16:55:15.937Z",
     "planned": null,
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T16:55:15.937Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -267405,7 +267413,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
