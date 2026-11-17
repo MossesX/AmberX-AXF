@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7484,
- "updatedAt": "2026-11-17T15:05:25.518Z",
+ "rev": 7485,
+ "updatedAt": "2026-11-17T15:05:35.680Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182944,7 +182944,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -182953,7 +182953,7 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T15:04:51.461Z",
+   "updatedAt": "2026-11-17T15:05:01.182Z",
    "builtAt": "",
    "notes": [
     {
@@ -183049,28 +183049,6 @@
     "heldWhy": ""
    },
    "steps": [
-    {
-     "id": "s22",
-     "uid": "st-mwktq15g01cflc",
-     "title": "",
-     "text": "Merge origin/main into this branch (PR #772). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres; keep main's store path, keep this build's watchdog hooks on top), build-orchestrator/notify.json, glossary-index/terms.json, deploy/install-console.sh, framework/spec/PORTING.md (keep both sides), inventory.json (take main's, regenerate). Tests green, push, merge the PR directly (merge queue is off). Brett: VPS/auto-lander PRs land first.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-17T15:04:51.462Z",
-     "updatedAt": "2026-11-17T15:04:51.796Z"
-    },
     {
      "id": "s1",
      "uid": "st-mwewwu9q01fx0i",
