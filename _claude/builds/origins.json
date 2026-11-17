@@ -2074,6 +2074,18 @@
    "from": "",
    "addenda": []
   },
+  "change-asset-only-assets-built-screen": {
+   "said": "Don't allow switching asset types unless they're built for the same screen. They must carry a field that says which plugin. That way you can't add an incompatible toolbar or tab group or nav menu. Only assets built for that particular screen show up in the change asset list.",
+   "at": "2026-11-17T18:15:39.557Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "change-to-move-amberx-web-app-console": {
    "said": "",
    "at": "",

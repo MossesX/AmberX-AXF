@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:36 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s5 done (all) · orchestrator
 - 2026-11-17 03:36 UTC · `server-auto-lander-fixes-lands` s6 done (all) · orchestrator
 - 2026-11-17 03:37 UTC · `console-app-part-2-native-floating` note (all) · cli
 - 2026-11-17 03:37 UTC · `land-project-create-mcp-resolve-clash` note (all) · cli
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 18:12 UTC · `fix-column-alignment-every-grid-table` → archived, note (all) · console
 - 2026-11-17 18:12 UTC · `context-menu-containers-show-hide-list` note (all) · orchestrator
 - 2026-11-17 18:14 UTC · `grids-layout-control-voice-controlled` note (all) · orchestrator
+- 2026-11-17 18:15 UTC · `change-asset-only-assets-built-screen` added (0 steps) (all) · console
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:14:12.328Z",
+ "updatedAt": "2026-11-17T18:15:41.909Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -176580,6 +176580,37 @@
      "createdAt": "2026-11-17T18:14:01.858Z"
     }
    ]
+  },
+  {
+   "id": "change-asset-only-assets-built-screen",
+   "title": "Change asset: only assets built for this screen/plugin can be swapped in",
+   "category": "",
+   "detail": "Every asset (toolbar, tab group, nav menu, banner, etc.) carries a field naming the screen/plugin it was built for. The Change asset list on every page only shows assets built for that exact screen; swapping in an incompatible one is refused everywhere (UI, REST, MCP, CLI, voice). Migration: tag existing assets with their screen; untagged ones only appear on the screen they're currently used on. Also: a 'Reset all to default' on every page with Change asset, plus a global one. Tests + UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:15:39.557Z",
+   "updatedAt": "2026-11-17T18:15:39.557Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Don't allow switching asset types unless they're built for the same screen. They must carry a field that says which plugin. That way you can't add an incompatible toolbar or tab group or nav menu. Only assets built for that particular screen show up in the change asset list.",
+    "at": "2026-11-17T18:15:39.557Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
