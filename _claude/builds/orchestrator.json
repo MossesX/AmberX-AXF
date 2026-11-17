@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:24:37.097Z",
+ "updatedAt": "2026-11-17T21:24:53.812Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186445,12 +186445,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T21:23:45.087Z",
+   "updatedAt": "2026-11-17T21:24:51.614Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T21:23:45.087Z"
+    },
+    {
+     "text": "Split by Claude into 13 steps (0 Fable).",
+     "at": "2026-11-17T21:24:51.614Z"
     }
    ],
    "approvals": [],
@@ -186467,7 +186471,304 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Reproduce and trace: open the banner's right-click Settings… dialog, find how the Interface tab's controls choose what they style, and confirm they write the settings window's own tokens or scope (axf.chrome.settings.banner, or the dialog's SkinScope) and not the banner's (axf.chrome.banner.<id>). Write the findings and the list of affected kinds into a working note in _claude/builds/reports/fix-banner-settings-interface-tab.md.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "framework/core/engines/chrome-settings-rules.mjs",
+      "framework/assets/settings/chrome-banner.json",
+      "apps/console-web/src/axf/react/components/ChromeContext.tsx",
+      "_claude/builds/reports/fix-banner-settings-interface-tab.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq017nxs",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add a failing test first: rendering the banner's Settings… dialog and changing one Interface tab control (for example the style or size) must change the banner's per-instance override key axf.chrome.banner.<id> and leave the settings window's keys and look unchanged.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-chrome-settings.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq021vht",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix the target: pass the chrome instance the dialog was opened for (type + id) into the Interface tab, and point every control in it at that instance's override key and asset pick (axf.chrome.<type>.<id>, axf.chrome.<type>.<id>.asset) instead of the dialog's own scope. The banner must restyle live through the runtime (rt.set plus a token recompile), not after a reload.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "framework/core/engines/chrome-settings-rules.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq0349so",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s4",
+     "text": "Live preview wiring: make sure the banner frame re-reads its per-instance overrides when they change (a settings subscription) so every Interface control (style, position, size, display, sticky, collapsible) shows on the banner right away. The test from step 2 now passes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/Banner.tsx",
+      "framework/ui/axf.css",
+      "framework/spec/check-chrome-settings.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq04y2dd",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s5",
+     "text": "Toolbars: check the toolbar Settings… Interface tab for the same bug (there is an earlier hotfix branch claude/hotfix-toolbar-settings-still-change, so read its diff first), point any control that still styles the dialog at axf.chrome.toolbar.<id>, and add a test case for it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "framework/react/tapConfirm.ts",
+      "framework/spec/check-chrome-settings.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq05xb8w",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s6",
+     "text": "Tab groups: check the TabGroup Settings… Interface tab, point its controls at axf.chrome.tab-group.<id>, and add a test case for it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "framework/react/components/TabGroup.tsx",
+      "framework/react/components/ChromeContext.tsx",
+      "framework/spec/check-tab-group.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq06wuky",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s7",
+     "text": "Nav menus, app menu and context menu: check their Settings… Interface tabs, point the controls at axf.chrome.nav-menu|app-menu|context-menu.<id>, and add a test case per kind.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "framework/spec/check-chrome-settings.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq072dfl",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s8",
+     "text": "Grids: check the DataGrid settings Interface tab (per-grid token sets), point its controls at that grid's own key and not the settings window, and add a test case for it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/react/components/ChromeContext.tsx",
+      "framework/spec/check-chrome-settings.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq08wdlt",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s9",
+     "text": "Guard against it coming back: add a check that fails when any chrome settings Interface tab writes a key outside the instance it was opened for (in check-chrome-settings, or in chrome-settings.mjs check).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "framework/cli/chrome-settings.mjs",
+      "framework/spec/check-chrome-settings.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq092lnn",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s10",
+     "text": "API part: make each chrome instance's Interface settings readable and settable without the UI, with the same keys the dialog writes: REST /api/console-control setting:chrome.<type>.<id>.*, MCP console actions chrome.set / chrome.reset with an instance id, the CLI `axf console chrome set <type> <id> <key> <value>`, and AmberX voice. A deep link opens the instance's Settings → Interface tab (console_show target).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "apps/console-web/src/consoleActions.ts",
+      "framework/cli/check-console-control.mjs",
+      "_claude/memory/docs/console-control.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq0a1lfk",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s11",
+     "text": "Re-bake the framework into the console (rebake.mjs apply console-web after taking main's src/axf and lock), then run typecheck and the console build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/console-web/axf.lock.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq0bp0ux",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s12",
+     "text": "Shots: take console desktop and phone screenshots of the banner before and after an Interface change (banner restyled, dialog unchanged), and send them to UI Review with 3 options (the Interface tab layout as settings assets) through review.mjs submit --choices. Add the matching shots for one toolbar and one tab group.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/chrome-settings/assets/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq0cuuzh",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "id": "s13",
+     "text": "Tests, report, THREADS row and PR: run check-chrome-settings.mts, check-tab-group.mts, chrome-settings.mjs check, check-chrome-assets.mjs, check-theme.mjs, check-controls.mjs, check-toolbars.mjs and check-console-control.mjs. Finish _claude/builds/reports/fix-banner-settings-interface-tab.md (the bug, every kind checked and fixed, before/after, how each instance setting is reached by REST, MCP, CLI and voice). Add the THREADS.md row, then open the PR and put it in the merge queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-banner-settings-interface-tab.md",
+      "_claude/THREADS.md",
+      "framework/spec/",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl7aplq0du32j",
+     "createdAt": "2026-11-17T21:24:51.614Z"
+    }
+   ]
   }
  ]
 }
