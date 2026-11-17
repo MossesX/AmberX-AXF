@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `context-menus-plugin-one-true-source` s9 done, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `group-chat-audio-hear-agents-talk-while` s5 done, → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `picker-dialog-plugin-replaces-all` → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `console-look-becomes-default-axhub-skin` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:32 UTC · `move-server-side-console-parts-onto-vps` → queued, note (all) · pipeline
 - 2026-11-17 23:32 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 23:32 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
+- 2026-11-17 23:33 UTC · `icon-picker-every-banner-settings-widget` note (all) · pipeline
 
 ## Token passes (log)
 

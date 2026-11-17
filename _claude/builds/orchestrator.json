@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:33:06.860Z",
+ "updatedAt": "2026-11-17T23:33:31.604Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172834,7 +172834,7 @@
    "title": "Move server-side console parts onto the VPS host as services, UI stays in console",
    "category": "",
    "detail": "Audit every console plugin. Anything that must keep running when the console is down, or touches Docker, disk or git, moves out of the axf-console container onto the VPS host as systemd services that start on boot and auto-restart, code at /opt/axf, run under a dedicated limited user with a sudo whitelist of only the commands needed (no general root). Candidates: Maintenance (coordinate with maintenance-plugin-clear-docker-cache), Systems check and its Auto fixes, agent-swarm job runner (CI-fix jobs), builds-live publisher, shipped-features watcher, axHub sync. Orchestrator/lander/watchdog are already moving in server-auto-lander-fixes-lands; reuse that, don't duplicate. App-only plugins (settings, skins, etc.) stay in the container. Console UI calls the host services over a local socket/API and shows a clear 'host service down' state. Include install script, health checks in Systems check, migration with rollback, and reachable via UI, REST, MCP, CLI, voice. Write the audit list into the report first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -191847,7 +191847,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T23:32:52.319Z",
+   "updatedAt": "2026-11-17T23:33:07.209Z",
    "builtAt": "2026-11-17T23:31:47.269Z",
    "notes": [
     {
@@ -191925,6 +191925,10 @@
     {
      "text": "Headless run axf-icon-picker-every-banner-settings-widget--joey: brief only · start 17.7K tokens ($0.12) · cost $23.75 · 342 turns · 6 tools, MCP none",
      "at": "2026-11-17T23:32:27.473Z"
+    },
+    {
+     "text": "Session axf-icon-picker-every-banner-settings-widget--joey on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-17T23:33:07.209Z"
     },
     {
      "text": "Session axf-icon-picker-every-banner-settings-widget--joey on hulu0241 ended (exit 0); the build was already complete.",
