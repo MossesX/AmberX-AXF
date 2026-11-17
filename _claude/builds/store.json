@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7852,
- "updatedAt": "2026-11-17T20:41:49.434Z",
+ "rev": 7853,
+ "updatedAt": "2026-11-17T20:42:11.922Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -280466,7 +280466,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:41:44.908Z",
+   "updatedAt": "2026-11-17T20:42:08.912Z",
    "builtAt": "",
    "notes": [
     {
@@ -280476,6 +280476,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-17T20:41:44.908Z"
+    },
+    {
+     "text": "Brett: make the Pending list toolbar its own page-specific set: Queue selected, Split now, Set priority, Hold, Archive, Show what Brett said (plus multi-select). Queue and Active get their own sets too.",
+     "at": "2026-11-17T20:42:08.912Z"
     }
    ],
    "approvals": [],
@@ -280643,7 +280647,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
