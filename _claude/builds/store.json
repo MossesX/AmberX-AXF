@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7961,
- "updatedAt": "2026-11-17T21:17:19.260Z",
+ "rev": 7962,
+ "updatedAt": "2026-11-17T21:17:27.430Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276137,7 +276137,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T21:17:22.290Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -276859,7 +276859,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -278106,7 +278106,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -278114,7 +278114,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T21:17:11.950Z",
+   "updatedAt": "2026-11-17T21:17:18.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -278292,6 +278292,10 @@
     {
      "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s22): session was killed (exit 143): step s22 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T21:17:11.950Z"
+    },
+    {
+     "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-17T21:17:18.001Z"
     }
    ],
    "approvals": [
@@ -278321,7 +278325,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "",
+    "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
     "slot": "",
     "model": "",
     "phase": "",
@@ -278415,7 +278419,7 @@
      "action": "retry",
      "attempt": 1,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T21:17:22.290Z",
      "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
      "note": "session was killed (exit 143): step s22 reset, slot released, back in the Queue (retry 1 of 3)."
     }
@@ -279024,7 +279028,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
