@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7136,
- "updatedAt": "2026-11-17T00:13:10.108Z",
+ "rev": 7137,
+ "updatedAt": "2026-11-17T00:13:30.342Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -257729,7 +257729,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T00:12:41.742Z",
+   "updatedAt": "2026-11-17T00:13:09.422Z",
    "builtAt": "",
    "notes": [
     {
@@ -257751,6 +257751,10 @@
     {
      "text": "Claude account: hulu0241 (axf-server-auto-lander-fixes-lands--sully, shared account login)",
      "at": "2026-11-16T23:52:49.272Z"
+    },
+    {
+     "text": "Headless run axf-server-auto-lander-fixes-lands--sully: brief only · start 17.8K tokens ($0.12) · cost $7.65 · 47 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:13:09.422Z"
     },
     {
      "text": "Phase 1 done (Fable): auto-lander@1 contract + engine + fixture + the auto-lander gate rule (info, on by default, joins saved rule sets on read). Not yet wired: the VPS runner (push banner cron / lander.mjs) does not call auto-lander.decide() yet, so nothing merges main, starts fix sessions or escalates by itself until the next phase adds the runner loop, the attempt store (auto-lander-state@1 in the lander data dir), the fix-session launch through the orchestrator dispatcher, and the health@1 banner item for escalations. Rule reachable now: REST /api/plugins/gate/rules/auto-lander, MCP gate_rules_get/set/toggle, CLI axf gate rules get|set|on|off auto-lander, voice gate.rule, deep link view:gate row:auto-lander.",
