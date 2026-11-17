@@ -832,12 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:28 UTC · `badge-shape-picker-banners-screen-pill` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `banners-page-focus-scroll-to-highlight` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `claude-badge-can-claude-build-green-when` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `collapse-auto-collapse-buttons-every-tab` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `fix-merge-conflicts-pr-557-professional` → complete, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `focus-every-screen-console-open-console` → landing, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `github-client-plugin-see-control-every` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `merges-are-only-merged-once-github` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `new-project-wizard-name-linked-repo` → complete, note (all) · foreign-write
@@ -1232,6 +1226,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:54 UTC · `api-fully-drives-every-field-type-forms` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:54 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · builds-live
 - 2026-11-17 22:54 UTC · `api-fully-drives-every-field-type-forms` note (all) · builds-live
+- 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` added (0 steps) (all) · console
+- 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` → queued, note (all) · console
+- 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` note (all) · console
+- 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` note (all) · Brett
+- 2026-11-17 22:54 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
+- 2026-11-17 22:54 UTC · `api-fully-drives-every-field-type-forms` note (all) · Brett
 
 ## Token passes (log)
 
