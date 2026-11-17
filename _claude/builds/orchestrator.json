@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:27:17.291Z",
+ "updatedAt": "2026-11-17T21:27:32.281Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175228,7 +175228,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:27:10.609Z",
+   "updatedAt": "2026-11-17T21:27:21.229Z",
    "builtAt": "",
    "notes": [
     {
@@ -175382,6 +175382,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 16 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T21:27:10.609Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s12): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:27:21.229Z"
     }
    ],
    "approvals": [
@@ -181447,7 +181451,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181455,8 +181459,8 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:20:40.525Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T21:27:29.196Z",
+   "builtAt": "2026-11-17T21:27:29.196Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -182034,7 +182038,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": true,
      "doneAt": "2026-11-17T21:04:39.628Z",
      "note": "",

@@ -829,9 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:50 UTC · `all-banners-hide-when-empty` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `auto-recover-stuck-builds` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `ui-review-gate-switch-default-off` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `fix-toolbar-settings-doing-nothing` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `merge-all-ready-buttons-server-side` → archived, note (all) · watchdog
@@ -1229,6 +1226,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:26 UTC · `rebuild-fresh-main-hide-any-asset` s10 done (all) · orchestrator
 - 2026-11-17 21:26 UTC · `fix-banner-settings-interface-tab` s1 done, → running (all) · orchestrator
 - 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
+- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
 
 ## Token passes (log)
 
