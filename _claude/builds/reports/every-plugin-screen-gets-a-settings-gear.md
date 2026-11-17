@@ -129,3 +129,11 @@ after the plugin's own settings and above Install & uninstall; no tab ids change
 controls stay on its screen. ui-review's "Options every build ships" and "Ask me how many options" were already
 in its sub-tab (panel `ui-review.choices`, REST `choices/settings`), so nothing moved and the keys are unchanged.
 No lines outside the plugin folders were edited, so no lifecycle markers were needed.
+
+## hub-sync (s15)
+
+hub-sync draws no screen (framework/libs/hubsync contributes a settings tab, settings and panels, no `views`), so
+there is no screen to carry a gear. Its sub-tab id is `hubsync` in the library, in plugin.json `provides`
+(`settings-tab:hubsync`) and now in the control inventory (`view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubsync`);
+they match, nothing to fix. `plugin.settings.open:hub-sync`, `GET /api/console-control/plugins/hub-sync/settings` and
+"open axhub sync settings" all reach it.
