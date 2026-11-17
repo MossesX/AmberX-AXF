@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7930,
- "updatedAt": "2026-11-17T21:06:27.488Z",
+ "rev": 7931,
+ "updatedAt": "2026-11-17T21:06:39.291Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268180,7 +268180,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:06:21.087Z",
+   "updatedAt": "2026-11-17T21:06:34.794Z",
    "builtAt": "",
    "notes": [
     {
@@ -268282,7 +268282,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -268321,7 +268321,17 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T21:06:34.794Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
@@ -269004,7 +269014,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
