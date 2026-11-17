@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7546,
- "updatedAt": "2026-11-17T17:01:18.510Z",
+ "rev": 7547,
+ "updatedAt": "2026-11-17T17:04:16.910Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266661,10 +266661,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/rebuild-fresh-main-phone-connect-small",
-   "pr": "",
+   "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T17:01:15.124Z",
+   "updatedAt": "2026-11-17T17:04:13.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -267417,7 +267417,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
