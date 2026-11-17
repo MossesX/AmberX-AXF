@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:41 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:41 UTC · `flagship-professional-skin-covering-2` s8 done (all) · foreign-write
 - 2026-11-17 22:41 UTC · `flagship-professional-skin-covering-2` s8 done (all) · orchestrator
 - 2026-11-17 22:40 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · mcp
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:03 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-17 23:03 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` s19 done, → landing (all) · orchestrator
+- 2026-11-17 23:03 UTC · `banner-widget-shapes-plus-change-icon` s19 done, → complete (all) · foreign-write
 
 ## Token passes (log)
 
