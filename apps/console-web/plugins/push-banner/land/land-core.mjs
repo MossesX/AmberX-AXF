@@ -3,7 +3,7 @@
  * land.mjs (the host runner) and the push banner's server read the same rules from here.
  *
  * A finished build (builds@1 status `built`, or every step done, with a branch) is landed by plain scripts:
- *   clean its worktree (synced files committed on its own branch, scratch files skipped, untracked duplicates of hub
+ *   clean its worktree (tracking files reset to the merge-base copy, never committed; other synced files committed on its branch; scratch files skipped, untracked duplicates of hub
  *   files backed up) → merge origin/main in (builds files newer-wins, union files unioned, generated files taken from
  *   main and regenerated) → push → its PR is opened / linked → the push banner merges it once CI is green on that head
  *   and UI Review doesn't hold it, in dependency order, one per round.
@@ -28,7 +28,7 @@ export const STATUS_PATHS = /^_claude\//;
 
 /** Files that are scratch in a build's worktree: never committed, never block a landing. */
 const SCRATCH = [/^\.brief\.md$/, /^[^/]+\.log$/, /^[^/]+\.jsonl$/, /^\.axf-[^/]*$/, /^\.claude-sync-hold$/, /(^|\/)node_modules(\/|$)/, /^\.shots-harness\//];
-/** Synced data (claude-sync, persist.mjs): changes here are committed on the build's own branch. */
+/** Synced data (claude-sync, persist.mjs): changes here are committed on the build's own branch, tracking files excepted. */
 const SYNCED = [/^_claude\//, /^changes\//, /^sessions\//, /^apps\/[^/]+\/_claude\//, /^framework\/plan\//, /^framework\/catalog\/status\.json$/, /^tracker\.json$/, /^project\.manifest\.json$/, /^apps\/[^/]+\/project\.manifest\.json$/];
 
 /**
@@ -148,8 +148,11 @@ export function mergeJson3(b, o, t, prefer = 'theirs') {
 }
 
 /**
- * What to do with each line of `git status --porcelain` in a finished build's worktree.
- *   commit   synced data changed here (claude-sync / persist wrote it): committed on the build's own branch
+ * What to do with each line of `git status --porcelain` in a finished build's worktree. A tracking file is never
+ * committed for the build (the auto-land commit of them dragged store/journal churn into build branches, #733).
+ *   reset    a tracking file (tracking-paths@1) changed here: backed up, then put back to the branch's merge-base copy
+ *            with main (main and the hub keep the live copy; the build branch never carries it)
+ *   commit   other synced data the build wrote (a report, memory, catalog status): committed on its own branch
  *   skip     scratch (.brief.md, logs, jsonl, .axf-* files): left alone, never committed
  *   archive  untracked file that is a copy of a hub file (claude-sync dropped it): moved to /root/archive/<build>/
  *   restore  tracked synced file whose content is the hub's copy (a sync drop, not the build's work): backed up the
@@ -159,7 +162,7 @@ export function mergeJson3(b, o, t, prefer = 'theirs') {
  * `hubHas(path)` says whether the hub (/projects/<name>/_claude …) has a file at that repo path.
  */
 export function strayPlan(porcelain, hubHas = () => false) {
-  const plan = { commit: [], skip: [], archive: [], restore: [], code: [], keep: [] };
+  const plan = { commit: [], reset: [], skip: [], archive: [], restore: [], code: [], keep: [] };
   for (const raw of String(porcelain || '').split('\n')) {
     if (!raw.trim()) continue;
     const xy = raw.slice(0, 2); let p = raw.slice(3).trim();
@@ -167,6 +170,8 @@ export function strayPlan(porcelain, hubHas = () => false) {
     p = p.replace(/^"|"$/g, '');
     if (any(SCRATCH, p)) { plan.skip.push(p); continue; }
     const untracked = xy === '??'; const deleted = xy.includes('D');
+    // an untracked tracking file (a new journal part, an export the branch never had) is the hub's: left alone
+    if (isTracking(p)) { (untracked ? plan.skip : plan.reset).push(p); continue; }
     if (!deleted && hubHas(p)) { (untracked ? plan.archive : plan.restore).push(p); continue; }
     if (untracked) { (any(SYNCED, p) ? plan.commit : plan.keep).push(p); continue; }
     (any(SYNCED, p) ? plan.commit : plan.code).push(p);

@@ -15,7 +15,8 @@
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
- *   1. its worktree: synced files committed on its own branch, scratch files skipped, untracked copies of hub files
+ *   1. its worktree: tracking files (framework/core/tracking-paths.mjs) reset to the branch's merge-base copy with
+ *      main, never committed (#733); other synced files committed on its own branch; scratch files skipped, untracked copies of hub files
  *      moved to /root/archive/auto-land/<build>/, `.claude-sync-hold` written so claude-sync stops dropping files in;
  *      code changes never committed stop it (reason `code`); the branch is pushed when it is ahead of GitHub;
  *   2. main merged in (a temporary worktree, never the build's): only when main moved in code (status-only `[skip ci]`
@@ -44,6 +45,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
+import * as tracking from '../../../../../framework/core/tracking-paths.mjs';
 import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -193,18 +195,57 @@ export function hubPath(s, wt, p) {
   return '';
 }
 
-/** Step 1: clean a finished build's worktree. Returns { code: [files], committed: [files], archived: [files], pushError }. */
+/** Files bigger than this are not backed up before a reset (journal parts: append-only, kept on main and the hub). */
+const BACKUP_MAX = 8 << 20;
+
+/**
+ * Put tracking files (tracking-paths@1) back to the branch's merge-base copy with main, in the
+ * build's worktree `wt`, instead of committing them: the dirty ones in `paths`, and any the branch itself committed
+ * since it left main (a session's commit, an old auto-land commit). A file main's base lacks is dropped from the
+ * index (the copy on disk stays, untracked). When the branch's commits carried any, one commit puts them back
+ * ("Reset tracking files to main's base copy"), so the build's diff never shows them. Returns { reset, commit, base }.
+ */
+export function resetTracking({ s, git, b, wt, paths = [], dry = false }) {
+  const g = (a, o = {}) => git(a, { ...o, cwd: wt });
+  const base = g(['merge-base', 'HEAD', `${s.remote}/${s.base}`]).out;
+  if (!base) return { reset: [], commit: '', base: '', error: 'no merge-base with main' };
+  const committed = g(['diff', '--name-only', base, 'HEAD', '--', ...trackingSpecs()]).out.split('\n').filter(Boolean);
+  const all = [...new Set([...paths, ...committed])];
+  if (dry || !all.length) return { reset: all, commit: '', base };
+  const inBase = (p) => g(['cat-file', '-e', `${base}:${p}`]).code === 0;
+  const out = [];
+  for (const p of all) {
+    const f = join(wt, p);
+    try { if (existsSync(f) && statSync(f).size <= BACKUP_MAX) { const to = join(s.archive, b.id, 'tracking', p); mkdirSync(dirname(to), { recursive: true }); copyFileSync(f, to); } } catch { /* backup is best effort */ }
+    const r = inBase(p) ? g(['checkout', base, '--', p]) : g(['rm', '-q', '--cached', '--ignore-unmatch', '--', p]);
+    if (!r.code) out.push(p);
+  }
+  let commit = '';
+  const staged = g(['diff', '--cached', '--name-only', 'HEAD', '--', ...out]).out.split('\n').filter(Boolean);
+  if (staged.length) {
+    const c = g(['-c', 'user.name=AXF auto-land', '-c', 'user.email=auto-land@amberxai.com', 'commit', '-q', '-m', `${b.id}: reset tracking files to main's base copy (auto-land; they live on main and the hub)`, '--', ...staged]);
+    if (!c.code) commit = g(['rev-parse', 'HEAD']).out;
+  }
+  return { reset: out, commit, base };
+}
+const trackingSpecs = () => tracking.trackingPathspecs();
+
+/**
+ * Step 1: clean a finished build's worktree. Returns { code: [files], reset: [files], archived: [files], pushError }.
+ * Tracking files are reset to the merge-base copy (resetTracking), never committed; other synced data is committed.
+ */
 export function cleanWorktree({ s, git, b, wt, dry, now = Date.now() }) {
   const g = (a, o = {}) => git(a, { ...o, cwd: wt });
-  const res = { committed: [], archived: [], skipped: [], code: [], settling: false, pushError: '' };
+  const res = { committed: [], reset: [], resetCommit: '', archived: [], skipped: [], code: [], settling: false, pushError: '' };
   if (!dry) { try { writeFileSync(join(wt, '.claude-sync-hold'), `auto-land: ${b.id} is finished; claude-sync leaves this checkout alone.\n`); } catch { /* read-only checkout */ } }
   const hubHas = (p) => { const h = hubPath(s, wt, p); if (!h || !existsSync(h)) return false; try { return readFileSync(h).equals(readFileSync(join(wt, p))); } catch { return false; } };
   const plan = core.strayPlan(g(['status', '--porcelain', '--untracked-files=all']).out, hubHas);
   res.skipped = plan.skip; res.code = plan.code;
-  // a session that wrote here in the last 10 minutes may still be finishing: leave it this round
+  // a session that wrote code here in the last 10 minutes may still be finishing: leave it this round (tracking files
+  // are rewritten by builds-live all the time and never hold a landing)
   const fresh = [...plan.commit, ...plan.code].some((p) => { try { return now - statSync(join(wt, p)).mtimeMs < 10 * 60000; } catch { return false; } });
   if (fresh) { res.settling = true; return res; }
-  if (dry) return { ...res, committed: plan.commit, archived: [...plan.archive, ...plan.restore] };
+  if (dry) { const t = resetTracking({ s, git, b, wt, paths: plan.reset, dry: true }); return { ...res, committed: plan.commit, reset: t.reset, archived: [...plan.archive, ...plan.restore] }; }
   for (const p of [...plan.archive, ...plan.restore]) {
     const to = join(s.archive, b.id, p);
     try {
@@ -215,9 +256,11 @@ export function cleanWorktree({ s, git, b, wt, dry, now = Date.now() }) {
   }
   if (plan.commit.length) {
     g(['add', '--', ...plan.commit]);
-    const c = g(['-c', 'user.name=AXF auto-land', '-c', 'user.email=auto-land@amberxai.com', 'commit', '-q', '-m', `${b.id}: commit synced files left in the worktree (auto-land)`, '--', ...plan.commit]);
+    const c = g(['-c', 'user.name=AXF auto-land', '-c', 'user.email=auto-land@amberxai.com', 'commit', '-q', '-m', `${b.id}: commit synced files left in the worktree (auto-land; tracking files excluded)`, '--', ...plan.commit]);
     if (!c.code) res.committed = plan.commit;
   }
+  const t = resetTracking({ s, git, b, wt, paths: plan.reset });
+  res.reset = t.reset; res.resetCommit = t.commit;
   if (plan.code.length) return res;
   // push the branch when the worktree is ahead of GitHub (never forced; a branch that moved on GitHub is left alone)
   const ahead = g(['rev-list', '--count', `${s.remote}/${b.branch}..HEAD`]);
@@ -386,8 +429,10 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
           if (c.settling) { it.state = 'settling'; it.reason = { kind: 'running', text: `${b.id}: its worktree changed in the last 10 minutes; lands once it settles.`, quiet: true }; items.push(it); continue; }
           if (c.code.length) facts.code = c.code;
           if (c.pushError) facts.pushError = c.pushError;
-          it.cleaned = { committed: c.committed, archived: c.archived, skipped: c.skipped.length };
-          if (c.committed.length || !remoteHas(b.branch)) git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]);
+          it.cleaned = { committed: c.committed, reset: c.reset, ...(c.resetCommit ? { resetCommit: c.resetCommit } : {}), archived: c.archived, skipped: c.skipped.length };
+          if (c.reset.length || c.resetCommit) it.tracking = { ...(old.tracking || {}), reset: { at, files: c.reset.slice(0, 40), commit: c.resetCommit || '' } };
+          else if (old.tracking) it.tracking = old.tracking;
+          if (c.committed.length || c.resetCommit || !remoteHas(b.branch)) git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]);
         }
         if (!remoteHas(b.branch) && !facts.pushError) facts.pushError = `${b.branch} is not on GitHub and has no worktree here`;
         let pr = prOf(b.branch);
