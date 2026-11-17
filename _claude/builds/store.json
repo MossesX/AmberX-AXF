@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7613,
- "updatedAt": "2026-11-17T19:02:36.886Z",
+ "rev": 7616,
+ "updatedAt": "2026-11-17T19:05:50.094Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151789,7 +151789,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151798,8 +151798,8 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T15:12:00.171Z",
-   "builtAt": "2026-11-14T23:13:42.882Z",
+   "updatedAt": "2026-11-17T19:05:30.347Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -151868,6 +151868,14 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:12:00.170Z"
+    },
+    {
+     "text": "Auto-lander: fix attempt 1 (s10) added. CI is red on 4b5465ae5 (claude/pass-approval-hook-deep-link-amberx-notification):",
+     "at": "2026-11-17T19:05:25.541Z"
+    },
+    {
+     "text": "Queued by auto-lander for fix attempt 1.",
+     "at": "2026-11-17T19:05:30.347Z"
     }
    ],
    "approvals": [
@@ -151894,8 +151902,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-17T19:05:18.650Z",
+    "queuedBy": "auto-lander",
     "account": "",
     "session": "",
     "slot": "[object Object]",
@@ -151907,7 +151915,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "fix attempt 1",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -152151,6 +152159,28 @@
      "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
      "updatedAt": "2026-11-14T23:13:15.819Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwl2bcst01vopa",
+     "title": "",
+     "text": "Auto-lander fix, attempt 1: make CI green on claude/pass-approval-hook-deep-link-amberx-notification so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 4b5465ae5 (claude/pass-approval-hook-deep-link-amberx-notification):\n- Web Dev Console (React/TS) + Python API › Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption\nBrett said (verbatim): \"I'm gonna need a link to the pass, a hook to it.\"",
+     "model": "Opus",
+     "why": "auto-lander red-ci",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T19:05:23.350Z",
+     "updatedAt": "2026-11-17T19:05:23.597Z"
     }
    ],
    "profiles": [
@@ -152161,7 +152191,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 114,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206250,7 +206280,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "built",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206258,8 +206288,8 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T15:12:18.490Z",
-   "builtAt": "2026-11-15T01:21:59.421Z",
+   "updatedAt": "2026-11-17T19:05:47.792Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -206564,6 +206594,28 @@
      "rev": 2,
      "createdAt": "2026-11-13T18:42:36.411Z",
      "updatedAt": "2026-11-15T01:21:44.977Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwl2bvr1028b4q",
+     "title": "",
+     "text": "Auto-lander fix, attempt 1: make CI green on claude/orchestrator-settings-collapsible-split so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 59fab543d (claude/orchestrator-settings-collapsible-split):\n- Web Dev Console (React/TS) + Python API › Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption\nFrom \"CI build errors\" #1:\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-accent (its files read it; run token-registry.mjs manifest gate --write)\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-border (its files read it; run token-registry.mjs manifest gate --write)\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-border-w (its files read it; run token-registry.mjs manifest gate --write)\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-danger (its files read it; run token-registry.mjs manifest gate --write)\n    ✗ apps/console-web/plugins/gate/plugin.json: tokens.uses is missing --fx-dens-gap-lg (its files read it; run token-registry.mjs manifest gate --write)\nBrett said (verbatim): \"orchestrator settings needs a collapsible section for split, with all the splitting options, and one option splits it so it runs multiple parallel builds simultaneously to speed it up\"",
+     "model": "Opus",
+     "why": "auto-lander red-ci",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T19:05:47.792Z",
+     "updatedAt": "2026-11-17T19:05:48.157Z"
     }
    ],
    "profiles": [
@@ -206574,7 +206626,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {

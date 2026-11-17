@@ -824,10 +824,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:58 UTC · `server-rule-done-means-merged-working` s11 done (all) · orchestrator
-- 2026-11-17 03:59 UTC · `orchestrator-runs-long-builds-across` s13 done (all) · orchestrator
-- 2026-11-17 03:59 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s10 done (all) · orchestrator
-- 2026-11-17 03:59 UTC · `server-auto-lander-fixes-lands` s17 done (all) · orchestrator
 - 2026-11-17 04:02 UTC · `server-auto-lander-fixes-lands` s18 done (all) · orchestrator
 - 2026-11-17 04:02 UTC · `builds-keep-their-slot-across-phases` s1 done, → running (all) · orchestrator
 - 2026-11-17 04:03 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s16 done (all) · orchestrator
@@ -1224,6 +1220,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:02 UTC · `reset-all-button-every-asset-override` note (all) · cli
 - 2026-11-17 19:02 UTC · `own-look-per-grid-and-tab-group` note (all) · cli
 - 2026-11-17 19:02 UTC · `server-auto-lander-fixes-lands` note (all) · cli
+- 2026-11-17 19:05 UTC · `pass-approval-hook-deep-link-amberx-notification` → running (all) · auto-lander
+- 2026-11-17 19:05 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · auto-lander
+- 2026-11-17 19:05 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · auto-lander
+- 2026-11-17 19:05 UTC · `orchestrator-settings-collapsible-split` → running (all) · auto-lander
 
 ## Token passes (log)
 
