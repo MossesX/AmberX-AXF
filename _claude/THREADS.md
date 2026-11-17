@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `unlink-plan-studio-builds-delete-all` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `vps-badge-shows-shell-commands-work` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `full-voice-api-control-type-fields-press` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `chrome-settings-actually-apply-toolbars` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `vps-builds-get-console-token-ui-review` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `decision-dialog-ui-review-other` note (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:29 UTC · `active-tab-stop-button-grid-alignment` note (all) · foreign-write
 - 2026-11-17 23:30 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 23:30 UTC · `fix-launcher-crash-duplicate-steps-brief` → running, note (all) · pipeline
+- 2026-11-17 23:30 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · orchestrator
+- 2026-11-17 23:30 UTC · `fix-launcher-crash-duplicate-steps-brief` branch claude/fix-launcher-crash-duplicate-steps-brief (all) · pipeline
+- 2026-11-17 23:31 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · orchestrator
 
 ## Token passes (log)
 

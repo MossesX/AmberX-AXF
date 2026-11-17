@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8393,
- "updatedAt": "2026-11-17T23:30:52.094Z",
+ "rev": 8394,
+ "updatedAt": "2026-11-17T23:31:20.906Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -459546,15 +459546,15 @@
    "title": "Fix launcher crash: duplicate steps + brief too big",
    "category": "",
    "detail": "auto-lander-never-wait-missing-ui-review died at launch: deploy/claude-headless.sh line 416 '/root/.local/bin/claude: Argument list too long' (brief ~54,579 tokens). Two causes: (1) the step splitter/re-split appends the same steps again and again (dispatcher-split had 897 steps, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63, all repeats of 13-15 real steps). Fix the splitter so a re-split replaces steps, dedupe by text, and clean every existing build's duplicate steps (keep done flags). (2) claude-headless.sh must pass the brief through a file/stdin, never as an argv string, and cap brief size with a trimmed step list. Also: a launch crash must be retried automatically by the VPS after the fix, and a land clash must send the build straight back to the queue with a merge-main fix step on its own (Phone Connect #787 sits with 27/27 steps done and a clash in framework/spec/check-ci-scope.mjs, so the dispatcher has nothing to run). Tests for each. Run on Opus now.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-launcher-crash-duplicate-steps-brief",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-17T23:30:44.117Z",
+   "updatedAt": "2026-11-17T23:31:03.149Z",
    "builtAt": "",
    "notes": [
     {
@@ -459568,6 +459568,14 @@
     {
      "text": "Split by Claude into 16 steps (0 Fable).",
      "at": "2026-11-17T23:21:46.506Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-launcher-crash-duplicate-steps-brief--earl, shared account login)",
+     "at": "2026-11-17T23:30:52.169Z"
+    },
+    {
+     "text": "Brief only: brief is 53488 characters (~13372 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T23:31:03.149Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-launcher-crash-duplicate-steps-brief--earl.",
@@ -459591,13 +459599,13 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-fix-launcher-crash-duplicate-steps-brief--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T23:30:36.727Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -459610,7 +459618,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T23:30:36.727Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -459619,7 +459627,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T23:30:36.727Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -464965,7 +464973,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
