@@ -821,13 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:22 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
-- 2026-11-17 00:22 UTC · `stop-auto-lander-committing-tracking` s2 done (all) · orchestrator
-- 2026-11-17 00:21 UTC · `own-look-per-grid-and-tab-group` s14 done (all) · orchestrator
-- 2026-11-17 00:23 UTC · `server-rule-done-means-merged-working` s1 done, → running (all) · orchestrator
-- 2026-11-17 00:24 UTC · `gate-auto-lander-tab-and-controls` s1 done, → running (all) · orchestrator
-- 2026-11-17 00:24 UTC · `every-plugin-screen-gets-a-settings-gear` s7 done (all) · orchestrator
-- 2026-11-17 00:24 UTC · `gate-auto-lander-tab-and-controls` note (all) · orchestrator
 - 2026-11-17 00:24 UTC · `stop-auto-lander-committing-tracking` s3 done (all) · orchestrator
 - 2026-11-17 00:25 UTC · `console-app-part-2-native-floating` → running, note (all) · pipeline
 - 2026-11-17 00:25 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
@@ -1221,6 +1214,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 14:59 UTC · `auto-lander-drag-rows-to-set-merge-order` → queued, note (all) · console
 - 2026-11-17 15:00 UTC · `edit-ui-mode-inline-edit-anything-active` s2 done (all) · orchestrator
 - 2026-11-17 15:00 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · orchestrator
+- 2026-11-17 15:01 UTC · `auto-lander-drag-rows-to-set-merge-order` → running, note (all) · pipeline
+- 2026-11-17 15:01 UTC · `auto-lander-drag-rows-to-set-merge-order` branch claude/auto-lander-drag-rows-to-set-merge-order (all) · pipeline
+- 2026-11-17 15:01 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · orchestrator
+- 2026-11-17 15:01 UTC · `rebuild-fresh-main-hide-any-asset` s3 done (all) · orchestrator
+- 2026-11-17 15:02 UTC · `auto-lander-drag-rows-to-set-merge-order` → running, note (all) · pipeline
+- 2026-11-17 15:03 UTC · `settings-opened-banners-nav-menu` s2 done (all) · orchestrator
+- 2026-11-17 15:04 UTC · `edit-ui-mode-inline-edit-anything-active` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
