@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:35:42.200Z",
+ "updatedAt": "2026-11-17T21:35:55.570Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186851,7 +186851,7 @@
    "title": "Land PR #730 Reset all button (far right)",
    "category": "",
    "detail": "Branch claude/reset-all-button-every-asset-override (PR #730). Brett picked UI Review option: button far right. Merge origin/main: clashes only in generated files apps/axhub-web/axf.lock.json, apps/molly/axf.lock.json, apps/console-web/src/control/inventory.json; take main's lock files (molly is removed, drop if gone), regenerate inventory.json, run checks, land. Console only. At most 3 steps.",
-   "status": "queued",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -186859,8 +186859,8 @@
    "pr": "#803",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:35:32.067Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T21:35:49.724Z",
+   "builtAt": "2026-11-17T21:35:49.725Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -186911,8 +186911,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:35:40.290Z",
      "note": "",
      "uid": "st-mwl7ocyq01lz2n",
      "createdAt": "2026-11-17T21:35:27.910Z"
@@ -186930,11 +186930,30 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:35:44.262Z",
      "note": "",
      "uid": "st-mwl7og5j01a6yi",
      "createdAt": "2026-11-17T21:35:32.072Z"
+    },
+    {
+     "id": "s3",
+     "text": "Push the branch and write the report _claude/builds/reports/land-pr-730-reset-all-button-far-right.md: the merge, which lock files were taken or dropped, the inventory regeneration, check results before and after, how Reset all is reached (deep link, REST, MCP, CLI, voice), and Brett's words 'reset all on the right'. Update the PR #730 description to say how each API is reached, link the build with builds-live.mjs link land-pr-730-reset-all-button-far-right --branch claude/reset-all-button-every-asset-override --pr 730, and add PR #730 to the merge queue (land.mjs queue add 730). Never merge it directly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T21:35:49.724Z",
+     "note": "",
+     "uid": "st-mwl7ojg201ur5j",
+     "createdAt": "2026-11-17T21:35:36.211Z"
     }
    ]
   },
