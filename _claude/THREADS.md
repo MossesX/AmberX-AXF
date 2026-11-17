@@ -820,7 +820,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:02 UTC · `attach-widgets-to-any-toolbar-banner` → pending, note (all) · reconciler
 - 2026-11-17 00:02 UTC · `icon-packs-with-drag-drop-pack-designer` branch claude/icon-packs-with-drag-drop-pack-designer, note (all) · reconciler
 - 2026-11-17 00:02 UTC · `banner-widget-shapes-plus-change-icon` → pending, note (all) · reconciler
 - 2026-11-17 00:03 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
@@ -1220,6 +1219,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 12:33 UTC · `orchestrator-stale-row-watchdog-vps` s3 done (all) · orchestrator
 - 2026-11-17 12:33 UTC · `orchestrator-stale-row-watchdog-vps` s4 done (all) · orchestrator
 - 2026-11-17 12:35 UTC · `auto-lander-grid-one-row-per-build` s5 done, → complete (all) · orchestrator
+- 2026-11-17 12:35 UTC · `orchestrator-stale-row-watchdog-vps` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
