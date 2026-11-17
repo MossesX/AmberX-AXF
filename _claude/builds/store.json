@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7180,
- "updatedAt": "2026-11-17T00:30:31.478Z",
+ "rev": 7181,
+ "updatedAt": "2026-11-17T00:32:48.743Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -251363,7 +251363,7 @@
    "title": "Own look per grid and tab group",
    "category": "",
    "detail": "Fresh build on current main replacing the archived own-token-sets-for-grids-and-tab-groups (2,196 behind). Every grid and tab group can get its own look separate from the app's skin: row colour, text size, spacing, borders, radius, hover and selected colours. Set per instance from its right-click Settings, with Reset to skin. Old branch for intent only, don't merge it. Tokens through the asset engines, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -251371,8 +251371,8 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:29:57.881Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T00:32:45.876Z",
+   "builtAt": "2026-11-17T00:32:45.876Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -251910,12 +251910,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:32:45.876Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T22:48:13.206Z",
-     "updatedAt": "2026-11-16T22:48:13.206Z"
+     "updatedAt": "2026-11-17T00:32:46.187Z"
     }
    ],
    "profiles": [
@@ -251926,7 +251926,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
