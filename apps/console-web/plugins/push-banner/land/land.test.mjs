@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, ciOf, reasonEvent } from './land.mjs';
+import { makeGit, round, control, readState, ciOf, reasonEvent, worktrees } from './land.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -78,11 +78,13 @@ check(core.regenFor('changes/2026/11/x.json') === null && core.regenFor('framewo
   check(core.mergeJson3(undefined, { k: 1 }, { k: 2 }, 'ours').k === 1 && core.mergeJson3(undefined, [1, 2], [2, 3]).join('') === '123', 'no base: prefer picks a scalar, plain lists union');
 }
 const sp = core.strayPlan(' M _claude/builds/store.json\n?? .brief.md\n?? auto-land.jsonl\n?? _claude/dup.md\n M framework/core/a.ts\n?? notes.txt\n M changes/2026/11/c.json\n M _claude/shared/x.md', (p) => p === '_claude/dup.md' || p === '_claude/shared/x.md');
-check(sp.commit.join() === '_claude/builds/store.json,changes/2026/11/c.json', 'synced data the build wrote is committed on its branch');
-check(sp.skip.join() === '.brief.md,auto-land.jsonl', '.brief.md and top-level jsonl/logs are skipped');
+check(sp.commit.join() === 'changes/2026/11/c.json', 'synced data the build wrote is committed on its branch');
+check(sp.skip.join() === '_claude/builds/store.json,.brief.md,auto-land.jsonl', '.brief.md, top-level jsonl/logs and the builds store builds-live keeps on main are skipped');
 check(sp.archive.join() === '_claude/dup.md' && sp.restore.join() === '_claude/shared/x.md', 'copies of hub files are backed up (untracked moved, tracked put back)');
 check(sp.code.join() === 'framework/core/a.ts' && sp.keep.join() === 'notes.txt', 'uncommitted code is reported, other untracked files left alone');
-check(core.strayPlan(' M _claude/builds/journal/2026-11.jsonl').commit.length === 1, 'a journal deep in _claude/ is data, not a scratch log');
+check(core.strayPlan(' M _claude/builds/journal/2026-11.jsonl').skip.length === 1, 'a builds journal is builds-live\'s (on main), not committed on a branch');
+check(core.strayPlan(' M _claude/builds/orchestrator.json\n M _claude/builds/origins.json').commit.length === 0, 'orchestrator.json and origins.json are never committed on a branch (GitHub would see a conflict)');
+check(core.strayPlan(' M _claude/memory/notes.jsonl').commit.length === 1, 'other data deep in _claude/ is still committed');
 
 const B = (id, o = {}) => ({ id, title: id, branch: `claude/${id}`, status: 'built', steps: [{ id: 's1', done: true }], notes: [], ...o });
 check(core.isCandidate(B('a')) && core.isCandidate(B('b', { status: 'running' })), 'built, or every step done = a candidate');
@@ -254,6 +256,14 @@ check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && [
   const rr = core.blockReason('b1', { ci: 'success', rules: { failing: ['home-card', 'ci-checks'] } });
   check(rr?.kind === 'rules' && /home-card, ci-checks/.test(rr.text) && reasonEvent('rules') === 'blocked' && !rr.agent, 'failing build rules block landing (not an agent job)');
   check(core.blockReason('b1', { ci: 'success', rules: { failing: [] } }) === null, 'passing build rules do not block');
+}
+{
+  // one branch in two worktrees: the build's own folder wins over a stray checkout, whichever is listed last
+  const list = (...wts) => () => ({ out: wts.map(([p, b]) => `worktree ${p}\nHEAD abc\nbranch refs/heads/${b}\n`).join('\n') });
+  const b = 'claude/auto-lander-controls';
+  check(worktrees(list(['/root/axf-builds/auto-lander-controls', b], ['/tmp/wt-lander', b]))[b] === '/root/axf-builds/auto-lander-controls', 'a stray second checkout of a branch does not replace the build worktree');
+  check(worktrees(list(['/tmp/wt-lander', b], ['/root/axf-builds/auto-lander-controls', b]))[b] === '/root/axf-builds/auto-lander-controls', 'the build worktree wins when listed second too');
+  check(worktrees(list(['/tmp/a', 'fix/x'], ['/tmp/b', 'fix/x']))['fix/x'] === '/tmp/a', 'no build folder: the first listed');
 }
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 if (bad) process.exitCode = 1;

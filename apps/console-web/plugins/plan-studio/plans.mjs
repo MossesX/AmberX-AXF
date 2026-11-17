@@ -35,14 +35,16 @@ import * as ai from './web/plan-ai.mjs';
 import { discover, readMatrices, writeBack } from './catalog.mjs';
 import { dataPath, orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
 import { activeProject, projectDataDir } from '../../../../framework/cli/projects.mjs';
+import * as files from '../../../../framework/core/data-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
 export const FOLDER = 'plan-studio';
 export const SEED_DIR = join(HERE, 'data/plans');
 const ID_RE = /^[a-z0-9][a-z0-9._-]{0,79}$/;
-const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(v, null, 1)}\n`); renameSync(tmp, f); }
+// data-store@1: plans, history and side records follow the planner namespace onto axf-data (framework/core/data-files.mjs)
+const readJson = (f, d = null) => files.readJsonSync(f, d);
+function writeJson(f, v) { files.writeJsonSync(f, v, 1); }
 
 /**
  * Where the plans live: the active project's copy (projects@1). AmberX AXF keeps the plugin folder itself; any other
@@ -77,13 +79,13 @@ export function seed() {
   const added = [];
   for (const f of existsSync(SEED_DIR) ? readdirSync(SEED_DIR).filter((x) => x.endsWith('.json')) : []) {
     const raw = readJson(join(SEED_DIR, f));
-    if (!raw?.id || deleted.has(raw.id) || existsSync(P('plans', `${raw.id}.json`))) continue;
+    if (!raw?.id || deleted.has(raw.id) || files.existsAnySync(P('plans', `${raw.id}.json`))) continue;
     const plan = pc.normalize(raw, { prices: prices() });
     writeJson(P('plans', `${plan.id}.json`), plan);
     writeJson(P('history', `${plan.id}.json`), pc.addVersion(null, plan, { by: 'seed', note: raw.source ? `Imported from ${raw.source}` : 'Imported', kind: 'import', at: plan.createdAt }));
     added.push(plan.id);
   }
-  if (!existsSync(P('categories.json'))) writeJson(P('categories.json'), pc.normCategories({ paths: ['Console > Plugins', 'Framework > Docs', 'Framework > Libraries', 'Product > Installer', 'Apps'] }));
+  if (!files.existsAnySync(P('categories.json'))) writeJson(P('categories.json'), pc.normCategories({ paths: ['Console > Plugins', 'Framework > Docs', 'Framework > Libraries', 'Product > Installer', 'Apps'] }));
   return added;
 }
 
@@ -91,7 +93,7 @@ export function loadPlans() {
   seed();
   const dir = P('plans');
   const px = prices();
-  return (existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')) : []).map((f) => readJson(join(dir, f))).filter(Boolean).map((p) => pc.normalize(p, { prices: px }));
+  return files.listSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean).map((p) => pc.normalize(p, { prices: px }));
 }
 export function getPlan(id) { if (!ID_RE.test(id ?? '')) throw new Error(`bad plan id "${id}"`); seed(); const p = readJson(P('plans', `${id}.json`)); return p ? pc.normalize(p, { prices: prices() }) : null; }
 export function history(id) { return readJson(P('history', `${id}.json`), pc.emptyHistory(id)); }
@@ -123,7 +125,7 @@ export function savePlan(raw, meta = {}) {
 }
 export function deletePlan(id) {
   if (!getPlan(id)) throw new Error(`no plan ${id}`);
-  rmSync(P('plans', `${id}.json`), { force: true });
+  files.removeSync(P('plans', `${id}.json`));
   const d = readJson(P('deleted.json'), { ids: [] }); d.ids = [...new Set([...(d.ids ?? []), id])]; writeJson(P('deleted.json'), d);
   return { ok: true, id }; // history stays: restore brings it back
 }
@@ -197,7 +199,7 @@ export function importText(text, { by = '', status = 'parked', force = true } = 
   else items = t.split(/\n(?=# )/).filter((x) => x.trim()).map((md) => { const p = pc.fromMarkdown(md); if (!/\*\*Status:\*\*/.test(md) && !md.includes('plan@1')) p.status = status; return p; });
   const out = [];
   for (const p of items) {
-    if (existsSync(P('plans', `${p.id}.json`)) && !p.$axf) p.id = `${pc.slug(p.title)}-${pc.rid(4)}`;
+    if (files.existsAnySync(P('plans', `${p.id}.json`)) && !p.$axf) p.id = `${pc.slug(p.title)}-${pc.rid(4)}`;
     out.push(savePlan(p, { by, kind: 'import', note: 'Imported', force }));
   }
   return { ok: true, imported: out.filter((r) => r.ok).map((r) => r.plan.id), duplicates: out.filter((r) => !r.ok) };

@@ -105,6 +105,20 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "pipeline.fyi",
+      "label": "Build FYI",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A running build tells you about a milestone you asked to hear about (a fix queued, a branch landed, a migration done). Information only, nothing to act on.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:fyi:"
+      },
+      "push": true,
+      "priority": "normal"
     }
   ]
 }

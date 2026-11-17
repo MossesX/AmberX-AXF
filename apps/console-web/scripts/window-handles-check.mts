@@ -4,7 +4,7 @@
  * frameless (the Terminal's frame) and a maximized window and checks: each non-maximized window has its grips layer with
  * all 8 handles, on the window's rect, in the same layer as the window (so dialogs, menus and toasts stay above every
  * window however often one is focused); a maximized window has none. Also checks the stylesheet keeps the handles
- * touch-ready, and that settings.open:<tab> opens a plugin's tab in a dialog when its "Opens in" is dialog.
+ * touch-ready, and that settings open in a floating dialog by default (page on request, a plugin's Dialog pick wins).
  *   cd apps/console-web && npx tsx scripts/window-handles-check.mts
  */
 import assert from 'node:assert/strict';
@@ -61,19 +61,24 @@ ok(/\.fx-window__grip \{[^}]*touch-action: none[^}]*position: sticky; left: 0/.t
 const backdrop = Number(css.match(/\.fx-backdrop \{[^}]*z-index: (\d+)/)?.[1]);
 ok(backdrop > 60, `dialog backdrop (${backdrop}) is above the window layer`);
 
-// settings.open:<tab> follows the owning plugin's "Opens in": dialog = that tab in a dialog, main = the settings page
+// every settings interface always opens as a floating popup (settings-open; Brett Nov 16 2026: no page choice, no
+// plugin "Opens in" pull on its settings, no Open as page)
 settingsLibrary.register?.(rt);
 rt.settings.addTab({ id: 'probe-tab', label: 'Probe', icon: 'settings', order: 1, module: 'probe.plugin' });
 rt.setPlacement('probe.plugin', { kind: 'dialog', id: 'probe.dialog' }, 'dialog', 'Probe');
-rt.dispatch('settings.open:probe-tab');
-ok(rt.getState().dialog?.id === 'axf.settings.tab' && rt.getState().dialog?.props?.tab === 'probe-tab', 'placement dialog opens the tab in a dialog');
+for (const pick of ['dialog', 'main', 'window']) {
+  rt.settings.set('axf.placement.probe.plugin', pick);
+  rt.dispatch('settings.open:probe-tab');
+  ok(rt.getState().dialog?.id === 'axf.settings.tab' && rt.getState().dialog?.props?.tab === 'probe-tab', `plugin Opens in = ${pick}: its settings tab still opens in the dialog`);
+  rt.closeDialog();
+}
+rt.dispatch('app.settings');
+ok(rt.getState().dialog?.id === 'axf.settings.all', 'app.settings opens the whole interface in the dialog');
 rt.closeDialog();
-rt.settings.set('axf.placement.probe.plugin', 'main');
-rt.dispatch('settings.open:probe-tab');
-ok(!rt.getState().dialog && rt.getState().view === 'settings', 'placement main opens the settings page');
-// the "Opens in" choice says it also decides where the plugin's settings open, and names the plugin
+ok(!rt.actions.get('settings.page') && !rt.actions.get('settings.opensas'), 'settings.page and settings.opensas are gone');
+// the "Opens in" choice names the plugin and says its settings always open in a dialog
 const { installLibraries } = await import('../src/axf/react/library');
 installLibraries(rt, [{ id: 'probe.term', label: 'Probe Terminal', opens: 'window', dialogs: { 'probe.term.open': { title: 'Open a tab', render: () => null } }, settingsTabs: [{ id: 'probe-term', label: 'Probe Terminal' }] } as never]);
 const desc = rt.settings.groupsIn('probe-term').find((g) => g.id === 'probe.term.placement')?.description ?? '';
-ok(/^Where Probe Terminal \(Open a tab\) opens, and where these settings open/.test(desc), `"Opens in" wording: ${desc.slice(0, 80)}`);
+ok(/^Where Probe Terminal \(Open a tab\) opens\. Its settings always open in a floating dialog/.test(desc), `"Opens in" wording: ${desc.slice(0, 80)}`);
 console.log(`window-handles-check: ${checks} checks passed`);
