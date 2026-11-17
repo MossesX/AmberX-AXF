@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7963,
- "updatedAt": "2026-11-17T21:17:39.058Z",
+ "rev": 7964,
+ "updatedAt": "2026-11-17T21:17:47.687Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275906,7 +275906,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275914,7 +275914,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:17:35.444Z",
+   "updatedAt": "2026-11-17T21:17:40.278Z",
    "builtAt": "",
    "notes": [
     {
@@ -276056,6 +276056,10 @@
     {
      "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s27): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:17:10.156Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-every-toolbar-page-specific--gina: brief only · start 19.9K tokens ($0.07) · cost $17.56 · 258 turns · 6 tools, MCP none",
+     "at": "2026-11-17T21:17:40.278Z"
     }
    ],
    "approvals": [
@@ -276869,7 +276873,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
