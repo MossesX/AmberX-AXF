@@ -24,6 +24,11 @@
  * (claude-workers route, every tried account excluded: pipeline.tried / planned). Past the cap, or every account tried:
  * the build goes to Pending with the reason as its note, in the Errors tab, with a banner item and an alert.
  *
+ * Every slot filled (Brett: "keep every slot filled"): after the recoveries, every pass runs the dispatcher tick
+ * (pipeline.mjs tick, under its lock) while agent slots are free and Queue work waits, at most FILL_ROUNDS rounds. Slots
+ * still idle with the Queue non-empty after that are a pass-level recovery with cause 'idle-slots' (action 'tick'; the
+ * next tick runs the dispatcher's self-check), kept in watchdog.json and sent with the pass's FYI.
+ *
  * Files: <pipeline dir>/watchdog.json (watchdog-state@1: last pass, recent fixes), next to the dispatcher's state.
  * Environment for tests: AXF_WATCHDOG_SETTINGS (a JSON patch over the settings), AXF_WATCHDOG_ACCOUNTS (comma list of usable
  * accounts instead of deploy/claude-workers.mjs status), AXF_WATCHDOG_PROBE (a JSON map build → probe instead of the host).
@@ -37,9 +42,11 @@ import { loadStore } from '../../../../framework/cli/builds-store.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import * as buildLock from '../../../../framework/cli/build-lock.mjs';
 import { hitOf, markLimit, release as workersRelease, route as workersRoute, status as workersStatus } from '../../../../deploy/claude-workers.mjs';
-import { endRun, pipeDir, setPipeline, worktreeOf } from './pipeline.mjs';
+import { endRun, pipeDir, pipelineLock, requestSelfCheck, setPipeline, slotsNow, tick, worktreeOf } from './pipeline.mjs';
+import * as BP from '../../../../framework/core/build-pipeline.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
+const HERE = dirname(SELF);
 export const SCHEMA_STATE = 'watchdog-state@1';
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
@@ -217,6 +224,53 @@ export function nextWorker(exclude = [], env = process.env) {
 /** Retries the build has used since it last made progress (kept on the build: its recoveries[]). */
 export const retriesOf = (b) => W.attemptOf(b) - 1;
 
+// ------------------------------------------------------------------ keep every slot filled
+
+const FILL_ROUNDS = 3;
+/** Queue work the dispatcher may start: queued, not on hold, steps left. */
+export const queueWork = (store) => store.builds.filter((b) => b.status === 'queued' && !b.deleted && !b.hidden && !BP.isHeld(b) && !W.isMarkedRunning(b) && BP.openSteps(b).length);
+
+/**
+ * One dispatcher tick: in-process when this process already holds the dispatcher's lock (AXF_PIPELINE_LOCKED=1, tests),
+ * else `pipeline.mjs tick --json` under flock -n of that lock (busy = the cron tick is filling the slots right now).
+ * Returns { ran, launched: [id…], busy?, error? }.
+ */
+export function runTick(env = process.env) {
+  if (env.AXF_WATCHDOG_TICK === 'off') return { ran: false, launched: [], why: 'off' };
+  try {
+    if (env.AXF_PIPELINE_LOCKED === '1' || spawnSync('flock', ['-V']).status !== 0) {
+      const r = tick({ env }); return { ran: true, launched: r.launched.map((l) => l.id) };
+    }
+    const r = spawnSync('flock', ['-n', pipelineLock(env), process.execPath, join(HERE, 'pipeline.mjs'), 'tick', '--json'], { encoding: 'utf8', timeout: 300e3, env: { ...env, AXF_PIPELINE_LOCKED: '1' } });
+    if (r.status === 1 && !r.stdout) return { ran: false, launched: [], busy: true };
+    let j = null; try { j = JSON.parse(r.stdout); } catch { /* not json */ }
+    return j ? { ran: true, launched: (j.launched ?? []).map((l) => l.id) } : { ran: false, launched: [], error: str(r.stderr || r.stdout, 300) };
+  } catch (e) { return { ran: false, launched: [], error: str(e.message, 300) }; }
+}
+
+/**
+ * Fill the free slots: tick while slots are free and Queue work waits (at most FILL_ROUNDS). Returns { rounds, launched,
+ * idle: null | { at, cause: 'idle-slots', action: 'tick', free, queued, note } }.
+ */
+export function fillSlots({ env = process.env, slotsOf = slotsNow, storeOf = loadStore } = {}) {
+  const launched = []; let rounds = 0; let last = null;
+  for (; rounds < FILL_ROUNDS; rounds += 1) {
+    const sl = slotsOf(); const work = queueWork(storeOf());
+    if (sl.unavailable || !(sl.free > 0) || !work.length) break;
+    last = runTick(env);
+    launched.push(...last.launched);
+    if (!last.ran || !last.launched.length) { rounds += 1; break; }
+  }
+  const sl = slotsOf(); const work = queueWork(storeOf());
+  let idle = null;
+  if (!sl.unavailable && sl.free > 0 && work.length && !launched.length && !last?.busy) {
+    idle = { at: new Date().toISOString(), buildId: '', cause: 'idle-slots', action: 'tick', attempt: 0, notified: '', free: sl.free, queued: work.length,
+      note: `${sl.free} slot(s) idle while ${work.length} build(s) wait in the Queue (${work.slice(0, 3).map((b) => b.id).join(', ')}): ticked the dispatcher${last?.error ? ` (it failed: ${last.error})` : ''} and asked for its self-check.` };
+    try { requestSelfCheck({ by: 'watchdog', reason: 'idle slots with Queue work' }); } catch { /* the next tick still runs */ }
+  }
+  return { rounds, launched, idle };
+}
+
 /**
  * One watchdog pass: scan, then recover every stuck build (per-build lock, cooldown). Writes watchdog.json (last pass,
  * recent fixes). Returns { at, fixes: [record…], skipped: [{ id, why }], scan }.
@@ -241,12 +295,14 @@ export function run({ env = process.env, only = '', settings = loadSettings(env)
       if (r) fixes.push({ ...r, title: x.title });
     } catch (e) { errors.push({ id: x.id, error: str(e.message, 300) }); } finally { unlock(); }
   }
+  // keep every slot filled: after the recoveries (and on every pass, recoveries or not)
+  const fill = settings.enabled ? fillSlots({ env }) : { rounds: 0, launched: [], idle: null };
   const at = new Date().toISOString();
   const st = loadState(env);
   saveState({ ...st, lastPass: at, passes: (st.passes ?? 0) + 1, ...(fixes.length ? { lastFix: at } : {}), lastStuck: sc.stuck.length, lastRunning: sc.builds.length,
-    recent: [...(st.recent ?? []), ...fixes.map((f) => ({ at: f.at, buildId: f.buildId, title: f.title, step: f.step, cause: f.cause, exit: f.exit, action: f.action, attempt: f.attempt, account: f.account, notified: f.notified, note: f.note }))].slice(-KEEP_RECENT),
-    errors }, env);
-  return { $axf: 'watchdog-pass@1', at, fixes, skipped, errors, scan: sc };
+    recent: [...(st.recent ?? []), ...fixes.map((f) => ({ at: f.at, buildId: f.buildId, title: f.title, step: f.step, cause: f.cause, exit: f.exit, action: f.action, attempt: f.attempt, account: f.account, notified: f.notified, note: f.note })), ...(fill.idle ? [fill.idle] : [])].slice(-KEEP_RECENT),
+    lastFill: { at, rounds: fill.rounds, launched: fill.launched, idle: !!fill.idle }, errors }, env);
+  return { $axf: 'watchdog-pass@1', at, fixes, skipped, errors, fill, scan: sc };
 }
 
 const line = (x) => `${x.id}: ${x.decision.cause}${x.decision.exit != null ? ` (exit ${x.decision.exit})` : ''} → ${x.decision.action}${x.decision.attempt ? ` · attempt ${x.decision.attempt}` : ''} · ${x.decision.note}`;
@@ -274,6 +330,7 @@ export async function main(argv = process.argv.slice(2)) {
     const r = run({ only: typeof f.build === 'string' ? f.build : '' });
     if (r.errors.length) process.exitCode = 1;
     return out(r, [`pass ${r.at}: ${r.scan.builds.length} marked running · ${r.fixes.length} fixed · ${r.skipped.length} left${r.errors.length ? ` · ${r.errors.length} failed` : ''}`,
+      ...(r.fill.launched.length ? [`  filled slots: started ${r.fill.launched.join(', ')}`] : []), ...(r.fill.idle ? [`  idle-slots: ${r.fill.idle.note}`] : []),
       ...r.fixes.map((x) => `  fixed ${x.buildId}: ${x.cause} → ${x.action}${x.attempt ? ` (attempt ${x.attempt})` : ''}`), ...r.skipped.map((x) => `  left ${x.id}: ${x.why}`), ...r.errors.map((x) => `  failed ${x.id}: ${x.error}`)].join('\n'));
   }
   throw Object.assign(new Error(`unknown command ${cmd} (scan, run)`), { code: 2 });
