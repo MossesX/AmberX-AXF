@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8339,
- "updatedAt": "2026-11-17T23:07:33.038Z",
+ "rev": 8340,
+ "updatedAt": "2026-11-17T23:08:09.681Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -294719,7 +294719,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -294727,7 +294727,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:04:17.505Z",
+   "updatedAt": "2026-11-17T23:08:06.104Z",
    "builtAt": "",
    "notes": [
     {
@@ -294803,10 +294803,6 @@
      "at": "2026-11-17T22:54:16.354Z"
     },
     {
-     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s19): session on hulu0241 failed (exit 129): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
-     "at": "2026-11-17T23:00:26.720Z"
-    },
-    {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T22:56:21.741Z"
     },
@@ -294815,12 +294811,20 @@
      "at": "2026-11-17T22:59:22.796Z"
     },
     {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s19): session on hulu0241 failed (exit 129): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T23:00:26.720Z"
+    },
+    {
      "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T23:02:18.989Z"
     },
     {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T23:03:11.868Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T23:08:06.104Z"
     }
    ],
    "approvals": [
@@ -294828,7 +294832,7 @@
      "phase": 1,
      "from": "Fable",
      "to": "Opus",
-     "at": "2026-11-17T23:02:04.238Z",
+     "at": "2026-11-17T22:47:43.903Z",
      "by": "auto",
      "kind": "downgrade"
     }
@@ -294850,21 +294854,21 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "axf-flagship-professional-skin-covering-2--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T21:58:22.524Z",
     "runs": 2,
-    "crashes": 1,
+    "crashes": 5,
     "lastRun": {
-     "at": "2026-11-17T21:54:44.467Z",
-     "exit": 3,
+     "at": "2026-11-17T23:08:04.493Z",
+     "exit": 129,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 28,
+     "stepsLeft": 8,
      "account": "hulu0241",
-     "session": "axf-flagship-professional-skin-covering-2--sully",
+     "session": "axf-flagship-professional-skin-covering-2--earl",
      "phase": "Phase 1"
     },
     "split": {
@@ -294875,15 +294879,15 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
-     "model": "Fable",
-     "account": "hulu0241",
+     "model": "Opus",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T21:34:22.330Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-17T22:45:35.083Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-17T21:58:22.524Z",
@@ -294891,6 +294895,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T23:08:04.493Z",
+     "buildId": "flagship-professional-skin-covering-2",
+     "phase": "Phase 1",
+     "step": "s20",
+     "cause": "exit-failed",
+     "exit": 129,
+     "action": "retry",
+     "attempt": 1,
+     "account": "hulu0241",
+     "notified": "",
+     "session": "axf-flagship-professional-skin-covering-2--earl",
+     "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3)."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -295396,10 +295416,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 3,
+     "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-17T23:08:06.104Z",
+     "rev": 4,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T23:04:12.566Z"
+     "updatedAt": "2026-11-17T23:08:06.106Z"
     },
     {
      "id": "s21",
@@ -295614,11 +295634,11 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
+    "model": "Fable",
     "status": "pending",
     "estimate": "",
     "source": "console",
