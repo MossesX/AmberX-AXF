@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:20:41.349Z",
+ "updatedAt": "2026-11-17T23:20:53.940Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -182187,7 +182187,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T23:15:21.425Z",
+   "updatedAt": "2026-11-17T23:20:34.711Z",
    "builtAt": "",
    "notes": [
     {
@@ -182429,6 +182429,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T23:15:21.425Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T23:20:34.711Z"
     }
    ],
    "approvals": [
@@ -193461,7 +193465,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:19:03.507Z",
+   "updatedAt": "2026-11-17T23:20:35.727Z",
    "builtAt": "",
    "notes": [
     {
@@ -194126,8 +194130,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:20:35.727Z",
      "note": "",
      "uid": "st-mwl7mosm0o1rov",
      "createdAt": "2026-11-17T21:34:10.438Z"
@@ -306747,12 +306751,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-17T23:19:53.398Z",
+   "updatedAt": "2026-11-17T23:20:24.011Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T23:19:53.398Z"
+    },
+    {
+     "text": "Brett: when something like this happens, the system fixes it itself, no one asking. Add a pre-launch self-check on the VPS: before every launch, detect duplicate steps, an oversized brief, a build with 0 steps left but not landed, or a land clash, and repair it on the spot (dedupe, trim, add a merge-main fix step, requeue), log the fix and send one FYI. Never let a build sit.",
+     "at": "2026-11-17T23:20:24.011Z"
     }
    ],
    "approvals": [],
