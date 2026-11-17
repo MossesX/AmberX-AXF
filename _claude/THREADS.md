@@ -832,11 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `own-look-per-grid-and-tab-group` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `banner-widget-shapes-plus-change-icon` s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `server-auto-lander-fixes-lands` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `rebuild-fresh-main-hide-any-asset` s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, → complete, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `rebuild-fresh-main-phone-connect-small` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, → complete, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `separate-settings-per-plugin-reset` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, → complete, note (all) · foreign-write
@@ -1232,6 +1227,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:36 UTC · `fix-launcher-crash-duplicate-steps-brief` s2 done (all) · orchestrator
 - 2026-11-17 23:36 UTC · `fix-launcher-crash-duplicate-steps-brief` s3 done (all) · orchestrator
 - 2026-11-17 23:37 UTC · `fix-launcher-crash-duplicate-steps-brief` s4 done (all) · orchestrator
+- 2026-11-17 23:37 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 23:37 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
+- 2026-11-17 23:37 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-17 23:37 UTC · `move-everything-axhub-web-console` s5 done (all) · foreign-write
+- 2026-11-17 23:37 UTC · `fix-launcher-crash-duplicate-steps-brief` s2 done, s3 done, note (all) · foreign-write
 
 ## Token passes (log)
 
