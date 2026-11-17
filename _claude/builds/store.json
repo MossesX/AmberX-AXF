@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7637,
- "updatedAt": "2026-11-17T19:16:52.576Z",
+ "rev": 7638,
+ "updatedAt": "2026-11-17T19:17:11.303Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247189,7 +247189,7 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T19:16:48.732Z",
+   "updatedAt": "2026-11-17T19:17:00.186Z",
    "builtAt": "",
    "notes": [
     {
@@ -247247,6 +247247,10 @@
     {
      "text": "Brief only: brief is 29454 characters (~7364 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T19:09:00.343Z"
+    },
+    {
+     "text": "s21: CI red was glossary-index/test.mts (gear terms linked bare ids instead of concept: ids). The earlier merge 5ae44e042 had also dropped those 4 terms; restored. Main itself fails glossary catalog --check (392 > ratchet 388) from plan-studio-2's undescribed rename/delete/unlink/clear commands; described them on this branch, so main goes green when PR #767 lands.",
+     "at": "2026-11-17T19:17:00.186Z"
     },
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
@@ -247860,7 +247864,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
