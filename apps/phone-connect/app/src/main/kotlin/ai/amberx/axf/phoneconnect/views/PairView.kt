@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +51,8 @@ fun PairView() {
     var busy by remember { mutableStateOf(false) }
     var msg by remember { mutableStateOf("") }
     var watch by remember { mutableStateOf(store.watch) }
+    // the app is in front: (re)start the watch if it should run (a background start could be refused by Android)
+    LaunchedEffect(Unit) { if (store.paired && store.watch) WatchService.start(ctx) }
 
     if (signIn) {
         Column(Modifier.padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.one)) {

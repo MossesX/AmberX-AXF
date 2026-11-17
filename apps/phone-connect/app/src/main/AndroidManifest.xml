@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <!-- Every framework module contributes its own manifest pieces; this file holds only the app's identity. -->
     <application
         android:name=".App"
@@ -25,5 +30,14 @@
                 <data android:scheme="axf" android:host="${axfAppId}" />
             </intent-filter>
         </activity>
+        <!-- The watch: keeps the link to the console open (phone-connect@1). -->
+        <service
+            android:name=".watch.WatchService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keeps the owner's paired link to their own Dev Console open so approvals, notifications and pages they send arrive at once" />
+        </service>
     </application>
 </manifest>
