@@ -1816,3 +1816,4 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - Waits on: nothing from Brett (UI Review shots are non-blocking for this build).
 - First message to carry on: "Carry on tab-group-assets from the typecheck step on branch claude/tab-group-assets (see THREADS.md To carry on)."
 - 2026-11-13 10:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` s1 + s2: every skin has light + dark (skin-modes@1), check-skin-modes in CI, CLI/REST/MCP/voice `mode` (all) · claude
+- 2026-11-17 05:00 UTC · `server-auto-lander-fixes-lands` phase 2 (Opus): the VPS auto-lander runner (systemd timer, attempt log, clash resolver, red-CI reader, fix sessions through the pipeline, reconcile/backoff, escalation to systems check + one push), Gate → Auto-lander → Server tab + settings, REST/MCP/CLI/voice; absorbed fix-red-ci-blocked-builds-they-land + get-main-green-unblock-lander-land-axf · claude
