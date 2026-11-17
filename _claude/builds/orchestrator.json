@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:42:14.286Z",
+ "updatedAt": "2026-11-17T00:42:27.976Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -128334,7 +128334,7 @@
    "pr": "#635",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-15T00:42:13.535Z",
+   "updatedAt": "2026-11-17T00:41:53.705Z",
    "builtAt": "2026-11-13T19:09:27.501Z",
    "notes": [
     {
@@ -128384,6 +128384,10 @@
     {
      "text": "Phase done: PR #635, UI Review r-20261113-89d7348e. Dispatcher bug: two sessions (Paulie 18:19, Sully 18:20) ran this build in the same worktree; Sully overwrote 3 files and ended uncommitted at 18:25. Restored; ~10 min lost.",
      "at": "2026-11-13T19:09:35.834Z"
+    },
+    {
+     "text": "Marked built with PR #635, but that PR was closed unmerged on Nov 16 and its branch deleted: the decision-dialog plugin is not on main. Commits are still at refs/pull/635/head and merged cleanly against main in a dry run. The prompt engine (prompting-engine-control-panel-to-create) only uses it through axf.decisions@1 when present, so it is not blocked; re-land this build to get the pop-up dialog.",
+     "at": "2026-11-17T00:41:53.705Z"
     }
    ],
    "approvals": [],
@@ -128590,7 +128594,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-17T00:41:35.231Z",
+   "updatedAt": "2026-11-17T00:41:40.854Z",
    "builtAt": "",
    "notes": [
     {
@@ -128612,6 +128616,10 @@
     {
      "text": "Brief only: brief is 24071 characters (~6018 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T00:27:44.051Z"
+    },
+    {
+     "text": "Fable phase (s1-s3) done on branch claude/prompting-engine-control-panel-to-create: the three Fable commits of the archived twin build prompting-engine-control-panel-events (PR #697, closed Nov 16 at 2500 behind main) were cherry-picked onto current main and re-verified there (tsc, check-prompt-engine 48, plugin tests 14 groups + 66 Python checks, theme / controls / toolbars / console-control / help / lifecycle / plugin-commands all green). The decision dialog it builds on (decision-dialog-ui-review-other, PR #635) is closed unmerged, so prompts go to the engine's own Waiting tab and the alert hub, and to the dialog through axf.decisions@1 when a plugin provides it. Next phase (Opus, s4-s8) continues from here.",
+     "at": "2026-11-17T00:41:40.854Z"
     }
    ],
    "approvals": [],
@@ -128799,7 +128807,7 @@
    "pr": "#697",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-16T22:44:10.895Z",
+   "updatedAt": "2026-11-17T00:41:48.032Z",
    "builtAt": "",
    "notes": [
     {
@@ -128853,6 +128861,10 @@
     {
      "text": "Moved to the Archive from pending (cli): Brett: archive, 2500 behind main.",
      "at": "2026-11-16T22:44:10.895Z"
+    },
+    {
+     "text": "Superseded by prompting-engine-control-panel-to-create (same origin quote, branch claude/prompting-engine-control-panel-to-create): its three Fable commits from PR #697 were cherry-picked there and re-verified on current main; the Opus steps s5-s9 here are the same as s4-s8 of that build. Nothing left to build on this item; it stays archived.",
+     "at": "2026-11-17T00:41:48.032Z"
     }
    ],
    "approvals": [],
@@ -142714,7 +142726,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T00:41:16.469Z",
+   "updatedAt": "2026-11-17T00:41:56.359Z",
    "builtAt": "",
    "notes": [
     {
@@ -142732,6 +142744,10 @@
     {
      "text": "Claude account: hulu0241 (axf-orchestrator-stale-row-watchdog-vps--paulie, shared account login)",
      "at": "2026-11-17T00:34:29.175Z"
+    },
+    {
+     "text": "Clash note: the prompt engine (prompt-engine@1, framework/core/engines/prompt-engine.mjs, plugin prompt-engine, branch claude/prompting-engine-control-panel-to-create) is the general rules engine: triggers + conditions + limits + what to ask + actions, with manifests every source registers. Watch rules here should register a manifest and fire events through axf.prompt-engine@1 rather than ship a second rules engine.",
+     "at": "2026-11-17T00:41:56.359Z"
     }
    ],
    "approvals": [],
