@@ -1,0 +1,111 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-plugin-manager-dense",
+  "name": "Plugin Manager: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-plugin-manager",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:plugin-manager",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "plugin",
+        "label": "Selected plugin",
+        "items": [
+          {
+            "id": "toggle",
+            "icon": "play",
+            "label": "Enable/Disable",
+            "action": "handler:plugin-manager.toggle",
+            "checked": "state:selection.enabled",
+            "enabledWhen": [
+              "selection.id",
+              "!selection.removed"
+            ],
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Open settings",
+            "action": "handler:plugin-manager.settings",
+            "enabledWhen": [
+              "selection.hasSettings",
+              "selection.enabled"
+            ],
+            "priority": 260
+          },
+          {
+            "id": "logs",
+            "icon": "terminal",
+            "label": "View logs",
+            "action": "handler:plugin-manager.logs",
+            "badge": "state:selection.logCount",
+            "enabledWhen": "selection.id",
+            "priority": 240
+          },
+          {
+            "id": "deps",
+            "icon": "branch",
+            "label": "Show dependencies",
+            "action": "handler:plugin-manager.deps",
+            "badge": "state:selection.blocking",
+            "enabledWhen": "selection.id",
+            "priority": 220
+          }
+        ]
+      },
+      {
+        "id": "health",
+        "label": "Health",
+        "items": [
+          {
+            "id": "clashes",
+            "icon": "alert",
+            "label": "Check clashes",
+            "action": "handler:plugin-manager.clashes",
+            "badge": "state:clashes",
+            "priority": 200
+          }
+        ]
+      },
+      {
+        "id": "install",
+        "label": "Install",
+        "items": [
+          {
+            "id": "install",
+            "icon": "package",
+            "label": "Install/Uninstall",
+            "action": "handler:plugin-manager.install",
+            "priority": 160
+          },
+          {
+            "id": "update",
+            "icon": "download",
+            "label": "Update/Replace",
+            "action": "handler:plugin-manager.update",
+            "badge": "state:selection.replacedBy",
+            "enabledWhen": "selection.id",
+            "priority": 140
+          }
+        ]
+      }
+    ]
+  }
+}

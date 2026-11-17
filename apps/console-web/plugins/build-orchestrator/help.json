@@ -404,25 +404,25 @@
       {
         "target": "dry-run-only",
         "title": "Dry run only",
-        "text": "The stale-row watchdog decides and records what it would clean (the Runs tab shows the plan) but changes nothing on the builds lists.",
+        "text": "On: the watchdog decides which rows it would take off the builds lists and records the plan, but changes nothing.",
         "kind": "toggle"
       },
       {
         "target": "tell-amberx-what-was-cleaned",
         "title": "Tell AmberX what was cleaned",
-        "text": "One FYI on the phone per watchdog run that cleaned something (Notifications: Watchdog cleaned stale rows). Off: the Cleanups log still records every one.",
+        "text": "On: each watchdog run that cleaned something sends one FYI to AmberX (Notifications panel: Watchdog cleaned stale rows).",
         "kind": "toggle"
       },
       {
         "target": "run-every-minutes",
         "title": "Run every (minutes)",
-        "text": "How often the stale-row watchdog runs, 1 to 120 minutes. Its cron fires every 5 minutes; a longer interval skips the ticks in between. Save applies it.",
+        "text": "How often the watchdog runs, 1 to 120 minutes. Cron fires every 5 minutes; a longer interval skips the ticks in between.",
         "kind": "field"
       },
       {
         "target": "fresh-session",
         "title": "Fresh session",
-        "text": "Retries this failed build now in a brand-new Claude session instead of the next rung of the retry ladder (done-means-merged@1). The attempts so far stay in the log.",
+        "text": "Retries this build's failure now in a fresh session instead of waiting for the next rung of the ladder. The attempts so far stay in the log.",
         "kind": "button"
       }
     ],

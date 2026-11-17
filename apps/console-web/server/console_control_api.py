@@ -407,6 +407,31 @@ def router_for(auth: Any) -> APIRouter:
             return fail(cc.ControlError("invalid", "voice needs text", field="text"))
         return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent")))
 
+    @r.get("/toolbars")
+    async def toolbars_list(request: Request, view: str = "") -> JSONResponse:
+        """Every page toolbar the open console shows (page-toolbar@1), with its buttons; view= narrows to one page. 503 when no console is open."""
+        audience, name = audience_of(request)
+        return answer(await run_in_threadpool(targets, f"view:{view}" if view else "", [cc.TOOLBAR_KIND], "console", name, audience, grants_of(request)))
+
+    @r.get("/toolbars/{ref}")
+    async def toolbar_get(request: Request, ref: str) -> JSONResponse:
+        """One toolbar's state by settings id (gate.auto-lander): look, buttons with enabled / visible / pressed / badge / action / inMore."""
+        try:
+            address = cc.toolbar_address(ref)
+        except cc.ControlError as e:
+            return fail(e)
+        return await go(request, {"$axf": cc.FRAME, "verb": "state", "address": address})
+
+    @r.post("/toolbars/{ref}/press")
+    async def toolbar_press(request: Request, ref: str) -> JSONResponse:
+        """{button, value?, confirm?, reason?, to?}: press one button of the toolbar; a destructive button answers confirmation_required until confirm is set."""
+        b = await _body(request)
+        try:
+            address = cc.toolbar_button_address(ref, str(b.get("button") or ""))
+        except cc.ControlError as e:
+            return fail(e)
+        return await from_body(request, {**{k: v for k, v in b.items() if k not in ("button",)}, "verb": "press", "address": address})
+
     @r.get("/plugins/{ref}/settings")
     async def plugin_settings(request: Request, ref: str, live: int = 0) -> JSONResponse:
         """One plugin's settings sub-tab, gear, on/off and settings; live=1 also asks the open console for the tab's state."""

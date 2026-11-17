@@ -568,6 +568,11 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2) == "on"}
+    # page toolbars (page-toolbar@1): a button named with its toolbar, and what a toolbar holds
+    if m := re.match(r"^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)? (?:on|in|of)(?: the)? (.+?) toolbar$", p):
+        return {"verb": "press", "find": {"q": f"{_strip(m.group(2))} {_strip(m.group(1))}", "kinds": ["button"]}, "toolbar": _strip(m.group(2))}
+    if m := re.match(r"^(?:what(?:'s| is) on|what does .+ hold on|list|show(?: me)?|read(?: me)?)(?: the)? (.+?) toolbar$", p):
+        return {"verb": "list", "find": {"q": _strip(m.group(1)), "kinds": ["toolbar"]}}
     if m := re.match(r"^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)?$", p):
         return {"verb": "press", "find": {"q": _strip(m.group(1)), "kinds": ["button", "function"]}}
     if m := re.match(rf"^{_GO}(?: the)? (.+?) settings?$", p):
@@ -621,6 +626,9 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
         return f"Showing {what}."
     if v == "press":
         return f"Pressed {what}."
+    if v == "list":
+        targets = answer.get("targets") or []
+        return f"{len(targets)} item{'' if len(targets) == 1 else 's'}: {', '.join(str(t.get('label')) for t in targets[:6])}." if targets else f"Nothing on {what or 'it'}."
     if v == "set":
         val = answer.get("value", intent.get("value"))
         return f"Set {what} to {('on' if val else 'off') if isinstance(val, bool) else val}."
@@ -630,3 +638,24 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
         loses = (answer.get("effects") or {}).get("loses") or []
         return f"{what} is off." + (f" {', '.join(d['name'] for d in loses)} lose{'s' if len(loses) == 1 else ''} a feature." if loses else "")
     return "Done."
+
+
+# ---------------------------------------------------------------------- page toolbars (page-toolbar@1; build rebuild-every-toolbar-page-specific)
+
+TOOLBAR_KIND = "toolbar"
+
+
+def toolbar_address(ref: str) -> str:
+    """`gate.auto-lander` or `toolbar:gate.auto-lander` → the console-control address of that toolbar."""
+    ref = str(ref or "").strip()
+    if not ref:
+        raise ControlError("invalid", "a toolbar needs its settings id (e.g. gate.auto-lander)", field="toolbar")
+    return ref if ref.startswith("toolbar:") or "/toolbar:" in ref else f"toolbar:{ref}"
+
+
+def toolbar_button_address(ref: str, button: str) -> str:
+    """The address of one button on a toolbar: `toolbar:<id>/button:<button>`."""
+    b = str(button or "").strip()
+    if not b:
+        raise ControlError("invalid", "press needs the button id (see the toolbar's state)", field="button")
+    return f"{toolbar_address(ref)}/button:{b}"
