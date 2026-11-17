@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7359,
- "updatedAt": "2026-11-17T04:28:49.847Z",
+ "rev": 7360,
+ "updatedAt": "2026-11-17T04:29:08.699Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182937,8 +182937,8 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T04:28:34.297Z",
-   "builtAt": "2026-11-17T04:28:34.297Z",
+   "updatedAt": "2026-11-17T04:28:58.424Z",
+   "builtAt": "2026-11-17T04:28:58.424Z",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
@@ -182967,6 +182967,10 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-server-watchdog-orchestrator-auto-recovers-stuck--gina.",
      "at": "2026-11-17T03:32:33.590Z"
+    },
+    {
+     "text": "Headless run axf-server-watchdog-orchestrator-auto-recovers-stuck--gina: brief only · start 15.1K tokens ($0.05) · cost $20.76 · 256 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:28:58.424Z"
     }
    ],
    "approvals": [

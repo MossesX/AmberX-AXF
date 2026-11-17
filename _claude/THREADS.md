@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:44 UTC · `axhub-veto-countdown-setting-read-only` s8 done (all) · orchestrator
 - 2026-11-16 23:44 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s1 done, → running (all) · orchestrator
 - 2026-11-16 23:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s2 done (all) · orchestrator
 - 2026-11-16 23:45 UTC · `axhub-veto-countdown-setting-read-only` s9 done (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 04:25 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s20 done (all) · orchestrator
 - 2026-11-17 04:28 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` PR #772 (all) · builds-live
 - 2026-11-17 04:28 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s21 done, → built (all) · orchestrator
+- 2026-11-17 04:28 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · orchestrator
 
 ## Token passes (log)
 
