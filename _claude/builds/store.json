@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7989,
- "updatedAt": "2026-11-17T21:24:53.812Z",
+ "rev": 7990,
+ "updatedAt": "2026-11-17T21:25:07.940Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282350,7 +282350,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T21:24:51.614Z",
+   "updatedAt": "2026-11-17T21:24:59.041Z",
    "builtAt": "",
    "notes": [
     {
@@ -282360,6 +282360,10 @@
     {
      "text": "Split by Claude into 13 steps (0 Fable).",
      "at": "2026-11-17T21:24:51.614Z"
+    },
+    {
+     "text": "Also fix: Brett (owner) gets 'Permission denied. Your role can't reset a chrome piece to asset' when resetting in asset settings. The owner must be allowed every chrome reset; check the role check for all reset actions.",
+     "at": "2026-11-17T21:24:59.041Z"
     }
    ],
    "approvals": [],
@@ -282399,7 +282403,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T21:24:54.466Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -282751,7 +282761,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
