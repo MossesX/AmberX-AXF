@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `land-pr-730-reset-all-button-far-right` added (5 steps) (all) · foreign-write
-- 2026-11-17 22:58 UTC · `flagship-professional-skin-covering` added (27 steps) (all) · foreign-write
-- 2026-11-17 22:58 UTC · `flagship-professional-skin-covering-2` added (28 steps) (all) · foreign-write
-- 2026-11-17 22:58 UTC · `fix-refreshing-console-jumps-back` added (11 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `remove-amberx-app-code-once-phone` added (42 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `settings-fix-part-2-blank-toolbars` added (84 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `dispatcher-split-builds-evenly-across` added (728 steps) (all) · foreign-write
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:41 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-17 23:42 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-17 23:42 UTC · `move-server-side-console-parts-onto-vps` s7 done (all) · orchestrator
+- 2026-11-17 23:42 UTC · `every-plugin-screen-gets-a-settings-gear` → landed, note (all) · foreign-write
+- 2026-11-17 23:42 UTC · `move-server-side-console-parts-onto-vps` s6 done (all) · foreign-write
+- 2026-11-17 23:42 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
+- 2026-11-17 23:42 UTC · `fix-launcher-crash-duplicate-steps-brief` s5 done (all) · foreign-write
 
 ## Token passes (log)
 
