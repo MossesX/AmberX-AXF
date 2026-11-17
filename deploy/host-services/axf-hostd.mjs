@@ -582,7 +582,7 @@ async function main(argv) {
     for (const id of order) {
       const m = manifests.find((x) => x.id === id);
       if (only && !only.has(m.id)) continue;
-      const render = m.kind === 'daemon' && m.unit === `axf-${m.id}.service` && (m.id === H.DEFAULTS.hostApiId || m.runner.startsWith('deploy/host-services/workers/'));
+      const render = m.kind === 'daemon' && (m.id === H.DEFAULTS.hostApiId || m.runner.startsWith('deploy/host-services/workers/'));
       console.log([m.id, m.unit, m.sudo.length ? 'no' : 'yes', render ? 'yes' : 'no', m.kind].join('\t'));
     }
     return;

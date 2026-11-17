@@ -15,14 +15,15 @@ mkdir -p "$T/data"
 inst > "$T/install.log" 2>&1 || { cat "$T/install.log"; fail "install --dry-run exited non-zero"; }
 mapfile -t IDS < <(node "$DIR/deploy/host-services/axf-hostd.mjs" --plan | awk -F'\t' '$4=="yes"{print $1}')
 for id in "${IDS[@]}"; do
-  u="$T/root/etc/systemd/system/axf-$id.service"
+  unit="$(node "$DIR/deploy/host-services/axf-hostd.mjs" --plan | awk -F'\t' -v i="$id" '$1==i{print $2}')"
+  u="$T/root/etc/systemd/system/$unit"
   [ -f "$u" ] || fail "no unit for $id"
   grep -q '@[A-Z]*@\|%i' "$u" && fail "$u: placeholder left"
   grep -q "^ExecStart=/usr/bin/env node $DIR/deploy/host-services/axf-hostd.mjs $id\$" "$u" || fail "$u: ExecStart"
   for k in 'User=axf-host' 'Restart=always' 'WantedBy=multi-user.target' 'ProtectSystem=strict' 'RuntimeDirectory=axf-host' "ReadWritePaths=$DIR $T/data"; do grep -q "^$k" "$u" || fail "$u: $k"; done
   nnp="$(node "$DIR/deploy/host-services/axf-hostd.mjs" --plan | awk -F'\t' -v i="$id" '$1==i{print $3}')"
   grep -q "^NoNewPrivileges=$nnp\$" "$u" || fail "$u: NoNewPrivileges=$nnp"
-  grep -q "^+ systemctl enable --now axf-$id.service\$" "$T/install.log" || fail "not enabled: $id"
+  grep -q "^+ systemctl enable --now $unit\$" "$T/install.log" || fail "not enabled: $id"
 done
 ok "${#IDS[@]} unit(s) rendered from axf-host@.service, hardened, enabled"
 [ "$(stat -c %a "$T/root/etc/axf-host/console.env")" = 600 ] || fail "console.env mode"

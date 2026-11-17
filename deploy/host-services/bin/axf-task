@@ -32,6 +32,18 @@ case "${1:-}" in
   claude-pick-install) export HOME=/root; exec bash deploy/claude-pick.sh --install ;;
   keyfile-perms) [ -f /root/.anthropic-key ] && exec chmod 600 /root/.anthropic-key; exit 0 ;;
   git-status) exec git -C "$DIR" status --porcelain=v1 --branch ;;
+  # Maintenance: the commands live once, in the maintenance plugin's engine (maintenance-plugin-clear-docker-cache:
+  # engine/hostd.py runs docker builder/image prune and the Docker restart; maint.py measures). Never repeated here.
+  maint-docker-cache|maint-docker-cache-norestart|maint-docker-restart|maint-status)
+    HD="apps/console-web/plugins/maintenance/engine/hostd.py"
+    [ -f "$HD" ] || { echo "the maintenance host runner ($HD) is not in this checkout yet: it lands with maintenance-plugin-clear-docker-cache" >&2; exit 69; }
+    case "$1" in
+      maint-docker-cache) exec python3 "$HD" call docker-cache ;;
+      maint-docker-cache-norestart) exec python3 "$HD" call docker-cache --json '{"restart": false}' ;;
+      maint-docker-restart) exec python3 "$HD" call docker-restart ;;
+      maint-status) exec python3 "$HD" call status ;;
+    esac ;;
+  maint-snapshot) exec nice -n 19 python3 apps/console-web/plugins/maintenance/engine/maint.py snapshot ;;
   git-fetch) exec git -C "$DIR" fetch -q origin ;;
   git-worktree-prune) exec git -C "$DIR" worktree prune ;;
   *) echo "axf-task: unknown task '${1:-}'" >&2; exit 64 ;;
