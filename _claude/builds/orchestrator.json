@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:05:44.032Z",
+ "updatedAt": "2026-11-17T18:05:58.545Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -174382,7 +174382,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:04:26.928Z",
-   "updatedAt": "2026-11-17T18:05:41.982Z",
+   "updatedAt": "2026-11-17T18:05:56.685Z",
    "builtAt": "",
    "notes": [
     {
@@ -174392,6 +174392,10 @@
     {
      "text": "Brett (more scope): voice scrolling — 'scroll up' / 'scroll down' moves in steps (interval setting), so he can hunt for things; 'click here', 'right click there', 'right click this button / that row' by pointing at any visible text, button or row (no exact name needed); bulk moves of the highlighted rows: to top, to bottom, to position N ('fifth in line'), or to another grid/tab. Applies to every grid, new and existing. Settings (scroll step size, highlight colours) live in Settings > Plugins > Console control.",
      "at": "2026-11-17T18:05:41.982Z"
+    },
+    {
+     "text": "Split by Claude into 15 steps (3 Fable).",
+     "at": "2026-11-17T18:05:56.685Z"
     }
    ],
    "approvals": [],
@@ -174408,7 +174412,340 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the grid match-select contract: a pure engine in framework/core/engines/grid-select.ts. matchRows(rows, q, fields) does a case-insensitive contains on the title, name and label fields. addToSelection, clear and reorder(selection, 'top'|'bottom') keep the order of the selected rows and of the rest. Add the address grammar grid:<id>/select-match?q=, grid:<id>/clear-selection and grid:<id>/move?to=top|bottom to framework/spec/CONSOLE-CONTROL.md.",
+     "model": "Fable",
+     "why": "New cross-app engine contract and control@1 address grammar that every current and future grid uses",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/grid-select.ts",
+      "framework/spec/CONSOLE-CONTROL.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx01z5qq",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s2",
+     "text": "Write the grid-select fixtures: match, additive select, clear, move to top, move to bottom, empty keyword and no match. Register the generator in framework/spec/gen-fixtures.mts and record the Kotlin twin as a deferred gap in framework/spec/PORTING.md, because Android is on hold.",
+     "model": "Fable",
+     "why": "Conformance fixtures are the cross-port contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/fixtures/grid-select.json",
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx02qomf",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s3",
+     "text": "Build match-select into the framework DataGrid itself, so every grid gets it with no per-screen code. Add the commands selectMatch(q), clearSelection() and moveSelection('top'|'bottom'). A match adds to the multi-selection, it never replaces it. Selected rows get whole-row highlight state (data-selected on the row element).",
+     "model": "Fable",
+     "why": "Changes how every grid behaves across all apps",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/core/engines/grid-select.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx039wi2",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add the whole-row highlight style in axf.css. It covers every cell of a selected row, uses tokens only (color-mix with --fx-opacity-tint) and has no var() fallbacks. Make sure the theme-swap and check-theme rules pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx04zms7",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add an onReorder host hook to DataGrid. Move to top or bottom calls the host's persisted reorder when it has one, and otherwise reorders the view order kept in the grid's settings key. Add a 'Selected (n)' bulk-action toolbar to DataGrid with Select matching… (keyword field), Clear, Move to top and Move to bottom. Give it role=toolbar, an aria-label and a settings id so it is a Toolbars plugin toolbar with tap-to-confirm.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/react/components/DataGridSelectionBar.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx0504hv",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s6",
+     "text": "Register the console-control targets in DataGrid through data-axf-target: grid:<id>/select-match, clear-selection, move and selection (state read). New targets go last in the control@1 registry, which is append-only. Update the pins in check-console-control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/core/control-registry.ts",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx06kfme",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s7",
+     "text": "Fix console_control_focus select:true so it adds to the grid's multi-selection instead of replacing it. Add replace:true as an opt-in for the old behaviour.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src/consoleControl.ts",
+      "apps/console-web/server/console_control.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx07qswg",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s8",
+     "text": "Wire the console server routes. GET /api/console-control/grid/<id>/selection reads the state. POST select-match {q}, clear-selection and move {to} run the actions through the existing console-control dispatcher, so they reach the open browser grid.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/console_control.py",
+      "apps/console-web/server/main.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx08aumc",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s9",
+     "text": "Add the MCP tools console_control_grid_select_match, console_control_grid_clear_selection, console_control_grid_move and console_control_grid_selection to mcp_server.py, all calling the same handlers as REST.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx097qh6",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s10",
+     "text": "Add the CLI commands axf console grid <id> select-match <q> | clear | move top|bottom | selection, using the same REST routes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "framework/cli/console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx0a98w5",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s11",
+     "text": "Add voice actions for AmberX: 'highlight/select every row with <keyword> in <grid>', 'clear selection' and 'move them to the top/bottom'. Resolve the grid from the current view when it isn't named. Update help and the glossary descriptions.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/src/voice/actions.ts",
+      "apps/console-web/plugins/glossary-index",
+      "apps/console-web/src/help"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx0b6392",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s12",
+     "text": "Engine tests: npx tsx check of grid-select against the fixtures, with additive select, case-insensitive matching and order-stable move. Wire it into the CI sweep.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-grid-select.mts",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx0cig9o",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s13",
+     "text": "API parity tests for REST, MCP and CLI on select-match, move and selection, including the focus select:true additive regression.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/tests/test_grid_select.py",
+      "framework/spec/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx0dgikd",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s14",
+     "text": "Re-bake the console framework copy, then take desktop and phone shots of a grid before and after a keyword select and move to top (vite preview). Submit them to UI Review with 3 options for the selection-bar asset (choices JSON).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf",
+      "apps/console-web/plugins/ui-review",
+      "apps/console-web/plugins/data-grid/assets/toolbar"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx0ezpkd",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    },
+    {
+     "id": "s15",
+     "text": "Run the checks: check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, the tracker check and the typecheck. Write the report _claude/builds/reports/every-grid-select-highlight-all-rows.md covering how each part is reached (deep link, REST, MCP, CLI, voice), the THREADS row and the PR noting it is waiting in UI Review.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/every-grid-select-highlight-all-rows.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl06wjx0fq8cx",
+     "createdAt": "2026-11-17T18:05:56.685Z"
+    }
+   ]
   }
  ]
 }
