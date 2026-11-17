@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7969,
- "updatedAt": "2026-11-17T21:19:29.548Z",
+ "rev": 7970,
+ "updatedAt": "2026-11-17T21:19:38.963Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268437,7 +268437,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-17T21:19:27.343Z",
      "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
      "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -269123,7 +269123,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -276144,7 +276144,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T21:19:27.343Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -276866,7 +276866,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -278430,7 +278430,7 @@
      "action": "retry",
      "attempt": 1,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T21:19:27.343Z",
      "session": "",
      "note": "session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3)."
     }
@@ -279039,7 +279039,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
