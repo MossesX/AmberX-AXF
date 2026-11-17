@@ -13,6 +13,7 @@ import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { toolbarErrors, toolbarItemSchema, toolbarSchemaProperties } from '../core/engines/toolbar-rules.mjs';
+import { toolbarMigrationErrors } from '../core/engines/toolbar-migrate.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
@@ -199,6 +200,8 @@ export function validateAsset(raw) {
   errors.push(...cardErrors(raw.type, raw.data));
   // page-toolbar@1: ONE validator shared with core (core/engines/toolbar-rules.mjs); both toolbar shapes
   errors.push(...toolbarErrors(raw.type, raw.data));
+  // toolbar-list@1 → page-toolbar@1 (core/engines/toolbar-migrate.mjs): the migrated asset is valid and draws the same
+  errors.push(...toolbarMigrationErrors(raw.type, raw.data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with core (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)

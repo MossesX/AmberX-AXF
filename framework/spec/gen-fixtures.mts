@@ -49,6 +49,8 @@ import { DEFAULT_DOCK_RULES, DOCK_CONTRACT, DOCK_LAYOUT_MAX_PANES, DOCK_SIDES, D
 import type { Pane, TabGroup } from '../core/engines/windows';
 import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, navStyleErrors, navStyleOutput, navToggle, normalizeNavStyle } from '../core/engines/navstyle';
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
+import { isPageToolbar, parseActionRef, parseBadge, parseToolbarScope, parseWhen, toolbarErrors, toolbarStateKeys, whenHolds } from '../core/engines/toolbar-rules.mjs';
+import { migrateToolbar, needsToolbarMigration, toolbarMigrationErrors, toolbarMigrationRecord, toolbarSignature } from '../core/engines/toolbar-migrate.mjs';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
@@ -2552,5 +2554,42 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
       sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
+  });
+}
+
+// Toolbar migration (toolbar-list@1 → page-toolbar@1; core/engines/toolbar-migrate.mjs + toolbar-rules.mjs): every starter
+// toolbar migrated with no visible change (signature equal before and after), the grammar parsers, and both shapes' errors.
+{
+  const starters = load('toolbar');
+  const pageToolbar = {
+    variant: 'icons-labels', align: 'start', showSearch: false, scope: 'view:gate', overflow: { when: 'auto', keep: 1 },
+    groups: [
+      { id: 'lander', items: [
+        { id: 'run', icon: 'play', label: 'Run now', action: 'command:gate/lander-run', enabledWhen: ['!paused', 'waiting>0'], badge: 'state:waiting', priority: 200, overflow: 'never' },
+        { id: 'retry', icon: 'refresh', label: 'Retry', action: 'command:gate/lander-retry', args: { build: '$selection.id' }, enabledWhen: 'selection.id' },
+        { id: 'reset', icon: 'trash', label: 'Reset', action: 'command:gate/rules-reset', destructive: true, confirm: 'Reset every rule to the defaults?', priority: 10 },
+        { id: 'pause', icon: 'pause', label: 'Pause', action: 'handler:gate.pause', checked: 'state:paused', visibleWhen: 'status!=off' },
+        { id: 'open', icon: 'settings', label: 'Rules', action: 'control:view:settings/tab:settings.tabs=plugins' },
+        { id: 'legacy', icon: 'home', label: 'Home', action: 'nav:home', badge: 'alerts.unread' },
+      ] },
+    ],
+  };
+  const badToolbar = { variant: 'icons', align: 'start', showSearch: false, scope: 'page:x', overflow: 'sometimes', groups: [{ id: 'g', items: [{ id: 'a', action: 'command:gate', enabledWhen: 'sel count', badge: 'state:', confirm: 7, priority: 5000, overflow: 'x' }, { id: 'a', action: '' }] }, { id: 'h' }] };
+  write('toolbar-migrate.json', {
+    contract: 'page-toolbar@1',
+    starters: Object.fromEntries(starters.map((a) => { const r = migrateToolbar(a); return [a.id, { needed: needsToolbarMigration(a.data), record: toolbarMigrationRecord(a), migrated: r.data, signatureBefore: toolbarSignature(a.data), signatureAfter: toolbarSignature(r.data), errors: toolbarMigrationErrors('toolbar', a.data) }]; })),
+    pageToolbar: { isPage: isPageToolbar(pageToolbar), needed: needsToolbarMigration(pageToolbar), errors: toolbarErrors('toolbar', pageToolbar), stateKeys: toolbarStateKeys(pageToolbar), migrated: migrateToolbar(pageToolbar) },
+    oldShape: { isPage: isPageToolbar(starters[0].data), needed: needsToolbarMigration(starters[0].data) },
+    errors: { bad: toolbarErrors('toolbar', badToolbar), notToolbar: toolbarErrors('button', badToolbar), notObject: toolbarErrors('toolbar', 'nope') },
+    parse: {
+      scope: Object.fromEntries(['app', undefined, 'view:gate', 'plugin:ai.amberx.axf.console.gate', 'page:x', 'view:', 'view', 7].map((s) => [String(s), parseToolbarScope(s)])),
+      action: Object.fromEntries(['file.save', 'nav:home', 'settings.open:appearance', 'swap:layout:next', 'action:file.save', 'command:gate/lander-run', 'command:gate', 'command:/x', 'control:view:settings/tab:settings.tabs=plugins', 'handler:gate.pause', 'handler:', '', '  '].map((s) => [s, parseActionRef(s)])),
+      badge: Object.fromEntries(['alerts.unread', 'counter:alerts.unread', 'state:waiting', 'state:', 'other:x', ''].map((s) => [s, parseBadge(s)])),
+      when: Object.fromEntries(['busy', '!busy', 'selection.count>0', 'status=running', 'status!=off', 'n>=2', 'n<=2', 'n<x', 'sel count', '', ['a', '!b', 'c=1'], Array(9).fill('a')].map((s) => [JSON.stringify(s), parseWhen(s)])),
+    },
+    holds: Object.fromEntries([
+      ['busy', { busy: true }], ['busy', { busy: 0 }], ['!busy', {}], ['selection.count>0', { selection: { count: 2 } }], ['selection.count>0', { selection: { count: 0 } }],
+      ['status=running', { status: 'running' }], ['status!=off', { status: 'off' }], ['n>=2', { n: 2 }], ['n<=2', { n: 3 }], ['list', { list: [] }], ['list', { list: [1] }], [['a', 'b=1'], { a: true, b: 1 }], [['a', 'b=1'], { a: true, b: 2 }],
+    ].map(([w, s]) => [`${JSON.stringify(w)} on ${JSON.stringify(s)}`, whenHolds(parseWhen(w), s)])),
   });
 }
