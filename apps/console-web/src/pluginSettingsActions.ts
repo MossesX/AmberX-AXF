@@ -25,6 +25,8 @@ export function settingsTabOf(p: BundledPlugin): string | undefined {
  * REST POST /api/console-control/plugins/<id>/settings/open and AmberX ("open <plugin> settings").
  */
 export function registerPluginSettingsActions(rt: AxfRuntime): () => void {
+  // the ⋯ menu on a plugin screen (gear placement `menu`): its Settings item
+  rt.contextExtras.set('plugin-host', (_t, folder) => (folder ? [{ id: 'plugin-host.settings', label: 'Settings', icon: 'settings', action: `plugin.settings.open:${folder}` }] : []));
   return rt.actions.register('plugin.settings.open', ([ref = '']) => {
     const p = findPlugin(ref);
     if (!p) { rt.toast(`No plugin called “${ref}”.`, 'warning', 'Plugins'); rt.dispatch('settings.open:plugins'); return; }

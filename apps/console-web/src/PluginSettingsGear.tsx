@@ -14,12 +14,24 @@
  * A plugin opts out only through plugin.json `"settingsGear": false` with a `"settingsGearReason"`.
  * Tokens only (pluginSettingsGear.css), framework IconButton, no raw controls.
  */
-import type { ReactNode } from 'react';
-import { IconButton, useRuntime } from './axf/react';
+import { useSyncExternalStore, type MouseEvent, type ReactNode } from 'react';
+import { Button, IconButton, useRuntime } from './axf/react';
 import './pluginSettingsGear.css';
 
 /** The address part every gear registers (relative: the view's ControlScope puts `view:<screen>/` in front). */
 export const SETTINGS_GEAR_TARGET = 'settings-gear';
+
+/** How the gear is drawn (console setting, Settings → Plugins → Console plugins): icon | label | menu. */
+export const SETTINGS_GEAR_PLACEMENT_KEY = 'axf.plugins.settingsGear.placement';
+export type SettingsGearPlacement = 'icon' | 'label' | 'menu';
+/** The context-menu target of the ⋯ button (placement `menu`); its Settings item is registered in pluginSettingsActions.ts. */
+export const PLUGIN_HOST_MENU = 'plugin-host';
+
+function usePlacement(): SettingsGearPlacement {
+  const rt = useRuntime();
+  const v = useSyncExternalStore((fn) => rt.settings.subscribe(fn), () => String(rt.settings.get(SETTINGS_GEAR_PLACEMENT_KEY) ?? ''), () => '');
+  return v === 'label' || v === 'menu' ? v : 'icon';
+}
 
 /** The Settings → Plugins sub-tab address of one plugin settings tab id. */
 export const pluginSettingsAddress = (tab: string) => `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=${tab}`;
@@ -33,21 +45,18 @@ export interface PluginSettingsGearProps {
   tab: string;
 }
 
-/** The gear: a framework IconButton that opens the plugin's Settings → Plugins sub-tab. */
+/** The gear: a framework IconButton (or Button with its label, or a ⋯ menu) that opens the plugin's Settings → Plugins sub-tab. */
 export function PluginSettingsGear({ folder, name, tab }: PluginSettingsGearProps): ReactNode {
   const rt = useRuntime();
-  return (
-    <IconButton
-      id={SETTINGS_GEAR_TARGET}
-      icon="settings"
-      label={`${name} settings`}
-      title={`${name} settings (Settings → Plugins → ${name})`}
-      className="cw-plugin-gear"
-      data-axf-plugin-gear={folder}
-      data-axf-opens={pluginSettingsAddress(tab)}
-      onClick={() => rt.dispatch(`settings.open:${tab}`)}
-    />
-  );
+  const placement = usePlacement();
+  const open = () => rt.dispatch(`settings.open:${tab}`);
+  const common = { id: SETTINGS_GEAR_TARGET, className: 'cw-plugin-gear', 'data-axf-plugin-gear': folder, 'data-axf-opens': pluginSettingsAddress(tab), 'data-axf-placement': placement };
+  if (placement === 'label') return <Button {...common} size="sm" tone="quiet" icon="settings" title={`${name} settings (Settings → Plugins → ${name})`} onClick={open}>Settings</Button>;
+  if (placement === 'menu') {
+    const more = (e: MouseEvent<HTMLButtonElement>) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(r.left, r.bottom, PLUGIN_HOST_MENU, folder); };
+    return <IconButton {...common} icon="more" label={`${name}: more`} title={`${name}: settings and more`} onClick={more} />;
+  }
+  return <IconButton {...common} icon="settings" label={`${name} settings`} title={`${name} settings (Settings → Plugins → ${name})`} onClick={open} />;
 }
 
 /** What the host needs to draw a plugin's screen with its gear. null tab = no settings tab (the CI check refuses that). */

@@ -157,3 +157,14 @@ Help (console.json): `settings-gear`, `plugin-default-settings`, `open-in-plugin
 `axf console plugin-settings`; the CI check is listed from its CLI header. `help-coverage.mjs --check` and
 `glossary-index/catalog.mjs --check` pass. Plugins README: new section "Settings → Plugins: every screen has a tab
 and a gear".
+
+## Gear placement options (s19) — UI Review hold
+
+Three placements, all live behind one console setting, `axf.plugins.settingsGear.placement` (Settings → Plugins →
+Console plugins → Plugin screens; default `icon`): **icon** (gear at the right of the host row), **label** (gear +
+"Settings"), **menu** (a ⋯ button whose menu has Settings, registered as context target `plugin-host`). Desktop
+(1400×900) and phone (390×844) shots of each on the Gate screen. Submitted to UI Review as `r-20261117-5e4c1d9c`
+(kind menu, group "Every plugin screen gets a settings gear", ui-choices@1 with 3 options); the option assets are
+`apps/console-web/plugins/plugin-manager/assets/settings/plugin-screen-settings-g-mwjz4jca-{icon,label,menu}.json`.
+Whichever Brett picks only needs the setting's default changed. Note: on the phone shot of the menu option the Gate
+grid is wider than the screen and scrolls sideways; that grid width predates this build.
