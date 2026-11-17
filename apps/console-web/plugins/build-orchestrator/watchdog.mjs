@@ -18,6 +18,11 @@
  *                                  recoveries[] entry in the same store write (journal action watchdog-recover, live on
  *                                  main through builds-live). Idempotent: a per-build lock, and a build recovered less than
  *                                  cooldownMin ago is left for the next pass.
+ * Retries (Brett: "retry failed sessions"): a crash or kill is retried up to maxRetries (default 3) since the build last
+ * ticked a step; the count is the build's own recoveries[] (never memory), so it survives restarts and other hosts. A
+ * usage limit or dead login marks that account out (claude-workers markLimit) and plans the retry on the next worker
+ * (claude-workers route, every tried account excluded: pipeline.tried / planned). Past the cap, or every account tried:
+ * the build goes to Pending with the reason as its note, in the Errors tab, with a banner item and an alert.
  *
  * Files: <pipeline dir>/watchdog.json (watchdog-state@1: last pass, recent fixes), next to the dispatcher's state.
  * Environment for tests: AXF_WATCHDOG_SETTINGS (a JSON patch over the settings), AXF_WATCHDOG_ACCOUNTS (comma list of usable
@@ -31,7 +36,7 @@ import * as W from '../../../../framework/core/build-watchdog.mjs';
 import { loadStore } from '../../../../framework/cli/builds-store.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import * as buildLock from '../../../../framework/cli/build-lock.mjs';
-import { hitOf, markLimit, release as workersRelease, status as workersStatus } from '../../../../deploy/claude-workers.mjs';
+import { hitOf, markLimit, release as workersRelease, route as workersRoute, status as workersStatus } from '../../../../deploy/claude-workers.mjs';
 import { endRun, pipeDir, setPipeline, worktreeOf } from './pipeline.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
@@ -116,7 +121,8 @@ export function probeBuild(b, env = process.env) {
  */
 export function scan({ env = process.env, store = loadStore(), settings = loadSettings(env), accounts = null } = {}) {
   const at = new Date().toISOString();
-  const usable = accounts ?? usableAccounts(env);
+  // retry on another account off: no account list, so an account stop never gives up on accounts (plain retries)
+  const usable = accounts ?? (settings.retryOtherAccount ? usableAccounts(env) : []);
   const builds = [];
   for (const b of store.builds) {
     if (!W.isMarkedRunning(b)) continue;
@@ -171,10 +177,14 @@ export function recover(b, d, probe, { env = process.env, settings = loadSetting
   if (!d || d.action === 'none') return null;
   if (d.action === 'kill-retry') killSession(probe);
   const freed = releaseHeld(b, probe, env);
-  if (d.action === 'retry-other-account' && settings.retryOtherAccount && d.account) {
-    try { markLimit(d.account, { kind: d.cause === 'auth-failed' ? 'auth' : 'usage', text: d.note }, env); } catch { /* the workers state may be absent (tests) */ }
+  // a usage limit / dead login: the account is out (claude-workers markLimit, so the dispatcher skips it) and the retry is
+  // planned on the next worker (claude-workers route, excluding every account this build already tried)
+  let next = '';
+  if (d.action === 'retry-other-account' && settings.retryOtherAccount) {
+    if (d.account) { try { markLimit(d.account, { kind: d.cause === 'auth-failed' ? 'auth' : 'usage', text: d.note }, env); } catch { /* no workers state (tests) */ } }
+    next = nextWorker(d.excludeAccounts, env);
   }
-  const rec = W.recoveryRecord(b, d, { now, session: b.pipeline?.session ?? '' });
+  const rec = W.recoveryRecord(b, next ? { ...d, note: str(`${d.note} Next: ${next}.`, 400) } : d, { now, session: b.pipeline?.session ?? '' });
   const add = (x, at) => {
     x.recoveries = W.normRecoveries([...(x.recoveries ?? []), rec]);
     if (d.resetStep && d.step) { const st = x.steps.find((s) => s.id === d.step); if (st && !st.done) { st.note = str(`Reset by the watchdog (${d.cause}, attempt ${d.attempt}) ${at}`, 1000); st.updatedAt = at; } }
@@ -190,12 +200,22 @@ export function recover(b, d, probe, { env = process.env, settings = loadSetting
     session: '', slot: '', note: d.note,
     crashes: W.RETRY_ACTIONS.includes(d.action) || giveUp ? (p.crashes ?? 0) + 1 : p.crashes ?? 0,
     lastRun: { at: now, exit: d.exit, outcome: giveUp ? 'failed' : 'requeued', reason: giveUp ? 'crash-limit' : 'crash', stepsLeft: (b.steps ?? []).filter((s) => !s.done && !s.skip).length, account: p.account ?? '', session: p.session ?? '', phase: d.phase },
-    ...(d.excludeAccounts.length ? { tried: d.excludeAccounts } : {}),
+    ...(d.excludeAccounts.length && settings.retryOtherAccount ? { tried: d.excludeAccounts } : {}),
+    ...(next ? { planned: { model: (b.steps ?? []).find((s) => !s.done && !s.skip)?.model ?? '', account: next, kind: 'subscription', at: now, why: `watchdog: ${d.account || 'its account'} ${d.cause === 'auth-failed' ? 'lost its login' : 'hit its limit'}, retry on ${next}` } } : {}),
     ...(giveUp ? { queuedAt: '' } : {}),
   };
   setPipeline(b.id, patch, { status: d.status, by: 'watchdog', action: W.JOURNAL_ACTION, note: W.recoveryLine(rec, b), mutate: add });
-  return { ...rec, freed };
+  return { ...rec, freed, ...(next ? { next } : {}) };
 }
+
+/** The worker a retry goes to (deploy/claude-workers.mjs route), never one in `exclude`; '' = none free now (the dispatcher picks later). */
+export function nextWorker(exclude = [], env = process.env) {
+  if (env.AXF_WATCHDOG_ACCOUNTS != null) return env.AXF_WATCHDOG_ACCOUNTS.split(',').map((x) => x.trim()).find((a) => a && !exclude.includes(a)) ?? '';
+  try { return workersRoute({ exclude }, env) || ''; } catch { return ''; }
+}
+
+/** Retries the build has used since it last made progress (kept on the build: its recoveries[]). */
+export const retriesOf = (b) => W.attemptOf(b) - 1;
 
 /**
  * One watchdog pass: scan, then recover every stuck build (per-build lock, cooldown). Writes watchdog.json (last pass,
