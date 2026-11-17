@@ -37,9 +37,18 @@ const ctxSlug = (s: string | null | undefined) => (s ? s.toLowerCase().replace(/
  * the one the element's context menu opens the settings of, so the dialog's choice is the one the tap reads.
  */
 export function tapSurfaceOf(node: Element): TapSurface | null {
+  const s = chromeSurfaceOf(node);
+  return s && s.el.dataset.axfTapConfirm !== 'off' ? s : null;
+}
+
+/**
+ * The chrome instance an element is part of (kind + the instance id its context menu opens), or null when it is in
+ * none or only in a preview. Shared by tap-to-confirm and per-instance transparency (chromeTransparency.ts).
+ */
+export function chromeSurfaceOf(node: Element): TapSurface | null {
   let el = node.closest<HTMLElement>(TAP_SURFACES);
   while (el && el.tagName === 'NAV' && el.hasAttribute('data-axf-not-nav')) el = el.parentElement?.closest<HTMLElement>(TAP_SURFACES) ?? null;
-  if (!el || el.dataset.axfTapConfirm === 'off') return null;
+  if (!el) return null;
   const role = el.getAttribute('role');
   const payload = el.getAttribute('data-fx-ctx-payload');
   const own = (target: string) => (el!.getAttribute('data-fx-ctx-target') === target ? ctxSlug(payload) : '');
@@ -48,7 +57,7 @@ export function tapSurfaceOf(node: Element): TapSurface | null {
   if (role === 'menu') {
     if (el.closest('.fx-ctx')) return { kind: 'context-menu', instance: 'app', el };
     const row = el.parentElement?.closest<HTMLElement>('[role="tablist"]');
-    if (row) return row.dataset.axfTapConfirm === 'off' ? null : tapSurfaceOf(row);
+    if (row) return chromeSurfaceOf(row);
     return { kind: 'app-menu', instance: 'app', el };
   }
   if (role === 'menubar') return { kind: 'app-menu', instance: ctxSlug(payload) || 'app', el };

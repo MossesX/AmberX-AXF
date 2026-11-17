@@ -299,6 +299,7 @@ jobs:
             node framework/spec/check-component-tokens.mjs             # component-tokens@1: grid + tab-group token families (schema, :root defaults, no general colour token in grid / tab rules, style compile, per-instance set / Restore previous edit / Restore from axHub, control@1 paths, fixture)
             npx -y tsx framework/spec/check-chrome-settings.mts        # chrome-settings@1: one shared default settings interface per chrome type + a custom copy per app (extends), default selected, dialog fields = asset fields
             npx -y tsx framework/spec/check-chrome-apply.mts           # chrome-settings@1 applies: every dialog value on every toolbar, nav, menu bar, banner and context menu changes the render, per instance, survives reload
+            npx -y tsx framework/spec/check-chrome-transparency.mts    # chrome-settings@1 transparency: each tab group / toolbar / nav / menu / banner instance gets only its own opacity token (jsdom)
             node framework/cli/chrome-settings.mjs check               # every app (shared-assets apps + Expenses) carries its custom chrome settings interfaces
             node framework/cli/check-chrome-assets.mjs                 # every tab group, toolbar, banner and nav is framework chrome with the right-click settings; ratchet spec/chrome-baseline.json
             npx -y tsx framework/spec/check-skin.mts                   # skin@1 + app-look@1: one look per app, fixture replay, the Windows skin's assets, preview, apply, overrides, Restore + undo

@@ -237,6 +237,62 @@ export function matchTabGroup(rows, words) {
   const best = list.map((r, i) => ({ r, i, s: score(r) })).filter((x) => x.s > 0).sort((a, b) => b.s - a.s || Number(!!b.r.visible) - Number(!!a.r.visible) || a.i - b.i)[0];
   return best ? best.r.id : null;
 }
+/**
+ * Transparency of one instance (Brett, Nov 13 2026, build land-per-instance-settings-picker: "every tab group,
+ * application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all
+ * have transparency"). One instance-only choice in every chrome kind's dialog: 'inherit' (follow the style theme's
+ * surface opacity) or a percentage of the surface colour kept, '100' = opaque … '0' = clear. It writes only that
+ * instance's opacity token on its own element (CHROME_TRANSPARENCY_VARS), so no other instance changes.
+ */
+export const CHROME_TRANSPARENCY_FIELD = 'transparency';
+export const CHROME_TRANSPARENCY_OPTIONS = ['inherit', '100', '90', '80', '70', '60', '50', '40', '30', '20', '10', '0'];
+/** The opacity token (and backdrop token, where the kind frosts) each kind's surface reads. */
+export const CHROME_TRANSPARENCY_VARS = {
+  'tab-group': { opacity: '--fx-tab-opacity', backdrop: null },
+  toolbar: { opacity: '--fx-opacity-toolbar', backdrop: '--fx-backdrop-toolbar' },
+  'app-menu': { opacity: '--fx-opacity-toolbar', backdrop: '--fx-backdrop-toolbar' },
+  'nav-menu': { opacity: '--fx-nav-opacity', backdrop: '--fx-nav-backdrop' },
+  banner: { opacity: '--fx-opacity-banner', backdrop: '--fx-backdrop-banner' },
+  'context-menu': { opacity: '--fx-opacity-menu', backdrop: '--fx-backdrop-menu' },
+};
+const TRANSPARENCY_WORDS = { inherit: 'inherit', default: 'inherit', theme: 'inherit', reset: 'inherit', 'same as all': 'inherit', opaque: '100', solid: '100', none: '100', half: '50', glass: '60', frosted: '60', clear: '0', invisible: '0', transparent: '0', full: '0' };
+/**
+ * A transparency value from anything a person or a caller says: 'inherit' | '0'…'100' in steps of 10, else null.
+ * Numbers are the opacity kept: 0.6 / "0.6" / 60 / "60%" all mean '60'; words: opaque, half, glass, clear, default.
+ */
+export function parseTransparency(v) {
+  let n = null;
+  if (typeof v === 'number') n = v;
+  else if (typeof v === 'string') {
+    const s = v.trim().toLowerCase().replace(/\s*(%|percent|opacity|opaque)$/, '').trim();
+    if (TRANSPARENCY_WORDS[s]) return TRANSPARENCY_WORDS[s];
+    if (TRANSPARENCY_WORDS[v.trim().toLowerCase()]) return TRANSPARENCY_WORDS[v.trim().toLowerCase()];
+    if (/^\d*\.?\d+$/.test(s)) n = Number(s);
+  }
+  if (n === null || !Number.isFinite(n) || n < 0) return null;
+  // ≤ 1 without a percent sign is a fraction (0.6 = 60%, 1 = opaque); above 1 it is a percentage
+  const pct = n <= 1 && !(typeof v === 'string' && /%|percent/.test(v)) ? n * 100 : n;
+  if (pct > 100) return null;
+  return String(Math.round(pct / 10) * 10);
+}
+/**
+ * The CSS variables one instance's element gets for its transparency field: {} when it follows the theme. Below
+ * opaque, a kind that frosts also gets its backdrop blur (the theme's --fx-blur).
+ */
+export function chromeTransparencyVars(type, override) {
+  const m = CHROME_TRANSPARENCY_VARS[type];
+  const v = isObjLoose(override) ? parseTransparency(override[CHROME_TRANSPARENCY_FIELD]) : null;
+  if (!m || !v || v === 'inherit') return {};
+  const o = Number(v) / 100;
+  const out = { [m.opacity]: String(o) };
+  if (m.backdrop) out[m.backdrop] = o < 1 ? 'blur(var(--fx-blur))' : 'none';
+  return out;
+}
+const isObjLoose = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
+for (const t of CHROME_TYPES) {
+  CHROME_FIELDS[t].push({ key: CHROME_TRANSPARENCY_FIELD, label: 'Transparency', kind: 'choice', options: [...CHROME_TRANSPARENCY_OPTIONS], labels: { inherit: 'Same as all (theme)', 100: 'Opaque', 0: 'Clear (0%)', ...Object.fromEntries(CHROME_TRANSPARENCY_OPTIONS.filter((o) => o !== 'inherit' && o !== '100' && o !== '0').map((o) => [o, `${o}%`])) }, default: 'inherit', group: 'look', level: 'simple', instanceOnly: true });
+}
+
 CHROME_FIELDS['tab-group'].push({ key: TAB_ROWS_FIELD, label: 'Rows', kind: 'choice', options: [...TAB_ROWS_OPTIONS], labels: { 1: '1 (one row)', auto: 'Auto (as many as fit)' }, default: '1', group: 'look', level: 'simple', instanceOnly: true });
 
 /** The tabs every chrome settings interface starts with (a settings asset may relabel, reorder or hide them). */
@@ -257,6 +313,7 @@ export function normalizeInstanceOverride(type, raw) {
     const v = raw[f.key];
     if (v === undefined || v === null) continue;
     if (type === 'tab-group' && f.key === TAB_ROWS_FIELD) { const r = parseTabRows(v); if (r) out[f.key] = r; continue; }
+    if (f.key === CHROME_TRANSPARENCY_FIELD) { const t = parseTransparency(v); if (t) out[f.key] = t; continue; }
     if (f.kind === 'toggle' && typeof v === 'boolean') out[f.key] = v;
     else if (f.kind === 'choice' && typeof v === 'string' && f.options.includes(v)) out[f.key] = v;
     else if (f.kind === 'number' && typeof v === 'number' && Number.isFinite(v)) out[f.key] = Math.min(f.max ?? v, Math.max(f.min ?? v, Math.round(v)));

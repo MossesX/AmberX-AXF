@@ -17,6 +17,8 @@
   /* surface transparency (engines/theme.ts SURFACE_KINDS): 1 = opaque; below 1 the backdrop becomes blur(var(--fx-blur)) */
   --fx-opacity-dialog: 1; --fx-opacity-settings: 1; --fx-opacity-panel: 1; /* theme-ok */
   --fx-opacity-menu: 1; --fx-opacity-toolbar: 1; --fx-opacity-banner: 1; /* theme-ok */
+  /* one navigation menu's own transparency (chrome-settings@1 `transparency`, set on its region; 1 = opaque) */
+  --fx-nav-opacity: 1; --fx-nav-backdrop: none; /* theme-ok */
   --fx-backdrop-dialog: none; --fx-backdrop-settings: none; --fx-backdrop-panel: none; /* theme-ok */
   --fx-backdrop-menu: none; --fx-backdrop-toolbar: none; --fx-backdrop-banner: none; /* theme-ok */
   /* brand palette slots (branding@1 overrides them from its palette; without a branding package they follow the theme) */
@@ -412,9 +414,9 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   overflow: hidden;
 }
 .fx-region { min-width: 0; min-height: 0; }
-.fx-region--nav[data-side='left'] { border-right: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); }
-.fx-region--nav[data-side='right'] { border-left: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); }
-.fx-region--nav[data-side='top'] { border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); }
+.fx-region--nav[data-side='left'] { border-right: var(--fx-border-w) solid var(--fx-border); background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-nav-opacity) * 100%), transparent); backdrop-filter: var(--fx-nav-backdrop); -webkit-backdrop-filter: var(--fx-nav-backdrop); }
+.fx-region--nav[data-side='right'] { border-left: var(--fx-border-w) solid var(--fx-border); background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-nav-opacity) * 100%), transparent); backdrop-filter: var(--fx-nav-backdrop); -webkit-backdrop-filter: var(--fx-nav-backdrop); }
+.fx-region--nav[data-side='top'] { border-bottom: var(--fx-border-w) solid var(--fx-border); background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-nav-opacity) * 100%), transparent); backdrop-filter: var(--fx-nav-backdrop); -webkit-backdrop-filter: var(--fx-nav-backdrop); }
 .fx-region--inspector { background: var(--fx-surface); overflow: auto; }
 .fx-region--inspector[data-side='right'] { border-left: var(--fx-border-w) solid var(--fx-border); }
 .fx-region--inspector[data-side='left'] { border-right: var(--fx-border-w) solid var(--fx-border); }

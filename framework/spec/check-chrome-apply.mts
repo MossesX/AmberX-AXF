@@ -19,7 +19,7 @@ import { join } from 'node:path';
 import { AxfRuntime } from '../core/runtime';
 import { toolbarStyle } from '../core/engines/components';
 import { tapConfigFor } from '../core/engines/tapconfirm';
-import { CHROME_FIELDS, CHROME_INSTANCE_KEY, CHROME_TAP_FIELD, CHROME_TAP_OPTIONS } from '../core/engines/chrome-settings-rules.mjs';
+import { CHROME_FIELDS, CHROME_INSTANCE_KEY, CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, CHROME_TRANSPARENCY_FIELD, CHROME_TRANSPARENCY_OPTIONS, chromeTransparencyVars } from '../core/engines/chrome-settings-rules.mjs';
 import { wsToolbarAttrs, wsToolbarLook } from '../libs/workspace/look';
 
 // a localStorage stand-in so settings persist across runtimes the way a reload does in the browser
@@ -74,7 +74,8 @@ const valuesOf = (f: { kind: string; options?: string[]; min?: number; max?: num
     ok(rt.assetOrNull(kind as never), `${kind}: the framework defaults ship one`);
     const key = CHROME_INSTANCE_KEY(kind, 'app');
     for (const f of CHROME_FIELDS[kind]) {
-      if (f.key === CHROME_TAP_FIELD) continue; // instance-only: checked below through the tap-confirm engine
+      // instance-only: Tap to confirm through the tap-confirm engine, Transparency on the instance's own element (below)
+      if (f.key === CHROME_TAP_FIELD || f.key === CHROME_TRANSPARENCY_FIELD) continue;
       const seen = new Map<string, string | number | boolean>();
       for (const v of valuesOf(f)) {
         rt.settings.set(key, { [f.key]: v } as never);
@@ -94,6 +95,27 @@ const valuesOf = (f: { kind: string; options?: string[]; min?: number; max?: num
       if (v === 'off') ok(!on, `${kind}.tapConfirm=off: not armed`);
       rt.settings.clear(key);
     }
+  }
+}
+
+// Transparency (instance-only, build land-per-instance-settings-picker): every kind offers it, every value gives that
+// instance's element different tokens ('inherit' none), and one instance's choice never reaches another instance or the
+// root style (the element side is check-chrome-transparency.mts, in jsdom)
+{
+  const rt = make();
+  const root0 = JSON.stringify(rt.compileStyles());
+  for (const kind of [...KINDS, 'tab-group'] as const) {
+    ok(CHROME_FIELDS[kind].some((f) => f.key === CHROME_TRANSPARENCY_FIELD), `${kind}: its settings dialog offers Transparency`);
+    const seen = new Map<string, string>();
+    for (const v of CHROME_TRANSPARENCY_OPTIONS) {
+      rt.settings.set(CHROME_INSTANCE_KEY(kind, 'one'), { [CHROME_TRANSPARENCY_FIELD]: v } as never);
+      const sig = JSON.stringify(chromeTransparencyVars(kind, rt.settings.get(CHROME_INSTANCE_KEY(kind, 'one'))));
+      ok(!seen.has(sig), `${kind}.transparency: ${v} gives the same tokens as ${seen.get(sig)}`);
+      seen.set(sig, v);
+      ok(JSON.stringify(chromeTransparencyVars(kind, rt.settings.get(CHROME_INSTANCE_KEY(kind, 'two')))) === '{}', `${kind}.transparency: instance "one" leaks into "two"`);
+    }
+    ok(JSON.stringify(rt.compileStyles()) === root0, `${kind}.transparency: an instance's choice never changes the root style`);
+    rt.settings.clear(CHROME_INSTANCE_KEY(kind, 'one'));
   }
 }
 
@@ -120,7 +142,7 @@ const valuesOf = (f: { kind: string; options?: string[]; min?: number; max?: num
   const draws = () => { const look = wsToolbarLook(get, tb); return JSON.stringify({ attrs: wsToolbarAttrs(look, false), showSearch: look.showSearch, collapsible: look.collapsible }); };
   const app0 = JSON.stringify(rt.chromeData('toolbar')), other0 = JSON.stringify(wsToolbarLook(get, other));
   for (const f of CHROME_FIELDS.toolbar) {
-    if (f.key === CHROME_TAP_FIELD) continue;
+    if (f.key === CHROME_TAP_FIELD || f.key === CHROME_TRANSPARENCY_FIELD) continue;
     const seen = new Map<string, string | number | boolean>();
     for (const v of valuesOf(f)) {
       rt.settings.set(key, { [f.key]: v } as never);

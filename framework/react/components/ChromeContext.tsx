@@ -31,13 +31,14 @@
  *   chrome.edits                                 open Settings → Appearance at the "Assets with edits" list
  *   settings.controlled-colour:<warning|accent|info|success|danger>   the colour that marks overridden settings
  *   tapconfirm.item:<type>:<instance>:<inherit|on|off>    one item's Tap to confirm (= chrome.set …:tapConfirm:…)
+ *   chrome.transparency:<type>:<instance>:<inherit|0…100>  one item's own transparency (= chrome.set …:transparency:…)
  *   tapconfirm.kind:<type>:<on|off>               Tap to confirm for a whole kind (every toolbar, tab group, nav, …)
  *   tapconfirm.window:<ms>                        how long an armed item waits for the second tap (1000–10000)
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
-import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
+import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, CHROME_TRANSPARENCY_FIELD, parseTransparency, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentToken, componentTokenError, instanceHasPrevious, instanceTokenValues, isComponentTokenFamily, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken, type ComponentTokenFamily } from '../../core/engines/component-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
@@ -117,6 +118,7 @@ function parseValue(type: ChromeType, key: string, raw: string): string | number
   const f = CHROME_FIELDS[type].find((x) => x.key === key);
   if (!f) return null;
   if (type === 'tab-group' && key === TAB_ROWS_FIELD) return parseTabRows(raw);
+  if (key === CHROME_TRANSPARENCY_FIELD) return parseTransparency(raw);
   if (f.kind === 'toggle') return /^(on|true|yes|1)$/i.test(raw) ? true : /^(off|false|no|0)$/i.test(raw) ? false : null;
   if (f.kind === 'number') { const n = Number(raw); return Number.isFinite(n) ? n : null; }
   return f.options?.includes(raw) ? raw : null;
@@ -219,6 +221,13 @@ export function installChrome(rt: AxfRuntime): void {
       const err = setChromeInterface(rt, ty, inst(ty, instance, ctx), which);
       if (err) rt.toast(err, 'warning', 'Chrome settings');
     }, { label: 'Pick the settings interface one tab group / toolbar / banner / nav / menu uses (chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>)', params: true });
+    // Transparency of one instance (build land-per-instance-settings-picker): the dialog's Look → Transparency.
+    rt.actions.register('chrome.transparency', ([type, instance, ...rest], ctx) => {
+      const ty = t(type); if (!ty) return;
+      const v = parseTransparency(rest.join(':'));
+      if (v === null) { rt.toast(`Transparency takes inherit or 0–100 (not "${rest.join(':')}").`, 'warning', 'Chrome settings'); return; }
+      setChromeField(rt, ty, inst(ty, instance, ctx), CHROME_TRANSPARENCY_FIELD, v);
+    }, { label: 'Transparency of one tab group / toolbar / nav / menu / banner (chrome.transparency:<type>:<instance>:<inherit|0…100|opaque|half|glass|clear>)', params: true, requires: 'assets.swap' });
     // Tap to confirm (build add-a-tap-to-confirm-option-to-every-settings-in): the same settings the dialogs edit.
     rt.actions.register('tapconfirm.item', ([type, instance, value = ''], ctx) => {
       const ty = t(type); if (!ty) return;

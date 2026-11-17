@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
+import { installChromeTransparency } from './chromeTransparency';
 import { installMenuFit } from './components/menuFit';
 import { installControlRegistry } from './controlTargets';
 import { installScrollControl } from './scrollControl';
@@ -138,6 +139,13 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   // Tap-to-confirm on every toolbar (framework/react/tapConfirm.ts): touch arms first, a second tap runs; mouse clicks once.
   useEffect(() => {
     const host = installTapConfirm(document, (key) => runtime.settings.get(key));
+    return () => host.dispose();
+  }, [runtime]);
+
+  // Per-instance transparency on every chrome surface (framework/react/chromeTransparency.ts): each tab group,
+  // toolbar, nav, menu and banner reads its own `axf.chrome.<kind>.<instance>.transparency`.
+  useEffect(() => {
+    const host = installChromeTransparency(document, (key) => runtime.settings.get(key), (fn) => runtime.settings.subscribe(fn));
     return () => host.dispose();
   }, [runtime]);
 
