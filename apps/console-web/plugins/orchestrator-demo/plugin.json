@@ -186,5 +186,8 @@
   "settingsTab": {
     "default": true,
     "parent": "plugins"
+  },
+  "cli": {
+    "demo": "cli.mjs"
   }
 }
