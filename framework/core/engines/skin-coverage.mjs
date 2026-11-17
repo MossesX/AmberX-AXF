@@ -184,7 +184,8 @@ export function coverageOf(type, spec, targets = {}, never = []) {
   if (errors.length) return { ...base, by: 'uncovered', declared: true, why: errors.join('; ') };
   const d = declaredCoverage(t);
   if (d) {
-    const also = d.by !== 'parts' && elements.length ? ['parts'] : [];
+    // `none` is absolute: a skin reaches nothing of the type, its style target included (toolbars, Nov 17 2026)
+    const also = d.by !== 'parts' && d.by !== 'none' && elements.length ? ['parts'] : [];
     return { ...base, by: d.by, also, declared: true, via: d.via, why: d.why };
   }
   const widget = t.widget === true || t.attachable === true;
@@ -214,18 +215,33 @@ export function coverageSummary(rows) {
   return out;
 }
 
-/** The types a skin's `parts` may name: everything with a style target, registry order. */
-export function partsTypes(spec, targets = {}) {
-  return Object.keys(isObj(spec) ? spec : {}).filter((t) => partElements(isObj(targets) ? targets[t] : null).length);
+/**
+ * The types the registry declares out of a skin's reach (`skin: { by: "none" }`), registry order. A skin never picks
+ * such a type's asset, styles its parts or sets its chrome: the runtime (`resolveLookSkin`, `SkinScope`) leaves its
+ * tokens alone. Toolbars are the first (Brett, Nov 17 2026: every toolbar blank, one settings gear, edited per toolbar).
+ */
+export function skinNoneTypes(spec) {
+  return Object.keys(isObj(spec) ? spec : {}).filter((t) => declaredCoverage(spec[t])?.by === 'none');
 }
 
-/** Validation messages for a skin's `parts` block: unknown types, types without a style target, values that aren't maps. */
+/** Is the type declared out of a skin's reach? */
+export function isSkinNoneType(type, spec) {
+  return isObj(spec) && declaredCoverage(spec[type])?.by === 'none';
+}
+
+/** The types a skin's `parts` may name: everything with a style target that is not declared `none`, registry order. */
+export function partsTypes(spec, targets = {}) {
+  return Object.keys(isObj(spec) ? spec : {}).filter((t) => partElements(isObj(targets) ? targets[t] : null).length && !isSkinNoneType(t, spec));
+}
+
+/** Validation messages for a skin's `parts` block: unknown types, types without a style target or declared `none`, values that aren't maps. */
 export function partsErrors(parts, spec, targets = {}) {
   if (parts === undefined) return [];
   if (!isObj(parts)) return ['data.parts must be an object (asset type → style parts)'];
   const out = [];
   for (const [type, values] of Object.entries(parts)) {
     if (!isObj(spec) || !spec[type]) out.push(`data.parts.${type}: not a registered asset type`);
+    else if (isSkinNoneType(type, spec)) out.push(`data.parts.${type}: this type is out of a skin's reach (skin by: none), so a skin can't style its parts`);
     else if (!partElements(isObj(targets) ? targets[type] : null).length) out.push(`data.parts.${type}: this type has no style target, so a skin can't style its parts`);
     if (!isObj(values)) out.push(`data.parts.${type} must be an object (token → value)`);
   }

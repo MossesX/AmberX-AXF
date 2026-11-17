@@ -21,10 +21,10 @@
   "extrasCategory": "extras",
   "global": "global",
   "summary": {
-    "categories": 48,
-    "groups": 289,
-    "options": 1150,
-    "limits": 4,
+    "categories": 47,
+    "groups": 278,
+    "options": 1100,
+    "limits": 3,
     "sections": [
       "Themes",
       "Navigation",
@@ -261,142 +261,6 @@
           "min": 1,
           "max": 4,
           "default": 2
-        }
-      ]
-    },
-    {
-      "type": "toolbar",
-      "label": "Toolbar",
-      "section": "Navigation",
-      "by": "slot",
-      "groups": [
-        {
-          "id": "pick",
-          "kind": "pick",
-          "options": [
-            "asset"
-          ]
-        },
-        {
-          "id": "fields",
-          "kind": "fields",
-          "options": [
-            "variant",
-            "align",
-            "groups",
-            "window",
-            "density",
-            "surface",
-            "divider",
-            "search",
-            "widgets",
-            "collapsible",
-            "scope",
-            "overflow",
-            "slot"
-          ]
-        },
-        {
-          "id": "parts.text",
-          "kind": "parts",
-          "options": [
-            "fontSize",
-            "fontWeight",
-            "fontFamily",
-            "letterSpacing",
-            "textTransform",
-            "italic",
-            "lineHeight",
-            "textAlign"
-          ]
-        },
-        {
-          "id": "parts.colour",
-          "kind": "parts",
-          "options": [
-            "textColor",
-            "background",
-            "borderColor",
-            "opacity",
-            "glass"
-          ]
-        },
-        {
-          "id": "parts.layout",
-          "kind": "parts",
-          "options": [
-            "alignment",
-            "location",
-            "width",
-            "padding",
-            "itemPadding",
-            "gap"
-          ]
-        },
-        {
-          "id": "parts.shape",
-          "kind": "parts",
-          "options": [
-            "radius",
-            "borderWidth",
-            "shadow"
-          ]
-        },
-        {
-          "id": "parts.icons",
-          "kind": "parts",
-          "options": [
-            "iconSet",
-            "iconSize",
-            "iconColor",
-            "showIcons"
-          ]
-        },
-        {
-          "id": "parts.motion",
-          "kind": "parts",
-          "options": [
-            "animation",
-            "animationSpeed",
-            "easing"
-          ]
-        },
-        {
-          "id": "parts.hover",
-          "kind": "parts",
-          "options": [
-            "hover",
-            "hoverColor",
-            "cursor"
-          ]
-        },
-        {
-          "id": "parts.click",
-          "kind": "parts",
-          "options": [
-            "click",
-            "clickColor",
-            "focusRing"
-          ]
-        },
-        {
-          "id": "chrome",
-          "kind": "chrome",
-          "options": [
-            "hidden"
-          ]
-        }
-      ],
-      "limits": [
-        {
-          "id": "groups",
-          "label": "Toolbar groups the AI may build",
-          "measure": "count",
-          "field": "groups",
-          "root": "",
-          "min": 1,
-          "max": 8,
-          "default": 4
         }
       ]
     },

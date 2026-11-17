@@ -93,10 +93,8 @@ ok(cs.resolveSettingsChain(get, 'loop1')!.header === 'none' && cs.resolveSetting
 
 /* ---- picks + choices ---- */
 eq(f.picks, { unset: cs.chromeSettingsPick(undefined, 'tab-group', ['chrome-tab-group', copy.id]), custom: cs.chromeSettingsPick(copy.id, 'tab-group', ['chrome-tab-group', copy.id]), gone: cs.chromeSettingsPick('chrome-tab-group-old', 'tab-group', ['chrome-tab-group', copy.id]), wrongType: cs.chromeSettingsPick('chrome-toolbar', 'tab-group', ['chrome-tab-group', 'chrome-toolbar']), noDefault: cs.chromeSettingsPick(undefined, 'tab-group', [copy.id]) }, 'picks fixture');
-eq(cs.chromeSettingsPick(undefined, 'tab-group', ['chrome-tab-group', copy.id]), 'chrome-tab-group', 'the shared default is selected by default (Brett, addendum 3)');
-eq(cs.chromeSettingsPick(copy.id, 'tab-group', ['chrome-tab-group', copy.id]), copy.id, 'the custom copy only when picked');
 eq(f.choices, cs.chromeSettingsChoices('tab-group', [edited, defaults.toolbar!, copy, defaults['tab-group']!]), 'choices fixture');
-ok(cs.chromeSettingsChoices('tab-group', [edited, defaults.toolbar!, copy, defaults['tab-group']!])[0]!.id === 'chrome-tab-group', 'the picker offers the shared default first');
+
 
 /* ---- per-instance settings interface (build per-instance-settings-window-picker) ---- */
 const ids3 = ['chrome-tab-group', copy.id, edited.id, 'chrome-toolbar'];
@@ -110,12 +108,39 @@ const instancePicks = {
   none: cs.chromeInstanceSettingsPick(edited.id, undefined, 'tab-group', []),
 };
 eq(f.instancePicks, instancePicks, 'instance picks fixture');
-eq(instancePicks.unset, { id: 'chrome-tab-group', source: 'default' }, 'an instance with no pick gets the shared default (preselected)');
-eq(instancePicks.own, { id: edited.id, source: 'instance' }, "an instance's own pick wins over the kind's");
-eq(instancePicks.gone, { id: copy.id, source: 'type' }, 'a pick whose asset is gone (another skin) falls back to the kind');
+// locked (Nov 17 2026): every case resolves the Gizmo X AI Studio copy (ids3 ships it as copy.id), whatever was stored
+eq(instancePicks.unset, { id: copy.id, source: 'locked' }, 'an instance with no pick gets the locked interface');
+eq(instancePicks.own, { id: copy.id, source: 'locked' }, "an instance's own pick is read and ignored");
+eq(instancePicks.gone, { id: copy.id, source: 'locked' }, 'a pick whose asset is gone changes nothing either');
+eq(instancePicks.none, null, 'nothing ships: null');
 const savedInst = { 'axf.chrome.toolbar.app.interface': 'chrome-toolbar-x', 'axf.chrome.tab-group.settings.main.interface': 'chrome-tab-group-x', 'axf.chrome.tab-group.settings.main': { style: 'pills' }, 'axf.chrome.banner.app.interface': '', 'axf.chrome.clock.app.interface': 'x', 'axf.chrome.settings.toolbar': 'chrome-toolbar' };
 eq(f.instanceInterfaces, cs.chromeInstanceInterfaceList(savedInst), 'instance interfaces fixture');
 eq(cs.chromeOverrideList(savedInst).map((o) => o.instance), ['settings.main'], 'an .interface pick is never listed as asset edits');
+
+/* ---- the lock (Brett, Nov 17 2026: "Don't even allow editing or changing the fucking settings layout.") ---- */
+eq(f.locked, {
+  on: cs.CHROME_SETTINGS_LOCKED, app: cs.CHROME_SETTINGS_LOCKED_APP, source: cs.CHROME_SETTINGS_LOCKED_SOURCE,
+  id: { gizmo: cs.chromeSettingsLockedId('tab-group', ['chrome-tab-group', 'chrome-tab-group-axf-console', copy.id]), defaultOnly: cs.chromeSettingsLockedId('tab-group', ['chrome-tab-group', 'chrome-tab-group-molly']), none: cs.chromeSettingsLockedId('tab-group', ['chrome-toolbar']) },
+  pickIgnored: cs.chromeSettingsPick('chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-tab-group-axf-console']),
+  instanceIgnored: cs.chromeInstanceSettingsPick('chrome-tab-group-molly', 'chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-tab-group-axf-console']),
+  choices: cs.chromeSettingsChoices('tab-group', [edited, defaults.toolbar!, copy, defaults['tab-group']!]),
+  ignoredPicks: cs.chromeSettingsIgnoredPicks({ ...savedInst, 'axf.chrome.settings.custom.toolbar': { layout: 'list' }, 'axf.chrome.settings.custom.banner': {}, 'axf.chrome.settings.nav-menu': '' }),
+}, 'lock fixture');
+ok(cs.CHROME_SETTINGS_LOCKED === true && cs.CHROME_SETTINGS_LOCKED_APP === 'axf-console', 'every settings window is locked to the Gizmo X AI Studio (Dev Console) interface');
+eq(cs.chromeSettingsLockedId('tab-group', ['chrome-tab-group', 'chrome-tab-group-axf-console', copy.id]), 'chrome-tab-group-axf-console', 'the Gizmo X AI Studio copy when the app ships it');
+eq(cs.chromeSettingsLockedId('tab-group', ['chrome-tab-group', 'chrome-tab-group-molly']), 'chrome-tab-group', 'else the shared default it follows');
+eq(cs.chromeSettingsLockedId('tab-group', ['chrome-toolbar']), null, 'null when the app ships neither');
+eq(cs.chromeSettingsPick(undefined, 'tab-group', ['chrome-tab-group', copy.id]), 'chrome-tab-group-axf-console', 'no pick: the lock resolves the Gizmo X AI Studio copy');
+eq(cs.chromeSettingsPick('chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-tab-group-axf-console']), 'chrome-tab-group-axf-console', 'a stored per-app pick is read and ignored');
+eq(cs.chromeSettingsPick('chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly']), 'chrome-tab-group', 'and ignored where only the shared default ships');
+eq(cs.chromeInstanceSettingsPick('chrome-tab-group-molly', 'chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-tab-group-axf-console']), { id: 'chrome-tab-group-axf-console', source: 'locked' }, 'a stored per-instance pick is read and ignored; the source says locked');
+eq(cs.chromeInstanceSettingsPick(undefined, undefined, 'tab-group', []), null, 'nothing ships: null (the dialog says so)');
+const lockedChoices = cs.chromeSettingsChoices('tab-group', [edited, defaults.toolbar!, copy, defaults['tab-group']!]);
+eq(lockedChoices.map((c) => c.id), ['chrome-tab-group-axf-console'], 'the picker offers only the locked interface (nothing to switch to)');
+ok(lockedChoices[0]!.locked === true, 'and flags it locked');
+const ignored = cs.chromeSettingsIgnoredPicks({ ...savedInst, 'axf.chrome.settings.custom.toolbar': { layout: 'list' }, 'axf.chrome.settings.custom.banner': {}, 'axf.chrome.settings.nav-menu': '' });
+eq(ignored.map((p) => p.key), ['axf.chrome.settings.toolbar', 'axf.chrome.settings.custom.toolbar', 'axf.chrome.tab-group.settings.main.interface', 'axf.chrome.toolbar.app.interface'], 'the stored picks and patches the lock ignores are listed (empty ones are not); nothing is deleted');
+eq(ignored[1], { key: 'axf.chrome.settings.custom.toolbar', type: 'toolbar', kind: 'patch', value: { layout: 'list' } }, 'a layout patch is listed as ignored');
 // every toolbar and tab row is its own instance: library toolbar targets map to the kind, unnamed ones get a slug
 const prefixTargets = Object.fromEntries(['axf-ws-toolbar:main', 'axf-ws-toolbar:', 'axf-ws-toolbarx'].map((t) => [t, cs.chromeTypeOfTarget(t)]));
 const instanceSlugs = Object.fromEntries(['Tree search', 'ui-review.sections', '  MCP server!! ', ''].map((l) => [l || '(empty)', cs.chromeInstanceSlug(l)]));

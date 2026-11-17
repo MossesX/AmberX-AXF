@@ -56,5 +56,7 @@ export function coverageOf(type: string, spec: TypeSpecs, targets?: StyleTargets
 export function coverageTable(spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): CoverageRow[];
 export function uncoveredTypes(spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): CoverageRow[];
 export function coverageSummary(rows: readonly CoverageRow[]): CoverageSummary;
+export function skinNoneTypes(spec: TypeSpecs): string[];
+export function isSkinNoneType(type: string, spec: TypeSpecs): boolean;
 export function partsTypes(spec: TypeSpecs, targets?: StyleTargets): string[];
 export function partsErrors(parts: unknown, spec: TypeSpecs, targets?: StyleTargets): string[];

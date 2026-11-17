@@ -217,7 +217,9 @@ export function validateAsset(raw) {
 
 /* skin@1 — mirrors core/engines/skin.ts (check-skin.mts keeps the messages equal). */
 const SKIN_THEMES = { layoutTheme: 'layout', colorTheme: 'color-theme', styleTheme: 'style-theme' };
-const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface', 'card', 'job-type', 'toolbar'];
+/** Never-slots an older skin may still name: read and dropped, never an error (skin-rules SKIN_IGNORED). */
+const SKIN_IGNORED = ['toolbar'];
 export function skinErrors(d) {
   const isO = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
   const ID = /^[a-z0-9][a-z0-9-]*$/;
@@ -227,6 +229,7 @@ export function skinErrors(d) {
   if ('behaviorTheme' in d && (typeof d.behaviorTheme !== 'string' || !ID.test(d.behaviorTheme))) errors.push('data.behaviorTheme must be a behavior-theme asset id');
   if (!isO(d.assets)) errors.push('data.assets must be an object (slot → asset id)');
   else for (const [t, id] of Object.entries(d.assets)) {
+    if (SKIN_IGNORED.includes(t)) continue;
     if (SKIN_NEVER.includes(t) || Object.values(SKIN_THEMES).includes(t)) errors.push(`data.assets.${t}: a skin never sets ${t} here`);
     else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.assets.${t} must be an asset id`);
   }

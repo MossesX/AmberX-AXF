@@ -9,6 +9,8 @@
  *   - a declaration outside the kinds list, a `none` without a why, a `reference` without a via,
  *   - a declaration naming a `via` that is neither `iconPack` nor a registered type,
  *   - a style target naming a type that isn't registered (a stale target would hide a gap),
+ *   - a type declared `none` that the never-list (skin-rules SKIN_NEVER) or partsTypes would still let a skin reach
+ *     (toolbars, Nov 17 2026: every toolbar blank, one settings gear, edited per toolbar, never restyled by a skin),
  *   - the scope chain not ending in the hub default skin (plugin → ui → app → global → default), or a chrome-settings@1
  *     kind (what a skin's `chrome` block names) that a skin can't pick as a slot,
  * and prints the coverage table so a reviewer sees how each type is reached.
@@ -18,7 +20,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, skinScopeChain } from '../core/engines/skin-coverage.mjs';
+import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, skinNoneTypes, skinScopeChain } from '../core/engines/skin-coverage.mjs';
 import { SKIN_NEVER, normalizeSkinChrome, skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 
@@ -45,15 +47,26 @@ if (JSON.stringify(COVERAGE_KINDS) !== JSON.stringify(['slot', 'parts', 'referen
 // the scope chain is the contract too (build console-look-becomes-default-axhub-skin): the hub default skin is its root
 if (JSON.stringify(SKIN_SCOPE_KINDS) !== JSON.stringify(['default', 'global', 'app', 'ui', 'plugin'])) problems.push('SKIN_SCOPE_KINDS changed: update spec/APPEARANCE-SOURCE.md (resolve order) and the Skins screen');
 if (JSON.stringify(skinScopeChain({ app: 'x', ui: 'home', plugin: 'notes' })) !== JSON.stringify(['plugin:notes', 'ui:home', 'app', 'global', SKIN_SCOPE_DEFAULT])) problems.push('skinScopeChain must run plugin → ui → app → global → default');
-// a skin's chrome block names chrome-settings@1 kinds: every one must be a registered type a skin reaches as a slot (never an unreachable type)
+// a skin's chrome block names chrome-settings@1 kinds: every one must be a registered type a skin reaches as a slot, or one
+// the registry declares out of reach (`none`, e.g. toolbar since Nov 17 2026): then the skin sets nothing of it at all
 for (const kind of CHROME_TYPES) {
   const row = rows.find((r) => r.type === kind);
   if (!row) problems.push(`chrome kind "${kind}" (skin chrome block) is not a registered asset type`);
-  else if (row.by !== 'slot') problems.push(`chrome kind "${kind}" (skin chrome block) is covered by ${row.by}, not as a slot: a skin could set its settings but not pick its asset`);
+  else if (row.by !== 'slot' && row.by !== 'none') problems.push(`chrome kind "${kind}" (skin chrome block) is covered by ${row.by}, not as a slot: a skin could set its settings but not pick its asset`);
 }
-const chromeOk = Object.keys(normalizeSkinChrome({ toolbar: { interface: 'chrome-toolbar' }, nope: { interface: 'x' } }));
-if (JSON.stringify(chromeOk) !== JSON.stringify(['toolbar'])) problems.push('normalizeSkinChrome must keep chrome-settings@1 kinds only');
+// the registry's `none` declarations and the never-list are one contract: a slot-shaped type declared none must be in
+// SKIN_NEVER (or resolveLookSkin would still pick it), and a never-listed type must be declared (coverage says so above)
+for (const type of skinNoneTypes(spec)) {
+  const t = spec[type];
+  const widget = t.widget === true || t.attachable === true;
+  if (!widget && !SKIN_NEVER.includes(type)) problems.push(`${type}: declared skin by "none" but not in SKIN_NEVER (core/engines/skin-rules.mjs and cli/build-engine.mjs): a skin would still pick it as a slot`);
+  if (rows.find((r) => r.type === type)?.also.length) problems.push(`${type}: declared skin by "none" must not also take parts`);
+  if (partsTypes(spec, targets).includes(type)) problems.push(`${type}: declared skin by "none" but partsTypes still lists it`);
+}
+const chromeOk = Object.keys(normalizeSkinChrome({ 'tab-group': { interface: 'chrome-tab-group' }, toolbar: { interface: 'chrome-toolbar' }, nope: { interface: 'x' } }));
+if (JSON.stringify(chromeOk) !== JSON.stringify(['tab-group'])) problems.push('normalizeSkinChrome must keep chrome-settings@1 kinds only, and drop kinds a skin never sets (toolbar)');
 if (!skinChromeErrors({ nope: {} }).length) problems.push('skinChromeErrors must refuse a kind outside chrome-settings@1');
+if (skinChromeErrors({ toolbar: { interface: 'Bad Id' } }).length) problems.push('skinChromeErrors must read and ignore toolbar chrome (an older skin keeps validating; the kind is dropped, never applied)');
 
 const summary = coverageSummary(rows);
 if (json) {

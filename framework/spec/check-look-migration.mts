@@ -64,7 +64,7 @@ for (const [name, c] of Object.entries(fx.fold as Record<string, { before: AppLo
 }
 eq(fx.fold.skinOn.reason, 'skin-on', 'a skin in force: picks under it fold');
 eq(fx.fold.skinOn.overrides, { 'behavior-theme': 'brisk' }, 'a section the skin leaves alone becomes an override');
-eq(fx.fold.skinOn.look.skin.overrides, { toolbar: 'labeled-actions', 'behavior-theme': 'brisk' }, 'existing overrides are kept');
+eq(fx.fold.skinOn.look.skin.overrides, { dialog: 'glass-air', 'behavior-theme': 'brisk' }, 'existing overrides are kept (a toolbar override would be dropped: skins never reach toolbars)');
 eq(fx.fold.skinOn.look.own.slots, { 'style-package': 'amber-signature' }, 'a style package is not folded yet (skin@2 makes it a skin)');
 ok(!FOLDED_PICK_TYPES.includes('style-package'), 'style-package is not a folded type on this contract version');
 // the retired precedence rule is written into the document once
@@ -79,7 +79,7 @@ eq(fx.fold.precedenceOwn.look.legacy.settings, { [DESIGN_OVERRIDES_SETTING]: { '
 eq(fx.fold.precedenceOwn.look.own.settings, {}, 'precedence in own: own settings cleaned');
 eq(fx.fold.package.reason, 'package', 'the applied package becomes the skin');
 eq(fx.fold.package.look.skin, { use: true, inherit: false, id: 'hub-default', overrides: {}, colorTheme: 'coral-studio' }, 'the colour pick over the package is the colour theme inside the skin, not an override');
-eq(fx.fold.package.look.own.slots, {}, 'the package\'s slots are the skin\'s now');
+eq(fx.fold.package.look.own.slots, { toolbar: 'standard-icons' }, 'the package\'s slots are the skin\'s now, except the toolbar: a skin never reaches toolbars, so that pick stays the app\'s own');
 eq(fx.fold.designPick.look.skin.id, 'aurora', 'the local note picks the skin');
 eq(fx.fold.match.look.skin, { use: true, inherit: false, id: 'aurora', overrides: {} }, 'an exact match: the skin, no overrides');
 eq(fx.fold.noSkin.reason, 'no-skin', 'no skin draws it: kept');

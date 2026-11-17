@@ -38,6 +38,7 @@ export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from 
 export * from './engines/toolbar-rules.mjs';
 export * from './engines/toolbar-migrate.mjs';
 export * from './engines/toolbar-actions';
+export * from './engines/toolbar-override';
 export * from './engines/help';
 export * from './engines/appearance';
 export * from './engines/banner';

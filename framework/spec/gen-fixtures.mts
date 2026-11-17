@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinNoneTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
@@ -707,6 +707,16 @@ write('spacing.json', {
       none: cs.chromeInstanceSettingsPick(edited.id, undefined, 'tab-group', []),
     },
     instanceInterfaces: cs.chromeInstanceInterfaceList(savedInst),
+    // the lock (Nov 17 2026, build settings-fix-part-2-blank-toolbars): every window is the Gizmo X AI Studio interface
+    // (chrome-<type>-axf-console, else the shared default); stored picks and the layout patch are read and ignored
+    locked: {
+      on: cs.CHROME_SETTINGS_LOCKED, app: cs.CHROME_SETTINGS_LOCKED_APP, source: cs.CHROME_SETTINGS_LOCKED_SOURCE,
+      id: { gizmo: cs.chromeSettingsLockedId('tab-group', ['chrome-tab-group', 'chrome-tab-group-axf-console', custom.id]), defaultOnly: cs.chromeSettingsLockedId('tab-group', ['chrome-tab-group', 'chrome-tab-group-molly']), none: cs.chromeSettingsLockedId('tab-group', ['chrome-toolbar']) },
+      pickIgnored: cs.chromeSettingsPick('chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-tab-group-axf-console']),
+      instanceIgnored: cs.chromeInstanceSettingsPick('chrome-tab-group-molly', 'chrome-tab-group-molly', 'tab-group', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-tab-group-axf-console']),
+      choices: cs.chromeSettingsChoices('tab-group', [edited, defaults['chrome-toolbar']!, custom, defaults['chrome-tab-group']!]),
+      ignoredPicks: cs.chromeSettingsIgnoredPicks({ ...savedInst, 'axf.chrome.settings.custom.toolbar': { layout: 'list' }, 'axf.chrome.settings.custom.banner': {}, 'axf.chrome.settings.nav-menu': '' }),
+    },
     prefixTargets: Object.fromEntries(['axf-ws-toolbar:main', 'axf-ws-toolbar:', 'axf-ws-toolbarx'].map((t) => [t, cs.chromeTypeOfTarget(t)])),
     instanceSlugs: Object.fromEntries(['Tree search', 'ui-review.sections', '  MCP server!! ', ''].map((l) => [l || '(empty)', cs.chromeInstanceSlug(l)])),
     overrides: {
@@ -2062,11 +2072,11 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     },
     // skin-coverage@1 (build skins-asset-types): every type covered, scopes plugin → ui → app → global, parts, icon pack
     coverage: (() => {
-      const types = { button: { label: 'Button', group: 'Controls' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, badge: { label: 'Badge', group: 'Chrome', attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } } };
+      const types = { button: { label: 'Button', group: 'Controls' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, badge: { label: 'Badge', group: 'Chrome', attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } }, toolbar: { label: 'Toolbar', group: 'Navigation', skin: { by: 'none', why: 'blank, one settings gear, edited per toolbar' } } };
       const targets = { button: { root: '.fx-btn' }, label: { root: '.fx-widget-label' }, toolbar: { root: '.fx-toolbar', item: '.fx-toolbar .fx-btn' } };
-      const never = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+      const never = ['uac-policy', 'help', 'skin', 'design-package', 'interface', 'toolbar'];
       const table = coverageTable(types as never, targets, never);
-      return { table, uncovered: uncoveredTypes(types as never, targets, never).map((r) => r.type), summary: coverageSummary(table), partsTypes: partsTypes(types as never, targets), elements: { plain: partElements(targets.button), items: partElements(targets.toolbar), none: partElements(undefined) }, partsErrors: { good: partsErrors({ button: { radius: 'pill' } }, types as never, targets), bad: partsErrors({ nope: {}, badge: { x: 1 }, label: 7 }, types as never, targets), notObject: partsErrors(3, types as never, targets) }, declarationErrors: declarationErrors('mystery', types.mystery).concat(declarationErrors('hush', types.hush)) };
+      return { table, uncovered: uncoveredTypes(types as never, targets, never).map((r) => r.type), summary: coverageSummary(table), partsTypes: partsTypes(types as never, targets), noneTypes: skinNoneTypes(types as never), elements: { plain: partElements(targets.button), items: partElements(targets.toolbar), none: partElements(undefined) }, partsErrors: { good: partsErrors({ button: { radius: 'pill' } }, types as never, targets), bad: partsErrors({ nope: {}, badge: { x: 1 }, label: 7, toolbar: { radius: 'pill' } }, types as never, targets), notObject: partsErrors(3, types as never, targets) }, declarationErrors: declarationErrors('mystery', types.mystery).concat(declarationErrors('hush', types.hush)) };
     })(),
     scopes: (() => {
       const skinned = normalizeSkin({ ...skin, iconPack: 'lucide-sharp', parts: { button: { radius: 'pill', fontWeight: '600' }, label: { textColor: 'accent' }, 'uac-policy': { radius: 'pill' }, toolbar: { bogus: 1 } } });
@@ -2255,7 +2265,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const cases: Record<string, { look: AppLookDocument; ctx?: Record<string, unknown> }> = {
     nothing: { look: base },
     // a skin in force: the picks under it were inert, except a section the skin leaves alone (behaviour) which becomes an override; a style package is not folded yet
-    skinOn: { look: { ...own({ 'color-theme': 'coral-studio', 'behavior-theme': 'brisk', 'style-package': 'amber-signature' }), skin: { use: true, inherit: false, id: 'windows', overrides: { toolbar: 'labeled-actions' } } } },
+    skinOn: { look: { ...own({ 'color-theme': 'coral-studio', 'behavior-theme': 'brisk', 'style-package': 'amber-signature' }), skin: { use: true, inherit: false, id: 'windows', overrides: { dialog: 'glass-air' } } } },
     // the old picker applied a package (its themes and extras landed in own), then a colour theme was picked over it
     package: { look: own({ 'design-package': 'hub-default', layout: 'classic-ide', 'color-theme': 'coral-studio', 'style-theme': 'hub', 'behavior-theme': 'standard', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, { spacing: 'tight', hidden: { toolbar: true } }) },
     // the local note (axf.appearance.design) names the package; the document holds one colour pick

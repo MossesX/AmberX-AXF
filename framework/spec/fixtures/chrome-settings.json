@@ -902,56 +902,45 @@
     "missing": null
   },
   "picks": {
-    "unset": "chrome-tab-group",
+    "unset": "chrome-tab-group-axf-console",
     "custom": "chrome-tab-group-axf-console",
-    "gone": "chrome-tab-group",
+    "gone": "chrome-tab-group-axf-console",
     "wrongType": "chrome-tab-group",
-    "noDefault": null
+    "noDefault": "chrome-tab-group-axf-console"
   },
   "choices": [
-    {
-      "id": "chrome-tab-group",
-      "name": "Tab group settings (default)",
-      "custom": false,
-      "extends": ""
-    },
     {
       "id": "chrome-tab-group-axf-console",
       "name": "Tab group settings (Dev Console)",
       "custom": true,
-      "extends": "chrome-tab-group"
-    },
-    {
-      "id": "chrome-tab-group-edited",
-      "name": "Tab group settings (Dev Console)",
-      "custom": true,
-      "extends": "chrome-tab-group"
+      "extends": "chrome-tab-group",
+      "locked": true
     }
   ],
   "instancePicks": {
     "unset": {
-      "id": "chrome-tab-group",
-      "source": "default"
+      "id": "chrome-tab-group-axf-console",
+      "source": "locked"
     },
     "kind": {
       "id": "chrome-tab-group-axf-console",
-      "source": "type"
+      "source": "locked"
     },
     "own": {
-      "id": "chrome-tab-group-edited",
-      "source": "instance"
+      "id": "chrome-tab-group-axf-console",
+      "source": "locked"
     },
     "ownDefault": {
-      "id": "chrome-tab-group",
-      "source": "instance"
+      "id": "chrome-tab-group-axf-console",
+      "source": "locked"
     },
     "gone": {
       "id": "chrome-tab-group-axf-console",
-      "source": "type"
+      "source": "locked"
     },
     "wrongType": {
-      "id": "chrome-tab-group",
-      "source": "default"
+      "id": "chrome-tab-group-axf-console",
+      "source": "locked"
     },
     "none": null
   },
@@ -967,6 +956,60 @@
       "interface": "chrome-toolbar-x"
     }
   ],
+  "locked": {
+    "on": true,
+    "app": "axf-console",
+    "source": "locked",
+    "id": {
+      "gizmo": "chrome-tab-group-axf-console",
+      "defaultOnly": "chrome-tab-group",
+      "none": null
+    },
+    "pickIgnored": "chrome-tab-group-axf-console",
+    "instanceIgnored": {
+      "id": "chrome-tab-group-axf-console",
+      "source": "locked"
+    },
+    "choices": [
+      {
+        "id": "chrome-tab-group-axf-console",
+        "name": "Tab group settings (Dev Console)",
+        "custom": true,
+        "extends": "chrome-tab-group",
+        "locked": true
+      }
+    ],
+    "ignoredPicks": [
+      {
+        "key": "axf.chrome.settings.toolbar",
+        "type": "toolbar",
+        "kind": "pick",
+        "value": "chrome-toolbar"
+      },
+      {
+        "key": "axf.chrome.settings.custom.toolbar",
+        "type": "toolbar",
+        "kind": "patch",
+        "value": {
+          "layout": "list"
+        }
+      },
+      {
+        "key": "axf.chrome.tab-group.settings.main.interface",
+        "type": "tab-group",
+        "instance": "settings.main",
+        "kind": "instance",
+        "value": "chrome-tab-group-x"
+      },
+      {
+        "key": "axf.chrome.toolbar.app.interface",
+        "type": "toolbar",
+        "instance": "app",
+        "kind": "instance",
+        "value": "chrome-toolbar-x"
+      }
+    ]
+  },
   "prefixTargets": {
     "axf-ws-toolbar:main": "toolbar",
     "axf-ws-toolbar:": null,
