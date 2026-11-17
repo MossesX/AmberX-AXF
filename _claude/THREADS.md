@@ -819,12 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:18 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued, note (all) · brett
-- 2026-11-16 23:18 UTC · `orchestrator-table-columns-model-queue-assigned` → built (all) · builds-live
-- 2026-11-16 23:19 UTC · `own-look-per-grid-and-tab-group` → queued, note (all) · pipeline
-- 2026-11-16 23:19 UTC · `icon-packs-with-drag-drop-pack-designer` s2 done (all) · orchestrator
-- 2026-11-16 23:20 UTC · `orchestrator-stale-row-watchdog-vps` → queued, note (all) · brett
-- 2026-11-16 23:20 UTC · `amberx-open-url-must-open-page-even-when` s3 done (all) · orchestrator
 - 2026-11-16 23:20 UTC · `grid-token-set-colours-hover-selected` → queued, note (all) · brett
 - 2026-11-16 23:20 UTC · `grids-get-their-own-full-token-set` → queued, note (all) · brett
 - 2026-11-16 23:20 UTC · `skin-animations-animated-colour-swatches` → queued, note (all) · brett
@@ -1219,6 +1213,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:36 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s5 done (all) · orchestrator
 - 2026-11-17 03:36 UTC · `server-auto-lander-fixes-lands` s6 done (all) · orchestrator
 - 2026-11-17 03:37 UTC · `console-app-part-2-native-floating` note (all) · cli
+- 2026-11-17 03:37 UTC · `land-project-create-mcp-resolve-clash` note (all) · cli
+- 2026-11-17 03:37 UTC · `skin-animations-animated-colour-swatches` note (all) · cli
+- 2026-11-17 03:38 UTC · `grid-token-set-colours-hover-selected` note (all) · cli
+- 2026-11-17 03:38 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · cli
+- 2026-11-17 03:38 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · cli
+- 2026-11-17 03:38 UTC · `gate-auto-lander-tab-and-controls` note (all) · cli
 
 ## Token passes (log)
 

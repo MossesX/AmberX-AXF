@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T03:37:52.178Z",
+ "updatedAt": "2026-11-17T03:38:13.816Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132313,7 +132313,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-17T03:32:07.739Z",
+   "updatedAt": "2026-11-17T03:37:51.811Z",
    "builtAt": "",
    "notes": [
     {
@@ -132343,6 +132343,10 @@
     {
      "text": "s1 done (Fable): PR #579's head 81fc47239 (branch deleted, PR closed unmerged) is merged into claude/land-project-create-mcp-resolve-clash on top of main, commit 3d1979e38, pushed. status.json: both sides. PORTING.md: main's rows plus the branch's Projects row. Main's framework/cli/project-seed.mjs (test-sandbox CLI) kept; the branch's seed writer is now framework/cli/project-seed-write.mjs (projects.mjs imports it). tracker.json and plan.json: main's snapshots kept (hub data already has cx.buildengine.projectcreate). Checks green: check-project-create, check-projects, test_mcp_projects, test_projects, check-theme, check-controls, tracker --check, console tsc. Note: hub status.json and the repo copy have drifted both ways (9 hub-only entries, 2 repo-only, 3 differ), pre-existing, not touched.",
      "at": "2026-11-16T23:51:59.685Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:37:51.811Z"
     }
    ],
    "approvals": [],
@@ -133771,7 +133775,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-17T03:32:13.974Z",
+   "updatedAt": "2026-11-17T03:37:54.442Z",
    "builtAt": "",
    "notes": [
     {
@@ -133801,6 +133805,10 @@
     {
      "text": "Headless run axf-skin-animations-animated-colour-swatches--rhonda: brief only · start 17.7K tokens ($0.06) · cost $0.74 · 22 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:27:11.576Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:37:54.442Z"
     }
    ],
    "approvals": [],
@@ -134886,7 +134894,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:29.839Z",
-   "updatedAt": "2026-11-17T03:32:22.119Z",
+   "updatedAt": "2026-11-17T03:38:00.231Z",
    "builtAt": "",
    "notes": [
     {
@@ -134912,6 +134920,10 @@
     {
      "text": "s1: the grid token family was already on main (component-tokens@1, 32 tokens, style theme + tokens.style + per-instance Restore previous / Restore from axHub, CI check, Token Control). This step landed the unmerged rest from the archived branch: filter chip tokens, focusedBg, disabledText (39 grid tokens now). Duplicate build grids-get-their-own-full-token-set marked complete. Report in _claude/builds/reports/.",
      "at": "2026-11-17T00:08:55.976Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:00.231Z"
     }
    ],
    "approvals": [],
@@ -142863,7 +142875,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T03:32:28.943Z",
+   "updatedAt": "2026-11-17T03:38:03.346Z",
    "builtAt": "",
    "notes": [
     {
@@ -142889,6 +142901,10 @@
     {
      "text": "Headless run axf-orchestrator-stale-row-watchdog-vps--paulie: brief only · start 17.3K tokens ($0.12) · cost $4.09 · 33 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:44:34.661Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:03.346Z"
     }
    ],
    "approvals": [],
@@ -165437,7 +165453,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-17T03:32:35.960Z",
+   "updatedAt": "2026-11-17T03:38:05.627Z",
    "builtAt": "",
    "notes": [
     {
@@ -165471,6 +165487,10 @@
     {
      "text": "Reconciler: branch claude/icon-packs-with-drag-drop-pack-designer (no PR yet)",
      "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:05.627Z"
     }
    ],
    "approvals": [],
@@ -168551,7 +168571,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:05:48.290Z",
-   "updatedAt": "2026-11-17T03:32:41.818Z",
+   "updatedAt": "2026-11-17T03:38:08.016Z",
    "builtAt": "",
    "notes": [
     {
@@ -168573,6 +168593,10 @@
     {
      "text": "Headless run axf-gate-auto-lander-tab-and-controls--paulie: brief only · start 18.5K tokens ($0.13) · cost $3.59 · 36 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:24:40.320Z"
+    },
+    {
+     "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-17T03:38:08.016Z"
     }
    ],
    "approvals": [],
