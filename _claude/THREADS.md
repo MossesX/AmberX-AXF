@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:28 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → landing, note (all) · foreign-write
-- 2026-11-17 22:28 UTC · `auto-recover-stuck-builds` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `ui-review-gate-switch-default-off` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `fix-toolbar-settings-doing-nothing` → complete, note (all) · foreign-write
 - 2026-11-17 22:28 UTC · `merge-all-ready-buttons-server-side` → complete, note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:53 UTC · `move-everything-axhub-web-console` s1 done (all) · foreign-write
 - 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:53 UTC · `flagship-professional-skin-covering-2` s16 done (all) · orchestrator
+- 2026-11-17 22:53 UTC · `flagship-professional-skin-covering-2` s16 done (all) · foreign-write
+- 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
 
 ## Token passes (log)
 
