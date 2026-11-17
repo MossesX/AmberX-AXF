@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:39:37.985Z",
+ "updatedAt": "2026-11-17T21:40:10.500Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175248,7 +175248,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:38:52.652Z",
+   "updatedAt": "2026-11-17T21:39:31.199Z",
    "builtAt": "",
    "notes": [
     {
@@ -175438,6 +175438,10 @@
     {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T21:38:51.643Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T21:39:31.199Z"
     }
    ],
    "approvals": [
@@ -186542,7 +186546,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T21:39:19.294Z",
+   "updatedAt": "2026-11-17T21:39:27.056Z",
    "builtAt": "",
    "notes": [
     {
@@ -186586,12 +186590,16 @@
      "at": "2026-11-17T21:38:41.843Z"
     },
     {
+     "text": "Brett picked the one to keep: the toolbar settings interface named 'Gizmo X AI Studio'. Make that THE default (and only) toolbar settings interface; delete the others.",
+     "at": "2026-11-17T21:39:05.285Z"
+    },
+    {
      "text": "Brett: in the one shared settings interface, every control that edits the settings interface itself (its own look/layout) is greyed out and locked by default, behind an 'Edit this interface' switch/checkbox. Flip it on to enable them; off greys them again. Controls for the toolbar/banner it was opened from stay live.",
      "at": "2026-11-17T21:38:47.165Z"
     },
     {
-     "text": "Brett picked the one to keep: the toolbar settings interface named 'Gizmo X AI Studio'. Make that THE default (and only) toolbar settings interface; delete the others.",
-     "at": "2026-11-17T21:39:05.285Z"
+     "text": "Brett: add many more toolbar options to the Gizmo X AI Studio toolbar settings (for the toolbar itself, these stay live): button size, icon size, icon-only / icon+text / text, label position, spacing and padding, height, alignment, grouping and separators, overflow menu behaviour, max visible buttons, button order (drag), show/hide each button, add buttons from the page's actions, colours/background/border/radius/shadow, transparency, hover/press effects, animations, tooltips, sticky, position (top/bottom/left/right/floating), vertical mode, auto-hide, density, tap-to-confirm, keyboard shortcuts per button, per-button colour. Pick whatever else a pro app offers.",
+     "at": "2026-11-17T21:39:27.056Z"
     }
    ],
    "approvals": [],
