@@ -1267,6 +1267,18 @@
    "from": "",
    "addenda": []
   },
+  "auto-lander-status-tab-rest-mcp-settings": {
+   "said": "Put that up into multiple slots.",
+   "at": "2026-11-17T00:04:44.153Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-recover-stuck-builds": {
    "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, FYI to phone per fix.",
    "at": "2026-11-13T11:45:11.111Z",
@@ -8617,6 +8629,18 @@
   "standing-rule-in-every-brief-fix-problems-yourse": {
    "said": "From now on, you do whatever in your ability to fix any problem. I don't want to be bothered... just notify me of doing it, not for permission or veto. ... Every single build, put that in the brief... put it where you need to so that anything that's doing anything will be able to follow those rules.",
    "at": "2026-11-09T23:45:25.391Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "stop-auto-lander-committing-tracking": {
+   "said": "Put that up into multiple slots.",
+   "at": "2026-11-17T00:04:33.299Z",
    "source": "",
    "session": "",
    "link": "",
