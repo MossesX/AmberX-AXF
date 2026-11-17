@@ -30,7 +30,8 @@
       "nav-menu": "flagship",
       "nav-style": "flagship",
       "tab-group": "flagship",
-      "toolbar": "flagship"
+      "toolbar": "flagship",
+      "banner": "flagship"
     },
     "preview": {
       "caption": "Blue-black and amber, compact, quiet motion: one product across console, axHub and AmberX."
@@ -63,6 +64,133 @@
       },
       "collapse": {
         "toolbar": true
+      }
+    },
+    "parts": {
+      "banner": {
+        "padding": "sm",
+        "gap": "sm",
+        "shadow": "sm",
+        "alignment": "spread"
+      },
+      "toolbar": {
+        "gap": "xs",
+        "itemPadding": "sm",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft"
+      },
+      "tab-group": {
+        "radius": "pill",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft"
+      },
+      "nav-menu": {
+        "itemPadding": "sm",
+        "radius": "md",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft"
+      },
+      "app-menu": {
+        "itemPadding": "sm",
+        "hover": "highlight",
+        "animation": "fade",
+        "animationSpeed": "fast",
+        "easing": "ease-out"
+      },
+      "context-menu": {
+        "radius": "md",
+        "shadow": "lg",
+        "itemPadding": "sm",
+        "hover": "highlight",
+        "animation": "scale",
+        "animationSpeed": "fast",
+        "easing": "ease-out"
+      },
+      "dialog": {
+        "radius": "lg",
+        "shadow": "lg",
+        "animation": "scale",
+        "animationSpeed": "normal",
+        "easing": "ease-out"
+      },
+      "popup": {
+        "radius": "md",
+        "shadow": "md",
+        "animation": "fade",
+        "animationSpeed": "fast",
+        "easing": "ease-out"
+      },
+      "button": {
+        "radius": "md",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft",
+        "fontWeight": "500"
+      },
+      "action-button": {
+        "radius": "md",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft",
+        "fontWeight": "600"
+      },
+      "search-bar": {
+        "radius": "md",
+        "background": "surface2",
+        "borderColor": "border",
+        "focusRing": "soft"
+      },
+      "clock": {
+        "fontFamily": "mono",
+        "textColor": "muted",
+        "fontWeight": "500"
+      },
+      "logo": {
+        "fontWeight": "700",
+        "letterSpacing": "tight"
+      },
+      "label": {
+        "fontWeight": "500",
+        "textColor": "muted"
+      },
+      "status": {
+        "radius": "pill",
+        "fontWeight": "500",
+        "padding": "xs"
+      },
+      "counter": {
+        "radius": "pill",
+        "fontWeight": "600",
+        "fontFamily": "mono"
+      },
+      "badge": {
+        "radius": "pill",
+        "fontWeight": "600"
+      },
+      "progress": {
+        "radius": "pill"
+      },
+      "avatar": {
+        "radius": "pill",
+        "hover": "glow"
+      },
+      "link": {
+        "textColor": "accent",
+        "hover": "underline"
+      },
+      "theme-switch": {
+        "radius": "pill",
+        "hover": "tint",
+        "click": "press"
+      },
+      "spacer": {
+        "padding": "none"
+      },
+      "divider": {
+        "borderColor": "border"
       }
     }
   }
