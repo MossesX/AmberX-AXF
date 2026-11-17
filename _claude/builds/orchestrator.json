@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:26:14.093Z",
+ "updatedAt": "2026-11-17T00:26:43.740Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133586,7 +133586,7 @@
    "title": "Skin animations: animated colour swatches, skin-switch sweep, swatch picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -133594,7 +133594,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-17T00:26:10.843Z",
+   "updatedAt": "2026-11-17T00:26:37.868Z",
    "builtAt": "",
    "notes": [
     {
@@ -133650,8 +133650,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:26:15.536Z",
      "note": "",
      "uid": "st-mwfe7phh09keem",
      "createdAt": "2026-11-13T19:51:51.749Z"
@@ -133669,8 +133669,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:26:20.197Z",
      "note": "",
      "uid": "st-mwfe7phh0abuec",
      "createdAt": "2026-11-13T19:51:51.749Z"
@@ -133688,8 +133688,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:26:25.552Z",
      "note": "",
      "uid": "st-mwfe7phh0bo42n",
      "createdAt": "2026-11-13T19:51:51.749Z"
@@ -133745,8 +133745,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:26:37.868Z",
      "note": "",
      "uid": "st-mwfe7phh0e7xkz",
      "createdAt": "2026-11-13T19:51:51.749Z"
