@@ -819,12 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 23:08 UTC · `always-fill-every-slot-when-slots-are` s25 done, → built (all) · orchestrator
-- 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` → running, note (all) · pipeline
-- 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
-- 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
-- 2026-11-16 23:14 UTC · `always-fill-every-slot-when-slots-are` → running, note (all) · pipeline
-- 2026-11-16 23:14 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
 - 2026-11-16 23:14 UTC · `one-source-truth-console-shows-only-what` → archived, note (all) · cli
 - 2026-11-16 23:14 UTC · `attach-widgets-to-any-toolbar-banner` s4 done (all) · orchestrator
 - 2026-11-16 23:14 UTC · `orchestrator-table-columns-model-queue-assigned` → archived, note (all) · cli
@@ -1219,6 +1213,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 02:22 UTC · `get-main-green-unblock-lander-land-axf` s14 done (all) · orchestrator
 - 2026-11-17 03:21 UTC · `get-main-green-unblock-lander-land-axf` s16 done (all) · orchestrator
 - 2026-11-17 03:30 UTC · `server-auto-lander-fixes-lands` → queued (all) · mcp
+- 2026-11-17 03:30 UTC · `server-rule-done-means-merged-working` → queued (all) · mcp
+- 2026-11-17 03:30 UTC · `orchestrator-runs-long-builds-across` → queued (all) · mcp
+- 2026-11-17 03:30 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · mcp
+- 2026-11-17 03:31 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · foreign-write
+- 2026-11-17 03:31 UTC · `orchestrator-runs-long-builds-across` → queued (all) · foreign-write
+- 2026-11-17 03:31 UTC · `server-rule-done-means-merged-working` → queued (all) · foreign-write
 
 ## Token passes (log)
 

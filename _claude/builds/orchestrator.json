@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T03:30:32.343Z",
+ "updatedAt": "2026-11-17T03:31:23.840Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123802,7 +123802,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -123810,7 +123810,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-16T23:50:38.880Z",
+   "updatedAt": "2026-11-17T03:30:45.664Z",
    "builtAt": "",
    "notes": [
     {
@@ -167178,7 +167178,7 @@
    "title": "Orchestrator runs long builds across multiple slots",
    "category": "",
    "detail": "Any build estimated over 30 minutes is split into independent step groups that run in parallel in separate slots (separate sessions on their own worktrees or sub-branches), then merged back onto the build's branch in order before landing. The splitter marks which steps are independent (no shared files) vs must run in sequence; dependent steps wait for their group. Uses free slots on any usable account. Shows per-group progress in the orchestrator. Server-gate rule. Same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -167186,7 +167186,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-17T00:11:45.454Z",
+   "updatedAt": "2026-11-17T03:30:38.391Z",
    "builtAt": "",
    "notes": [
     {
@@ -168846,7 +168846,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -168854,7 +168854,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T00:47:55.547Z",
+   "updatedAt": "2026-11-17T03:30:33.807Z",
    "builtAt": "",
    "notes": [
     {
