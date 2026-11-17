@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7260,
- "updatedAt": "2026-11-17T03:35:07.275Z",
+ "rev": 7261,
+ "updatedAt": "2026-11-17T03:35:31.474Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242717,7 +242717,7 @@
    "title": "Get main green, unblock the lander, land axf-data and Postgres",
    "category": "",
    "detail": "TOP PRIORITY, ahead of everything. The auto-lander is ON but has landed nothing in 6 hours: about 20 builds are blocked because CI is red, nearly all failing the same checks (Web Dev Console (React/TS) + Python API, Build engine sweep (Node), plus some AmberX APK / Gradle). That points to main itself being broken, likely from the disk-full night. 1) Find and fix what's red on main (gh run list --branch main, --log-failed) until main is green. 2) Re-sync the 4 branches whose push failed because local and GitHub differ (server-gate-one-session-per-build-no, one-source-truth-console-shows-only-what, console-axhub-retry-failed-calls, demo-video-series-three-minute-browser); drop the stray merge-main-land-one-source-truth-console. 3) auto-lander-controls-in-the-gate-plugin: commit or drop its uncommitted worktree changes. 4) Then land, one at a time, data-container-axf-data-holds-all (bring the axf-data container up), then axf-data-postgres-real-tables-own, and run and verify the Postgres migration. 5) Confirm the auto-lander is landing the rest one at a time. Log each fix and send Brett FYI notifications.",
-   "status": "running",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -242726,7 +242726,7 @@
    "mergedAt": "2026-11-16T23:54:53Z",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-17T03:21:52.764Z",
+   "updatedAt": "2026-11-17T03:34:34.107Z",
    "builtAt": "",
    "notes": [
     {
@@ -242812,6 +242812,10 @@
     {
      "text": "Shipped manifest sm-get-main-green-unblock-lander-land-axf rev 1 sent to Shipped features (orchestrator): landed ec2a35d78, 240 file(s), 0 test line(s), 3 open.",
      "at": "2026-11-17T00:03:13Z"
+    },
+    {
+     "text": "Absorbed into server-auto-lander-fixes-lands (Nov 17 2026): Brett's words are addenda there; open steps folded in as its s24/s25. Nothing left to build here.",
+     "at": "2026-11-17T03:34:27.775Z"
     }
    ],
    "approvals": [],
@@ -243361,7 +243365,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -257993,7 +257997,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T03:33:55.656Z",
+   "updatedAt": "2026-11-17T03:35:14.008Z",
    "builtAt": "",
    "notes": [
     {
@@ -258035,9 +258039,22 @@
     {
      "text": "Claude account: hulu0241 (axf-server-auto-lander-fixes-lands--joey, shared account login)",
      "at": "2026-11-17T03:31:39.869Z"
+    },
+    {
+     "text": "Absorbed fix-red-ci-blocked-builds-they-land (all 24 steps done, archived) and get-main-green-unblock-lander-land-axf (PR #723 merged; open s17 Postgres migration + s19 wrap-up folded in as s24/s25). Brett's words from both are addenda.",
+     "at": "2026-11-17T03:34:38.594Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:35:14.008Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "We need the auto lander to bang shit out on its own. It needs to automatically fix it. We need a server rule to do that. Make the server do it automatically without the console.",
@@ -258221,12 +258238,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:35:14.008Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:24:34.880Z",
-     "updatedAt": "2026-11-16T23:24:34.880Z"
+     "updatedAt": "2026-11-17T03:35:14.854Z"
     },
     {
      "id": "s6",
@@ -258739,7 +258756,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
