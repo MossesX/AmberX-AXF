@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:33 UTC · `orchestrator-runs-long-builds-across` → running, note (all) · orchestrator
 - 2026-11-17 03:33 UTC · `server-rule-done-means-merged-working` → running, note (all) · pipeline
 - 2026-11-17 03:33 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
 - 2026-11-17 03:33 UTC · `server-auto-lander-fixes-lands` → running (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 18:04 UTC · `every-grid-select-highlight-all-rows` note (all) · mcp
 - 2026-11-17 18:05 UTC · `every-grid-select-highlight-all-rows` note (all) · mcp
 - 2026-11-17 18:05 UTC · `every-grid-select-highlight-all-rows` note (all) · orchestrator
+- 2026-11-17 18:08 UTC · `build-grids-full-column-set-date-time` added (0 steps) (all) · console
 
 ## Token passes (log)
 

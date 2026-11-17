@@ -1805,6 +1805,18 @@
    "from": "",
    "addenda": []
   },
+  "build-grids-full-column-set-date-time": {
+   "said": "All the visible columns right now in all grids are set as the default view. Every table grid in the orchestrator or the lander or anywhere that has build information or notes or tests, they all have to have a column called date and time, model used, account used, how many steps, steps out of how many are complete, a whole bunch of columns. Add a column so everyone is numbered one, two, three all the way down, and they keep that number even if you move them. If I say take the highlighted ones and put them at the top, it's only for that session; they won't stay there after the console's closed. Keep the ones visible now as default, with the rest hidden. Hide or unhide all columns from the context menu: right click on the header, a submenu called Columns, then Visible listing the visible ones with check marks and Hidden listing the hidden ones with no-smoking crosses, and they toggle.",
+   "at": "2026-11-17T18:08:39.671Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-manager-history": {
    "said": "every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "at": "2026-10-21",

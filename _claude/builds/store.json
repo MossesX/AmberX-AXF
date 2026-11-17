@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7554,
- "updatedAt": "2026-11-17T18:06:07.867Z",
+ "rev": 7555,
+ "updatedAt": "2026-11-17T18:08:41.902Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -267919,6 +267919,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T18:05:56.685Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "build-grids-full-column-set-date-time",
+   "title": "Build grids: full column set (date/time, model, account, steps done/total, row #) with header Columns menu",
+   "category": "",
+   "detail": "Every grid that shows builds or build info (Build orchestrator tabs, Auto-lander/Gate, landing line, notes, tests, anywhere build data is listed) gets the same full column set: date and time, model used, account used, steps done out of total, plus every other useful build field. Columns visible today stay the default view; all new columns start hidden. Number column: every row numbered 1, 2, 3 down the list; a row keeps its number when moved. Moving rows (e.g. highlighted rows to the top) is session-only: it shows until the console closes, then the saved order comes back. Header right-click menu gets a Columns submenu with two lists, Visible (check mark next to each) and Hidden (red no-entry cross next to each); clicking one toggles it between the lists. Full API parity (voice, REST, MCP, CLI, console-control). Tests + UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:08:39.671Z",
+   "updatedAt": "2026-11-17T18:08:39.671Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "All the visible columns right now in all grids are set as the default view. Every table grid in the orchestrator or the lander or anywhere that has build information or notes or tests, they all have to have a column called date and time, model used, account used, how many steps, steps out of how many are complete, a whole bunch of columns. Add a column so everyone is numbered one, two, three all the way down, and they keep that number even if you move them. If I say take the highlighted ones and put them at the top, it's only for that session; they won't stay there after the console's closed. Keep the ones visible now as default, with the rest hidden. Hide or unhide all columns from the context menu: right click on the header, a submenu called Columns, then Visible listing the visible ones with check marks and Hidden listing the hidden ones with no-smoking crosses, and they toggle.",
+    "at": "2026-11-17T18:08:39.671Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 946
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
