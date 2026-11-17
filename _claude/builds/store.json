@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7621,
- "updatedAt": "2026-11-17T19:06:58.332Z",
+ "rev": 7622,
+ "updatedAt": "2026-11-17T19:07:16.529Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187589,7 +187589,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -187597,7 +187597,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-17T19:06:52.960Z",
+   "updatedAt": "2026-11-17T19:06:57.744Z",
    "builtAt": "",
    "notes": [
     {
@@ -187743,6 +187743,14 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:12:40.188Z"
+    },
+    {
+     "text": "Auto-lander: fix attempt 1 (s27) added. CI is red on 5f377a05e (claude/always-fill-every-slot-when-slots-are):",
+     "at": "2026-11-17T19:06:55.698Z"
+    },
+    {
+     "text": "Queued by auto-lander for fix attempt 1.",
+     "at": "2026-11-17T19:06:57.744Z"
     }
    ],
    "approvals": [
@@ -187769,8 +187777,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T23:13:30.402Z",
-    "queuedBy": "brett",
+    "queuedAt": "2026-11-17T19:06:44.097Z",
+    "queuedBy": "auto-lander",
     "account": "hulu0241",
     "session": "",
     "slot": "[object Object]",
@@ -187797,7 +187805,7 @@
      "note": "Split by Claude into 21 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "fix attempt 1",
     "route": "",
     "dispatchedAt": "2026-11-16T23:14:27.253Z",
     "planned": {
@@ -188493,7 +188501,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206314,7 +206322,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206322,7 +206330,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T19:06:48.233Z",
+   "updatedAt": "2026-11-17T19:07:07.625Z",
    "builtAt": "",
    "notes": [
     {
@@ -206396,6 +206404,10 @@
     {
      "text": "Queued by auto-lander for fix attempt 1.",
      "at": "2026-11-17T19:05:53.204Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-settings-collapsible-split--joey.",
+     "at": "2026-11-17T19:07:07.625Z"
     }
    ],
    "approvals": [
@@ -206424,13 +206436,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T19:05:42.949Z",
     "queuedBy": "auto-lander",
-    "account": "",
-    "session": "",
-    "slot": "[object Object]",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "account": "hulu0241",
+    "session": "axf-orchestrator-settings-collapsible-split--joey",
+    "slot": "",
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-17T19:06:55.374Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -206441,9 +206453,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6b468540-0c79-44b3-9ccc-314d979f4e2c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "fix attempt 1",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T19:06:55.374Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -206452,7 +206464,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T19:06:55.374Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -206668,7 +206680,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
