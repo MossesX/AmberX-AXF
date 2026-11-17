@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 22:46 UTC · `fable-icon-map-icon-packs-icon-pack` added (0 steps) (all) · console
 - 2026-11-16 22:46 UTC · `toolbar-widgets-attach-any-banner-style` → archived, note (all) · cli
 - 2026-11-16 22:46 UTC · `icon-pack-studio-on-fable` added (0 steps) (all) · console
 - 2026-11-16 22:47 UTC · `rebuild-own-token-sets-every-grid-tab` note (all) · orchestrator
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:27 UTC · `prompting-engine-control-panel-to-create` branch claude/prompting-engine-control-panel-to-create (all) · pipeline
 - 2026-11-17 00:27 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
 - 2026-11-17 00:27 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
+- 2026-11-17 00:28 UTC · `every-plugin-screen-gets-a-settings-gear` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
