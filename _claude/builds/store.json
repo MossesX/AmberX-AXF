@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7853,
- "updatedAt": "2026-11-17T20:42:11.922Z",
+ "rev": 7854,
+ "updatedAt": "2026-11-17T20:42:48.318Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -280670,9 +280670,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T20:40:07.679Z",
-   "updatedAt": "2026-11-17T20:40:07.680Z",
+   "updatedAt": "2026-11-17T20:42:45.374Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 4 steps (0 Fable).",
+     "at": "2026-11-17T20:42:45.374Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -280687,7 +280692,142 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-17T20:42:45.374Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 4,
+     "note": "Split by Claude into 4 steps (0 Fable)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwl5skch016o9s",
+     "title": "",
+     "text": "Merge main so the page-toolbar foundation from rebuild-every-toolbar-page-specific is in this checkout. Then add the Plan Studio page toolbar asset with real buttons bound to the plan actions that already exist: new plan, park, turn into a build, filter and refresh. Mount it on the Plan Studio page through the foundation's page-toolbar host, with role=toolbar and a settings id. In the same step, register control@1 / console-control targets for it: a deep link (view:plan-studio/toolbar), a state read, and one action per button, reachable by REST, MCP, the CLI and voice. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio/assets/toolbar/",
+      "apps/console-web/plugins/plan-studio/",
+      "framework/schemas/console-control targets (append-only)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T20:42:45.374Z",
+     "updatedAt": "2026-11-17T20:42:45.374Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwl5skch02asf0",
+     "title": "",
+     "text": "Add the UI Review page toolbar asset, bound to the review actions that already exist: refresh, filter by status, open the Choices tab, send to review and open Screenshots. Approve and Reject stay personOnly: they keep their existing person-only path, and the toolbar API never exposes them as commands. Mount the toolbar on the UI Review page and register its deep link, state read and non-deciding actions as control targets (REST, MCP, CLI and voice). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/assets/toolbar/",
+      "apps/console-web/plugins/ui-review/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T20:42:45.374Z",
+     "updatedAt": "2026-11-17T20:42:45.374Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwl5skch03u9v6",
+     "title": "",
+     "text": "Add the Plugin Manager page toolbar asset, bound to the actions that already exist: refresh, enable/disable selected, open the selected plugin's settings, view logs and show dependencies. Mount it on the Plugin Manager page and register its deep link, state read and actions as control targets (REST, MCP, CLI and voice). Re-bake the console's src/axf if the framework changed. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/plugin-manager/assets/toolbar/",
+      "apps/console-web/plugins/plugin-manager/",
+      "apps/console-web/src/axf/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T20:42:45.374Z",
+     "updatedAt": "2026-11-17T20:42:45.374Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwl5skch04ttgo",
+     "title": "",
+     "text": "Add one test that checks all three toolbars: each asset loads, every button's action exists, Approve and Reject cannot be reached as commands, and each toolbar has a deep link. Run check-toolbars.mjs, check-console-control.mjs, check-chrome-assets.mjs, check-theme.mjs and the console typecheck. Send desktop and phone shots, with at least 3 options, to UI Review. Write the report at _claude/builds/reports/toolbars-2-5-plan-studio-ui-review.md and add the THREADS row. Open the PR, saying how each toolbar is reached through REST, MCP, the CLI and voice, and put it in the merge queue to land.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio/test/",
+      "framework/cli/check-toolbars.mjs",
+      "_claude/builds/reports/toolbars-2-5-plan-studio-ui-review.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T20:42:45.374Z",
+     "updatedAt": "2026-11-17T20:42:45.374Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -280696,12 +280836,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-17T20:42:45.374Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
