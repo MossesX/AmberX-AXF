@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8080,
- "updatedAt": "2026-11-17T21:46:57.970Z",
+ "rev": 8081,
+ "updatedAt": "2026-11-17T21:47:22.560Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -249679,7 +249679,7 @@
    "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-17T21:40:37.753Z",
+   "updatedAt": "2026-11-17T21:47:19.202Z",
    "builtAt": "",
    "notes": [
     {
@@ -249745,6 +249745,10 @@
     {
      "text": "Watchdog: Merge queue entry 803 → Remove: The build was cancelled (not on main; build reset-all-button-every-asset-override: archived)",
      "at": "2026-11-17T21:40:37.753Z"
+    },
+    {
+     "text": "Branch claude/reset-all-button-every-asset-override handed to build land-pr-730-reset-all-button-far-right (PR #803), so the merge queue maps the PR to the live build instead of this archived one.",
+     "at": "2026-11-17T21:47:19.200Z"
     }
    ],
    "approvals": [],
@@ -250094,7 +250098,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
