@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8116,
- "updatedAt": "2026-11-17T21:59:17.303Z",
+ "rev": 8117,
+ "updatedAt": "2026-11-17T21:59:26.556Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268315,7 +268315,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:58:43.542Z",
+   "updatedAt": "2026-11-17T21:59:14.803Z",
    "builtAt": "",
    "notes": [
     {
@@ -268573,6 +268573,10 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:58:12.354Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T21:59:14.803Z"
     }
    ],
    "approvals": [
@@ -268602,7 +268606,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -269334,7 +269338,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
