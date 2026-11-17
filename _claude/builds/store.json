@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8040,
- "updatedAt": "2026-11-17T21:36:48.905Z",
+ "rev": 8041,
+ "updatedAt": "2026-11-17T21:36:58.913Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282851,7 +282851,7 @@
    "title": "Land PR #730 Reset all button (far right)",
    "category": "",
    "detail": "Branch claude/reset-all-button-every-asset-override (PR #730). Brett picked UI Review option: button far right. Merge origin/main: clashes only in generated files apps/axhub-web/axf.lock.json, apps/molly/axf.lock.json, apps/console-web/src/control/inventory.json; take main's lock files (molly is removed, drop if gone), regenerate inventory.json, run checks, land. Console only. At most 3 steps.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -282859,8 +282859,8 @@
    "pr": "#803",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:36:35.120Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T21:36:44.500Z",
+   "builtAt": "2026-11-17T21:36:44.501Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -283045,12 +283045,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:36:44.500Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:35:58.659Z",
-     "updatedAt": "2026-11-17T21:35:58.659Z"
+     "updatedAt": "2026-11-17T21:36:44.880Z"
     }
    ],
    "profiles": [
@@ -283061,7 +283061,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

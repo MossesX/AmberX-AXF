@@ -3602,6 +3602,18 @@
    "from": "",
    "addenda": []
   },
+  "fix-refreshing-console-jumps-back": {
+   "said": "when are we fixing the refresh bug",
+   "at": "2026-11-17T21:36:54.206Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fix-step-splitter-claude-exit-1-input": {
    "said": "Yeah",
    "at": "",
