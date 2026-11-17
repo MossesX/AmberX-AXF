@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:34:17.468Z",
+ "updatedAt": "2026-11-17T23:34:33.059Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172842,7 +172842,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:33:50.068Z",
+   "updatedAt": "2026-11-17T23:34:06.927Z",
    "builtAt": "",
    "notes": [
     {
@@ -172928,9 +172928,28 @@
     {
      "text": "Claude account: hulu0241 (axf-move-server-side-console-parts-onto-vps--lenny, shared account login)",
      "at": "2026-11-17T23:33:50.067Z"
+    },
+    {
+     "text": "Started run 2 on hulu0241 (Opus, Phase 3): axf-move-server-side-console-parts-onto-vps--lenny.",
+     "at": "2026-11-17T23:33:55.664Z"
+    },
+    {
+     "text": "Brief only: brief is 34108 characters (~8527 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T23:34:06.927Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-17T23:14:19.219Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "So shouldn't we move everything to the VPS except for the UI itself for the console? ... All right, do it.",
@@ -193498,7 +193517,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:32:39.608Z",
+   "updatedAt": "2026-11-17T23:34:15.686Z",
    "builtAt": "",
    "notes": [
     {
@@ -193620,6 +193639,10 @@
     {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T23:32:39.608Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 3 of 3).",
+     "at": "2026-11-17T23:34:15.686Z"
     }
    ],
    "approvals": [
@@ -194091,7 +194114,7 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Reset by the watchdog (exit-failed, attempt 2) 2026-11-17T23:28:43.188Z",
+     "note": "Reset by the watchdog (exit-failed, attempt 3) 2026-11-17T23:34:15.686Z",
      "uid": "st-mwl7mosm0kovn1",
      "createdAt": "2026-11-17T21:34:10.438Z"
     },

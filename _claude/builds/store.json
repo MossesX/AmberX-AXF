@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8404,
- "updatedAt": "2026-11-17T23:34:17.468Z",
+ "rev": 8405,
+ "updatedAt": "2026-11-17T23:34:33.059Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268445,7 +268445,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:33:50.068Z",
+   "updatedAt": "2026-11-17T23:34:06.927Z",
    "builtAt": "",
    "notes": [
     {
@@ -268531,9 +268531,28 @@
     {
      "text": "Claude account: hulu0241 (axf-move-server-side-console-parts-onto-vps--lenny, shared account login)",
      "at": "2026-11-17T23:33:50.067Z"
+    },
+    {
+     "text": "Started run 2 on hulu0241 (Opus, Phase 3): axf-move-server-side-console-parts-onto-vps--lenny.",
+     "at": "2026-11-17T23:33:55.664Z"
+    },
+    {
+     "text": "Brief only: brief is 34108 characters (~8527 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T23:34:06.927Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-17T23:14:19.219Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "So shouldn't we move everything to the VPS except for the UI itself for the console? ... All right, do it.",
@@ -268550,23 +268569,23 @@
    "pipeline": {
     "queuedAt": "2026-11-17T12:26:43.338Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "hulu0241",
     "session": "axf-move-server-side-console-parts-onto-vps--lenny",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-17T23:04:29.385Z",
-    "runs": 1,
+    "model": "Opus",
+    "phase": "Phase 3",
+    "launchedAt": "2026-11-17T23:33:43.195Z",
+    "runs": 2,
     "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T22:42:08.826Z",
-     "exit": null,
+     "at": "2026-11-17T23:28:06.377Z",
+     "exit": 0,
      "outcome": "requeued",
-     "reason": "crash",
-     "stepsLeft": 24,
-     "account": "",
-     "session": "",
-     "phase": ""
+     "reason": "phase-done",
+     "stepsLeft": 21,
+     "account": "mossesx-max-",
+     "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-17T12:28:31.327Z",
@@ -268578,20 +268597,46 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T23:04:29.385Z",
+    "dispatchedAt": "2026-11-17T23:33:43.195Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T22:38:20.865Z",
+     "at": "2026-11-17T23:29:50.956Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T23:04:29.385Z",
+    "pickedAt": "2026-11-17T23:33:43.195Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T23:27:13.513Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "mossesx-max-",
+     "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+     "phase": "Phase 2"
+    }
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T23:28:06.010Z",
+     "buildId": "move-server-side-console-parts-onto-vps",
+     "phase": "Phase 2",
+     "step": "s6",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "mossesx-max-",
+     "notified": "2026-11-17T23:28:46.562Z",
+     "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+     "note": "session on mossesx-max- ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -269264,7 +269309,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -294841,7 +294886,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:32:39.608Z",
+   "updatedAt": "2026-11-17T23:34:15.686Z",
    "builtAt": "",
    "notes": [
     {
@@ -294963,6 +295008,10 @@
     {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T23:32:39.608Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 3 of 3).",
+     "at": "2026-11-17T23:34:15.686Z"
     }
    ],
    "approvals": [
@@ -294992,15 +295041,15 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "axf-flagship-professional-skin-covering-2--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T21:58:22.524Z",
     "runs": 2,
-    "crashes": 3,
+    "crashes": 4,
     "lastRun": {
-     "at": "2026-11-17T23:28:39.115Z",
+     "at": "2026-11-17T23:34:07.940Z",
      "exit": 129,
      "outcome": "requeued",
      "reason": "crash",
@@ -295017,7 +295066,7 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 2 of 3).",
+    "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 3 of 3).",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
@@ -295061,6 +295110,20 @@
      "notified": "2026-11-17T23:28:46.562Z",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 2 of 3)."
+    },
+    {
+     "at": "2026-11-17T23:34:07.940Z",
+     "buildId": "flagship-professional-skin-covering-2",
+     "phase": "Phase 1",
+     "step": "s20",
+     "cause": "exit-failed",
+     "exit": 129,
+     "action": "retry",
+     "attempt": 3,
+     "account": "hulu0241",
+     "notified": "",
+     "session": "axf-flagship-professional-skin-covering-2--earl",
+     "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 3 of 3)."
     }
    ],
    "steps": [
@@ -295568,10 +295631,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Reset by the watchdog (exit-failed, attempt 2) 2026-11-17T23:28:43.188Z",
-     "rev": 7,
+     "note": "Reset by the watchdog (exit-failed, attempt 3) 2026-11-17T23:34:15.686Z",
+     "rev": 8,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T23:28:43.191Z"
+     "updatedAt": "2026-11-17T23:34:15.688Z"
     },
     {
      "id": "s21",
@@ -295786,7 +295849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
