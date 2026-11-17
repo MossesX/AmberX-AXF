@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7439,
- "updatedAt": "2026-11-17T13:32:32.236Z",
+ "rev": 7440,
+ "updatedAt": "2026-11-17T13:33:08.255Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259700,7 +259700,7 @@
    "mergedAt": "2026-11-17T12:49:44Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T13:32:18Z",
+   "updatedAt": "2026-11-17T13:33:06.424Z",
    "builtAt": "2026-11-17T12:50:05.006Z",
    "notes": [
     {
@@ -259766,6 +259766,10 @@
     {
      "text": "Session axf-stop-auto-lander-committing-tracking--lenny on hulu0241 ended (exit 0); the build was already complete.",
      "at": "2026-11-17T13:32:17.694Z"
+    },
+    {
+     "text": "Session axf-stop-auto-lander-committing-tracking--lenny on hulu0241 ended (exit 0); the build was already complete.",
+     "at": "2026-11-17T13:33:06.424Z"
     }
    ],
    "approvals": [
@@ -259795,14 +259799,23 @@
     "queuedAt": "2026-11-17T00:04:36.246Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-stop-auto-lander-committing-tracking--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T12:38:16.390Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T13:33:05.646Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "hulu0241",
+     "session": "axf-stop-auto-lander-committing-tracking--lenny",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-17T00:07:26.389Z",
      "by": "orchestrator",
@@ -260225,7 +260238,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
