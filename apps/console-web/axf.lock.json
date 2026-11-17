@@ -794,7 +794,7 @@
     "src/axf/react/components/AgentCard.tsx": "c73a04590aac39fe",
     "src/axf/react/components/AppMenu.tsx": "12dd741a7adfd658",
     "src/axf/react/components/Arrange.tsx": "841d51d6f17976fc",
-    "src/axf/react/components/Banner.tsx": "d72e25a159d47e09",
+    "src/axf/react/components/Banner.tsx": "6aa8b1a2e16b282e",
     "src/axf/react/components/BannerGroup.tsx": "bf29c024591b48c3",
     "src/axf/react/components/BannerSettings.tsx": "8e0194d48d0c03a0",
     "src/axf/react/components/BannerStrip.tsx": "12f40c2a4d0150b4",
@@ -802,7 +802,7 @@
     "src/axf/react/components/Brand.tsx": "6a760e003265bf1f",
     "src/axf/react/components/BuildOrigin.tsx": "3bb7209320577a40",
     "src/axf/react/components/Chrome.tsx": "98c25f9e1b22ef80",
-    "src/axf/react/components/ChromeContext.tsx": "cad17850244135c5",
+    "src/axf/react/components/ChromeContext.tsx": "15f63a302da5b00c",
     "src/axf/react/components/Controls.tsx": "e4ca2bef33361544",
     "src/axf/react/components/DataCard.tsx": "b927c7d4d6517664",
     "src/axf/react/components/Forms.tsx": "528cf13e423d7d1b",
@@ -832,7 +832,7 @@
     "src/axf/react/components/WatchLive.tsx": "6c447433cdcc43d4",
     "src/axf/react/components/Widgets.tsx": "67a3554da3084a61",
     "src/axf/react/components/menuFit.ts": "04c0539214743de1",
-    "src/axf/react/controlTargets.ts": "6e4edcd8edc6e4d3",
+    "src/axf/react/controlTargets.ts": "22222eec5b650377",
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppLook.ts": "5e9a996b10ea76a0",
     "src/axf/react/hubAppearance.ts": "355ca539e1bed83b",
@@ -985,8 +985,8 @@
     "src/axf/schemas/skin-config.json": "6a22e6d34da90be8",
     "src/axf/schemas/stale-row.json": "76f381941cdcc6ff",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
-    "src/axf/schemas/token-registry.json": "26ef466cf3047926",
+    "src/axf/schemas/token-registry.json": "fd3183b215ab9df6",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
-    "src/axf/ui/axf.css": "937100f29a5fc6c7"
+    "src/axf/ui/axf.css": "303802472c607cc2"
   }
 }
