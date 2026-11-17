@@ -976,6 +976,20 @@ async def _control_focus(address: str, verb: str = "focus", to: str = "recent", 
     return {**r, "status": "delivered" if r.get("ok") else "failed"}
 
 
+async def _drag_show(target: str, to: str = "recent") -> dict[str, Any]:
+    """console_open / console_show with a drag deep link (drag:<kind>:<container>[:<item>], drag-move@1): opens the
+    host's page, highlights the item and where it can go, and answers the host's current order."""
+    import drag_api
+    link = drag_api.parse_link(target)
+    if link is None:
+        raise ToolError("invalid: a drag link is drag:<kind>:<container>[:<item>]")
+    run = _drag_run or drag_runner()
+    r = await anyio.to_thread.run_sync(lambda: run("show", {**link, "to": to, "by": "mcp"}))
+    if not r.get("ok") and r.get("code") != "unavailable":
+        raise ToolError(f"{r.get('code', 'failed')}: {r.get('message', 'failed')}" + (f" (nearest: {', '.join(r['nearest'][:8])})" if r.get("nearest") else ""))
+    return {**r, "status": "delivered" if r.get("ok") else "failed"}
+
+
 def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
     """The console_* tools (= CONSOLE_TOOLS in core/engines/console-commands.mjs): what a Claude session calls when Brett
     says "open Plan Studio". Each answer says what the open console did (`delivered`: per console ok + message) and how
@@ -1008,6 +1022,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         opens the Build orchestrator on its tab with that build scrolled into view, expanded and highlighted.
         Read `status`: delivered (a console acked it), pending (no console answered yet; queued and AmberX opens the
         console on Brett's phone) or failed. Not sure of the name? console_list(kind="screens", q="…") first."""
+        if screen.strip().startswith("drag:"):
+            return await _drag_show(screen.strip(), to)
         if ADDRESS_RE.match(screen.strip()):
             return await _control_focus(screen.strip() if not focus else f"{screen.strip()}/{focus}", "focus", to)
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to, focus=focus)})
@@ -1081,6 +1097,11 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
         whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed.
         `target` may be a console-control@1 address ("grid:queue/row:<id>", "plugin:<id>"): focused and highlighted."""
+        if target.strip().startswith("drag:"):
+            st = await follow("state")
+            if not st.get("on"):
+                return {"ok": True, "shown": False, "message": "Follow Amber is off: nothing was opened"}
+            return {**(await _drag_show(target.strip(), to)), "shown": True}
         if ADDRESS_RE.match(target.strip()):
             st = await follow("state")
             if not st.get("on"):
@@ -1231,6 +1252,7 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
 
 # ---------------------------------------------------------------------- drag (drag-move@1, framework/spec/DRAG-MOVE.md)
 
+_drag_run: Callable[[str, dict[str, Any]], dict[str, Any]] | None = None
 DRAG_TOOLS = ("console_drag_list", "console_drag_zones", "console_drag_move", "console_drag_add", "console_drag_remove")
 
 
@@ -1274,6 +1296,8 @@ def _register_drag_tools(mcp: MCPServer, run: Callable[[str, dict[str, Any]], di
     """console_drag_* (= DRAG_TOOLS): read and move every draggable thing on the open console (banner widgets, toolbar
     items, tabs, dock panes, grid columns and rows, list items, layout slots). The reads are read-only; every move, add
     and remove is a write (a veto call on axHub) and must say why (`reason`), which the activity log keeps."""
+    global _drag_run
+    _drag_run = run
 
     async def go(verb: str, body: dict[str, Any]) -> dict[str, Any]:
         body = {k: v for k, v in body.items() if v not in (None, "", {}, [])}

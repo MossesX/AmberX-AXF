@@ -29,6 +29,22 @@ export interface DraggableHostOptions {
   apply: (plan: DragPlan) => unknown | Promise<unknown>;
   /** false keeps the host off the registry (a row that cannot be reordered); default true */
   enabled?: boolean;
+  /** The host's element (id null) or one item's, for a deep link or a preview to highlight (drag:<kind>:<container>:<item>). */
+  locate?: (id: string | null) => Element | null;
+}
+
+const cssEsc = (s: string) => (globalThis.CSS?.escape ? globalThis.CSS.escape(s) : s.replace(/["\\]/g, '\\$&'));
+const locators = new Map<string, (id: string | null) => Element | null>();
+const locKey = (kind: string, container: string) => `${kind}\u0000${container.toLowerCase()}`;
+/** Register how to find a host's elements (the hooks do it; a host registered by hand may too). Returns a remover. */
+export function setDragLocator(kind: string, container: string, locate: (id: string | null) => Element | null): () => void {
+  const k = locKey(kind, container);
+  locators.set(k, locate);
+  return () => { if (locators.get(k) === locate) locators.delete(k); };
+}
+/** The element of a host (id null) or of one of its items, or null when the host gave no locator or it is not drawn. */
+export function dragLocate(kind: string, container: string, id: string | null): Element | null {
+  try { return locators.get(locKey(kind, container))?.(id) ?? null; } catch { return null; }
 }
 
 /**
@@ -42,11 +58,13 @@ export function useDraggableHost(kind: string, container: string, opts: Draggabl
   const enabled = opts.enabled !== false;
   useEffect(() => {
     if (!enabled || !container) return;
-    return rt.drag.hosts.register({
+    const off = rt.drag.hosts.register({
       kind, container,
       list: () => ({ ...ref.current.list(), kind, container }),
       apply: (plan) => ref.current.apply(plan),
     });
+    const offLoc = setDragLocator(kind, container, (id) => ref.current.locate?.(id) ?? null);
+    return () => { offLoc(); off(); };
   }, [rt, kind, container, enabled]);
 }
 
@@ -60,11 +78,11 @@ export function useDraggableHostSet(kind: string, containers: readonly string[],
   ref.current = make;
   const ids = containers.join('\u0000');
   useEffect(() => {
-    const offs = (ids ? ids.split('\u0000') : []).filter(Boolean).map((container) => rt.drag.hosts.register({
+    const offs = (ids ? ids.split('\u0000') : []).filter(Boolean).flatMap((container) => [rt.drag.hosts.register({
       kind, container,
       list: () => ({ ...ref.current(container).list(), kind, container }),
       apply: (plan) => ref.current(container).apply(plan),
-    }));
+    }), setDragLocator(kind, container, (id) => ref.current(container).locate?.(id) ?? null)]);
     return () => offs.forEach((off) => off());
   }, [rt, kind, ids]);
 }
@@ -151,7 +169,7 @@ export function fullSideIndex(all: readonly string[], drawn: readonly string[], 
  * pointer and the arrow keys make. The banner also adds and removes: add shows a widget the banner knows (the banner
  * widget engine's `hidden` choice) and places it, remove hides it; a widget is never deleted, so add brings it back.
  */
-export function widgetHostAdapter(rt: AxfRuntime, host: string, placed: () => Record<string, PlacedAttachment[]>): Pick<DraggableHostOptions, 'list' | 'apply'> {
+export function widgetHostAdapter(rt: AxfRuntime, host: string, placed: () => Record<string, PlacedAttachment[]>): Pick<DraggableHostOptions, 'list' | 'apply' | 'locate'> {
   const isBanner = host === 'banner';
   const sides = () => hostSpec(host)?.sides ?? [];
   const place = (key: string, plan: DragPlan) => {
@@ -162,7 +180,9 @@ export function widgetHostAdapter(rt: AxfRuntime, host: string, placed: () => Re
     const all = (rt.hostPlaced(host)[side] ?? []).map((p) => p.key);
     if (!rt.moveHostItem(host, key, side, fullSideIndex(all, drawn, key))) throw new Error(`${host}: ${key} could not move (no arrange permission, or it is not attached)`);
   };
+  const attr = isBanner ? 'data-axf-banner-item' : host === 'toolbar' ? 'data-axf-toolbar-widget' : 'data-axf-arrange-item';
   return {
+    locate: (id) => (typeof document === 'undefined' ? null : id ? document.querySelector(`[${attr}="${cssEsc(id)}"]`) : document.querySelector(`[data-axf-arrange-host="${cssEsc(host)}"]`)),
     list: () => {
       const p = placed();
       const ss = sides();

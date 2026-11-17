@@ -13,6 +13,8 @@
  *   axf drag add <kind> <item> <container> [before|after <ref> | into [index] | side <side> [index]] [--from <catalogue>] [--type <type>]
  *   axf drag remove <kind> <container> <item> [--confirm]
  *   axf drag preview <same as move>                      highlight where it would land, move nothing
+ *   axf drag show <kind> <container> [item]              open its page and highlight it and its drop zones (= drag:<kind>:<container>:<item>)
+ *   axf drag voice "<phrase>"                           what AmberX does with it ("drag the Logs tab first")
  *   axf drag <move|add|remove|preview> --json-command '{…drag-move@1…}'                   any command as JSON
  *   --reason "…"  why (kept in the activity log) · --by <who> · --to-console recent|all|<client> · --json · --remote <url>
  *
@@ -28,7 +30,7 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const DRAG_SUBCOMMANDS = ['list', 'zones', 'move', 'add', 'remove', 'preview'];
+export const DRAG_SUBCOMMANDS = ['list', 'zones', 'show', 'move', 'add', 'remove', 'preview', 'voice'];
 const FLAGS_WITH_VALUE = new Set(['reason', 'by', 'to', 'to-console', 'from', 'type', 'remote', 'json-command']);
 const ZONES = ['before', 'after', 'into', 'side'];
 
@@ -75,6 +77,15 @@ export function toRequest(argv) {
   const q = (o) => new URLSearchParams(Object.entries(o).filter(([, v]) => v)).toString();
   switch (sub) {
     case 'list': return { method: 'GET', path: `/hosts${w.length ? `?${q({ kind: w[0], container: w[1] })}` : ''}` };
+    case 'show': {
+      const [kind, container, id] = w;
+      if (!kind || !container) throw new Error('usage: axf drag show <kind> <container> [item]');
+      return { method: 'GET', path: `/show?${q({ kind, container, id })}` };
+    }
+    case 'voice': {
+      if (!w.length) throw new Error('usage: axf drag voice "move the clock widget to the left of the banner"');
+      return { method: 'POST', path: '/voice', body: { text: w.join(' '), ...extra } };
+    }
     case 'zones': {
       const [kind, container, id] = w;
       if (!kind || !container || !id) throw new Error('usage: axf drag zones <kind> <container> <item>');
@@ -131,6 +142,8 @@ export function describe(r) {
     }
     return out;
   }
+  if ('say' in r && r.say) return [`🗣 ${r.say}`];
+  if (r.$axf === 'drag-show@1') return [`✓ showing ${r.kind} ${r.id ?? r.container} on ${r.view}${r.zones ? ` · ${r.zones} drop zones` : ''}`, orderLine(r.container, r.host.order)];
   if (r.$axf === 'drag-zones@1') return [`${r.targets.length}${r.more ? '+' : ''} places for ${r.kind} ${r.id} (from ${r.container})`, ...r.targets.map((t) => `  ${t.container} ${t.zone}${t.ref ? ` ${t.ref}` : ''}${t.side ? ` ${t.side}` : ''}${t.index !== undefined ? ` ${t.index}` : ''}`)];
   const head = !r.to ? `✓ removed ${r.item.id} from ${r.from?.container}` : `✓ ${r.op === 'add' ? 'added' : r.from ? 'moved' : 'previewed'} ${r.item.id} → ${r.to.container}${r.to.side ? ` ${r.to.side}` : ''} place ${r.to.index + 1}`;
   return [head, ...Object.entries(r.order ?? {}).map(([c, o]) => orderLine(c, o))];

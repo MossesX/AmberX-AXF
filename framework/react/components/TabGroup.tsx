@@ -109,6 +109,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     enabled: !!onReorder,
     list: () => ({ label, items: tabs.map((t) => ({ id: String(t.value), label: t.label, ...(t.disabled ? { locked: true } : {}) })), accepts: { from: [] } }),
     apply: (plan) => { const next = plan.order[id]; if (Array.isArray(next)) onReorder?.(next as T[]); },
+    locate: (v) => { const row = rowRef.current; if (!row || v === null) return row; const i = tabs.findIndex((t) => String(t.value).toLowerCase() === v.toLowerCase()); return i >= 0 ? row.querySelectorAll('[role="tab"]')[i] ?? null : null; },
   });
 
   // remember the last tab (per device): reopen on it, keep it as it changes

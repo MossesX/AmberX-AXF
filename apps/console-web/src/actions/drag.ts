@@ -8,17 +8,21 @@
  *   drag.zones:<kind>:<container>:<item>       where that item may land (each target a ready drag-move@1 target)
  *   drag.move:<json>                           run a drag-move@1 move (also drag.add / drag.remove)
  *   drag.preview:<json>                        plan it and highlight the item and its landing spot, change nothing
+ *   drag.show:<kind>:<container>[:<item>]     the deep link drag:<kind>:<container>:<item>: open its page, highlight it and its drop zones
  *   drag.voice:<phrase>                        "move the clock widget to the left of the banner" (names → ids via drag.list)
  *
  * Every answer is an envelope: `drag-list@1` / `drag-zones@1` for the reads, `drag-move-result@1` for the writes.
  */
 import type { AxfRuntime } from '../axf/core';
 import { dragVoiceIntent, dragVoiceScore, type DragVoiceIntent } from '../axf/core/engines/drag-voice.mjs';
-import { DRAG_MOVE_CONTRACT, dragKind, dragKinds, dragMoveFailure, type DragHostSnapshot, type DragMoveResult, type DragTarget } from '../axf/core/engines/drag-move';
+import { DRAG_MOVE_CONTRACT, dragKind, dragKinds, dragMoveFailure, orderOf, type ContainerOrder, type DragHostSnapshot, type DragMoveResult, type DragTarget } from '../axf/core/engines/drag-move';
+import { dragLocate } from '../axf/react/dragHost';
+import { executeControl } from '../control/executor';
 
 export const DRAG_LIST_FRAME = 'drag-list@1';
 export const DRAG_ZONES_FRAME = 'drag-zones@1';
-export const DRAG_VERBS = ['drag.list', 'drag.zones', 'drag.move', 'drag.add', 'drag.remove', 'drag.preview', 'drag.voice'] as const;
+export const DRAG_VERBS = ['drag.list', 'drag.zones', 'drag.move', 'drag.add', 'drag.remove', 'drag.preview', 'drag.voice', 'drag.show'] as const;
+export const DRAG_SHOW_FRAME = 'drag-show@1';
 export type DragVerb = (typeof DRAG_VERBS)[number];
 /** Most landing spots drag.zones answers (a long list is cut; `more` says so). */
 export const DRAG_ZONES_MAX = 120;
@@ -30,6 +34,7 @@ export const DRAG_ACTIONS: Record<DragVerb, { label: string; effect: 'read' | 'w
   'drag.add': { label: 'Drag: add an item to a host (drag-move@1 JSON)', effect: 'write' },
   'drag.remove': { label: 'Drag: remove an item from a host (drag-move@1 JSON)', effect: 'write' },
   'drag.preview': { label: 'Drag: show where a move would land, without moving (drag-move@1 JSON)', effect: 'navigate' },
+  'drag.show': { label: 'Drag: open the page of a host and highlight an item and where it can go (kind:container[:item])', effect: 'navigate' },
   'drag.voice': { label: 'Drag by voice: "move the clock widget to the left of the banner", "drag the Logs tab first", "remove the CPU widget"', effect: 'write' },
 };
 
@@ -45,10 +50,11 @@ export interface DragRequest {
   by?: string;
 }
 
-export type DragListAnswer = { $axf: typeof DRAG_LIST_FRAME; ok: true; view: string; kinds: { kind: string; label: string; add: boolean; remove: boolean; crossContainer: boolean; zones: readonly string[] }[]; hosts: DragHostSnapshot[] };
+export type DragListAnswer = { $axf: typeof DRAG_LIST_FRAME; ok: true; view: string; kinds: { kind: string; label: string; add: boolean; remove: boolean; crossContainer: boolean; zones: readonly string[] }[]; hosts: (DragHostSnapshot & { order: ContainerOrder })[] };
+export type DragShowAnswer = { $axf: typeof DRAG_SHOW_FRAME; ok: true; kind: string; container: string; id: string | null; view: string; host: DragHostSnapshot & { order: ContainerOrder }; highlighted: boolean; zones: number } | { $axf: typeof DRAG_SHOW_FRAME; ok: false; code: string; message: string; nearest?: string[] };
 export type DragZonesAnswer = { $axf: typeof DRAG_ZONES_FRAME; ok: true; kind: string; container: string; id: string; targets: DragTarget[]; more: boolean } | { $axf: typeof DRAG_ZONES_FRAME; ok: false; code: string; message: string; nearest?: string[] };
 export type DragVoiceAnswer = DragMoveResult & { heard: string; intent: DragVoiceIntent | null; command?: Record<string, unknown>; say: string };
-export type DragAnswer = DragListAnswer | DragZonesAnswer | DragMoveResult | DragVoiceAnswer;
+export type DragAnswer = DragListAnswer | DragZonesAnswer | DragMoveResult | DragVoiceAnswer | DragShowAnswer;
 
 /** A relayed console-control command that is really a drag request (`verb` starts with `drag.`). */
 export function isDragRequest(raw: unknown): raw is DragRequest {
@@ -61,12 +67,13 @@ export function dragActionRequest(verb: DragVerb, args: string[]): DragRequest |
   if (text.startsWith('{') && verb !== 'drag.voice') {
     try {
       const j = JSON.parse(text) as Record<string, unknown>;
-      if (verb === 'drag.list' || verb === 'drag.zones') return { verb, ...(j as Omit<DragRequest, 'verb'>) };
+      if (verb === 'drag.list' || verb === 'drag.zones' || verb === 'drag.show') return { verb, ...(j as Omit<DragRequest, 'verb'>) };
       return { verb, command: (j.command && typeof j.command === 'object' ? j.command : j) as Record<string, unknown> };
     } catch { return null; }
   }
   if (verb === 'drag.voice') return text ? { verb, text } : null;
   if (verb === 'drag.list') { const [kind, container] = args; return { verb, ...(kind ? { kind } : {}), ...(container ? { container } : {}) }; }
+  if (verb === 'drag.show') { const [kind, container, ...id] = args; return kind && container ? { verb, kind, container, ...(id.length ? { id: id.join(':') } : {}) } : null; }
   if (verb === 'drag.zones') { const [kind, container, ...id] = args; return kind && container && id.length ? { verb, kind, container, id: id.join(':') } : null; }
   return null;
 }
@@ -75,7 +82,7 @@ const same = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
 
 /** The hosts on the page (optionally one kind / one container). */
 export function dragList(rt: AxfRuntime, kind?: string, container?: string): DragListAnswer {
-  const hosts = rt.drag.hosts.snapshots(kind || undefined).filter((h) => !container || same(h.container, container));
+  const hosts = rt.drag.hosts.snapshots(kind || undefined).filter((h) => !container || same(h.container, container)).map((h) => ({ ...h, order: orderOf(h) }));
   const kinds = dragKinds().map((k) => ({ kind: k.kind, label: k.label, add: k.add, remove: k.remove, crossContainer: k.crossContainer, zones: k.zones }));
   return { $axf: DRAG_LIST_FRAME, ok: true, view: rt.getState().view, kinds, hosts };
 }
@@ -115,8 +122,64 @@ export function dragZones(rt: AxfRuntime, kind: string, container: string, id: s
   return { $axf: DRAG_ZONES_FRAME, ok: true, kind, container: src.container, id: item.id, targets, more };
 }
 
+/**
+ * Where a host lives when it is not on the page: how to open it. Matched by container prefix (longest first); a plugin
+ * adds its own with registerDragPlace. Tab rows and grids open through their console-control address.
+ */
+const places: { prefix: string; open: (rt: AxfRuntime, container: string) => unknown }[] = [
+  { prefix: 'build-manager.', open: (rt) => rt.navigate('build') },
+  { prefix: 'plan-studio.', open: (rt) => rt.navigate('plan-studio') },
+  { prefix: 'ai-keys.accounts', open: (rt) => rt.openDialog('ai-keys.accounts') },
+];
+export function registerDragPlace(prefix: string, open: (rt: AxfRuntime, container: string) => unknown): () => void {
+  const p = { prefix, open };
+  places.push(p);
+  return () => { const i = places.indexOf(p); if (i >= 0) places.splice(i, 1); };
+}
+
+/** Bring a host onto the page (its place, or its console-control address), then wait for it to register (≤ ms). */
+async function bringHost(rt: AxfRuntime, kind: string, container: string, ms = 4000): Promise<DragHostSnapshot | null> {
+  const here = rt.drag.hosts.snapshot(kind, container);
+  if (here) return here;
+  const place = [...places].sort((a, b) => b.prefix.length - a.prefix.length).find((p) => container.toLowerCase().startsWith(p.prefix.toLowerCase()));
+  if (place) place.open(rt, container);
+  else if (kind === 'tab') await executeControl(rt, { verb: 'open', address: `tab:${container}`, by: 'drag' });
+  else if (kind === 'grid-column' || kind === 'grid-row') await executeControl(rt, { verb: 'open', address: `grid:${container}`, by: 'drag' });
+  return new Promise((resolve) => {
+    const done = (v: DragHostSnapshot | null) => { off(); clearTimeout(t); resolve(v); };
+    const off = rt.drag.hosts.subscribe(() => { const s = rt.drag.hosts.snapshot(kind, container); if (s) done(s); });
+    const t = setTimeout(() => done(rt.drag.hosts.snapshot(kind, container)), ms);
+  });
+}
+
+/**
+ * The deep link `drag:<kind>:<container>[:<item>]` (console_show / console_open, REST /api/drag/show, the drag.show
+ * action): open the host's page, scroll the item (or the host) into view, highlight it and the places it can go
+ * (dragPreviewHooks.zones, drawn with tokens by the drop-zone overlay), and answer the host's current order.
+ */
+export async function showDrag(rt: AxfRuntime, kind: string, container: string, id: string | null): Promise<DragShowAnswer> {
+  const fail = (code: string, message: string, nearest?: string[]): DragShowAnswer => ({ $axf: DRAG_SHOW_FRAME, ok: false, code, message, ...(nearest ? { nearest } : {}) });
+  if (!dragKind(kind)) return fail('unknown_kind', `no draggable kind ${kind} (${dragKinds().map((k) => k.kind).join(', ')})`);
+  const host = await bringHost(rt, kind, container);
+  if (!host) return fail('unknown_container', `no ${kind} host ${container} could be opened`, rt.drag.hosts.containers(kind).map((c) => c.container));
+  const item = id ? host.items.find((i) => same(i.id, id)) : null;
+  if (id && !item) return fail('unknown_item', `${host.container} has no ${id}`, host.items.slice(0, 8).map((i) => i.id));
+  const el = dragLocate(kind, host.container, item?.id ?? null) as HTMLElement | null;
+  if (el) {
+    const reduce = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView?.({ block: 'center', inline: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+  }
+  const zones = item ? dragZones(rt, kind, host.container, item.id) : null;
+  const targets = zones && zones.ok ? zones.targets : [];
+  dragPreviewHooks.zones?.(rt, { kind, container: host.container, id: item?.id ?? null, element: el, targets });
+  return { $axf: DRAG_SHOW_FRAME, ok: true, kind, container: host.container, id: item?.id ?? null, view: rt.getState().view, host: { ...host, order: orderOf(host) }, highlighted: !!el, zones: targets.length };
+}
+
 /** Hooks a preview / a highlight can attach to (s16 / s17 fill them): what a dry run or a deep link shows. */
-export const dragPreviewHooks: { show: ((rt: AxfRuntime, cmd: Record<string, unknown>, answer: DragMoveResult) => void) | null } = { show: null };
+export const dragPreviewHooks: {
+  show: ((rt: AxfRuntime, cmd: Record<string, unknown>, answer: DragMoveResult) => void) | null;
+  zones: ((rt: AxfRuntime, at: { kind: string; container: string; id: string | null; element: Element | null; targets: DragTarget[] }) => void) | null;
+} = { show: null, zones: null };
 
 /** Run one request. Never throws: a failure is the envelope. */
 export async function executeDrag(rt: AxfRuntime, req: DragRequest): Promise<DragAnswer> {
@@ -125,6 +188,7 @@ export async function executeDrag(rt: AxfRuntime, req: DragRequest): Promise<Dra
       case 'drag.list': return dragList(rt, req.kind, req.container);
       case 'drag.zones': return dragZones(rt, String(req.kind ?? ''), String(req.container ?? ''), String(req.id ?? ''));
       case 'drag.voice': return await runDragVoice(rt, String(req.text ?? ''));
+      case 'drag.show': return await showDrag(rt, String(req.kind ?? ''), String(req.container ?? ''), req.id ? String(req.id) : null);
       case 'drag.preview': {
         const cmd = { ...(req.command ?? {}), by: req.by ?? (req.command?.by as string | undefined) ?? 'api' };
         let answer: DragMoveResult;
@@ -212,6 +276,7 @@ function whereTarget(host: DragHostSnapshot, intent: DragVoiceIntent, ref: strin
 /** One line for a toast or a spoken answer. */
 export function describeDrag(a: DragAnswer): string {
   if ('say' in a) return a.say;
+  if (a.$axf === DRAG_SHOW_FRAME) return a.ok ? `showing ${a.kind} ${a.id ?? a.container}${a.zones ? ` and ${a.zones} places it can go` : ''}` : `${a.code}: ${a.message}`;
   if (a.$axf === DRAG_LIST_FRAME) return `${a.hosts.length} draggable host${a.hosts.length === 1 ? '' : 's'} on ${a.view}`;
   if (a.$axf === DRAG_ZONES_FRAME) return a.ok ? `${a.targets.length}${a.more ? '+' : ''} places ${a.id} can go` : `${a.code}: ${a.message}`;
   if (!a.ok) return `${a.code}: ${a.message}`;
@@ -227,7 +292,7 @@ export function installDragActions(rt: AxfRuntime): () => void {
     void executeDrag(rt, { ...req, by: req.by ?? 'action' }).then((a) => {
       const line = describeDrag(a);
       rt.terminal.log('drag', `${verb}: ${line}`, a.ok ? 'info' : 'warn');
-      if (verb !== 'drag.list' && verb !== 'drag.zones') rt.toast(line, a.ok ? 'info' : 'warning', 'Drag');
+      if (verb !== 'drag.list' && verb !== 'drag.zones' && verb !== 'drag.show') rt.toast(line, a.ok ? 'info' : 'warning', 'Drag');
     });
     return true;
   }, { label: DRAG_ACTIONS[verb].label, params: true, module: 'console.drag', effect: DRAG_ACTIONS[verb].effect }));

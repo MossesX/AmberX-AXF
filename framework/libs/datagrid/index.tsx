@@ -192,6 +192,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
       if (plan.op === 'add') p.onToggleColumn!(col.id, true);
       if (Array.isArray(next)) { const shown = next.map((id) => (id.toLowerCase() === col.id.toLowerCase() ? col.id : id)); writeOrder([...shown, ...ordered.map((c) => c.id).filter((id) => !shown.includes(id))]); }
     },
+    locate: (id) => (id === null ? gridRef.current?.querySelector('.axf-grid-head') ?? null : gridRef.current?.querySelector(`[data-axf-col="${escapeSelector(id)}"]`) ?? null),
   });
   const sorted = !!(config.sort && p.sort);
   useDraggableHost('grid-row', p.id, {
@@ -205,6 +206,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
       if (before) p.onMove!({ kind: 'row', id: plan.item.id }, { kind: 'row', id: before }, 'before');
       else if (after) p.onMove!({ kind: 'row', id: plan.item.id }, { kind: 'row', id: after }, 'after');
     },
+    locate: (id) => (id === null ? gridRef.current : rowEl(id)),
   });
 
   const lines: Line<R>[] = [];
@@ -261,7 +263,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (
-          <button key={c.id} type="button" role="columnheader" className={`fx-btn fx-btn--sm fx-btn--quiet axf-grid-hcell ${c.align === 'end' ? 'is-end' : ''}`}
+          <button key={c.id} type="button" role="columnheader" data-axf-col={c.id} className={`fx-btn fx-btn--sm fx-btn--quiet axf-grid-hcell ${c.align === 'end' ? 'is-end' : ''}`}
             data-fx-ctx-target={config.columnMenu ? headerTarget : undefined} data-fx-ctx-payload={c.id}
             aria-sort={p.sort?.col === c.id ? (p.sort.dir === 1 ? 'ascending' : 'descending') : 'none'}
             onClick={() => config.sort && c.sortable && p.onSort?.(c.id)} title={config.columnMenu ? 'Click to sort · right-click for columns' : undefined}>

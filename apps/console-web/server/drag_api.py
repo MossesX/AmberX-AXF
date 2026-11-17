@@ -6,6 +6,8 @@
     POST /add      {kind, source, target, by?, reason?, to?}          add an item to a host
     POST /remove   {kind, source, confirm?, by?, reason?, to?}        remove an item from a host
     POST /preview  {kind, source, target, …}                          plan it and highlight it on the screen, move nothing
+    GET  /show?kind=&container=&id=&to=      the deep link drag:<kind>:<container>:<item>: open its page, highlight it and
+                                             its drop zones, answer the host's current order (drag-show@1)
     POST /voice    {text, to?}        "move the clock widget to the left of the banner": the console resolves the names
 
 The command is checked here (drag_move.py, the engine's twin) and relayed to the open console over the console-commands
@@ -91,6 +93,11 @@ def command(verb: str, body: dict[str, Any], by: str = "", audience: str = "owne
         if not (body.get("kind") and body.get("container") and body.get("id")):
             return {"$axf": "drag-zones@1", "ok": False, "code": "invalid", "message": "zones needs kind, container and id"}
         return guarded({"verb": "drag.zones", "kind": body["kind"], "container": body["container"], "id": body["id"], "by": who}, READ_PERM, False, who, audience, g, to)
+    if verb == "show":
+        if not (body.get("kind") and body.get("container")):
+            return {"$axf": "drag-show@1", "ok": False, "code": "invalid", "message": "show needs kind and container (and the item id to highlight it)"}
+        req = {"verb": "drag.show", "kind": body["kind"], "container": body["container"], **({"id": body["id"]} if body.get("id") else {}), "by": who}
+        return guarded(req, NAV_PERM, False, who, audience, g, to)
     if verb == "voice":
         text = str(body.get("text") or "").strip()[:300]
         if not text:
@@ -104,6 +111,17 @@ def command(verb: str, body: dict[str, Any], by: str = "", audience: str = "owne
         return e.envelope()
     perm, is_write = (NAV_PERM, False) if verb == "preview" else (WRITE_PERM, True)
     return guarded(req, perm, is_write, who, audience, g, to)
+
+
+def parse_link(target: str) -> dict[str, str] | None:
+    """`drag:<kind>:<container>[:<item>]` → {kind, container, id?}; the item may hold colons (a banner widget `clock:main`)."""
+    t = (target or "").strip()
+    if not t.startswith("drag:"):
+        return None
+    parts = t[5:].split(":", 2)
+    if len(parts) < 2 or not parts[0] or not parts[1]:
+        return None
+    return {"kind": parts[0], "container": parts[1], **({"id": parts[2]} if len(parts) > 2 and parts[2] else {})}
 
 
 def router_for(auth: Any) -> APIRouter:
@@ -155,6 +173,11 @@ def router_for(auth: Any) -> APIRouter:
     @r.post("/remove")
     async def remove(request: Request) -> JSONResponse:
         return await write(request, "remove")
+
+    @r.get("/show")
+    async def show(request: Request, kind: str = "", container: str = "", id: str = "", to: str = "recent") -> JSONResponse:  # noqa: A002
+        audience, by, grants = who(request)
+        return answer(await run_in_threadpool(command, "show", {"kind": kind, "container": container, "id": id, "to": to}, by, audience, grants))
 
     @r.post("/voice")
     async def voice(request: Request) -> JSONResponse:
