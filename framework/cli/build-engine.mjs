@@ -29,6 +29,7 @@ import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } 
 import { REGISTRY as AUTO_LANDER_REGISTRY, jsonSchemas as autoLanderJsonSchemas } from '../core/auto-lander.mjs';
 import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
 import { jsonSchema as buildWatchdogJsonSchema } from '../core/build-watchdog.mjs';
+import { jsonSchema as buildLiveJsonSchema } from '../core/engines/build-live.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
 import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
@@ -927,6 +928,8 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   const rlreg = join(FRAMEWORK_DIR, 'schemas/retry-ladder.json'); writeFileSync(rlreg, JSON.stringify(RETRY_LADDER_REGISTRY, null, 2) + '\n'); written.push(rlreg); // done-means-merged@1 retry ladder
   // build-watchdog@1: the stuck-build recovery record on builds@1 (recoveries[]), the probe, the decision and the settings
   const wreg = join(FRAMEWORK_DIR, 'schemas/build-watchdog.json'); writeFileSync(wreg, JSON.stringify(buildWatchdogJsonSchema(), null, 2) + '\n'); written.push(wreg);
+  // build-live@1: build changes and liveness on the console live channel (the event, the per-build state, the snapshot)
+  const blreg = join(FRAMEWORK_DIR, 'schemas/build-live.json'); writeFileSync(blreg, JSON.stringify(buildLiveJsonSchema(), null, 2) + '\n'); written.push(blreg);
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);

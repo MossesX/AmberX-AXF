@@ -96,13 +96,117 @@
       ]
     },
     "state": {
-      "enum": [
-        "idle",
-        "running",
-        "stale",
-        "broke",
-        "done"
-      ]
+      "title": "build-live-state@1",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "$axf",
+        "build",
+        "status",
+        "state",
+        "alive",
+        "at",
+        "seq"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "build-live-state@1"
+        },
+        "build": {
+          "$ref": "#/$defs/buildId"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "state": {
+          "$ref": "#/$defs/state"
+        },
+        "step": {
+          "$ref": "#/$defs/step"
+        },
+        "lastStep": {
+          "$ref": "#/$defs/lastStep"
+        },
+        "alive": {
+          "$ref": "#/$defs/alive"
+        },
+        "cause": {
+          "$ref": "#/$defs/cause"
+        },
+        "exit": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "signal": {
+          "type": "string",
+          "maxLength": 8
+        },
+        "watchdog": {
+          "$ref": "#/$defs/watchdog"
+        },
+        "stale": {
+          "$ref": "#/$defs/stale"
+        },
+        "broke": {
+          "$ref": "#/$defs/broke"
+        },
+        "lastBroke": {
+          "$ref": "#/$defs/broke"
+        },
+        "recovering": {
+          "type": "boolean"
+        },
+        "lastChange": {
+          "$ref": "#/$defs/lastChange"
+        },
+        "at": {
+          "$ref": "#/$defs/isoOrNone"
+        },
+        "checkedAt": {
+          "$ref": "#/$defs/isoOrNone"
+        },
+        "seen": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "change": {
+              "$ref": "#/$defs/isoOrNone"
+            },
+            "liveness": {
+              "$ref": "#/$defs/isoOrNone"
+            },
+            "watchdog": {
+              "$ref": "#/$defs/isoOrNone"
+            },
+            "snapshot": {
+              "$ref": "#/$defs/isoOrNone"
+            }
+          },
+          "description": "the newest `at` folded per kind: an older frame of a kind is dropped"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "line": {
+          "type": "string",
+          "maxLength": 300
+        }
+      }
     },
     "step": {
       "type": [
@@ -256,6 +360,29 @@
         }
       }
     },
+    "lastChange": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "event",
+        "at"
+      ],
+      "properties": {
+        "event": {
+          "$ref": "#/$defs/change"
+        },
+        "at": {
+          "$ref": "#/$defs/iso"
+        },
+        "by": {
+          "type": "string",
+          "maxLength": 80
+        }
+      }
+    },
     "event": {
       "title": "build-live-event@1",
       "type": "object",
@@ -337,100 +464,21 @@
           "$ref": "#/$defs/change"
         },
         "everySec": {
-          "type": "integer",
-          "minimum": 5,
-          "maximum": 300
+          "anyOf": [
+            {
+              "const": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 5,
+              "maximum": 300
+            }
+          ],
+          "description": "how often the liveness pass runs (15); carried on liveness and snapshot, 0 = not carried"
         },
         "note": {
           "type": "string",
           "maxLength": 400
-        }
-      }
-    },
-    "state": {
-      "title": "build-live-state@1",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "$axf",
-        "build",
-        "status",
-        "state",
-        "alive",
-        "at",
-        "seq"
-      ],
-      "properties": {
-        "$axf": {
-          "const": "build-live-state@1"
-        },
-        "build": {
-          "$ref": "#/$defs/buildId"
-        },
-        "title": {
-          "type": "string",
-          "maxLength": 160
-        },
-        "status": {
-          "$ref": "#/$defs/status"
-        },
-        "state": {
-          "$ref": "#/$defs/state"
-        },
-        "step": {
-          "$ref": "#/$defs/step"
-        },
-        "lastStep": {
-          "$ref": "#/$defs/lastStep"
-        },
-        "alive": {
-          "$ref": "#/$defs/alive"
-        },
-        "cause": {
-          "$ref": "#/$defs/cause"
-        },
-        "exit": {
-          "type": [
-            "integer",
-            "null"
-          ]
-        },
-        "signal": {
-          "type": "string",
-          "maxLength": 8
-        },
-        "watchdog": {
-          "$ref": "#/$defs/watchdog"
-        },
-        "stale": {
-          "$ref": "#/$defs/stale"
-        },
-        "broke": {
-          "$ref": "#/$defs/broke"
-        },
-        "lastBroke": {
-          "$ref": "#/$defs/broke"
-        },
-        "recovering": {
-          "type": "boolean"
-        },
-        "at": {
-          "$ref": "#/$defs/iso"
-        },
-        "checkedAt": {
-          "$ref": "#/$defs/isoOrNone"
-        },
-        "seq": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "events": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "line": {
-          "type": "string",
-          "maxLength": 300
         }
       }
     },
@@ -457,9 +505,17 @@
           "minimum": 0
         },
         "everySec": {
-          "type": "integer",
-          "minimum": 5,
-          "maximum": 300
+          "anyOf": [
+            {
+              "const": 0
+            },
+            {
+              "type": "integer",
+              "minimum": 5,
+              "maximum": 300
+            }
+          ],
+          "description": "how often the liveness pass runs (15); carried on liveness and snapshot, 0 = not carried"
         },
         "builds": {
           "type": "array",
