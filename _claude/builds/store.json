@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7964,
- "updatedAt": "2026-11-17T21:17:47.687Z",
+ "rev": 7965,
+ "updatedAt": "2026-11-17T21:18:09.896Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265906,7 +265906,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:12:27.039Z",
+   "updatedAt": "2026-11-17T21:18:06.950Z",
    "builtAt": "",
    "notes": [
     {
@@ -265954,7 +265954,16 @@
      "at": "2026-11-17T21:12:27.039Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T21:18:06.950Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Why can't we hide assets yet? We're supposed to be able to hide toolbars and tab groups and all that and be able to see what's hidden. ... You have to rebuild it.",
@@ -265971,13 +265980,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T14:50:36.734Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-hide-any-asset--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-17T21:12:20.028Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 1,
     "lastRun": {
      "at": "2026-11-17T21:11:03.193Z",
@@ -265997,9 +266006,9 @@
      "note": "Split by Claude into 16 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
-    "dispatchedAt": "2026-11-17T21:12:20.028Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -266008,27 +266017,11 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T21:12:20.028Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:11:03.193Z",
-     "buildId": "rebuild-fresh-main-hide-any-asset",
-     "phase": "",
-     "step": "s6",
-     "cause": "tmux-missing",
-     "exit": null,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "2026-11-17T21:11:16.164Z",
-     "session": "",
-     "note": "its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -266179,12 +266172,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:18:06.950Z",
      "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T21:11:04.164Z",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:11:04.167Z"
+     "updatedAt": "2026-11-17T21:18:07.428Z"
     },
     {
      "id": "s7",
@@ -268419,34 +268412,8 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T21:06:34.794Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:15:11.470Z",
-     "buildId": "rebuild-fresh-main-phone-connect-small",
-     "phase": "Phase 1",
-     "step": "s7",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "hulu0241",
-     "notified": "2026-11-17T21:15:31.951Z",
-     "session": "",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -276128,34 +276095,8 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T21:17:35.444Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-rebuild-every-toolbar-page-specific--gina",
-     "phase": "Phase 2"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:17:07.031Z",
-     "buildId": "rebuild-every-toolbar-page-specific",
-     "phase": "",
-     "step": "s27",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "2026-11-17T21:17:22.290Z",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -278380,64 +278321,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T20:59:11.038Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s21",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "2026-11-17T20:59:23.786Z",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
-     "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 1 of 3)."
-    },
-    {
-     "at": "2026-11-17T21:05:17.707Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s21",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 2,
-     "account": "",
-     "notified": "2026-11-17T21:05:32.329Z",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
-     "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 2 of 3)."
-    },
-    {
-     "at": "2026-11-17T21:11:12.977Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s21",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 3,
-     "account": "",
-     "notified": "2026-11-17T21:11:16.164Z",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
-     "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 3 of 3)."
-    },
-    {
-     "at": "2026-11-17T21:17:11.188Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s22",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "2026-11-17T21:17:22.290Z",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
-     "note": "session was killed (exit 143): step s22 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -279967,7 +279850,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -279976,7 +279859,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
    "updatedAt": "2026-11-17T21:07:49.775Z",
-   "builtAt": "2026-11-17T21:01:32.194Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -280051,17 +279934,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T21:07:45.194Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-terminal-main-tab-streaming-console-s--sully",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
