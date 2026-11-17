@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `server-rule-done-means-merged-working` → running, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `builds-keep-their-slot-across-phases` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `maintenance-plugin-clear-docker-cache` s1 done, → complete, note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:57 UTC · `move-server-side-console-parts-onto-vps` s15 done, s16 done (all) · foreign-write
 - 2026-11-17 23:57 UTC · `fix-launcher-crash-duplicate-steps-brief` s10 done (all) · orchestrator
 - 2026-11-17 23:58 UTC · `move-server-side-console-parts-onto-vps` s17 done (all) · orchestrator
+- 2026-11-17 23:58 UTC · `fix-launcher-crash-duplicate-steps-brief` s10 done (all) · foreign-write
 
 ## Token passes (log)
 
