@@ -100,7 +100,7 @@
     "kind": "daemon",
     "unit": "axf-host-api.service",
     "plugin": "console",
-    "runner": "deploy/host-api/host-api.mjs",
+    "runner": "deploy/host-services/axf-hostd.mjs",
     "user": "axf-host",
     "sudo": [
      {
@@ -135,7 +135,7 @@
      {
       "id": "reload",
       "title": "Reload manifests",
-      "description": "Re-read deploy/*/host-service.json without a restart (SIGHUP).",
+      "description": "Re-read deploy/host-services/services/*.json without a restart (SIGHUP).",
       "confirm": false,
       "modes": [
        "shadow",

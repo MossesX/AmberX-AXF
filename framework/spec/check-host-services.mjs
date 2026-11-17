@@ -39,7 +39,17 @@ await t('schemas/host-service.json + schemas/json/host-*.schema.json are current
 
 // ── 2. every manifest in the repo ────────────────────────────────────────────────────────────────────────────────────
 const repoManifests = [];
-await t('every deploy/*/host-service.json validates and the set has no duplicate id / unit / socket', () => {
+await t('every deploy/host-services/services/*.json (and deploy/*/host-service.json) validates and the set has no duplicate id / unit / socket', () => {
+  const sdir = join(ROOT, 'deploy/host-services/services');
+  if (existsSync(sdir)) for (const name of readdirSync(sdir).filter((x) => x.endsWith('.json')).sort()) {
+    const m = JSON.parse(readFileSync(join(sdir, name), 'utf8'));
+    const e = H.manifestErrors(m, `deploy/host-services/services/${name}`);
+    assert.deepEqual(e, [], e.join('\n'));
+    assert.equal(`${m.id}.json`, name, `${name}: the file is named after its id`);
+    assert.ok(m.runner.startsWith('deploy/'), `${name}: runner lives under deploy/`);
+    assert.ok(existsSync(join(ROOT, m.runner)), `${name}: runner ${m.runner} exists`);
+    repoManifests.push(m);
+  }
   const dir = join(ROOT, 'deploy');
   for (const d of readdirSync(dir, { withFileTypes: true })) {
     if (!d.isDirectory()) continue;

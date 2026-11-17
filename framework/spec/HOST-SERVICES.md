@@ -32,7 +32,8 @@ plugin's own screens) is built from framework controls on the console's assets l
 
 ## The manifest (host-service@1)
 
-One file per service: `deploy/<service>/host-service.json`. The host API reads every `deploy/*/host-service.json` at
+One file per service: `deploy/host-services/services/<id>.json` (older parts may keep `deploy/<dir>/host-service.json`;
+both are read). The host API reads every manifest at
 start and on `SIGHUP`; `node framework/spec/check-host-services.mjs` validates every manifest in the repo in CI.
 
 ```jsonc

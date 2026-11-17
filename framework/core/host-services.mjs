@@ -6,7 +6,7 @@
  * endpoints, the state the UI reads and the wire errors.
  *
  * Frames:
- *   host-service@1        a service manifest (deploy/<service>/host-service.json): id, unit, owning plugin, sudo
+ *   host-service@1        a service manifest (deploy/host-services/services/<id>.json): id, unit, owning plugin, sudo
  *                         whitelist, health, actions, settings
  *   host-service-state@1  what the console reads for one service: up / degraded / down / unknown, since, unit facts,
  *                         health, last run, mode
@@ -107,7 +107,7 @@ export const DEFAULTS = Object.freeze({
   fallbackUrl: 'http://host.docker.internal:7788',
   apiPrefix: '/v1',
   unitPrefix: 'axf-',
-  manifestGlob: 'deploy/*/host-service.json',
+  manifestGlob: 'deploy/host-services/services/*.json',
   stateDir: '_data/host-services',
   modeFile: '_data/host-services/mode.json',
   logDir: '/var/log',
@@ -290,7 +290,7 @@ export function derived(id) {
 /** The host API's own manifest: the one service the console must find; `plugin: console`. */
 export const HOST_API_MANIFEST = Object.freeze({
   $axf: MANIFEST_FRAME, id: DEFAULTS.hostApiId, title: 'Host API', kind: 'daemon', unit: `${DEFAULTS.unitPrefix}${DEFAULTS.hostApiId}.service`, plugin: 'console',
-  runner: 'deploy/host-api/host-api.mjs', socket: DEFAULTS.apiSocket,
+  runner: 'deploy/host-services/axf-hostd.mjs', socket: DEFAULTS.apiSocket,
   description: `Serves ${DEFAULTS.apiSocket} and ${DEFAULTS.loopbackHost}:${DEFAULTS.loopbackPort}: every host service's state, health, actions, settings, logs and mode.`,
   sudo: [
     { cmd: '/usr/bin/systemctl start axf-*', why: 'unit actions: start a service or run a tick now' },
@@ -299,7 +299,7 @@ export const HOST_API_MANIFEST = Object.freeze({
     { cmd: '/usr/bin/journalctl -u axf-* *', why: 'the Logs route' },
   ],
   health: { path: '/health' },
-  actions: [{ id: 'reload', title: 'Reload manifests', description: 'Re-read deploy/*/host-service.json without a restart (SIGHUP).' }],
+  actions: [{ id: 'reload', title: 'Reload manifests', description: 'Re-read deploy/host-services/services/*.json without a restart (SIGHUP).' }],
 });
 
 /**
