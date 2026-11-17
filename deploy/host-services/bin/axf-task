@@ -27,6 +27,11 @@ case "${1:-}" in
   jobs-sweep) exec node "$JOBS" sweep --json ;;
   jobs-list) exec node "$JOBS" list --json ;;
   jobs-drain) exec node deploy/host-services/workers/agent-swarm.mjs --drain "$DATA/host-services/agent-swarm/requests" ;;
+  doctor-report) export DIR NAME=axf-console; exec bash deploy/console-doctor.sh --report ;;
+  console-install) exec bash deploy/install-console.sh ;;
+  claude-pick-install) export HOME=/root; exec bash deploy/claude-pick.sh --install ;;
+  keyfile-perms) [ -f /root/.anthropic-key ] && exec chmod 600 /root/.anthropic-key; exit 0 ;;
+  git-status) exec git -C "$DIR" status --porcelain=v1 --branch ;;
   git-fetch) exec git -C "$DIR" fetch -q origin ;;
   git-worktree-prune) exec git -C "$DIR" worktree prune ;;
   *) echo "axf-task: unknown task '${1:-}'" >&2; exit 64 ;;
