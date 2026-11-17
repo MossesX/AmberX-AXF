@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, ciOf, reasonEvent } from './land.mjs';
+import { makeGit, round, control, readState, ciOf, reasonEvent, worktrees } from './land.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -250,5 +250,18 @@ rmSync(tmp, { recursive: true, force: true });
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
 check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');
+{
+  const rr = core.blockReason('b1', { ci: 'success', rules: { failing: ['home-card', 'ci-checks'] } });
+  check(rr?.kind === 'rules' && /home-card, ci-checks/.test(rr.text) && reasonEvent('rules') === 'blocked' && !rr.agent, 'failing build rules block landing (not an agent job)');
+  check(core.blockReason('b1', { ci: 'success', rules: { failing: [] } }) === null, 'passing build rules do not block');
+}
+{
+  // one branch in two worktrees: the build's own folder wins over a stray checkout, whichever is listed last
+  const list = (...wts) => () => ({ out: wts.map(([p, b]) => `worktree ${p}\nHEAD abc\nbranch refs/heads/${b}\n`).join('\n') });
+  const b = 'claude/auto-lander-controls';
+  check(worktrees(list(['/root/axf-builds/auto-lander-controls', b], ['/tmp/wt-lander', b]))[b] === '/root/axf-builds/auto-lander-controls', 'a stray second checkout of a branch does not replace the build worktree');
+  check(worktrees(list(['/tmp/wt-lander', b], ['/root/axf-builds/auto-lander-controls', b]))[b] === '/root/axf-builds/auto-lander-controls', 'the build worktree wins when listed second too');
+  check(worktrees(list(['/tmp/a', 'fix/x'], ['/tmp/b', 'fix/x']))['fix/x'] === '/tmp/a', 'no build folder: the first listed');
+}
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 if (bad) process.exitCode = 1;

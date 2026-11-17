@@ -23,6 +23,13 @@
  * published there at once as its own status-only commit, whatever branch this checkout is on. AXF_BUILDS_LIVE=0 = off.
  * The old per-profile files (orchestrator.json, pending.json, build-queue.json) stay for one release as READ-ONLY
  * exports of the store (see exportAll); nothing but the store writes them, and a direct edit is taken into the store.
+ *
+ * data-store@1 (axf-data, Nov 15 2026: "the builds keep running" with the console down): the store and its journal
+ * follow the mode of the `builds` namespace (framework/core/data-store-mode.mjs). local = the files, as before. shadow =
+ * the files first, then the same write and journal line on axf-data (a failure is a drift line, never an error). cutover
+ * = axf-data only: the read takes the record's etag and the write sends it back (lock = rev check: a conflict re-reads
+ * and re-applies the change, up to 5 times), so a headless session or axf-molly with the console down writes the same
+ * store. rollback = writes refused (read_only) until the local copy has caught up.
  */
 import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -34,6 +41,8 @@ import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
+import * as files from '../core/data-files.mjs';
+import { DataStoreError } from '../core/data-store.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
 /** A scratch data folder (AXF_DATA_DIR set to a folder, as tests do): the store lives there too, seeded from the repo's. */
@@ -42,6 +51,40 @@ export const storeFile = () => process.env.AXF_BUILDS_STORE || (scratchDir() ? j
 export const journalDir = () => join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal');
 
 export class StoreLocked extends Error {}
+/** cutover: someone else wrote the store on axf-data between our read and our write (withStore re-runs). */
+export class StoreConflict extends Error {}
+const storeKey = () => files.keyFor(storeFile());
+/** The data-store@1 mode of the builds store: local unless the store maps onto axf-data and `builds` has moved. */
+export const storeMode = () => { const k = storeKey(); return k ? files.modeOf(k) : 'local'; };
+const remoteOn = () => { const m = storeMode(); return m === 'cutover' || m === 'rollback'; };
+let remoteEtag = '';
+const shadowCall = (req, what) => { try { return files.callSync(req); } catch (e) { files.logDrift(req.op === 'append' ? 'append' : 'write', req.key, req.op === 'append' ? 'append-failed' : 'write-failed', null, null, `${what}: ${e.code || 'error'}: ${e.message}`); return null; } };
+/** One journal entry on axf-data; an entry over the 256 KiB entry limit goes as a record with a pointer line. */
+function remoteJournal(key, entry, shadow) {
+  const call = shadow ? (r) => shadowCall(r, 'journal') : files.callSync;
+  try { return call({ op: 'append', key, entries: [entry], idem: `rev-${entry.rev}-${entry.at}` }); }
+  catch (e) {
+    if (!(e instanceof DataStoreError) || e.code !== 'too_large') throw e;
+    const big = `builds/journal-large/${entry.rev}-${entry.at.replace(/[^0-9]/g, '')}.json`;
+    files.callSync({ op: 'put', key: big, data: entry, create: true });
+    return files.callSync({ op: 'append', key, entries: [{ rev: entry.rev, at: entry.at, by: entry.by, action: entry.action, large: big }], idem: `rev-${entry.rev}-${entry.at}` });
+  }
+}
+/** Store write by mode (local file + optional shadow mirror, or axf-data with the etag read). */
+function writeStoreFile(f, store) {
+  const mode = storeMode();
+  if (mode === 'rollback') throw new DataStoreError('read_only', 'the builds namespace is rolling back: writes wait until it is local again');
+  if (mode === 'cutover') {
+    try { remoteEtag = files.callSync({ op: 'put', key: storeKey(), data: core.compactStore(store), ...(remoteEtag ? { ifMatch: remoteEtag } : { create: true }) }).etag; }
+    catch (e) { if (e instanceof DataStoreError && (e.code === 'conflict' || e.code === 'exists')) throw new StoreConflict(e.message); throw e; }
+    return;
+  }
+  const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(store)); renameSync(tmp, f);
+  if (mode === 'shadow') {
+    const cur = shadowCall({ op: 'get', key: storeKey() }, 'store read');
+    shadowCall({ op: 'put', key: storeKey(), data: core.compactStore(store), ...(cur ? { ifMatch: cur.etag } : { create: true }) }, 'store');
+  }
+}
 function lock(f, waitMs = 20000) {
   const l = `${f}.lock`; const t0 = Date.now();
   for (;;) {
@@ -81,6 +124,11 @@ function foldOrigins(store) {
 }
 export const mergeOriginsText = (a, b) => { const pa = (() => { try { return JSON.parse(a || '{}').origins ?? {}; } catch { return {}; } })(); const pb = (() => { try { return JSON.parse(b || '{}').origins ?? {}; } catch { return {}; } })(); const out = { ...pa }; for (const [k, v] of Object.entries(pb)) out[k] = mergeOrigin(out[k], v); return originsText(out); };
 function readStore() {
+  if (remoteOn()) {
+    const r = files.callSync({ op: 'get', key: storeKey() });
+    remoteEtag = r ? r.etag : '';
+    return healOrigins(core.normalizeStore(r ? r.data : core.emptyStore()));
+  }
   const f = storeFile();
   if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, readFileSync(join(REPO_ROOT, STORE_REL))); }
   if (!existsSync(f)) {
@@ -248,7 +296,14 @@ function journal(entry) {
   const d = journalDir(); mkdirSync(d, { recursive: true });
   const line = `${JSON.stringify(entry)}\n`;
   const sizes = Object.fromEntries(readdirSync(d).filter((f) => f.endsWith('.jsonl')).map((f) => [f.slice(0, -6), statSync(join(d, f)).size]));
-  appendFileSync(join(d, `${merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax())}.jsonl`), line);
+  const part = join(d, `${merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax())}.jsonl`);
+  const mode = storeMode();
+  if (mode === 'cutover') remoteJournal(`builds/journal/${entry.at.slice(0, 7)}`, entry, false);
+  else {
+    appendFileSync(part, line);
+    const key = files.keyFor(part);
+    if (mode === 'shadow' && key) remoteJournal(key, entry, true);
+  }
   // every change to a build goes live to main (builds-live.mjs); draft-only writes stay local
   if (entry.builds?.length) enqueueLive(entry);
 }
@@ -258,6 +313,8 @@ function journal(entry) {
  * only main's newer builds arriving. `journals` = { 'YYYY-MM': text } replaces those journal files (already the union).
  */
 export function adoptStore(next, { journals = {} } = {}) {
+  // cutover / rollback: axf-data is the store; main's git copy is a projection of it, never adopted back
+  if (remoteOn()) return;
   const f = storeFile(); const unlock = lock(f);
   try {
     // build-hook@1: builds changed in another checkout (a build session's worktree) arrive here, not through saveStore;
@@ -295,8 +352,8 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   const metaChanged = JSON.stringify([before.meta, before.rules]) !== JSON.stringify([after.meta, after.rules]);
   if (!changes.length && !draftChanged && !metaChanged) return { store: before, changes: [], rev: before.rev };
   after.rev = (before.rev ?? 0) + 1; after.updatedAt = now;
-  const f = storeFile(); mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(after)); renameSync(tmp, f);
+  const f = storeFile(); if (!remoteOn()) mkdirSync(dirname(f), { recursive: true });
+  writeStoreFile(f, after);
   foldOrigins(after);
   journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
   // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
@@ -306,21 +363,28 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
 
 /** Read, change, save under a lock. fn(store) returns the new store (or { store, ...extra }). */
 export function withStore(fn, meta = {}) {
-  const f = storeFile();
-  const unlock = lock(f, meta.lockWaitMs);
-  try {
-    const before = readStore();
-    const foreign = [];
-    const base = exportsOn() ? absorbForeign(core.normalizeStore(JSON.parse(JSON.stringify(before))), foreign) : before;
-    if (foreign.length) saveStore(before, base, { by: 'foreign-write', action: 'absorb', note: foreign.join('; ') });
-    const start = foreign.length ? readStore() : before;
-    // nothing new from outside, but the files still differ from the store (e.g. older): the export below rewrites them
-    const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
-    const next = r && r.$axf ? r : r.store;
-    const saved = saveStore(start, next, meta);
-    if (exportsOn()) exportAll(saved.store);
-    return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign };
-  } finally { unlock(); flushLiveSoon(); }
+  if (remoteOn()) {
+    // cutover: no file lock; the etag read with the store is the lock (a conflict re-reads and re-applies fn)
+    for (let i = 0; ; i += 1) {
+      try { const r = withStoreOnce(fn, meta); flushLiveSoon(); return r; }
+      catch (e) { if (!(e instanceof StoreConflict) || i >= 4) throw e; }
+    }
+  }
+  const unlock = lock(storeFile(), meta.lockWaitMs);
+  try { return withStoreOnce(fn, meta); } finally { unlock(); flushLiveSoon(); }
+}
+function withStoreOnce(fn, meta) {
+  const before = readStore();
+  const foreign = [];
+  const base = exportsOn() ? absorbForeign(core.normalizeStore(JSON.parse(JSON.stringify(before))), foreign) : before;
+  if (foreign.length) saveStore(before, base, { by: 'foreign-write', action: 'absorb', note: foreign.join('; ') });
+  const start = foreign.length ? readStore() : before;
+  // nothing new from outside, but the files still differ from the store (e.g. older): the export below rewrites them
+  const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
+  const next = r && r.$axf ? r : r.store;
+  const saved = saveStore(start, next, meta);
+  if (exportsOn()) exportAll(saved.store);
+  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign };
 }
 
 // ------------------------------------------------------------------ migration sources
@@ -409,6 +473,7 @@ export function dryRunMarkdown({ store, report, sources }) {
 
 /** Restore one build to the state it had at journal revision `rev` (itself a new, journalled write). */
 export function journalOf(id) {
+  if (remoteOn()) return remoteJournalOf(id);
   const d = journalDir(); if (!existsSync(d)) return [];
   const out = [];
   for (const f of readdirSync(d).filter((x) => x.endsWith('.jsonl')).sort()) for (const line of readFileSync(join(d, f), 'utf8').split('\n')) {
@@ -416,6 +481,26 @@ export function journalOf(id) {
     for (const b of e.builds ?? []) if (b.id === id) out.push({ rev: e.rev, at: e.at, by: e.by, action: e.action, op: b.op, buildRev: b.rev, after: b.after });
   }
   return out;
+}
+/** journalOf on axf-data: every builds/journal/* key, oversized entries read from their record. */
+function remoteJournalOf(id) {
+  const out = [];
+  let after = '';
+  const keys = [];
+  for (;;) { const l = files.callSync({ op: 'list', ns: 'builds', prefix: 'journal/', after }); keys.push(...l.items.filter((i) => i.kind === 'journal').map((i) => i.path)); if (!l.next) break; after = l.next; }
+  for (const path of keys) {
+    let since = 0;
+    for (;;) {
+      const r = files.callSync({ op: 'read', key: `builds/${path}`, since });
+      for (const x of r.entries) {
+        let e = x.entry;
+        if (e.large) { const big = files.callSync({ op: 'get', key: e.large }); if (big) e = big.data; }
+        for (const b of e.builds ?? []) if (b.id === id) out.push({ rev: e.rev, at: e.at, by: e.by, action: e.action, op: b.op, buildRev: b.rev, after: b.after });
+      }
+      if (!r.next) break; since = r.next;
+    }
+  }
+  return out.sort((a, b) => a.rev - b.rev);
 }
 export function restoreBuild(id, rev, by = 'cli') {
   const h = journalOf(id).find((x) => x.rev === Number(rev));

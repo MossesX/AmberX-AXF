@@ -1,0 +1,582 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-gate-rules-plugin-in-the-console",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-15T13:39:38Z",
+ "build": {
+  "id": "gate-rules-plugin-in-the-console",
+  "title": "Gate & rules plugin in the console",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Where is the gate and rules plugin, open it on my screen. Yeah.",
+  "verbatim": true,
+  "at": "2026-11-15T11:53:25.282Z",
+  "source": "",
+  "by": "gate-rules-plugin-in-the-console",
+  "addenda": []
+ },
+ "brief": "# Build: gate-rules-plugin-in-the-console\n\n## Brett said (verbatim)\nAt: 2026-11-15T11:53:25.282Z\n> Where is the gate and rules plugin, open it on my screen. Yeah.\n\n## What to build\nContinue build \"Gate & rules plugin in the console\" (gate-rules-plugin-in-the-console) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-15 11:53):\n\"Where is the gate and rules plugin, open it on my screen. Yeah.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/gate-rules-plugin-in-the-console\nSteps in this phase (18 left, ~2.7 h):\n[ ] s6 (~7 min) Scaffold the plugin apps/console-web/plugins/gate/: plugin.json (builtWith, description, lifecycle.dataDir, uiEditor none), install.mjs, uninstall.mjs, README.md with the lifecycle marker, and register it in the plugin catalog.\n[ ] s7 (~10 min) Write the gate store adapter apps/console-web/plugins/gate/gate-store.mjs: read and write the rule set and history through the current orchestrator and lander code (push-banner land settings, merge-queue state) behind one interface, so a later molly backend replaces only this file.\n[ ] s8 (~10 min) Write the lander adapter apps/console-web/plugins/gate/lander.mjs with ONE mode switch 'Merge queue on/off' (Brett 06:59): ON = PRs go through the stacked merge queue (land.mjs queue add) and the one-at-a-time auto-lander is off; OFF (the default) = merge queue off and the auto-lander lands each finished build one at a time (merge main first, fix clashes, then land). Flipping it takes effect at once and is logged in History. Also: status (running/paused/idle, current mode), last N runs, waiting PRs with the gate-rules evaluate reasons, land now (follows the current mode), pause and resume. The default rule set in s3 must not force 'merge-queue only'.\n[ ] s9 (~7 min) Write the History log: append-only JSONL in the plugin dataDir for rule changes (who, when, before/after) and lander actions, plus read with filters (kind, since, pr).\n[ ] s10 (~10 min) Add the FastAPI routes in apps/console-web/plugins/gate/server/: GET rules, PUT rules/<id>, POST rules/<id>/toggle, POST rules/reset, GET lander, GET lander/waiting, GET lander/runs, POST lander/land-now, pause, resume, GET history. Destructive presses need confirm.\n[ ] s11 (~8 min) Add the CLI apps/console-web/plugins/gate/gate.mjs (rules list|get|set|on|off|reset, lander status|waiting|runs|land-now|pause|resume, history) and wire `axf gate …` in framework/cli/axf.mjs through the plugin-commands path.\n[ ] s12 (~10 min) Expose the gate.* and lander.* MCP tools from the console MCP server (through plugin-commands, matching GATE.md names) and register them for axHub routing. Add the voice/AmberX console actions gate.open, gate.rule, lander.land-now, lander.pause, lander.resume.\n[ ] s13 (~9 min) Build the plugin view shell GateView.tsx: a framework TabGroup (tab-group asset, settings id gate.tabs) with Rules, Auto-lander and History tabs, SkinScope root, remember last tab. Register console-control targets view:gate and tab:gate.tabs=<tab> plus console_show deep links.\n[ ] s14 (~10 min) Build the Rules tab: a DataGrid of rules that follows the skin's 1-or-2-row grid setting, each row with a Switch (on/off), severity chip and a settings popover using framework fields; register row:<rule>/setting targets. Tokens only.\n[ ] s15 (~8 min) Add the Rules tab toolbar (role=toolbar, aria-label gate.rules): Reset to defaults (confirm), Check a PR (opens gate.check_pr result dialog). Wire every control to the same REST routes the CLI and MCP use.\n[ ] s16 (~10 min) Build the Auto-lander tab: status card (running/paused, since, current stack), waiting grid (PR, build, which rule holds it and why) on the 1-or-2-row grid setting, last runs grid, toolbar with Land now and Pause/Resume; register control targets for every button and row.\n[ ] s17 (~8 min) Build the History tab: grid of rule changes and lander actions (1-or-2-row setting), filter chips by kind, a row detail showing before/after; register targets.\n[ ] s18 (~8 min) Add the plugin's settings sub-tab under Settings → Plugins → Gate (refresh interval, history size, default tab) with the level toolbar, and settings keys readable/writable through REST, MCP, CLI and voice.\n[ ] s19 (~8 min) Add the console nav entry (Builds → Gate & rules), the help page, glossary descriptions, notify.json for 'lander paused' and 'PR held by gate' alerts, and a systems-check health item when the lander is stuck.\n[ ] s20 (~10 min) Write unit tests: gate-rules core against fixtures, gate-store and lander adapters against a temp land/queue dir, history append/filter, REST route tests, CLI vs MCP parity test (same inputs → same outputs).\n[ ] s21 (~10 min) Run the CI checks (check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, glossary catalog --check, plugin-lifecycle check gate --after-uninstall, tracker --check) and fix findings.\n[ ] s22 (~10 min) Re-bake the console, run vite preview, take desktop and phone shots of the three tabs, and submit to UI Review with 3 options (grid density / card layout / compact) as assets in plugins/gate/assets/.\n[ ] s23 (~10 min) Log the plugin in Shipped features, update catalog status and tracker, then write the report _claude/builds/reports/gate-rules-plugin-in-the-console.md (what was built, API parity table: deep link, state, actions, settings across REST/MCP/CLI/voice; molly handover), add the THREADS row, push the branch, link it with builds-live.mjs and open the PR for the merge queue.\nRead first: apps/console-web/plugins/gate/plugin.json, apps/console-web/plugins/gate/install.mjs, apps/console-web/plugins/gate/uninstall.mjs, apps/console-web/plugins/gate/README.md, apps/console-web/plugins/gate/gate-store.mjs, apps/console-web/plugins/gate/lander.mjs, apps/console-web/plugins/push-banner/land/, apps/console-web/plugins/gate/history.mjs, apps/console-web/plugins/gate/server/routes.py, apps/console-web/plugins/gate/gate.mjs, framework/cli/axf.mjs, apps/console-web/server/mcp_server.py, apps/console-web/plugins/gate/commands.json, apps/console-web/plugins/gate/web/GateView.tsx, apps/console-web/plugins/gate/web/index.ts, apps/console-web/plugins/gate/web/RulesTab.tsx, apps/console-web/plugins/gate/web/CheckPrDialog.tsx, apps/console-web/plugins/gate/web/LanderTab.tsx, apps/console-web/plugins/gate/web/HistoryTab.tsx, apps/console-web/plugins/gate/web/GateSettings.tsx, apps/console-web/plugins/gate/settings.json, apps/console-web/plugins/gate/help.md, apps/console-web/plugins/gate/notify.json, apps/console-web/plugins/gate/health.py, apps/console-web/plugins/gate/test.mjs, apps/console-web/plugins/gate/server/test_routes.py, apps/console-web/plugins/gate/, apps/console-web/plugins/gate/assets/, apps/console-web/src/axf/, _claude/builds/reports/gate-rules-plugin-in-the-console.md, _claude/THREADS.md, framework/catalog/status.json, tracker.json\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step gate-rules-plugin-in-the-console <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link gate-rules-plugin-in-the-console --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step gate-rules-plugin-in-the-console <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note gate-rules-plugin-in-the-console \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-gate-rules-plugin-in-the-console--earl",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-15T11:58:22.424Z",
+   "endedAt": "2026-11-15T12:14:50.478Z",
+   "exit": 0,
+   "costUsd": 6.5636
+  },
+  {
+   "session": "axf-gate-rules-plugin-in-the-console--paulie",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-15T12:17:19.386Z",
+   "endedAt": "2026-11-15T13:04:12.547Z",
+   "exit": 0,
+   "costUsd": 20.0882
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Read the coordinating builds (auto-lander-controls-in-the-gate-plugin, move-build-orchestrator-to-axhub) and the current lander/merge-queue code (apps/console-web/plugins/push-banner/land/, build-orchestrator/pipeline.mjs). Write a short design note listing which existing settings and checks become gate rules and where molly will take over. Add a build note on both coordinating builds.",
+   "model": "Fable",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-15T11:58:22.424Z",
+   "doneAt": "2026-11-15T12:02:49.525Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Define the gate-rules@1 schema: the rule record (id, kind ci|tests|theme|controls|ui-review|clash|custom, enabled, settings, severity, owner), the rule set document and the lander-state@1 record (status, paused, last runs, waiting items with reasons). Add it to framework/schemas/ and generate the JSON schema.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:02:49.525Z",
+   "doneAt": "2026-11-15T12:06:12.088Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Write the reference core framework/core/gate-rules.mjs: validate, default rule set (CI green, tests, check-theme, check-controls, check-toolbars, UI Review gate, clash handling) plus a landing-mode setting mergeQueue: on|off (default off = one-at-a-time auto-lander; on = stacked merge queue, lander off), evaluate(rules, prSnapshot) → pass/fail per rule with reasons, and migrate from today's push-banner/lander settings keys. Put the landing mode in the gate-rules@1 / lander-state@1 schema (s2) too.",
+   "model": "Fable",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:06:12.088Z",
+   "doneAt": "2026-11-15T12:09:34.397Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Add golden fixtures for gate-rules@1 (default set, a migration from the current lander settings, evaluate cases for green, red CI, UI Review held, clash) and a check script. Record the Android twin as a deferred gap in PORTING.md.",
+   "model": "Fable",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-15T12:09:34.397Z",
+   "doneAt": "2026-11-15T12:12:44.690Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Define the gate.* and lander.* tool contract (names, inputs and outputs: gate.rules_list/get/set/toggle/reset, gate.check_pr, gate.history; lander.status/waiting/runs/land_now/pause/resume) in framework/spec/GATE.md, marking which side runs them (console now, axf-molly later) and that axHub only routes them.",
+   "model": "Fable",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-15T12:12:44.690Z",
+   "doneAt": "2026-11-15T12:14:27.855Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Scaffold the plugin apps/console-web/plugins/gate/: plugin.json (builtWith, description, lifecycle.dataDir, uiEditor none), install.mjs, uninstall.mjs, README.md with the lifecycle marker, and register it in the plugin catalog.",
+   "model": "Opus",
+   "estimate": "7 min",
+   "estimateMin": 7,
+   "startedAt": "2026-11-15T12:14:27.855Z",
+   "doneAt": "2026-11-15T12:20:45.711Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Write the gate store adapter apps/console-web/plugins/gate/gate-store.mjs: read and write the rule set and history through the current orchestrator and lander code (push-banner land settings, merge-queue state) behind one interface, so a later molly backend replaces only this file.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:20:45.711Z",
+   "doneAt": "2026-11-15T12:22:11.576Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Write the lander adapter apps/console-web/plugins/gate/lander.mjs with ONE mode switch 'Merge queue on/off' (Brett 06:59): ON = PRs go through the stacked merge queue (land.mjs queue add) and the one-at-a-time auto-lander is off; OFF (the default) = merge queue off and the auto-lander lands each finished build one at a time (merge main first, fix clashes, then land). Flipping it takes effect at once and is logged in History. Also: status (running/paused/idle, current mode), last N runs, waiting PRs with the gate-rules evaluate reasons, land now (follows the current mode), pause and resume. The default rule set in s3 must not force 'merge-queue only'.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:22:11.576Z",
+   "doneAt": "2026-11-15T12:24:15.938Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Write the History log: append-only JSONL in the plugin dataDir for rule changes (who, when, before/after) and lander actions, plus read with filters (kind, since, pr).",
+   "model": "Opus",
+   "estimate": "7 min",
+   "estimateMin": 7,
+   "startedAt": "2026-11-15T12:24:15.938Z",
+   "doneAt": "2026-11-15T12:24:37.906Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Add the FastAPI routes in apps/console-web/plugins/gate/server/: GET rules, PUT rules/<id>, POST rules/<id>/toggle, POST rules/reset, GET lander, GET lander/waiting, GET lander/runs, POST lander/land-now, pause, resume, GET history. Destructive presses need confirm.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:24:37.906Z",
+   "doneAt": "2026-11-15T12:26:56.348Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Add the CLI apps/console-web/plugins/gate/gate.mjs (rules list|get|set|on|off|reset, lander status|waiting|runs|land-now|pause|resume, history) and wire `axf gate …` in framework/cli/axf.mjs through the plugin-commands path.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-15T12:26:56.348Z",
+   "doneAt": "2026-11-15T12:28:08.927Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Expose the gate.* and lander.* MCP tools from the console MCP server (through plugin-commands, matching GATE.md names) and register them for axHub routing. Add the voice/AmberX console actions gate.open, gate.rule, lander.land-now, lander.pause, lander.resume.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:28:08.927Z",
+   "doneAt": "2026-11-15T12:30:37.875Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Build the plugin view shell GateView.tsx: a framework TabGroup (tab-group asset, settings id gate.tabs) with tabs Rules (including an 'After merge' section whose first rule is 'Send Shipped features'), Pending features, Auto-lander and History; SkinScope root; remember last tab. PENDING FEATURES tab (Brett 07:17): every active or incomplete build in one grid on the shared 2-row status row with animated badges; each row expands to show that build's feature record EXACTLY as Shipped features shows it, reusing the Shipped features expanded-row component (not a copy). Data comes ONLY from the one true feature store on the VPS (built by vps-sends-shipped-features-every-merge, through its REST/features.* API), never a local copy; when a build lands, its row leaves this tab and appears in Shipped features because it's the same record. Register console-control targets view:gate and tab:gate.tabs=<tab> plus console_show deep links. If this is too big for one step, split it into more steps rather than cutting it.",
+   "model": "Opus",
+   "estimate": "9 min",
+   "estimateMin": 9,
+   "startedAt": "2026-11-15T12:30:37.875Z",
+   "doneAt": "2026-11-15T12:34:09.706Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Build the Rules tab: a DataGrid of rules that follows the skin's 1-or-2-row grid setting, each row with a Switch (on/off), severity chip and a settings popover using framework fields; register row:<rule>/setting targets. Tokens only.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:34:09.706Z",
+   "doneAt": "2026-11-15T12:36:08.328Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Add the Rules tab toolbar (role=toolbar, aria-label gate.rules): Reset to defaults (confirm), Check a PR (opens gate.check_pr result dialog). Wire every control to the same REST routes the CLI and MCP use.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-15T12:36:08.328Z",
+   "doneAt": "2026-11-15T12:37:27.732Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Build the Auto-lander tab: status card (running/paused, since, current stack), waiting grid (PR, build, which rule holds it and why) on the 1-or-2-row grid setting, last runs grid, toolbar with Land now and Pause/Resume; register control targets for every button and row.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:37:27.732Z",
+   "doneAt": "2026-11-15T12:38:56.475Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s17",
+   "text": "Build the History tab: grid of rule changes and lander actions (1-or-2-row setting), filter chips by kind, a row detail showing before/after; register targets.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-15T12:38:56.475Z",
+   "doneAt": "2026-11-15T12:40:02.576Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "Add the plugin's settings sub-tab under Settings → Plugins → Gate (refresh interval, history size, default tab) with the level toolbar, and settings keys readable/writable through REST, MCP, CLI and voice.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-15T12:40:02.576Z",
+   "doneAt": "2026-11-15T12:41:41.023Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "Add the console nav entry (Builds → Gate & rules), the help page, glossary descriptions, notify.json for 'lander paused' and 'PR held by gate' alerts, and a systems-check health item when the lander is stuck.",
+   "model": "Opus",
+   "estimate": "8 min",
+   "estimateMin": 8,
+   "startedAt": "2026-11-15T12:41:41.023Z",
+   "doneAt": "2026-11-15T12:44:11.315Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "Write unit tests: gate-rules core against fixtures, gate-store and lander adapters against a temp land/queue dir, history append/filter, REST route tests, CLI vs MCP parity test (same inputs → same outputs).",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:44:11.315Z",
+   "doneAt": "2026-11-15T12:46:00.819Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "Run the CI checks (check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, glossary catalog --check, plugin-lifecycle check gate --after-uninstall, tracker --check) and fix findings.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:46:00.819Z",
+   "doneAt": "2026-11-15T12:47:15.378Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "Re-bake the console, run vite preview, take desktop and phone shots of the three tabs, and submit to UI Review with 3 options (grid density / card layout / compact) as assets in plugins/gate/assets/.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T12:47:15.378Z",
+   "doneAt": "2026-11-15T13:01:17.573Z",
+   "actualMin": 14,
+   "done": true
+  },
+  {
+   "id": "s23",
+   "text": "Log the plugin in Shipped features, update catalog status and tracker, then write the report _claude/builds/reports/gate-rules-plugin-in-the-console.md (what was built, API parity table: deep link, state, actions, settings across REST/MCP/CLI/voice; molly handover), add the THREADS row, push the branch, link it with builds-live.mjs and open the PR for the merge queue.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-15T13:01:17.573Z",
+   "doneAt": "2026-11-15T13:03:58.446Z",
+   "actualMin": 3,
+   "done": true
+  }
+ ],
+ "branch": "claude/gate-rules-plugin-in-the-console",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 711,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/711"
+ },
+ "landedCommit": "cf2f5d769fd2005c50c83a2b18e63e3d8e46bc2d",
+ "commits": [
+  "a317980a3ec24d951bc16734c5da99f2512800cd",
+  "88e4fa22d71363b0e4661430fab9d1195e2fb343",
+  "f7799ed1b3936d4ce95ae2b6859939ea5949dc0f",
+  "c250cf3eec92c7f6bcd63907946cda8d08c00a60",
+  "24c4406766b10a07a23f58fad3b7c8f98a40de02",
+  "68474480da11fe2cbc49061cd9f86f44d9921972",
+  "820cfabaa64e92235fc066d24fefe9983ed598c6",
+  "3bfc0e48db250a9eb4f5177dec63321b38c0cdd2",
+  "6d33ac357b6017d75aa69fb6851d2451073e4d79",
+  "05b67be21dba92345c506b34323d130571c60df2",
+  "0fdc4bc0609f12bdb194b9d4f92eaacf883c26e6",
+  "ddcd7e963a9532ffa52538af9bef5c1af4ceb9ca",
+  "c1cd1138b63885e0f2ce515951b2183d15a6e209",
+  "7cb848c934121e54c7f7bf315c3b91fb9ce4426d",
+  "9606f3897ba18fc6ddbbe27eba7478a595dec606",
+  "cd2d6279495c0e7ea16f8cae6c599386808e24a1",
+  "166c5c14a952488b3a496d474f7cf1bab99f8b6c",
+  "a7e25119679fb78930877580a3da60329a68035e",
+  "5f95d4009e413d4388db00dc41e852ef2c3ee287",
+  "d78478967b446ef73f7c375685037eb0fb9cef05",
+  "d5021844fd195d271f87be7398688fd484fa1aea",
+  "26c84d45a8720f65420c47400026b374eb2f1e36",
+  "1e0045ab0617d493ae5c8b600e2aa9148629b405",
+  "75c68bf1f5d3f6481e5dc0ae971d15c6f77a4649",
+  "e5316ad3ecac32e355bd0532775b12925fe2a0e6"
+ ],
+ "mergedAt": "2026-11-15T13:23:45Z",
+ "landedAt": "2026-11-15T13:23:41Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/gate-rules-plugin-in-the-console.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/gate/README.md",
+  "apps/console-web/plugins/gate/assets/settings/gate-lists-cards.json",
+  "apps/console-web/plugins/gate/assets/settings/gate-lists-compact.json",
+  "apps/console-web/plugins/gate/assets/settings/gate-lists-grid.json",
+  "apps/console-web/plugins/gate/gate-store.mjs",
+  "apps/console-web/plugins/gate/gate.mjs",
+  "apps/console-web/plugins/gate/health.py",
+  "apps/console-web/plugins/gate/help.json",
+  "apps/console-web/plugins/gate/help.md",
+  "apps/console-web/plugins/gate/history.mjs",
+  "apps/console-web/plugins/gate/hooks.mjs",
+  "apps/console-web/plugins/gate/install.mjs",
+  "apps/console-web/plugins/gate/lander.mjs",
+  "apps/console-web/plugins/gate/notify.json",
+  "apps/console-web/plugins/gate/plugin.json",
+  "apps/console-web/plugins/gate/server/__init__.py",
+  "apps/console-web/plugins/gate/server/routes.py",
+  "apps/console-web/plugins/gate/server/test_routes.py",
+  "apps/console-web/plugins/gate/settings.json",
+  "apps/console-web/plugins/gate/test.mjs",
+  "apps/console-web/plugins/gate/uninstall.mjs",
+  "apps/console-web/plugins/gate/web/CheckPrDialog.tsx",
+  "apps/console-web/plugins/gate/web/GateList.tsx",
+  "apps/console-web/plugins/gate/web/GateSettings.tsx",
+  "apps/console-web/plugins/gate/web/GateView.tsx",
+  "apps/console-web/plugins/gate/web/HistoryTab.tsx",
+  "apps/console-web/plugins/gate/web/LanderTab.tsx",
+  "apps/console-web/plugins/gate/web/RulesTab.tsx",
+  "apps/console-web/plugins/gate/web/RulesToolbar.tsx",
+  "apps/console-web/plugins/gate/web/actions.ts",
+  "apps/console-web/plugins/gate/web/api.ts",
+  "apps/console-web/plugins/gate/web/gate.css",
+  "apps/console-web/plugins/gate/web/index.tsx",
+  "apps/console-web/plugins/gate/web/menu.ts",
+  "apps/console-web/plugins/gate/web/rows.ts",
+  "apps/console-web/plugins/gate/web/settingsStore.ts",
+  "apps/console-web/plugins/gate/web/usePoll.ts",
+  "apps/console-web/plugins/glossary-index/catalog.mjs",
+  "apps/console-web/plugins/notify-control/server/core.py",
+  "apps/console-web/plugins/plugin-commands/commands.mjs",
+  "apps/console-web/plugins/plugin-commands/web/index.tsx",
+  "apps/console-web/src/axf/core/engines/plugin-commands.d.mts",
+  "apps/console-web/src/axf/core/engines/plugin-commands.mjs",
+  "apps/console-web/src/control/inventory.json",
+  "framework/catalog/catalog.json",
+  "framework/catalog/status.json",
+  "framework/cli/axf.mjs",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/core/engines/plugin-commands.d.mts",
+  "framework/core/engines/plugin-commands.mjs",
+  "framework/core/gate-rules.mjs",
+  "framework/schemas/gate-rules.json",
+  "framework/schemas/json/gate-rule-set.schema.json",
+  "framework/schemas/json/gate-rule.schema.json",
+  "framework/schemas/json/lander-state.schema.json",
+  "framework/spec/GATE.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-gate-rules.mjs",
+  "framework/spec/check-plugin-commands.mjs",
+  "framework/spec/fixtures/gate-rules.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "gate",
+   "files": [
+    "apps/console-web/plugins/gate/README.md",
+    "apps/console-web/plugins/gate/assets/settings/gate-lists-cards.json",
+    "apps/console-web/plugins/gate/assets/settings/gate-lists-compact.json",
+    "apps/console-web/plugins/gate/assets/settings/gate-lists-grid.json",
+    "apps/console-web/plugins/gate/gate-store.mjs",
+    "apps/console-web/plugins/gate/gate.mjs",
+    "apps/console-web/plugins/gate/health.py",
+    "apps/console-web/plugins/gate/help.json",
+    "apps/console-web/plugins/gate/help.md",
+    "apps/console-web/plugins/gate/history.mjs",
+    "apps/console-web/plugins/gate/hooks.mjs",
+    "apps/console-web/plugins/gate/install.mjs",
+    "apps/console-web/plugins/gate/lander.mjs",
+    "apps/console-web/plugins/gate/notify.json",
+    "apps/console-web/plugins/gate/plugin.json",
+    "apps/console-web/plugins/gate/server/__init__.py",
+    "apps/console-web/plugins/gate/server/routes.py",
+    "apps/console-web/plugins/gate/server/test_routes.py",
+    "apps/console-web/plugins/gate/settings.json",
+    "apps/console-web/plugins/gate/test.mjs",
+    "apps/console-web/plugins/gate/uninstall.mjs",
+    "apps/console-web/plugins/gate/web/CheckPrDialog.tsx",
+    "apps/console-web/plugins/gate/web/GateList.tsx",
+    "apps/console-web/plugins/gate/web/GateSettings.tsx",
+    "apps/console-web/plugins/gate/web/GateView.tsx",
+    "apps/console-web/plugins/gate/web/HistoryTab.tsx",
+    "apps/console-web/plugins/gate/web/LanderTab.tsx",
+    "apps/console-web/plugins/gate/web/RulesTab.tsx",
+    "apps/console-web/plugins/gate/web/RulesToolbar.tsx",
+    "apps/console-web/plugins/gate/web/actions.ts",
+    "apps/console-web/plugins/gate/web/api.ts",
+    "apps/console-web/plugins/gate/web/gate.css",
+    "apps/console-web/plugins/gate/web/index.tsx",
+    "apps/console-web/plugins/gate/web/menu.ts",
+    "apps/console-web/plugins/gate/web/rows.ts",
+    "apps/console-web/plugins/gate/web/settingsStore.ts",
+    "apps/console-web/plugins/gate/web/usePoll.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/axf/core/engines/plugin-commands.d.mts",
+    "apps/console-web/src/axf/core/engines/plugin-commands.mjs",
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/GATE.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-gate-rules.mjs",
+    "framework/spec/check-plugin-commands.mjs",
+    "framework/spec/fixtures/gate-rules.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/gate-rules.json",
+    "framework/schemas/json/gate-rule-set.schema.json",
+    "framework/schemas/json/gate-rule.schema.json",
+    "framework/schemas/json/lander-state.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/axf.mjs",
+    "framework/cli/build-engine.mjs",
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/plugin-commands.d.mts",
+    "framework/core/engines/plugin-commands.mjs",
+    "framework/core/gate-rules.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-commands",
+   "files": [
+    "apps/console-web/plugins/plugin-commands/commands.mjs",
+    "apps/console-web/plugins/plugin-commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/catalog.json",
+    "framework/catalog/status.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "glossary-index",
+   "files": [
+    "apps/console-web/plugins/glossary-index/catalog.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notify-control",
+   "files": [
+    "apps/console-web/plugins/notify-control/server/core.py"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/gate-rules-plugin-in-the-console.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261115-re9pm01",
+   "name": "Gate & rules: Rules, Auto-lander and History tabs",
+   "status": "waiting",
+   "group": "g-20261115-249f1c99",
+   "url": "/review/r-20261115-re9pm01"
+  }
+ ],
+ "cost": {
+  "usd": 26.6518,
+  "estimated": false,
+  "tokens": {
+   "input": 1740,
+   "output": 4207,
+   "cacheRead": 67946965,
+   "cacheWrite": 556124
+  }
+ },
+ "report": "_claude/builds/reports/gate-rules-plugin-in-the-console.md",
+ "open": []
+}

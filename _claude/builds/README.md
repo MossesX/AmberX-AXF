@@ -87,8 +87,15 @@ pending to queue … If he has slots open, he grabs the next build in the queue 
   how many run on each, limits), the agent slots and the Queue, and starts the next build when a slot and an account for
   its next phase's model are free: `deploy/claude-headless.sh --account <acct>` in `/root/axf-builds/<id>`. Status
   `queued` → `running` (**Building**). It never starts a session right away.
-- A session end moves the build on: built / complete; the Queue again (next phase, or a crash, up to 3 runs); Pending
-  (stopped early, for Brett); failed. Nothing running while the Queue has work = one phone alert (`pipeline.idle`).
+- A session end moves the build on (`nextStatusOnExit()` in build-pipeline@1): every step done = built / complete. Its
+  **phase done with steps left = back to the Queue at its place** (reason `phase-done`, journalled "phase <n> done,
+  requeued for <model>"), and the next phase **launches by itself**: `claude-headless.sh` reports the exit
+  (`pipeline.mjs exit <id> --kind phase-done|crash|stopped --phase <p>`, under the cron's lock) and that runs one
+  dispatcher tick at once, no wait for the cron. A crash = the Queue again until 3 crashes, then Pending (Errors tab).
+  **Pending only when Brett is needed**: the crash limit, an upgrade he has not approved (while that setting is on), the
+  session said it needs him, or it stopped mid-phase. Builds the old rule parked in Pending after a finished phase:
+  `pipeline.mjs requeue-stuck [--apply]` (also every `builds-reconcile.mjs --apply`, REST `POST /pipeline/requeue-stuck`,
+  MCP / voice `pipeline-requeue-stuck`). Nothing running while the Queue has work = one phone alert (`pipeline.idle`).
 - Contract: `framework/core/build-pipeline.mjs` (build-pipeline@1, the `pipeline` record on a build). Rules:
   `apps/console-web/plugins/build-orchestrator/pipeline-core.mjs`. Report: `reports/pipeline-rebuild.md`.
 

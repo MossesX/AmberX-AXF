@@ -17,6 +17,7 @@
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
  *   axf repo create <name> [--private|--public] [--description "…"]
  *                               new GitHub repo with the GitHub App's user token (framework/cli/github-app.mjs)
+ *   axf data [status|backup|verify|mode <ns> <shadow|cutover|rollback|local>|drift <ns>|migrate|get <key>|list <ns>]   axf-data (framework/cli/data.mjs)
  *   axf shot <file> --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by type:id]
  *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
@@ -49,6 +50,7 @@
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
+ *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
@@ -98,6 +100,20 @@ if (cmd === 'console') {
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
   process.exit(await main(rest));
 }
+// `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
+// by folder name: Claude mode on / off / status / test and the command history.
+if (cmd === 'voice') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:axf.wake-listener@1') && exists(joinPath(plugins, d, 'cli.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides the voice listener (service:axf.wake-listener@1)'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'cli.mjs')).href);
+  process.exit(await main(rest));
+}
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
@@ -112,6 +128,15 @@ const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'v
     const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
       try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:plugin-commands@1') && exists(joinPath(plugins, d, 'commands.mjs')); } catch { return false; }
     });
+    // a plugin may name its own command-line script for word commands (plugin.json "cli": { "<folder>": "<file>.mjs" },
+    // e.g. `axf <plugin> rules list`); its generated commands (`axf <plugin> <command-id> --field …`) stay with plugin-commands
+    if (isPlugin && rest[0] && !rest[0].startsWith('--')) {
+      let own = '';
+      try { own = JSON.parse(readText(joinPath(plugins, cmd, 'plugin.json'), 'utf8')).cli?.[cmd] || ''; } catch { /* no manifest */ }
+      const file = own && /^[\w./-]+\.mjs$/.test(own) && !own.includes('..') ? joinPath(plugins, cmd, own) : '';
+      const words = file ? (await import(pathToFileURL(file).href)) : null;
+      if (words?.cliWords?.includes(rest[0])) process.exit(await words.main(rest));
+    }
     if (!dir) { console.error('no plugin provides plugin-commands@1 (install the Plugin commands plugin)'); process.exit(1); }
     const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'commands.mjs')).href);
     process.exit(await main([cmd, ...rest]));
@@ -357,6 +382,12 @@ try {
       const { appDir, createRepo } = await import('./github-app.mjs');
       const r = await createRepo(appDir(), { name, private: !flags.public, description: typeof flags.description === 'string' ? flags.description : '' });
       console.log(c.ok(`✓ ${r.created ? 'created' : 'already there'}: ${r.fullName} (${r.private ? 'private' : 'public'}) ${r.htmlUrl}`));
+      break;
+    }
+    case 'data': {
+      // axf-data (data-store@1): status, backup, verify, mode, drift, migrate, get, list: framework/cli/data.mjs
+      const { main: data } = await import('./data.mjs');
+      process.exitCode = await data(process.argv.slice(3));
       break;
     }
     case 'shot': {
