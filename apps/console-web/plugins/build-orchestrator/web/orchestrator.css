@@ -48,3 +48,15 @@ button.oc-model { cursor: pointer }
 
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+
+/* Custom groups and tabs (Nov 13 2026): layout plus the group's colour dot; every control is a framework control */
+.og-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.og-counts { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) }
+.og-editor { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.og-dot { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
+.og-dot::before { content: ''; inline-size: var(--fx-dens-gap-lg); block-size: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-lg); background: var(--fx-muted); flex: none }
+.og-dot.is-accent::before { background: var(--fx-accent) }
+.og-dot.is-info::before { background: var(--fx-info) }
+.og-dot.is-success::before { background: var(--fx-success) }
+.og-dot.is-warning::before { background: var(--fx-warning) }
+.og-dot.is-danger::before { background: var(--fx-danger) }

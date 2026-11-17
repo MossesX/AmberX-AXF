@@ -55,6 +55,10 @@ const RATCHET_BASELINE = /^framework\/spec\/chrome-baseline\.json$/;
 // Generated fixtures that snapshot real data: the shipped-features manifest (files a build shipped, history) and the
 // demonstration fixture generated from a glossary entry. A plugin removed later only leaves a stale snapshot behind.
 const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo)\.json$/;
+// data-store@1 maps every plugin's data folder to a namespace key (the path map, its fixtures), names the SQLite files it
+// mirrors as tables (the data-store plugin, the axf data CLIs, the axf-data service), and its specs and tests seed plugin
+// data files as fixtures: a plugin removed later leaves a line that maps nothing, data, not a reference.
+const DATA_STORE_MAP = /^(framework\/schemas\/data-store(-paths)?\.json|framework\/spec\/DATA-STORE\.md|framework\/spec\/fixtures\/data-store[a-z-]*\.json|framework\/spec\/check-(data-store[a-z-]*|data-migrate|builds-store-data)\.mjs|services\/axf-data\/test_[a-z_]+\.py|apps\/console-web\/server\/test_data_store\.py|apps\/console-web\/plugins\/data-store\/.+|framework\/cli\/data(-[a-z]+)?\.mjs|services\/axf-data\/[a-z_]+\.py)$/;
 const BUILD_EXPORT = /^framework\/plan\/(profiles\/[^/]+\/framework\/plan\/)?(pending|build-queue)\.json$/;
 const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
@@ -144,7 +148,7 @@ export function scanReferences(p) {
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
     // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file)) || SNAPSHOT_FIXTURE.test(relative(ROOT, file))) continue;
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file)) || SNAPSHOT_FIXTURE.test(relative(ROOT, file)) || DATA_STORE_MAP.test(relative(ROOT, file))) continue;
     // The console's public/data is generated from the builds store and is git-ignored: build notes there are history too.
     if (file.startsWith(join(CONSOLE_APP_DIR, 'public/data') + '/')) continue;
     // The console-control inventory is generated from the installed plugins (scripts/control-inventory.mjs, run by every
@@ -164,6 +168,8 @@ export function scanReferences(p) {
     const lines = readFileSync(file, 'utf8').split('\n');
     lines.forEach((line, i) => {
       let hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
+      // a line that uses the folder name as a plain word of its own vocabulary says so: `axf-not-plugin:<folder>`
+      if (hit && line.includes(`axf-not-plugin:${p.folder}`)) hit = false;
       if (hit && inOtherApp && !namesHostPlugin(line, p.folder, id)) hit = false;
       if (!hit) return;
       const managed = line.includes(`axf-plugin:${p.folder}`) && mentions.has(file);

@@ -382,7 +382,7 @@ export const controlFailure = (code, message, extra = {}) => ({ $axf: CONTROL_FR
 
 /* ================================================================== projections: schema, MCP tools, REST routes, CLI */
 
-const schemaOf = (decl) => (decl === 'object' ? { type: 'object' } : decl === 'object[]' ? { type: 'array', items: { type: 'object' } } : decl === 'string[]' ? { type: 'array', items: { type: 'string' } } : decl === 'string|null' ? { type: ['string', 'null'] } : decl.startsWith('enum:') ? { enum: decl.slice(5).split(',') } : { type: decl });
+const schemaOf = (decl) => (decl === 'any' ? {} : decl === 'object' ? { type: 'object' } : decl === 'object[]' ? { type: 'array', items: { type: 'object' } } : decl === 'string[]' ? { type: 'array', items: { type: 'string' } } : decl === 'string|null' ? { type: ['string', 'null'] } : decl.startsWith('enum:') ? { enum: decl.slice(5).split(',') } : { type: decl });
 
 /** JSON Schema of a control@1 command (editors, the API's request body, the MCP tools' inputs). */
 export function controlSchema() {

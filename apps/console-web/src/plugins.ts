@@ -183,6 +183,19 @@ export async function pluginFetch(folder: string, path: string, init: RequestIni
   return fetch(pluginUrl(folder, path), { ...init, headers: authHeaders(consoleTokens, init), cache: 'no-store' });
 }
 
+/**
+ * Fetch for Brett's own action on a plugin route (an owner-only switch, a veto pass): his signed-in axHub session
+ * first, WITHOUT the console token. Behind the wall a request carrying a bearer token reaches the console as a token
+ * call (X-Auth-Via: token, no session headers), and a token is what agents and scripts hold, so an owner check can
+ * never see Brett through it. Only when there is no session (401, or the wall sent the browser to sign in) does it
+ * go again with the console token, and the server answers what that may do.
+ */
+export async function ownerFetch(folder: string, path: string, init: RequestInit = {}): Promise<Response> {
+  const r = await fetch(pluginUrl(folder, path), { ...init, credentials: 'same-origin', cache: 'no-store' });
+  if (r.status !== 401 && !r.redirected) return r;
+  return pluginFetch(folder, path, init);
+}
+
 /** Where a plugin's 401 message sends people (the console token lives under Settings → Account & security). */
 export function tokenHome(): string { return 'Settings → Account & security'; }
 

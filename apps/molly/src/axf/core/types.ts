@@ -205,6 +205,19 @@ export interface StyleThemeData {
   opacityScrim?: number;
   /** glass surfaces (how much of the surface colour a frosted panel keeps) */
   opacityGlass?: number;
+  /* ---- surface transparency (0..1, default 1 = opaque; engines/theme.ts SURFACE_KINDS). Lower = see-through + frosted. ---- */
+  /** dialogs (.fx-dialog) */
+  opacityDialog?: number;
+  /** floating windows: settings interfaces and tool windows (.fx-window) */
+  opacitySettings?: number;
+  /** panels, containers, groups (.fx-card) */
+  opacityPanel?: number;
+  /** popovers, dropdowns, context menus */
+  opacityMenu?: number;
+  /** toolbars and the app menubar */
+  opacityToolbar?: number;
+  /** the top banner */
+  opacityBanner?: number;
   /* ---- behaviour ---- */
   /** every section / group (Container) gets a collapse toggle top-right; build option --wrap-groups (default false) */
   wrapGroups?: boolean;

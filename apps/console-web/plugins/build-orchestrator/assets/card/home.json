@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "build-orchestrator-home",
+  "name": "Build orchestrator",
+  "version": "1.0.0",
+  "description": "Build orchestrator on Home: Build priorities.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Build orchestrator",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "build-orchestrator",
+      "command": "priority-list"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

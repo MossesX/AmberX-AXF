@@ -163,6 +163,13 @@ ok(commandToolName('a'.repeat(40), 'b'.repeat(40)) !== commandToolName('a'.repea
 eq(pluginCommandRoutes(reg).find((r) => r.command === 'state').path, '/api/control/demo/state', 'REST route');
 ok(pluginCommandCli(reg).commands.find((c) => c.command === 'plans-by-pid').usage.includes('--pid <pid>'), 'CLI usage names required fields');
 eq(commandSlug('/plans/{pid}/steps'), 'plans-by-pid-steps', 'slugs');
+{ // a declared tool name (a contract's fixed name) wins when it is free; a bad or generic one is an error
+  const mk = (folder, items) => ({ folder, manifest: { name: folder, commands: { $axf: 'plugin-commands@1', auto: true, items } }, routes: [{ method: 'GET', path: '/state', fn: 'state', params: [], body: false }], actions: [] });
+  const named = pluginCommandRegistry([mk('alpha', [{ route: 'GET /state', id: 'state', tool: 'thing_status' }]), mk('beta', [{ route: 'GET /state', id: 'state', tool: 'thing_status' }])]);
+  const tl = pluginCommandTools(named);
+  eq(tl.filter((x) => x.command === 'state').map((x) => x.name), ['thing_status', 'beta_state'], 'a declared tool name wins once; a clash falls back to <plugin>_<command>');
+  ok(derivePluginCommands(mk('gamma', [{ route: 'GET /state', tool: 'plugin_run' }])).errors.some((e) => /generic tool/.test(e)), 'a generic tool name is refused');
+}
 
 /* ---- coverage */
 const cov = pluginCommandCoverage(reg.plugins.find((p) => p.folder === 'demo'));
