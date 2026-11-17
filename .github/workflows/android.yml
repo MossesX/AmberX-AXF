@@ -146,7 +146,7 @@ jobs:
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
         run: node framework/cli/check-plugin-pages.mjs
       - name: Plugin settings — every plugin screen has a Settings → Plugins sub-tab and the host settings gear (opt-out only with plugin.json settingsGear false + settingsGearReason); file:line
-        run: node framework/cli/check-plugin-settings.mjs
+        run: node framework/cli/check-plugin-settings.mjs && node framework/spec/check-plugin-settings.test.mjs
       - name: Shipped features plugin (SQLite ledger, build-hook listener plans features and edits, importers, live dates from the deploy log)  # axf-plugin:shipped-features
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
       - name: Gate & rules plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate

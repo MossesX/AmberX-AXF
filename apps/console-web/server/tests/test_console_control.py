@@ -165,6 +165,41 @@ def test_plugins_enable_disable() -> None:
     assert not any(s["verb"].startswith("plugin.") for s in fake.sent), "plugin toggles never need the browser"
 
 
+def test_plugin_settings_state_and_open() -> None:
+    """Every plugin screen's gear (build every-plugin-screen-gets-a-settings-gear): REST read, open, set, MCP."""
+    reset()
+    r = client.get(f"{U}/plugins/gate/settings")
+    j = r.json()
+    sub = "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate"
+    assert r.status_code == 200 and j["plugin"] == "ai.amberx.axf.console.gate" and j["folder"] == "gate"
+    assert j["tab"] == {"address": sub, "id": "gate"} and j["gear"] == "view:gate/button:settings-gear" and j["enabled"] is True
+    assert j["open"] == {"action": "plugin.settings.open:gate", "address": sub}
+    assert not fake.sent, "the state read needs no browser"
+    # by name, by id, and a library tab a plugin spreads in (mcp-client → mcp, hub-sync → hubsync)
+    assert client.get(f"{U}/plugins/Gate & rules/settings").json()["folder"] == "gate"
+    assert client.get(f"{U}/plugins/ai.amberx.axf.console.mcp-client/settings").json()["tab"]["id"] == "mcp"
+    hub = client.get(f"{U}/plugins/hub-sync/settings").json()
+    assert hub["tab"]["id"] == "hubsync" and "gear" not in hub, "hub-sync has no screen, so no gear"
+    assert client.get(f"{U}/plugins/nope-nope/settings").status_code == 404
+    # open = the gear's press: console_open on the sub-tab in the open console
+    r = client.post(f"{U}/plugins/gate/settings/open", json={})
+    assert r.status_code == 200 and fake.sent[-1]["verb"] == "open" and fake.sent[-1]["address"] == sub
+    assert r.json()["policy"]["tag"] == "allow", "opening settings only navigates"
+    # set: a setting in the plugin's tab by key; unknown keys name what exists
+    voice = client.get(f"{U}/plugins/agent-voice/settings").json()
+    key = voice["settings"][0]["key"]
+    r = client.post(f"{U}/plugins/agent-voice/settings/set", json={"key": key, "value": voice["settings"][0].get("options", [{"value": "x"}])[0]["value"] if voice["settings"][0].get("options") else "x"})
+    assert fake.sent[-1]["verb"] == "set" and fake.sent[-1]["address"].endswith(f"/setting:{key}")
+    r = client.post(f"{U}/plugins/agent-voice/settings/set", json={"key": "nope.key", "value": 1})
+    assert r.status_code == 404 and key in r.json()["nearest"]
+    # every gear is a static target, and so is every plugin sub-tab (voice finds "open gate settings" with no console open)
+    t = {x["address"]: x for x in cc.static_targets()}
+    assert t["view:gate/button:settings-gear"]["opens"] == sub and t[sub]["kind"] == "subtab"
+    fake.open = False
+    r = client.post(f"{U}/voice", json={"text": "open gate settings"})
+    assert r.json().get("command", {}).get("address") == sub or sub in str(r.json()), r.json()
+
+
 def test_person_only_and_confirm() -> None:
     reset()
     r = client.post(f"{U}/do", json={"verb": "press", "address": "function:approvals.approve"})
@@ -253,6 +288,24 @@ def test_mcp_tools() -> None:
     fake.open = False
     r = call("console_control_state", {})
     assert r["code"] == "unavailable" and r["openUrl"], "no console: unavailable with the link, not an exception"
+
+
+def test_mcp_plugin_settings() -> None:
+    reset()
+    srv = mcp_server.build_server(lambda op, **a: {}, console=lambda c: {"ok": True}, console_control=lambda body: api.command(body, "mcp"))
+    tools = {t.name: t for t in asyncio.run(srv.list_tools())}
+    assert tools["console_control_plugin_settings"].annotations.read_only_hint is not True
+    res = asyncio.run(srv.call_tool("console_control_plugin_settings", {"plugin": "gate", "open": True}))
+    if isinstance(res, tuple):  # (content, structured) on older SDKs
+        res = res[1]
+    if isinstance(res, dict):
+        data = res.get("result", res)
+    else:
+        assert not getattr(res, "is_error", False), res.content[0].text if res.content else ""
+        sc = getattr(res, "structured_content", None)
+        data = sc.get("result", sc) if sc else json.loads(res.content[0].text)
+    assert data["gear"] == "view:gate/button:settings-gear" and data["done"][0]["verb"] == "open"
+    assert fake.sent[-1]["address"].endswith("subtab:settings.subtabs=gate")
 
 
 if __name__ == "__main__":

@@ -137,3 +137,15 @@ there is no screen to carry a gear. Its sub-tab id is `hubsync` in the library, 
 (`settings-tab:hubsync`) and now in the control inventory (`view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubsync`);
 they match, nothing to fix. `plugin.settings.open:hub-sync`, `GET /api/console-control/plugins/hub-sync/settings` and
 "open axhub sync settings" all reach it.
+
+## Tests (s17)
+
+- `framework/spec/check-plugin-settings.test.mjs` (in CI next to the check): fixture trees for a good screen, no
+  sub-tab (file:line), the default tab, no gear, a second hand-made gear, opt-out with and without a reason, a
+  settings-only plugin and a type literal named `views`. 10 checks pass.
+- `apps/console-web/server/tests/test_console_control.py`: `test_plugin_settings_state_and_open` (REST read by
+  folder / name / id, library tabs, hub-sync without a gear, 404, open = console_open on the sub-tab with policy
+  `allow`, set by key with nearest keys on a miss, static gear + sub-tab targets, voice with no console open) and
+  `test_mcp_plugin_settings`. 10 tests pass; console-control parity 132 comparisons pass.
+- Checks: check-console-control, check-toolbars, check-theme, check-controls, check-chrome-assets,
+  check-plugin-pages and check-plugin-settings all pass; check-control (control@1) 410 checks pass.
