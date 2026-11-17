@@ -831,7 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` branch claude/toolbars-1-5-build-orchestrator-incl (all) · pipeline
 - 2026-11-17 20:56 UTC · `guided-live-demo-test-watch-orchestrator` s20 done (all) · orchestrator
 - 2026-11-17 20:56 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
 - 2026-11-17 20:56 UTC · `toolbars-1-5-build-orchestrator-incl` → pending, note (all) · pipeline
@@ -1231,6 +1230,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:26 UTC · `rebuild-every-toolbar-page-specific` → landed, note (all) · foreign-write
 - 2026-11-17 22:26 UTC · `flagship-professional-skin-covering-2` s6 done, note (all) · foreign-write
 - 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · builds-live
 
 ## Token passes (log)
 
