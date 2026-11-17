@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7231,
- "updatedAt": "2026-11-17T00:52:22.153Z",
+ "rev": 7232,
+ "updatedAt": "2026-11-17T00:52:57.666Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210112,15 +210112,15 @@
    "title": "Land per-instance settings picker: resolve clash in Overlays.tsx",
    "category": "",
    "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-17T00:51:58.767Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T00:52:55.075Z",
+   "builtAt": "2026-11-17T00:52:55.075Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a54de3c9-d6da-4a1b-94df-48b7fb181427\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
@@ -210252,12 +210252,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:52:55.075Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:37:31.490Z",
-     "updatedAt": "2026-11-13T19:37:31.490Z"
+     "updatedAt": "2026-11-17T00:52:55.381Z"
     }
    ],
    "profiles": [
@@ -210268,7 +210268,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
