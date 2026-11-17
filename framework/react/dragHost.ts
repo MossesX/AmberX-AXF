@@ -16,6 +16,11 @@ import { useEffect, useRef } from 'react';
 import type { AxfRuntime } from '../core';
 import { DRAG_MOVE_ACTION, DRAG_MOVE_CONTRACT, dragMoveFailure, isDragKind, pointerDrop, type DragHostSnapshot, type DragMoveCommand, type DragMoveResult, type DragPlan, type DropRect, type DropZone } from '../core/engines/drag-move';
 import { hostSpec, type PlacedAttachment } from '../core/engines/widgets';
+import { paneGroups } from '../core/engines/windows';
+import type { DockSide } from '../core/engines/dock';
+import { SLOT_REGIONS, compileSlots } from '../core/engines/layout';
+import { hideable } from '../core/engines/hide';
+import type { AssetType, LayoutData } from '../core/types';
 import { useRuntime } from './AxfProvider';
 
 /** What a host hands the hook: the snapshot without `kind` / `container` (the hook fills them) and the apply. */
@@ -158,13 +163,95 @@ export function widgetHostAdapter(rt: AxfRuntime, host: string, placed: () => Re
   };
 }
 
+/**
+ * The window engine's tab stacks and panes as drag hosts (dock@1 through the same engine call a pointer drop makes,
+ * WindowManager.dropTab → applyDockDrop):
+ *  - every tab stack (window group) is a `tab` host (container = the group id): reorder, or move a tab to another stack;
+ *  - every window with a pane tree is a `dock-pane` host (container = the window id, items = its panes in reading
+ *    order): `side` splits the pane named by `ref` (or the whole tree without one) and moves the pane's tabs there;
+ *    `into` joins the pane at `index` of the list without the moved pane (the tabs join that stack); remove closes the
+ *    pane's tabs (confirm). Registered once per runtime (installDragHosts) and kept in step with the window state.
+ */
+export function installWindowDragHosts(rt: AxfRuntime): () => void {
+  const wm = rt.windows;
+  const offs = new Map<string, () => void>();
+  const tabs = (gid: string) => wm.state.groups[gid]?.tabs ?? [];
+  const groupIds = () => Object.keys(wm.state.groups);
+  const tabHost = (gid: string) => rt.drag.hosts.register({
+    kind: 'tab', container: gid,
+    list: () => ({ kind: 'tab', container: gid, label: `Tab stack ${gid}`, items: tabs(gid).map((t) => ({ id: t.id, label: t.title })), accepts: { from: groupIds() } }),
+    apply: (plan) => {
+      const to = plan.to; if (!to || to.container.toLowerCase() !== gid.toLowerCase()) return; // the target stack places it
+      const g = wm.state.groups[gid]; if (!g) throw new Error(`tab stack ${gid} is gone`);
+      const cur = g.tabs.findIndex((t) => t.id === plan.item.id);
+      // applyDockDrop counts a header index before the tab leaves its own stack; the plan counts after
+      const index = cur >= 0 && to.index >= cur ? to.index + 1 : to.index;
+      if (!wm.dropTab(plan.item.id, g.windowId, { target: 'group', groupId: g.id, zone: 'header', index })) throw new Error(`${plan.item.id} could not move to ${gid}`);
+    },
+  });
+  const panesOf = (wid: string) => { const l = wm.state.layouts[wid]; return l ? paneGroups(l) : []; };
+  const moveAll = (wid: string, from: string, first: Parameters<typeof wm.dropTab>[2]) => {
+    const ids = tabs(from).map((t) => t.id);
+    if (!ids.length || !wm.dropTab(ids[0]!, wid, first)) throw new Error(`pane ${from} could not move`);
+    const into = wm.groupOf(ids[0]!);
+    for (const id of ids.slice(1)) if (into) wm.dropTab(id, wid, { target: 'group', groupId: into, zone: 'centre' });
+  };
+  const paneHost = (wid: string) => rt.drag.hosts.register({
+    kind: 'dock-pane', container: wid,
+    list: () => ({ kind: 'dock-pane', container: wid, label: wm.state.windows.find((w) => w.id === wid)?.title ?? wid, items: panesOf(wid).map((gid) => ({ id: gid, label: tabs(gid).map((t) => t.title).join(', ') || gid })) }),
+    apply: (plan) => {
+      const gid = plan.item.id;
+      if (plan.op === 'remove') { for (const t of [...tabs(gid)]) wm.closeTab(t.id); return; }
+      const to = plan.to!;
+      if (to.side) return moveAll(wid, gid, to.ref ? { target: 'group', groupId: to.ref, zone: to.side as DockSide } : { target: 'root', zone: to.side as DockSide });
+      const others = panesOf(wid).filter((x) => x !== gid);
+      const join = others[Math.min(to.index, others.length - 1)];
+      if (!join) throw new Error(`no other pane in ${wid} to join`);
+      moveAll(wid, gid, { target: 'group', groupId: join, zone: 'centre' });
+    },
+  });
+  const sync = () => {
+    const want = new Set([...groupIds().map((g) => `tab\u0000${g}`), ...Object.keys(wm.state.layouts).map((w) => `dock-pane\u0000${w}`)]);
+    for (const [k, off] of offs) if (!want.has(k)) { off(); offs.delete(k); }
+    for (const k of want) if (!offs.has(k)) { const [kind, id] = k.split('\u0000') as [string, string]; offs.set(k, kind === 'tab' ? tabHost(id) : paneHost(id)); }
+  };
+  sync();
+  const unsub = wm.subscribe(sync);
+  return () => { unsub(); for (const off of offs.values()) off(); offs.clear(); };
+}
+
+/**
+ * The layout's regions as `layout-slot` hosts (container = the region: menubar, toolbar, nav, main, inspector, status,
+ * fab, sheet, overlay; items = the slot types drawn there). Add shows a hidden slot (rt.setSlotHidden), remove hides
+ * one; both obey the hide rules and the UAC gate like the View menu. Which region holds a slot type is the layout
+ * asset's (`data.slots`), so a move answers `failed` and names the way: edit the layout.
+ */
+export function installLayoutSlotHosts(rt: AxfRuntime): () => void {
+  const slots = () => compileSlots((rt.assetOrNull('layout')?.data ?? {}) as LayoutData);
+  const offs = SLOT_REGIONS.map((region) => rt.drag.hosts.register({
+    kind: 'layout-slot', container: region,
+    list: () => ({ kind: 'layout-slot', container: region, label: `${region} region`, items: slots()[region].filter((t) => !rt.slotHidden(t as AssetType)).map((t) => ({ id: t, type: t, ...(hideable(t as AssetType) ? {} : { locked: true }) })), accepts: { from: [] } }),
+    apply: (plan) => {
+      const type = plan.item.id as AssetType;
+      if (plan.op === 'move') throw new Error(`which region holds ${type} is set by the layout asset (data.slots); edit the layout to move it`);
+      if (plan.op === 'add' && !slots()[region].includes(type)) throw new Error(`the ${region} region does not take ${type} (${slots()[region].join(', ') || 'nothing'})`);
+      rt.setSlotHidden(type, plan.op === 'remove');
+      if (rt.slotHidden(type) !== (plan.op === 'remove')) throw new Error(`${type} could not be ${plan.op === 'remove' ? 'hidden' : 'shown'} (not hideable, owned by the host app, or no permission)`);
+    },
+  }));
+  return () => offs.forEach((off) => off());
+}
+
 /** AxfProvider: the `drag-move:<json>` action, so console.actions / console_action / the CLI / voice move things. */
 export function installDragHosts(rt: AxfRuntime): () => void {
-  return rt.actions.register(DRAG_MOVE_ACTION, (args) => {
+  const offWindows = installWindowDragHosts(rt);
+  const offSlots = installLayoutSlotHosts(rt);
+  const offAction = rt.actions.register(DRAG_MOVE_ACTION, (args) => {
     void rt.drag.hosts.run_text(args.join(':')).then((r) => {
       if (!r.ok) rt.terminal.warn('drag', `${r.code}: ${r.message}`);
       else rt.terminal.ok('drag', `${r.kind} ${r.item.id}${r.from ? ` from ${r.from.container}` : ''}${r.to ? ` → ${r.to.container}${r.to.side ? ` ${r.to.side}` : ''} #${r.to.index + 1}` : ' removed'}`);
     }).catch((e) => rt.terminal.warn('drag', dragMoveFailure(e).message));
     return true;
   }, { label: 'Move, add or remove a draggable item (drag-move@1)', params: true, module: 'axf.framework' });
+  return () => { offAction(); offSlots(); offWindows(); };
 }

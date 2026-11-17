@@ -146,6 +146,20 @@ through `useArrange` (kinds `banner-widget` / `toolbar-item`, container `banner`
 false` until the widgets phase wires add and remove). Their pointer drops run the same command through `runDragMove`.
 Dock panes, grids, lists and layout slots register in the follow-up phases.
 
+Hosts added in phase 2 (Opus):
+
+| Host | Kind | Container | Apply |
+|---|---|---|---|
+| Banner widgets | `banner-widget` | `banner` | move: `rt.moveHostItem` (drawn order mapped onto the full side list); add: show + place; remove: hide (banner widget engine) |
+| App toolbar widgets | `toolbar-item` | `toolbar` | move only (`rt.moveHostItem`) |
+| Workspace toolbars | `toolbar-item` | `<workspace>.<toolbar>` | the toolbar's item list; item ids are command specs, repeats `spec~2` |
+| Terminal session strip | `tab` | `terminal.<window tab>` | reorder, or move a session to another Terminal window |
+| Workspace pane strips | `tab` | `workspace.<id>.<area>` | `Workspace.placePane` (reorder, area → area) |
+| Window tab stacks | `tab` | the group id | `WindowManager.dropTab` header drop (cross-stack allowed) |
+| Window panes | `dock-pane` | the window id | `side` + `ref`: split that pane; `side` alone: the whole tree's side; `into` + `index`: join the pane at `index` of the list without the moved one; remove closes its tabs (confirm) |
+| Layout regions | `layout-slot` | the region | add / remove = show / hide the slot (`rt.setSlotHidden`); a move answers `failed`: the layout asset's `data.slots` decides the region |
+
+
 ## Fixture
 
 `framework/spec/fixtures/drag-move.json`: the registry (kinds, ops, zones, codes), the JSON Schema, and cases for a
