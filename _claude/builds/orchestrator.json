@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:59:26.848Z",
+ "updatedAt": "2026-11-17T20:59:47.504Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181309,7 +181309,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181317,7 +181317,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:59:10.132Z",
+   "updatedAt": "2026-11-17T20:59:44.784Z",
    "builtAt": "",
    "notes": [
     {
@@ -181733,8 +181733,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T20:59:44.784Z",
      "note": "",
      "uid": "st-mwl2335e0w15nh",
      "createdAt": "2026-11-17T18:58:57.805Z"

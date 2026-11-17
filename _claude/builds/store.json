@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7908,
- "updatedAt": "2026-11-17T20:59:26.848Z",
+ "rev": 7909,
+ "updatedAt": "2026-11-17T20:59:47.504Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275770,7 +275770,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275778,7 +275778,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:59:10.132Z",
+   "updatedAt": "2026-11-17T20:59:44.784Z",
    "builtAt": "",
    "notes": [
     {
@@ -275896,16 +275896,7 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-17T20:59:06.291Z",
-     "exit": 0,
-     "outcome": "returned",
-     "reason": "stopped",
-     "stepsLeft": 10,
-     "account": "",
-     "session": "",
-     "phase": "Phase 2"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-17T18:58:57.805Z",
      "by": "orchestrator",
@@ -275914,14 +275905,14 @@
      "note": "Split by Claude into 28 steps (7 Fable)."
     },
     "splitRequested": "",
-    "note": "Session stopped on its own with 10 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T20:59:15.037Z",
+     "at": "2026-11-17T18:58:59.749Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -275930,22 +275921,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T20:59:06.288Z",
-     "buildId": "rebuild-every-toolbar-page-specific",
-     "phase": "",
-     "step": "s14",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "2026-11-17T20:59:23.786Z",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -276296,12 +276271,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T20:59:44.784Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T18:58:57.805Z"
+     "updatedAt": "2026-11-17T20:59:45.202Z"
     },
     {
      "id": "s15",
