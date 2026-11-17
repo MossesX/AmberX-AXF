@@ -55,17 +55,18 @@
     "pending": 256
   },
   "patterns": {
-    "ns": "^[a-z0-9_-]+(/[A-Za-z0-9._:-]+)*$",
+    "ns": "^[a-z0-9_-]+(\\/[A-Za-z0-9._:-]+)*$",
     "key": "^[^/]{1,128}$"
   },
   "optimisticTimeoutMs": 8000,
+  "logLimit": 4000,
   "capability": "axf.live-changes@1",
   "dataStoreMap": {
     "ns": "ns",
     "path": "key",
     "put": "upsert",
     "delete": "delete",
-    "rev": "rev",
+    "cursor": "rev",
     "by": "origin",
     "at": "ts"
   }

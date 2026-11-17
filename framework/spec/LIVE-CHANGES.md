@@ -27,9 +27,9 @@ console's row stores sit on it. Fixtures: `spec/fixtures/live-rows.json` (from `
   else: scroll, selection, sort, filters, expanded rows, column picks and every open dialog stay as they are.
 
 The same event shape works for every store: the builds store (`builds@1`), the planner, UI Review, notes, plugin
-data folders. A store that already emits `data-change@1` (`data-store@1`, `watch`) maps it 1:1: `ns` → `ns`,
-`path` → `key`, `put` → `upsert`, `delete` → `delete`, `rev` → `rev`, `by` → `origin`, `at` → `ts`; an ordered store
-adds `reorder`.
+data folders. A store that already emits `data-change@1` (`data-store@1`, `watch`) maps it 1:1 (`fromDataChange`): `ns` → `ns`,
+`path` → `key`, `put` / `append` → `upsert`, `delete` → `delete`, `cursor` → `rev` (the store-wide contiguous counter;
+a data record's own `rev` is per record and is not it), `by` → `origin`, `at` → `ts`; an ordered store adds `reorder`.
 
 ## Event
 
