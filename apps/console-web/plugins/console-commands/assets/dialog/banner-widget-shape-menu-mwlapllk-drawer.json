@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "banner-widget-shape-menu-mwlapllk-drawer",
+ "name": "banner-widget-shape-menu-mwlapllk: Side drawer",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "They open in a drawer on the right: the bar and the widget being changed stay in view while picking.",
+ "tags": [
+  "ui-choice",
+  "choice-set:banner-widget-shape-menu-mwlapllk",
+  "choice-option:drawer"
+ ],
+ "data": {
+  "variant": "drawer",
+  "width": 440,
+  "backdrop": "blur",
+  "animation": "slide",
+  "header": "accent-bar",
+  "closeOnBackdrop": true
+ }
+}

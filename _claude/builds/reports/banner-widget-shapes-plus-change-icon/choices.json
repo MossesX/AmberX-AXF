@@ -1,0 +1,57 @@
+{
+  "assetType": "dialog",
+  "owner": "console-commands",
+  "options": [
+    {
+      "id": "modal",
+      "label": "Centered modal",
+      "notes": "The picker and the shape editor open as a centered modal over a dimmed page (today's default).",
+      "shots": [
+        "/tmp/bwsp-shots/opt-modal--icon-picker-desktop.png",
+        "/tmp/bwsp-shots/opt-modal--icon-picker-phone.png"
+      ],
+      "data": {
+        "variant": "modal",
+        "width": 520,
+        "backdrop": "dim",
+        "animation": "scale",
+        "header": "plain",
+        "closeOnBackdrop": true
+      }
+    },
+    {
+      "id": "sheet",
+      "label": "Bottom sheet",
+      "notes": "They slide up from the bottom: thumb-reachable on the phone, the bar stays visible above.",
+      "shots": [
+        "/tmp/bwsp-shots/opt-sheet--icon-picker-desktop.png",
+        "/tmp/bwsp-shots/opt-sheet--icon-picker-phone.png"
+      ],
+      "data": {
+        "variant": "sheet",
+        "width": 680,
+        "backdrop": "dim",
+        "animation": "slide",
+        "header": "filled",
+        "closeOnBackdrop": true
+      }
+    },
+    {
+      "id": "drawer",
+      "label": "Side drawer",
+      "notes": "They open in a drawer on the right: the bar and the widget being changed stay in view while picking.",
+      "shots": [
+        "/tmp/bwsp-shots/opt-drawer--icon-picker-desktop.png",
+        "/tmp/bwsp-shots/opt-drawer--icon-picker-phone.png"
+      ],
+      "data": {
+        "variant": "drawer",
+        "width": 440,
+        "backdrop": "blur",
+        "animation": "slide",
+        "header": "accent-bar",
+        "closeOnBackdrop": true
+      }
+    }
+  ]
+}

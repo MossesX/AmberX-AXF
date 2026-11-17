@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "banner-widget-shape-menu-mwlapllk-sheet",
+ "name": "banner-widget-shape-menu-mwlapllk: Bottom sheet",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "They slide up from the bottom: thumb-reachable on the phone, the bar stays visible above.",
+ "tags": [
+  "ui-choice",
+  "choice-set:banner-widget-shape-menu-mwlapllk",
+  "choice-option:sheet"
+ ],
+ "data": {
+  "variant": "sheet",
+  "width": 680,
+  "backdrop": "dim",
+  "animation": "slide",
+  "header": "filled",
+  "closeOnBackdrop": true
+ }
+}

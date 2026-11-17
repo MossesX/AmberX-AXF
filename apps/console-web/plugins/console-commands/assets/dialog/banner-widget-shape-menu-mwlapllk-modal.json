@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "banner-widget-shape-menu-mwlapllk-modal",
+ "name": "banner-widget-shape-menu-mwlapllk: Centered modal",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The picker and the shape editor open as a centered modal over a dimmed page (today's default).",
+ "tags": [
+  "ui-choice",
+  "choice-set:banner-widget-shape-menu-mwlapllk",
+  "choice-option:modal"
+ ],
+ "data": {
+  "variant": "modal",
+  "width": 520,
+  "backdrop": "dim",
+  "animation": "scale",
+  "header": "plain",
+  "closeOnBackdrop": true
+ }
+}
