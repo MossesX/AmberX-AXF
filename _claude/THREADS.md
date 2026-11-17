@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `badge-shape-picker-banners-screen-pill` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `banners-page-focus-scroll-to-highlight` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `claude-badge-can-claude-build-green-when` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `collapse-auto-collapse-buttons-every-tab` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `fix-merge-conflicts-pr-557-professional` note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:27 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
 - 2026-11-17 23:28 UTC · `move-server-side-console-parts-onto-vps` → queued, note (all) · pipeline
 - 2026-11-17 23:28 UTC · `move-server-side-console-parts-onto-vps` note (all) · watchdog
+- 2026-11-17 23:28 UTC · `active-tab-add-stop-button-per-running` note (all) · orchestrator
+- 2026-11-17 23:28 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
 
 ## Token passes (log)
 
