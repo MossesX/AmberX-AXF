@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7913,
- "updatedAt": "2026-11-17T21:01:22.040Z",
+ "rev": 7914,
+ "updatedAt": "2026-11-17T21:01:31.546Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -279688,10 +279688,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/terminal-main-tab-streaming-console-s",
-   "pr": "",
+   "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-17T21:00:38.742Z",
+   "updatedAt": "2026-11-17T21:01:28.423Z",
    "builtAt": "",
    "notes": [
     {
@@ -280131,7 +280131,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
