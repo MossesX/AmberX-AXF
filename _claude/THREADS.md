@@ -829,8 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:50 UTC · `ui-review-gate-switch-default-off` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `fix-toolbar-settings-doing-nothing` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `merge-all-ready-buttons-server-side` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `account-order-hulu-moses-x-api-account` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `assets-menu-hide-any-asset-visible` → archived, note (all) · watchdog
@@ -1229,6 +1227,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
 - 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
+- 2026-11-17 21:27 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
 
 ## Token passes (log)
 
