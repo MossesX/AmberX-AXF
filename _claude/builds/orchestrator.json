@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:46:26.518Z",
+ "updatedAt": "2026-11-17T22:46:49.575Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77980,6 +77980,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -94680,6 +94681,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -133492,6 +133494,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -142146,6 +142149,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -209874,14 +209878,14 @@
    "title": "VPS sets every build status in the manifest; orchestrator files tabs from it",
    "category": "",
    "detail": "Rule from Brett: the VPS is the only thing that sets a build's status. Status lives in the build manifest the VPS owns. As soon as a build starts on the VPS, its manifest status becomes building. When the VPS hands a build back to the orchestrator (stopped, killed, crashed, paused, kicked out) and its status is building or on hold, the orchestrator files it straight into the Hold tab: never Pending, never auto-relaunched. The orchestrator never computes status itself; it only reads the manifest status and puts the build in the matching tab. Hold must work on running builds too (stop the session on the VPS, keep the branch and ticked steps, file to Hold). Today hold only works on queued builds, and a paused build (flagship-professional-skin-covering-2) got relaunched on its own. Add tests: started build returned => Hold; held build never relaunched by the dispatcher. Part of the everything-on-the-VPS rule; coordinate with move-server-side-console-parts-onto-vps.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "vps-sets-every-build-status-manifest",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:42:26.247Z",
-   "updatedAt": "2026-11-17T22:45:13.312Z",
+   "updatedAt": "2026-11-17T22:46:01.153Z",
    "builtAt": "",
    "notes": [
     {
@@ -209891,6 +209895,10 @@
     {
      "text": "Split by Claude into 15 steps (3 Fable).",
      "at": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "text": "Brett: Pending is ONLY for builds that have never started. Once a build has started, it never goes back to Pending. Today the orchestrator sends stopped, needs-brett, upgrade-blocked and crash-limit builds back to Pending (README session-end table); change all of those. A started build that comes back as building goes to the Queue, one that comes back as on hold goes to Hold, a failed one goes to Errors. Move every already-started build now sitting in Pending (steps done > 0 or runs > 0) to the right tab during migration.",
+     "at": "2026-11-17T22:46:01.153Z"
     }
    ],
    "approvals": [],
@@ -209924,8 +209932,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla725501vmnl",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e2tbh6l",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s2",
@@ -209943,8 +209951,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72550216s7",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e2ucral",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s3",
@@ -209962,8 +209970,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla725503v68o",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e2ve3pp",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s4",
@@ -209981,8 +209989,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72550494f2",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e2w13ps",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s5",
@@ -210000,8 +210008,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla725505mi12",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e2x816g",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s6",
@@ -210019,8 +210027,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla725506hcet",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e2yzd9c",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s7",
@@ -210038,8 +210046,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla725507sfue",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e2zzsrr",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s8",
@@ -210057,8 +210065,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla725508rid8",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e30amq2",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s9",
@@ -210076,8 +210084,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla725509t5vh",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e312w6x",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s10",
@@ -210095,8 +210103,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72550aobt4",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e32ejj0",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s11",
@@ -210114,8 +210122,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72550b2nqm",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e33mqxr",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s12",
@@ -210133,8 +210141,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72550c388k",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e34hj4l",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s13",
@@ -210152,8 +210160,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72550db3zx",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e35dagl",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s14",
@@ -210171,8 +210179,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72550e0l36",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e36bzrc",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s15",
@@ -210190,8 +210198,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570fw7yb",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e37xhyx",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s16",
@@ -210209,8 +210217,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570gupif",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e38iy1o",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s17",
@@ -210228,8 +210236,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570hh4ce",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e397dvi",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s18",
@@ -210247,8 +210255,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570iwrcn",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3aoqth",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s19",
@@ -210266,8 +210274,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570jzgrw",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3byx37",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s20",
@@ -210285,8 +210293,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570kjxiy",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3chyhq",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s21",
@@ -210304,8 +210312,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570lku8d",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3d3h15",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s22",
@@ -210323,8 +210331,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570mfcpo",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3e4qev",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s23",
@@ -210342,8 +210350,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570nd4h5",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3fpode",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s24",
@@ -210361,8 +210369,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570o69un",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3gek9v",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s25",
@@ -210380,8 +210388,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570plg73",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3h2vtz",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s26",
@@ -210399,8 +210407,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570qgpso",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3ihgpa",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s27",
@@ -210418,8 +210426,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570rsv8t",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3jf2qu",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s28",
@@ -210437,8 +210445,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570s7fcd",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3ko3kl",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s29",
@@ -210456,8 +210464,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570t3rl1",
-     "createdAt": "2026-11-17T22:45:59.621Z"
+     "uid": "st-mwla7w3e3lnon7",
+     "createdAt": "2026-11-17T22:45:13.312Z"
     },
     {
      "id": "s30",
@@ -210475,621 +210483,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwla72570uh06t",
-     "createdAt": "2026-11-17T22:45:59.621Z"
-    },
-    {
-     "id": "s31-30",
-     "text": "Design build-manifest status contract: add VPS-owned `status` (building|on-hold|stopped|done|…) with `setBy:'vps'`, `setAt`, `reason` (stopped/killed/crashed/paused/kicked-out) to the build manifest schema in framework/schemas and the builds@1 record; document in framework/spec/BUILD-STATUS.md (VPS is sole writer, orchestrator read-only)",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b015fgb",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s32-31",
-     "text": "Write the status→tab mapping core: pure function fileTab(manifest) in framework/core/build-status-tabs.mjs (building or on-hold when returned => hold; never pending; queued => queue; done => built/complete) plus migration note for existing store records without manifest status",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b02xwc2",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s33-32",
-     "text": "Migration: builds-store.mjs reads legacy status as manifest status once (setBy:'migration'), journalled; verify keeps every build; add fixture framework/spec/fixtures/build-status-tabs.json",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b039og1",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s34-33",
-     "text": "VPS side: deploy/claude-headless.sh sets manifest status=building through a new framework/cli/build-manifest.mjs `set-status <id> building --by vps` the moment a session starts",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b04by8z",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s35-34",
-     "text": "VPS side: on session exit (stop, kill, crash, pause, kick-out) the launcher trap records the return reason on the manifest and hands it back to the orchestrator via build-manifest.mjs `return <id> --reason …` without changing status",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b059lx7",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s36-35",
-     "text": "Orchestrator: remove its own status computation in pipeline.mjs / orchestrator.mjs; on return it reads manifest status and files the build with fileTab() (building/on-hold => Hold); never Pending, never requeue",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b06isu7",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s37-36",
-     "text": "Dispatcher guard: pipeline.mjs tick skips any build whose manifest status is on-hold or filed in Hold, and drops the 'crash → back to Queue, 3 runs' path (fixes the flagship-professional-skin-covering-2 relaunch)",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b074n7e",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s38-37",
-     "text": "Hold on running builds: build-manifest.mjs `hold <id>` asks the VPS to stop the session (agent-slots / headless pid), keeps branch and ticked steps, VPS sets status=on-hold, orchestrator files to Hold",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b08jtha",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s39-38",
-     "text": "Console server routes: GET /api/plugins/build-orchestrator/manifest/<id> (status read), POST …/hold and …/release (release moves Hold → Pending only by Brett's call); console_show target for the Hold tab and a build row",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b09hkg3",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s40-39",
-     "text": "Console UI: Pipeline tab shows tab from manifest status, a Hold button on running rows (confirm), a 'set by VPS · reason' line on held rows; register control targets (data-axf-target)",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b0aivah",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s41-40",
-     "text": "API parity: MCP plugin commands (pipeline-hold, pipeline-release, manifest-status), axf CLI `axf builds hold|release|status`, AmberX voice actions; all calling the same routes",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b0b907j",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s42-41",
-     "text": "Tests: framework/spec/check-build-status-tabs.mjs (fixture; started build returned => Hold for every reason; on-hold returned => Hold; never Pending); orchestrator refuses to write status itself",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b0cg1lj",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s43-42",
-     "text": "Tests: dispatcher test — held build never relaunched over N ticks, running-build hold stops the fake session and keeps branch + ticked steps; wire both checks into CI",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b0d8s9j",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s44-43",
-     "text": "Coordinate with move-server-side-console-parts-onto-vps: add a note on that build naming the shared manifest contract; update builds README and decisions.md with the VPS-only status rule",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "6 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b0ek3is",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s45-44",
-     "text": "Run all checks (builds-store verify, check-builds-store, check-build-status-tabs, pipeline tests, console-control, check-theme), write _claude/builds/reports/vps-sets-every-build-status-manifest.md (API reach per feature), THREADS row, UI Review submission, open PR",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla681b0fu07y",
-     "createdAt": "2026-11-17T22:45:20.690Z"
-    },
-    {
-     "id": "s16-15",
-     "text": "Design build-manifest status contract: add VPS-owned `status` (building|on-hold|stopped|done|…) with `setBy:'vps'`, `setAt`, `reason` (stopped/killed/crashed/paused/kicked-out) to the build manifest schema in framework/schemas and the builds@1 record; document in framework/spec/BUILD-STATUS.md (VPS is sole writer, orchestrator read-only)",
-     "model": "Fable",
-     "why": "Schema + cross-app status contract design",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/schemas/build-manifest.json",
-      "framework/spec/BUILD-STATUS.md",
-      "framework/core/build-pipeline.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s01n7ha",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s17-16",
-     "text": "Write the status→tab mapping core: pure function fileTab(manifest) in framework/core/build-status-tabs.mjs (building or on-hold when returned => hold; never pending; queued => queue; done => built/complete) plus migration note for existing store records without manifest status",
-     "model": "Fable",
-     "why": "Engine internals the orchestrator, dispatcher and console all read",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/core/build-status-tabs.mjs",
-      "framework/spec/BUILD-STATUS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s02o3a4",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s18-17",
-     "text": "Migration: builds-store.mjs reads legacy status as manifest status once (setBy:'migration'), journalled; verify keeps every build; add fixture framework/spec/fixtures/build-status-tabs.json",
-     "model": "Fable",
-     "why": "Store migration design",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/cli/builds-store.mjs",
-      "framework/spec/fixtures/build-status-tabs.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s03mbmq",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s19-18",
-     "text": "VPS side: deploy/claude-headless.sh sets manifest status=building through a new framework/cli/build-manifest.mjs `set-status <id> building --by vps` the moment a session starts",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "deploy/claude-headless.sh",
-      "framework/cli/build-manifest.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s049h20",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s20-19",
-     "text": "VPS side: on session exit (stop, kill, crash, pause, kick-out) the launcher trap records the return reason on the manifest and hands it back to the orchestrator via build-manifest.mjs `return <id> --reason …` without changing status",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "deploy/claude-headless.sh",
-      "framework/cli/build-manifest.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s05biwt",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s21-20",
-     "text": "Orchestrator: remove its own status computation in pipeline.mjs / orchestrator.mjs; on return it reads manifest status and files the build with fileTab() (building/on-hold => Hold); never Pending, never requeue",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s06cqks",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s22-21",
-     "text": "Dispatcher guard: pipeline.mjs tick skips any build whose manifest status is on-hold or filed in Hold, and drops the 'crash → back to Queue, 3 runs' path (fixes the flagship-professional-skin-covering-2 relaunch)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s07rtmu",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s23-22",
-     "text": "Hold on running builds: build-manifest.mjs `hold <id>` asks the VPS to stop the session (agent-slots / headless pid), keeps branch and ticked steps, VPS sets status=on-hold, orchestrator files to Hold",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/cli/build-manifest.mjs",
-      "framework/cli/agent-slots.mjs",
-      "deploy/claude-headless.sh"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s08u4w1",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s24-23",
-     "text": "Console server routes: GET /api/plugins/build-orchestrator/manifest/<id> (status read), POST …/hold and …/release (release moves Hold → Pending only by Brett's call); console_show target for the Hold tab and a build row",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/routes.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s094wb5",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s25-24",
-     "text": "Console UI: Pipeline tab shows tab from manifest status, a Hold button on running rows (confirm), a 'set by VPS · reason' line on held rows; register control targets (data-axf-target)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/web/PipelineTab.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s0atxwl",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s26-25",
-     "text": "API parity: MCP plugin commands (pipeline-hold, pipeline-release, manifest-status), axf CLI `axf builds hold|release|status`, AmberX voice actions; all calling the same routes",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/commands.json",
-      "framework/cli/axf.mjs",
-      "apps/console-web/plugins/build-orchestrator/actions.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s0bnenb",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s27-26",
-     "text": "Tests: framework/spec/check-build-status-tabs.mjs (fixture; started build returned => Hold for every reason; on-hold returned => Hold; never Pending); orchestrator refuses to write status itself",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/spec/check-build-status-tabs.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s0cp3bo",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s28-27",
-     "text": "Tests: dispatcher test — held build never relaunched over N ticks, running-build hold stops the fake session and keeps branch + ticked steps; wire both checks into CI",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/test/pipeline-hold.test.mjs",
-      ".github/workflows/android.yml"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s0dh8nf",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s29-28",
-     "text": "Coordinate with move-server-side-console-parts-onto-vps: add a note on that build naming the shared manifest contract; update builds README and decisions.md with the VPS-only status rule",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "6 min",
-     "files": [
-      "_claude/builds/README.md",
-      "_claude/memory/decisions.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s0eq3jb",
-     "createdAt": "2026-11-17T22:45:13.312Z"
-    },
-    {
-     "id": "s30-29",
-     "text": "Run all checks (builds-store verify, check-builds-store, check-build-status-tabs, pipeline tests, console-control, check-theme), write _claude/builds/reports/vps-sets-every-build-status-manifest.md (API reach per feature), THREADS row, UI Review submission, open PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/vps-sets-every-build-status-manifest.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwla621s0fi5g6",
+     "uid": "st-mwla7w3e3mhup9",
      "createdAt": "2026-11-17T22:45:13.312Z"
     }
    ]

@@ -832,12 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:26 UTC · `rebuild-every-toolbar-page-specific` → landed, note (all) · foreign-write
-- 2026-11-17 22:26 UTC · `flagship-professional-skin-covering-2` s6 done, note (all) · foreign-write
-- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · foreign-write
-- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · builds-live
-- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · console
-- 2026-11-17 22:27 UTC · `console-app-part-2-native-floating` → landed, note (all) · foreign-write
 - 2026-11-17 22:27 UTC · `banner-widget-shapes-plus-change-icon` s10 done, s11 done (all) · foreign-write
 - 2026-11-17 22:27 UTC · `rebuild-fresh-main-phone-connect-small` s26 done, note (all) · foreign-write
 - 2026-11-17 22:27 UTC · `rebuild-every-toolbar-page-specific` → landed, note (all) · foreign-write
@@ -1232,6 +1226,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:46 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-17 22:46 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
 - 2026-11-17 22:45 UTC · `flagship-professional-skin-covering-2` → running, note (all) · pipeline
+- 2026-11-17 22:46 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 22:46 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
+- 2026-11-17 22:46 UTC · `flagship-professional-skin-covering-2` s8 done, s9 done, note (all) · foreign-write
+- 2026-11-17 22:46 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
+- 2026-11-17 22:46 UTC · `one-true-source-for-every-setting` added (100 steps) (all) · foreign-write
+- 2026-11-17 22:46 UTC · `vps-sets-every-build-status-manifest` added (30 steps) (all) · foreign-write
 
 ## Token passes (log)
 
