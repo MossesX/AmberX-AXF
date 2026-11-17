@@ -64,5 +64,9 @@
     "builtAt": "2026-11-17"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": "main",
+  "cli": {
+    "phone-connect": "phone-connect.mjs",
+    "phone": "phone-connect.mjs"
+  }
 }
