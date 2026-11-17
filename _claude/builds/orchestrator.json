@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:45:16.983Z",
+ "updatedAt": "2026-11-17T19:45:30.674Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -183935,9 +183935,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T19:37:43.130Z",
-   "updatedAt": "2026-11-17T19:37:43.130Z",
+   "updatedAt": "2026-11-17T19:45:27.870Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 9 steps (2 Fable).",
+     "at": "2026-11-17T19:45:27.870Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -183952,7 +183957,208 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the generic settings-slot contract (settings-slot@1): a slot id like 'log', a host key (plugin id plus settings section), what a provider registers (render component, label, priority), and what shows when nobody fills it (placeholder text plus fallback links). Write it to framework/spec/SETTINGS-SLOTS.md so any plugin's settings can host a slot and a future Log plugin can fill one for any host.",
+     "model": "Fable",
+     "why": "New cross-plugin contract that changes how every plugin's settings can be extended",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/SETTINGS-SLOTS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy60tqbw8",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add the settings-slot registry core: register, unregister, list for a host, and resolve to the provider or the placeholder. Keep it pure, with no React. Add a fixture and a check script.",
+     "model": "Fable",
+     "why": "Engine internals that the contract depends on",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/settings-slots.mjs",
+      "framework/spec/fixtures/settings-slots.json",
+      "framework/spec/check-settings-slots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy60unitn",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add the React SettingsSlot component. It reads the registry and renders the provider when one is registered, otherwise the placeholder with its fallback links. Use framework controls and tokens only, plus a data-axf-target address. Export it from framework/react and re-bake it into the console's src/axf.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/SettingsSlot.tsx",
+      "framework/react/index.ts",
+      "apps/console-web/src/axf/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy70vomd3",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add a 'Log' section to the Gate plugin's AutoLanderSettings using <SettingsSlot host=\"gate.auto-lander\" slot=\"log\">. The placeholder reads 'Log viewer coming with the Log plugin' and links to the existing Attempts list. List what the future log will hold (every tick, decision, merge-main, fix attempt, land, error) as the slot's declared contents.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/AutoLanderSettings.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy70wv1z0",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add the API side. Give the Log section and the Attempts link control@1 / console-control addresses (deep link view:settings/tab:plugins/gate/auto-lander#log) so console_show and console_open open them. Add a REST route GET /api/plugins/gate/settings-slots that returns which slots exist and whether each is filled.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/server/",
+      "apps/console-web/plugins/gate/plugin.json",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy70x5n8r",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    },
+    {
+     "id": "s6",
+     "text": "Reach the slot state through every API surface: an MCP plugin command (gate_settings_slots), the CLI (axf gate slots [--host]) and a voice action (settings.slots), all returning the same thing as REST. Add descriptions so the glossary picks them up.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy70yt3cj",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    },
+    {
+     "id": "s7",
+     "text": "Add a register API for future providers: a capability service axf.settings-slots@1 (register/list) so the Log plugin can attach to any plugin's settings without naming folders. Add lifecycle markers, and document it in the Gate plugin README.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/README.md",
+      "apps/console-web/server/",
+      "framework/core/settings-slots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy70zn4mz",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    },
+    {
+     "id": "s8",
+     "text": "Prepare the UI Review submission: 3 placeholder options (inline note, collapsed card, empty-state panel), each as an asset under apps/console-web/plugins/gate/assets/, with desktop and phone shots. Submit them with review.mjs --choices.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/assets/",
+      "apps/console-web/plugins/ui-review/review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy710f3iq",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    },
+    {
+     "id": "s9",
+     "text": "Run the tests (check-settings-slots, check-console-control, check-theme, check-controls, check-chrome-assets, plugin-lifecycle check gate, console typecheck/build). Write the report to _claude/builds/reports/auto-lander-settings-log-placeholder.md, add the THREADS row and open the PR, saying how the slot is reached through REST, MCP, CLI, voice and deep link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/auto-lander-settings-log-placeholder.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3qvy711xfc2",
+     "createdAt": "2026-11-17T19:45:27.870Z"
+    }
+   ]
   }
  ]
 }

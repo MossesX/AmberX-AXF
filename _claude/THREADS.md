@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:10 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `every-settings-interface-gets` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:44 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
 - 2026-11-17 19:44 UTC · `terminal-main-tab-streaming-console-s` note (all) · builds-live
 - 2026-11-17 19:45 UTC · `separate-settings-per-plugin-reset` s3 done (all) · orchestrator
+- 2026-11-17 19:45 UTC · `auto-lander-settings-log-placeholder` note (all) · orchestrator
 
 ## Token passes (log)
 
