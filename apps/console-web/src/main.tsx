@@ -23,7 +23,10 @@ const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager:
 const pluginCards = import.meta.glob(['../plugins/*/assets/card/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
 // Page toolbars (page-toolbar@1 at plugins/<folder>/assets/toolbar/*.json, scoped to the plugin's page; build
 // rebuild-every-toolbar-page-specific): each plugin page draws its own through <PageToolbar>.
-const pluginToolbars = import.meta.glob(['../plugins/*/assets/toolbar/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
+// UI Review options (tag ui-choice) are left out: an option is used only once it is picked (it joins the library through
+// UI Review's choices/assets), so the page's own asset stays the one its scope picks.
+const pluginToolbars = Object.fromEntries(Object.entries(import.meta.glob(['../plugins/*/assets/toolbar/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' }))
+  .filter(([, a]) => !((a as { tags?: string[] }).tags ?? []).includes('ui-choice')));
 const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...pluginToolbars, ...overrideAssets };
 
 const axf = createAxf({

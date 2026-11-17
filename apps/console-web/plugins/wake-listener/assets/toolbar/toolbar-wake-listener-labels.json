@@ -1,0 +1,69 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-wake-listener-labels",
+  "name": "Wake word: Icons + text",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icon and name on every button, overflow only when the bar runs out of room (ships as the default).",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-wake-listener",
+    "choice-option:labels"
+  ],
+  "data": {
+    "scope": "view:wake-listener",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "listen",
+        "label": "Listening",
+        "items": [
+          {
+            "id": "on",
+            "icon": "mic",
+            "label": "Listen",
+            "action": "command:wake-listener/on",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "off",
+            "icon": "pause",
+            "label": "Stop listening",
+            "action": "command:wake-listener/off",
+            "priority": 280,
+            "overflow": "never"
+          }
+        ]
+      },
+      {
+        "id": "claude",
+        "label": "Claude",
+        "items": [
+          {
+            "id": "claude-on",
+            "icon": "sparkles",
+            "label": "Claude understands",
+            "action": "command:wake-listener/claude-on",
+            "priority": 200
+          },
+          {
+            "id": "claude-off",
+            "icon": "x",
+            "label": "Rules only",
+            "action": "command:wake-listener/claude-off",
+            "priority": 180
+          }
+        ]
+      }
+    ]
+  }
+}

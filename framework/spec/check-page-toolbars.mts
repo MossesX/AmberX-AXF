@@ -144,7 +144,8 @@ export function pluginToolbarAssets(): string[] {
     if (!existsSync(base)) continue;
     for (const p of readdirSync(base)) {
       const d = join(base, p, 'assets', 'toolbar');
-      if (existsSync(d)) for (const f of readdirSync(d)) if (f.endsWith('.json')) out.push(join(d, f));
+      // UI Review options (tag ui-choice) are looks of the same toolbar, used once picked: checked with their page's asset, not listed on their own
+      if (existsSync(d)) for (const f of readdirSync(d)) if (f.endsWith('.json') && !(JSON.parse(read(join(d, f)) || '{}').tags ?? []).includes('ui-choice')) out.push(join(d, f));
     }
   }
   return out.sort();
