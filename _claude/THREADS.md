@@ -826,8 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:10 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
-- 2026-11-17 15:10 UTC · `ui-review-filter-and-search-by-pr` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `own-look-per-grid-and-tab-group` note (all) · orchestrator
@@ -1226,6 +1224,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:40 UTC · `right-click-running-build-open-headless` note (all) · orchestrator
 - 2026-11-17 19:40 UTC · `group-chat-audio-hear-agents-talk-while` → fixing, note (all) · pipeline
 - 2026-11-17 19:41 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
+- 2026-11-17 19:41 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
+- 2026-11-17 19:41 UTC · `guided-live-demo-test-watch-orchestrator` branch claude/guided-live-demo-test-watch-orchestrator (all) · pipeline
 
 ## Token passes (log)
 
