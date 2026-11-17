@@ -12,19 +12,27 @@
  *
  *   node apps/console-web/plugins/build-orchestrator/watchdog.mjs scan [--json]     dry run: every stuck build, its cause and
  *                                                                                   the planned action; nothing changes
+ *   … run [--build id] [--json]    one pass that applies the recoveries: a hung session is killed first, the build's agent
+ *                                  slots, worker claim and build lock are released, the step it was on is reset, the build
+ *                                  goes back to the Queue (or Pending on give-up) through pipeline.mjs setPipeline with a
+ *                                  recoveries[] entry in the same store write (journal action watchdog-recover, live on
+ *                                  main through builds-live). Idempotent: a per-build lock, and a build recovered less than
+ *                                  cooldownMin ago is left for the next pass.
  *
  * Files: <pipeline dir>/watchdog.json (watchdog-state@1: last pass, recent fixes), next to the dispatcher's state.
  * Environment for tests: AXF_WATCHDOG_SETTINGS (a JSON patch over the settings), AXF_WATCHDOG_ACCOUNTS (comma list of usable
  * accounts instead of deploy/claude-workers.mjs status), AXF_WATCHDOG_PROBE (a JSON map build → probe instead of the host).
  */
-import { readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as W from '../../../../framework/core/build-watchdog.mjs';
 import { loadStore } from '../../../../framework/cli/builds-store.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
-import { hitOf, status as workersStatus } from '../../../../deploy/claude-workers.mjs';
-import { pipeDir, worktreeOf } from './pipeline.mjs';
+import * as buildLock from '../../../../framework/cli/build-lock.mjs';
+import { hitOf, markLimit, release as workersRelease, status as workersStatus } from '../../../../deploy/claude-workers.mjs';
+import { endRun, pipeDir, setPipeline, worktreeOf } from './pipeline.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 export const SCHEMA_STATE = 'watchdog-state@1';
@@ -34,12 +42,32 @@ const headlessDir = (env = process.env) => env.AXF_HEADLESS_DIR || '/var/tmp/axf
 
 export const stateFile = (env = process.env) => join(pipeDir(env), 'watchdog.json');
 export const loadState = (env = process.env) => ({ $axf: SCHEMA_STATE, lastPass: '', lastFix: '', passes: 0, recent: [], ...(readJson(stateFile(env), {}) ?? {}) });
+function saveState(s, env = process.env) {
+  const f = stateFile(env); mkdirSync(dirname(f), { recursive: true });
+  const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify({ ...s, $axf: SCHEMA_STATE }, null, 1)}\n`); renameSync(tmp, f);
+}
+const KEEP_RECENT = 50;
 
-/** The watchdog settings (build-watchdog@1 normSettings): defaults, then the saved settings, then AXF_WATCHDOG_SETTINGS. */
+/**
+ * The plugin's own settings on top of build-watchdog@1's { enabled, staleMin, graceMin, maxRetries }:
+ *   intervalMin        minutes between cron passes (1)          cooldownMin   a recovered build is left alone this long (5)
+ *   retryOtherAccount  a usage limit / dead login moves the retry to the next worker (true)
+ *   fyi                'batch' (one phone push per pass) | 'each' (one per fix)
+ */
+export const EXTRA_DEFAULTS = Object.freeze({ intervalMin: 1, cooldownMin: 5, retryOtherAccount: true, fyi: 'batch' });
+const EXTRA_RANGES = { intervalMin: [1, 60], cooldownMin: [0, 120] };
+export function normSettings(raw = {}) {
+  const o = raw && typeof raw === 'object' ? raw : {};
+  const num = (k) => { const n = Number(o[k]); const [lo, hi] = EXTRA_RANGES[k]; return o[k] == null || o[k] === '' || !Number.isFinite(n) ? EXTRA_DEFAULTS[k] : Math.min(hi, Math.max(lo, Math.round(n))); };
+  const bool = (v, d) => (v === true || v === 'true' || v === 'on' ? true : v === false || v === 'false' || v === 'off' ? false : d);
+  return { ...W.normSettings({ ...o, enabled: bool(o.enabled, true) }), intervalMin: num('intervalMin'), cooldownMin: num('cooldownMin'), retryOtherAccount: bool(o.retryOtherAccount, true), fyi: o.fyi === 'each' ? 'each' : 'batch' };
+}
+export const settingsFile = (env = process.env) => join(pipeDir(env), 'watchdog-settings.json');
+/** The watchdog settings: defaults, then the saved settings, then AXF_WATCHDOG_SETTINGS (tests). */
 export function loadSettings(env = process.env) {
   let patch = {};
   try { patch = env.AXF_WATCHDOG_SETTINGS ? JSON.parse(env.AXF_WATCHDOG_SETTINGS) : {}; } catch { /* a bad patch is ignored */ }
-  return W.normSettings({ ...(readJson(join(pipeDir(env), 'watchdog-settings.json'), {}) ?? {}), ...patch });
+  return normSettings({ ...(readJson(settingsFile(env), {}) ?? {}), ...patch });
 }
 
 /** Accounts a retry may go to (claude-workers: every account that takes jobs). [] = unknown (the table then never gives up on accounts). */
@@ -100,6 +128,107 @@ export function scan({ env = process.env, store = loadStore(), settings = loadSe
   return { $axf: 'watchdog-scan@1', at, settings, accounts: usable, builds, stuck: builds.filter((x) => x.decision.stuck) };
 }
 
+// ------------------------------------------------------------------ run: apply the recoveries
+
+/** A per-build lock (mkdir, stale after 5 min): two passes never recover the same build at once. */
+function lockBuild(id, env) {
+  const d = join(pipeDir(env), 'watchdog-locks'); mkdirSync(d, { recursive: true });
+  const f = join(d, `${id}.lock`);
+  try { mkdirSync(f); } catch {
+    let age = 0; try { age = Date.now() - statSync(f).mtimeMs; } catch { /* gone */ }
+    if (age < 5 * 60e3) return null;
+    try { rmSync(f, { recursive: true, force: true }); mkdirSync(f); } catch { return null; }
+  }
+  return () => { try { rmSync(f, { recursive: true, force: true }); } catch { /* gone */ } };
+}
+
+/** Recovered less than cooldownMin ago (the build's newest recovery): left for a later pass. */
+export function cooling(b, settings, now = Date.now()) {
+  const last = (b.recoveries ?? []).at(-1);
+  return !!last && now - Date.parse(last.at) < settings.cooldownMin * 60e3;
+}
+
+function killSession(probe) {
+  for (const s of probe.sessions ?? []) spawnSync('tmux', ['kill-session', '-t', `=${s}`]);
+  for (const pid of probe.pids ?? []) { try { process.kill(pid, 'SIGTERM'); } catch { /* gone */ } }
+}
+
+/** Free what the dead run held: its agent slots, its worker claim, its build lock. */
+function releaseHeld(b, probe, env) {
+  const freed = [];
+  for (const sl of probe.slots ?? []) { try { if (slots.release(sl.id, probe.exit)) freed.push(sl.id); } catch { /* store gone */ } }
+  if (b.pipeline?.slot && !freed.includes(b.pipeline.slot)) { try { if (slots.release(b.pipeline.slot, probe.exit)) freed.push(b.pipeline.slot); } catch { /* gone */ } }
+  if (b.pipeline?.session) { try { workersRelease(b.pipeline.session, env); } catch { /* no claim */ } }
+  try { buildLock.release(b.id, { dir: worktreeOf(b.id, env) }); } catch { /* no lock */ }
+  return freed;
+}
+
+/**
+ * Apply one decision. Returns the recovery record written (with `freed` slots), or null when nothing was done.
+ * exit-clean (requeue): the dispatcher's own exit transition runs (pipeline endRun), then the record is added.
+ */
+export function recover(b, d, probe, { env = process.env, settings = loadSettings(env), now = new Date().toISOString() } = {}) {
+  if (!d || d.action === 'none') return null;
+  if (d.action === 'kill-retry') killSession(probe);
+  const freed = releaseHeld(b, probe, env);
+  if (d.action === 'retry-other-account' && settings.retryOtherAccount && d.account) {
+    try { markLimit(d.account, { kind: d.cause === 'auth-failed' ? 'auth' : 'usage', text: d.note }, env); } catch { /* the workers state may be absent (tests) */ }
+  }
+  const rec = W.recoveryRecord(b, d, { now, session: b.pipeline?.session ?? '' });
+  const add = (x, at) => {
+    x.recoveries = W.normRecoveries([...(x.recoveries ?? []), rec]);
+    if (d.resetStep && d.step) { const st = x.steps.find((s) => s.id === d.step); if (st && !st.done) { st.note = str(`Reset by the watchdog (${d.cause}, attempt ${d.attempt}) ${at}`, 1000); st.updatedAt = at; } }
+  };
+  if (d.action === 'requeue') {
+    endRun(b, { exit: 0, kind: 'phase-done', phase: d.phase, env });
+    setPipeline(b.id, {}, { by: 'watchdog', action: W.JOURNAL_ACTION, note: W.recoveryLine(rec, b), mutate: add });
+    return { ...rec, freed };
+  }
+  const p = b.pipeline ?? {};
+  const giveUp = d.action === 'give-up';
+  const patch = {
+    session: '', slot: '', note: d.note,
+    crashes: W.RETRY_ACTIONS.includes(d.action) || giveUp ? (p.crashes ?? 0) + 1 : p.crashes ?? 0,
+    lastRun: { at: now, exit: d.exit, outcome: giveUp ? 'failed' : 'requeued', reason: giveUp ? 'crash-limit' : 'crash', stepsLeft: (b.steps ?? []).filter((s) => !s.done && !s.skip).length, account: p.account ?? '', session: p.session ?? '', phase: d.phase },
+    ...(d.excludeAccounts.length ? { tried: d.excludeAccounts } : {}),
+    ...(giveUp ? { queuedAt: '' } : {}),
+  };
+  setPipeline(b.id, patch, { status: d.status, by: 'watchdog', action: W.JOURNAL_ACTION, note: W.recoveryLine(rec, b), mutate: add });
+  return { ...rec, freed };
+}
+
+/**
+ * One watchdog pass: scan, then recover every stuck build (per-build lock, cooldown). Writes watchdog.json (last pass,
+ * recent fixes). Returns { at, fixes: [record…], skipped: [{ id, why }], scan }.
+ */
+export function run({ env = process.env, only = '', settings = loadSettings(env) } = {}) {
+  const sc = scan({ env, settings });
+  const fixes = []; const skipped = []; const errors = [];
+  const store = loadStore();
+  for (const x of sc.stuck) {
+    if (only && x.id !== only) continue;
+    if (x.decision.action === 'none') { skipped.push({ id: x.id, why: x.decision.note }); continue; }
+    const b = store.builds.find((y) => y.id === x.id);
+    if (!b) continue;
+    if (cooling(b, settings)) { skipped.push({ id: x.id, why: `recovered less than ${settings.cooldownMin} min ago` }); continue; }
+    const unlock = lockBuild(x.id, env);
+    if (!unlock) { skipped.push({ id: x.id, why: 'another pass holds its lock' }); continue; }
+    try {
+      // re-read under the lock: another pass (or the dispatcher) may have moved it on already
+      const fresh = loadStore().builds.find((y) => y.id === x.id);
+      if (!fresh || !W.isMarkedRunning(fresh) || (fresh.pipeline?.session ?? '') !== (x.session ?? '')) { skipped.push({ id: x.id, why: 'moved on since the scan' }); continue; }
+      const r = recover(fresh, x.decision, x.probe, { env, settings });
+      if (r) fixes.push({ ...r, title: x.title });
+    } catch (e) { errors.push({ id: x.id, error: str(e.message, 300) }); } finally { unlock(); }
+  }
+  const at = new Date().toISOString();
+  const st = loadState(env);
+  saveState({ ...st, lastPass: at, passes: (st.passes ?? 0) + 1, ...(fixes.length ? { lastFix: at } : {}), lastStuck: sc.stuck.length, lastRunning: sc.builds.length,
+    recent: [...(st.recent ?? []), ...fixes.map((f) => ({ at: f.at, buildId: f.buildId, title: f.title, step: f.step, cause: f.cause, exit: f.exit, action: f.action, attempt: f.attempt, account: f.account, notified: f.notified, note: f.note }))].slice(-KEEP_RECENT),
+    errors }, env);
+  return { $axf: 'watchdog-pass@1', at, fixes, skipped, errors, scan: sc };
+}
+
 const line = (x) => `${x.id}: ${x.decision.cause}${x.decision.exit != null ? ` (exit ${x.decision.exit})` : ''} → ${x.decision.action}${x.decision.attempt ? ` · attempt ${x.decision.attempt}` : ''} · ${x.decision.note}`;
 
 // ------------------------------------------------------------------ CLI
@@ -121,7 +250,13 @@ export async function main(argv = process.argv.slice(2)) {
     const r = scan();
     return out(r, r.builds.length ? [`${r.builds.length} marked running · ${r.stuck.length} stuck${r.settings.enabled ? '' : ' · watchdog off'}`, ...r.builds.map((x) => `  ${x.decision.stuck ? '!' : ' '} ${line(x)}`)].join('\n') : 'nothing marked running');
   }
-  throw Object.assign(new Error(`unknown command ${cmd} (scan)`), { code: 2 });
+  if (cmd === 'run') {
+    const r = run({ only: typeof f.build === 'string' ? f.build : '' });
+    if (r.errors.length) process.exitCode = 1;
+    return out(r, [`pass ${r.at}: ${r.scan.builds.length} marked running · ${r.fixes.length} fixed · ${r.skipped.length} left${r.errors.length ? ` · ${r.errors.length} failed` : ''}`,
+      ...r.fixes.map((x) => `  fixed ${x.buildId}: ${x.cause} → ${x.action}${x.attempt ? ` (attempt ${x.attempt})` : ''}`), ...r.skipped.map((x) => `  left ${x.id}: ${x.why}`), ...r.errors.map((x) => `  failed ${x.id}: ${x.error}`)].join('\n'));
+  }
+  throw Object.assign(new Error(`unknown command ${cmd} (scan, run)`), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === SELF) {

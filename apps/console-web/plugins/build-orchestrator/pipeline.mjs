@@ -253,8 +253,11 @@ export function status() {
 
 // ------------------------------------------------------------------ store writes
 
-/** One change to a build's pipeline record (and status / note) under the store lock. */
-export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline', action = 'pipeline' } = {}) {
+/**
+ * One change to a build's pipeline record (and status / note) under the store lock. `mutate(b, now)` (optional) changes
+ * the same record in the same write (the watchdog appends its recovery and resets the step this way).
+ */
+export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline', action = 'pipeline', mutate = null } = {}) {
   let out = null;
   withStore((s) => {
     const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
@@ -263,6 +266,7 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
     if (!b.pipeline) delete b.pipeline;
     if (status) { if (!storeCore.STATUSES.includes(status)) throw new Error(`unknown status ${status}`); b.status = status; b.builtAt = storeCore.FINISHED.includes(status) ? (b.builtAt || now) : ''; }
     if (note) b.notes.push({ text: str(note, 2000), at: now });
+    if (typeof mutate === 'function') mutate(b, now);
     b.updatedAt = now; out = b;
     return s;
   }, { by, action, note: id });
