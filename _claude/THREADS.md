@@ -826,10 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:03 UTC · `settings-opened-banners-nav-menu` s2 done (all) · orchestrator
-- 2026-11-17 15:04 UTC · `edit-ui-mode-inline-edit-anything-active` s3 done (all) · orchestrator
-- 2026-11-17 15:04 UTC · `rebuild-fresh-main-hide-any-asset` s4 done (all) · orchestrator
-- 2026-11-17 15:04 UTC · `server-rule-done-means-merged-working` → running (all) · mcp
 - 2026-11-17 15:04 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running (all) · mcp
 - 2026-11-17 15:04 UTC · `server-rule-done-means-merged-working` → queued (all) · mcp
 - 2026-11-17 15:05 UTC · `edit-ui-mode-inline-edit-anything-active` s4 done (all) · orchestrator
@@ -1226,6 +1222,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:19 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · watchdog
 - 2026-11-17 19:20 UTC · `pass-approval-hook-deep-link-amberx-notification` s10 done, → landing (all) · orchestrator
 - 2026-11-17 19:20 UTC · `every-plugin-screen-gets-a-settings-gear` merged, note (all) · watchdog
+- 2026-11-17 19:20 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · watchdog
+- 2026-11-17 19:20 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` merged, note (all) · reconciler
+- 2026-11-17 19:20 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · reconciler
+- 2026-11-17 19:20 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 
 ## Token passes (log)
 
