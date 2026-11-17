@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7395,
- "updatedAt": "2026-11-17T12:29:52.402Z",
+ "rev": 7396,
+ "updatedAt": "2026-11-17T12:30:32.323Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223034,7 +223034,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T12:29:47.664Z",
+   "updatedAt": "2026-11-17T12:29:56.717Z",
    "builtAt": "",
    "notes": [
     {
@@ -223070,6 +223070,14 @@
      "at": "2026-11-17T03:42:11.631Z"
     },
     {
+     "text": "Brief only: brief is 24727 characters (~6182 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T12:29:51.916Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-stale-row-watchdog-vps--earl, shared account login)",
+     "at": "2026-11-17T12:29:56.717Z"
+    },
+    {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-stale-row-watchdog-vps--earl.",
      "at": "2026-11-17T12:29:47.664Z"
     }
@@ -223091,13 +223099,13 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "hulu0241",
-    "session": "axf-orchestrator-stale-row-watchdog-vps--earl",
-    "slot": "",
-    "model": "Opus",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-17T12:29:45.540Z",
-    "runs": 1,
+    "account": "",
+    "session": "",
+    "slot": "[object Object]",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -223110,7 +223118,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T12:29:45.540Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -223119,7 +223127,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T12:29:45.540Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -223706,7 +223714,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262668,7 +262676,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T12:29:35.849Z",
+   "updatedAt": "2026-11-17T12:30:21.498Z",
    "builtAt": "",
    "notes": [
     {
@@ -262678,6 +262686,10 @@
     {
      "text": "Split by Claude into 26 steps (3 Fable).",
      "at": "2026-11-17T12:28:31.327Z"
+    },
+    {
+     "text": "Dispatch gate: move-server-side-console-parts-onto-vps still has axf-move-server-side-console-parts-onto-vps--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-17T12:30:21.498Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-move-server-side-console-parts-onto-vps--sully.",
@@ -262709,13 +262721,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T12:26:43.338Z",
     "queuedBy": "console",
-    "account": "hulu0241",
+    "account": "",
     "session": "axf-move-server-side-console-parts-onto-vps--sully",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T12:29:25.455Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -262728,7 +262740,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T12:29:25.455Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -262737,7 +262749,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T12:29:25.455Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""

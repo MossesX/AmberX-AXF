@@ -819,9 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:59 UTC · `grid-token-set-colours-hover-selected` note (all) · orchestrator
-- 2026-11-17 00:01 UTC · `grid-token-set-colours-hover-selected` branch claude/grid-token-set-colours-hover-selected, note (all) · builds-live
-- 2026-11-17 00:02 UTC · `own-look-per-grid-and-tab-group` s7 done (all) · orchestrator
 - 2026-11-17 00:02 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
 - 2026-11-17 00:01 UTC · `every-plugin-screen-gets-a-settings-gear` s2 done (all) · orchestrator
 - 2026-11-17 00:02 UTC · `merge-main-land-console-axhub-retry` → pending, note (all) · reconciler
@@ -1219,6 +1216,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
 - 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
 - 2026-11-17 12:29 UTC · `orchestrator-stale-row-watchdog-vps` → running, note (all) · pipeline
+- 2026-11-17 12:29 UTC · `orchestrator-stale-row-watchdog-vps` → running, note (all) · orchestrator
+- 2026-11-17 12:29 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
+- 2026-11-17 12:30 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · pipeline
 
 ## Token passes (log)
 
