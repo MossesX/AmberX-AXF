@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:26:37.215Z",
+ "updatedAt": "2026-11-17T20:26:49.425Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137095,7 +137095,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-17T20:26:30.879Z",
+   "updatedAt": "2026-11-17T20:26:41.477Z",
    "builtAt": "",
    "notes": [
     {
@@ -137181,6 +137181,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "s9: CI fixes pushed (d8d2b3e45). Ours: token-registry block + command descriptions for context-menus. Main was red too, fixed at cause here: plan-studio-2 tokens + glossary descriptions, watchdog help, stale-row watchdog vs done-means-merged (landing + landed.sha instead of a refused landed), check-ci-scope follows the queue-off switch, plugin-lifecycle scanner (whole-name id match, mentions bookkeeping) + markers for the auto-lander's cross-plugin refs. Local-only failures left (not CI): tests that read this session's env (AXF_*, CLAUDE_CODE_*), the VPS build limit 8/8, Node 20 vs CI's 22, no console dist. Worktree was left at a pre-merge tree; index rebuilt from HEAD. VPS disk hit 100% mid-run (168G in /root/axf-builds worktrees); the systems-check disk item covers it.",
+     "at": "2026-11-17T20:26:41.477Z"
     }
    ],
    "approvals": [
