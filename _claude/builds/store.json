@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7837,
- "updatedAt": "2026-11-17T20:37:34.602Z",
+ "rev": 7838,
+ "updatedAt": "2026-11-17T20:37:44.103Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268151,7 +268151,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T20:37:32.545Z",
+   "updatedAt": "2026-11-17T20:37:41.104Z",
    "builtAt": "",
    "notes": [
     {
@@ -268185,6 +268185,10 @@
     {
      "text": "Brett (Nov 17): DO NOT rebuild fresh. Reuse the existing Phone Connect code on branch claude/phone-connect-small-android-companion (PR #712, 35/35 steps built). Plan: check out that branch, merge current main into it, resolve conflicts, fix what broke (checks, console build, APK CI), push, and land #712. Opus only, no Fable. Ignore the remaining fresh-rebuild steps (s3-s27) except what is needed to get the old code green on main. Keep it small and fast. When #712 lands, mark this build complete.",
      "at": "2026-11-17T20:37:32.545Z"
+    },
+    {
+     "text": "Brett (Nov 17, update): Fable IS allowed — use Fable or whatever model it takes to fix the old Phone Connect code (PR #712) and get it merged, running and the APK built. Still reuse the old code, no fresh rebuild.",
+     "at": "2026-11-17T20:37:41.104Z"
     }
    ],
    "approvals": [],
@@ -268927,7 +268931,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
