@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7398,
- "updatedAt": "2026-11-17T12:33:08.436Z",
+ "rev": 7399,
+ "updatedAt": "2026-11-17T12:33:35.965Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -258126,7 +258126,7 @@
    "pr": "#774",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T04:40:41.012Z",
+   "updatedAt": "2026-11-17T12:33:11.362Z",
    "builtAt": "2026-11-17T04:40:41.012Z",
    "notes": [
     {
@@ -258180,6 +258180,10 @@
     {
      "text": "Headless run axf-server-auto-lander-fixes-lands--joey: brief only · start 18.3K tokens ($0.07) · cost $18.26 · 240 turns · 6 tools, MCP none",
      "at": "2026-11-17T04:40:41.012Z"
+    },
+    {
+     "text": "Clash note (move-server-side-console-parts-onto-vps): that build reuses axf_systemd_unit and the deploy/systemd/ pattern from here, adds User=axf-host and a sudo whitelist to axf-auto-lander.service, exposes its status through the new host API socket, and retires the axf-pipeline / axf-auto-land cron lines with a rollback. The tick logic here is not changed. Report: _claude/builds/reports/move-server-side-console-parts-onto-vps.md §2.",
+     "at": "2026-11-17T12:33:11.362Z"
     }
    ],
    "approvals": [
@@ -258893,7 +258897,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -262680,7 +262684,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T12:32:23.126Z",
+   "updatedAt": "2026-11-17T12:33:27.337Z",
    "builtAt": "",
    "notes": [
     {
@@ -262706,6 +262710,10 @@
     {
      "text": "Claude account: hulu0241 (axf-move-server-side-console-parts-onto-vps--sully, shared account login)",
      "at": "2026-11-17T12:29:35.849Z"
+    },
+    {
+     "text": "Overlaps recorded (s2): maintenance-plugin-clear-docker-cache owns the Clear Docker cache action, this build owns where it runs (host unit, user, sudo whitelist, socket). server-auto-lander-fixes-lands units and axf_systemd_unit are reused; this build adds the user, whitelist and socket to them. Clash notes posted on both.",
+     "at": "2026-11-17T12:33:15.516Z"
     }
    ],
    "approvals": [],
@@ -262804,12 +262812,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:33:27.337Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T12:28:31.327Z"
+     "updatedAt": "2026-11-17T12:33:27.945Z"
     },
     {
      "id": "s3",
@@ -263430,7 +263438,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
