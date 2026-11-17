@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:41:17.488Z",
+ "updatedAt": "2026-11-17T23:41:31.929Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -5857,7 +5857,7 @@
    "pr": "#288",
    "mergedAt": "2026-11-04T12:05:57.348Z",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-12T03:29:45Z",
+   "updatedAt": "2026-11-17T23:41:27.378Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -5885,7 +5885,7 @@
    "upgradeRequests": [],
    "steps": [
     {
-     "id": "s106-105",
+     "id": "s1",
      "text": "Reproduce in a headless browser: Molly with the Console frame, trace console-command@1",
      "model": "Opus",
      "why": "",
@@ -5904,7 +5904,7 @@
      "createdAt": "2026-11-03T21:05:30.630Z"
     },
     {
-     "id": "s107-106",
+     "id": "s2",
      "text": "Commands work inside Molly: embedded console executes; client reported as molly/console-web; recent = the visible/focused client",
      "model": "Opus",
      "why": "",
@@ -5923,7 +5923,7 @@
      "createdAt": "2026-11-03T21:05:30.630Z"
     },
     {
-     "id": "s108-107",
+     "id": "s3",
      "text": "Same for the axHub and AmberX frames inside Molly",
      "model": "Opus",
      "why": "",
@@ -5942,7 +5942,7 @@
      "createdAt": "2026-11-03T21:05:30.630Z"
     },
     {
-     "id": "s109-108",
+     "id": "s4",
      "text": "console-wake path: wake/relay through Molly when Molly is the open app",
      "model": "Opus",
      "why": "",
@@ -5961,7 +5961,7 @@
      "createdAt": "2026-11-03T21:05:30.630Z"
     },
     {
-     "id": "s110-109",
+     "id": "s5",
      "text": "Tests, report, THREADS, PR, redeploy",
      "model": "Opus",
      "why": "",
@@ -5980,7 +5980,7 @@
      "createdAt": "2026-11-03T21:05:30.630Z"
     },
     {
-     "id": "s111-110",
+     "id": "s6",
      "text": "Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
      "model": "Opus",
      "why": "",
@@ -5999,7 +5999,7 @@
      "createdAt": "2026-11-03T21:05:30.630Z"
     },
     {
-     "id": "s112-111",
+     "id": "s7",
      "text": "Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
      "model": "Opus",
      "why": "",

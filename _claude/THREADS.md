@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `toolbars-4-5-chat-viewer-codebase` added (4 steps) (all) · foreign-write
-- 2026-11-17 22:58 UTC · `toolbars-2-5-plan-studio-ui-review-2` added (4 steps) (all) · foreign-write
-- 2026-11-17 22:58 UTC · `toolbars-5-5-claude-accounts-glossary` added (4 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `icon-picker-every-banner-settings-widget` added (12 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `fix-banner-settings-interface-tab` added (13 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `land-pr-730-reset-all-button-far-right` added (5 steps) (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:40 UTC · `move-server-side-console-parts-onto-vps` s6 done (all) · orchestrator
 - 2026-11-17 23:40 UTC · `flagship-professional-skin-covering-2` → pending, note (all) · watchdog
 - 2026-11-17 23:41 UTC · `move-server-side-console-parts-onto-vps` s6 done (all) · foreign-write
+- 2026-11-17 23:41 UTC · `every-plugin-screen-gets-a-settings-gear` → landed, note (all) · foreign-write
+- 2026-11-17 23:41 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
+- 2026-11-17 23:41 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 
 ## Token passes (log)
 
