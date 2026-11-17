@@ -4,8 +4,17 @@
 # the only wildcard a manifest may use (a unit name axf-*) is expanded here to the named units.
 Defaults:axf-host !requiretty, env_reset, secure_path="/usr/sbin:/usr/bin:/sbin:/bin"
 
+# builds-live
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task builds-live-flush
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task builds-live-pull
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task builds-live-sync
+
 # host-api
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-host-api.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-host-api.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-host-api.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-builds-live.service -n 500 -o short-iso --no-pager
 axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-host-api.service -n 500 -o short-iso --no-pager

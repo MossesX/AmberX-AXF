@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# axf-task — the fixed root tasks host services may ask for through sudo (one line each in /etc/sudoers.d/axf-host).
+# A task name is the only argument; there is nothing else to pass, so a whitelist line can never be widened. Each task
+# runs the same repo code root already runs on this host (the auto-lander, the installers) against the checkout this
+# script lives in. Root-owned like the rest of /opt/axf; the axf-host account cannot change it.
+#   sudo -n /opt/axf/deploy/host-services/bin/axf-task <task>
+set -euo pipefail
+DIR="$(cd "$(dirname "$(readlink -f "$0")")/../../.." && pwd)"
+cd "$DIR"
+export PATH=/usr/local/bin:/usr/bin:/bin AXF_CONSOLE_ROOT="$DIR" AXF_HOST_SIDE=1 AXF_ACTOR="host:${1:-}"
+# The shared data folder, as the console sees it (/projects/amberx-axf/_data): the installer writes where it is.
+P="$(sed -n 's/^AXHUB_PROJECTS_DIR=//p' /etc/axf-host/env 2>/dev/null | head -1 || true)"
+[ -n "$P" ] && export AXHUB_PROJECTS_DIR="$P"
+case "${1:-}" in
+  builds-live-flush) exec node framework/cli/builds-live.mjs flush --quiet ;;
+  builds-live-pull) exec node framework/cli/builds-live.mjs pull ;;
+  builds-live-sync) exec node framework/cli/builds-live.mjs sync ;;
+  git-fetch) exec git -C "$DIR" fetch -q origin ;;
+  git-worktree-prune) exec git -C "$DIR" worktree prune ;;
+  *) echo "axf-task: unknown task '${1:-}'" >&2; exit 64 ;;
+esac

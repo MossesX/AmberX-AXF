@@ -86,7 +86,7 @@ if [ -n "$UNINSTALL" ]; then
   if [ -n "$ONLY" ]; then
     KEEP="$(printf '%s\n' "$ALL" | cut -f1 | grep -vxF -f <(printf '%s\n' "${ONLY//,/$'\n'}") | grep -vx host-api | paste -sd, -)"
     mkdir -p "$(dirname "$SUDOERS")"
-    node "$DIR/deploy/host-services/gen-sudoers.mjs" --only "$KEEP" --out "$SUDOERS"
+    node "$DIR/deploy/host-services/gen-sudoers.mjs" --only "$KEEP" --root "$DIR" --out "$SUDOERS"
   else
     [ -n "$DRY" ] && echo "+ rm -f $SUDOERS $ETC/env $ETC/console.env" || rm -f "$SUDOERS" "$ETC/env" "$ETC/console.env"
     run userdel axf-host || true
@@ -114,7 +114,8 @@ TOKEN="$(sed -n 's/^AXF_HOST_TOKEN=//p' "$ETC/env" 2>/dev/null | head -1 || true
 [ -n "$TOKEN" ] || TOKEN="$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
 BRIDGE="$( (ip -4 addr show docker0 2>/dev/null || true) | sed -n 's/.*inet \([0-9.]*\).*/\1/p' | head -1)"
 GID="$(getent group axf-host 2>/dev/null | cut -d: -f3 || true)"
-( umask 027; printf 'AXF_HOST_TOKEN=%s\nAXF_HOST_BIND=%s\n' "$TOKEN" "$BRIDGE" > "$ETC/env" )
+PROJ=""; case "$AXF_HOST_DATA" in */amberx-axf/_data) PROJ="${AXF_HOST_DATA%/amberx-axf/_data}" ;; esac
+( umask 027; printf 'AXF_HOST_TOKEN=%s\nAXF_HOST_BIND=%s\nAXHUB_PROJECTS_DIR=%s\n' "$TOKEN" "$BRIDGE" "$PROJ" > "$ETC/env" )
 ( umask 077; printf 'AXF_HOST_API=unix:/run/axf-host/api.sock\nAXF_HOST_API_FALLBACK=http://host.docker.internal:7788\nAXF_HOST_TOKEN=%s\nAXF_HOST_GID=%s\n' "$TOKEN" "${GID:-}" > "$ETC/console.env" )
 [ -z "$DRY" ] && chown root:axf-host "$ETC/env"
 say "wrote $ETC/env and $ETC/console.env (the console mounts /run/axf-host on its next install run)"
@@ -137,7 +138,7 @@ done <<< "$PLAN"
 
 # ---- 5. sudoers (only the declared commands; visudo -c before it goes live)
 mkdir -p "$(dirname "$SUDOERS")"
-node "$DIR/deploy/host-services/gen-sudoers.mjs" ${ONLY:+--only "$ONLY"} --out "$SUDOERS"
+node "$DIR/deploy/host-services/gen-sudoers.mjs" ${ONLY:+--only "$ONLY"} --root "$DIR" --out "$SUDOERS"
 
 # ---- 6. start
 run systemctl daemon-reload

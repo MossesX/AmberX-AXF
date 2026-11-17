@@ -45,6 +45,10 @@ export const DATA = resolve(process.env.AXF_HOST_DATA || join(ROOT, '_data'));
 export const SOCKET_DIR = process.env.AXF_HOST_SOCKET_DIR || H.DEFAULTS.socketDir;
 export const SERVICES_DIR = join(ROOT, 'deploy/host-services/services');
 const TOKEN = (process.env.AXF_HOST_TOKEN || '').trim();
+// Everything this process runs (workers, the framework CLIs they import) knows it is the host side: the mode guard
+// (framework/cli/host-mode.mjs) lets the host copy run, the console's copy is the one that steps aside.
+process.env.AXF_HOST_SIDE = '1';
+if (process.env.AXHUB_PROJECTS_DIR === '') delete process.env.AXHUB_PROJECTS_DIR;
 const VERSION = 1;
 const now = () => new Date().toISOString();
 
@@ -133,7 +137,9 @@ const toModeName = (rm) => (rm === 'off' ? 'container' : rm);
 
 const SUDO = process.env.AXF_HOST_SUDO || '/usr/bin/sudo';
 /** Does `line` match one whitelist entry (exact, or a prefix when the entry ends in ` *`)? */
-export function allowed(manifest, line) {
+export function allowed(manifest, raw) {
+  // Manifests name the production checkout (/opt/axf); a checkout elsewhere (tests, a second clone) maps onto it.
+  const line = ROOT !== '/opt/axf' ? raw.split(ROOT).join('/opt/axf') : raw;
   const glob = (cmd) => new RegExp(`^${cmd.split('*').map((x) => x.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('.*')}$`);
   return manifest.sudo.some((s) => line === s.cmd || (s.cmd.includes('*') && (glob(s.cmd).test(line) || (s.cmd.endsWith(' *') && line === s.cmd.slice(0, -2)))));
 }

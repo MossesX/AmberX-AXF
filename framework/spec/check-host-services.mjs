@@ -63,7 +63,7 @@ await t('every deploy/host-services/services/*.json (and deploy/*/host-service.j
   }
   const set = H.normManifests(repoManifests);
   assert.deepEqual(set.errors, []);
-  assert.equal(set.manifests[0].id, H.DEFAULTS.hostApiId);
+  assert.ok(set.manifests.some((m) => m.id === H.DEFAULTS.hostApiId), 'host-api is in the set');
 });
 
 // ── 3. the engine, replayed into the fixture ─────────────────────────────────────────────────────────────────────────

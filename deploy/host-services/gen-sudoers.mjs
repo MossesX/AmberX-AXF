@@ -9,6 +9,7 @@
  *   node deploy/host-services/gen-sudoers.mjs --only a,b      only these services (+ host-api), printed (the installer's --only)
  *   node deploy/host-services/gen-sudoers.mjs --out FILE      write FILE instead (the installer writes /etc/sudoers.d/axf-host)
  *   node deploy/host-services/gen-sudoers.mjs --print         print to stdout
+ *   … --root DIR                                               the checkout when it is not /opt/axf (manifests name /opt/axf)
  *
  * Rules on top of the manifest schema:
  *   - the one wildcard allowed is a unit name `axf-*`: it is expanded to every unit and timer the manifests name, so
@@ -31,7 +32,7 @@ export const OUT = join(ROOT, 'deploy/host-services/sudoers.d/axf-host');
 export const REFUSED_PROGRAMS = new Set(['sh', 'bash', 'dash', 'zsh', 'fish', 'env', 'node', 'nodejs', 'python', 'python3', 'perl', 'ruby', 'php', 'su', 'sudo', 'doas', 'tee', 'cp', 'mv', 'dd', 'chmod', 'chown', 'chgrp', 'ln', 'install', 'rsync', 'vi', 'vim', 'nano', 'less', 'more', 'find', 'xargs', 'awk', 'sed', 'nsenter', 'unshare', 'chroot', 'setpriv', 'runuser', 'crontab', 'visudo', 'passwd', 'useradd', 'usermod', 'mount', 'tar']);
 
 /** The lines for a set of manifests, or throws with every reason a line was refused. */
-export function sudoersFor(manifests) {
+export function sudoersFor(manifests, { root = '/opt/axf' } = {}) {
   const units = [...new Set(manifests.flatMap((m) => [m.unit, ...(m.timer ? [m.timer] : [])]))].sort();
   const refused = [];
   const blocks = [];
@@ -51,7 +52,7 @@ export function sudoersFor(manifests) {
       const wild = args.filter((a) => a.includes('*'));
       if (wild.some((a) => a !== 'axf-*')) { refused.push(`${why} — the only wildcard is a unit name axf-* (expanded to the named units)`); continue; }
       const expanded = wild.length ? units.map((u) => s.cmd.replace('axf-*', u)) : [s.cmd];
-      for (const cmd of expanded) lines.push(`${m.user} ALL=(${s.as}) NOPASSWD: ${cmd}`);
+      for (const c of expanded) { const cmd = root === '/opt/axf' ? c : c.split('/opt/axf').join(root); lines.push(`${m.user} ALL=(${s.as}) NOPASSWD: ${cmd}`); }
     }
     if (lines.length) blocks.push({ id: m.id, why: m.sudo.map((s) => s.why), lines: [...new Set(lines)] });
   }
@@ -90,7 +91,7 @@ function main(argv) {
   const only = argv.includes('--only') ? new Set(['host-api', ...String(arg('--only') || '').split(',').map((s) => s.trim()).filter(Boolean)]) : null;
   if (only) for (const id of only) if (!manifests.some((m) => m.id === id)) { console.error(`unknown service ${id}`); process.exit(1); }
   let text;
-  try { text = render(sudoersFor(manifests.filter((m) => !only || only.has(m.id)))); } catch (e) { console.error(e.message); process.exit(1); }
+  try { text = render(sudoersFor(manifests.filter((m) => !only || only.has(m.id)), { root: arg('--root') || '/opt/axf' })); } catch (e) { console.error(e.message); process.exit(1); }
   if (argv.includes('--check')) {
     const cur = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
     if (cur !== text) { console.error('deploy/host-services/sudoers.d/axf-host is stale: run node deploy/host-services/gen-sudoers.mjs'); process.exit(1); }
