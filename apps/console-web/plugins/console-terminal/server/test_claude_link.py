@@ -321,6 +321,34 @@ class HubWatchTests(unittest.TestCase):
         self.assertEqual(self.kinds(), ["connect", "disconnect", "error"])
 
 
+class SettingsTests(unittest.TestCase):
+    """The Claude link settings in the Terminal's settings store: buffer range, kinds checked, booleans."""
+
+    def test_settings(self) -> None:
+        sys.path.insert(0, str(HERE.parents[2] / "server"))
+        sys.path.insert(0, str(HERE.parents[4] / "framework" / "python"))
+        os.environ["AXF_TERMINAL_DIR"] = tempfile.mkdtemp(prefix="axf-term-settings-")
+        import importlib.util
+        import types
+        import console_context as cx
+        cx.set_context(ROOT=HERE.parents[4], current_token=lambda: "t" * 32)
+        pkg = types.ModuleType("axf_cl_settings_pkg")
+        pkg.__path__ = [str(HERE)]
+        sys.modules["axf_cl_settings_pkg"] = pkg
+        sys.modules["axf_cl_settings_pkg.claude_link"] = cl
+        spec = importlib.util.spec_from_file_location("axf_cl_settings_pkg.store", HERE / "store.py")
+        store = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = store
+        spec.loader.exec_module(store)
+        d = store.settings()
+        self.assertEqual((d["claudeLinkBuffer"], d["claudeLinkKinds"], d["claudeLinkAutoScroll"], d["claudeLinkDetail"]), (2000, [], True, False))
+        out = store.save_settings({"claudeLinkBuffer": 50, "claudeLinkKinds": ["mcp", "error", "mcp"], "claudeLinkAutoScroll": False, "claudeLinkDetail": 1})
+        self.assertEqual((out["claudeLinkBuffer"], out["claudeLinkKinds"], out["claudeLinkAutoScroll"], out["claudeLinkDetail"]), (100, ["mcp", "error"], False, True))
+        self.assertEqual(store.save_settings({"claudeLinkBuffer": 10**6})["claudeLinkBuffer"], 20000)
+        with self.assertRaises(ValueError):
+            store.save_settings({"claudeLinkKinds": ["nope"]})
+
+
 class McpServerCalls(unittest.TestCase):
     """The console's own /mcp server: every tool call reaches axf.claude-link@1 (session, tool, ok / error)."""
 

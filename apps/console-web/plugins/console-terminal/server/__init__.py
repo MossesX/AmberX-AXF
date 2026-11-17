@@ -48,7 +48,10 @@ plugin_services.provide("axf.session-feed@1", nav.SessionFeed(), "console-termin
 BUS = claude_link.make_bus(store.data_dir, int(store.settings().get("claudeLinkBuffer") or claude_link.DEFAULT_SIZE))
 LINK = claude_link.ClaudeLinkService(BUS)
 plugin_services.provide("axf.claude-link@1", LINK, "console-terminal")
-router.include_router(routes.build(lambda: BUS))
+_s0 = store.settings()
+# the shared live view starts from the settings: paused when auto-scroll is off, the default kinds
+VIEW = {"paused": _s0.get("claudeLinkAutoScroll") is False, "kinds": list(_s0.get("claudeLinkKinds") or []), "q": "", "rev": 0}
+router.include_router(routes.build(lambda: BUS, VIEW))
 
 
 def _link_append(e: dict[str, Any]) -> None:

@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button, Icon, SelectField, Slider, Switch, TextField } from '@console/axf/react';
 import { SCHEMES, getSettings, onSettings, saveSettings, type ClaudeProfile, type Settings } from './api';
 import { blankProfile } from './profiles';
+import { KINDS, KIND_LABEL, setDefaults } from './claude-link';
 
 export type Level = 'simple' | 'basic' | 'developer' | 'administrator';
 /** Every terminal setting's level (what the level toolbar shows at Simple, Basic, Developer; Administrator = all). */
@@ -17,6 +18,7 @@ export const LEVELS: Record<string, Level> = {
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
   persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple', newSession: 'simple',
+  claudeLinkAutoScroll: 'simple', claudeLinkKinds: 'basic', claudeLinkDetail: 'basic', claudeLinkBuffer: 'developer',
   'profile.permissionMode': 'developer', 'profile.flags': 'developer', 'profile.cwd': 'developer', 'profile.prompt': 'developer', 'profile.icon': 'developer',
 };
 
@@ -148,6 +150,33 @@ export function ProfilesPanel() {
         </div>
       ))}
       <div className="fx-row"><Button icon="plus" onClick={add}>Add a profile</Button><span className="fx-small">{msg}</span></div>
+    </div>
+  );
+}
+
+/** Claude link tab (terminal-main-tab-streaming-console-s): how much it keeps, what it shows by default, auto-scroll, detail. */
+export function ClaudeLinkPanel() {
+  const { s, msg, save } = useLive();
+  if (!s) return <p className="fx-muted">{msg || 'Loading…'}</p>;
+  const kinds = s.claudeLinkKinds ?? [];
+  const flip = (k: string) => save({ claudeLinkKinds: kinds.includes(k) ? kinds.filter((x) => x !== k) : [...kinds, k] });
+  return (
+    <div className="fx-stack axp-terminal-settings">
+      <L k="claudeLinkAutoScroll"><Switch label="Follow new events (auto-scroll)" hint="Off = the tab opens paused; scrolling up always pauses, the “N new” button jumps back" checked={s.claudeLinkAutoScroll !== false} onChange={(v) => save({ claudeLinkAutoScroll: v })} /></L>
+      <L k="claudeLinkDetail"><Switch label="Rows open with their detail shown" checked={!!s.claudeLinkDetail} onChange={(v) => { save({ claudeLinkDetail: v }); setDefaults({ detailDefault: v }); }} /></L>
+      <L k="claudeLinkKinds">
+        <div className="fx-field">
+          <span className="fx-field__label">Kinds shown by default (none = all)</span>
+          <div className="axp-cl__kinds" role="group" aria-label="Kinds shown by default">
+            {KINDS.map((k) => (
+              <button key={k} type="button" className={`fx-chip ${kinds.includes(k) ? 'fx-chip--accent' : ''}`} aria-pressed={kinds.includes(k)} onClick={() => flip(k)} data-axf-target={`button:default-kind-${k}`}>{KIND_LABEL[k]}</button>
+            ))}
+          </div>
+        </div>
+      </L>
+      <L k="claudeLinkBuffer"><Slider label="Events kept in memory (the log on disk keeps more)" value={s.claudeLinkBuffer ?? 2000} min={100} max={20000} step={100} onChange={(v) => { save({ claudeLinkBuffer: v }, 400); setDefaults({ max: v }); }} /></L>
+      <p className="fx-small fx-muted">The same settings through the API: PUT /api/plugins/console-terminal/settings, MCP console-terminal_claude_link_*, axf claude-link, voice “show the Claude link”.</p>
+      <span className="fx-small">{msg}</span>
     </div>
   );
 }

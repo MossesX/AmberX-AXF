@@ -5,7 +5,7 @@ import { findHost, newTab, openFromContext } from './open';
 import { ConnectDialog, ConnectionDialog } from './connections';
 import { getSettings } from './api';
 import { applyProfile } from './profiles';
-import { AppearancePanel, BehaviourPanel, HeadlessPanel, ProfilesPanel } from './look';
+import { AppearancePanel, BehaviourPanel, ClaudeLinkPanel, HeadlessPanel, ProfilesPanel } from './look';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalHost } from './TerminalHost';
 import { RunOutputTab, watchHubRuns } from './RunOutputTab';
@@ -72,6 +72,7 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     { id: 'terminal.appearance', tab: 'terminal', title: 'Appearance', icon: 'palette', order: 4, render: () => <AppearancePanel /> },
     { id: 'terminal.behaviour', tab: 'terminal', title: 'Tabs & behaviour', icon: 'layout', order: 6, render: () => <BehaviourPanel /> },
+    { id: 'terminal.claude-link', tab: 'terminal', title: 'Claude link tab', icon: 'cloud', order: 5, render: () => <ClaudeLinkPanel /> },
     { id: 'terminal.headless', tab: 'terminal', title: 'Headless tabs', icon: 'sparkles', order: 7, render: () => <HeadlessPanel /> },
     { id: 'terminal.profiles', tab: 'terminal', title: 'Claude Code profiles', icon: 'sparkles', order: 8, render: () => <ProfilesPanel /> },
     { id: 'terminal.general', tab: 'terminal', title: 'Sessions & shells', icon: 'terminal', order: 10, render: () => <div className="axp-terminal-settings"><GeneralPanel /></div> },

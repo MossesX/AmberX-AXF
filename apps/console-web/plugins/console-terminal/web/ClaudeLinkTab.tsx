@@ -8,7 +8,8 @@
  */
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Chip, ControlScope, Icon } from '@console/axf/react';
-import { KIND_LABEL, KIND_TONE, markSeen, pause, resume, toggleOpen, useClaudeLink, visible, type LinkEvent } from './claude-link';
+import { KIND_LABEL, KIND_TONE, markSeen, pause, resume, setDefaults, toggleOpen, useClaudeLink, visible, type LinkEvent } from './claude-link';
+import { getSettings, onSettings, type Settings } from './api';
 import { ClaudeLinkToolbar, LINK_ADDRESS } from './claudeLinkToolbar';
 
 const P = 'axp-cl';
@@ -23,6 +24,12 @@ export function ClaudeLinkTab({ active }: { active: boolean }) {
   const atEnd = () => { const el = list.current; return !el || el.scrollHeight - el.scrollTop - el.clientHeight < 24; };
   const jump = () => { const el = list.current; if (el) el.scrollTop = el.scrollHeight; byScroll.current = false; resume(); markSeen(); };
 
+  // the Claude link settings (Settings → Plugins → Terminal → Claude link tab): ring size and detail shown by default
+  useEffect(() => {
+    const apply = (x: Settings) => setDefaults({ max: x.claudeLinkBuffer, detailDefault: !!x.claudeLinkDetail });
+    void getSettings().then(apply, () => undefined);
+    return onSettings(apply);
+  }, []);
   // live: follow the newest unless paused
   useLayoutEffect(() => { if (active && !st.view.paused && list.current) list.current.scrollTop = list.current.scrollHeight; }, [rows.length, active, st.view.paused]);
   useEffect(() => { if (active && !st.view.paused) markSeen(); }, [active, st.view.paused]);
