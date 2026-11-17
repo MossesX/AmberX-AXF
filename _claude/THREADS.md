@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:50 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-17 21:50 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 21:50 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 21:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:41 UTC · `plan-blueprints` → fixing, note (all) · pipeline
 - 2026-11-17 22:41 UTC · `blueprint-notes-tasks` → fixing, note (all) · pipeline
 - 2026-11-17 22:42 UTC · `move-server-side-console-parts-onto-vps` → queued, note (all) · watchdog
+- 2026-11-17 22:42 UTC · `move-everything-axhub-web-console` note (all) · orchestrator
 
 ## Token passes (log)
 
