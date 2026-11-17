@@ -815,9 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:29 UTC · `plan-studio-collapse-all-expand-all` note (all) · orchestrator
-- 2026-11-16 20:29 UTC · `plan-studio-collapse-all-expand-all` branch claude/plan-studio-collapse-all-expand-all (all) · pipeline
-- 2026-11-16 20:32 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · mcp
 - 2026-11-16 20:34 UTC · `fable-rebuild-to-do-manager-unlimited` s1 done, → running (all) · orchestrator
 - 2026-11-16 20:36 UTC · `to-do-manager-fully-voice-mcp-controlled` s1 done (all) · orchestrator
 - 2026-11-16 20:37 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · orchestrator
@@ -1215,6 +1212,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:13 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-17 00:13 UTC · `server-auto-lander-fixes-lands` note (all) · foreign-write
 - 2026-11-17 00:13 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
+- 2026-11-17 00:14 UTC · `gate-auto-lander-tab-and-controls` → running, note (all) · pipeline
+- 2026-11-17 00:14 UTC · `gate-auto-lander-tab-and-controls` branch claude/gate-auto-lander-tab-and-controls (all) · pipeline
+- 2026-11-17 00:14 UTC · `gate-auto-lander-tab-and-controls` note (all) · orchestrator
 
 ## Token passes (log)
 
