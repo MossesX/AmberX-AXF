@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7233,
- "updatedAt": "2026-11-17T00:53:13.398Z",
+ "rev": 7234,
+ "updatedAt": "2026-11-17T00:53:29.894Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210119,8 +210119,8 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-17T00:53:10.254Z",
-   "builtAt": "2026-11-17T00:53:10.254Z",
+   "updatedAt": "2026-11-17T00:53:13.094Z",
+   "builtAt": "2026-11-17T00:53:13.094Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a54de3c9-d6da-4a1b-94df-48b7fb181427\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
@@ -210141,6 +210141,10 @@
     {
      "text": "Headless run axf-land-per-instance-settings-picker--sully: brief only · start 15.7K tokens ($0.05) · cost $3.35 · 99 turns · 6 tools, MCP none",
      "at": "2026-11-17T00:53:10.254Z"
+    },
+    {
+     "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-17T00:53:13.094Z"
     }
    ],
    "approvals": [],
@@ -210161,14 +210165,23 @@
     "queuedAt": "2026-11-16T23:20:45.373Z",
     "queuedBy": "brett",
     "account": "",
-    "session": "axf-land-per-instance-settings-picker--sully",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T00:53:10.796Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 1,
+     "account": "",
+     "session": "axf-land-per-instance-settings-picker--sully",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-13T19:37:31.490Z",
      "by": "orchestrator",
@@ -210177,7 +210190,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a54de3c9-d6da-4a1b-94df-48b7fb181427\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
+    "note": "Session stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -210272,7 +210285,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {

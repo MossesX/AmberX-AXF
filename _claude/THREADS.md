@@ -816,7 +816,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:04 UTC · `own-look-per-grid-and-tab-group` s2 done (all) · orchestrator
 - 2026-11-16 23:04 UTC · `attach-widgets-to-any-toolbar-banner` s2 done (all) · orchestrator
 - 2026-11-16 23:04 UTC · `icon-packs-with-drag-drop-pack-designer` → running, note (all) · pipeline
 - 2026-11-16 23:04 UTC · `icon-packs-with-drag-drop-pack-designer` branch claude/icon-packs-with-drag-drop-pack-designer (all) · pipeline
@@ -1216,6 +1215,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:51 UTC · `land-per-instance-settings-picker` s2 done (all) · orchestrator
 - 2026-11-17 00:52 UTC · `land-per-instance-settings-picker` s3 done, → complete (all) · orchestrator
 - 2026-11-17 00:53 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
+- 2026-11-17 00:53 UTC · `land-per-instance-settings-picker` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
