@@ -19,6 +19,9 @@ import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettin
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
+import { setResetTableRenderer } from '../../react/components/ResetConfirmDialog';
+import { ChangedAssetsTable } from './changed';
+export { ChangedAssetsTable, changedAssetRows, resetStateOf } from './changed';
 import { PLUGIN_SETTINGS_ACTION, PLUGIN_SETTINGS_DIALOG, PluginSettingsWindow, setPluginSettingsRenderer, useSettingsUiOverride } from '../../react/components/PluginSettingsWindow';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
@@ -1094,6 +1097,7 @@ export const library: AxfWebLibrary = {
   register(rt) {
     injectStyles();
     setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} all />);
+    setResetTableRenderer((rows, o) => <ChangedAssetsTable rows={rows} id={o.id} />);
     setPluginSettingsRenderer({ tab: (id) => <TabContent id={id} />, levelBar: () => <PluginLevelBar /> });
     syncSettingsAsset(rt);
     applyDisplay(rt);

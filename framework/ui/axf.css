@@ -2049,3 +2049,13 @@ html[data-fx-skin-switching='fade']::view-transition-new(root) { animation: fx-f
   :is(.fx-swatches__chip, .fx-swatch-fan__main, .fx-swatch-fan__shade) { animation: none !important; transition: none; }
   html[data-fx-skin-switching]::view-transition-new(root) { animation: none; }
 }
+
+/* Reset confirm dialog (settings-reset@1, react/components/ResetConfirmDialog.tsx): the table scrolls past the plan's
+   tableRows (--axf-reset-rows, a row count set on the element) and never grows the dialog; rows the reset keeps are muted. */
+.axf-reset { min-width: 0; }
+.axf-reset__question { margin: 0; }
+.axf-reset__table { max-height: calc(var(--axf-reset-rows) * var(--fx-row-h) + var(--fx-row-h)); overflow: auto; overscroll-behavior: contain; border-radius: var(--fx-grid-radius); }
+.axf-reset__table:focus-visible { outline: var(--fx-border-w) solid var(--fx-accent); }
+.axf-reset__kept, .axf-reset__table [data-axf-reset-kept] { opacity: var(--fx-opacity-muted); }
+.axf-reset__actions { justify-content: flex-end; }
+.axf-reset__empty { margin: 0; }
