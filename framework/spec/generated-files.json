@@ -22,6 +22,12 @@
       "optional": true,
       "optionalNote": "rebake refuses an app whose baked files were edited in place; main's copy of the clashed files then stands (what main's CI passed) and the refusal is logged, not fatal"
     },
+    "schemas": {
+      "title": "Framework JSON Schemas (axf schemas, build-engine writeSchemas)",
+      "run": ["node", "framework/cli/axf.mjs", "schemas"],
+      "check": null,
+      "outputs": ["framework/schemas/json"]
+    },
     "fixtures": {
       "title": "Port-conformance fixtures from the reference engines",
       "run": ["npx", "-y", "tsx", "framework/spec/gen-fixtures.mts"],
@@ -41,6 +47,7 @@
     { "match": "^apps/[^/]+/src/assets/help/[^/]+\\.json$", "merge": "regen", "generator": "help-sync" },
     { "match": "^apps/([^/]+)/src/axf/.+", "merge": "regen", "generator": "rebake", "app": 1 },
     { "match": "^apps/([^/]+)/axf\\.lock\\.json$", "merge": "regen", "generator": "rebake", "app": 1 },
+    { "match": "^framework/schemas/json/[^/]+\\.schema\\.json$", "merge": "regen", "generator": "schemas" },
     { "match": "^framework/spec/fixtures/[^/]+\\.json$", "merge": "regen", "generator": "fixtures" },
     { "match": "^tracker\\.json$", "merge": "regen", "generator": "tracker" },
     { "match": "^framework/assets/help/[^/]+\\.json$", "merge": "union-json" },

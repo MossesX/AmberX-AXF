@@ -47,7 +47,7 @@ def ok(cond: bool, what: str) -> None:
 
 try:
     r = c.get(f"{B}/rules")
-    ok(r.status_code == 200 and len(r.json()["rules"]) == 8, "GET rules")
+    ok(r.status_code == 200 and len(r.json()["rules"]) == 9, "GET rules")
     ok(c.get(f"{B}/rules?enabled=false").json()["rules"] == [], "GET rules filters")
     ok(c.get(f"{B}/rules/clash").json()["default"]["id"] == "clash", "GET rules/<id>")
     ok(c.get(f"{B}/rules/nope").status_code == 404, "an unknown rule is 404")
