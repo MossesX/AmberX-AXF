@@ -2978,6 +2978,18 @@
    "from": "",
    "addenda": []
   },
+  "dispatcher-split-builds-evenly-across": {
+   "said": "We need it to split evenly. One and one and one and one. Every other one. The same amount running on each account.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "drag-anything-api-voice-after-pr-556": {
    "said": "I want to be able to drag anything on any page, anything that's draggable. The regular API build land first.",
    "at": "2026-11-13T11:13:29.147Z",
