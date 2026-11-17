@@ -582,6 +582,9 @@ jobs:
       - name: Build Voice Vault (apps/voicevault) + its unit tests (voice notes rules)
         working-directory: apps/voicevault
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-voicevault.log; exit ${PIPESTATUS[0]}
+      - name: Build Phone Connect (apps/phone-connect) + its unit tests (link rules)
+        working-directory: apps/phone-connect
+        run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-phone-connect.log; exit ${PIPESTATUS[0]}
       - name: Build AXHub (apps/axhub-android) + its unit tests
         working-directory: apps/axhub-android
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-axhub.log; exit ${PIPESTATUS[0]}
@@ -606,7 +609,7 @@ jobs:
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/build-console-droid.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
+          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/build-console-droid.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-phone-connect.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
           N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
@@ -622,6 +625,11 @@ jobs:
         with:
           name: voicevault-debug.apk
           path: apps/voicevault/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: phone-connect-debug.apk   # Phone Connect, the small companion that replaces the AmberX app (phone-connect@1)
+          path: apps/phone-connect/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: axhub-debug.apk

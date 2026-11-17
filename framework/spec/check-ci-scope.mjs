@@ -19,6 +19,7 @@ t('each app runs only its own build', () => {
   assert.deepEqual(on(scopeFor(['apps/axhub-web/src/x.ts'])), ['engine', 'console', 'axhubweb']);
   assert.deepEqual(on(scopeFor(['apps/amberx-droid/src/x.ts'])), ['engine', 'console', 'amberxweb', 'amberx']);
   assert.deepEqual(on(scopeFor(['apps/voicevault/app/x.kt'])), ['engine', 'android']);
+  assert.deepEqual(on(scopeFor(['apps/phone-connect/app/x.kt'])), ['engine', 'android']);
   assert.deepEqual(on(scopeFor(['framework/android/axf-kernel/x.kt'])), ['engine', 'android']);
 });
 t('shared framework, fixtures, CI itself and unknown paths run everything', () => {

@@ -45,6 +45,7 @@ export const TARGETS = [
   { app: 'console', label: 'Dev Console (Android)', match: /^apps\/console\//, kind: 'shell', dir: 'apps/demo', assets: { dir: 'apps/console' }, android: true },
   { app: 'axhub-android', label: 'axHub (Android)', match: /^apps\/axhub-android\//, kind: 'shell', dir: 'apps/demo', assets: { dir: 'apps/axhub-android' }, android: true },
   { app: 'voicevault', label: 'Voice Vault (Android)', match: /^apps\/voicevault\//, kind: 'shell', dir: 'apps/demo', assets: { dir: 'apps/voicevault' }, android: true },
+  { app: 'phone-connect', label: 'Phone Connect (Android)', match: /^apps\/phone-connect\//, kind: 'shell', dir: 'apps/demo', assets: { dir: 'apps/phone-connect' }, android: true },
 ];
 export const ANDROID_NOTE = 'Android/Compose screen shown through the web port: asset and layout changes render live here; Kotlin/Compose code changes only show in the next APK.';
 
