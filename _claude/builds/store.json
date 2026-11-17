@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7228,
- "updatedAt": "2026-11-17T00:49:26.947Z",
+ "rev": 7229,
+ "updatedAt": "2026-11-17T00:50:01.195Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -186374,7 +186374,7 @@
    "branch": "claude/axhub-raise-per-project-memory-file-cap-from-500-to-750",
    "pr": "",
    "createdAt": "2026-11-13T16:58:18.760Z",
-   "updatedAt": "2026-11-17T00:44:31.954Z",
+   "updatedAt": "2026-11-17T00:49:56.993Z",
    "builtAt": "",
    "notes": [
     {
@@ -186407,20 +186407,20 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:20:58.645Z",
     "queuedBy": "brett",
-    "account": "hulu0241",
-    "session": "axf-axhub-raise-per-project-memory-file-cap-from-500--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T00:44:23.495Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T00:44:23.495Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -186429,7 +186429,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T00:44:23.495Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -186450,12 +186450,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:49:56.993Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T16:58:18.761Z",
-     "updatedAt": "2026-11-13T16:58:18.761Z"
+     "updatedAt": "2026-11-17T00:49:57.614Z"
     },
     {
      "id": "s2",

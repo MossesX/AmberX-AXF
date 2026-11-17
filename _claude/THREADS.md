@@ -816,7 +816,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:01 UTC · `toolbar-widgets-in-any-banner-style` → complete (all) · orchestrator
 - 2026-11-16 23:01 UTC · `banner-widget-shapes-and-change-icon` note (all) · orchestrator
 - 2026-11-16 23:02 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · orchestrator
 - 2026-11-16 23:03 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · builds-live
@@ -1216,6 +1215,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:48 UTC · `stop-auto-lander-committing-tracking` s14 done, → built (all) · orchestrator
 - 2026-11-17 00:48 UTC · `every-plugin-screen-gets-a-settings-gear` s19 done (all) · orchestrator
 - 2026-11-17 00:49 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
+- 2026-11-17 00:49 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
