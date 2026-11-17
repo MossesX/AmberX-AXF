@@ -32,12 +32,25 @@
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/hub-admin",
-    "env": ["AXF_WALL_HUB", "AXF_HUB_RELAY_USER", "AXF_HUB_RELAY_PASSWORD", "AXF_HUB_RELAY_OWNERS", "AXF_HUB_ADMIN_DATA_DIR"],
+    "env": [
+      "AXF_WALL_HUB",
+      "AXF_HUB_RELAY_USER",
+      "AXF_HUB_RELAY_PASSWORD",
+      "AXF_HUB_RELAY_OWNERS",
+      "AXF_HUB_ADMIN_DATA_DIR"
+    ],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md", "_claude/memory/decisions.md",
-      "apps/console-web/plugins/README.md", "framework/catalog/plugins.json",
-      "framework/spec/HUB-CONSOLE.md", "framework/schemas/hub-console.json", "framework/spec/fixtures/hub-console.json",
-      "framework/core/hub-console.mjs", "framework/spec/check-hub-console.mjs", "framework/cli/hub-settings-migrate.mjs"
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "_claude/memory/decisions.md",
+      "apps/console-web/plugins/README.md",
+      "framework/catalog/plugins.json",
+      "framework/spec/HUB-CONSOLE.md",
+      "framework/schemas/hub-console.json",
+      "framework/spec/fixtures/hub-console.json",
+      "framework/core/hub-console.mjs",
+      "framework/spec/check-hub-console.mjs",
+      "framework/cli/hub-settings-migrate.mjs"
     ],
     "keeps": [
       "The hub's own data (approvals, passes, users, services) lives on axHub and is never touched by uninstall",
@@ -48,11 +61,133 @@
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "route": "GET /table", "skip": "the hub-console@1 route table itself (read it from framework/schemas/hub-console.json)" }
+      {
+        "route": "GET /table",
+        "skip": "the hub-console@1 route table itself (read it from framework/schemas/hub-console.json)"
+      },
+      {
+        "id": "overview",
+        "route": "GET /overview",
+        "title": "Hub status",
+        "readOnly": true,
+        "tool": "hub_status",
+        "description": "Hub status: whether the console holds a hub session, who it is, how many calls wait, the relay state."
+      },
+      {
+        "id": "approvals",
+        "route": "GET /approvals",
+        "title": "Approvals",
+        "readOnly": true,
+        "tool": "hub_approvals_list",
+        "description": "Approvals: every call axHub is holding or asking about (approval-grid@1), filtered by status, paged."
+      },
+      {
+        "id": "approval",
+        "route": "GET /approvals/{row}",
+        "title": "One approval request",
+        "readOnly": true,
+        "tool": "hub_approval_get",
+        "description": "One approval request (approval-item@1): reason, exact call, who asked, countdown, history."
+      },
+      {
+        "id": "log",
+        "route": "GET /log",
+        "title": "Approval log",
+        "readOnly": true,
+        "tool": "hub_approval_log",
+        "description": "Approval log (approval-log@1): every request and how it ended; filters q, status, via, tool, sort, pass, page."
+      },
+      {
+        "id": "passes",
+        "route": "GET /passes",
+        "title": "Passes and veto",
+        "readOnly": true,
+        "tool": "hub_passes_list",
+        "description": "Passes and veto (hub-passes@1): active and ended passes, pass requests waiting for Brett, the go pass, the veto countdown, No wait."
+      },
+      {
+        "id": "users",
+        "route": "GET /users",
+        "title": "Hub accounts",
+        "readOnly": true,
+        "tool": "hub_users_list",
+        "description": "Hub accounts (hub-users@1): every account with role, permissions and state."
+      },
+      {
+        "id": "user",
+        "route": "GET /users/{row}",
+        "title": "One hub account",
+        "readOnly": true,
+        "tool": "hub_users_get",
+        "description": "One hub account (hub-user@1)."
+      },
+      {
+        "id": "account",
+        "route": "GET /account",
+        "title": "Your hub account",
+        "readOnly": true,
+        "tool": "hub_account_get",
+        "description": "Your hub account (hub-account@1): profile, signed-in browsers, linked phone, notification preferences."
+      },
+      {
+        "id": "connectors",
+        "route": "GET /connectors",
+        "title": "Connected services",
+        "readOnly": true,
+        "tool": "hub_services_list",
+        "description": "Connected services (hub-services@1): status, policies per tool, key health."
+      },
+      {
+        "id": "service",
+        "route": "GET /connectors/{row}",
+        "title": "One service",
+        "readOnly": true,
+        "tool": "hub_service_get",
+        "description": "One service (hub-service@1): tools and schemas, policy per tool, recent calls."
+      },
+      {
+        "id": "handoff",
+        "route": "GET /handoff",
+        "title": "Handoff runs",
+        "readOnly": true,
+        "tool": "hub_handoff_list",
+        "description": "Handoff runs (hub-handoffs@1)."
+      },
+      {
+        "id": "handoff-run",
+        "route": "GET /handoff/{row}",
+        "title": "One handoff run",
+        "readOnly": true,
+        "tool": "hub_handoff_get",
+        "description": "One handoff run (hub-handoff@1): prompt, files, log, steps."
+      },
+      {
+        "id": "auth",
+        "route": "GET /auth",
+        "title": "Auth admin",
+        "readOnly": true,
+        "tool": "hub_auth_get",
+        "description": "Auth admin (hub-auth@1): sign-in rules, OAuth clients and API tokens; hub_missing where the hub has no route yet."
+      },
+      {
+        "id": "apps",
+        "route": "GET /apps",
+        "title": "App catalog",
+        "readOnly": true,
+        "tool": "hub_apps_list",
+        "description": "App catalog (hub-apps@1): every app the framework's CI built."
+      }
     ]
   },
-  "tokens": { "$axf": "token-registry@1", "uses": [], "defines": [] },
-  "builtWith": { "model": "fable", "builtAt": "2026-11-17" },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [],
+    "defines": []
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-17"
+  },
   "help": "help.json",
   "opens": "main"
 }

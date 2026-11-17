@@ -25,7 +25,8 @@
     "action:approvals.overlay",
     "action:overlay.expand",
     "action:overlay.collapse",
-    "action:overlay.open"
+    "action:overlay.open",
+    "service:axf.hub-relay@1"
   ],
   "optional": [],
   "scopes": [
@@ -36,8 +37,14 @@
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "route": "POST /decide", "skip": "a person's tap only: it needs the signed-in browser's hub session, no session may ever call it" },
-      { "route": "GET /relay", "skip": "the browser's own probe" }
+      {
+        "route": "POST /decide",
+        "skip": "a person's tap only: it needs the signed-in browser's hub session, no session may ever call it"
+      },
+      {
+        "route": "GET /relay",
+        "skip": "the browser's own probe"
+      }
     ]
   },
   "builtWith": {
@@ -57,7 +64,8 @@
     "mentions": [
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
-      "_claude/THREADS.md"
+      "_claude/THREADS.md",
+      "framework/spec/HUB-CONSOLE.md"
     ]
   },
   "opens": "main"

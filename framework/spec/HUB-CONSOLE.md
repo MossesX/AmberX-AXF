@@ -84,7 +84,7 @@ Two channels, never mixed:
 | Channel | Who holds it | What it may do |
 | --- | --- | --- |
 | **Reads with the hub bearer** (the console server's `AXF_TOKEN` / hub MCP token) | the console server | `GET /auth/api/*` state the hub lets a bearer read (`policy`, the approvals feed `/auth/admin/approvals.json`, `list_services` / `describe_service` through MCP). Never a decision. |
-| **Brett's own hub session** (the browser's `axhub_session` cookie, or the console's owner sign-in `AXF_HUB_RELAY_USER`) | the approvals-banner relay (`plugins/approvals-banner/server`) | every write: approve / deny / shelve / postpone, passes, users, account, auth admin. Only a wall admin's browser, same origin, JSON; the console token is refused (`relay_state`). |
+| **Brett's own hub session** (the browser's `axhub_session` cookie, or the console's owner sign-in `AXF_HUB_RELAY_USER`) | the approvals-banner relay (`plugins/approvals-banner/server`) | every write: approve / deny / shelve / postpone, passes, users, account, auth admin. Only a wall admin's browser, same origin, JSON; the console token is refused (`relay_state`). | <!-- axf-plugin:approvals-banner -->
 
 Rule (kept from axHub decisions #96, #104, #105 and the relay): a decision is Brett's tap, never a session's. Decide
 actions are registered `personOnly` in console-control@1, so `console_control_*`, the CLI and voice can **open** the

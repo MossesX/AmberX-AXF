@@ -40,6 +40,9 @@ import httpx
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import approvals_relay as relay_core
+
 import plugin_services
 import wall
 
@@ -299,3 +302,107 @@ def ensure_health() -> bool:
         return False
     _health_done = True
     return True
+
+
+# ---- axf.hub-relay@1: the same session for the Hub plugin's reads and writes (hub-console@1, Nov 17 2026)
+
+RELAY_CAP = "axf.hub-relay@1"
+
+
+class RelayService:
+    """What the Hub plugin (hub-admin) borrows: one `/auth/api` read or write through the console's own hub session, the
+    cookie never leaving this module. Reads use the tapping browser's session, else the owner sign-in. A write marked
+    `person` goes only for a wall admin's same-origin browser request (Brett's own tap); any other write (a `confirm` or
+    `command` action of the route table) may come from the console token too and is audited in relay.jsonl."""
+
+    def state(self, request: Request) -> dict[str, Any]:
+        return relay_state(wall.wall_caller(request.headers), bool(request.cookies.get(COOKIE)))
+
+    def _sessions(self, request: Request, c: wall.Caller | None) -> list[tuple[str, str]]:
+        out: list[tuple[str, str]] = []
+        cookie = request.cookies.get(COOKIE) or ""
+        if cookie:
+            out.append(("browser", cookie))
+        return out
+
+    def read(self, request: Request, path: str, params: dict[str, Any] | None = None, timeout: float = TIMEOUT_S) -> dict[str, Any]:
+        """→ {ok, status, json, via} or {ok: False, code: signed_out | unreachable | old_hub | forbidden | hub_error, status, message}."""
+        hub = hub_base()
+        if not hub:
+            return {"ok": False, "code": "unreachable", "status": 0, "message": "The console has no https hub address (AXF_WALL_HUB)."}
+        c = wall.wall_caller(request.headers)
+        cred = owner_credential() if (c is None or owner_may(c) or getattr(getattr(request, "state", None), "axf_user", None) is not None) else None
+        try:
+            with httpx.Client(timeout=timeout, follow_redirects=False) as client:
+                for via, cookie in self._sessions(request, c):
+                    r = relay_core.get_json(hub, cookie, path, client, params)
+                    if r["status"] != 401:
+                        return _read_reply(r, via)
+                if cred:
+                    for attempt in (1, 2):
+                        s = OWNER.get(hub, cred, client)
+                        if not s["ok"]:
+                            return {"ok": False, "code": s.get("code", "signed_out"), "status": 0, "message": s.get("message", "")}
+                        r = relay_core.get_json(hub, s["cookie"], path, client, params)
+                        if r["status"] != 401:
+                            return _read_reply(r, "owner")
+                        OWNER.drop(s["cookie"])
+        except httpx.HTTPError as e:
+            return {"ok": False, "code": "unreachable", "status": 0, "message": f"Couldn't reach axHub ({type(e).__name__})."}
+        return {"ok": False, "code": "signed_out", "status": 401, "message": NO_CREDENTIAL if not cred else "axHub didn't take any session."}
+
+    def write(self, request: Request, path: str, body: Any, person: bool, timeout: float = TIMEOUT_S) -> dict[str, Any]:
+        c = wall.wall_caller(request.headers)
+        if person and (c is None or not c.admin or not wall.same_origin(request)):
+            return {"ok": False, "code": "person_required", "status": 403, "message": "Only your own tap in your signed-in console browser does this."}
+        hub = hub_base()
+        if not hub:
+            return {"ok": False, "code": "unreachable", "status": 0, "message": "The console has no https hub address (AXF_WALL_HUB)."}
+        cred = owner_credential() if (c is None or owner_may(c)) else None
+        who = c.name if c else "token"
+        out: dict[str, Any]
+        try:
+            with httpx.Client(timeout=timeout, follow_redirects=False) as client:
+                out = {"ok": False, "code": "signed_out", "status": 401, "message": NO_CREDENTIAL if not cred else "axHub didn't take any session."}
+                for via, cookie in self._sessions(request, c):
+                    r = relay_core.post_json(hub, cookie, path, body, client)
+                    if r.get("code") != "no_session":
+                        out = _write_reply(r, via)
+                        break
+                else:
+                    if cred:
+                        for attempt in (1, 2):
+                            s = OWNER.get(hub, cred, client)
+                            if not s["ok"]:
+                                out = {"ok": False, "code": s.get("code", "signed_out"), "status": 0, "message": s.get("message", "")}
+                                break
+                            r = relay_core.post_json(hub, s["cookie"], path, body, client)
+                            if r.get("code") != "no_session":
+                                out = _write_reply(r, "owner")
+                                break
+                            OWNER.drop(s["cookie"])
+        except httpx.HTTPError as e:
+            out = {"ok": False, "code": "unreachable", "status": 0, "message": f"Couldn't reach axHub ({type(e).__name__})."}
+        _log({"by": who, "path": path, "person": person, "ok": out["ok"], "via": out.get("via", ""), "status": out.get("status"), "code": out.get("code", "")})
+        return out
+
+
+def _read_reply(r: dict[str, Any], via: str) -> dict[str, Any]:
+    st = r["status"]
+    if st == 200:
+        return {"ok": True, "status": 200, "json": r["json"], "via": via}
+    code = "old_hub" if st == 404 else "forbidden" if st == 403 else "hub_error"
+    err = r["json"].get("error") if isinstance(r["json"].get("error"), dict) else {}
+    return {"ok": False, "code": code, "status": st, "via": via, "message": str(err.get("message") or f"axHub answered {st}.")[:MESSAGE_MAX]}
+
+
+def _write_reply(r: dict[str, Any], via: str) -> dict[str, Any]:
+    if r["status"] == 200:
+        return {"ok": True, "status": 200, "json": r["json"], "via": via}
+    err = r["json"].get("error") if isinstance(r["json"].get("error"), dict) else {}
+    return {"ok": False, "status": r["status"], "via": via, "code": str(r.get("code") or err.get("code") or "hub_refused"), "json": r["json"],
+            "message": str(err.get("message") or f"axHub answered {r['status']}.")[:MESSAGE_MAX]}
+
+
+plugin_services.provide(RELAY_CAP, RelayService(), FOLDER)
+

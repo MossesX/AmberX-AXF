@@ -256,20 +256,25 @@ class HubLink:
                 self._sid = self._sid or ""
             return self._sid or None
 
-    def call(self, tool: str, arguments: dict[str, Any], timeout: float = 30) -> str:
-        """axHub `call` (hold: false, so nothing is ever left waiting on the hub): the tool's text answer, or
-        HubDownstream / HubNeedsApproval / HubUnreachable."""
+    def tool(self, name: str, arguments: dict[str, Any], timeout: float = 30) -> dict[str, Any]:
+        """One of the hub's own MCP tools (`list_services`, `describe_service`, `call`, …): the raw tools/call result
+        (`content`, `isError`); a session the hub dropped is opened again once. HubUnreachable when the hub can't be reached."""
         for attempt in (0, 1):
             sid = self._session(timeout)
             try:
-                res, _ = self._rpc(sid, "tools/call", {"name": "call", "arguments": {"tool": tool, "arguments": arguments, "hold": False,
-                                                                                       "timeout_seconds": int(max(5, timeout))}}, timeout + 10)
-                break
+                res, _ = self._rpc(sid, "tools/call", {"name": name, "arguments": arguments}, timeout + 10)
+                return res
             except _SessionGone:
                 with self._lock:
                     self._sid = None
                 if attempt:
                     raise HubUnreachable("axHub keeps dropping the session") from None
+        return {}
+
+    def call(self, tool: str, arguments: dict[str, Any], timeout: float = 30) -> str:
+        """axHub `call` (hold: false, so nothing is ever left waiting on the hub): the tool's text answer, or
+        HubDownstream / HubNeedsApproval / HubUnreachable."""
+        res = self.tool("call", {"tool": tool, "arguments": arguments, "hold": False, "timeout_seconds": int(max(5, timeout))}, timeout)
         texts = [c.get("text", "") for c in res.get("content", []) if isinstance(c, dict)]
         text = "\n".join(texts)
         if not res.get("isError"):
