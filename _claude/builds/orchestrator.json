@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:12:21.850Z",
+ "updatedAt": "2026-11-17T00:12:37.423Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168141,12 +168141,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:05:48.290Z",
-   "updatedAt": "2026-11-17T00:05:54.951Z",
+   "updatedAt": "2026-11-17T00:12:16.022Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T00:05:54.951Z"
+    },
+    {
+     "text": "Split by Claude into 18 steps (1 Fable).",
+     "at": "2026-11-17T00:12:16.022Z"
     }
    ],
    "approvals": [],
@@ -168163,7 +168167,401 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Pull the auto-lander@1 contract from claude/server-auto-lander-fixes-lands if it is there; otherwise write a minimal read and action shape (service, current, queue, builds[] with state, attempts, behind, lastResult; actions run/retry/pause/resume/settings) as a schema plus a fixture so the parallel build can adopt it later",
+     "model": "Fable",
+     "why": "Schema and contract design that the gate server, MCP, CLI and voice all depend on",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/auto-lander.mjs",
+      "framework/schemas/auto-lander.json",
+      "framework/spec/fixtures/auto-lander.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920e37v4",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s2",
+     "text": "Read the gate plugin's server layout, route registration, plugin.json, settings tab and existing Gate tabs; note the lander-state@1 and gate-rules@1 readers to reuse in a short notes block in the report draft",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/gate/",
+      "_claude/builds/reports/gate-auto-lander-tab-and-controls.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920fv48d",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s3",
+     "text": "Gate server: add an auto-lander state reader that joins the service heartbeat, the current build, the queue and per-build state with attempts, commits behind main and last result from the builds store and lander state",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/server/auto_lander.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920g2brw",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s4",
+     "text": "REST: GET /api/plugins/gate/auto-lander (full state) and GET /api/plugins/gate/auto-lander/{build} (one row)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/server/routes.py",
+      "apps/console-web/plugins/gate/server/auto_lander.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920hp96k",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s5",
+     "text": "REST actions: POST auto-lander/run, /retry {build}, /pause {build?}, /resume {build?} and /settings, each writing through the auto-lander@1 actions with a reason and an audit line; destructive ones need confirm",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/server/routes.py",
+      "apps/console-web/plugins/gate/server/auto_lander.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920ietrv",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s6",
+     "text": "Auto-lander settings keys (enabled, interval, max attempts, retry backoff, behind-main threshold, auto-fix on red) with defaults in plugin.json and the gate settings registry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/gate/plugin.json",
+      "apps/console-web/plugins/gate/settings.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920jkav4",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s7",
+     "text": "Server tests for the GET state, the actions (run, retry, pause, resume, settings) and refusing an unknown build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/server/test_auto_lander.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920k2wyf",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s8",
+     "text": "MCP: register gate auto-lander commands (status, get, run, retry, pause, resume, settings get and set) through plugin-commands with the static route declarations",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/commands.json",
+      "apps/console-web/plugins/gate/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920lvxyi",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s9",
+     "text": "CLI: 'axf gate auto-lander [status|get <id>|run|retry <id>|pause [id]|resume [id]|settings [k=v]]' calling the same REST, with --json output",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/gate/cli/auto-lander.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920m15zc",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s10",
+     "text": "Gate > Auto-lander tab, part 1: a TabGroup entry plus a status header with service up/down, heartbeat age, current build and a pause/resume-all toolbar (role=toolbar, aria-label), using tokens and framework controls only",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/AutoLanderTab.tsx",
+      "apps/console-web/plugins/gate/web/index.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920nqpgp",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s11",
+     "text": "Auto-lander tab, part 2: a DataGrid of builds that keeps ALL existing auto-lander grid columns and adds commits behind main, attempts and last result, plus Retry, Pause and Fix row actions wired to the REST",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/AutoLanderGrid.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920o6tow",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s12",
+     "text": "Settings > Plugins > Gate: an Auto-lander section that reads and writes the new keys through the settings registry, with the level toolbar levels set on each key",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/GateSettings.tsx",
+      "apps/console-web/plugins/gate/settings.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920pt26n",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s13",
+     "text": "Console-control: register targets view:gate/tab:auto-lander, row:<build> and the Retry/Pause/Fix/Run/Resume buttons and settings via data-axf-target, appended at the end of the control registry; console_show deep link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/AutoLanderTab.tsx",
+      "apps/console-web/plugins/gate/control.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920qmunh",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s14",
+     "text": "AmberX voice: console actions gate.autoLander.status/run/retry/pause/resume/settings, with phrases mapped to the same commands",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/plugins/gate/actions.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920rvqih",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s15",
+     "text": "Help stub and description for the tab, commands and CLI so the glossary catalog check passes; lifecycle markers on any doc lines outside the plugin",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/gate/help/auto-lander.md",
+      "apps/console-web/plugins/gate/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920svljq",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s16",
+     "text": "Run the CI checks locally: check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, plugin-lifecycle check gate, glossary catalog --check and the console typecheck; fix what fails",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920tkxka",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s17",
+     "text": "Desktop and phone shots of the Auto-lander tab and its settings; submit to UI Review with 3 grid-layout options as assets (review.mjs submit --choices)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/assets/",
+      "_claude/builds/reports/gate-auto-lander-tab-and-controls/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920uh2i6",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    },
+    {
+     "id": "s18",
+     "text": "Final step: run the tests again, write the report _claude/builds/reports/gate-auto-lander-tab-and-controls.md saying how each feature is reached over REST, MCP, CLI, voice and console-control, add the THREADS row, push the branch, open the PR, link it with builds-live.mjs and add it to the merge queue through the orchestrator",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/gate-auto-lander-tab-and-controls.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwjxu5920vcuhh",
+     "createdAt": "2026-11-17T00:12:16.022Z"
+    }
+   ]
   },
   {
    "id": "server-rule-done-means-merged-working",
