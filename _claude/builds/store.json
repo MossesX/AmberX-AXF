@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7132,
- "updatedAt": "2026-11-17T00:11:46.067Z",
+ "rev": 7133,
+ "updatedAt": "2026-11-17T00:12:03.849Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -258415,7 +258415,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-17T00:11:08.880Z",
+   "updatedAt": "2026-11-17T00:11:45.454Z",
    "builtAt": "",
    "notes": [
     {
@@ -258433,6 +258433,10 @@
     {
      "text": "Claude account: hulu0241 (axf-orchestrator-runs-long-builds-across--earl, shared account login)",
      "at": "2026-11-16T23:53:33.871Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-runs-long-builds-across--earl: brief only · start 14.5K tokens ($0.08) · cost $6.54 · 65 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:11:45.454Z"
     }
    ],
    "approvals": [],
