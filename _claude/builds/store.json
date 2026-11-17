@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8396,
- "updatedAt": "2026-11-17T23:32:11.710Z",
+ "rev": 8397,
+ "updatedAt": "2026-11-17T23:32:25.167Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -292601,7 +292601,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "landing",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -292609,7 +292609,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T23:31:47.269Z",
+   "updatedAt": "2026-11-17T23:32:12.309Z",
    "builtAt": "2026-11-17T23:31:47.269Z",
    "notes": [
     {
@@ -292751,7 +292751,17 @@
     "pickedAt": "2026-11-17T22:09:20.596Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T23:32:12.309Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-icon-picker-every-banner-settings-widget--joey",
+     "phase": "Phase 2"
+    }
    },
    "steps": [
     {
@@ -293067,17 +293077,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-17T21:20:30.021Z",
-    "builtAt": "",
+    "builtAt": "2026-11-17T23:31:47.269Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwl76ubk01w860": "2026-11-17T21:21:51.104Z",
