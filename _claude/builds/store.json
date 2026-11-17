@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7171,
- "updatedAt": "2026-11-17T00:26:59.358Z",
+ "rev": 7172,
+ "updatedAt": "2026-11-17T00:27:14.003Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210913,7 +210913,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-17T00:26:37.868Z",
+   "updatedAt": "2026-11-17T00:27:11.576Z",
    "builtAt": "",
    "notes": [
     {
@@ -210939,6 +210939,10 @@
     {
      "text": "Brief only: brief is 25807 characters (~6452 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T00:21:48.809Z"
+    },
+    {
+     "text": "Headless run axf-skin-animations-animated-colour-swatches--rhonda: brief only · start 17.7K tokens ($0.06) · cost $0.74 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:27:11.576Z"
     }
    ],
    "approvals": [],
@@ -211180,7 +211184,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
