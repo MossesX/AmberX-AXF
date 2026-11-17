@@ -178,7 +178,9 @@ class Routes(unittest.TestCase):
         self.routes = routes
         self.bus, _ = bus()
         app = FastAPI()
-        app.include_router(routes.build(lambda: self.bus), prefix="/api/plugins/console-terminal")
+        own = routes.build(lambda: self.bus, routes.View())
+        app.include_router(own, prefix="/api/plugins/console-terminal")
+        app.include_router(routes.remount(own), prefix="/api/claude-link")
         self.c = TestClient(app)
         self.base = "/api/plugins/console-terminal/claude-link"
 
@@ -245,6 +247,14 @@ class Routes(unittest.TestCase):
         self.assertEqual(out[1], ": ping\n\n")
         self.assertIn("live one", out[2])
         self.assertEqual(self.bus.state()["subscribers"], 0)  # closing the stream unsubscribes
+
+    def test_capability_mount(self) -> None:
+        """The same routes at /api/claude-link share the bus and the view (what the framework CLI and emitter call)."""
+        self.c.post("/api/claude-link/ingest", json={"event": {"kind": "launch", "summary": "via the mount"}})
+        self.assertEqual(self.c.get("/api/claude-link").json()["items"][0]["summary"], "via the mount")
+        self.c.post("/api/claude-link/pause")
+        self.assertTrue(self.c.get(self.base + "/view").json()["paused"])
+        self.assertEqual(self.c.get("/api/claude-link/state").json()["counts"]["launch"], 1)
 
     def test_ingest(self) -> None:
         r = self.c.post(self.base + "/ingest", json={"event": {"kind": "launch", "source": "headless", "summary": "go", "detail": {"token": "x" * 20}}}).json()

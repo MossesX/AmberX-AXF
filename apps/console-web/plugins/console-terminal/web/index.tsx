@@ -34,7 +34,7 @@ import { registerClaudeLink } from './claude-link-actions';
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Terminal',
-  version: '0.5.0',
+  version: '0.6.0',
   appMenu,
   provides: ['axf.terminal'],
   register(rt) {

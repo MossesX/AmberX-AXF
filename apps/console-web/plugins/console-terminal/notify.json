@@ -12,6 +12,38 @@
       "only": [
         "sound"
       ]
+    },
+    {
+      "id": "terminal.claude-link.disconnect",
+      "label": "Claude link: axHub unreachable",
+      "group": "console",
+      "app": "console",
+      "source": "Terminal",
+      "description": "The console's calls to axHub stopped getting through (Claude link disconnect line). Off by default: the systems check banner already shows a dead hub.",
+      "enforced": "gate",
+      "channels": {
+        "banner": false,
+        "amberx": false,
+        "sound": false,
+        "popup": false,
+        "webpush": false
+      }
+    },
+    {
+      "id": "terminal.claude-link.error",
+      "label": "Claude link: error",
+      "group": "console",
+      "app": "console",
+      "source": "Terminal",
+      "description": "An error line on the Claude link: a refused token on /mcp or axHub, a crashed headless run, a failed MCP call. Off by default.",
+      "enforced": "gate",
+      "channels": {
+        "banner": false,
+        "amberx": false,
+        "sound": false,
+        "popup": false,
+        "webpush": false
+      }
     }
   ]
 }

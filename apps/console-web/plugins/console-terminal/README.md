@@ -106,10 +106,49 @@ closes every terminal.
 
 xterm.js 5.3.0 + fit/search/web-links addons are vendored in `web/vendor/` (MIT) so uninstalling leaves nothing.
 
+## Claude link tab (Nov 17 2026)
+
+Brett: "Give terminal a main tab that outputs in real time the console's connection to cloud." Every Terminal window
+opens with a pinned first tab, **Claude link**, that can't be closed or moved: a live, read-only log of everything the
+console does with Claude and axHub. Design and event fields: `docs/claude-link.md` (claude-link-event@1).
+
+| Source | Kinds | From |
+|--------|-------|------|
+| axHub client | axhub (tool, held / veto / denied / ok / error, ms), connect, disconnect, error (401/403) | one `axf_server.http.observe` listener (`server/hub_watch.py`) |
+| Anthropic API | connect, disconnect, error | the same listener |
+| console MCP server | mcp (caller session, tool, ok / error, ms), error (wrong bearer) | `mcp_server.feed_recorder`, `main.py` `/mcp` |
+| headless launches | launch, account, account (limit hand-off), exit, error (stderr lines) | `deploy/claude-headless.sh` → `framework/cli/claude-link-emit.mjs` |
+| worker accounts | account (pick / queue), error | `deploy/claude-workers.mjs claim / limit` |
+| agent slots | launch (take / queue), exit (release) | `framework/cli/agent-slots.mjs` |
+
+Server: `server/claude_link.py` (ring of `claudeLinkBuffer` events, default 2000; JSONL tail `claude-link/events.jsonl`
+through data_store; every value redacted), `server/routes.py`, capability `axf.claude-link@1` (also mounted at
+`/api/claude-link`). Senders outside the console spool to `.axf-console/claude-link-spool.jsonl` when it is down.
+Web: `web/ClaudeLinkTab.tsx`, `web/claudeLinkToolbar.tsx` (toolbar `terminal.claude-link`), `web/claude-link.ts`.
+
+How to reach it:
+
+| | |
+|---|---|
+| Deep link | `?view=terminal&tab=claude-link` (or `#/terminal?tab=claude-link`) |
+| control@1 | `view:terminal/tab:claude-link` (+ `setting:paused`, `setting:kinds`, `setting:q`, `button:pause`, `button:clear`); `console_show` / `console_open` take it |
+| REST | `GET /api/plugins/console-terminal/claude-link?since&kind&q&limit&all`, `…/stream` (SSE, `Last-Event-ID`), `…/state`, `POST …/clear`, `…/pause`, `…/resume`, `…/filter`, `GET/PUT …/view`, `POST …/ingest`; the same under `/api/claude-link/…` |
+| MCP | `console-terminal_claude_link_tail`, `_state`, `_clear`, `_pause`, `_resume`, `_filter`, `_view`, `_view_set`, `_ingest`, `_open` |
+| CLI | `axf claude-link tail [--follow] [--kind a,b] [--q words]`, `state`, `clear`, `open`, `pause`, `resume`, `filter` |
+| Voice | "show the Claude link", "what's Claude doing" (control@1 target keywords; actions `claude-link.open`, `claude-link.state`) |
+| Actions | `claude-link.open`, `.state`, `.pause`, `.resume`, `.filter:<kinds>[:<text>]`, `.clear` |
+
+Settings → Plugins → Terminal → Claude link tab: follow new events (auto-scroll), rows open with their detail, kinds shown
+by default, events kept in memory. Notifications `terminal.claude-link.disconnect` and `terminal.claude-link.error` are
+off by default. Switch the senders off with `AXF_CLAUDE_LINK=off`.
+
 ## Lifecycle (plugin-lifecycle@1)
-Data: `.axf-console/plugins/console-terminal/` (`settings.json`, `ssh/` key + known_hosts, `claude-token`, `sessions.jsonl`).
+Data: `.axf-console/plugins/console-terminal/` (`settings.json`, `ssh/` key + known_hosts, `claude-token`, `sessions.jsonl`,
+`claude-link/events.jsonl` + `view.json`). Uninstall also removes the Claude link spool (`.axf-console/claude-link-spool.jsonl`).
 ```bash
 node apps/console-web/plugins/console-terminal/install.mjs
 node apps/console-web/plugins/console-terminal/uninstall.mjs --all
 python3 apps/console-web/plugins/console-terminal/test.py
+python3 apps/console-web/plugins/console-terminal/server/test_claude_link.py
+node framework/cli/claude-link-emit.test.mjs
 ```

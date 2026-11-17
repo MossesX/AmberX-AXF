@@ -5,7 +5,7 @@
     "core": "open"
   },
   "name": "Terminal",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -357,15 +357,18 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/console-terminal",
     "env": [
+      "AXF_CLAUDE_LINK_SPOOL",
       "AXF_TERMINAL_DIR",
       "AXF_VPS_HOST",
       "CLAUDE_BIN"
     ],
     "mentions": [
+      ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "_claude/shared/rules/RULES.md",
       "apps/console-web/plugins/README.md",
+      "framework/cli/axf.mjs",
       "framework/spec/PORTING.md"
     ]
   },

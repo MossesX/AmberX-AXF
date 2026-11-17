@@ -15,7 +15,7 @@
  */
 const KINDS = ['launch', 'exit', 'account', 'mcp', 'axhub', 'connect', 'disconnect', 'error'];
 const base = () => `${(process.env.AXF_CONSOLE_URL || 'https://console.amberxai.com').replace(/\/+$/, '')}`;
-const ROUTE = '/api/plugins/console-terminal/claude-link';
+const ROUTE = '/api/claude-link'; // the axf.claude-link@1 capability mount (whichever plugin provides it)
 const headers = (extra = {}) => ({ ...(process.env.AXF_TOKEN ? { authorization: `Bearer ${process.env.AXF_TOKEN}` } : {}), ...extra });
 
 async function req(path, { method = 'GET', body } = {}) {

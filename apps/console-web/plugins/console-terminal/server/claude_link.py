@@ -311,6 +311,7 @@ class ClaudeLinkService:
     importing this folder. Every method is safe to call from any thread and never raises on a bad event."""
     version = 1
     kinds = KINDS
+    router: Any = None  # the REST routes, mounted again at /api/claude-link by the console (CAPABILITY_MOUNTS)
 
     def __init__(self, bus: Bus):
         self.bus = bus

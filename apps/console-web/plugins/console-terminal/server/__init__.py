@@ -50,8 +50,12 @@ LINK = claude_link.ClaudeLinkService(BUS)
 plugin_services.provide("axf.claude-link@1", LINK, "console-terminal")
 _s0 = store.settings()
 # the shared live view starts from the settings: paused when auto-scroll is off, the default kinds
-VIEW = {"paused": _s0.get("claudeLinkAutoScroll") is False, "kinds": list(_s0.get("claudeLinkKinds") or []), "q": "", "rev": 0}
-router.include_router(routes.build(lambda: BUS, VIEW))
+VIEW = routes.View({"paused": _s0.get("claudeLinkAutoScroll") is False, "kinds": list(_s0.get("claudeLinkKinds") or [])})
+_LINK_ROUTES = routes.build(lambda: BUS, VIEW)
+router.include_router(_LINK_ROUTES)
+# the same routes again for the capability mount /api/claude-link (main.py CAPABILITY_MOUNTS): what the framework CLI
+# (axf claude-link) and claude-link-emit.mjs call, so nothing outside this folder names it
+LINK.router = routes.remount(_LINK_ROUTES)
 
 
 def _link_append(e: dict[str, Any]) -> None:

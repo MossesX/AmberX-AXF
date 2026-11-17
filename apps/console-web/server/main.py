@@ -1098,23 +1098,6 @@ if not current_token():
     log("mcp", "AXF_TOKEN is not set — /mcp and the write routes are open; set it before exposing this server", "warn")
 
 
-@app.post("/api/claude-link/ingest")
-def claude_link_ingest(body: dict[str, Any]) -> dict[str, Any]:
-    """Claude link events from outside the console server (framework/cli/claude-link-emit.mjs: headless launches,
-    worker accounts, agent slots), handed to whichever plugin provides axf.claude-link@1 (console token, like every
-    write route). 404 when none does, so the sender spools the line."""
-    link = plugin_services.get("axf.claude-link@1")
-    if link is None:
-        raise HTTPException(404, "no plugin provides axf.claude-link@1 (the Terminal is off)")
-    evs = body.get("events") if isinstance(body.get("events"), list) else [body.get("event", body)]
-    if not evs or len(evs) > 200:
-        raise HTTPException(400, "send 1 to 200 events")
-    ids = [e["id"] for e in (link.append(x if isinstance(x, dict) else {}) for x in evs) if e]
-    if not ids:
-        raise HTTPException(400, "no valid event (kind is launch, exit, account, mcp, axhub, connect, disconnect or error)")
-    return {"ok": True, "ids": ids}
-
-
 @app.get("/api/mcp")
 def mcp_info(request: Request) -> dict[str, Any]:
     """How to connect Claude to this console's MCP endpoint."""
@@ -1411,6 +1394,9 @@ _prune_plugin_state()
 # console-commands@1 = /api/console (open screens, dialogs, settings, run actions in the open console).
 CAPABILITY_MOUNTS = {"control@1": "/api/control"}
 CAPABILITY_MOUNTS["console-commands@1"] = "/api/console"  # the Console commands plugin  axf-plugin:console-commands
+# axf.claude-link@1 = /api/claude-link: the console's connection to Claude and axHub as one live log (snapshot, stream,
+# state, clear, view, ingest); framework/cli/claude-link.mjs and claude-link-emit.mjs call it
+CAPABILITY_MOUNTS["axf.claude-link@1"] = "/api/claude-link"
 
 
 def _capability_guard(name: str):

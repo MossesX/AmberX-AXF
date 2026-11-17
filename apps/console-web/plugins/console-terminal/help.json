@@ -463,6 +463,42 @@
         "title": "When a new session starts",
         "text": "What the Terminal does when a headless Claude session starts. Add tab quietly (default) adds its tab in the background of an open Terminal window and shows a count on the Terminal toolbar icon, without bringing the window up. Do nothing adds no tab (the sessions list still shows it). Bring Terminal to front opens it and brings the window up.",
         "kind": "field"
+      },
+      {
+        "target": "view:terminal/tab:claude-link",
+        "title": "Claude link",
+        "text": "The Terminal's first tab, always there: everything the console does with Claude and axHub, live. Launches, which account a run got, limit hand-offs, exits, MCP calls and axHub calls (held, veto, done, failed). Tap a row for its detail.",
+        "kind": "tab"
+      },
+      {
+        "target": "kind-launch",
+        "title": "Kind filter",
+        "text": "Show only these kinds of event. None picked shows everything.",
+        "kind": "button"
+      },
+      {
+        "target": "filter",
+        "title": "Filter",
+        "text": "Only rows with all these words (tool, session, account, model, summary or detail).",
+        "kind": "field"
+      },
+      {
+        "target": "clear",
+        "title": "Clear",
+        "text": "Empties the view. The log itself is kept: the API still reads it with all=1.",
+        "kind": "button"
+      },
+      {
+        "target": "status",
+        "title": "Live / axHub",
+        "text": "Live = the stream to the console is up (it reconnects by itself). axHub answers / unreachable = whether the console's last calls to axHub got through.",
+        "kind": "button"
+      },
+      {
+        "target": "jump",
+        "title": "N new",
+        "text": "New events came while paused. Tap to jump to the newest and follow again.",
+        "kind": "button"
       }
     ],
     "intros": []

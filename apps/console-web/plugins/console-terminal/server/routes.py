@@ -1,5 +1,8 @@
 """Claude link — REST routes, under /api/plugins/console-terminal/claude-link (console token; 404 when the plugin is off).
 
+Also served at /api/claude-link/… (capability mount of axf.claude-link@1: what framework/cli/claude-link.mjs and
+claude-link-emit.mjs call, so nothing outside this folder names it).
+
   GET  claude-link?since=&kind=a,b&q=&limit=&all=   snapshot, oldest first (after the view marker unless all=1)
   GET  claude-link/stream?kind=&q=&since=&once=     SSE: `event: hello` (state), then `event: link` per event, id = event id;
                                                      a `: ping` comment every 15 s; resumes after Last-Event-ID (or since);
@@ -17,6 +20,7 @@ import json
 from typing import Any, AsyncIterator, Callable
 
 from fastapi import APIRouter, HTTPException, Request
+from fastapi.routing import APIRoute
 from fastapi.responses import StreamingResponse
 
 from . import claude_link
@@ -33,15 +37,37 @@ def kinds_of(kind: str | list[str] | None) -> list[str]:
     return ks
 
 
-def build(bus: Callable[[], claude_link.Bus], view: dict[str, Any] | None = None) -> APIRouter:
+class View:
+    """The tab's shared live view (paused, kinds, q) and who wants to hear when it changes (open SSE streams)."""
+
+    def __init__(self, v: dict[str, Any] | None = None):
+        self.v: dict[str, Any] = {"paused": False, "kinds": [], "q": "", "rev": 0, **(v or {})}
+        self.watchers: list[Callable[[dict[str, Any]], None]] = []
+
+    def watch(self, fn: Callable[[dict[str, Any]], None]) -> Callable[[], None]:
+        self.watchers.append(fn)
+        return lambda: self.watchers.remove(fn) if fn in self.watchers else None
+
+    def set(self, body: dict[str, Any]) -> dict[str, Any]:
+        v = self.v
+        if "paused" in body:
+            v["paused"] = bool(body["paused"])
+        if "kinds" in body:
+            v["kinds"] = kinds_of(body.get("kinds") or [])
+        if "q" in body:
+            v["q"] = str(body.get("q") or "")[:200]
+        v["rev"] = int(v.get("rev") or 0) + 1
+        for fn in list(self.watchers):
+            fn(dict(v))
+        return dict(v)
+
+
+def build(bus: Callable[[], claude_link.Bus], view: View | dict[str, Any] | None = None) -> APIRouter:
     """The routes over a bus (a getter, so tests and a resize can swap it)."""
     r = APIRouter()
-    v: dict[str, Any] = view if view is not None else {"paused": False, "kinds": [], "q": "", "rev": 0}
-    watchers: list[Callable[[dict[str, Any]], None]] = []
-
-    def watch(fn: Callable[[dict[str, Any]], None]) -> Callable[[], None]:
-        watchers.append(fn)
-        return lambda: watchers.remove(fn) if fn in watchers else None
+    vs = view if isinstance(view, View) else View(view)
+    v = vs.v
+    watch = vs.watch
 
     @r.get("/claude-link")
     def snapshot(since: int = 0, kind: str = "", q: str = "", limit: int = 200, all: bool = False) -> dict[str, Any]:
@@ -61,16 +87,7 @@ def build(bus: Callable[[], claude_link.Bus], view: dict[str, Any] | None = None
 
     @r.put("/claude-link/view")
     def put_view(body: dict[str, Any]) -> dict[str, Any]:
-        if "paused" in body:
-            v["paused"] = bool(body["paused"])
-        if "kinds" in body:
-            v["kinds"] = kinds_of(body.get("kinds") or [])
-        if "q" in body:
-            v["q"] = str(body.get("q") or "")[:200]
-        v["rev"] = int(v.get("rev") or 0) + 1
-        for fn in list(watchers):
-            fn(dict(v))
-        return dict(v)
+        return vs.set(body)
 
     @r.post("/claude-link/pause")
     def pause() -> dict[str, Any]:
@@ -111,6 +128,17 @@ def build(bus: Callable[[], claude_link.Bus], view: dict[str, Any] | None = None
                                  headers={"cache-control": "no-store", "x-accel-buffering": "no"})
 
     return r
+
+
+def remount(src: APIRouter, strip: str = "/claude-link") -> APIRouter:
+    """The same endpoints without the `/claude-link` prefix, for the capability mount /api/claude-link (axf.claude-link@1):
+    one set of handlers, so both mounts share the bus and the view."""
+    out = APIRouter()
+    for rt in src.routes:
+        if isinstance(rt, APIRoute):
+            path = rt.path[len(strip):] if rt.path.startswith(strip) else rt.path
+            out.add_api_route(path, rt.endpoint, methods=sorted(rt.methods or []), name=rt.name)
+    return out
 
 
 def frame(e: dict[str, Any]) -> str:
