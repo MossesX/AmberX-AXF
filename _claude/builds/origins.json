@@ -8544,6 +8544,18 @@
    "from": "detail",
    "addenda": []
   },
+  "settings-fix-part-2-blank-toolbars": {
+   "said": "Make every toolbar blank and just all it has is a settings hook. A little gear with a settings hook. That's it. Every toolbar, we'll edit them later. Don't even allow editing or changing the fucking settings layout.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "settings-interface-gear-every-plugin": {
    "said": "They all need a settings page. They all need a settings interface.",
    "at": "2026-11-16T18:27:38.814Z",
