@@ -6,6 +6,7 @@ Pending → Queue → Building. The store is `_claude/builds/store.json`; the ru
 
 - `orchestrator.mjs`: steps, phases, briefs, notes, approvals (`next | brief | act`).
 - `pipeline.mjs`: the dispatcher on the VPS host (cron `axf-pipeline`, every minute, `flock /run/axf-pipeline.lock`).
+- `watchdog.mjs`: the build watchdog (cron `axf-watchdog`, every minute): stuck builds reset, requeued, retried; see below.
 - `pipeline-core.mjs`: the pure rules (plan, account pick, session end). Contract: `framework/core/build-pipeline.mjs`.
 - `server/__init__.py`: the console REST routes (`/api/plugins/build-orchestrator/…`); `plugin.json` lists the commands
   (MCP tools, voice, CLI). `web/`: the Orchestrator view and its Pipeline tabs.
@@ -60,7 +61,59 @@ Rows from `GET /pipeline` (MCP `pipeline-status`, `pipeline-tab`) carry `requeue
 queued build back after a finished phase) and `stuck` (`{ phase, next, why }`, a Pending build parked by mistake). A
 build's pipeline row opens with `console_show build-orchestrator <id>` (action `build-orchestrator.open:<id>`).
 
+## Watchdog: stuck builds fix themselves
+
+Brett, Nov 13 2026: "if anything stops working, the server/orchestrator fixes it automatically with no one asking.
+Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry
+failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice."
+
+`watchdog.mjs` (build-watchdog@1; the decision table is `framework/core/build-watchdog.mjs`, golden cases
+`framework/spec/fixtures/build-watchdog.json`) runs on the VPS host from the cron `axf-watchdog` (every minute,
+`flock /run/axf-watchdog.lock`; `install.mjs` / `deploy/install-console.sh` install it, `uninstall.mjs` removes it, the
+line removes itself once the plugin folder is gone). One pass:
+
+1. **Evidence.** `deploy/claude-headless.sh` records every run's end the moment claude exits (or the wrapper gets HUP /
+   TERM): exit code, signal, exit kind, a usage / login stop, account, time, on the build (`pipeline.runEnd`, through
+   `builds-live.mjs run-end`, live on main) and in `<slots dir>/runs/<build>.json` (`agent-slots.mjs run-end`).
+2. **Probe.** Every build marked running is probed: `agent-slots.mjs alive <build>` (a claude pid in its worktree or with
+   its `AXF_BUILD_ID`, its `axf-<build>*` tmux sessions, the heartbeat = newest of its log and meter) plus that evidence.
+   `agent-slots.mjs reap` frees orphan slots whose process is gone.
+3. **Decide** (`decide()`): killed 143 / OOM 137 / failed exit / tmux or claude gone / stale heartbeat → **retry** (a
+   hung live session is killed first); exit 0 never processed → **requeue**; usage limit or dead login →
+   **retry-other-account** (the account is marked out, the next worker planned); past `maxRetries` since the last
+   ticked step, or every account tried → **give-up** (Pending, Errors tab, banner item, alert). A live or just-started
+   build is never touched.
+4. **Recover** (`run`): the step reset, its slots, worker claim and build lock released, a leftover tmux session with no
+   claude closed, the build back to the Queue through `pipeline.mjs setPipeline`, with a `recoveries[]` entry in the
+   same store write (journal action `watchdog-recover`). A per-build lock, a re-read under it and a cooldown keep it
+   idempotent: a second pass does nothing. The retry count is the build's own recoveries (a give-up hands it to Brett;
+   his requeue starts a fresh count).
+5. **Fill the slots:** the dispatcher tick runs while slots are free and the Queue has work; slots still idle with Queue
+   work are recorded as an `idle-slots` fix and the self-check is asked for.
+6. **Tell the phone:** notify types `watchdog.fix` (FYI, pushed at normal priority: `low` never leaves the banner) and
+   `watchdog.gave-up` (alert), through the console's alerts API and axf.notify@1 to AmberX, with build, cause, action
+   and attempt; batched per pass or one per fix. Each sent fix gets `notified` on its record.
+
+Files (pipeline folder, shared with the console): `build-watchdog.json` (last pass, last scan, recent fixes),
+`build-watchdog-settings.json`, `build-watchdog-request.json` (a pass the console asked for). The console container
+can't see the host's processes (`AXF_WATCHDOG_HOST=request`): it shows the host's last scan and hands passes to the cron.
+
+Systems check (health@1): **Build watchdog** (red when on and the last pass is older than 3 min; Auto fix reinstalls the
+cron and runs one pass, through axHub `vps.run`) and **Builds the watchdog gave up on** (Fix = Requeue, ask first).
+
+| Reach it | How |
+|---|---|
+| Screen | Build orchestrator → **Watchdog** tab (last pass, running builds with liveness, recent fixes, gave up, Run now); each build's expanded row lists its **Recoveries** |
+| Settings | Settings → Plugins → Build orchestrator → **Watchdog**: on/off, interval, stale heartbeat, max retries, retry on another account, FYI batched / per fix |
+| REST | `GET watchdog/status`, `GET watchdog/scan`, `POST watchdog/run {build?}`, `POST watchdog/requeue {builds?}`, `GET/PUT watchdog/settings`, `GET builds/<id>/recoveries` |
+| MCP | plugin commands `watchdog-status`, `watchdog-scan`, `watchdog-run`, `watchdog-requeue`, `watchdog-settings`, `watchdog-settings-set`, `build-recoveries` |
+| CLI | `axf watchdog status\|scan\|run [--build id]\|set key=value…\|settings\|recoveries <id>\|requeue [id…]` (= `node …/watchdog.mjs …`) |
+| Voice / actions | `watchdog.status`, `watchdog.run[:<build>]` |
+| Deep link | `build-orchestrator.focus:watchdog[?build=<id>]` (console_open `build-orchestrator` focus `watchdog`; console_show `build-orchestrator/watchdog`) |
+
 ## Tests
 
 `node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs` (pure rules and the CLI end to end on a scratch
-store with a fake launcher), `node framework/spec/check-build-pipeline.mjs`, `node framework/spec/check-builds-store.mjs`.
+store with a fake launcher), `node …/test-watchdog.mjs` (the watchdog on a temp store, fake probe), `bash
+…/test-watchdog-e2e.sh` (a fake claude started through the dispatcher and claude-headless.sh, killed, recovered and
+relaunched; needs tmux), `node framework/spec/check-build-watchdog.mjs`, `node framework/spec/check-build-pipeline.mjs`, `node framework/spec/check-builds-store.mjs`.

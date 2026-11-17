@@ -32,5 +32,6 @@
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "opus", "builtAt": "2026-10-28" },
-  "opens": "main"
+  "opens": "main",
+  "settingsTab": { "default": true }
 }

@@ -310,6 +310,78 @@
         "title": "Set for all",
         "text": "Gives every build of the group the priority picked next to it (Urgent, High, Normal, Low).",
         "kind": "button"
+      },
+      {
+        "target": "watchdog-on",
+        "title": "Watchdog on",
+        "text": "The build watchdog: every minute it finds builds marked running with no live session (killed exit 143, failed exit 1, out of memory, hung, tmux gone, a usage limit), resets the step, frees the slot and puts them back in the Queue or retries them, fills idle slots, and sends the phone an FYI for each fix. Off = it only reports.",
+        "kind": "toggle"
+      },
+      {
+        "target": "retry-on-another-account",
+        "title": "Retry on another account",
+        "text": "When a build stopped on a usage limit or a dead login, the watchdog marks that account out and plans the retry on the next worker account. Off: the retry goes to whichever account the dispatcher picks.",
+        "kind": "toggle"
+      },
+      {
+        "target": "phone-fyi",
+        "title": "Phone FYI",
+        "text": "Batched: one AmberX push per watchdog pass listing every fix. One push per fix: a push for each. A build the watchdog gave up on is always its own alert.",
+        "kind": "field"
+      },
+      {
+        "target": "requeue",
+        "title": "Requeue",
+        "text": "Puts a build the watchdog gave up on (past Max retries, or every account tried) back in the Queue; its retry count starts again from zero. Same as the systems check's Fix and POST watchdog/requeue.",
+        "kind": "button"
+      },
+      {
+        "target": "run-now",
+        "title": "Run now",
+        "text": "Runs one watchdog pass now: stuck builds are reset, requeued or retried, slots refilled, the phone told. From the console the VPS runs it within a minute. Same as the voice action watchdog.run and axf watchdog run.",
+        "kind": "button"
+      },
+      {
+        "target": "interval-minutes",
+        "title": "Interval (minutes)",
+        "text": "How often the watchdog makes a pass. The cron ticks every minute and skips until this many minutes have passed since the last pass.",
+        "kind": "field"
+      },
+      {
+        "target": "stale-heartbeat-minutes",
+        "title": "Stale heartbeat (minutes)",
+        "text": "A build marked running whose log and meter have not changed for this long counts as dead (nothing alive) or hung (its process alive: killed and retried).",
+        "kind": "field"
+      },
+      {
+        "target": "max-retries",
+        "title": "Max retries",
+        "text": "How many times a crashed or killed build is retried since it last ticked a step. Past it the build goes back to Pending with a banner item and an alert. Account stops (usage limit, login) never count.",
+        "kind": "field"
+      },
+      {
+        "target": "dry-run-only",
+        "title": "Dry run only",
+        "text": "On: the watchdog decides which rows it would take off the builds lists and records the plan, but changes nothing.",
+        "kind": "toggle"
+      },
+      {
+        "target": "tell-amberx-what-was-cleaned",
+        "title": "Tell AmberX what was cleaned",
+        "text": "On: each watchdog run that cleaned something sends one FYI to AmberX (Notifications panel: Watchdog cleaned stale rows).",
+        "kind": "toggle"
+      },
+      {
+        "target": "run-every-minutes",
+        "title": "Run every (minutes)",
+        "text": "How often the watchdog runs, 1 to 120 minutes. Cron fires every 5 minutes; a longer interval skips the ticks in between.",
+        "kind": "field"
+      },
+      {
+        "target": "fresh-session",
+        "title": "Fresh session",
+        "text": "Retries this build's failure now in a fresh session instead of waiting for the next rung of the ladder. The attempts so far stay in the log.",
+        "kind": "button"
       }
     ],
     "intros": []

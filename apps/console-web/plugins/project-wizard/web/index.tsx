@@ -109,7 +109,7 @@ function Readiness({ st }: { st: Status }) {
     <div className={`${P}__notice`} role="status">
       <Icon name="info" />
       <div className="fx-grow fx-small">{issues.map((i, n) => <p key={n} style={{ margin: 0 }}>{i}</p>)}</div>
-      <IconButton icon="settings" label="Project wizard settings" onClick={() => rt.dispatch('settings.open:project-wizard')} />
+      <Button size="sm" tone="quiet" icon="arrow-right" onClick={() => rt.dispatch('settings.open:project-wizard')}>Fix in settings</Button>
     </div>
   );
 }

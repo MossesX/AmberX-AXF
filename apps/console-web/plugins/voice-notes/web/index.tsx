@@ -432,7 +432,6 @@ function NotesPage() {
           </div>
           <div className="fx-row axp-voice-notes-acts">
             <IconButton icon="refresh" label={snap.notesBusy ? 'Fetching…' : 'Fetch now'} disabled={snap.notesBusy} onClick={() => void store.loadNotes()} />
-            <IconButton icon="settings" label="Set up" onClick={() => rt.dispatch('settings.open:voice-notes')} />
           </div>
         </header>
       )}

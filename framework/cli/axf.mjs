@@ -47,10 +47,14 @@
  *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
  *   axf pass grant [minutes] [--scope theme|style|layout|tokens]   timed veto pass, everything by default (Brett approves once)
  *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
+ *   axf <word> …                 a word a plugin's "cli" map names besides its folder (e.g. `axf watchdog status|scan|run|set`
+ *                               from the Build orchestrator): found by scanning plugin manifests, never by folder name
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
+ *   axf watchdog status | run [--dry-run] [--force] | log [--kind K] [--action A] [--build B] | settings | set <key> <value>
+ *                               the VPS stale-row watchdog (Build orchestrator): what it cleaned, run it, change its settings
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
@@ -84,7 +88,7 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
-if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice'].includes(rest[0] ?? '')) {
+if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings'].includes(rest[0] ?? '')) {
   const { main } = await import('./console-control.mjs');
   process.exit(await main(rest));
 }
@@ -99,6 +103,21 @@ if (cmd === 'console') {
   if (!dir) { console.error('no plugin provides console-commands@1 (install the Console commands plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
   process.exit(await main(rest));
+}
+// `axf watchdog status|run [--dry-run] [--force]|log [--kind K] [--action A] [--build B]|set <key> <value>|settings` goes to
+// the stale-row watchdog of the plugin that provides the build orchestrator (service:orchestrator@1), never by folder name.
+if (cmd === 'watchdog') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:orchestrator@1') && exists(joinPath(plugins, d, 'watchdog.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides the build orchestrator (service:orchestrator@1) with a watchdog'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'watchdog.mjs')).href);
+  try { await main(rest.length ? rest : ['status']); } catch (e) { console.error(`watchdog: ${e.message}`); process.exit(2); }
+  process.exit(process.exitCode ?? 0);
 }
 // `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
 // by folder name: Claude mode on / off / status / test and the command history.
@@ -117,12 +136,26 @@ if (cmd === 'voice') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'watchdog']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
   const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
   const isPlugin = cmd && !AXF_COMMANDS.has(cmd) && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(joinPath(plugins, cmd, 'plugin.json'));
+  // a word no command or plugin folder has: the plugin whose "cli" map names it runs it (`axf watchdog status`)
+  if (cmd && !AXF_COMMANDS.has(cmd) && !isPlugin && /^[a-z0-9][a-z0-9-]+$/.test(cmd) && exists(plugins)) {
+    const { pathToFileURL } = await import('node:url');
+    for (const d of readdirSync(plugins).sort()) {
+      let own = '';
+      try { const m = JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')); own = d !== cmd && m.cli && typeof m.cli === 'object' ? m.cli[cmd] || '' : ''; } catch { continue; }
+      const file = own && /^[\w./-]+\.mjs$/.test(own) && !own.includes('..') ? joinPath(plugins, d, own) : '';
+      if (!file || !exists(file)) continue;
+      const words = await import(pathToFileURL(file).href);
+      if (!rest[0] || rest[0] === 'help' || rest[0] === '--help') { console.log(`axf ${cmd} ${(words.cliWords ?? []).join('|')} …`); process.exit(0); }
+      if (words.cliWords?.includes(rest[0])) process.exit((await words.main(rest)) ?? process.exitCode ?? 0);
+      console.error(`axf ${cmd}: ${rest[0]} is not one of ${(words.cliWords ?? []).join(', ')}`); process.exit(2);
+    }
+  }
   if (cmd === 'plugins' || cmd === 'plugin' || isPlugin) {
     const { pathToFileURL } = await import('node:url');
     const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {

@@ -1,0 +1,13 @@
+{
+  "set": "build-attempts-status",
+  "assetType": "badge",
+  "owner": "build-orchestrator",
+  "options": [
+    { "id": "pill-grid", "label": "Pill chips + attempts grid (what is built now)", "notes": "Status as a toned pill chip (building, fixing, landing, landed, complete, escalated); the Attempts tab is a DataGrid, newest first: #, failure, strategy, model, account, result chip, what happened. Densest; reads like the Steps grid next to it.", "shots": ["shots/grid-desktop.png"],
+      "data": { "icon": "refresh", "label": "fixing", "tone": "warning", "shape": "pill", "statuses": { "running": ["building", "accent"], "fixing": ["fixing", "warning"], "landing": ["landing", "accent"], "landed": ["landed", "success"], "complete": ["complete", "success"], "escalated": ["escalated", "danger"] }, "attempts": { "layout": "grid", "order": "newest-first" } } },
+    { "id": "dot-timeline", "label": "Dot + word, attempts as a timeline", "notes": "Status as a coloured dot and its word (quieter in long tables); the Attempts tab is a vertical timeline, one entry per try with its result colour. Easiest to read on the phone.", "shots": ["shots/timeline-desktop.png"],
+      "data": { "icon": "refresh", "label": "fixing", "tone": "warning", "shape": "dot", "statuses": { "running": ["building", "accent"], "fixing": ["fixing", "warning"], "landing": ["landing", "accent"], "landed": ["landed", "success"], "complete": ["complete", "success"], "escalated": ["escalated", "danger"] }, "attempts": { "layout": "timeline", "order": "newest-first" } } },
+    { "id": "icon-grouped", "label": "Icon chips, attempts grouped by failure", "notes": "Status chip with an icon per status; attempts grouped under each failure (CI red, crashed …), with the ladder still to try under them. Shows best what was tried for which problem.", "shots": ["shots/grouped-desktop.png"],
+      "data": { "icon": "refresh", "label": "fixing", "tone": "warning", "shape": "pill", "icons": true, "statuses": { "running": ["building", "accent"], "fixing": ["fixing", "warning"], "landing": ["landing", "accent"], "landed": ["landed", "success"], "complete": ["complete", "success"], "escalated": ["escalated", "danger"] }, "attempts": { "layout": "grouped", "order": "newest-first", "showLadder": true } } }
+  ]
+}

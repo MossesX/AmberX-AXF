@@ -31,7 +31,7 @@
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "route": "GET /state", "id": "state", "title": "The whole Notifications panel: master, apps, quiet hours, every type", "readOnly": true },
+      { "route": "GET /state", "id": "state", "title": "The whole Notifications panel: master, apps, quiet hours, every type", "description": "Reads the Notifications panel in one answer: the master switch, the console / AmberX / web push app switches, quiet hours, and every notification type with its channels, priority and whether it is on.", "readOnly": true },
       { "route": "GET /types", "id": "types", "title": "List every notification type and what happens to it now", "readOnly": true },
       { "route": "GET /check", "id": "check", "title": "What happens to one notification type right now, and why", "readOnly": true, "input": { "type": "object", "properties": { "type": { "type": "string", "description": "the type id, e.g. ci.failed" } }, "required": ["type"], "additionalProperties": false } },
       { "route": "GET /recent", "id": "recent", "title": "What the gate sent or blocked lately", "readOnly": true },

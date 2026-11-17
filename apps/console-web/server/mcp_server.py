@@ -1096,7 +1096,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
-                         "console_control_scroll", "console_control_plugin", "console_control_voice")
+                         "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings")
 ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):")
 
 
@@ -1215,6 +1215,31 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         """Turn a console plugin on or off (id, folder or name). Core plugins refuse; a plugin another enabled one needs
         refuses unless force. The answer names the effects: who stops working, what it needs that is off."""
         return await go({"verb": "plugin.enable" if enabled else "plugin.disable", "address": plugin, "reason": reason, **({"options": {"force": True}} if force else {})})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_plugin_settings(plugin: str, open: bool = False, set: dict[str, Any] | None = None, enabled: bool | None = None, reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """One console plugin's settings (id, folder or name): with no other argument, its Settings → Plugins sub-tab,
+        the gear on its screen, on/off and every setting in the tab. open=true opens that sub-tab in the open console
+        (the same as pressing the plugin's settings gear); set={key: value} changes settings in it; enabled turns the
+        plugin on or off. Same as GET /api/console-control/plugins/<id>/settings and `axf console plugin-settings`."""
+        import console_control as cc  # noqa: PLC0415 — the same module REST uses (reads the static inventory)
+        try:
+            st = cc.plugin_settings_state(plugin)
+        except cc.ControlError as e:
+            raise ToolError(f"{e.code}: {e.message}") from e
+        done: list[dict[str, Any]] = []
+        if enabled is not None:
+            done.append(await go({"verb": "plugin.enable" if enabled else "plugin.disable", "address": plugin, "reason": reason}))
+        for key, value in (set or {}).items():
+            spec = next((x for x in st.get("settings") or [] if x.get("key") == key or x.get("address") == key), None)
+            if spec is None:
+                raise ToolError(f"not_found: {st.get('label')} has no setting {key}")
+            done.append(await go({"verb": "set", "address": spec["address"], "value": value, "reason": reason, "to": to}))
+        if open:
+            if not st.get("tab"):
+                raise ToolError(f"not_found: {st.get('label')} has no settings sub-tab")
+            done.append(await go({"verb": "open", "address": st["tab"]["address"], "to": to}))
+        return {**st, **({"done": done} if done else {})}
 
     @mcp.tool(annotations=WRITE)
     async def console_control_voice(text: str, to: str = "recent") -> dict[str, Any]:
