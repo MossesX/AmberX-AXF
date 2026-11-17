@@ -826,8 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:10 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
-- 2026-11-17 19:10 UTC · `auto-recover-stuck-builds` note (all) · watchdog
 - 2026-11-17 19:10 UTC · `decision-dialog-ui-review-other` note (all) · watchdog
 - 2026-11-17 19:10 UTC · `console-app-part-2-native-floating-2` note (all) · watchdog
 - 2026-11-17 19:10 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
@@ -1226,6 +1224,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:37 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · Brett
 - 2026-11-17 20:37 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · Brett
 - 2026-11-17 20:37 UTC · `rebuild-fresh-main-phone-connect-small` → pending (all) · Brett
+- 2026-11-17 20:38 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · console
+- 2026-11-17 20:38 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 
 ## Token passes (log)
 

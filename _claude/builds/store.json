@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7839,
- "updatedAt": "2026-11-17T20:38:01.301Z",
+ "rev": 7840,
+ "updatedAt": "2026-11-17T20:38:10.948Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268143,7 +268143,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -268151,7 +268151,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T20:37:58.618Z",
+   "updatedAt": "2026-11-17T20:38:05.883Z",
    "builtAt": "",
    "notes": [
     {
@@ -268189,6 +268189,10 @@
     {
      "text": "Brett (Nov 17, update): Fable IS allowed — use Fable or whatever model it takes to fix the old Phone Connect code (PR #712) and get it merged, running and the APK built. Still reuse the old code, no fresh rebuild.",
      "at": "2026-11-17T20:37:41.104Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T20:38:05.883Z"
     }
    ],
    "approvals": [],
@@ -268206,7 +268210,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-17T16:53:28.041Z",
+    "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
     "session": "",
@@ -268234,7 +268238,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on hulu0241 stopped on its own with 25 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-17T16:55:15.937Z",
     "planned": {
@@ -268931,7 +268935,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277850,7 +277854,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -277858,7 +277862,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:37:13.486Z",
+   "updatedAt": "2026-11-17T20:38:09.526Z",
    "builtAt": "",
    "notes": [
     {
@@ -277964,6 +277968,10 @@
     {
      "text": "Claude account: hulu0241 (axf-guided-live-demo-test-watch-orchestrator--joey, shared account login)",
      "at": "2026-11-17T20:33:26.763Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s14): session was killed (exit 143): step s14 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T20:38:09.526Z"
     }
    ],
    "approvals": [
@@ -277999,13 +278007,13 @@
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 1,
+    "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T20:32:04.340Z",
+     "at": "2026-11-17T20:38:04.713Z",
      "exit": 143,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 13,
+     "stepsLeft": 11,
      "account": "",
      "session": "",
      "phase": ""
@@ -278018,7 +278026,7 @@
      "note": "Split by Claude into 24 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "session was killed (exit 143): step s14 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -278072,6 +278080,20 @@
      "notified": "",
      "session": "",
      "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3)."
+    },
+    {
+     "at": "2026-11-17T20:38:04.713Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s14",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session was killed (exit 143): step s14 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -278417,10 +278439,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T20:38:09.526Z",
+     "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T19:39:27.698Z"
+     "updatedAt": "2026-11-17T20:38:09.530Z"
     },
     {
      "id": "s15",
@@ -278678,7 +278700,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
