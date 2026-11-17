@@ -50,7 +50,6 @@
  *   axf <word> …                 a word a plugin's "cli" map names besides its folder (e.g. `axf watchdog status|scan|run|set`
  *                               from the Build orchestrator): found by scanning plugin manifests, never by folder name
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
- *   axf claude-link tail|state|clear|open|pause|resume|filter [--follow] [--kind a,b] [--q words]   the Terminal's Claude link (axf-plugin:console-terminal)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords

@@ -4,7 +4,7 @@
  * empty, against `vite preview` of dist/ with the Claude link stream answered from a fixed SSE fixture (no VPS, no
  * axHub). Each shot opens the tab through console-control (`view:terminal/tab:claude-link`), like the deep link does.
  *
- *   node scripts/claude-link-shots.mjs <out-dir>        (build first: npm run build)
+ *   node apps/console-web/plugins/console-terminal/scripts/claude-link-shots.mjs <out-dir>   (build the console first: npm run build)
  *   CL_SHOTS_PORT=7098 · CL_SHOTS_ONLY=dense-live,cards-live,… · PW_CHROMIUM=<chromium path>
  */
 import { spawn } from 'node:child_process';
@@ -14,10 +14,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 
-const APP = join(dirname(fileURLToPath(import.meta.url)), '..');
+const APP = join(dirname(fileURLToPath(import.meta.url)), '../../..'); // apps/console-web
 const ROOT = join(APP, '../..');
 const OUT = process.argv[2];
-if (!OUT) { console.error('usage: node scripts/claude-link-shots.mjs <out-dir>'); process.exit(2); }
+if (!OUT) { console.error('usage: node apps/console-web/plugins/console-terminal/scripts/claude-link-shots.mjs <out-dir>'); process.exit(2); }
 const PORT = Number(process.env.CL_SHOTS_PORT) || 7098;
 let playwright;
 for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }
@@ -46,11 +46,13 @@ const EVENTS = [
 ];
 const counts = (list) => Object.fromEntries(['launch', 'exit', 'account', 'mcp', 'axhub', 'connect', 'disconnect', 'error'].map((k) => [k, list.filter((e) => e.kind === k).length]));
 const STATE = (list) => ({ $axf: 'claude-link-state@1', connected: true, since: T0, why: 'axhub.amberxai.com answered again', last: list[list.length - 1] ?? null, counts: counts(list), seq: list.length, clearedAt: 0, size: 2000, held: list.length, subscribers: 1, view: { paused: false, kinds: [], q: '', rev: 0 } });
+// theme-ok-begin: the Terminal's saved settings as fixture data (numbers here are settings values, not styles)
 const SETTINGS = (layout) => ({ $axf: 'terminal-settings@1', idleMinutes: 60, moshKeepMinutes: 30, fontSize: 14, fontSizePhone: 0, chainTextSize: 100, copyOnSelect: false, pasteWarn: true, mouseDefault: false, moshDefault: false, user: '', showHubRuns: false, showHeadless: false,
   vps: { host: '', port: 22, user: 'root' }, windowsLook: true, mica: true, toolbar: true, scheme: 'app', fontFamily: '', lineHeight: 1.15, cursorStyle: 'bar', cursorBlink: true, scrollback: 10000, padding: 1, bell: 'visual', closeConfirm: true,
   startup: 'none', newTab: 'picker', tabWidth: 'equal', claudeProfiles: [{ id: 'default', name: 'Default', model: '', permissionMode: 'default', flags: [], cwd: '', prompt: '', icon: 'sparkles', color: '', connection: 'console' }], defaultClaudeProfile: 'default',
   persistTabs: true, splitDefault: 'side', chainSpeed: 'normal', showChain: true, sessionsNav: false, newSession: 'quiet', sshKey: false, claudeToken: false, publicKey: '',
   claudeLinkBuffer: 2000, claudeLinkKinds: [], claudeLinkAutoScroll: true, claudeLinkDetail: false, claudeLinkLayout: layout });
+// theme-ok-end
 const sse = (list) => `retry: 3000\nevent: hello\ndata: ${JSON.stringify(STATE(list))}\n\n${list.map((e) => `id: ${e.id}\nevent: link\ndata: ${JSON.stringify(e)}\n\n`).join('')}`;
 const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 

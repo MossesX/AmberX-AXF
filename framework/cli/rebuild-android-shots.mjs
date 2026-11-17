@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/** rebuild-android-shots: files Android before / after screenshots into a rebuild's folder (rebuild log rule). */
 // rebuild-android-shots — files Android before/after screenshots into a rebuild's folder (rebuild log rule).
 //
 //   node framework/cli/rebuild-android-shots.mjs <captured dir> <rebuild dir> [--base sha] [--head sha] [--run url]
