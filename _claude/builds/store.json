@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8142,
- "updatedAt": "2026-11-17T22:08:32.677Z",
+ "rev": 8143,
+ "updatedAt": "2026-11-17T22:09:12.491Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259435,7 +259435,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -259443,7 +259443,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T22:06:07.129Z",
+   "updatedAt": "2026-11-17T22:09:09.958Z",
    "builtAt": "",
    "notes": [
     {
@@ -259501,6 +259501,10 @@
     {
      "text": "Session on hulu0241 ended (exit 3) with 15 steps left: back in the Queue (run 1).",
      "at": "2026-11-17T22:05:57.394Z"
+    },
+    {
+     "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T22:09:09.958Z"
     }
    ],
    "approvals": [],
@@ -259527,9 +259531,9 @@
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 1,
+    "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T21:42:11.765Z",
+     "at": "2026-11-17T22:09:09.103Z",
      "exit": null,
      "outcome": "requeued",
      "reason": "crash",
@@ -259562,6 +259566,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T22:09:09.103Z",
+     "buildId": "banner-widget-shapes-plus-change-icon",
+     "phase": "",
+     "step": "s5",
+     "cause": "tmux-missing",
+     "exit": null,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3)."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -259686,10 +259706,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T21:42:15.589Z",
-     "rev": 2,
+     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T22:09:09.958Z",
+     "rev": 3,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T21:42:15.591Z"
+     "updatedAt": "2026-11-17T22:09:09.959Z"
     },
     {
      "id": "s6",
@@ -260054,7 +260074,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
