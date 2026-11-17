@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7878,
- "updatedAt": "2026-11-17T20:53:14.406Z",
+ "rev": 7879,
+ "updatedAt": "2026-11-17T20:53:25.505Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275065,7 +275065,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:53:10.839Z",
+   "updatedAt": "2026-11-17T20:53:13.754Z",
    "builtAt": "",
    "notes": [
     {
@@ -275179,6 +275179,10 @@
     {
      "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-17T20:53:10.839Z"
+    },
+    {
+     "text": "Watchdog fixed Separate settings per plugin + reset confirm dialog (step s18): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:53:13.754Z"
     }
    ],
    "approvals": [
@@ -275265,6 +275269,20 @@
      "buildId": "separate-settings-per-plugin-reset",
      "phase": "",
      "step": "s4",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:53:08.472Z",
+     "buildId": "separate-settings-per-plugin-reset",
+     "phase": "",
+     "step": "s18",
      "cause": "exit-clean",
      "exit": 0,
      "action": "requeue",
@@ -275744,7 +275762,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277884,7 +277902,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -277892,7 +277910,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:51:29.649Z",
+   "updatedAt": "2026-11-17T20:53:17.272Z",
    "builtAt": "",
    "notes": [
     {
@@ -278022,6 +278040,10 @@
     {
      "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s18): session was killed (exit 143): step s18 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T20:51:19.565Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s19): session was killed (exit 143): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T20:53:17.272Z"
     }
    ],
    "approvals": [
@@ -278057,13 +278079,13 @@
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 1,
+    "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T20:32:04.340Z",
+     "at": "2026-11-17T20:53:15.963Z",
      "exit": 143,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 13,
+     "stepsLeft": 6,
      "account": "",
      "session": "",
      "phase": ""
@@ -278076,7 +278098,7 @@
      "note": "Split by Claude into 24 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "session was killed (exit 143): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -278130,6 +278152,20 @@
      "notified": "",
      "session": "",
      "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3)."
+    },
+    {
+     "at": "2026-11-17T20:53:15.963Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s19",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session was killed (exit 143): step s19 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -278599,10 +278635,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T20:53:17.272Z",
+     "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T19:39:27.698Z"
+     "updatedAt": "2026-11-17T20:53:17.274Z"
     },
     {
      "id": "s20",
@@ -278736,7 +278772,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
