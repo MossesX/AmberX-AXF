@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
-import { Icon } from './Icon';
+import { Icon, IconOverride } from './Icon';
+import { widgetShapeItemProps, widgetShapeOf } from './widgetShape';
 import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { AppMenuDropdown } from './AppMenu';
@@ -100,7 +101,8 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const arrange = useArrange('toolbar', widgets);
   const brand = useBrandPlace('toolbar');
   const brandHost = brandHostProps(brand);
-  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
+  // widget-shape@1: the same per-widget shape and icon override as on a banner (components/widgetShape.ts)
+  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin, ...widgetShapeItemProps(rt, w.key) }, <IconOverride icon={widgetShapeOf(rt, w.key).icon}><WidgetView type={w.type} id={w.id} host="toolbar" /></IconOverride>);
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
   const collapsible = tb.data.collapsible === true;
   const collapsed = rt.toolbarCollapsed();

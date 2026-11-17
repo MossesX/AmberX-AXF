@@ -285,12 +285,12 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
    body keeps its box, so an attached widget never draws over or clips a neighbour whatever its shape (attached things snap). */
 :is(.fx-banner__item, .fx-toolbar__widget) { --fx-widget-shape-radius: var(--fx-widget-shape-circle); --fx-widget-shape-clip: none; --fx-widget-icon: own; }
 .fx-banner__item > .fx-banner__badge:where(.is-icon, .is-dot), .fx-banner__item[data-fx-wsize='icon'] > .fx-widget-theme,
-:is(.fx-banner__item, .fx-toolbar__widget) > [data-fx-shaped] { border-radius: var(--fx-widget-shape-radius); clip-path: var(--fx-widget-shape-clip); }
+:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-shaped] > :not(.fx-banner__pop) { border-radius: var(--fx-widget-shape-radius); clip-path: var(--fx-widget-shape-clip); }
 /* the outline-drawn shapes get room so the clip never bites the glyph: a pill grows its ends, a hexagon or custom outline its sides */
-:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-wshape='pill'] > [data-fx-shaped] { padding-inline: var(--fx-dens-gap-md); }
-:is(.fx-banner__item, .fx-toolbar__widget):where([data-fx-wshape='hexagon'], [data-fx-wshape='custom']) > [data-fx-shaped] { padding-inline: var(--fx-dens-gap-sm); }
+:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-shaped][data-fx-wshape='pill'] > :not(.fx-banner__pop) { padding-inline: var(--fx-dens-gap-md); }
+:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-shaped]:where([data-fx-wshape='hexagon'], [data-fx-wshape='custom']) > :not(.fx-banner__pop) { padding-inline: var(--fx-dens-gap-sm); }
 /* a clipped body would cut its own focus ring: draw it inside */
-:is(.fx-banner__item, .fx-toolbar__widget):where([data-fx-wshape='hexagon'], [data-fx-wshape='custom']) > [data-fx-shaped]:focus-visible { outline-offset: calc(var(--fx-border-w) * -3); }
+:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-shaped]:where([data-fx-wshape='hexagon'], [data-fx-wshape='custom']) > :not(.fx-banner__pop):focus-visible { outline-offset: calc(var(--fx-border-w) * -3); }
 .fx-banner__more-btn { position: relative; }
 .fx-banner__more { position: fixed; z-index: 70; display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-md); min-width: calc(var(--fx-space) * 20); max-width: calc(100vw - var(--fx-space) * 2); max-height: 70vh; overflow-y: auto; padding: var(--fx-dens-gap-lg); font-size: var(--fx-type-root-sm); }
 .fx-banner__more-item { display: flex; align-items: center; min-height: var(--fx-row-h); max-width: 100%; }

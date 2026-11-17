@@ -9,7 +9,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { BANNER_SIDES, type PlacedAttachment } from '../../core/engines/banner';
-import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHAPES, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, WIDGET_ICON_OWN, bannerWidgetCapCss, flattenCustomPath, overflowWidgets, widgetShapeTokens, type BannerWidgetShape, type BannerWidgetShow, type BannerWidgetSize, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
+import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHAPES, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, WIDGET_ICON_OWN, bannerWidgetCapCss, flattenCustomPath, overflowWidgets, type BannerWidgetShape, type BannerWidgetShow, type BannerWidgetSize, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
 import { BANNER_WIDGETS_DIALOG, type AxfRuntime, type BannerWidget } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Banner } from './Banner';
@@ -18,6 +18,7 @@ import { Button, IconButton } from './Controls';
 import { Checkbox, Note, SelectField, Switch, TextField } from './Forms';
 import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
+import { widgetShapeAttrs, widgetShapeOf } from './widgetShape';
 
 const SIZE_LABEL: Record<BannerWidgetSize, string> = { icon: 'Icon only', compact: 'Compact', normal: 'Normal', wide: 'Wide' };
 const SHOW_LABEL: Record<BannerWidgetShow, string> = { auto: 'Its own mix', both: 'Icon and text', icon: 'Icon only', text: 'Text only', number: 'Number only' };
@@ -33,9 +34,9 @@ const CUSTOM_PATH_EXAMPLE = 'M50 0 L100 50 L50 100 L0 50 Z';
 export function bannerItemAttrs(rt: AxfRuntime, key: string): Record<string, unknown> {
   const v = rt.bannerWidgetView(key);
   const max = bannerWidgetCapCss(v.cap);
-  const shape = rt.bannerWidgetShape(key);
-  const style: Record<string, string> = { ...(max ? { maxWidth: max } : {}), ...(shape.explicit ? widgetShapeTokens(shape) : {}) };
-  return { 'data-fx-wsize': v.size, 'data-fx-wshow': v.show === 'auto' ? undefined : v.show, 'data-fx-wshape': shape.shape, ...(Object.keys(style).length ? { style } : {}) };
+  const shape = widgetShapeAttrs(widgetShapeOf(rt, key));
+  const style: Record<string, string> = { ...(max ? { maxWidth: max } : {}), ...shape.style };
+  return { 'data-fx-wsize': v.size, 'data-fx-wshow': v.show === 'auto' ? undefined : v.show, ...shape.attrs, ...(Object.keys(style).length ? { style } : {}) };
 }
 
 /** Shape, custom outline and icon override for one widget (widget-shape@1). */
