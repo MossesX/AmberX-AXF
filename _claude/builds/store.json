@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7642,
- "updatedAt": "2026-11-17T19:19:21.897Z",
+ "rev": 7643,
+ "updatedAt": "2026-11-17T19:19:33.099Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247189,7 +247189,7 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T19:19:18.373Z",
+   "updatedAt": "2026-11-17T19:19:21.613Z",
    "builtAt": "",
    "notes": [
     {
@@ -247263,6 +247263,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-17T19:19:18.373Z"
+    },
+    {
+     "text": "Watchdog fixed Every plugin screen gets a settings gear (step s22-21): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T19:19:21.613Z"
     }
    ],
    "approvals": [],
@@ -247324,6 +247328,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T19:19:09.177Z",
+     "buildId": "every-plugin-screen-gets-a-settings-gear",
+     "phase": "Phase 1",
+     "step": "s22-21",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "hulu0241",
+     "notified": "2026-11-17T19:19:24.049Z",
+     "session": "axf-every-plugin-screen-gets-a-settings-gear--gina",
+     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -247881,7 +247901,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
