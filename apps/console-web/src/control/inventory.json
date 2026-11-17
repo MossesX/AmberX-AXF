@@ -4,8 +4,8 @@
   "counts": {
     "views": 65,
     "nav": 16,
-    "tabGroups": 27,
-    "tabs": 78,
+    "tabGroups": 28,
+    "tabs": 80,
     "settingsTabs": 71,
     "settings": 89,
     "functions": 275,
@@ -1354,13 +1354,34 @@
       ]
     },
     {
+      "address": "view:build-orchestrator/tab:build-orchestrator.build",
+      "id": "build-orchestrator.build",
+      "dynamic": false,
+      "view": "build-orchestrator",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/attempts.tsx",
+      "line": 64,
+      "tabs": [
+        {
+          "address": "view:build-orchestrator/tab:build-orchestrator.build=steps",
+          "value": "steps",
+          "label": "Steps"
+        },
+        {
+          "address": "view:build-orchestrator/tab:build-orchestrator.build=attempts",
+          "value": "attempts",
+          "label": "Attempts"
+        }
+      ]
+    },
+    {
       "address": "view:build-orchestrator/tab:build-orchestrator.tabs",
       "id": "build-orchestrator.tabs",
       "dynamic": false,
       "view": "build-orchestrator",
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/ui.tsx",
-      "line": 115,
+      "line": 116,
       "tabs": []
     },
     {

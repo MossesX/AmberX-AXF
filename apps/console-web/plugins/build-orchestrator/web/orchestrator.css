@@ -7,6 +7,10 @@ button.oc-model { cursor: pointer }
 .oc-badge.is-queued { color: var(--fx-info) }
 .oc-badge.is-waiting, .oc-badge.is-blocked { color: var(--fx-warning) }
 .oc-badge.is-archived { color: var(--fx-muted) }
+.oc-badge.is-fixing { color: var(--fx-warning) }
+.oc-badge.is-landing { color: var(--fx-accent) }
+.oc-badge.is-landed, .oc-badge.is-built, .oc-badge.is-complete { color: var(--fx-success) }
+.oc-badge.is-escalated, .oc-badge.is-failed { color: var(--fx-danger) }
 .oc-count { margin-left: var(--fx-dens-gap-md); padding: 0 var(--fx-dens-gap-lg); border-radius: var(--fx-radius-lg); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-accent); font-size: var(--fx-type-root-xs) }
 .oc-gate { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl) }
 .oc-flag { font-size: var(--fx-type-root-xs); color: var(--fx-muted) }
