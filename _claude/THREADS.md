@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:56 UTC · `prompting-engine-control-panel-to-create` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `land-project-duplicate-boilerplate` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `land-overlay-preview-ui-review-resolve` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `console-look-becomes-default-axhub-skin` note (all) · watchdog
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:38 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
 - 2026-11-17 21:38 UTC · `banner-widget-shapes-plus-change-icon` → running, note (all) · orchestrator
 - 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` s16 done (all) · orchestrator
+- 2026-11-17 21:38 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 
 ## Token passes (log)
 

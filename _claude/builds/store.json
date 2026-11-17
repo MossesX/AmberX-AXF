@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8050,
- "updatedAt": "2026-11-17T21:38:56.734Z",
+ "rev": 8051,
+ "updatedAt": "2026-11-17T21:39:06.701Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268436,6 +268436,10 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:38:25.149Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T21:38:51.643Z"
     }
    ],
    "approvals": [
@@ -269197,7 +269201,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -282439,7 +282443,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T21:38:17.497Z",
+   "updatedAt": "2026-11-17T21:38:47.165Z",
    "builtAt": "",
    "notes": [
     {
@@ -282477,6 +282481,14 @@
     {
      "text": "Brett: only ONE toolbar settings interface. Every toolbar uses the shared default (with its full tab group restored); delete every other toolbar settings asset (per-app copies settings/chrome-toolbar-<app> and any variants), move any picks pointing at them back to the shared one, and change the chrome-settings check/backfill so it no longer requires per-app toolbar copies. Controls still apply to the toolbar it was opened from.",
      "at": "2026-11-17T21:38:17.497Z"
+    },
+    {
+     "text": "Brett (final): there is nothing to select. Remove the interface picker for settings windows entirely; every settings window just uses the one default interface. Editing that interface's own look is locked (greyed out behind the 'Edit this interface' switch, off by default).",
+     "at": "2026-11-17T21:38:41.843Z"
+    },
+    {
+     "text": "Brett: in the one shared settings interface, every control that edits the settings interface itself (its own look/layout) is greyed out and locked by default, behind an 'Edit this interface' switch/checkbox. Flip it on to enable them; off greys them again. Controls for the toolbar/banner it was opened from stay live.",
+     "at": "2026-11-17T21:38:47.165Z"
     }
    ],
    "approvals": [],
@@ -282874,7 +282886,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
