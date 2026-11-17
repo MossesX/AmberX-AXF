@@ -56,6 +56,9 @@ import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAn
 import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
+import { EDIT_UI_INITIAL, editUiStateFrom, editUiStateView, reduceEditUi, resolveOwner, targetKey, validateTarget, type EditUiEvent, type EditUiState, type OwnerContext } from '../core/engines/edit-ui';
+import { emptyUndo, pushEdit, redo, revertStep, undo, undoHistory, undoSummary } from '../core/engines/edit-ui-undo';
+import { editUiRegistry } from '../core/engines/edit-ui-rules.mjs';
 
 const root = new URL('..', import.meta.url).pathname;
 const assetsDir = join(root, 'assets');
@@ -2551,6 +2554,129 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       shades5: shadesOf('#3366CC', 5), shades4: shadesOf('#3366cc', 4), shadesNotHex: shadesOf('red', 3),
       skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
       sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
+    },
+  });
+}
+
+// Edit UI (edit-ui@1, spec/EDIT-UI.md; core/engines/edit-ui.ts + edit-ui-undo.ts): target validation, owner resolution
+// under every context, the gate replayed from off, and the undo stack (push, undo, redo, a commit after undo drops the
+// redo tail, the cap, a failed re-apply). `ctx` specs are plain data: check-edit-ui.mts rebuilds the same OwnerContext.
+{
+  type CtxSpec = { dataSources?: OwnerContext['dataSources']; hideableKinds?: string[]; denied?: string[]; locked?: boolean; owners?: string[]; missingAssets?: string[] };
+  const ctxFrom = (c: CtxSpec): OwnerContext => ({
+    ...(c.dataSources ? { dataSources: c.dataSources } : {}), ...(c.hideableKinds ? { hideableKinds: c.hideableKinds } : {}), ...(c.locked !== undefined ? { locked: c.locked } : {}), ...(c.owners ? { owners: c.owners } : {}),
+    ...(c.denied ? { can: (p: string) => !c.denied!.includes(p) } : {}),
+    ...(c.missingAssets ? { hasAsset: (t: string, id: string) => !c.missingAssets!.includes(`${t}/${id}`) } : {}),
+  });
+  const base: CtxSpec = {
+    dataSources: { builds: { writable: true }, logs: { writable: false, reason: 'no-writer', detail: 'logs are read-only' }, secrets: { writable: true, permission: 'secrets.write' } },
+    denied: ['secrets.write'],
+  };
+  const targets: Record<string, unknown> = {
+    toolbarSize: { kind: 'property', assetType: 'toolbar', assetId: 'main', prop: 'size' },
+    tabColour: { kind: 'property', assetType: 'tab-group', assetId: 'settings', instance: 'settings.tabs', prop: 'colour' },
+    navIcon: { kind: 'property', assetType: 'nav-menu', assetId: 'main', prop: 'icon', path: 'sections.0.items.1.icon' },
+    navOrder: { kind: 'property', assetType: 'nav-menu', assetId: 'main', prop: 'order', path: 'sections.0.items.1' },
+    bannerHide: { kind: 'property', assetType: 'banner', assetId: 'top', prop: 'hide' },
+    widgetHide: { kind: 'property', assetType: 'widget', assetId: 'clock', prop: 'hide' },
+    cardHide: { kind: 'property', assetType: 'card', assetId: 'builds', prop: 'hide' },
+    buttonLabel: { kind: 'property', assetType: 'button', assetId: 'primary', prop: 'label' },
+    themeAccent: { kind: 'token', slot: 'tokens.theme', path: 'accent' },
+    styleRadius: { kind: 'token', slot: 'tokens.style', path: 'radius', assetId: 'soft-studio' },
+    cell: { kind: 'cell', source: 'builds', record: 'b1', field: 'title' },
+    cellReadOnly: { kind: 'cell', source: 'logs', record: 'l1', field: 'line' },
+    cellNoSource: { kind: 'cell', source: 'nothing', record: 'x', field: 'y' },
+    cellNoPermission: { kind: 'cell', source: 'secrets', record: 's1', field: 'value' },
+    columnLabel: { kind: 'column', grid: 'builds.queue', column: 'title', prop: 'label' },
+    columnHide: { kind: 'column', grid: 'builds.queue', column: 'cost', prop: 'hide' },
+    columnWidth: { kind: 'column', grid: 'builds.queue', column: 'cost', prop: 'width' },
+    menuLabel: { kind: 'text', assetType: 'app-menu', assetId: 'main', path: 'menus.0.items.2.label' },
+    recordTitle: { kind: 'text', source: 'builds', record: 'b1', field: 'title' },
+    codeText: { kind: 'text', id: 'button:builds.start' },
+    // bad ones
+    badKind: { kind: 'sprite', id: 'x' },
+    badProp: { kind: 'property', assetType: 'toolbar', assetId: 'main', prop: 'weight' },
+    badColumnProp: { kind: 'column', grid: 'g', column: 'c', prop: 'colour' },
+    badSlot: { kind: 'token', slot: 'tokens.fonts', path: 'body' },
+    missingField: { kind: 'cell', source: 'builds', record: 'b1' },
+    textNoOwner: { kind: 'text' },
+    notObject: 'toolbar',
+  };
+  const ctxs: Record<string, CtxSpec> = {
+    base,
+    locked: { ...base, locked: true },
+    noLookPermission: { ...base, denied: ['assets.swap'] },
+    hideNotLanded: { ...base, owners: ['asset-token', 'asset-property', 'data'] },
+    noDataOwner: { ...base, owners: ['asset-token', 'asset-property', 'hidden-assets'] },
+    missingAsset: { ...base, missingAssets: ['toolbar/main', 'app-menu/main'] },
+    narrowHide: { ...base, hideableKinds: ['toolbar'] },
+    empty: {},
+  };
+  const owners = Object.fromEntries(Object.entries(ctxs).map(([c, spec]) => [c, Object.fromEntries(Object.entries(targets).map(([k, t]) => [k, resolveOwner(t, ctxFrom(spec))]))]));
+  const validation = Object.fromEntries(Object.entries(targets).map(([k, t]) => [k, validateTarget(t)]));
+  const keys = Object.fromEntries(Object.entries(validation).flatMap(([k, v]) => (v.ok ? [[k, targetKey(v.target)]] : [])));
+
+  // The gate: one script of events replayed from off; every step records what the reducer said.
+  const own = (k: string) => resolveOwner(targets[k], ctxFrom(base));
+  const tgt = (k: string) => (validateTarget(targets[k]) as { target: never }).target;
+  const script: EditUiEvent[] = [
+    { type: 'ctrl-down' },                                                   // off: Ctrl does nothing
+    { type: 'begin', target: tgt('toolbarSize'), owner: own('toolbarSize'), before: 32 }, // off: refused
+    { type: 'enable' },                                                      // armed
+    { type: 'begin', target: tgt('toolbarSize'), owner: own('toolbarSize'), before: 32 }, // armed: not held
+    { type: 'ctrl-down' },                                                   // held
+    { type: 'begin', target: tgt('codeText'), owner: own('codeText'), before: 'Start' },  // read-only: refused, still held
+    { type: 'begin', target: tgt('toolbarSize'), owner: own('toolbarSize'), before: 32 }, // editing (ctrl)
+    { type: 'begin', target: tgt('cell'), owner: own('cell'), before: 'a' },  // busy
+    { type: 'commit', after: 40 },                                           // op → held
+    { type: 'begin', target: tgt('cell'), owner: own('cell'), before: 'Old title' },
+    { type: 'commit', after: 'Old title' },                                  // no-op → held, nothing recorded
+    { type: 'begin', target: tgt('menuLabel'), owner: own('menuLabel'), before: 'Builds' },
+    { type: 'cancel' },                                                      // Esc: cancelled → held
+    { type: 'begin', target: tgt('menuLabel'), owner: own('menuLabel'), before: 'Builds' },
+    { type: 'ctrl-up' },                                                     // Ctrl released while editing: cancelled → armed
+    { type: 'commit', after: 'Queue' },                                      // nothing open: refused
+    { type: 'long-press', target: tgt('cell'), owner: own('cell'), before: 'Old title' }, // touch gate → editing
+    { type: 'ctrl-up' },                                                     // a touch edit is not on Ctrl: ignored
+    { type: 'commit', after: 'New title' },                                  // op → armed (touch)
+    { type: 'long-press', target: tgt('cell'), owner: own('cell'), before: 'New title' },
+    { type: 'window-blur' },                                                 // blur cancels even a touch edit
+    { type: 'ctrl-down' },
+    { type: 'begin', target: tgt('themeAccent'), owner: own('themeAccent'), before: '#ff8800' },
+    { type: 'commit', after: { hex: '#000' } as never },                     // not a scalar: refused, still editing
+    { type: 'disable' },                                                     // setting off: cancelled → off
+    { type: 'ctrl-down' },                                                   // off again: nothing
+    { type: 'long-press', target: tgt('cell'), owner: own('cell'), before: 'x' }, // off: refused
+  ];
+  let state: EditUiState = EDIT_UI_INITIAL;
+  const gate = script.map((event) => { const r = reduceEditUi(state, event); state = r.state; return { event, ...r }; });
+
+  // The undo stack: ops out of the gate above, then undo / redo / a commit after undo / the cap / a failed re-apply.
+  const ops = gate.flatMap((g) => (g.op ? [g.op] : []));
+  const at = (n: number) => `2026-11-17T15:00:${String(n).padStart(2, '0')}.000Z`;
+  let stack = emptyUndo();
+  const pushes = ops.map((op, i) => { const r = pushEdit(stack, op, at(i), 'brett'); stack = r.stack; return { entry: r.entry, summary: undoSummary(stack) }; });
+  const noop = pushEdit(stack, { ...ops[0]!, after: ops[0]!.before }, at(9));
+  const u1 = undo(stack); const u2 = undo(u1.stack); const u3 = undo(u2.stack);
+  const r1 = redo(u2.stack);
+  const afterUndo = pushEdit(u1.stack, { ...ops[1]!, before: 'Z', after: 'Y' }, at(10)); // drops the redo tail
+  const r2 = redo(afterUndo.stack);
+  let capped = emptyUndo();
+  for (let i = 0; i < 5; i++) capped = pushEdit(capped, { ...ops[0]!, before: i, after: i + 1 }, at(20 + i), undefined, 3).stack;
+  const reverted = { undo: revertStep(u1.stack, 'undo'), redo: revertStep(r1.stack, 'redo') };
+
+  write('edit-ui.json', {
+    registry: editUiRegistry(),
+    initial: { off: EDIT_UI_INITIAL, fromSetting: { on: editUiStateFrom(true), off: editUiStateFrom(false) } },
+    targets, validation, keys,
+    contexts: ctxs, owners,
+    gate: { script, steps: gate, view: editUiStateView(state, undoSummary(stack)) },
+    undo: {
+      ops, pushes, noop,
+      undo1: u1, undo2: u2, undo3: u3, redo1: r1, afterUndo, redoAfterPush: r2,
+      history: undoHistory(afterUndo.stack),
+      capped: { stack: capped, summary: undoSummary(capped) },
+      reverted,
     },
   });
 }

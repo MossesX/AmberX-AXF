@@ -1,0 +1,3211 @@
+{
+  "registry": {
+    "$axf": "edit-ui@1",
+    "frames": {
+      "target": "edit-ui-target@1",
+      "op": "edit-ui-op@1",
+      "undo": "edit-ui-undo@1",
+      "state": "edit-ui-state@1"
+    },
+    "modes": [
+      "off",
+      "armed",
+      "held",
+      "editing"
+    ],
+    "gates": [
+      "ctrl",
+      "touch"
+    ],
+    "events": [
+      "enable",
+      "disable",
+      "ctrl-down",
+      "ctrl-up",
+      "window-blur",
+      "long-press",
+      "begin",
+      "commit",
+      "cancel"
+    ],
+    "targetKinds": [
+      "text",
+      "cell",
+      "column",
+      "property",
+      "token"
+    ],
+    "props": [
+      "size",
+      "colour",
+      "icon",
+      "order",
+      "hide",
+      "label"
+    ],
+    "columnProps": [
+      "label",
+      "width",
+      "order",
+      "hide"
+    ],
+    "tokenProps": [
+      "size",
+      "colour"
+    ],
+    "hideProps": [
+      "hide"
+    ],
+    "owners": [
+      "asset-token",
+      "asset-property",
+      "hidden-assets",
+      "data",
+      "read-only"
+    ],
+    "reasons": [
+      "off",
+      "not-held",
+      "busy",
+      "bad-target",
+      "unknown-asset",
+      "unknown-source",
+      "no-writer",
+      "code-text",
+      "locked",
+      "permission",
+      "owner-unavailable",
+      "nothing-to-undo",
+      "nothing-to-redo"
+    ],
+    "hide": {
+      "build": "rebuild-fresh-main-hide-any-asset",
+      "by": "edit-ui"
+    },
+    "limits": {
+      "undoMax": 100,
+      "textMax": 4000
+    },
+    "lookPermission": "assets.swap",
+    "actions": [
+      "editui.on",
+      "editui.off",
+      "editui.toggle",
+      "editui.state",
+      "editui.set",
+      "editui.undo",
+      "editui.redo"
+    ],
+    "settings": {
+      "enabledKey": "axf.editUi.enabled",
+      "group": {
+        "id": "axf.editUi",
+        "label": "Edit UI",
+        "icon": "edit",
+        "tab": "general",
+        "order": 45,
+        "description": "Inline-edit anything on the screen. With Edit UI on, hold Ctrl (long-press on a phone) and click the thing to edit it; let go of Ctrl to stop. Every edit saves where that value lives (the look, a data source) and can be undone with Ctrl+Z.",
+        "settings": [
+          {
+            "key": "axf.editUi.enabled",
+            "label": "Edit UI",
+            "kind": "toggle",
+            "default": false,
+            "scope": "user",
+            "description": "On: hold Ctrl and click anything to edit it inline. Off: Ctrl does nothing."
+          }
+        ]
+      }
+    }
+  },
+  "initial": {
+    "off": {
+      "mode": "off",
+      "edit": null
+    },
+    "fromSetting": {
+      "on": {
+        "mode": "armed",
+        "edit": null
+      },
+      "off": {
+        "mode": "off",
+        "edit": null
+      }
+    }
+  },
+  "targets": {
+    "toolbarSize": {
+      "kind": "property",
+      "assetType": "toolbar",
+      "assetId": "main",
+      "prop": "size"
+    },
+    "tabColour": {
+      "kind": "property",
+      "assetType": "tab-group",
+      "assetId": "settings",
+      "instance": "settings.tabs",
+      "prop": "colour"
+    },
+    "navIcon": {
+      "kind": "property",
+      "assetType": "nav-menu",
+      "assetId": "main",
+      "prop": "icon",
+      "path": "sections.0.items.1.icon"
+    },
+    "navOrder": {
+      "kind": "property",
+      "assetType": "nav-menu",
+      "assetId": "main",
+      "prop": "order",
+      "path": "sections.0.items.1"
+    },
+    "bannerHide": {
+      "kind": "property",
+      "assetType": "banner",
+      "assetId": "top",
+      "prop": "hide"
+    },
+    "widgetHide": {
+      "kind": "property",
+      "assetType": "widget",
+      "assetId": "clock",
+      "prop": "hide"
+    },
+    "cardHide": {
+      "kind": "property",
+      "assetType": "card",
+      "assetId": "builds",
+      "prop": "hide"
+    },
+    "buttonLabel": {
+      "kind": "property",
+      "assetType": "button",
+      "assetId": "primary",
+      "prop": "label"
+    },
+    "themeAccent": {
+      "kind": "token",
+      "slot": "tokens.theme",
+      "path": "accent"
+    },
+    "styleRadius": {
+      "kind": "token",
+      "slot": "tokens.style",
+      "path": "radius",
+      "assetId": "soft-studio"
+    },
+    "cell": {
+      "kind": "cell",
+      "source": "builds",
+      "record": "b1",
+      "field": "title"
+    },
+    "cellReadOnly": {
+      "kind": "cell",
+      "source": "logs",
+      "record": "l1",
+      "field": "line"
+    },
+    "cellNoSource": {
+      "kind": "cell",
+      "source": "nothing",
+      "record": "x",
+      "field": "y"
+    },
+    "cellNoPermission": {
+      "kind": "cell",
+      "source": "secrets",
+      "record": "s1",
+      "field": "value"
+    },
+    "columnLabel": {
+      "kind": "column",
+      "grid": "builds.queue",
+      "column": "title",
+      "prop": "label"
+    },
+    "columnHide": {
+      "kind": "column",
+      "grid": "builds.queue",
+      "column": "cost",
+      "prop": "hide"
+    },
+    "columnWidth": {
+      "kind": "column",
+      "grid": "builds.queue",
+      "column": "cost",
+      "prop": "width"
+    },
+    "menuLabel": {
+      "kind": "text",
+      "assetType": "app-menu",
+      "assetId": "main",
+      "path": "menus.0.items.2.label"
+    },
+    "recordTitle": {
+      "kind": "text",
+      "source": "builds",
+      "record": "b1",
+      "field": "title"
+    },
+    "codeText": {
+      "kind": "text",
+      "id": "button:builds.start"
+    },
+    "badKind": {
+      "kind": "sprite",
+      "id": "x"
+    },
+    "badProp": {
+      "kind": "property",
+      "assetType": "toolbar",
+      "assetId": "main",
+      "prop": "weight"
+    },
+    "badColumnProp": {
+      "kind": "column",
+      "grid": "g",
+      "column": "c",
+      "prop": "colour"
+    },
+    "badSlot": {
+      "kind": "token",
+      "slot": "tokens.fonts",
+      "path": "body"
+    },
+    "missingField": {
+      "kind": "cell",
+      "source": "builds",
+      "record": "b1"
+    },
+    "textNoOwner": {
+      "kind": "text"
+    },
+    "notObject": "toolbar"
+  },
+  "validation": {
+    "toolbarSize": {
+      "ok": true,
+      "target": {
+        "kind": "property",
+        "assetType": "toolbar",
+        "assetId": "main",
+        "prop": "size"
+      }
+    },
+    "tabColour": {
+      "ok": true,
+      "target": {
+        "kind": "property",
+        "assetType": "tab-group",
+        "assetId": "settings",
+        "instance": "settings.tabs",
+        "prop": "colour"
+      }
+    },
+    "navIcon": {
+      "ok": true,
+      "target": {
+        "kind": "property",
+        "assetType": "nav-menu",
+        "assetId": "main",
+        "prop": "icon",
+        "path": "sections.0.items.1.icon"
+      }
+    },
+    "navOrder": {
+      "ok": true,
+      "target": {
+        "kind": "property",
+        "assetType": "nav-menu",
+        "assetId": "main",
+        "prop": "order",
+        "path": "sections.0.items.1"
+      }
+    },
+    "bannerHide": {
+      "ok": true,
+      "target": {
+        "kind": "property",
+        "assetType": "banner",
+        "assetId": "top",
+        "prop": "hide"
+      }
+    },
+    "widgetHide": {
+      "ok": true,
+      "target": {
+        "kind": "property",
+        "assetType": "widget",
+        "assetId": "clock",
+        "prop": "hide"
+      }
+    },
+    "cardHide": {
+      "ok": true,
+      "target": {
+        "kind": "property",
+        "assetType": "card",
+        "assetId": "builds",
+        "prop": "hide"
+      }
+    },
+    "buttonLabel": {
+      "ok": true,
+      "target": {
+        "kind": "property",
+        "assetType": "button",
+        "assetId": "primary",
+        "prop": "label"
+      }
+    },
+    "themeAccent": {
+      "ok": true,
+      "target": {
+        "kind": "token",
+        "slot": "tokens.theme",
+        "path": "accent"
+      }
+    },
+    "styleRadius": {
+      "ok": true,
+      "target": {
+        "kind": "token",
+        "assetId": "soft-studio",
+        "slot": "tokens.style",
+        "path": "radius"
+      }
+    },
+    "cell": {
+      "ok": true,
+      "target": {
+        "kind": "cell",
+        "source": "builds",
+        "record": "b1",
+        "field": "title"
+      }
+    },
+    "cellReadOnly": {
+      "ok": true,
+      "target": {
+        "kind": "cell",
+        "source": "logs",
+        "record": "l1",
+        "field": "line"
+      }
+    },
+    "cellNoSource": {
+      "ok": true,
+      "target": {
+        "kind": "cell",
+        "source": "nothing",
+        "record": "x",
+        "field": "y"
+      }
+    },
+    "cellNoPermission": {
+      "ok": true,
+      "target": {
+        "kind": "cell",
+        "source": "secrets",
+        "record": "s1",
+        "field": "value"
+      }
+    },
+    "columnLabel": {
+      "ok": true,
+      "target": {
+        "kind": "column",
+        "grid": "builds.queue",
+        "column": "title",
+        "prop": "label"
+      }
+    },
+    "columnHide": {
+      "ok": true,
+      "target": {
+        "kind": "column",
+        "grid": "builds.queue",
+        "column": "cost",
+        "prop": "hide"
+      }
+    },
+    "columnWidth": {
+      "ok": true,
+      "target": {
+        "kind": "column",
+        "grid": "builds.queue",
+        "column": "cost",
+        "prop": "width"
+      }
+    },
+    "menuLabel": {
+      "ok": true,
+      "target": {
+        "kind": "text",
+        "assetType": "app-menu",
+        "assetId": "main",
+        "path": "menus.0.items.2.label"
+      }
+    },
+    "recordTitle": {
+      "ok": true,
+      "target": {
+        "kind": "text",
+        "source": "builds",
+        "record": "b1",
+        "field": "title"
+      }
+    },
+    "codeText": {
+      "ok": true,
+      "target": {
+        "kind": "text",
+        "id": "button:builds.start"
+      }
+    },
+    "badKind": {
+      "ok": false,
+      "reason": "bad-target",
+      "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+    },
+    "badProp": {
+      "ok": false,
+      "reason": "bad-target",
+      "detail": "a property prop is one of size, colour, icon, order, hide, label"
+    },
+    "badColumnProp": {
+      "ok": false,
+      "reason": "bad-target",
+      "detail": "a column prop is one of label, width, order, hide"
+    },
+    "badSlot": {
+      "ok": false,
+      "reason": "bad-target",
+      "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+    },
+    "missingField": {
+      "ok": false,
+      "reason": "bad-target",
+      "detail": "a cell target needs field"
+    },
+    "textNoOwner": {
+      "ok": false,
+      "reason": "bad-target",
+      "detail": "a text target needs an id, an asset or a source"
+    },
+    "notObject": {
+      "ok": false,
+      "reason": "bad-target",
+      "detail": "a target is an object"
+    }
+  },
+  "keys": {
+    "toolbarSize": "property:toolbar/main.size",
+    "tabColour": "property:tab-group/settings.tabs.colour",
+    "navIcon": "property:nav-menu/main.icon",
+    "navOrder": "property:nav-menu/main.order",
+    "bannerHide": "property:banner/top.hide",
+    "widgetHide": "property:widget/clock.hide",
+    "cardHide": "property:card/builds.hide",
+    "buttonLabel": "property:button/primary.label",
+    "themeAccent": "token:tokens.theme/accent",
+    "styleRadius": "token:tokens.style/radius@soft-studio",
+    "cell": "cell:builds/b1.title",
+    "cellReadOnly": "cell:logs/l1.line",
+    "cellNoSource": "cell:nothing/x.y",
+    "cellNoPermission": "cell:secrets/s1.value",
+    "columnLabel": "column:builds.queue/title.label",
+    "columnHide": "column:builds.queue/cost.hide",
+    "columnWidth": "column:builds.queue/cost.width",
+    "menuLabel": "text:app-menu/main#menus.0.items.2.label",
+    "recordTitle": "text:builds/b1.title",
+    "codeText": "text:button:builds.start"
+  },
+  "contexts": {
+    "base": {
+      "dataSources": {
+        "builds": {
+          "writable": true
+        },
+        "logs": {
+          "writable": false,
+          "reason": "no-writer",
+          "detail": "logs are read-only"
+        },
+        "secrets": {
+          "writable": true,
+          "permission": "secrets.write"
+        }
+      },
+      "denied": [
+        "secrets.write"
+      ]
+    },
+    "locked": {
+      "dataSources": {
+        "builds": {
+          "writable": true
+        },
+        "logs": {
+          "writable": false,
+          "reason": "no-writer",
+          "detail": "logs are read-only"
+        },
+        "secrets": {
+          "writable": true,
+          "permission": "secrets.write"
+        }
+      },
+      "denied": [
+        "secrets.write"
+      ],
+      "locked": true
+    },
+    "noLookPermission": {
+      "dataSources": {
+        "builds": {
+          "writable": true
+        },
+        "logs": {
+          "writable": false,
+          "reason": "no-writer",
+          "detail": "logs are read-only"
+        },
+        "secrets": {
+          "writable": true,
+          "permission": "secrets.write"
+        }
+      },
+      "denied": [
+        "assets.swap"
+      ]
+    },
+    "hideNotLanded": {
+      "dataSources": {
+        "builds": {
+          "writable": true
+        },
+        "logs": {
+          "writable": false,
+          "reason": "no-writer",
+          "detail": "logs are read-only"
+        },
+        "secrets": {
+          "writable": true,
+          "permission": "secrets.write"
+        }
+      },
+      "denied": [
+        "secrets.write"
+      ],
+      "owners": [
+        "asset-token",
+        "asset-property",
+        "data"
+      ]
+    },
+    "noDataOwner": {
+      "dataSources": {
+        "builds": {
+          "writable": true
+        },
+        "logs": {
+          "writable": false,
+          "reason": "no-writer",
+          "detail": "logs are read-only"
+        },
+        "secrets": {
+          "writable": true,
+          "permission": "secrets.write"
+        }
+      },
+      "denied": [
+        "secrets.write"
+      ],
+      "owners": [
+        "asset-token",
+        "asset-property",
+        "hidden-assets"
+      ]
+    },
+    "missingAsset": {
+      "dataSources": {
+        "builds": {
+          "writable": true
+        },
+        "logs": {
+          "writable": false,
+          "reason": "no-writer",
+          "detail": "logs are read-only"
+        },
+        "secrets": {
+          "writable": true,
+          "permission": "secrets.write"
+        }
+      },
+      "denied": [
+        "secrets.write"
+      ],
+      "missingAssets": [
+        "toolbar/main",
+        "app-menu/main"
+      ]
+    },
+    "narrowHide": {
+      "dataSources": {
+        "builds": {
+          "writable": true
+        },
+        "logs": {
+          "writable": false,
+          "reason": "no-writer",
+          "detail": "logs are read-only"
+        },
+        "secrets": {
+          "writable": true,
+          "permission": "secrets.write"
+        }
+      },
+      "denied": [
+        "secrets.write"
+      ],
+      "hideableKinds": [
+        "toolbar"
+      ]
+    },
+    "empty": {}
+  },
+  "owners": {
+    "base": {
+      "toolbarSize": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:toolbar.main"
+      },
+      "tabColour": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:tab-group.settings.tabs"
+      },
+      "navIcon": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "navOrder": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "bannerHide": {
+        "kind": "hidden-assets",
+        "key": "banner:top"
+      },
+      "widgetHide": {
+        "kind": "hidden-assets",
+        "key": "widget:clock"
+      },
+      "cardHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "card cannot be hidden (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, widget)"
+      },
+      "buttonLabel": {
+        "kind": "asset-property",
+        "key": "look:button/primary"
+      },
+      "themeAccent": {
+        "kind": "asset-token",
+        "key": "axf.tokens.theme"
+      },
+      "styleRadius": {
+        "kind": "asset-token",
+        "key": "axf.tokens.style"
+      },
+      "cell": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "cellReadOnly": {
+        "kind": "read-only",
+        "reason": "no-writer",
+        "detail": "logs are read-only"
+      },
+      "cellNoSource": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"nothing\" in this app"
+      },
+      "cellNoPermission": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"secrets.write\" to change secrets"
+      },
+      "columnLabel": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnHide": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnWidth": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "menuLabel": {
+        "kind": "asset-property",
+        "key": "axf.chrome.app-menu.main"
+      },
+      "recordTitle": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "codeText": {
+        "kind": "read-only",
+        "reason": "code-text",
+        "detail": "this text is written in code; nothing owns it"
+      },
+      "badKind": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+      },
+      "badProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a property prop is one of size, colour, icon, order, hide, label"
+      },
+      "badColumnProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a column prop is one of label, width, order, hide"
+      },
+      "badSlot": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+      },
+      "missingField": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a cell target needs field"
+      },
+      "textNoOwner": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a text target needs an id, an asset or a source"
+      },
+      "notObject": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a target is an object"
+      }
+    },
+    "locked": {
+      "toolbarSize": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "tabColour": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "navIcon": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "navOrder": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "bannerHide": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "widgetHide": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "cardHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "card cannot be hidden (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, widget)"
+      },
+      "buttonLabel": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "themeAccent": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "styleRadius": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "cell": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "cellReadOnly": {
+        "kind": "read-only",
+        "reason": "no-writer",
+        "detail": "logs are read-only"
+      },
+      "cellNoSource": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"nothing\" in this app"
+      },
+      "cellNoPermission": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"secrets.write\" to change secrets"
+      },
+      "columnLabel": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "columnHide": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "columnWidth": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "menuLabel": {
+        "kind": "read-only",
+        "reason": "locked",
+        "detail": "the look is locked: it comes from axHub"
+      },
+      "recordTitle": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "codeText": {
+        "kind": "read-only",
+        "reason": "code-text",
+        "detail": "this text is written in code; nothing owns it"
+      },
+      "badKind": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+      },
+      "badProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a property prop is one of size, colour, icon, order, hide, label"
+      },
+      "badColumnProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a column prop is one of label, width, order, hide"
+      },
+      "badSlot": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+      },
+      "missingField": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a cell target needs field"
+      },
+      "textNoOwner": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a text target needs an id, an asset or a source"
+      },
+      "notObject": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a target is an object"
+      }
+    },
+    "noLookPermission": {
+      "toolbarSize": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "tabColour": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "navIcon": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "navOrder": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "bannerHide": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "widgetHide": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "cardHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "card cannot be hidden (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, widget)"
+      },
+      "buttonLabel": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "themeAccent": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "styleRadius": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "cell": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "cellReadOnly": {
+        "kind": "read-only",
+        "reason": "no-writer",
+        "detail": "logs are read-only"
+      },
+      "cellNoSource": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"nothing\" in this app"
+      },
+      "cellNoPermission": {
+        "kind": "data",
+        "key": "secrets"
+      },
+      "columnLabel": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "columnHide": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "columnWidth": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "menuLabel": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"assets.swap\" to change the look"
+      },
+      "recordTitle": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "codeText": {
+        "kind": "read-only",
+        "reason": "code-text",
+        "detail": "this text is written in code; nothing owns it"
+      },
+      "badKind": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+      },
+      "badProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a property prop is one of size, colour, icon, order, hide, label"
+      },
+      "badColumnProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a column prop is one of label, width, order, hide"
+      },
+      "badSlot": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+      },
+      "missingField": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a cell target needs field"
+      },
+      "textNoOwner": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a text target needs an id, an asset or a source"
+      },
+      "notObject": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a target is an object"
+      }
+    },
+    "hideNotLanded": {
+      "toolbarSize": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:toolbar.main"
+      },
+      "tabColour": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:tab-group.settings.tabs"
+      },
+      "navIcon": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "navOrder": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "bannerHide": {
+        "kind": "read-only",
+        "reason": "owner-unavailable",
+        "detail": "hiding lands with build rebuild-fresh-main-hide-any-asset"
+      },
+      "widgetHide": {
+        "kind": "read-only",
+        "reason": "owner-unavailable",
+        "detail": "hiding lands with build rebuild-fresh-main-hide-any-asset"
+      },
+      "cardHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "card cannot be hidden (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, widget)"
+      },
+      "buttonLabel": {
+        "kind": "asset-property",
+        "key": "look:button/primary"
+      },
+      "themeAccent": {
+        "kind": "asset-token",
+        "key": "axf.tokens.theme"
+      },
+      "styleRadius": {
+        "kind": "asset-token",
+        "key": "axf.tokens.style"
+      },
+      "cell": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "cellReadOnly": {
+        "kind": "read-only",
+        "reason": "no-writer",
+        "detail": "logs are read-only"
+      },
+      "cellNoSource": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"nothing\" in this app"
+      },
+      "cellNoPermission": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"secrets.write\" to change secrets"
+      },
+      "columnLabel": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnHide": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnWidth": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "menuLabel": {
+        "kind": "asset-property",
+        "key": "axf.chrome.app-menu.main"
+      },
+      "recordTitle": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "codeText": {
+        "kind": "read-only",
+        "reason": "code-text",
+        "detail": "this text is written in code; nothing owns it"
+      },
+      "badKind": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+      },
+      "badProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a property prop is one of size, colour, icon, order, hide, label"
+      },
+      "badColumnProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a column prop is one of label, width, order, hide"
+      },
+      "badSlot": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+      },
+      "missingField": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a cell target needs field"
+      },
+      "textNoOwner": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a text target needs an id, an asset or a source"
+      },
+      "notObject": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a target is an object"
+      }
+    },
+    "noDataOwner": {
+      "toolbarSize": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:toolbar.main"
+      },
+      "tabColour": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:tab-group.settings.tabs"
+      },
+      "navIcon": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "navOrder": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "bannerHide": {
+        "kind": "hidden-assets",
+        "key": "banner:top"
+      },
+      "widgetHide": {
+        "kind": "hidden-assets",
+        "key": "widget:clock"
+      },
+      "cardHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "card cannot be hidden (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, widget)"
+      },
+      "buttonLabel": {
+        "kind": "asset-property",
+        "key": "look:button/primary"
+      },
+      "themeAccent": {
+        "kind": "asset-token",
+        "key": "axf.tokens.theme"
+      },
+      "styleRadius": {
+        "kind": "asset-token",
+        "key": "axf.tokens.style"
+      },
+      "cell": {
+        "kind": "read-only",
+        "reason": "owner-unavailable",
+        "detail": "no data owner in this app yet"
+      },
+      "cellReadOnly": {
+        "kind": "read-only",
+        "reason": "no-writer",
+        "detail": "logs are read-only"
+      },
+      "cellNoSource": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"nothing\" in this app"
+      },
+      "cellNoPermission": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"secrets.write\" to change secrets"
+      },
+      "columnLabel": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnHide": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnWidth": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "menuLabel": {
+        "kind": "asset-property",
+        "key": "axf.chrome.app-menu.main"
+      },
+      "recordTitle": {
+        "kind": "read-only",
+        "reason": "owner-unavailable",
+        "detail": "no data owner in this app yet"
+      },
+      "codeText": {
+        "kind": "read-only",
+        "reason": "code-text",
+        "detail": "this text is written in code; nothing owns it"
+      },
+      "badKind": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+      },
+      "badProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a property prop is one of size, colour, icon, order, hide, label"
+      },
+      "badColumnProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a column prop is one of label, width, order, hide"
+      },
+      "badSlot": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+      },
+      "missingField": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a cell target needs field"
+      },
+      "textNoOwner": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a text target needs an id, an asset or a source"
+      },
+      "notObject": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a target is an object"
+      }
+    },
+    "missingAsset": {
+      "toolbarSize": {
+        "kind": "read-only",
+        "reason": "unknown-asset",
+        "detail": "no toolbar \"main\" here"
+      },
+      "tabColour": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:tab-group.settings.tabs"
+      },
+      "navIcon": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "navOrder": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "bannerHide": {
+        "kind": "hidden-assets",
+        "key": "banner:top"
+      },
+      "widgetHide": {
+        "kind": "hidden-assets",
+        "key": "widget:clock"
+      },
+      "cardHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "card cannot be hidden (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, widget)"
+      },
+      "buttonLabel": {
+        "kind": "asset-property",
+        "key": "look:button/primary"
+      },
+      "themeAccent": {
+        "kind": "asset-token",
+        "key": "axf.tokens.theme"
+      },
+      "styleRadius": {
+        "kind": "asset-token",
+        "key": "axf.tokens.style"
+      },
+      "cell": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "cellReadOnly": {
+        "kind": "read-only",
+        "reason": "no-writer",
+        "detail": "logs are read-only"
+      },
+      "cellNoSource": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"nothing\" in this app"
+      },
+      "cellNoPermission": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"secrets.write\" to change secrets"
+      },
+      "columnLabel": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnHide": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnWidth": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "menuLabel": {
+        "kind": "read-only",
+        "reason": "unknown-asset",
+        "detail": "no app-menu \"main\" here"
+      },
+      "recordTitle": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "codeText": {
+        "kind": "read-only",
+        "reason": "code-text",
+        "detail": "this text is written in code; nothing owns it"
+      },
+      "badKind": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+      },
+      "badProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a property prop is one of size, colour, icon, order, hide, label"
+      },
+      "badColumnProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a column prop is one of label, width, order, hide"
+      },
+      "badSlot": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+      },
+      "missingField": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a cell target needs field"
+      },
+      "textNoOwner": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a text target needs an id, an asset or a source"
+      },
+      "notObject": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a target is an object"
+      }
+    },
+    "narrowHide": {
+      "toolbarSize": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:toolbar.main"
+      },
+      "tabColour": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:tab-group.settings.tabs"
+      },
+      "navIcon": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "navOrder": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "bannerHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "banner cannot be hidden (toolbar)"
+      },
+      "widgetHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "widget cannot be hidden (toolbar)"
+      },
+      "cardHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "card cannot be hidden (toolbar)"
+      },
+      "buttonLabel": {
+        "kind": "asset-property",
+        "key": "look:button/primary"
+      },
+      "themeAccent": {
+        "kind": "asset-token",
+        "key": "axf.tokens.theme"
+      },
+      "styleRadius": {
+        "kind": "asset-token",
+        "key": "axf.tokens.style"
+      },
+      "cell": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "cellReadOnly": {
+        "kind": "read-only",
+        "reason": "no-writer",
+        "detail": "logs are read-only"
+      },
+      "cellNoSource": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"nothing\" in this app"
+      },
+      "cellNoPermission": {
+        "kind": "read-only",
+        "reason": "permission",
+        "detail": "your role needs \"secrets.write\" to change secrets"
+      },
+      "columnLabel": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnHide": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnWidth": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "menuLabel": {
+        "kind": "asset-property",
+        "key": "axf.chrome.app-menu.main"
+      },
+      "recordTitle": {
+        "kind": "data",
+        "key": "builds"
+      },
+      "codeText": {
+        "kind": "read-only",
+        "reason": "code-text",
+        "detail": "this text is written in code; nothing owns it"
+      },
+      "badKind": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+      },
+      "badProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a property prop is one of size, colour, icon, order, hide, label"
+      },
+      "badColumnProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a column prop is one of label, width, order, hide"
+      },
+      "badSlot": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+      },
+      "missingField": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a cell target needs field"
+      },
+      "textNoOwner": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a text target needs an id, an asset or a source"
+      },
+      "notObject": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a target is an object"
+      }
+    },
+    "empty": {
+      "toolbarSize": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:toolbar.main"
+      },
+      "tabColour": {
+        "kind": "asset-token",
+        "key": "axf.tokens.instances:tab-group.settings.tabs"
+      },
+      "navIcon": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "navOrder": {
+        "kind": "asset-property",
+        "key": "axf.chrome.nav-menu.main"
+      },
+      "bannerHide": {
+        "kind": "hidden-assets",
+        "key": "banner:top"
+      },
+      "widgetHide": {
+        "kind": "hidden-assets",
+        "key": "widget:clock"
+      },
+      "cardHide": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "card cannot be hidden (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, widget)"
+      },
+      "buttonLabel": {
+        "kind": "asset-property",
+        "key": "look:button/primary"
+      },
+      "themeAccent": {
+        "kind": "asset-token",
+        "key": "axf.tokens.theme"
+      },
+      "styleRadius": {
+        "kind": "asset-token",
+        "key": "axf.tokens.style"
+      },
+      "cell": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"builds\" in this app"
+      },
+      "cellReadOnly": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"logs\" in this app"
+      },
+      "cellNoSource": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"nothing\" in this app"
+      },
+      "cellNoPermission": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"secrets\" in this app"
+      },
+      "columnLabel": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnHide": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "columnWidth": {
+        "kind": "asset-property",
+        "key": "axf.grid.builds.queue.columns"
+      },
+      "menuLabel": {
+        "kind": "asset-property",
+        "key": "axf.chrome.app-menu.main"
+      },
+      "recordTitle": {
+        "kind": "read-only",
+        "reason": "unknown-source",
+        "detail": "no data source \"builds\" in this app"
+      },
+      "codeText": {
+        "kind": "read-only",
+        "reason": "code-text",
+        "detail": "this text is written in code; nothing owns it"
+      },
+      "badKind": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown target kind \"sprite\" (text, cell, column, property, token)"
+      },
+      "badProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a property prop is one of size, colour, icon, order, hide, label"
+      },
+      "badColumnProp": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a column prop is one of label, width, order, hide"
+      },
+      "badSlot": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "unknown token slot \"tokens.fonts\" (tokens.theme, tokens.style, tokens.layout, tokens.typography, tokens.density, tokens.sizing, tokens.nav)"
+      },
+      "missingField": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a cell target needs field"
+      },
+      "textNoOwner": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a text target needs an id, an asset or a source"
+      },
+      "notObject": {
+        "kind": "read-only",
+        "reason": "bad-target",
+        "detail": "a target is an object"
+      }
+    }
+  },
+  "gate": {
+    "script": [
+      {
+        "type": "ctrl-down"
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "property",
+          "assetType": "toolbar",
+          "assetId": "main",
+          "prop": "size"
+        },
+        "owner": {
+          "kind": "asset-token",
+          "key": "axf.tokens.instances:toolbar.main"
+        },
+        "before": 32
+      },
+      {
+        "type": "enable"
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "property",
+          "assetType": "toolbar",
+          "assetId": "main",
+          "prop": "size"
+        },
+        "owner": {
+          "kind": "asset-token",
+          "key": "axf.tokens.instances:toolbar.main"
+        },
+        "before": 32
+      },
+      {
+        "type": "ctrl-down"
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "text",
+          "id": "button:builds.start"
+        },
+        "owner": {
+          "kind": "read-only",
+          "reason": "code-text",
+          "detail": "this text is written in code; nothing owns it"
+        },
+        "before": "Start"
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "property",
+          "assetType": "toolbar",
+          "assetId": "main",
+          "prop": "size"
+        },
+        "owner": {
+          "kind": "asset-token",
+          "key": "axf.tokens.instances:toolbar.main"
+        },
+        "before": 32
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "before": "a"
+      },
+      {
+        "type": "commit",
+        "after": 40
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "before": "Old title"
+      },
+      {
+        "type": "commit",
+        "after": "Old title"
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "text",
+          "assetType": "app-menu",
+          "assetId": "main",
+          "path": "menus.0.items.2.label"
+        },
+        "owner": {
+          "kind": "asset-property",
+          "key": "axf.chrome.app-menu.main"
+        },
+        "before": "Builds"
+      },
+      {
+        "type": "cancel"
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "text",
+          "assetType": "app-menu",
+          "assetId": "main",
+          "path": "menus.0.items.2.label"
+        },
+        "owner": {
+          "kind": "asset-property",
+          "key": "axf.chrome.app-menu.main"
+        },
+        "before": "Builds"
+      },
+      {
+        "type": "ctrl-up"
+      },
+      {
+        "type": "commit",
+        "after": "Queue"
+      },
+      {
+        "type": "long-press",
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "before": "Old title"
+      },
+      {
+        "type": "ctrl-up"
+      },
+      {
+        "type": "commit",
+        "after": "New title"
+      },
+      {
+        "type": "long-press",
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "before": "New title"
+      },
+      {
+        "type": "window-blur"
+      },
+      {
+        "type": "ctrl-down"
+      },
+      {
+        "type": "begin",
+        "target": {
+          "kind": "token",
+          "slot": "tokens.theme",
+          "path": "accent"
+        },
+        "owner": {
+          "kind": "asset-token",
+          "key": "axf.tokens.theme"
+        },
+        "before": "#ff8800"
+      },
+      {
+        "type": "commit",
+        "after": {
+          "hex": "#000"
+        }
+      },
+      {
+        "type": "disable"
+      },
+      {
+        "type": "ctrl-down"
+      },
+      {
+        "type": "long-press",
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "before": "x"
+      }
+    ],
+    "steps": [
+      {
+        "event": {
+          "type": "ctrl-down"
+        },
+        "state": {
+          "mode": "off",
+          "edit": null
+        }
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "property",
+            "assetType": "toolbar",
+            "assetId": "main",
+            "prop": "size"
+          },
+          "owner": {
+            "kind": "asset-token",
+            "key": "axf.tokens.instances:toolbar.main"
+          },
+          "before": 32
+        },
+        "state": {
+          "mode": "off",
+          "edit": null
+        },
+        "refused": {
+          "reason": "off",
+          "detail": "Edit UI is off"
+        }
+      },
+      {
+        "event": {
+          "type": "enable"
+        },
+        "state": {
+          "mode": "armed",
+          "edit": null
+        }
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "property",
+            "assetType": "toolbar",
+            "assetId": "main",
+            "prop": "size"
+          },
+          "owner": {
+            "kind": "asset-token",
+            "key": "axf.tokens.instances:toolbar.main"
+          },
+          "before": 32
+        },
+        "state": {
+          "mode": "armed",
+          "edit": null
+        },
+        "refused": {
+          "reason": "not-held",
+          "detail": "hold Ctrl to edit"
+        }
+      },
+      {
+        "event": {
+          "type": "ctrl-down"
+        },
+        "state": {
+          "mode": "held",
+          "edit": null
+        }
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "text",
+            "id": "button:builds.start"
+          },
+          "owner": {
+            "kind": "read-only",
+            "reason": "code-text",
+            "detail": "this text is written in code; nothing owns it"
+          },
+          "before": "Start"
+        },
+        "state": {
+          "mode": "held",
+          "edit": null
+        },
+        "refused": {
+          "reason": "code-text",
+          "detail": "this text is written in code; nothing owns it"
+        }
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "property",
+            "assetType": "toolbar",
+            "assetId": "main",
+            "prop": "size"
+          },
+          "owner": {
+            "kind": "asset-token",
+            "key": "axf.tokens.instances:toolbar.main"
+          },
+          "before": 32
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "gate": "ctrl"
+          }
+        }
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "cell",
+            "source": "builds",
+            "record": "b1",
+            "field": "title"
+          },
+          "owner": {
+            "kind": "data",
+            "key": "builds"
+          },
+          "before": "a"
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "gate": "ctrl"
+          }
+        },
+        "refused": {
+          "reason": "busy",
+          "detail": "already editing property:toolbar/main.size"
+        }
+      },
+      {
+        "event": {
+          "type": "commit",
+          "after": 40
+        },
+        "state": {
+          "mode": "held",
+          "edit": null
+        },
+        "op": {
+          "$axf": "edit-ui-op@1",
+          "target": {
+            "kind": "property",
+            "assetType": "toolbar",
+            "assetId": "main",
+            "prop": "size"
+          },
+          "owner": {
+            "kind": "asset-token",
+            "key": "axf.tokens.instances:toolbar.main"
+          },
+          "before": 32,
+          "after": 40,
+          "gate": "ctrl"
+        }
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "cell",
+            "source": "builds",
+            "record": "b1",
+            "field": "title"
+          },
+          "owner": {
+            "kind": "data",
+            "key": "builds"
+          },
+          "before": "Old title"
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "gate": "ctrl"
+          }
+        }
+      },
+      {
+        "event": {
+          "type": "commit",
+          "after": "Old title"
+        },
+        "state": {
+          "mode": "held",
+          "edit": null
+        },
+        "noop": true
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "text",
+            "assetType": "app-menu",
+            "assetId": "main",
+            "path": "menus.0.items.2.label"
+          },
+          "owner": {
+            "kind": "asset-property",
+            "key": "axf.chrome.app-menu.main"
+          },
+          "before": "Builds"
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "text",
+              "assetType": "app-menu",
+              "assetId": "main",
+              "path": "menus.0.items.2.label"
+            },
+            "owner": {
+              "kind": "asset-property",
+              "key": "axf.chrome.app-menu.main"
+            },
+            "before": "Builds",
+            "gate": "ctrl"
+          }
+        }
+      },
+      {
+        "event": {
+          "type": "cancel"
+        },
+        "state": {
+          "mode": "held",
+          "edit": null
+        },
+        "cancelled": true
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "text",
+            "assetType": "app-menu",
+            "assetId": "main",
+            "path": "menus.0.items.2.label"
+          },
+          "owner": {
+            "kind": "asset-property",
+            "key": "axf.chrome.app-menu.main"
+          },
+          "before": "Builds"
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "text",
+              "assetType": "app-menu",
+              "assetId": "main",
+              "path": "menus.0.items.2.label"
+            },
+            "owner": {
+              "kind": "asset-property",
+              "key": "axf.chrome.app-menu.main"
+            },
+            "before": "Builds",
+            "gate": "ctrl"
+          }
+        }
+      },
+      {
+        "event": {
+          "type": "ctrl-up"
+        },
+        "state": {
+          "mode": "armed",
+          "edit": null
+        },
+        "cancelled": true
+      },
+      {
+        "event": {
+          "type": "commit",
+          "after": "Queue"
+        },
+        "state": {
+          "mode": "armed",
+          "edit": null
+        },
+        "refused": {
+          "reason": "not-held",
+          "detail": "nothing is being edited"
+        }
+      },
+      {
+        "event": {
+          "type": "long-press",
+          "target": {
+            "kind": "cell",
+            "source": "builds",
+            "record": "b1",
+            "field": "title"
+          },
+          "owner": {
+            "kind": "data",
+            "key": "builds"
+          },
+          "before": "Old title"
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "gate": "touch"
+          }
+        }
+      },
+      {
+        "event": {
+          "type": "ctrl-up"
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "gate": "touch"
+          }
+        }
+      },
+      {
+        "event": {
+          "type": "commit",
+          "after": "New title"
+        },
+        "state": {
+          "mode": "armed",
+          "edit": null
+        },
+        "op": {
+          "$axf": "edit-ui-op@1",
+          "target": {
+            "kind": "cell",
+            "source": "builds",
+            "record": "b1",
+            "field": "title"
+          },
+          "owner": {
+            "kind": "data",
+            "key": "builds"
+          },
+          "before": "Old title",
+          "after": "New title",
+          "gate": "touch"
+        }
+      },
+      {
+        "event": {
+          "type": "long-press",
+          "target": {
+            "kind": "cell",
+            "source": "builds",
+            "record": "b1",
+            "field": "title"
+          },
+          "owner": {
+            "kind": "data",
+            "key": "builds"
+          },
+          "before": "New title"
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "New title",
+            "gate": "touch"
+          }
+        }
+      },
+      {
+        "event": {
+          "type": "window-blur"
+        },
+        "state": {
+          "mode": "armed",
+          "edit": null
+        },
+        "cancelled": true
+      },
+      {
+        "event": {
+          "type": "ctrl-down"
+        },
+        "state": {
+          "mode": "held",
+          "edit": null
+        }
+      },
+      {
+        "event": {
+          "type": "begin",
+          "target": {
+            "kind": "token",
+            "slot": "tokens.theme",
+            "path": "accent"
+          },
+          "owner": {
+            "kind": "asset-token",
+            "key": "axf.tokens.theme"
+          },
+          "before": "#ff8800"
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "token",
+              "slot": "tokens.theme",
+              "path": "accent"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.theme"
+            },
+            "before": "#ff8800",
+            "gate": "ctrl"
+          }
+        }
+      },
+      {
+        "event": {
+          "type": "commit",
+          "after": {
+            "hex": "#000"
+          }
+        },
+        "state": {
+          "mode": "editing",
+          "edit": {
+            "target": {
+              "kind": "token",
+              "slot": "tokens.theme",
+              "path": "accent"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.theme"
+            },
+            "before": "#ff8800",
+            "gate": "ctrl"
+          }
+        },
+        "refused": {
+          "reason": "bad-target",
+          "detail": "a value is a scalar of at most 4000 characters"
+        }
+      },
+      {
+        "event": {
+          "type": "disable"
+        },
+        "state": {
+          "mode": "off",
+          "edit": null
+        },
+        "cancelled": true
+      },
+      {
+        "event": {
+          "type": "ctrl-down"
+        },
+        "state": {
+          "mode": "off",
+          "edit": null
+        }
+      },
+      {
+        "event": {
+          "type": "long-press",
+          "target": {
+            "kind": "cell",
+            "source": "builds",
+            "record": "b1",
+            "field": "title"
+          },
+          "owner": {
+            "kind": "data",
+            "key": "builds"
+          },
+          "before": "x"
+        },
+        "state": {
+          "mode": "off",
+          "edit": null
+        },
+        "refused": {
+          "reason": "off",
+          "detail": "Edit UI is off"
+        }
+      }
+    ],
+    "view": {
+      "$axf": "edit-ui-state@1",
+      "enabled": false,
+      "mode": "off",
+      "gate": null,
+      "edit": null,
+      "undo": {
+        "canUndo": true,
+        "canRedo": false,
+        "depth": 2,
+        "redoDepth": 0
+      }
+    }
+  },
+  "undo": {
+    "ops": [
+      {
+        "$axf": "edit-ui-op@1",
+        "target": {
+          "kind": "property",
+          "assetType": "toolbar",
+          "assetId": "main",
+          "prop": "size"
+        },
+        "owner": {
+          "kind": "asset-token",
+          "key": "axf.tokens.instances:toolbar.main"
+        },
+        "before": 32,
+        "after": 40,
+        "gate": "ctrl"
+      },
+      {
+        "$axf": "edit-ui-op@1",
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "before": "Old title",
+        "after": "New title",
+        "gate": "touch"
+      }
+    ],
+    "pushes": [
+      {
+        "entry": {
+          "$axf": "edit-ui-undo@1",
+          "id": "e-0001",
+          "at": "2026-11-17T15:00:00.000Z",
+          "by": "brett",
+          "target": {
+            "kind": "property",
+            "assetType": "toolbar",
+            "assetId": "main",
+            "prop": "size"
+          },
+          "owner": {
+            "kind": "asset-token",
+            "key": "axf.tokens.instances:toolbar.main"
+          },
+          "before": 32,
+          "after": 40
+        },
+        "summary": {
+          "canUndo": true,
+          "canRedo": false,
+          "depth": 1,
+          "redoDepth": 0
+        }
+      },
+      {
+        "entry": {
+          "$axf": "edit-ui-undo@1",
+          "id": "e-0002",
+          "at": "2026-11-17T15:00:01.000Z",
+          "by": "brett",
+          "target": {
+            "kind": "cell",
+            "source": "builds",
+            "record": "b1",
+            "field": "title"
+          },
+          "owner": {
+            "kind": "data",
+            "key": "builds"
+          },
+          "before": "Old title",
+          "after": "New title"
+        },
+        "summary": {
+          "canUndo": true,
+          "canRedo": false,
+          "depth": 2,
+          "redoDepth": 0
+        }
+      }
+    ],
+    "noop": {
+      "stack": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0002",
+            "at": "2026-11-17T15:00:01.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "after": "New title"
+          }
+        ],
+        "cursor": 2,
+        "seq": 3
+      },
+      "entry": null
+    },
+    "undo1": {
+      "stack": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0002",
+            "at": "2026-11-17T15:00:01.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "after": "New title"
+          }
+        ],
+        "cursor": 1,
+        "seq": 3
+      },
+      "apply": {
+        "entry": {
+          "$axf": "edit-ui-undo@1",
+          "id": "e-0002",
+          "at": "2026-11-17T15:00:01.000Z",
+          "by": "brett",
+          "target": {
+            "kind": "cell",
+            "source": "builds",
+            "record": "b1",
+            "field": "title"
+          },
+          "owner": {
+            "kind": "data",
+            "key": "builds"
+          },
+          "before": "Old title",
+          "after": "New title"
+        },
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "value": "Old title",
+        "from": "New title"
+      }
+    },
+    "undo2": {
+      "stack": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0002",
+            "at": "2026-11-17T15:00:01.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "after": "New title"
+          }
+        ],
+        "cursor": 0,
+        "seq": 3
+      },
+      "apply": {
+        "entry": {
+          "$axf": "edit-ui-undo@1",
+          "id": "e-0001",
+          "at": "2026-11-17T15:00:00.000Z",
+          "by": "brett",
+          "target": {
+            "kind": "property",
+            "assetType": "toolbar",
+            "assetId": "main",
+            "prop": "size"
+          },
+          "owner": {
+            "kind": "asset-token",
+            "key": "axf.tokens.instances:toolbar.main"
+          },
+          "before": 32,
+          "after": 40
+        },
+        "target": {
+          "kind": "property",
+          "assetType": "toolbar",
+          "assetId": "main",
+          "prop": "size"
+        },
+        "owner": {
+          "kind": "asset-token",
+          "key": "axf.tokens.instances:toolbar.main"
+        },
+        "value": 32,
+        "from": 40
+      }
+    },
+    "undo3": {
+      "stack": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0002",
+            "at": "2026-11-17T15:00:01.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "after": "New title"
+          }
+        ],
+        "cursor": 0,
+        "seq": 3
+      },
+      "refused": {
+        "reason": "nothing-to-undo",
+        "detail": "nothing to undo"
+      }
+    },
+    "redo1": {
+      "stack": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0002",
+            "at": "2026-11-17T15:00:01.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "after": "New title"
+          }
+        ],
+        "cursor": 1,
+        "seq": 3
+      },
+      "apply": {
+        "entry": {
+          "$axf": "edit-ui-undo@1",
+          "id": "e-0001",
+          "at": "2026-11-17T15:00:00.000Z",
+          "by": "brett",
+          "target": {
+            "kind": "property",
+            "assetType": "toolbar",
+            "assetId": "main",
+            "prop": "size"
+          },
+          "owner": {
+            "kind": "asset-token",
+            "key": "axf.tokens.instances:toolbar.main"
+          },
+          "before": 32,
+          "after": 40
+        },
+        "target": {
+          "kind": "property",
+          "assetType": "toolbar",
+          "assetId": "main",
+          "prop": "size"
+        },
+        "owner": {
+          "kind": "asset-token",
+          "key": "axf.tokens.instances:toolbar.main"
+        },
+        "value": 40,
+        "from": 32
+      }
+    },
+    "afterUndo": {
+      "stack": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0003",
+            "at": "2026-11-17T15:00:10.000Z",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Z",
+            "after": "Y"
+          }
+        ],
+        "cursor": 2,
+        "seq": 4
+      },
+      "entry": {
+        "$axf": "edit-ui-undo@1",
+        "id": "e-0003",
+        "at": "2026-11-17T15:00:10.000Z",
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "before": "Z",
+        "after": "Y"
+      }
+    },
+    "redoAfterPush": {
+      "stack": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0003",
+            "at": "2026-11-17T15:00:10.000Z",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Z",
+            "after": "Y"
+          }
+        ],
+        "cursor": 2,
+        "seq": 4
+      },
+      "refused": {
+        "reason": "nothing-to-redo",
+        "detail": "nothing to redo"
+      }
+    },
+    "history": [
+      {
+        "$axf": "edit-ui-undo@1",
+        "id": "e-0003",
+        "at": "2026-11-17T15:00:10.000Z",
+        "target": {
+          "kind": "cell",
+          "source": "builds",
+          "record": "b1",
+          "field": "title"
+        },
+        "owner": {
+          "kind": "data",
+          "key": "builds"
+        },
+        "before": "Z",
+        "after": "Y"
+      },
+      {
+        "$axf": "edit-ui-undo@1",
+        "id": "e-0001",
+        "at": "2026-11-17T15:00:00.000Z",
+        "by": "brett",
+        "target": {
+          "kind": "property",
+          "assetType": "toolbar",
+          "assetId": "main",
+          "prop": "size"
+        },
+        "owner": {
+          "kind": "asset-token",
+          "key": "axf.tokens.instances:toolbar.main"
+        },
+        "before": 32,
+        "after": 40
+      }
+    ],
+    "capped": {
+      "stack": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0003",
+            "at": "2026-11-17T15:00:22.000Z",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 2,
+            "after": 3
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0004",
+            "at": "2026-11-17T15:00:23.000Z",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 3,
+            "after": 4
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0005",
+            "at": "2026-11-17T15:00:24.000Z",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 4,
+            "after": 5
+          }
+        ],
+        "cursor": 3,
+        "seq": 6
+      },
+      "summary": {
+        "canUndo": true,
+        "canRedo": false,
+        "depth": 3,
+        "redoDepth": 0
+      }
+    },
+    "reverted": {
+      "undo": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0002",
+            "at": "2026-11-17T15:00:01.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "after": "New title"
+          }
+        ],
+        "cursor": 2,
+        "seq": 3
+      },
+      "redo": {
+        "entries": [
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0001",
+            "at": "2026-11-17T15:00:00.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "property",
+              "assetType": "toolbar",
+              "assetId": "main",
+              "prop": "size"
+            },
+            "owner": {
+              "kind": "asset-token",
+              "key": "axf.tokens.instances:toolbar.main"
+            },
+            "before": 32,
+            "after": 40
+          },
+          {
+            "$axf": "edit-ui-undo@1",
+            "id": "e-0002",
+            "at": "2026-11-17T15:00:01.000Z",
+            "by": "brett",
+            "target": {
+              "kind": "cell",
+              "source": "builds",
+              "record": "b1",
+              "field": "title"
+            },
+            "owner": {
+              "kind": "data",
+              "key": "builds"
+            },
+            "before": "Old title",
+            "after": "New title"
+          }
+        ],
+        "cursor": 0,
+        "seq": 3
+      }
+    }
+  }
+}

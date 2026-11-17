@@ -315,6 +315,7 @@ jobs:
             npx -y tsx framework/spec/check-skin-switch.mts            # skin-switch@1: use / back-to-skin / restore-default / undo per scope (hub, app, ui, plugin): fixture replay, scope precedence, undo after restore, back clears only the overridden part
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-settings-open.mts          # every settings interface opens in a floating glass dialog by default; fails on code that navigates to the Settings page instead
+            npx -y tsx framework/spec/check-edit-ui.mts                # edit-ui@1: Edit UI off = Ctrl does nothing, Ctrl release cancels, owner resolution per context, undo / redo through the same owner, schema snapshots, rt.editUi
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture

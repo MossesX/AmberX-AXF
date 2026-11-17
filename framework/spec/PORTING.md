@@ -371,3 +371,18 @@ Android app renders them.
 Build stop-auto-lander-committing-tracking adds `framework/core/tracking-paths.mjs` (tracking-paths@1: the files a build
 branch never commits) and the builds journal's hub home (builds-journal@1). Build tooling only (lander, CI, CLI): no
 Kotlin twin, none needed; the baked copies ride along unused.
+
+## Deferred: Edit UI (edit-ui@1, Nov 17 2026)
+
+Build `edit-ui-mode-inline-edit-anything-active` (Fable phase). Brett: "I need a way to inline edit anything. We need
+an Edit UI. When Edit UI is on, it only works when I'm also holding down Control." Spec `framework/spec/EDIT-UI.md`;
+engines `framework/core/engines/edit-ui.ts` (the gate: off / armed / held / editing, `reduceEditUi`; `validateTarget`,
+`resolveOwner`) and `edit-ui-undo.ts` (`pushEdit`, `undo`, `redo`, `revertStep`); names in `edit-ui-rules.mjs` →
+`framework/schemas/edit-ui.json` + `schemas/json/edit-ui-*.schema.json`; fixture `framework/spec/fixtures/edit-ui.json`
+(`check-edit-ui.mts`); runtime `rt.editUi` with the owner adapters in `core/edit-ui-owners.ts`. Web only; Android on
+hold, no new Kotlin work. The twin, when Android resumes: `EditUiEngine` in axf-kernel with the same four modes and the
+same events (the long-press path is the one a phone uses; `ctrl-down` / `ctrl-up` arrive from a hardware keyboard), the
+same owner kinds (`asset-token` → `Axf.tokens` overrides, `asset-property` → the chrome instance override / look writer,
+`hidden-assets` → the hide-any-asset twin, `data` → a registered repository writer), the same undo entry shape, and a
+replay of every block of the fixture (`validation`, `keys`, `owners` per context, `gate.steps`, `undo`). The setting
+`axf.editUi.enabled` is read from the same settings key.
