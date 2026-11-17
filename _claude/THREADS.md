@@ -823,37 +823,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:42 UTC · `orchestrator-runs-long-builds-across` s7 done (all) · orchestrator
-- 2026-11-17 03:43 UTC · `server-rule-done-means-merged-working` s7 done (all) · orchestrator
-- 2026-11-17 03:46 UTC · `orchestrator-runs-long-builds-across` s8 done (all) · orchestrator
-- 2026-11-17 03:47 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s7 done (all) · orchestrator
-- 2026-11-17 03:45 UTC · `server-auto-lander-fixes-lands` s11 done (all) · orchestrator
-- 2026-11-17 03:47 UTC · `server-auto-lander-fixes-lands` s12 done (all) · orchestrator
-- 2026-11-17 03:47 UTC · `prompting-engine-control-panel-to-create` s6 done (all) · orchestrator
-- 2026-11-17 03:48 UTC · `server-auto-lander-fixes-lands` s13 done (all) · orchestrator
-- 2026-11-17 03:49 UTC · `server-rule-done-means-merged-working` s8 done (all) · orchestrator
-- 2026-11-17 03:46 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s11 done (all) · orchestrator
-- 2026-11-17 03:48 UTC · `orchestrator-runs-long-builds-across` s9 done (all) · orchestrator
-- 2026-11-17 03:49 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s12 done (all) · orchestrator
-- 2026-11-17 03:51 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s8 done (all) · orchestrator
-- 2026-11-17 03:52 UTC · `prompting-engine-control-panel-to-create` s7 done (all) · orchestrator
-- 2026-11-17 03:52 UTC · `orchestrator-runs-long-builds-across` s10 done (all) · orchestrator
-- 2026-11-17 03:52 UTC · `server-auto-lander-fixes-lands` s14 done (all) · orchestrator
-- 2026-11-17 03:53 UTC · `server-auto-lander-fixes-lands` s15 done (all) · orchestrator
-- 2026-11-17 03:53 UTC · `server-rule-done-means-merged-working` s9 done (all) · orchestrator
-- 2026-11-17 03:53 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s13 done (all) · orchestrator
-- 2026-11-17 03:53 UTC · `prompting-engine-control-panel-to-create` s8 done, → complete (all) · orchestrator
-- 2026-11-17 03:54 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
-- 2026-11-17 03:53 UTC · `orchestrator-runs-long-builds-across` s11 done (all) · orchestrator
-- 2026-11-17 03:55 UTC · `server-rule-done-means-merged-working` s10 done (all) · orchestrator
-- 2026-11-17 03:55 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s9 done (all) · orchestrator
-- 2026-11-17 03:55 UTC · `orchestrator-runs-long-builds-across` s12 done (all) · orchestrator
-- 2026-11-17 03:55 UTC · `server-auto-lander-fixes-lands` s16 done (all) · orchestrator
-- 2026-11-17 03:57 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s14 done (all) · orchestrator
-- 2026-11-17 03:55 UTC · `builds-keep-their-slot-across-phases` → running, note (all) · pipeline
-- 2026-11-17 03:56 UTC · `builds-keep-their-slot-across-phases` branch claude/builds-keep-their-slot-across-phases (all) · pipeline
-- 2026-11-17 03:56 UTC · `builds-keep-their-slot-across-phases` note (all) · orchestrator
-- 2026-11-17 03:58 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s15 done (all) · orchestrator
 - 2026-11-17 03:58 UTC · `server-rule-done-means-merged-working` s11 done (all) · orchestrator
 - 2026-11-17 03:59 UTC · `orchestrator-runs-long-builds-across` s13 done (all) · orchestrator
 - 2026-11-17 03:59 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s10 done (all) · orchestrator
@@ -1223,6 +1192,37 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:02 UTC · `merge-main-land-console-axhub-retry` → archived, note (all) · cli
 - 2026-11-17 19:02 UTC · `amberx-open-url-must-open-page-even-when` → archived, note (all) · cli
 - 2026-11-17 19:02 UTC · `orchestrator-runs-long-builds-across` → archived, note (all) · cli
+- 2026-11-17 19:02 UTC · `molly-one-shell` note (all) · cli
+- 2026-11-17 19:02 UTC · `molly-native-expenses` note (all) · cli
+- 2026-11-17 19:02 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · cli
+- 2026-11-17 19:02 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · cli
+- 2026-11-17 19:02 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · cli
+- 2026-11-17 19:02 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · cli
+- 2026-11-17 19:02 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · cli
+- 2026-11-17 19:02 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · cli
+- 2026-11-17 19:02 UTC · `server-gate-one-session-per-build-no` note (all) · cli
+- 2026-11-17 19:02 UTC · `prompting-engine-control-panel-events` note (all) · cli
+- 2026-11-17 19:02 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · cli
+- 2026-11-17 19:02 UTC · `console-app-part-3-native-bridge-mic` note (all) · cli
+- 2026-11-17 19:02 UTC · `console-app-part-4-console-side-safe` note (all) · cli
+- 2026-11-17 19:02 UTC · `console-app-part-2-native-floating-2` note (all) · cli
+- 2026-11-17 19:02 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · cli
+- 2026-11-17 19:02 UTC · `token-registry-skin-editor-live-sandbox` note (all) · cli
+- 2026-11-17 19:02 UTC · `banner-widget-shapes-more-than-circle` note (all) · cli
+- 2026-11-17 19:02 UTC · `ui-review-filter-and-search-by-pr` note (all) · cli
+- 2026-11-17 19:02 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · cli
+- 2026-11-17 19:02 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · cli
+- 2026-11-17 19:02 UTC · `data-container-axf-data-holds-all` note (all) · cli
+- 2026-11-17 19:02 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · cli
+- 2026-11-17 19:02 UTC · `gate-rules-plugin-in-the-console` note (all) · cli
+- 2026-11-17 19:02 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · cli
+- 2026-11-17 19:02 UTC · `phone-connect-small-android-companion` note (all) · cli
+- 2026-11-17 19:02 UTC · `shipped-features-open-button-views-each` note (all) · cli
+- 2026-11-17 19:02 UTC · `settings-interface-gear-every-plugin` note (all) · cli
+- 2026-11-17 19:02 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · cli
+- 2026-11-17 19:02 UTC · `reset-all-button-every-asset-override` note (all) · cli
+- 2026-11-17 19:02 UTC · `own-look-per-grid-and-tab-group` note (all) · cli
+- 2026-11-17 19:02 UTC · `server-auto-lander-fixes-lands` note (all) · cli
 
 ## Token passes (log)
 

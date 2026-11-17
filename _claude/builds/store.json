@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7612,
- "updatedAt": "2026-11-17T19:02:25.249Z",
+ "rev": 7613,
+ "updatedAt": "2026-11-17T19:02:36.886Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123051,7 +123051,7 @@
    "pr": "#395",
    "priority": "P0",
    "createdAt": "2026-11-08T16:57:58.978Z",
-   "updatedAt": "2026-11-16T16:43:06.220Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -123109,6 +123109,10 @@
     {
      "text": "Moved to the Archive from built (cli).",
      "at": "2026-11-16T16:43:06.220Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-5d1a0295 → Remove: Its PR was closed without a merge (PR #395 closed; build molly-one-shell: archived; branch claude/molly-one-shell-r4 deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -123484,7 +123488,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123535,7 +123539,7 @@
    "mergedAt": "2026-11-12T03:02:32Z",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T03:31:06Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-12T02:32:30.649Z",
    "notes": [
     {
@@ -123601,6 +123605,10 @@
     {
      "text": "Shipped manifest sm-molly-native-expenses rev 1 sent to Shipped features (backfill): landed af1975191, 24 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:06Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261112-4ec56890 → Complete: Its PR merged on main (PR #497 merged 2026-11-12T03:02:32Z (af1975191147); build molly-native-expenses: complete; branch claude/molly-native-expenses deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -123754,7 +123762,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140882,7 +140890,7 @@
    "pr": "#446",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-15T00:42:27.247Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-12T18:40:40.962Z",
    "notes": [
     {
@@ -140956,6 +140964,26 @@
     {
      "text": "Headless run axf-skins-as-packages-of-slices-every-section-its-ow--earl: brief only · start 11.6K tokens ($0.03) · cost $0.75 · 29 turns · 6 tools, MCP none",
      "at": "2026-11-12T18:41:01.378Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-1a716db6 → Remove: Its PR was closed without a merge (PR #446 closed; build skins-as-packages-of-slices-every-section-its-ow: built; branch claude/skins-as-packages-of-slices-every-section-its-ow deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-7483b6fb → Remove: Its PR was closed without a merge (PR #446 closed; build skins-as-packages-of-slices-every-section-its-ow: built; branch claude/skins-as-packages-of-slices-every-section-its-ow deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-10b7e3ba → Remove: Its PR was closed without a merge (PR #446 closed; build skins-as-packages-of-slices-every-section-its-ow: built; branch claude/skins-as-packages-of-slices-every-section-its-ow deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-32b83233 → Remove: Its PR was closed without a merge (PR #446 closed; build skins-as-packages-of-slices-every-section-its-ow: built; branch claude/skins-as-packages-of-slices-every-section-its-ow deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-0be06b55 → Remove: Its PR was closed without a merge (PR #446 closed; build skins-as-packages-of-slices-every-section-its-ow: built; branch claude/skins-as-packages-of-slices-every-section-its-ow deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -141084,7 +141112,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 106,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -143263,7 +143291,7 @@
    "pr": "#447",
    "priority": "P0",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-16T16:43:13.819Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -143321,6 +143349,30 @@
     {
      "text": "Moved to the Archive from built (cli).",
      "at": "2026-11-16T16:43:13.819Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-c7431f42 → Remove: Its PR was closed without a merge (PR #447 closed; build molly-fable-version-the-one-interface-for-amberx: archived; branch claude/molly-fable-version-the-one-interface-for-amberx deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-c1e811c0 → Remove: Its PR was closed without a merge (PR #447 closed; build molly-fable-version-the-one-interface-for-amberx: archived; branch claude/molly-fable-version-the-one-interface-for-amberx deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-da7101c2 → Remove: Its PR was closed without a merge (PR #447 closed; build molly-fable-version-the-one-interface-for-amberx: archived; branch claude/molly-fable-version-the-one-interface-for-amberx deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-22ea3d4f → Remove: Its PR was closed without a merge (PR #447 closed; build molly-fable-version-the-one-interface-for-amberx: archived; branch claude/molly-fable-version-the-one-interface-for-amberx deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-aef8deb0 → Remove: Its PR was closed without a merge (PR #447 closed; build molly-fable-version-the-one-interface-for-amberx: archived; branch claude/molly-fable-version-the-one-interface-for-amberx deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-19dc983a → Remove: Its PR was closed without a merge (PR #447 closed; build molly-fable-version-the-one-interface-for-amberx: archived; branch claude/molly-fable-version-the-one-interface-for-amberx deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -143425,7 +143477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148779,7 +148831,7 @@
    "pr": "#470",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-15T00:42:46.846Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-10T21:28:48.873Z",
    "notes": [
     {
@@ -148853,6 +148905,18 @@
     {
      "text": "Headless run axf-inline-element-editing-plugin-right-click-any-el--sully: brief only · start 12.7K tokens ($0.03) · cost $19.08 · 256 turns · 6 tools, MCP none",
      "at": "2026-11-10T21:28:43.318Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-8d5608b5 → Remove: Its PR was closed without a merge (PR #470 closed; build inline-element-editing-plugin-right-click-any-el: built; branch claude/inline-element-editing-plugin-right-click-any-el deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-5cb94dcc → Remove: Its PR was closed without a merge (PR #470 closed; build inline-element-editing-plugin-right-click-any-el: built; branch claude/inline-element-editing-plugin-right-click-any-el deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-86064988 → Remove: Its PR was closed without a merge (PR #470 closed; build inline-element-editing-plugin-right-click-any-el: built; branch claude/inline-element-editing-plugin-right-click-any-el deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -149230,7 +149294,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152142,7 +152206,7 @@
    "pr": "#466",
    "priority": "P0",
    "createdAt": "2026-11-10T17:11:27.008Z",
-   "updatedAt": "2026-11-15T00:39:47.706Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-10T19:31:24.543Z",
    "notes": [
     {
@@ -152188,6 +152252,10 @@
     {
      "text": "Session axf-skin-checker-flags-anything-that-breaks-a-profes--joey on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-10T19:32:03.360Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261110-6fab4033 → Remove: Its PR was closed without a merge (PR #466 closed; build skin-checker-flags-anything-that-breaks-a-profes: built; branch claude/skin-checker-flags-anything-that-breaks-a-profes deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -152552,7 +152620,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158707,7 +158775,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-15T13:42:59.468Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-12T02:49:21.476Z",
    "notes": [
     {
@@ -158769,6 +158837,10 @@
     {
      "text": "Status check by voice (Brett 08:45): he says toolbar settings still never change the toolbars.",
      "at": "2026-11-15T13:42:59.468Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261112-0bed137c → Remove: Its PR was closed without a merge (PR #503 closed; build bug-asset-settings-nav-menu-tab-bar-toolbar-chan: built; branch claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -158906,7 +158978,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161540,7 +161612,7 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-16T16:43:58.133Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-11T00:38:01.223Z",
    "notes": [
     {
@@ -161622,6 +161694,18 @@
     {
      "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
      "at": "2026-11-16T16:43:58.133Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261111-98eaa15e → Remove: Its PR was closed without a merge (PR #488 closed; build ai-assistant-in-molly-console-drives-by-api-open: built; branch claude/ai-assistant-in-molly-console-drives-by-api-open deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261111-r9jdg01 → Remove: Its PR was closed without a merge (PR #488 closed; build ai-assistant-in-molly-console-drives-by-api-open: built; branch claude/ai-assistant-in-molly-console-drives-by-api-open deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261111-v2asl01 → Remove: Its PR was closed without a merge (PR #488 closed; build ai-assistant-in-molly-console-drives-by-api-open: built; branch claude/ai-assistant-in-molly-console-drives-by-api-open deleted)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -161765,7 +161849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -197874,7 +197958,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-17T15:09:58.298Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -197956,6 +198040,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:58.298Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 793 → Remove: The build was cancelled (PR #793 open; not on main; build server-gate-one-session-per-build-no: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -198131,7 +198219,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204225,7 +204313,7 @@
    "pr": "#697",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-17T00:41:48.032Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -204283,6 +204371,10 @@
     {
      "text": "Superseded by prompting-engine-control-panel-to-create (same origin quote, branch claude/prompting-engine-control-panel-to-create): its three Fable commits from PR #697 were cherry-picked there and re-verified on current main; the Opus steps s5-s9 here are the same as s4-s8 of that build. Nothing left to build on this item; it stays archived.",
      "at": "2026-11-17T00:41:48.032Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-6a9ba5bd → Remove: Its PR was closed without a merge (PR #697 closed; not on main; build prompting-engine-control-panel-events: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -204546,7 +204638,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204590,7 +204682,7 @@
    "pr": "#656",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-16T22:46:30.113Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -204624,6 +204716,10 @@
     {
      "text": "Moved to the Archive from pending (cli): Brett: rebuild fresh on main.",
      "at": "2026-11-16T22:46:30.113Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261113-2b323a9f → Remove: Its PR was closed without a merge (PR #656 closed; not on main; build toolbar-widgets-attach-any-banner-style: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -204755,7 +204851,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206816,7 +206912,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-17T15:10:39.119Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -206894,6 +206990,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:39.119Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 791 → Remove: The build was cancelled (PR #791 open; not on main; build console-app-part-3-native-bridge-mic: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -207131,7 +207231,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -207173,7 +207273,7 @@
    "pr": "#640",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-17T15:10:35.613Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -207207,6 +207307,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:35.613Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 792 → Remove: The build was cancelled (PR #792 open; not on main; build console-app-part-4-console-side-safe: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -207426,7 +207530,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -207468,7 +207572,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-17T15:10:30.427Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -207514,6 +207618,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:30.427Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 750 → Remove: The build was cancelled (PR #750 open; not on main; build console-app-part-2-native-floating-2: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -207742,7 +207850,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212166,7 +212274,7 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-16T22:53:58.330Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -212260,6 +212368,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T22:53:58.330Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261113-138a2532 → Remove: Its PR was closed without a merge (PR #664 closed; not on main; build icon-map-icon-packs-every-icon-badge-app: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -212551,7 +212663,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -213455,7 +213567,7 @@
    "mergedAt": "2026-11-14T21:33:25Z",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-16T23:15:49.029Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -213525,6 +213637,10 @@
     {
      "text": "Moved to the Archive from complete (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:15:49.029Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261113-5f636908 → Complete: The build is complete (not on main; build token-registry-skin-editor-live-sandbox: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -213825,7 +213941,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -219885,7 +220001,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "#703",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-16T22:49:00.199Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -219959,6 +220075,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: rebuild fresh on main.",
      "at": "2026-11-16T22:49:00.199Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261116-h9nkg01 → Remove: Its PR was closed without a merge (PR #703 closed; not on main; build banner-widget-shapes-more-than-circle: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -220723,7 +220843,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222760,7 +222880,7 @@
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-17T15:10:10.275Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -222790,6 +222910,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:10.275Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261114-5f16e332 → Remove: Its PR was closed without a merge (PR #675 closed; not on main; build ui-review-filter-and-search-by-pr: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -222921,7 +223045,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -227143,7 +227267,7 @@
    "pr": "#678",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-16T13:08:31.740Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -227205,6 +227329,10 @@
     {
      "text": "Headless run axf-land-finish-auto-land-live-clear-backlog--gina: brief only · start 16.0K tokens ($0.05) · cost $31.24 · 393 turns · 6 tools, MCP none",
      "at": "2026-11-15T00:51:48.336Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-8434dd57 → Remove: Its PR was closed without a merge (PR #678 closed; not on main; build land-finish-auto-land-live-clear-backlog: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -227972,7 +228100,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -231746,7 +231874,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-17T15:10:26.507Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -231836,6 +231964,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:26.507Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-f66ad007 → Remove: Its PR was closed without a merge (PR #705 closed; not on main; build auto-lander-controls-in-the-gate-plugin: archived)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -232319,7 +232451,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -233443,7 +233575,7 @@
    "mergedAt": "2026-11-17T02:07:47Z",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-17T12:39:27.078Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-16T23:35:36.106Z",
    "notes": [
     {
@@ -233529,6 +233661,10 @@
     {
      "text": "Reconciler: PR #704 merged",
      "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-29c7b1b6 → Complete: Its PR merged on main (PR #704 merged 2026-11-17T02:07:47Z (7015af4b817c); on main by merge-commit 7015af4b817c; build data-container-axf-data-holds-all: complete)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -234308,7 +234444,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -234332,7 +234468,7 @@
    "pr": "#706",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-17T15:11:41.668Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-15T12:21:00.568Z",
    "notes": [
     {
@@ -234374,6 +234510,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:41.668Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-2464b94c → Remove: Its PR was closed without a merge (PR #706 closed; not on main; build pending-tab-one-collapsed-row-per-2: built)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -234796,7 +234936,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -235538,7 +235678,7 @@
    "mergedAt": "2026-11-15T13:23:45Z",
    "priority": "P1",
    "createdAt": "2026-11-15T11:53:25.282Z",
-   "updatedAt": "2026-11-15T13:39:38Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-15T13:04:13.597Z",
    "notes": [
     {
@@ -235616,6 +235756,10 @@
     {
      "text": "Shipped manifest sm-gate-rules-plugin-in-the-console rev 1 sent to Shipped features (orchestrator): landed cf2f5d769, 67 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-15T13:39:38Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-re9pm01 → Complete: The build is complete (build gate-rules-plugin-in-the-console: complete)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -236275,7 +236419,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -237836,7 +237980,7 @@
    "mergedAt": "2026-11-15T19:56:03Z",
    "priority": "P0",
    "createdAt": "2026-11-15T13:23:46.016Z",
-   "updatedAt": "2026-11-15T19:59:06Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-15T17:08:47.543Z",
    "notes": [
     {
@@ -237890,6 +238034,10 @@
     {
      "text": "Shipped manifest sm-build-rules-tab-gate-rules-vps-owns rev 1 sent to Shipped features (orchestrator): landed 2cf47a634, 64 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-15T19:59:06Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-0969e483 → Complete: The build is complete (build build-rules-tab-gate-rules-vps-owns: complete)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -238597,7 +238745,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -238621,7 +238769,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-17T15:11:27.725Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-16T17:08:51.405Z",
    "notes": [
     {
@@ -238747,6 +238895,14 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:27.725Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-w4ueo01 → Remove: Its PR was closed without a merge (PR #712 closed; not on main; build phone-connect-small-android-companion: built)",
+     "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-usst701 → Remove: Its PR was closed without a merge (PR #712 closed; not on main; build phone-connect-small-android-companion: built)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -239704,7 +239860,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -239728,7 +239884,7 @@
    "pr": "#714",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-17T15:11:24.505Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-15T16:15:56.589Z",
    "notes": [
     {
@@ -239758,6 +239914,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:24.505Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-a909a832 → Remove: Its PR was closed without a merge (PR #714 closed; not on main; build shipped-features-open-button-views-each: built)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -240206,7 +240366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246440,7 +246600,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-17T15:11:13.156Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-16T20:49:51.102Z",
    "notes": [
     {
@@ -246526,6 +246686,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:13.156Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261116-zyvou01 → Remove: Its PR was closed without a merge (PR #725 closed; not on main; build settings-interface-gear-every-plugin: built)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -247313,7 +247477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247337,7 +247501,7 @@
    "pr": "#729",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-17T15:10:59.028Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-16T19:44:20.879Z",
    "notes": [
     {
@@ -247371,6 +247535,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:59.028Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261116-k7rk501 → Remove: Its PR was closed without a merge (PR #729 closed; not on main; build hotfix-orchestrator-grid-columns-don-t: built)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -247713,7 +247881,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -248301,7 +248469,7 @@
    "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-17T15:10:55.743Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-16T19:52:10.001Z",
    "notes": [
     {
@@ -248343,6 +248511,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:55.743Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261116-sjk8l01 → Remove: Its PR was closed without a merge (PR #730 closed; not on main; build reset-all-button-every-asset-override: built)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [],
@@ -248692,7 +248864,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -252081,7 +252253,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T15:10:22.915Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-17T00:32:45.876Z",
    "notes": [
     {
@@ -252159,6 +252331,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:22.915Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-avs9i01 → Remove: Its PR was closed without a merge (PR #752 closed; not on main; build own-look-per-grid-and-tab-group: built)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -252648,7 +252824,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -258538,7 +258714,7 @@
    "pr": "#774",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T12:33:11.362Z",
+   "updatedAt": "2026-11-17T19:02:33.722Z",
    "builtAt": "2026-11-17T04:40:41.012Z",
    "notes": [
     {
@@ -258596,6 +258772,10 @@
     {
      "text": "Clash note (move-server-side-console-parts-onto-vps): that build reuses axf_systemd_unit and the deploy/systemd/ pattern from here, adds User=axf-host and a sudo whitelist to axf-auto-lander.service, exposes its status through the new host API socket, and retires the axf-pipeline / axf-auto-land cron lines with a rollback. The tick logic here is not changed. Report: _claude/builds/reports/move-server-side-console-parts-onto-vps.md §2.",
      "at": "2026-11-17T12:33:11.362Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-0pcgp01 → Complete: Its PR merged on main (PR #774 merged 2026-11-17T18:58:09Z (92343032cbd7); on main by squash 92343032cbd7; build server-auto-lander-fixes-lands: built)",
+     "at": "2026-11-17T19:02:33.722Z"
     }
    ],
    "approvals": [
@@ -259309,7 +259489,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
