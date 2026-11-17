@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7440,
- "updatedAt": "2026-11-17T13:33:08.255Z",
+ "rev": 7441,
+ "updatedAt": "2026-11-17T13:40:25.281Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223043,14 +223043,14 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "#780",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T13:10:23.017Z",
+   "updatedAt": "2026-11-17T13:40:22.024Z",
    "builtAt": "",
    "notes": [
     {
@@ -223108,6 +223108,10 @@
     {
      "text": "Reconciler: PR #780",
      "at": "2026-11-17T13:10:23.017Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T13:40:22.024Z"
     }
    ],
    "approvals": [
@@ -223751,7 +223755,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
