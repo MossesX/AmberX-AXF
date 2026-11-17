@@ -48,7 +48,7 @@ import { ChoiceGrid, Note, Section, SelectField, Switch, TextField } from './For
 import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
-import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
+import { openSettingsFloating } from '../settingsFloating';
 
 export const CHROME_SETTINGS_DIALOG = CHROME_SETTINGS_DIALOG_ID;
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -182,7 +182,9 @@ export function installChrome(rt: AxfRuntime): void {
   rt.actions.withModule(FRAMEWORK_MODULE, () => {
     const t = (v: unknown): ChromeType | null => (isChromeType(v) ? v : null);
     const inst = (type: ChromeType, v: unknown, ctx?: { payload?: unknown }) => instanceOf(type, (typeof v === 'string' && v) || (typeof ctx?.payload === 'string' ? ctx.payload : undefined)) || CHROME_APP_INSTANCE;
-    rt.actions.register('chrome.settings', ([type, instance], ctx) => { const ty = t(type); if (ty) rt.openDialog(CHROME_SETTINGS_DIALOG, { type: ty, instance: inst(ty, instance, ctx) }); }, { label: 'Chrome settings (tab group, toolbar, banner, nav, menu bar)', params: true });
+    // Settings… from a banner, nav menu, toolbar, tab group or menu bar: the floating window, through the one door
+    // (settings-opened-banners-nav-menu); the dialog already up for that instance is focused, not opened again.
+    rt.actions.register('chrome.settings', ([type, instance], ctx) => { const ty = t(type); if (ty) openSettingsFloating(rt, { kind: 'chrome', type: ty, instance: inst(ty, instance, ctx) }); }, { label: 'Chrome settings (tab group, toolbar, banner, nav, menu bar)', params: true });
     rt.actions.register('chrome.pick', ([type, instance], ctx) => { const ty = t(type); if (ty) rt.openDialog(CHROME_PICK_DIALOG, { type: ty, instance: inst(ty, instance, ctx) }); }, { label: 'Change a chrome asset (picker)', params: true });
     rt.actions.register('chrome.move', ([type, instance, position = ''], ctx) => { const ty = t(type); if (ty && !moveChrome(rt, ty, inst(ty, instance, ctx), position)) rt.toast(`${chromeLabel(ty ?? type ?? '')} can't move to "${position}".`, 'warning', 'Move'); }, { label: 'Move a chrome piece (top / bottom / left / right)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.set', ([type, instance, key = '', ...rest], ctx) => {
@@ -463,7 +465,7 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
       return (
         <div className="fx-stack">
           {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
-          {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => rt.openDialog(BANNER_SETTINGS_DIALOG, instance !== CHROME_APP_INSTANCE ? { id: instance } : {})}>Banner settings (look, behaviour, Apply to all)…</Button>}
+          {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => openSettingsFloating(rt, instance !== CHROME_APP_INSTANCE ? { kind: 'banner', id: instance } : { kind: 'banner' })}>Banner settings (look, behaviour, Apply to all)…</Button>}
           {id === 'look' && type === 'tab-group' && levelOk('tokens', 'basic') && <InstanceTokensPanel family="tabs" instance={instance} />}
           {id === 'behaviour' && <Note tone="info">Tap to confirm: on a touch screen the first tap shows what an item is and the second tap confirms it. Same as all follows the switch for every {chromeLabel(type).toLowerCase()} in Settings → Plugins → Toolbars.</Note>}
           {id === 'behaviour' && type === 'nav-menu' && <Note tone="info">Sub menus, animation and colours of a nav that opts in are the Navigation style settings (nav-style@1).</Note>}

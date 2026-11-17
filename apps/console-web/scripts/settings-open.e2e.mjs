@@ -61,10 +61,19 @@ try {
 
     // one tab: settings.open:appearance → the tab dialog
     await page.keyboard.press('Escape');
-    await run({ verb: 'open', address: 'view:settings/tab:settings.tabs=appearance' });
+    await sleep(200);
+    await run({ verb: 'press', address: 'function:settings.open', value: 'appearance' });
     await page.waitForSelector('[data-axf-settings-tab="appearance"]', { timeout: 10_000 });
     s = await st();
     ok(s.dialog === 'axf.settings.tab', `${name}: a tab opens in the tab dialog (${s.dialog})`);
+    // the console-control chain (view:settings, then its tab) opens the whole interface and switches to that tab inside
+    // it, never a second window (settings-opened-banners-nav-menu)
+    await page.keyboard.press('Escape');
+    await sleep(200);
+    await run({ verb: 'open', address: 'view:settings/tab:settings.tabs=appearance' });
+    await page.waitForSelector('[data-axf-settings-all] [data-axf-scope="tab:settings.tabs=appearance"]', { timeout: 10_000 });
+    s = await st();
+    ok(s.dialog === 'axf.settings.all' && (await page.$$('.fx-dialog')).length === 1, `${name}: view:settings/tab:… opens the whole interface on that tab, one window (${s.dialog})`);
     await sleep(400);
     if (SHOTS) await page.screenshot({ path: join(SHOTS, `settings-tab-dialog-${name}.png`) });
 
@@ -75,6 +84,62 @@ try {
     await run({ verb: 'open', address: 'view:settings' });
     s = await st();
     ok(s.dialog === 'axf.settings.all', `${name}: Settings still opens as a popup`);
+
+    // settings-opened-banners-nav-menu (Brett, Nov 17 2026: "it doesn't open in the floating window. It opens in the
+    // main area."): the nav menu's Settings item is the floating window too, never the Settings page
+    await page.keyboard.press('Escape');
+    await sleep(200);
+    const navItem = await page.$('[data-axf-view-link="settings"]');
+    if (navItem && await navItem.isVisible()) {
+      await navItem.click();
+      await page.waitForSelector('[data-axf-settings-all]', { timeout: 10_000 });
+      s = await st();
+      ok(s.dialog === 'axf.settings.all' && s.screen === screen0, `${name}: the nav menu's Settings item opens the floating window over ${screen0} (${s.dialog} on ${s.screen})`);
+      // a second press keeps the one window (focused, not opened twice)
+      await navItem.click();
+      await sleep(200);
+      ok((await page.$$('.fx-dialog')).length === 1 && (await st()).dialog === 'axf.settings.all', `${name}: pressing it again keeps one window`);
+    } else {
+      await run({ verb: 'press', address: 'function:nav', value: 'settings' });
+      await page.waitForSelector('[data-axf-settings-all]', { timeout: 10_000 });
+      s = await st();
+      ok(s.dialog === 'axf.settings.all' && s.screen === screen0, `${name}: nav:settings opens the floating window over ${screen0} (${s.dialog} on ${s.screen})`);
+    }
+    // a banner gear / toolbar item (settings.open:<tab>) while the window is up switches the tab inside it: still floating
+    await run({ verb: 'press', address: 'function:settings.open', value: 'about' });
+    await sleep(300);
+    s = await st();
+    ok(s.dialog === 'axf.settings.all' && s.screen === screen0, `${name}: a settings tab asked while the window is up stays in the floating window (${s.dialog} on ${s.screen})`);
+    ok(!!(await page.$('[data-axf-settings-all] [data-axf-scope="tab:settings.tabs=about"]')), `${name}: the window switched to that tab`);
+
+    // right-click Settings… on a toolbar / banner / nav / tab group / menu bar: chrome.settings → the chrome settings dialog, once
+    await page.keyboard.press('Escape');
+    await sleep(200);
+    await run({ verb: 'press', address: 'function:chrome.settings', value: 'toolbar:app' });
+    await page.waitForSelector('.fx-dialog[aria-label="Chrome settings"]', { timeout: 10_000 });
+    s = await st();
+    ok(s.dialog === 'axf.chrome.settings' && s.screen === screen0, `${name}: Toolbar settings… opens the floating chrome settings dialog (${s.dialog} on ${s.screen})`);
+    await run({ verb: 'press', address: 'function:chrome.settings', value: 'toolbar:app' });
+    await sleep(200);
+    ok((await page.$$('.fx-dialog')).length === 1 && (await st()).dialog === 'axf.chrome.settings', `${name}: Settings… again keeps the one dialog`);
+    await sleep(400);
+    if (SHOTS) await page.screenshot({ path: join(SHOTS, `chrome-settings-dialog-${name}.png`) });
+
+    // Banner settings: the floating banner settings dialog
+    await page.keyboard.press('Escape');
+    await sleep(200);
+    await run({ verb: 'press', address: 'function:banners.settings' });
+    await page.waitForSelector('.fx-dialog[aria-label="Banner settings"]', { timeout: 10_000 });
+    s = await st();
+    ok(s.dialog === 'axf.banners.settings' && s.screen === screen0, `${name}: Banner settings opens floating (${s.dialog} on ${s.screen})`);
+
+    // the one door by API: settings.floating:<target>
+    await page.keyboard.press('Escape');
+    await sleep(200);
+    await run({ verb: 'press', address: 'function:settings.floating', value: 'chrome:nav-menu:app' });
+    await page.waitForSelector('.fx-dialog[aria-label="Chrome settings"]', { timeout: 10_000 });
+    ok((await st()).dialog === 'axf.chrome.settings', `${name}: settings.floating:chrome:nav-menu:app opens the nav menu's settings floating`);
+    await page.keyboard.press('Escape');
     await ctx.close();
   }
   console.log(`settings-open e2e: ${checks} checks passed${SHOTS ? ` (shots in ${SHOTS})` : ''}`);

@@ -47,6 +47,7 @@ import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { BANNER_SETTINGS_DIALOG_ID } from '../../core/engines/settingsopen';
+import { openSettingsFloating } from '../settingsFloating';
 
 export type BannerTone = 'own' | 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 export type BannerDensity = 'compact' | 'regular' | 'roomy';
@@ -219,7 +220,8 @@ function installActions(rt: AxfRuntime): void {
     const pick = id || (typeof ctx?.payload === 'string' ? ctx.payload : '');
     // Shown as a page on its own (a host's Banners settings tab, embed@1 page `banners`): switch the page's tab instead.
     if (rt.embedded?.page === 'banners') { setWantTab(pick); return; }
-    rt.openDialog(BANNER_SETTINGS_DIALOG, pick ? { id: pick } : {});
+    // the floating window, through the one door (settings-opened-banners-nav-menu): already up for this banner → focus
+    openSettingsFloating(rt, pick ? { kind: 'banner', id: pick } : { kind: 'banner' });
   }, { label: 'Banner settings' });
   // Every frame of this app (a host's Banners tab, its banner strip, the app's own tab) shows the same choices at once:
   // the runtime re-reads settings when another frame saves (storage events) and re-renders on any settings change.

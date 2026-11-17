@@ -96,7 +96,7 @@ export function openView(rt: AxfRuntime, view: string): SettingsFloatingResult |
 export function installSettingsFloating(rt: AxfRuntime): void {
   if (installed.has(rt)) return;
   installed.add(rt);
-  rt.actions.register(SETTINGS_FLOATING_ACTION, (args) => {
+  rt.actions.register('settings.floating', (args) => {
     const t = parseSettingsFloatingTarget(args);
     if (!t) { rt.toast(`Say what to open: all, tab:<id>, chrome:<type>[:<instance>] or banner[:<id>] (not "${args.join(':')}").`, 'warning', 'Settings'); return; }
     openSettingsFloating(rt, t);

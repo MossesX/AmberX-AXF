@@ -53,7 +53,31 @@ every banner gear, toolbar button and menu entry that runs `settings.open:<tab>`
 
 Checks run: check-settings-open 84, check-theme, check-controls, check-console-control (CLI + spec 290), check-chrome-settings 304, check-embed 429, check-help 274, check-console-commands 101, validate --framework; console-web `tsc --noEmit` clean. `check-help-mode.mts` needs `jsdom`, which this worktree does not have (not related to this change).
 
-### What s3 does with it
+## s3: Settings… from banner, nav menu, toolbar, tab group and menu bar through the door
+
+| Piece | Where |
+|---|---|
+| `chrome.settings:<type>:<instance>` (right-click / long-press `<Kind> settings…`, the "Assets with edits" gear) → `openSettingsFloating(rt, { kind: 'chrome', type, instance })`: the floating chrome settings dialog, focused when that instance's dialog is already up | `framework/react/components/ChromeContext.tsx` |
+| The chrome dialog's "Banner settings…" button and the `banners.settings[:id]` action → `openSettingsFloating(rt, { kind: 'banner', id })` | `ChromeContext.tsx`, `BannerSettings.tsx` |
+| The settings asset rendering is untouched: `ChromeSettingsPanel` still resolves `settings/chrome-<type>` (instance pick → kind pick → shared default) through `resolveSettingsChain` (extends) and lays the dialog out from it | `ChromeContext.tsx` (`chromeSettingsUi`, `ChromeSettingsPanel`) |
+| `settings.floating` registered with a literal id so the console's control inventory lists `function:settings.floating` | `framework/react/settingsFloating.ts`, `apps/console-web/src/control/inventory.json` |
+| e2e: the nav menu's Settings item (or `nav:settings` where the item is folded away) opens the floating window over the screen you were on; a second press keeps one window; a settings tab asked while it is up switches inside it (`data-axf-scope="tab:settings.tabs=<id>"`); the console-control chain `view:settings/tab:…` lands in the whole interface on that tab, one window; a direct `settings.open:<tab>` still opens the tab dialog; `chrome.settings:toolbar:app` opens the chrome settings dialog once (a repeat keeps one); `banners.settings` floats; `settings.floating:chrome:nav-menu:app` by API. **29 checks, desktop + phone**, run against `vite preview` of this branch's build (note: the VPS has stale `vite preview` servers from other sessions on low ports; the first run hit one of those and tested an old bundle, so the script's port must be verified free first) | `apps/console-web/scripts/settings-open.e2e.mjs` |
+| Screenshots (UI Review → Screenshots, group `settings-opened-banners-nav-menu`): Settings from the nav menu floating over the home screen, one tab in the floating window, right-click Toolbar settings… floating; desktop + phone | `axf shot` |
+| Behaviour change from #628 to note: with the whole interface up, asking for a tab (banner gear, toolbar, `settings.open:<tab>`, console-control `view:settings/tab:…`) switches the tab inside that window instead of swapping it for a single-tab dialog | `framework/react/settingsFloating.ts` |
+| CI: 95 checks (s3 adds the chrome / banner routing, no `rt.openDialog` of a settings dialog left in ChromeContext, the asset rendering still there, every app's chrome context the same, the e2e covers the new cases) | `framework/spec/check-settings-open.mts` |
+
+### How each piece is reached without the UI
+
+| What | REST `/api/console-control` · MCP `console_press` / `console_open` · `axf console …` · voice |
+|---|---|
+| Settings (whole interface) in the floating window | `open view:settings` · `press function:app.settings` · `press function:settings.floating` (value `all`) · `press function:nav` value `settings` |
+| One settings tab | `open view:settings/tab:settings.tabs=<tab>` · `press function:settings.open` value `<tab>` · `press function:settings.floating` value `tab:<tab>` |
+| A banner / nav menu / toolbar / tab group / menu bar's own settings | `press function:chrome.settings` value `<type>:<instance>` · `press function:settings.floating` value `chrome:<type>:<instance>` |
+| Banner settings | `press function:banners.settings` [value `<banner id>`] · `press function:settings.floating` value `banner[:<id>]` |
+| What is open | console-control `state` → `dialog` (`axf.settings.all` / `axf.settings.tab` / `axf.chrome.settings` / `axf.banners.settings`), `screen` stays the screen underneath |
+| Every setting inside those dialogs | unchanged: `setting:<key>` get / set, `chrome.set:<type>:<instance>:<field>:<value>`, `chrome.unset`, `chrome.reset`, `chrome.interface`, `chrome.instance-interface` |
+
+### What s3 did with the inventory
 
 - s2: one entry point `openSettingsFloating(rt, target)` in `framework/react/settingsFloating.ts` (exported from
   `framework/react`): target = the whole interface, a settings tab, a chrome kind + instance, or a banner. It resolves

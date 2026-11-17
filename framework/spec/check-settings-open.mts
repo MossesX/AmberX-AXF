@@ -70,7 +70,7 @@ ok(/export function openView\(rt: AxfRuntime, view: string\)/.test(door) && /vie
 ok(/sameSettingsDialog\(state\.dialog, target\)\) \{ focusOpenDialog\(\)/.test(door), 'the same dialog already up is focused, never opened twice');
 ok(/state\.dialog\?\.id === SETTINGS_ALL_DIALOG\) \{ switchTabInPlace\(rt, tab\)/.test(door), 'a tab asked while the whole interface is up switches inside it');
 ok(/rt\.hostTakes\('settings'\)\) \{ rt\.dispatch\(tab \? `settings\.open:\$\{tab\}` : 'app\.settings'\)/.test(door), 'a host that takes settings gets the opening');
-ok(/register\(SETTINGS_FLOATING_ACTION, \(args\) => \{\s*const t = parseSettingsFloatingTarget\(args\)/.test(door), 'the settings.floating action parses its target through the engine');
+ok(/register\('settings\.floating', \(args\) => \{\s*const t = parseSettingsFloatingTarget\(args\)/.test(door), 'the settings.floating action parses its target through the engine');
 const reactIndex = readFileSync(join(ROOT, 'framework/react/index.ts'), 'utf8');
 ok(/export \{ openSettingsFloating, openView, installSettingsFloating, SETTINGS_FLOATING_ACTION/.test(reactIndex), 'framework/react exports the door');
 ok(/installSettingsFloating\(rt\);/.test(readFileSync(join(ROOT, 'framework/react/AppShell.tsx'), 'utf8')), 'AppShell installs the settings.floating action');
@@ -82,6 +82,18 @@ for (const [file, what] of [['framework/react/components/Chrome.tsx', 'the nav m
 ok(/viewOpensSettings\(view\) && this\.actions\.get\('app\.settings'\)\) this\.dispatch\('app\.settings'\)/.test(readFileSync(join(ROOT, 'framework/core/runtime.ts'), 'utf8')), 'the core nav action sends nav:settings to app.settings');
 ok(/^export const CHROME_SETTINGS_DIALOG = CHROME_SETTINGS_DIALOG_ID;/m.test(readFileSync(join(ROOT, 'framework/react/components/ChromeContext.tsx'), 'utf8')) && /^export const BANNER_SETTINGS_DIALOG = BANNER_SETTINGS_DIALOG_ID;/m.test(readFileSync(join(ROOT, 'framework/react/components/BannerSettings.tsx'), 'utf8')), 'the chrome and banner dialogs use the engine\'s ids');
 for (const app of ['console-web', 'axhub-web', 'amberx-droid', 'molly']) ok(readFileSync(join(ROOT, `apps/${app}/src/axf/react/settingsFloating.ts`), 'utf8') === door, `${app} ships the same door`);
+// s3: Settings… on a banner / nav menu / toolbar / tab group / menu bar, and Banner settings, go through the door too
+const chromeCtx = readFileSync(join(ROOT, 'framework/react/components/ChromeContext.tsx'), 'utf8');
+ok(/register\('chrome\.settings', \(\[type, instance\], ctx\) => \{ const ty = t\(type\); if \(ty\) openSettingsFloating\(rt, \{ kind: 'chrome', type: ty, instance: inst\(ty, instance, ctx\) \}\); \}/.test(chromeCtx), 'chrome.settings (right-click Settings…) opens through the door');
+ok(!/rt\.openDialog\(CHROME_SETTINGS_DIALOG/.test(chromeCtx) && !/rt\.openDialog\(BANNER_SETTINGS_DIALOG/.test(chromeCtx), 'ChromeContext opens no settings dialog on its own');
+ok(/openSettingsFloating\(rt, instance !== CHROME_APP_INSTANCE \? \{ kind: 'banner', id: instance \} : \{ kind: 'banner' \}\)/.test(chromeCtx), "the chrome dialog's Banner settings button opens through the door");
+ok(/\[CHROME_SETTINGS_DIALOG\]: \{ title: 'Chrome settings'[^\n]*<ChromeSettingsPanel type=\{typeOf\(p\)\} instance=\{instOf\(p\)\} \/>/.test(chromeCtx), 'the chrome settings dialog still renders ChromeSettingsPanel (settings/chrome-<type>, extends chain)');
+ok(/chromeSettingsUi\(rt, type, instance\)/.test(chromeCtx) && /resolveSettingsChain\(get, id\)/.test(chromeCtx), 'the settings asset rendering is unchanged');
+const bannerSettings = readFileSync(join(ROOT, 'framework/react/components/BannerSettings.tsx'), 'utf8');
+ok(/openSettingsFloating\(rt, pick \? \{ kind: 'banner', id: pick \} : \{ kind: 'banner' \}\)/.test(bannerSettings) && !/rt\.openDialog\(BANNER_SETTINGS_DIALOG/.test(bannerSettings), 'banners.settings opens through the door');
+for (const app of ['console-web', 'axhub-web', 'amberx-droid', 'molly']) ok(readFileSync(join(ROOT, `apps/${app}/src/axf/react/components/ChromeContext.tsx`), 'utf8') === chromeCtx, `${app} ships the same chrome context`);
+const e2e = readFileSync(join(ROOT, 'apps/console-web/scripts/settings-open.e2e.mjs'), 'utf8');
+ok(/data-axf-view-link="settings"/.test(e2e) && /function:chrome\.settings/.test(e2e) && /function:banners\.settings/.test(e2e) && /function:settings\.floating/.test(e2e), 'the e2e covers the nav item, chrome settings, banner settings and settings.floating');
 
 /* 2. library */
 const lib = readFileSync(join(ROOT, 'framework/libs/settings/index.tsx'), 'utf8');
