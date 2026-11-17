@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8248,
- "updatedAt": "2026-11-17T22:44:29.601Z",
+ "rev": 8249,
+ "updatedAt": "2026-11-17T22:44:44.396Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -290439,7 +290439,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -290447,7 +290447,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T22:43:47.278Z",
+   "updatedAt": "2026-11-17T22:44:30.480Z",
    "builtAt": "",
    "notes": [
     {
@@ -290505,6 +290505,10 @@
     {
      "text": "Brett: this build must run on Fable 5.2 (claude-fable-5-2) Ultra Code, not fable-5-1. Restart the remaining steps on Fable 5.2 Ultra Code, preferably on the Moses X account.",
      "at": "2026-11-17T22:25:23.406Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s10): session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T22:44:30.480Z"
     }
    ],
    "approvals": [],
@@ -290525,21 +290529,21 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "axf-flagship-professional-skin-covering-2--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T21:58:22.524Z",
     "runs": 2,
-    "crashes": 1,
+    "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T21:54:44.467Z",
-     "exit": 3,
+     "at": "2026-11-17T22:44:09.502Z",
+     "exit": 129,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 28,
+     "stepsLeft": 19,
      "account": "hulu0241",
-     "session": "axf-flagship-professional-skin-covering-2--sully",
+     "session": "axf-flagship-professional-skin-covering-2--earl",
      "phase": "Phase 1"
     },
     "split": {
@@ -290550,7 +290554,7 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
@@ -290576,6 +290580,22 @@
      "phase": "Phase 1"
     }
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T22:44:09.502Z",
+     "buildId": "flagship-professional-skin-covering-2",
+     "phase": "Phase 1",
+     "step": "s10",
+     "cause": "exit-failed",
+     "exit": 129,
+     "action": "retry",
+     "attempt": 1,
+     "account": "hulu0241",
+     "notified": "2026-11-17T22:44:32.474Z",
+     "session": "axf-flagship-professional-skin-covering-2--earl",
+     "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3)."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -290829,10 +290849,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-17T22:44:30.480Z",
+     "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T21:34:10.438Z"
+     "updatedAt": "2026-11-17T22:44:30.504Z"
     },
     {
      "id": "s11",
@@ -291299,7 +291319,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {

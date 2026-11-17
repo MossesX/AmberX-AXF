@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:26 UTC · `group-chat-audio-hear-agents-talk-while` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `picker-dialog-plugin-replaces-all` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · builds-live
 - 2026-11-17 22:26 UTC · `separate-settings-per-plugin-reset` → landing (all) · builds-live
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:42 UTC · `vps-sets-every-build-status-manifest` added (0 steps) (all) · pending
 - 2026-11-17 22:42 UTC · `vps-sets-every-build-status-manifest` note (all) · pending
 - 2026-11-17 22:43 UTC · `vps-sets-every-build-status-manifest` → queued, note (all) · console
+- 2026-11-17 22:44 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
 
 ## Token passes (log)
 
