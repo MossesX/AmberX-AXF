@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "nav-style",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "Flagship sub menus: they slide open in 180 ms on the standard easing with a 20 ms stagger, one open at a time, following the active page; still under reduced motion.",
+  "tags": [
+    "flagship",
+    "navigation"
+  ],
+  "data": {
+    "colors": {
+      "submenu": "surface2"
+    },
+    "layout": {
+      "density": "compact",
+      "indent": 1.6
+    },
+    "animation": {
+      "kind": "slide",
+      "durationMs": 180,
+      "easing": "standard",
+      "staggerMs": 20,
+      "chevron": "rotate",
+      "reduced": "system"
+    },
+    "behavior": {
+      "single": true,
+      "openOn": "tap",
+      "autoCollapse": true,
+      "remember": true,
+      "followActive": true,
+      "swipe": true
+    }
+  }
+}

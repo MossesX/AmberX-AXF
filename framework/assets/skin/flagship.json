@@ -24,7 +24,11 @@
     "assets": {
       "typography": "flagship",
       "density": "flagship",
-      "sizing": "flagship"
+      "sizing": "flagship",
+      "context-menu": "flagship",
+      "app-menu": "flagship",
+      "nav-menu": "flagship",
+      "nav-style": "flagship"
     },
     "preview": {
       "caption": "Blue-black and amber, compact, quiet motion: one product across console, axHub and AmberX."
