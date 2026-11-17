@@ -821,10 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:51 UTC · `land-per-instance-settings-picker` s1 done (all) · orchestrator
-- 2026-11-17 00:51 UTC · `land-per-instance-settings-picker` s2 done (all) · orchestrator
-- 2026-11-17 00:52 UTC · `land-per-instance-settings-picker` s3 done, → complete (all) · orchestrator
-- 2026-11-17 00:53 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
 - 2026-11-17 00:53 UTC · `land-per-instance-settings-picker` → pending, note (all) · pipeline
 - 2026-11-17 00:55 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` s1 done, → running (all) · orchestrator
 - 2026-11-17 00:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` s2 done, → complete (all) · orchestrator
@@ -1221,6 +1217,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:12 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-17 15:12 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
 - 2026-11-17 15:12 UTC · `auto-lander-drag-rows-to-set-merge-order` s3 done (all) · orchestrator
+- 2026-11-17 15:12 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-17 15:12 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-17 15:12 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
+- 2026-11-17 15:12 UTC · `projects-own-everything-per-project` note (all) · orchestrator
 
 ## Token passes (log)
 

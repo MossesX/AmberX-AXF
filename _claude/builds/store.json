@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7518,
- "updatedAt": "2026-11-17T15:12:21.809Z",
+ "rev": 7519,
+ "updatedAt": "2026-11-17T15:12:35.649Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196431,7 +196431,7 @@
    "branch": "claude/projects-own-everything-per-project",
    "pr": "#605",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-15T01:39:43.872Z",
+   "updatedAt": "2026-11-17T15:12:32.306Z",
    "builtAt": "2026-11-15T01:39:19.969Z",
    "notes": [
     {
@@ -196505,6 +196505,10 @@
     {
      "text": "Headless run axf-projects-own-everything-per-project--rhonda: brief only · start 11.3K tokens ($0.03) · cost $2.71 · 53 turns · 6 tools, MCP none",
      "at": "2026-11-15T01:39:43.872Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:32.306Z"
     }
    ],
    "approvals": [
@@ -196682,7 +196686,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -202706,7 +202710,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-16T18:34:44.105Z",
+   "updatedAt": "2026-11-17T15:12:23.916Z",
    "builtAt": "2026-11-15T01:05:23.539Z",
    "notes": [
     {
@@ -202760,6 +202764,10 @@
     {
      "text": "Brett Nov 16: merged into themed-native-controls-plugin (one plugin for all browser-replacement controls + animations). Don't land separately.",
      "at": "2026-11-16T18:34:44.105Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:23.916Z"
     }
    ],
    "approvals": [
@@ -203085,7 +203093,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206116,7 +206124,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-15T01:21:59.421Z",
+   "updatedAt": "2026-11-17T15:12:18.490Z",
    "builtAt": "2026-11-15T01:21:59.421Z",
    "notes": [
     {
@@ -206178,6 +206186,10 @@
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--paulie: brief only · start 11.5K tokens ($0.03) · cost $5.48 · 122 turns · 6 tools, MCP none",
      "at": "2026-11-15T01:21:59.421Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:18.490Z"
     }
    ],
    "approvals": [
@@ -206428,7 +206440,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214600,7 +214612,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-16T13:10:22.649Z",
+   "updatedAt": "2026-11-17T15:12:14.753Z",
    "builtAt": "2026-11-15T01:26:56.489Z",
    "notes": [
     {
@@ -214658,6 +214670,10 @@
     {
      "text": "Brett (Nov 16): KEEP. Menus must be fully DYNAMIC: built at runtime from what every installed/enabled plugin registers for the right-clicked thing (no hardcoded lists). Enabling, disabling or installing a plugin adds/removes its items instantly with no rebuild, and items follow the current skin. Verify before landing.",
      "at": "2026-11-16T13:10:22.649Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:14.753Z"
     }
    ],
    "approvals": [
@@ -214917,7 +214933,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
