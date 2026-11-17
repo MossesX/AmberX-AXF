@@ -1,0 +1,475 @@
+{
+ "$axf": "pass-approval-cases@1",
+ "note": "Fixed secret and clock. Every port (Node here, Kotlin twin later) must reproduce these messages, tokens and verdicts byte for byte.",
+ "secret": "pass-approval-cases-secret-0123456789abcdef",
+ "now": 1794331200000,
+ "nowIso": "2026-11-10T17:20:00.000Z",
+ "passes": {
+  "all": {
+   "id": "pass-mwb1a2c3-0a1b2c",
+   "scope": "all",
+   "state": "pending",
+   "minutes": 30,
+   "reason": "finish the look",
+   "requestedBy": "amber (mcp)",
+   "requestedAt": "2026-11-10T17:15:00.000Z",
+   "label": "Everything"
+  },
+  "irreversible": {
+   "id": "pass-mwb1a2c3-ffeedd",
+   "scope": "all",
+   "state": "pending",
+   "minutes": 30,
+   "reason": "finish the look",
+   "requestedBy": "amber (mcp)",
+   "requestedAt": "2026-11-10T17:15:00.000Z",
+   "label": "Everything",
+   "includeIrreversible": true
+  },
+  "theme": {
+   "id": "pass-mwb1a2c3-123456",
+   "scope": "tokens.theme",
+   "state": "pending",
+   "minutes": 10,
+   "reason": "finish the look",
+   "requestedBy": "amber (mcp)",
+   "requestedAt": "2026-11-10T17:15:00.000Z",
+   "label": "Theme"
+  }
+ },
+ "nonce": "0123456789abcdef",
+ "expiry": {
+  "all": 1794331800000,
+  "lateMint": 1794331800000,
+  "noRequestedAt": 1794332100000
+ },
+ "messages": {
+  "allApprove": "pass-action@1.pass-mwb1a2c3-0a1b2c.approve.all.30.1794331800000.0123456789abcdef",
+  "allDeny": "pass-action@1.pass-mwb1a2c3-0a1b2c.deny.all.30.1794331800000.0123456789abcdef",
+  "irreversibleApprove": "pass-action@1.pass-mwb1a2c3-ffeedd.approve.all.30.irreversible.1794331800000.0123456789abcdef",
+  "themeApprove": "pass-action@1.pass-mwb1a2c3-123456.approve.tokens.theme.10.1794331800000.0123456789abcdef"
+ },
+ "tokens": {
+  "allApprove": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+  "allDeny": "pa1.pass-mwb1a2c3-0a1b2c.deny.1794331800000.0123456789abcdef.949c53fe0fa573b9626f65299a6a125d8273af5e59ca18db7f1a9756021d5c4c",
+  "irreversibleApprove": "pa1.pass-mwb1a2c3-ffeedd.approve.1794331800000.0123456789abcdef.6801565d8b9ca05072cacd690d65bc3fb078bb85b30b94e41d50daaf903d8f54",
+  "themeApprove": "pa1.pass-mwb1a2c3-123456.approve.1794331800000.0123456789abcdef.bd091b7df9aa4e3616ef490e6046d0f66b751e357d9f0088ec54c9f99e797c90"
+ },
+ "verify": [
+  {
+   "name": "fresh approve",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": "all",
+   "now": 1794331200000,
+   "want": {
+    "ok": true,
+    "decision": "approve",
+    "already": false
+   }
+  },
+  {
+   "name": "fresh deny",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.deny.1794331800000.0123456789abcdef.949c53fe0fa573b9626f65299a6a125d8273af5e59ca18db7f1a9756021d5c4c",
+   "pass": "all",
+   "now": 1794331200000,
+   "want": {
+    "ok": true,
+    "decision": "deny",
+    "already": false
+   }
+  },
+  {
+   "name": "same token again after it decided",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": "all",
+   "now": 1794331201000,
+   "stateAt": "active",
+   "decidedBy": {
+    "nonce": "0123456789abcdef",
+    "decision": "approve"
+   },
+   "want": {
+    "ok": true,
+    "decision": "approve",
+    "already": true
+   }
+  },
+  {
+   "name": "deny token after approve decided",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.deny.1794331800000.0123456789abcdef.949c53fe0fa573b9626f65299a6a125d8273af5e59ca18db7f1a9756021d5c4c",
+   "pass": "all",
+   "now": 1794331201000,
+   "stateAt": "active",
+   "decidedBy": {
+    "nonce": "0123456789abcdef",
+    "decision": "approve"
+   },
+   "want": {
+    "ok": false,
+    "code": "decided"
+   }
+  },
+  {
+   "name": "at expiry",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": "all",
+   "now": 1794331800000,
+   "want": {
+    "ok": false,
+    "code": "expired"
+   }
+  },
+  {
+   "name": "lapsed request",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": "all",
+   "now": 1794331260000,
+   "stateAt": "lapsed",
+   "want": {
+    "ok": false,
+    "code": "not_pending"
+   }
+  },
+  {
+   "name": "wrong pass",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": "theme",
+   "now": 1794331200000,
+   "want": {
+    "ok": false,
+    "code": "wrong_pass"
+   }
+  },
+  {
+   "name": "no such pass",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": null,
+   "now": 1794331200000,
+   "want": {
+    "ok": false,
+    "code": "unknown_pass"
+   }
+  },
+  {
+   "name": "tampered signature",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd200",
+   "pass": "all",
+   "now": 1794331200000,
+   "want": {
+    "ok": false,
+    "code": "bad_signature"
+   }
+  },
+  {
+   "name": "decision swapped in token",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.deny.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": "all",
+   "now": 1794331200000,
+   "want": {
+    "ok": false,
+    "code": "bad_signature"
+   }
+  },
+  {
+   "name": "minutes changed on the pass",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": {
+    "id": "pass-mwb1a2c3-0a1b2c",
+    "scope": "all",
+    "state": "pending",
+    "minutes": 60,
+    "reason": "finish the look",
+    "requestedBy": "amber (mcp)",
+    "requestedAt": "2026-11-10T17:15:00.000Z",
+    "label": "Everything"
+   },
+   "now": 1794331200000,
+   "want": {
+    "ok": false,
+    "code": "bad_signature"
+   }
+  },
+  {
+   "name": "irreversible added to the pass",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": {
+    "id": "pass-mwb1a2c3-0a1b2c",
+    "scope": "all",
+    "state": "pending",
+    "minutes": 30,
+    "reason": "finish the look",
+    "requestedBy": "amber (mcp)",
+    "requestedAt": "2026-11-10T17:15:00.000Z",
+    "label": "Everything",
+    "includeIrreversible": true
+   },
+   "now": 1794331200000,
+   "want": {
+    "ok": false,
+    "code": "bad_signature"
+   }
+  },
+  {
+   "name": "not a token",
+   "token": "pa1.nope",
+   "pass": "all",
+   "now": 1794331200000,
+   "want": {
+    "ok": false,
+    "code": "malformed"
+   }
+  },
+  {
+   "name": "wrong secret",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": "all",
+   "now": 1794331200000,
+   "secret": "another-secret-another-secret-another",
+   "want": {
+    "ok": false,
+    "code": "bad_signature"
+   }
+  },
+  {
+   "name": "no secret",
+   "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+   "pass": "all",
+   "now": 1794331200000,
+   "secret": "",
+   "want": {
+    "ok": false,
+    "code": "no_secret"
+   }
+  }
+ ],
+ "links": {
+  "deep_link": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c",
+  "approve_url": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c/approve",
+  "deny_url": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c/deny",
+  "molly_url": "https://molly.amberxai.com/#/console/pass/pass-mwb1a2c3-0a1b2c"
+ },
+ "linksCustom": {
+  "deep_link": "http://localhost:7488/#/pass/pass-mwb1a2c3-0a1b2c",
+  "approve_url": "http://localhost:7488/#/pass/pass-mwb1a2c3-0a1b2c/approve",
+  "deny_url": "http://localhost:7488/#/pass/pass-mwb1a2c3-0a1b2c/deny",
+  "molly_url": "http://localhost:5173/#/console/pass/pass-mwb1a2c3-0a1b2c"
+ },
+ "routes": [
+  {
+   "hash": "#/pass/pass-mwb1a2c3-0a1b2c",
+   "want": {
+    "id": "pass-mwb1a2c3-0a1b2c"
+   }
+  },
+  {
+   "hash": "#/pass/pass-mwb1a2c3-0a1b2c/approve",
+   "want": {
+    "id": "pass-mwb1a2c3-0a1b2c",
+    "decision": "approve"
+   }
+  },
+  {
+   "hash": "/pass/pass-mwb1a2c3-0a1b2c/deny?x=1",
+   "want": {
+    "id": "pass-mwb1a2c3-0a1b2c",
+    "decision": "deny"
+   }
+  },
+  {
+   "hash": "#/console/pass/pass-mwb1a2c3-0a1b2c/deny",
+   "want": {
+    "id": "pass-mwb1a2c3-0a1b2c",
+    "decision": "deny"
+   }
+  },
+  {
+   "hash": "#/pass/pass-mwb1a2c3-0a1b2c/revoke",
+   "want": null
+  },
+  {
+   "hash": "#/pass/pass-mwb1a2c3-0a1b2c/approve/now",
+   "want": null
+  },
+  {
+   "hash": "#/passes/pass-mwb1a2c3-0a1b2c",
+   "want": null
+  },
+  {
+   "hash": "#/pass/not-an-id",
+   "want": null
+  }
+ ],
+ "targets": [
+  {
+   "target": "pass:pass-mwb1a2c3-0a1b2c",
+   "want": "pass-mwb1a2c3-0a1b2c"
+  },
+  {
+   "target": "pass-mwb1a2c3-0a1b2c",
+   "want": "pass-mwb1a2c3-0a1b2c"
+  },
+  {
+   "target": "PASS:pass-mwb1a2c3-0a1b2c",
+   "want": "pass-mwb1a2c3-0a1b2c"
+  },
+  {
+   "target": "pass:",
+   "want": null
+  },
+  {
+   "target": "approval:abc",
+   "want": null
+  },
+  {
+   "target": "pass-studio",
+   "want": null
+  }
+ ],
+ "grantResult": {
+  "pending": {
+   "deep_link": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c",
+   "approve_url": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c/approve",
+   "deny_url": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c/deny",
+   "molly_url": "https://molly.amberxai.com/#/console/pass/pass-mwb1a2c3-0a1b2c",
+   "target": "pass:pass-mwb1a2c3-0a1b2c",
+   "hand_over": "Approve here: https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c"
+  },
+  "active": {
+   "deep_link": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c",
+   "approve_url": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c/approve",
+   "deny_url": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c/deny",
+   "molly_url": "https://molly.amberxai.com/#/console/pass/pass-mwb1a2c3-0a1b2c",
+   "target": "pass:pass-mwb1a2c3-0a1b2c"
+  },
+  "noId": {}
+ },
+ "push": {
+  "pending": {
+   "$axf": "pass-push@1",
+   "type": "pass",
+   "phase": "pending",
+   "id": "pass-mwb1a2c3-0a1b2c",
+   "scope": "all",
+   "minutes": 30,
+   "include_irreversible": false,
+   "requestedBy": "amber (mcp)",
+   "requestedAt": "2026-11-10T17:15:00.000Z",
+   "deep_link": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c",
+   "molly_url": "https://molly.amberxai.com/#/console/pass/pass-mwb1a2c3-0a1b2c",
+   "target": "pass:pass-mwb1a2c3-0a1b2c",
+   "title": "Pass: Everything for 30 min",
+   "body": "amber (mcp) asks for a pass. finish the look Approve or deny.",
+   "state": "pending",
+   "expiresAt": "2026-11-10T17:30:00.000Z",
+   "actions": [
+    {
+     "id": "pass.approve",
+     "label": "Approve",
+     "token": "pa1.pass-mwb1a2c3-0a1b2c.approve.1794331800000.0123456789abcdef.faa9716b04943a88faee838c0c0e63d15c5b396cce1dc63ebd66493b222fd20f",
+     "background": true
+    },
+    {
+     "id": "pass.deny",
+     "label": "Deny",
+     "token": "pa1.pass-mwb1a2c3-0a1b2c.deny.1794331800000.0123456789abcdef.949c53fe0fa573b9626f65299a6a125d8273af5e59ca18db7f1a9756021d5c4c",
+     "background": true
+    },
+    {
+     "id": "pass.open",
+     "label": "Open",
+     "url": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c",
+     "background": false
+    }
+   ]
+  },
+  "cleared": {
+   "$axf": "pass-push@1",
+   "type": "pass",
+   "phase": "cleared",
+   "id": "pass-mwb1a2c3-0a1b2c",
+   "scope": "all",
+   "minutes": 30,
+   "include_irreversible": false,
+   "requestedBy": "amber (mcp)",
+   "requestedAt": "2026-11-10T17:15:00.000Z",
+   "deep_link": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-0a1b2c",
+   "molly_url": "https://molly.amberxai.com/#/console/pass/pass-mwb1a2c3-0a1b2c",
+   "target": "pass:pass-mwb1a2c3-0a1b2c",
+   "title": "Pass: Everything for 30 min",
+   "body": "amber (mcp) asks for a pass. finish the look Approve or deny.",
+   "state": "active",
+   "actions": []
+  }
+ },
+ "alert": {
+  "source": "pass",
+  "key": "pass:pass-mwb1a2c3-ffeedd",
+  "severity": "warning",
+  "title": "Pass: Everything for 30 min",
+  "body": "amber (mcp) asks for a pass, irreversible deletes included. finish the look Approve or deny.",
+  "link": "https://console.amberxai.com/#/pass/pass-mwb1a2c3-ffeedd",
+  "meta": {
+   "pass": "pass-mwb1a2c3-ffeedd",
+   "scope": "all",
+   "minutes": 30,
+   "requestedBy": "amber (mcp)",
+   "target": "pass:pass-mwb1a2c3-ffeedd"
+  }
+ },
+ "words": {
+  "all": {
+   "title": "Pass: Everything for 30 min",
+   "body": "amber (mcp) asks for a pass. finish the look Approve or deny."
+  },
+  "irreversible": {
+   "title": "Pass: Everything for 30 min",
+   "body": "amber (mcp) asks for a pass, irreversible deletes included. finish the look Approve or deny."
+  },
+  "bare": {
+   "title": "Pass: tokens.layout for 5 min",
+   "body": "an agent asks for a pass. Approve or deny."
+  }
+ },
+ "problems": [
+  {
+   "code": "malformed",
+   "status": 400,
+   "message": "that is not a pass action token"
+  },
+  {
+   "code": "unknown_pass",
+   "status": 404,
+   "message": "no such pass"
+  },
+  {
+   "code": "wrong_pass",
+   "status": 409,
+   "message": "the token names another pass"
+  },
+  {
+   "code": "expired",
+   "status": 410,
+   "message": "this link has expired: open the pass instead"
+  },
+  {
+   "code": "not_pending",
+   "status": 409,
+   "message": "this pass is not waiting any more"
+  },
+  {
+   "code": "decided",
+   "status": 409,
+   "message": "this pass was already decided"
+  },
+  {
+   "code": "bad_signature",
+   "status": 401,
+   "message": "the token does not check out"
+  },
+  {
+   "code": "no_secret",
+   "status": 503,
+   "message": "the console has no pass secret configured"
+  }
+ ]
+}

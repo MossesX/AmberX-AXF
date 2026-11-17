@@ -28,6 +28,12 @@ Veto passes (control-pass@1, framework/core/engines/control-pass.mjs; CONTROL.md
   POST   pass/revoke | pass/undo  { scope, by? }
   GET|PUT pass/settings           { maxMinutes, timeZone }
 
+pass-approval@1 (docs/contracts/pass-approval.md), plugin mount + /api/passes/* aliases:
+  GET    pass/pending             every waiting request with deep_link / approve_url / deny_url (never a token)
+  GET    pass/{id}                one pass: state, links, text
+  POST   pass/{id}/approve|deny   Brett's session (or axHub's signed headers): the same proof as pass/approve
+  POST   pass/action { token }    a signed pass action token from a notification (/api/passes/action: no session)
+
 Capability control@1: plugin_services.get("control@1").run(command, grants=[…], by="…") → the answer dict.
 Who may: the console token and hub admins = the admin role (`*`); a role's grants come from the console's uac-policy
 (`control.<domain>.<read|write|delete>`), never more than the caller's own role.
@@ -36,8 +42,10 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -294,6 +302,99 @@ async def pass_settings_put(request: Request) -> Any:
         return {"ok": False, "error": str(e)[:200]}
 
 
+# ---------------------------------------------------------------------- pass-approval@1 (docs/contracts/pass-approval.md)
+# One pass by id: read it with its links, list the waiting ones, approve or deny it. The owner routes take the same
+# proof as pass/approve | pass/deny (Brett's session, a local console, axHub's signed headers); pass/action takes a
+# signed pass action token instead (a device notification's Approve / Deny, in the background). Both run
+# lib/pass-approval.mjs → the existing pass.scopes approve / deny. Aliases: /api/passes/* (capability pass-approval@1).
+
+PROBLEM_STATUS = {"malformed": 400, "unknown_pass": 404, "wrong_pass": 409, "expired": 410, "not_pending": 409, "decided": 409,
+                  "bad_signature": 401, "no_secret": 503, "owner_required": 403}
+
+
+def _node_json(args: list[str], stdin: str | None = None) -> dict[str, Any]:
+    try:
+        proc = subprocess.run(["node", str(CLI), *args], input=stdin, cwd=ROOT, capture_output=True, text=True, timeout=60)
+        lines = proc.stdout.strip().splitlines()
+        return json.loads("\n".join(lines) if args[-1:] == ["--json"] else lines[-1])
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError, IndexError) as e:
+        return {"ok": False, "code": "unexpected", "message": f"the pass runner could not answer: {str(e)[:200]}"}
+
+
+def _pass_answer(r: dict[str, Any]) -> JSONResponse:
+    if r.get("ok"):
+        return JSONResponse(r)
+    return JSONResponse(r, status_code=int(r.get("status") or PROBLEM_STATUS.get(str(r.get("code")), 500)))
+
+
+def pending_passes() -> dict[str, Any]:
+    return _node_json(["pass-pending", "--json"])
+
+
+def get_pass(pass_id: str) -> dict[str, Any]:
+    return _node_json(["pass-get", pass_id, "--json"])
+
+
+def decide_pass(pass_id: str, decision: str, request: Request | None = None, token: str = "", by: str = "") -> dict[str, Any]:
+    """Approve or deny one pass. With `token`: the signed action token decides (no session needed). Without: the owner
+    approval this request carries (never anything from a body)."""
+    env: dict[str, Any] = {"id": pass_id, "decision": decision, "by": by[:80]}
+    if token:
+        env["token"] = token[:400]
+    elif request is not None:
+        approver, proof = owner_approval(request)
+        if approver:
+            env["approver"] = approver
+        if proof:
+            env["proof"] = proof
+    return _node_json(["pass-decide"], json.dumps(env))
+
+
+def pass_action(token: str) -> dict[str, Any]:
+    """POST pass/action: the token alone names the pass and the decision."""
+    return decide_pass("", "", token=str(token or ""))
+
+
+def push_tokens(pass_id: str) -> dict[str, Any] | None:
+    """Approve / deny tokens for one device delivery of a pending pass (never put into an API answer)."""
+    r = _node_json(["pass-tokens", pass_id])
+    return r if r.get("approve") and r.get("deny") else None
+
+
+@router.get("/pass/pending")
+def pass_pending_route() -> JSONResponse:
+    return _pass_answer(pending_passes())
+
+
+@router.post("/pass/action")
+async def pass_action_route(request: Request) -> JSONResponse:
+    b = await _body(request)
+    return _pass_answer(await run_in_threadpool(pass_action, str(b.get("token") or "")))
+
+
+@router.get("/pass/{pass_id}")
+def pass_get_route(pass_id: str) -> JSONResponse:
+    return _pass_answer(get_pass(pass_id))
+
+
+@router.post("/pass/{pass_id}/{decision}")
+async def pass_decide_route(pass_id: str, decision: str, request: Request) -> JSONResponse:
+    if decision not in ("approve", "deny"):
+        return _pass_answer({"ok": False, "code": "malformed", "message": "approve or deny"})
+    _, name = caller(request)
+    return _pass_answer(await run_in_threadpool(lambda: decide_pass(pass_id, decision, request, by=name)))
+
+
+# /api/passes/* (main.py mounts pass-approval@1's routers): `router` behind the console's auth, `public_router` with
+# no session at all (the signed token is the proof: one pass, one decision, 15 min, single use).
+passes_router = APIRouter()
+passes_public_router = APIRouter()
+passes_router.add_api_route("/pending", pass_pending_route, methods=["GET"])
+passes_router.add_api_route("/{pass_id}", pass_get_route, methods=["GET"])
+passes_router.add_api_route("/{pass_id}/{decision}", pass_decide_route, methods=["POST"])
+passes_public_router.add_api_route("/action", pass_action_route, methods=["POST"])
+
+
 @router.get("/meta/registry")
 def registry() -> Any:
     return meta("registry")
@@ -424,3 +525,214 @@ class Control:
 
 
 plugin_services.provide("control@1", Control(), folder=FOLDER)
+
+
+class PassApproval:
+    """pass-approval@1: one veto pass by id (read, list waiting, approve / deny with an owner request or a signed
+    token), its /api/passes routers, and the device-delivery tokens a push carries."""
+
+    router = passes_router
+    public_router = passes_public_router
+
+    def pending(self) -> dict[str, Any]:
+        return pending_passes()
+
+    def get(self, pass_id: str) -> dict[str, Any]:
+        return get_pass(pass_id)
+
+    def decide(self, pass_id: str, decision: str, request: Request | None = None, token: str = "", by: str = "") -> dict[str, Any]:
+        return decide_pass(pass_id, decision, request, token=token, by=by)
+
+    def action(self, token: str) -> dict[str, Any]:
+        return pass_action(token)
+
+    def push_tokens(self, pass_id: str) -> dict[str, Any] | None:
+        return push_tokens(pass_id)
+
+
+class PassFocus:
+    """console-focus@1/pass: `pass:<id>` (or a bare pass id) on console_show / console_open → the Token control screen,
+    focused on that pass (its pass-approval view opens on it, Approve and Deny ready)."""
+
+    SCREEN = "token-control"
+    ID_RE = re.compile(r"^pass-[0-9a-z]{1,16}-[0-9a-f]{6}$")
+
+    def resolve(self, path: str) -> dict[str, Any] | None:
+        p = str(path or "").strip()
+        explicit = p.lower().startswith("pass:")
+        pid = p[5:].strip() if explicit else p
+        if not self.ID_RE.match(pid):
+            return None
+        return {"screen": self.SCREEN, "focus": f"pass:{pid}", "explicit": True}
+
+
+class PassAlertActions:
+    """alert-actions@1: a pass request's push gets Approve / Deny (a background POST to /api/passes/action with a token
+    minted for that one delivery) and Open (the deep link). Nothing once the pass stopped waiting."""
+
+    def actions(self, alert: dict[str, Any]) -> list[dict[str, Any]] | None:
+        key = str(alert.get("key") or "")
+        if alert.get("source") != "pass" or not key.startswith("pass:"):
+            return None
+        pid = key[5:]
+        toks = push_tokens(pid)
+        if not toks:
+            return None
+        link = str(alert.get("link") or "")
+        return [
+            {"id": "pass.approve", "label": "Approve", "post": "/api/passes/action", "body": {"token": toks["approve"]}},
+            {"id": "pass.deny", "label": "Deny", "post": "/api/passes/action", "body": {"token": toks["deny"]}},
+            *([{"id": "pass.open", "label": "Open", "url": link}] if link.startswith("https://") else []),
+        ]
+
+
+class PassVoice:
+    """voice-intents@1 (AmberX through console-control voice): "approve the pass" / "deny the pass" decide with the
+    token the notification holds (`extra.token`); without one the pass opens with that button ready (a voice request is
+    no proof it is Brett). "open the pending pass" opens it (console + `openUrl` for the phone); "what's waiting" lists."""
+
+    DECIDE = re.compile(r"^(?:please )?(approve|allow|accept|deny|reject|decline)(?: the)?(?: veto)? pass(?: (pass-[0-9a-z]+-[0-9a-f]{6}))?$")
+    OPEN = re.compile(r"^(?:open|show(?: me)?|bring up)(?: the)?(?: (?:pending|waiting))?(?: veto)? pass(?: request)?$")
+    LIST = re.compile(r"^(?:what'?s waiting|what is waiting|any passes(?: waiting)?|(?:list|show)(?: the)?(?: pending| waiting)? passes)$")
+
+    @staticmethod
+    def _clean(text: str) -> str:
+        t = re.sub(r"[^\w\s'-]", " ", str(text or "").lower())
+        t = re.sub(r"\s+", " ", t).strip()
+        return re.sub(r"^(?:hey )?amber ", "", t)
+
+    @staticmethod
+    def _show(pid: str) -> None:
+        svc = plugin_services.get("console-commands@1")
+        if svc is None:
+            return
+        try:
+            svc.run({"op": "act", "target": "console.screens", "path": f"pass:{pid}", "action": "open"}, ["*"], "voice", wait=1.0)
+        except Exception:  # noqa: BLE001 — the phone still gets openUrl
+            pass
+
+    def handle(self, text: str, extra: dict[str, Any]) -> dict[str, Any] | None:
+        t = self._clean(text)
+        m = self.DECIDE.match(t)
+        if m:
+            decision = "approve" if m.group(1) in ("approve", "allow", "accept") else "deny"
+            token = str(extra.get("token") or "")
+            if token:
+                r = decide_pass(m.group(2) or "", decision, token=token, by="voice")
+                return {**r, "intent": {"verb": f"pass.{decision}"}, "say": r.get("text") if r.get("ok") else f"That didn't go through: {r.get('message', 'refused')}."}
+            items = (pending_passes().get("items") or [])
+            p = next((x for x in items if x.get("id") == m.group(2)), None) if m.group(2) else (items[0] if len(items) == 1 else None)
+            if p is None:
+                return {"ok": False, "code": "not_found" if not items else "ambiguous", "intent": {"verb": f"pass.{decision}"}, "items": items,
+                        "say": "No pass is waiting." if not items else f"{len(items)} passes are waiting: say which, or open them."}
+            self._show(str(p["id"]))
+            url = p.get("approve_url" if decision == "approve" else "deny_url") or p.get("deep_link")
+            return {"ok": False, "code": "approval_required", "intent": {"verb": f"pass.{decision}"}, "pass": p, "openUrl": url,
+                    "say": f"{p.get('requestedBy') or 'An agent'} asks for {p.get('label', 'a pass')} for {p.get('minutes')} minutes. It's open: tap {decision.title()}."}
+        if self.OPEN.match(t):
+            items = (pending_passes().get("items") or [])
+            if not items:
+                return {"ok": True, "intent": {"verb": "pass.open"}, "items": [], "say": "No pass is waiting."}
+            p = items[0]
+            self._show(str(p["id"]))
+            return {"ok": True, "intent": {"verb": "pass.open"}, "pass": p, "openUrl": p.get("deep_link"), "say": f"Opened the pass {p.get('requestedBy') or 'an agent'} asked for."}
+        if self.LIST.match(t):
+            items = (pending_passes().get("items") or [])
+            say = "No pass is waiting." if not items else " ".join(f"{x.get('requestedBy')} asks for {x.get('label')} for {x.get('minutes')} minutes." for x in items[:3])
+            return {"ok": True, "intent": {"verb": "pass.list"}, "items": items, "say": say}
+        return None
+
+
+# ---------------------------------------------------------------------- pass request → push (pass-approval@1 pass-push@1)
+# A watcher reads the pass store (whoever filed the request: REST, MCP, CLI, axHub) and raises one alert per request
+# (key pass:<id>, push: an approval reaches the phone channels that are set up; the notify gate has the last word). When
+# the pass stops waiting the same key is raised again with the outcome and resolved: the phone's notice is replaced.
+
+DATA_DIR = Path(os.environ.get("AXF_CONTROL_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
+WATCH_S = 2.0
+
+
+def _pending_ids(now_ms: int) -> set[str]:
+    try:
+        d = json.loads((DATA_DIR / "passes.json").read_text())
+    except (OSError, ValueError):
+        return set()
+    out = set()
+    for p in d.get("passes") or []:
+        if not isinstance(p, dict) or p.get("state") != "pending":
+            continue
+        try:
+            from datetime import datetime
+            at = int(datetime.fromisoformat(str(p.get("requestedAt")).replace("Z", "+00:00")).timestamp() * 1000)
+        except ValueError:
+            continue
+        if now_ms < at + 15 * 60 * 1000:
+            out.add(str(p.get("id")))
+    return out
+
+
+def pass_alert(pass_id: str) -> dict[str, Any] | None:
+    r = _node_json(["pass-alert", pass_id])
+    return r if r.get("key") else None
+
+
+def notify_pending(pass_id: str) -> None:
+    import console_context as cx
+    a = pass_alert(pass_id)
+    if not a or a.get("phase") != "pending":
+        return
+    cx.raise_alert({k: a[k] for k in ("source", "severity", "title", "body", "key", "link", "meta") if k in a} | {"push": True})
+
+
+def notify_cleared(pass_id: str) -> None:
+    import console_context as cx
+    a = pass_alert(pass_id)
+    key = f"pass:{pass_id}"
+    if a and a.get("phase") == "cleared":
+        cx.resolve_alerts([key])  # resolved first, so the outcome reopens it and reaches the phone (replacing the ask)
+        cx.raise_alert({k: a[k] for k in ("source", "severity", "title", "body", "key", "link", "meta") if k in a} | {"push": True})
+    cx.resolve_alerts([key])
+
+
+class PassWatcher:
+    def __init__(self) -> None:
+        self.seen: set[str] | None = None
+        self.mtime = -1.0
+        self.stop = threading.Event()
+
+    def tick(self) -> None:
+        import time as _t
+        f = DATA_DIR / "passes.json"
+        try:
+            mt = f.stat().st_mtime
+        except OSError:
+            mt = 0.0
+        now_ms = int(_t.time() * 1000)
+        if mt == self.mtime and self.seen is not None and not self.seen:
+            return  # nothing waiting and nothing written: no work
+        self.mtime = mt
+        now = _pending_ids(now_ms)
+        before, self.seen = self.seen, now
+        if before is None:
+            return  # first look: what already waits was announced before a restart
+        for pid in sorted(now - before):
+            notify_pending(pid)
+        for pid in sorted(before - now):
+            notify_cleared(pid)
+
+    def run(self) -> None:
+        while not self.stop.wait(WATCH_S):
+            try:
+                self.tick()
+            except Exception:  # noqa: BLE001 — the watcher never dies on one bad read
+                pass
+
+
+WATCHER = PassWatcher()
+if os.environ.get("AXF_PASS_WATCH", "1") != "0":
+    threading.Thread(target=WATCHER.run, name="pass-watch", daemon=True).start()
+
+plugin_services.provide("pass-approval@1", PassApproval(), folder=FOLDER)
+plugin_services.provide("alert-actions@1/pass", PassAlertActions(), folder=FOLDER)
+plugin_services.provide("voice-intents@1/pass", PassVoice(), folder=FOLDER)
+plugin_services.provide("console-focus@1/pass", PassFocus(), folder=FOLDER)

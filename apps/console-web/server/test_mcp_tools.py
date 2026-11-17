@@ -30,7 +30,8 @@ tools = {t.name: t for t in asyncio.run(server.list_tools())}
 # Tools that only read: names that look up, list, show or check something. Each must say so (readOnlyHint), so the
 # recommended axHub policy (reads run, writes veto, deletes confirm) can run them with no countdown.
 READ_NAME = re.compile(r"(^|_)(list|get|status|find|search|overview|queue|next|summary|libraries|templates|validate|tail|feature|rules)$")
-READ_TOOLS = {n for n in tools if READ_NAME.search(n) and "_set_" not in n} | {"build_options", "pending_steps"}
+# pass_approve / pass_deny only answer the link to the pass (MCP never carries an approval, pass-approval@1): reads
+READ_TOOLS = {n for n in tools if READ_NAME.search(n) and "_set_" not in n} | {"build_options", "pending_steps", "pass_list_pending", "pass_approve", "pass_deny"}
 for name in sorted(READ_TOOLS):
     a = tools[name].annotations
     ok(a is not None and a.read_only_hint is True, f"{name} is annotated read-only")

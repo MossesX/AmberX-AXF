@@ -1,0 +1,15 @@
+{
+  "name": "@axf/pass-approval",
+  "version": "1.0.0",
+  "private": true,
+  "description": "pass-approval@1: deep links, signed single-use action tokens, push payload and grant result fields for approving a veto pass from console, Molly or AmberX. Pure core + Node signing twin. Spec: docs/contracts/pass-approval.md.",
+  "type": "module",
+  "exports": {
+    ".": { "types": "./index.d.mts", "default": "./index.mjs" },
+    "./node": { "types": "./node.d.mts", "default": "./node.mjs" }
+  },
+  "files": ["index.mjs", "index.d.mts", "node.mjs", "node.d.mts", "cases.json", "README.md"],
+  "scripts": {
+    "test": "node --test test.mjs"
+  }
+}

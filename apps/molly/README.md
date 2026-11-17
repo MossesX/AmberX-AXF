@@ -10,6 +10,9 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
 - Frames are kept alive (`src/molly/FrameDeck.tsx`): switching apps never reloads them. Reload or open the one on screen
   on its own from the Molly menu or toolbar.
 - Deep links: `#/<app>/<route>` (for example `#/console/builds`) open straight on that app's route.
+  A veto pass: `#/console/pass/<id>[/approve|/deny]` (short `#/pass/<id>`) or the action `molly.pass:<id>` opens the
+  console's pass-approval view on it (pass-approval@1); a link that arrives while Molly is open moves the live console
+  frame there without a reload.
 - The look comes from axHub only (`developer.hub`), like every app; Molly ships the shared asset set at `src/axf/assets`.
   Its own assets are its nav menu, app menu and toolbar (`src/assets/*/molly.json`). The app list is `src/molly/apps.ts`.
 - The only changes outside this folder: axHub web's and AmberX's `frame-ancestors` now allow `https://molly.amberxai.com`.

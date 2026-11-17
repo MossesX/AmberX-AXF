@@ -15,6 +15,8 @@ import { createMeter, importsOf, memoryChain, mentionsOf, rulesOf, startRule } f
 import { reorderIndex, tabPressIntent, TAB_HOLD_MS } from '../core/engines/windows.ts';
 import { pinchSteps, resolveSize, stepSize } from '../../apps/console-web/plugins/console-terminal/web/textsize.ts';
 import { advance, chainTree, modelName, money, persistable, replay, revealTick, shownOf, statusOf, steps, tmuxName, toOpen, treeOrder, REVEAL0, planNew, newSessionMode, type ChainItem } from '../../apps/console-web/plugins/console-terminal/web/headless-core.ts';
+// The meter reads these at call time; a check run from inside a brief-only headless session must not inherit them.
+delete process.env.AXF_BRIEF_ONLY_RUN; delete process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS;
 
 const REPO = fileURLToPath(new URL('../..', import.meta.url));
 let ok = 0;

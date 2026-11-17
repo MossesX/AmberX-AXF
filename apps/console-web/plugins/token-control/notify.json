@@ -1,0 +1,19 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "pass.request",
+      "label": "Veto pass waiting",
+      "group": "approvals",
+      "app": "console",
+      "source": "Token control",
+      "description": "An agent asks for a veto pass. The push carries Approve and Deny that work without opening anything; a tap opens the pass. Goes through quiet hours: only you can turn it down.",
+      "guarded": true,
+      "priority": "urgent",
+      "match": {
+        "source": "pass",
+        "keyPrefix": "pass:"
+      }
+    }
+  ]
+}
