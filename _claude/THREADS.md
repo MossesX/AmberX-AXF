@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:50 UTC · `to-do-manager-fully-voice-mcp-controlled` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `own-look-per-grid-and-tab-group` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `maintenance-plugin-clear-docker-cache` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` note (all) · watchdog
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:34 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
 - 2026-11-17 21:34 UTC · `rebuild-fresh-main-phone-connect-small` s13 done (all) · orchestrator
 - 2026-11-17 21:34 UTC · `land-pr-730-reset-all-button-far-right` → queued, branch claude/reset-all-button-every-asset-override, PR #803 (all) · foreign-write
+- 2026-11-17 21:34 UTC · `fix-banner-settings-interface-tab` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
