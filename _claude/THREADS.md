@@ -821,8 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:29 UTC · `stop-auto-lander-committing-tracking` s6 done (all) · orchestrator
-- 2026-11-17 00:29 UTC · `own-look-per-grid-and-tab-group` s15 done (all) · orchestrator
 - 2026-11-17 00:30 UTC · `stop-auto-lander-committing-tracking` s7 done (all) · orchestrator
 - 2026-11-17 00:32 UTC · `own-look-per-grid-and-tab-group` s16 done, → built (all) · orchestrator
 - 2026-11-17 00:33 UTC · `stop-auto-lander-committing-tracking` s8 done (all) · orchestrator
@@ -1221,6 +1219,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:07 UTC · `live-hot-refresh-every-grid-list-re` → running, note (all) · pipeline
 - 2026-11-17 15:07 UTC · `live-hot-refresh-every-grid-list-re` branch claude/live-hot-refresh-every-grid-list-re (all) · pipeline
 - 2026-11-17 15:07 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
+- 2026-11-17 15:07 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
+- 2026-11-17 15:07 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
 
 ## Token passes (log)
 

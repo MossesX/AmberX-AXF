@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:07:35.158Z",
+ "updatedAt": "2026-11-17T15:07:47.750Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116609,7 +116609,7 @@
    "branch": "claude/rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou",
    "pr": "#768",
    "createdAt": "2026-11-12T23:25:43.887Z",
-   "updatedAt": "2026-11-17T12:39:27.078Z",
+   "updatedAt": "2026-11-17T15:07:42.512Z",
    "builtAt": "2026-11-17T01:01:11.971Z",
    "notes": [
     {
@@ -116635,6 +116635,10 @@
     {
      "text": "Reconciler: PR #768",
      "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:07:42.512Z"
     }
    ],
    "approvals": [],
@@ -128736,7 +128740,7 @@
    "pr": "#770",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-17T12:39:27.078Z",
+   "updatedAt": "2026-11-17T15:07:38.328Z",
    "builtAt": "2026-11-17T03:54:31.292Z",
    "notes": [
     {
@@ -128786,6 +128790,10 @@
     {
      "text": "Reconciler: PR #770; PR #770 names s1, s4, s5, s8 done",
      "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:07:38.328Z"
     }
    ],
    "approvals": [
