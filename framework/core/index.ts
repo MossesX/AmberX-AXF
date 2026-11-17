@@ -19,6 +19,7 @@ export * from './engines/spacing';
 export * from './engines/settingsui';
 export * from './engines/settingsopen';
 export * from './engines/edit-ui';
+export * from './engines/edit-ui-undo';
 export * from './engines/designpackage';
 export * from './engines/skin';
 export * from './engines/brand';
