@@ -154,11 +154,11 @@ export async function createFixtures({ store, data, suffix, runId = '', keys = F
 
 /**
  * Remove demo builds: every ledger entry (optionally only one run's), plus with `sweep` any `demo-*` build still in the
- * store. Ids without the demo prefix are never removed, whatever the ledger says. Returns { removed, kept }.
+ * store; `only` limits it to those ids. Ids without the demo prefix are never removed, whatever the ledger says. Returns { removed, kept }.
  */
-export async function removeFixtures({ store, data, runId = '', sweep = false }) {
+export async function removeFixtures({ store, data, runId = '', sweep = false, only = null }) {
   const ledger = readLedger(data);
-  const mine = ledger.builds.filter((b) => !runId || b.runId === runId).map((b) => b.id).filter(isDemoId);
+  const mine = ledger.builds.filter((b) => (!runId || b.runId === runId) && (!only || only.includes(b.id))).map((b) => b.id).filter(isDemoId);
   const want = new Set(mine);
   if (sweep) for (const b of store.read().builds ?? []) if (isDemoId(b.id)) want.add(b.id);
   let removed = [];
