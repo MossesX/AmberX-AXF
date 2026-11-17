@@ -14,6 +14,10 @@ S("view:hub", "Hub", "Your hub at a glance: services, jobs, devices and what's c
 S("view:approval", "Request", "One call in full: the reason, the exact code, who asked, the tool and its risk, the timeline and the result.", related=["view:home"])
 S("view:go-pass", "Go pass", "Lets a Claude session that can't reach the hub work anyway, for the hours you pick. When it ends, they stop.", "Pick the hours, add a note, tap Go.")
 S("view:approvals-log", "Approvals log", "Every call the hub ever held or asked about: decided, denied, timed out — with who asked and what ran.")
+S("view:approval-settings", "Approval settings", "How long you have to deny a veto call before the hub runs it, for the whole hub: 0 to 120 seconds, 10 by default. Zero means veto calls run at once (they're still logged).", "Drag the slider or type the seconds, then Save. Or tap 0 s, 10 s or 30 s.", "The same setting from anywhere: Claude asks with axhub.settings_set (you approve it), the CLI is axhub approvals veto-seconds 10, the console and AmberX take \"set the veto countdown to ten seconds\". A tool with its own countdown keeps it.", ["view:home", "view:approvals-log", "read-only-calls-run-at-once"])
+e("veto-countdown-seconds", "Veto countdown (seconds)", "How long a veto call waits for your Deny before it runs: 0 to 120 seconds, default 10. 0 = it runs at once, still logged.", kind="field", related=["view:approval-settings"])
+e("seconds-0-120", "Seconds (0-120)", "The same countdown, typed: a whole number from 0 to 120.", kind="field")
+e("read-only-calls-run-at-once", "Read-only calls run at once", "Calls that only read (ls, cat, grep, git log, docker ps, systemctl status, journalctl …) skip the countdown and show in the log as \"read-only, ran at once\". Anything that changes something keeps the countdown.", more="The hub decides, not the caller: a command with a redirection (> file), tee, $(…), sudo, or any write in a chain (git fetch && git reset) waits like any other. Straight approvals still need your tap. Turn this off to put reads back on the countdown too.", kind="toggle", related=["view:approval-settings", "view:approvals-log"])
 S("view:apps", "Apps", "Your apps on the hub, each with its page.")
 S("view:users", "Users", "Who can sign in to the hub, their role and their permissions.")
 S("view:handoff", "Handoff", "Hands a job to another Claude account with everything it needs, and shows the runs.")
@@ -85,6 +89,9 @@ intros = [
  {"screen": "approvals-log", "title": "Approvals log", "steps": [
    {"say": "Every call the hub ever held or asked about, newest first.", "target": ""},
    {"say": "Filter by source or tool, tap a row for the full request.", "target": ""}]},
+ {"screen": "approval-settings", "title": "Approval settings", "steps": [
+   {"say": "This is how long you get to deny a veto call before the hub runs it. Ten seconds by default, zero runs it at once.", "target": "approval-settings-veto-seconds"},
+   {"say": "Reads never wait: ls, cat, git log, docker ps run straight away. Only changes count down.", "target": "approval-settings-read-only"}]},
  {"screen": "go-pass", "title": "Go pass", "steps": [
    {"say": "When a Claude session can't reach the hub, it stops and asks for a go. This is where you give one.", "target": ""},
    {"say": "Pick the hours, tap Go. When it runs out, the sessions stop again.", "target": ""}]},

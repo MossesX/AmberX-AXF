@@ -54,6 +54,45 @@
         "kind": "screen"
       },
       {
+        "target": "view:approval-settings",
+        "title": "Approval settings",
+        "text": "How long you have to deny a veto call before the hub runs it, for the whole hub: 0 to 120 seconds, 10 by default. Zero means veto calls run at once (they're still logged).",
+        "more": "The same setting from anywhere: Claude asks with axhub.settings_set (you approve it), the CLI is axhub approvals veto-seconds 10, the console and AmberX take \"set the veto countdown to ten seconds\". A tool with its own countdown keeps it.",
+        "tryIt": "Drag the slider or type the seconds, then Save. Or tap 0 s, 10 s or 30 s.",
+        "related": [
+          "view:home",
+          "view:approvals-log",
+          "read-only-calls-run-at-once"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "veto-countdown-seconds",
+        "title": "Veto countdown (seconds)",
+        "text": "How long a veto call waits for your Deny before it runs: 0 to 120 seconds, default 10. 0 = it runs at once, still logged.",
+        "related": [
+          "view:approval-settings"
+        ],
+        "kind": "field"
+      },
+      {
+        "target": "seconds-0-120",
+        "title": "Seconds (0-120)",
+        "text": "The same countdown, typed: a whole number from 0 to 120.",
+        "kind": "field"
+      },
+      {
+        "target": "read-only-calls-run-at-once",
+        "title": "Read-only calls run at once",
+        "text": "Calls that only read (ls, cat, grep, git log, docker ps, systemctl status, journalctl …) skip the countdown and show in the log as \"read-only, ran at once\". Anything that changes something keeps the countdown.",
+        "more": "The hub decides, not the caller: a command with a redirection (> file), tee, $(…), sudo, or any write in a chain (git fetch && git reset) waits like any other. Straight approvals still need your tap. Turn this off to put reads back on the countdown too.",
+        "related": [
+          "view:approval-settings",
+          "view:approvals-log"
+        ],
+        "kind": "toggle"
+      },
+      {
         "target": "view:apps",
         "title": "Apps",
         "text": "Your apps on the hub, each with its page.",
@@ -432,6 +471,20 @@
           {
             "say": "Filter by source or tool, tap a row for the full request.",
             "target": ""
+          }
+        ]
+      },
+      {
+        "screen": "approval-settings",
+        "title": "Approval settings",
+        "steps": [
+          {
+            "say": "This is how long you get to deny a veto call before the hub runs it. Ten seconds by default, zero runs it at once.",
+            "target": "approval-settings-veto-seconds"
+          },
+          {
+            "say": "Reads never wait: ls, cat, git log, docker ps run straight away. Only changes count down.",
+            "target": "approval-settings-read-only"
           }
         ]
       },

@@ -9,6 +9,8 @@
 
 /** A request id the hub hands out (UUID), checked before it goes into a route or a URL. */
 export const APPROVAL_ID_RE = /^[0-9a-f-]{36}$/;
+/** Fields of the approval settings page a deep link may ring (`#/approvals/settings?field=…`). */
+export const SETTINGS_FIELD_RE = /^(vetoSeconds|vetoWarningSeconds|readOnlySkipsVeto)$/;
 /** A handoff run id (`20261022-143005-ab12`). */
 export const RUN_ID_RE = /^\d{8}-\d{6}-[a-z0-9]{4}$/;
 /** A view name the shell knows, for routes that aren't one of the hub's own. */
@@ -38,6 +40,11 @@ export function parseRoute(hash: string): Route {
     const status = query.get('status') ?? '';
     return { view: 'home', params: (APPROVAL_FILTERS as readonly string[]).includes(status) && status !== 'all' ? { status } : {} };
   }
+  if (a === 'approvals' && b === 'settings' && parts.length === 2) {
+    // `?field=vetoSeconds`: the field a deep link rings (axHub decision 119)
+    const field = query.get('field') ?? '';
+    return { view: 'approval-settings', params: SETTINGS_FIELD_RE.test(field) ? { field } : {} };
+  }
   if (a === 'approvals' && b === 'log' && parts.length === 2) {
     // `?pass=any|<id>`: the calls that ran under a pass (axHub decision 112)
     const pass = query.get('pass') ?? '';
@@ -61,6 +68,8 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
   switch (view) {
     case 'home':
       return params.status && params.status !== 'all' && (APPROVAL_FILTERS as readonly string[]).includes(params.status) ? `#/approvals?status=${params.status}` : '#/approvals';
+    case 'approval-settings':
+      return SETTINGS_FIELD_RE.test(params.field ?? '') ? `#/approvals/settings?field=${params.field}` : '#/approvals/settings';
     case 'approvals-log':
       return PASS_FILTER_RE.test(params.pass ?? '') ? `#/approvals/log?pass=${encodeURIComponent(params.pass!)}` : '#/approvals/log';
     case 'approval':
@@ -340,7 +349,10 @@ export type LogEntryView = Record<string, unknown>;
  * request page would open empty. The log shows its details inline instead.
  */
 export const ranWithoutApproval = (e: LogEntryView): boolean =>
-  typeof e.status === 'string' && (e.status.endsWith('without approval') || e.status.endsWith('under pass'));
+  typeof e.status === 'string' && (e.status.endsWith('without approval') || e.status.endsWith('under pass') || ranReadOnly(e));
+
+/** A veto call that changed nothing, so it ran at once (axHub decision 119: "read-only, ran at once"); no request page. */
+export const ranReadOnly = (e: LogEntryView): boolean => typeof e.status === 'string' && e.status.startsWith('read-only, ');
 
 /** A call that ran under a timed pass (axHub decision 112): no veto countdown, no request page; the pass is named. */
 export const ranUnderPass = (e: LogEntryView): boolean => typeof e.status === 'string' && e.status.endsWith('under pass');
@@ -356,7 +368,7 @@ export function directRunRows(e: LogEntryView): { key: string; label: string; va
   const who = [Object.hasOwn(SOURCE_LABEL, source) ? SOURCE_LABEL[source] : source, txt(e.sourceSession), txt(e.callerName) || txt(e.callerId)]
     .filter((v, i, a) => v && a.indexOf(v) === i).join(' · ');
   const ms = typeof e.runMs === 'number' && Number.isFinite(e.runMs) ? e.runMs : null;
-  const result = [txt(e.resultStatus) || (e.status === 'failed without approval' || e.status === 'failed under pass' ? 'error' : 'ok'), txt(e.errorCode),
+  const result = [txt(e.resultStatus) || (e.status === 'failed without approval' || e.status === 'failed under pass' || e.status === 'read-only, failed' ? 'error' : 'ok'), txt(e.errorCode),
     txt(e.jobId) ? `job ${txt(e.jobId)}` : '', ms === null ? '' : ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(1)} s`].filter(Boolean).join(' · ');
   const rows: { key: string; label: string; value: string; time?: boolean; mono?: boolean }[] = [
     { key: 'tool', label: 'Tool', value: txt(e.toolTitle) && txt(e.toolTitle) !== tool ? `${tool} — ${txt(e.toolTitle)}` : tool, mono: true },
@@ -365,6 +377,7 @@ export function directRunRows(e: LogEntryView): { key: string; label: string; va
     { key: 'when', label: 'When', value: txt(e.ranAt) || txt(e.createdAt), time: true },
     { key: 'result', label: 'Result', value: result },
     { key: 'why', label: 'Approval', value: txt(e.decidedBy) || 'no approval needed (policy allow)' },
+    { key: 'read-only', label: 'Read-only', value: ranReadOnly(e) ? `ran at once, not held${Array.isArray(e.readOnlyPrograms) && e.readOnlyPrograms.length ? ` (${e.readOnlyPrograms.filter((p): p is string => typeof p === 'string').join(', ')})` : ''}` : '', mono: false },
     { key: 'pass', label: 'Pass', value: txt(e.passId) ? `${txt(e.passId)}${txt(e.passGrantedBy) ? ` · granted by ${txt(e.passGrantedBy)}` : ''}${txt(e.passExpiresAt) ? ` · ends ${txt(e.passExpiresAt)}` : ''}` : '', mono: true },
   ];
   return rows.filter((r) => r.value);

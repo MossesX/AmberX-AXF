@@ -9,7 +9,7 @@ import { signOut } from './hub/api';
 
 /** `hub.open:<page>` → this app's own page (the hub's HTML pages moved here, axHub decision #96). */
 const PAGES: Record<string, [view: string, params?: Record<string, string>]> = {
-  approvals: ['home'], home: ['home'], log: ['approvals-log'], apps: ['apps'], account: ['account'], users: ['users'], handoff: ['handoff'],
+  approvals: ['home'], home: ['home'], log: ['approvals-log'], 'approval-settings': ['approval-settings'], 'veto-countdown': ['approval-settings', { field: 'vetoSeconds' }], apps: ['apps'], account: ['account'], users: ['users'], handoff: ['handoff'],
 };
 
 /** The live search box on screen (toolbar or banner), not one inside a dialog. */

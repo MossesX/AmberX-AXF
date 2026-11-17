@@ -8,6 +8,7 @@ import { dialogs } from './dialogs';
 import { Approvals } from './views/Approvals';
 import { ApprovalDetail } from './views/ApprovalDetail';
 import { ApprovalLog } from './views/ApprovalLog';
+import { ApprovalSettings } from './views/ApprovalSettings';
 import { GoPass } from './views/GoPass';
 import { Passes } from './views/Passes';
 import { HandoffList, HandoffRun } from './views/Handoff';
@@ -33,6 +34,7 @@ const views: ViewMap = {
   approval: { title: 'Request', icon: 'shield', render: () => <ApprovalDetail /> },
   'go-pass': { title: 'Go pass', icon: 'check', keywords: ['go', 'pass', 'session', 'rules', 'threads'], render: () => <GoPass /> },
   passes: { title: 'Passes', icon: 'clock', keywords: ['pass', 'veto', 'allow', 'theme', 'timer'], render: () => <Passes /> },
+  'approval-settings': { title: 'Approval settings', icon: 'settings', keywords: ['veto', 'countdown', 'seconds', 'read-only', 'settings'], render: () => <ApprovalSettings /> },
   'approvals-log': { title: 'Approvals log', icon: 'list', keywords: ['log', 'history', 'auto-approve'], render: () => <ApprovalLog /> },
   apps: { title: 'Apps', icon: 'download', keywords: ['apk', 'download', 'catalog'], render: () => <Apps /> },
   users: { title: 'Users', icon: 'user', keywords: ['accounts', 'permissions', 'roles'], render: () => <Users /> },

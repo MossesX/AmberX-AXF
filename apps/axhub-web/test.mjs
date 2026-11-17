@@ -7,7 +7,7 @@
  * Nothing here touches the network: every case is a hand-written reply.
  */
 import { keepSessionOnFailure, MISSES_SHOWN, sameJson, showReading, shownError } from './src/hub/core.ts';
-import { directRunRows, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList } from './src/hub/core.ts';
+import { directRunRows, ranReadOnly, ranUnderPass, ranWithoutApproval, passClock, passCovers, passSecondsLeft, patternList } from './src/hub/core.ts';
 import { countdownKey, nextSort, replyBase, requestedKey, shownRow, sourceChips, sourceKind, sourceWho, afterPick, approveNowPaths, bashCommand, clipboardFor, clock, errorText, handoffGauges, heldActions, localToUtcMinute, parseRoute, pickOf, waitingCount, waitingTitle, platformOf, relTime, routeHash, safeFilePath, sessionsFor, signInUrl, stepGroups } from './src/hub/core.ts';
 import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
@@ -161,6 +161,11 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
     // The open row is lib-approvals' shared details panel (Nov 1 2026: every approval row expandable).
     ok(/<ApprovalDetailsPanel/.test(row) && /detailsOfHubEntry\(HUB, item\)/.test(row), 'an open row shows the shared details panel');
   }
+  eq(parseRoute('#/approvals/settings'), { view: 'approval-settings', params: {} }, '#/approvals/settings opens the approval settings (axHub decision 119)');
+  eq(parseRoute('#/approvals/settings?field=vetoSeconds'), { view: 'approval-settings', params: { field: 'vetoSeconds' } }, 'the deep link rings the veto countdown field');
+  eq(parseRoute('#/approvals/settings?field=bogus'), { view: 'approval-settings', params: {} }, 'an unknown field is dropped');
+  eq(routeHash('approval-settings', { field: 'vetoSeconds' }), '#/approvals/settings?field=vetoSeconds', 'the settings address round-trips');
+  eq(routeHash('approval-settings', {}), '#/approvals/settings', 'no field, no query');
   eq(parseRoute('#/approvals?status=pending'), { view: 'home', params: { status: 'pending' } }, 'a filter is kept');
   eq(parseRoute('#/approvals?status=bogus'), { view: 'home', params: {} }, 'an unknown filter is dropped');
   eq(parseRoute('#/approvals?status=all'), { view: 'home', params: {} }, '"all" is no filter');
@@ -374,6 +379,11 @@ console.log('Approvals log — calls that ran without an approval (decision 110)
   const under = { status: 'ran under pass', qualifiedTool: 'axf-console.control_set', summary: 'axf-console.control_set with arguments {"target":"tokens.theme"}', decidedBy: 'pass p1 (web:brett)', passId: 'p1', passGrantedBy: 'web:brett', passExpiresAt: '2026-11-03T15:30:00.000Z', ranAt: '2026-11-03T15:01:00.000Z' };
   ok(ranUnderPass(under) && ranWithoutApproval(under), 'a call under a pass has no request page: shown inline');
   ok(!ranUnderPass({ status: 'ran' }), 'an approved call is not under a pass');
+  const ro = { status: 'read-only, ran at once', qualifiedTool: 'vps.run', command: 'git log -5', decidedBy: 'read-only, not held', readOnlyPrograms: ['git log'], resultStatus: 'ok', ranAt: '2026-11-16T19:00:00.000Z' };
+  ok(ranReadOnly(ro) && ranWithoutApproval(ro), 'a read-only run (axHub decision 119) has no request page: shown inline');
+  ok(directRunRows(ro).some((r) => r.key === 'read-only' && r.value === 'ran at once, not held (git log)'), 'the row says it ran at once, read-only, with the programs');
+  ok(directRunRows({ ...ro, status: 'read-only, failed', resultStatus: '' }).some((r) => r.key === 'result' && r.value.startsWith('error')), 'a failed read-only run says error');
+  ok(!ranReadOnly({ status: 'ran' }), 'an approved call is not read-only');
   const rows = Object.fromEntries(directRunRows(under).map((r) => [r.key, r.value]));
   eq(rows.pass, 'p1 · granted by web:brett · ends 2026-11-03T15:30:00.000Z', 'the pass is named on the row');
   eq(rows.why, 'pass p1 (web:brett)', 'why it ran: the pass');

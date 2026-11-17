@@ -266,6 +266,103 @@ async def post_decide(request: Request) -> dict[str, Any]:
     return r
 
 
+# ---- approval settings (axHub decision 119): the veto countdown and the read-only skip ----------------------------
+
+SETTINGS_PATH = "/auth/api/approvals/settings"
+SETTINGS_KEYS = {"vetoSeconds", "vetoWarningSeconds", "readOnlySkipsVeto"}
+
+
+def settings_patch(b: Any) -> dict[str, Any]:
+    """The change to send: known keys only, whole seconds 0-120 and a boolean; anything else is a 400 here (the hub checks again)."""
+    if not isinstance(b, dict) or not b:
+        raise HTTPException(400, "Send vetoSeconds, vetoWarningSeconds and/or readOnlySkipsVeto")
+    extra = set(b) - SETTINGS_KEYS
+    if extra:
+        raise HTTPException(400, f"Unknown setting: {', '.join(sorted(extra))}")
+    for k in ("vetoSeconds", "vetoWarningSeconds"):
+        if k in b and (isinstance(b[k], bool) or not isinstance(b[k], int) or not 0 <= b[k] <= 120):
+            raise HTTPException(400, f"{k} must be a whole number from 0 to 120")
+    if "readOnlySkipsVeto" in b and not isinstance(b["readOnlySkipsVeto"], bool):
+        raise HTTPException(400, "readOnlySkipsVeto must be true or false")
+    return dict(b)
+
+
+def relay_settings(hub: str, cookie: str, patch: dict[str, Any] | None, client: httpx.Client) -> dict[str, Any]:
+    """Reads (patch None) or changes the hub's approval settings with this hub session; → {ok, status, settings…} or why not."""
+    head = {"Cookie": f"{COOKIE}={cookie}", "Accept": "application/json"}
+    if patch is None:
+        r = client.get(f"{hub}{SETTINGS_PATH}", headers=head)
+    else:
+        s = client.get(f"{hub}/auth/api/session", headers=head)
+        csrf = _reply_json(s).get("csrf") if s.status_code == 200 else None
+        if not isinstance(csrf, str) or not csrf:
+            return {"ok": False, "code": "no_session", "status": s.status_code, "message": "axHub didn't take your session. Sign in to axHub again."}
+        r = client.put(f"{hub}{SETTINGS_PATH}", headers={**head, "Origin": hub, "Content-Type": "application/json", "X-AxHub-CSRF": csrf}, content=json.dumps(patch))
+    j = _reply_json(r)
+    if r.status_code == 200 and isinstance(j.get("settings"), dict):
+        return {"ok": True, "status": 200, **{k: j[k] for k in ("settings", "defaults", "limits", "stored", "links", "changed") if k in j}}
+    if r.status_code == 401:
+        return {"ok": False, "code": "no_session", "status": 401, "message": "axHub didn't take your session. Sign in to axHub again."}
+    err = j.get("error") if isinstance(j.get("error"), dict) else {}
+    return {"ok": False, "status": r.status_code, "code": str(err.get("code") or "hub_refused"), "message": str(err.get("message") or f"axHub answered {r.status_code}.")[:MESSAGE_MAX]}
+
+
+async def _settings(request: Request, patch: dict[str, Any] | None) -> dict[str, Any]:
+    c = _admin_browser(request)
+    hub = hub_base()
+    if not hub:
+        raise HTTPException(503, "The console has no https hub address (AXF_WALL_HUB)")
+    cookie = request.cookies.get(COOKIE) or ""
+    cred = owner_credential() if owner_may(c) else None
+    if not cookie and not cred:
+        return {"ok": False, "code": "no_credential", "message": relay_state(c, False)["reason"]}
+
+    def send() -> dict[str, Any]:
+        with httpx.Client(timeout=TIMEOUT_S, follow_redirects=False) as client:
+            if cookie:
+                r = relay_settings(hub, cookie, patch, client)
+                if r.get("code") != "no_session" or not cred:
+                    return {**r, "via": "browser"}
+            assert cred
+            for _ in (1, 2):
+                s = OWNER.get(hub, cred, client)
+                if not s["ok"]:
+                    return {**s, "via": "owner"}
+                r = relay_settings(hub, s["cookie"], patch, client)
+                if r.get("code") != "no_session":
+                    return {**r, "via": "owner"}
+                OWNER.drop(s["cookie"])
+            return {**r, "via": "owner"}
+
+    try:
+        r = await run_in_threadpool(send)
+    except httpx.HTTPError as e:
+        r = {"ok": False, "code": "unreachable", "message": f"Couldn't reach axHub ({type(e).__name__})."}
+    if patch is not None:
+        _log({"by": c.name, "action": "approval-settings", "patch": patch, "ok": r["ok"], "via": r.get("via", ""), "code": r.get("code", "")})
+    return r
+
+
+@router.get("/approval-settings")
+async def get_approval_settings(request: Request) -> dict[str, Any]:
+    """The hub's approval settings (veto countdown 0-120 s, read-only skip), read with the admin's hub session."""
+    return await _settings(request, None)
+
+
+@router.post("/approval-settings")
+async def post_approval_settings(request: Request) -> dict[str, Any]:
+    """Changes them: {vetoSeconds?, vetoWarningSeconds?, readOnlySkipsVeto?}. The wall admin's browser, the console's own pages, JSON."""
+    if not wall.same_origin(request):
+        raise HTTPException(403, "Only from the console's own pages")
+    if "application/json" not in (request.headers.get("content-type") or ""):
+        raise HTTPException(415, "Send JSON")
+    try:
+        b = await request.json()
+    except ValueError:
+        raise HTTPException(400, "Send JSON") from None
+    return await _settings(request, settings_patch(b))
+
+
 # ---- systems check: can the console decide in place?
 
 def health_probe() -> dict[str, Any]:

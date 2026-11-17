@@ -622,6 +622,31 @@ export const plugin: AxfWebLibrary = {
       rt.toast(`Overlay ${change.key.split('.').pop()}: ${String(change.value)}`, 'success', 'Overlay');
     }, { label: 'Overlay (phone): on/off, edge, top, size, opens, show, opacity, shrink; expand, collapse, open:<url>; bar[:off] (approvals.overlay:<what>:<value>)', params: true });
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
+    // Approval settings (axHub decision 119): the veto countdown (0-120 s, default 10) and the read-only skip. Open the
+    // page (deep link, field rung), or change it here: approvals.veto-seconds:<0-120>, approvals.read-only:on|off. Voice
+    // and the AmberX app run these actions; the plugin's route changes it with the admin's own hub session.
+    rt.actions.register('approvals.settings', () => { globalThis.open(`${st.approvalsUrl}/settings`, '_blank', 'noopener'); }, { label: 'Approval settings: veto countdown', effect: 'navigate' });
+    const changeSettings = async (patch: Record<string, unknown>, done: string) => {
+      try {
+        const r = await pluginFetch(FOLDER, 'approval-settings', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(patch), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
+        const j = (await r.json().catch(() => null)) as { ok?: boolean; message?: string; detail?: string } | null;
+        if (r.ok && j?.ok) rt.toast(done, 'success', 'Approvals');
+        else rt.toast(j?.message ?? j?.detail ?? "axHub didn't take the change.", 'warning', 'Approvals');
+        return r.ok && j?.ok === true;
+      } catch (e) {
+        rt.toast(`Couldn't reach the console (${(e as Error)?.message ?? e}).`, 'warning', 'Approvals');
+        return false;
+      }
+    };
+    rt.actions.register('approvals.veto-seconds', ([raw = '']) => {
+      const n = /^\d{1,3}$/.test(raw.trim()) ? Number(raw.trim()) : NaN;
+      if (!(n >= 0 && n <= 120)) { rt.toast('Say a whole number of seconds from 0 to 120.', 'warning', 'Approvals'); return false; }
+      return changeSettings({ vetoSeconds: n }, n === 0 ? 'Veto calls now run at once.' : `Veto countdown set to ${n} s.`);
+    }, { label: 'Set the veto countdown (seconds, 0-120)', params: true, effect: 'write' });
+    rt.actions.register('approvals.read-only', ([v = '']) => {
+      if (v !== 'on' && v !== 'off') { rt.toast('Say on or off.', 'warning', 'Approvals'); return false; }
+      return changeSettings({ readOnlySkipsVeto: v === 'on' }, v === 'on' ? 'Read-only calls run at once.' : 'Read-only calls wait on the countdown too.');
+    }, { label: 'Read-only calls skip the veto countdown (on/off)', params: true, effect: 'write' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
     // older name. Only opens: a session may show it to him, the deciding stays his.
