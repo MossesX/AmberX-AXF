@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "hidden-list-three-ways-t-mwl8n31m-modal",
+ "name": "hidden-list-three-ways-t-mwl8n31m: Centred card",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A compact centred card (480 wide, dimmed page, plain header): the list and its buttons only, nothing else competing.",
+ "tags": [
+  "ui-choice",
+  "choice-set:hidden-list-three-ways-t-mwl8n31m",
+  "choice-option:modal"
+ ],
+ "data": {
+  "variant": "modal",
+  "width": 480,
+  "backdrop": "dim",
+  "animation": "scale",
+  "header": "plain",
+  "closeOnBackdrop": true
+ }
+}
