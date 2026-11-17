@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:53:29.894Z",
+ "updatedAt": "2026-11-17T00:55:43.663Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122131,7 +122131,7 @@
    "branch": "claude/every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field",
    "pr": "",
    "createdAt": "2026-11-13T10:39:34.330Z",
-   "updatedAt": "2026-11-17T00:45:38.468Z",
+   "updatedAt": "2026-11-17T00:55:39.600Z",
    "builtAt": "",
    "notes": [
     {
@@ -122183,8 +122183,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:55:39.600Z",
      "note": "",
      "uid": "st-mweujssv0188cu",
      "createdAt": "2026-11-13T10:41:23.599Z"
