@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:10:12.522Z",
+ "updatedAt": "2026-11-17T18:10:21.273Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175191,6 +175191,69 @@
      "createdAt": "2026-11-17T18:10:10.178Z"
     }
    ]
+  },
+  {
+   "id": "context-menu-containers-show-hide-list",
+   "title": "Context menu: Containers show/hide list + IDE layout mode (drag containers into tab groups)",
+   "category": "",
+   "detail": "1) Context menu item 'Containers' with Visible (check mark) and Hidden (red no-entry cross) lists of every container/pane on the screen (dataset bar, panels, every pane); click toggles show/hide; persisted per screen. 2) Global context-menu item 'IDE layout' on every full-screen main UI (plugin main screens), placed right above Settings in the same top group: converts the screen to an IDE-style layout where every container is a tab group; drag a container into another to drop it in as a tab; drag to split/dock; Reset layout on every container and floating window. Powerful, asset-driven (layout saved as assets), tokens only. Full API parity (voice, REST, MCP, CLI, console-control). Tests + UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T18:10:12.979Z",
+   "updatedAt": "2026-11-17T18:10:14.959Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Add to the context menu an item called containers. Hidden, visible, with the same check mark, the same stop signs, the same toggle that lists every single container pane, like data set, every single thing, and you need to be able to hide or show. Also the context menu needs a global thing anytime a UI screen is open that is a main screen, like a full screen main plugin type of main UI, right above the settings in the same top container, called IDE layout. When you click it, it converts the layout to IDE style with drag and drop containers. You can drag one container into another one, and every container is a tab group, which will drop as a tab group. It needs to be reset in every floating, in every container, and just make it powerful.",
+    "at": "2026-11-17T18:10:12.979Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "fix-pop-up-windows-don-t-close-x-only",
+   "title": "Fix: pop-up windows don't close on X (only minimize)",
+   "category": "",
+   "detail": "Some floating/pop-up windows in the console only minimize when the X is clicked. Find every floating window/dialog host, make X close it (minimize stays its own button), add a test that X closes each window kind, and an API close action.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:10:19.647Z",
+   "updatedAt": "2026-11-17T18:10:19.647Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Pop-up windows, some, they don't close when I click X. I can only minimize them, so fix that.",
+    "at": "2026-11-17T18:10:19.647Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
