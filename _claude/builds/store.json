@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8016,
- "updatedAt": "2026-11-17T21:30:34.221Z",
+ "rev": 8017,
+ "updatedAt": "2026-11-17T21:30:45.895Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -283041,6 +283041,56 @@
    "kind": "build",
    "planRef": "",
    "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "flagship-professional-skin-covering-2",
+   "title": "Flagship professional skin covering everything (Fable Ultra Code)",
+   "category": "",
+   "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T21:30:30.893Z",
+   "updatedAt": "2026-11-17T21:30:34.790Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "build a skin with Fable Ultra Code, really sick professional skin that covers everything: context menus, app menus, navigation menus, animations, colors, behavior, hooks, everything. Show me where the data sets go, the layouts, every single thing. Professional. One app: axHub, console, AmberX all as one app.",
+    "at": "2026-11-17T21:30:30.893Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 978
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
