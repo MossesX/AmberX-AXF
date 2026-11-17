@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:45:16.542Z",
+ "updatedAt": "2026-11-17T23:45:27.819Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -156933,7 +156933,7 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T23:40:23.531Z",
+   "updatedAt": "2026-11-17T23:45:17.578Z",
    "builtAt": "",
    "notes": [
     {
@@ -157031,6 +157031,10 @@
     {
      "text": "Refused pending → landed (asked by watchdog): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T23:40:23.543Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its commits are on main (on main by squash 887cb0cfb47a; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landed)",
+     "at": "2026-11-17T23:45:17.578Z"
     }
    ],
    "approvals": [],
@@ -177425,7 +177429,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T23:40:23.531Z",
+   "updatedAt": "2026-11-17T23:45:17.578Z",
    "builtAt": "",
    "notes": [
     {
@@ -177687,6 +177691,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: The build is complete (build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T23:40:23.531Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: The build is complete (build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T23:45:17.578Z"
     }
    ],
    "approvals": [
