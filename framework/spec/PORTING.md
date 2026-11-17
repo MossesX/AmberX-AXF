@@ -382,7 +382,8 @@ Kotlin twin, none needed; the baked copies ride along unused.
 Build move-server-side-console-parts-onto-vps adds `framework/core/host-services.mjs` (host-service@1 manifests with
 defaults and errors, `resolveEndpoints` for the unix socket and the loopback fallback, `serviceState` → up / degraded /
 down / unknown with `since`, `toHostError` turning transport failures and host-error@1 bodies into `host_service_down`
-and the other codes, `healthItem`, `controlTargets`, `sudoersLines`), the fixture `framework/spec/fixtures/host-services.json`
+and the other codes, `healthItem`, `controlTargets`, `sudoersLines`; the migration machine `canChangeMode` / `changeMode` /
+`cutoverOrder` / `rollbackSteps` with the mode file schema `framework/schemas/host-service-mode.json`), the fixture `framework/spec/fixtures/host-services.json`
 (`spec/check-host-services.mjs`) and the spec `framework/spec/HOST-SERVICES.md`. Kotlin twin deferred (no new Android
 work): no Android app talks to the VPS host directly; AmberX only receives the health@1 pushes the console sends. When a
 Kotlin reader is needed (a Host services card in AmberX), it ports `serviceState`, `toHostError` and `summary` and replays

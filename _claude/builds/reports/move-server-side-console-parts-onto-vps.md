@@ -157,3 +157,21 @@ Overlap: its s1 is this build's maintenance row (1a). Split so nothing is built 
   API, never through a console thread: that is the clearest case for this build's socket.
 
 Clash notes were added to both builds (orchestrator notes).
+
+## 3. The contract, the engine and the migration (s3-s5)
+
+Spec `framework/spec/HOST-SERVICES.md`: host-service@1 manifests (`deploy/<service>/host-service.json`: id, unit, owning
+plugin, sudo whitelist, health, actions, settings, `replaces`, `after`), the host API on `/run/axf-host/api.sock` +
+loopback `127.0.0.1:7788` (routes in `REGISTRY.routes`), host-error@1 with `host_service_down`, host-service-state@1
+(up / degraded / down / unknown with `since`), discovery (`AXF_HOST_API`, `AXF_HOST_API_FALLBACK`, `AXF_HOST_TOKEN`,
+`GET /v1/services`), and the migration: per-service modes container / shadow / host, shadow drift
+(host-shadow-drift@1), cut-over guards and tiers, rollback steps. Engine `framework/core/host-services.mjs`, schemas
+`framework/schemas/host-service.json`, `schemas/json/host-service*.schema.json`, `schemas/json/host-error.schema.json`,
+`framework/schemas/host-service-mode.json`; fixture `framework/spec/fixtures/host-services.json`; check
+`framework/spec/check-host-services.mjs` (CI). Kotlin twin deferred (PORTING.md).
+
+Decisions taken here (no one to ask): one gateway daemon (`host-api`) instead of a socket per service, so ticks (which
+have no process to ask) get status, logs and run-now the same way as daemons; shadow means the host copy runs dry and is
+compared, never two copies doing the work; no container → host shortcut; `host-api` has no mode; the terminal moves
+last. The first manifests, the host API runner, the installer (`axf_host_services_install`), the `axf-host` user and the
+console's REST / MCP / CLI / voice surface are the next phase.

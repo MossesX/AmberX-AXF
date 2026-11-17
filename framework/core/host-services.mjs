@@ -36,8 +36,42 @@ export const RUN_RESULTS = Object.freeze(['ok', 'error', 'skipped', 'timeout']);
 export const SUDO_AS = Object.freeze(['root']);
 /** Setting value kinds a manifest may declare (settings are plain JSON, merged key by key, last save wins). */
 export const SETTING_TYPES = Object.freeze(['boolean', 'integer', 'number', 'string', 'enum']);
-/** Migration modes (s5). The document is host-service-mode@1 at `<data>/host-services/mode.json`. */
+/**
+ * Migration modes (s5). The document is host-service-mode@1 at `<data>/host-services/mode.json`; both sides read it
+ * before every tick.
+ *   container  the in-container copy does the work; the unit is installed but stopped (timer disabled)
+ *   shadow     both run: the container copy does the work, the host copy runs the same tick in dry-run and logs what it
+ *              would have done; the host API compares the two (host-shadow-drift@1)
+ *   host       the host copy does the work; the container copy sees the mode and skips, cron files named in `replaces`
+ *              are removed, the console's routes read through the host API
+ */
 export const MODES = Object.freeze(['container', 'shadow', 'host']);
+export const DRIFT_FRAME = 'host-shadow-drift@1';
+export const MODE_EVENTS = Object.freeze(['start-shadow', 'back-to-container', 'cut-over', 'step-back', 'roll-back']);
+/** event → [from, to]. There is no container → host: shadow first. roll-back and back-to-container are always allowed. */
+export const MODE_TRANSITIONS = Object.freeze({
+  'start-shadow': ['container', 'shadow'],
+  'back-to-container': ['shadow', 'container'],
+  'cut-over': ['shadow', 'host'],
+  'step-back': ['host', 'shadow'],
+  'roll-back': ['host', 'container'],
+});
+/** What cut-over needs: shadow this long, this many clean host runs, no unaccepted drift, health up, every `after` in host. */
+export const MODE_GUARDS = Object.freeze({ minShadowMs: 30 * 60 * 1000, minRuns: 3, maxDrift: 0 });
+export const DRIFT_KINDS = Object.freeze(['effect-differs', 'result-differs', 'host-error', 'container-error', 'host-missing', 'container-missing']);
+/**
+ * The order to cut over (report § 1e): a tier at a time, every service of a tier in host mode before the next starts.
+ * Services not listed here sit in the `rest` tier; `after` on a manifest adds finer ordering inside a tier.
+ */
+export const CUTOVER_TIERS = Object.freeze([
+  { tier: 1, name: 'gateway', why: 'nothing else is reachable without it', services: ['host-api'] },
+  { tier: 2, name: 'credentials and alerts', why: 'every host caller needs a fresh GitHub App token and a way to reach the phone', services: ['github-app', 'ai-keys', 'alerts'] },
+  { tier: 3, name: 'ticks already on the host', why: 'cron lines become units; the lander and the pipeline tick are adopted, not rewritten', services: ['auto-lander', 'pipeline', 'stale-row-watchdog'] },
+  { tier: 4, name: 'independent loops', why: 'no console coupling beyond their own data folder', services: ['maintenance', 'shipped-features', 'activity', 'claude-settings', 'claude-handoff', 'session-checkin', 'notify-control'] },
+  { tier: 5, name: 'host actions', why: 'they need alerts, the token keeper and the docker proxy in place', services: ['systems-check', 'container-access', 'project-wizard', 'agent-swarm', 'agent-manager-tools'] },
+  { tier: 6, name: 'rest', why: 'anything a later build adds and does not place', services: [] },
+  { tier: 7, name: 'terminal', why: 'the most visible: sessions stop dying with the container, so it goes last with everything else proven', services: ['console-terminal'] },
+]);
 
 /**
  * Wire errors. `http` is the status the host API answers with; `console` says what the console does with it: `down`
@@ -106,13 +140,17 @@ export const ROUTES = Object.freeze([
   { method: 'GET', path: '/services/{id}/mode', auth: 'token', answers: `the service's entry of ${MODE_FRAME}` },
   { method: 'PUT', path: '/services/{id}/mode', auth: 'token', answers: `{ ok, mode, changes } body { to: container|shadow|host, by, reason, confirm? } (s5)` },
   { method: 'GET', path: '/mode', auth: 'token', answers: `${MODE_FRAME}: the whole document` },
+  { method: 'POST', path: '/services/{id}/shadow', auth: 'token', answers: '{ ok, drift } the console reports what its in-container copy did (shadow mode); the host API compares with the host run and logs host-shadow-drift@1' },
+  { method: 'GET', path: '/services/{id}/shadow?since=', auth: 'token', answers: '{ runs, drift: [host-shadow-drift@1] } the shadow log' },
+  { method: 'POST', path: '/services/{id}/rollback', auth: 'token', answers: '{ ok, steps } mode → container, unit stopped, timer disabled, cron restored; body { by, reason, why }' },
 ]);
 
 /** The snapshot framework/schemas/host-service.json carries, for Python readers (the console server) and ports. */
 export const REGISTRY = Object.freeze({
   schema: SCHEMA, version: VERSION, manifest: MANIFEST_FRAME, state: STATE_FRAME, error: ERROR_FRAME, mode: MODE_FRAME, list: LIST_FRAME,
   kinds: KINDS, statuses: STATUSES, unitStates: UNIT_STATES, unitActions: UNIT_ACTIONS, runResults: RUN_RESULTS, sudoAs: SUDO_AS,
-  settingTypes: SETTING_TYPES, modes: MODES, errors: ERRORS, defaults: DEFAULTS, routes: ROUTES,
+  settingTypes: SETTING_TYPES, modes: MODES, modeEvents: MODE_EVENTS, modeTransitions: MODE_TRANSITIONS, modeGuards: MODE_GUARDS, cutoverTiers: CUTOVER_TIERS, driftKinds: DRIFT_KINDS, drift: DRIFT_FRAME,
+  errors: ERRORS, defaults: DEFAULTS, routes: ROUTES,
   idPattern: ID_PATTERN, unitPattern: UNIT_PATTERN, pluginPattern: PLUGIN_PATTERN, pathPattern: PATH_PATTERN, limits: LIMITS,
 });
 
@@ -173,6 +211,7 @@ function manifestProps() {
     actions: { type: 'array', maxItems: LIMITS.actionsMax, items: actionSchema() },
     settings: { type: 'object', maxProperties: LIMITS.settingsMax, additionalProperties: settingSchema() },
     replaces: { type: 'array', items: { type: 'object', required: ['kind', 'name'], properties: { kind: { enum: ['cron', 'thread', 'loop'] }, name: { type: 'string' }, where: { type: 'string' } } }, description: 'what in the container or in cron this service takes over (the migration turns these off in host mode)' },
+    after: { type: 'array', items: { type: 'string', pattern: ID_PATTERN }, description: 'services that must be in host mode before this one may cut over (host-api is implied)' },
     dataDir: { type: 'string', maxLength: 200, description: `repo-relative state folder; default ${DEFAULTS.stateDir}/<id>` },
     log: { type: 'string', pattern: PATH_PATTERN, description: `default ${DEFAULTS.logDir}/axf-<id>.log` },
   };
@@ -335,6 +374,7 @@ export function manifestErrors(m, path = 'manifest') {
     if (!Array.isArray(m.replaces)) e('replaces', 'array');
     else m.replaces.forEach((r, i) => { if (!isObj(r) || !['cron', 'thread', 'loop'].includes(r.kind) || typeof r.name !== 'string' || !r.name) e(`replaces[${i}]`, '{ kind: cron|thread|loop, name, where? }'); });
   }
+  if (m.after !== undefined && (!Array.isArray(m.after) || m.after.some((x) => typeof x !== 'string' || !re(ID_PATTERN).test(x) || x === m.id))) e('after', 'a list of other service ids');
   if (m.dataDir !== undefined && (typeof m.dataDir !== 'string' || m.dataDir.startsWith('/') || m.dataDir.includes('..') || m.dataDir.length > 200)) e('dataDir', 'repo-relative');
   if (m.log !== undefined && (typeof m.log !== 'string' || !re(PATH_PATTERN).test(m.log))) e('log', 'an absolute path');
   return errs;
@@ -368,6 +408,7 @@ export function normManifest(m) {
     actions: (m.actions || []).map((a) => ({ id: a.id, title: a.title, description: a.description || '', confirm: a.confirm === true, modes: a.modes || ['shadow', 'host'], args: a.args || {}, timeoutMs: a.timeoutMs || health.timeoutMs })),
     settings: Object.fromEntries(Object.entries(m.settings || {}).map(([k, s]) => [k, { type: s.type, default: s.default, ...(s.values ? { values: s.values } : {}), ...(s.min !== undefined ? { min: s.min } : {}), ...(s.max !== undefined ? { max: s.max } : {}), title: s.title || k, description: s.description || '' }])),
     replaces: (m.replaces || []).map((r) => ({ kind: r.kind, name: r.name, where: r.where || '' })),
+    after: [...new Set(m.after || [])].filter((x) => x !== DEFAULTS.hostApiId),
     dataDir: m.dataDir || d.dataDir, log: m.log || d.log,
   };
 }
@@ -385,6 +426,7 @@ export function normManifests(list) {
     for (const k of ['id', 'unit', 'socket']) { if (!n[k]) continue; if (seen[k].has(n[k])) errs.push(`[${i}] ${k} ${n[k]} already used by ${seen[k].get(n[k])}`); else seen[k].set(n[k], n.id); }
     out.push(n);
   });
+  for (const n of out) for (const a of n.after) if (!seen.id.has(a)) errs.push(`${n.id}: after names unknown service ${a}`);
   return { manifests: out, errors: errs };
 }
 
@@ -578,4 +620,203 @@ export function actionCallErrors(manifest, actionId, { args = {}, confirm = '', 
   if (!a.modes.includes(MODES.includes(mode) ? mode : 'container')) errs.push(new HostServiceError('mode_refused', `${m.id} is in ${mode}: ${actionId} runs in ${a.modes.join(' or ')}`, { service: m.id, action: actionId }));
   if (a.confirm && !confirm) errs.push(new HostServiceError('confirm_required', `${a.title} needs a confirm token`, { service: m.id, action: actionId }));
   return errs;
+}
+
+// ------------------------------------------------------------------ migration modes (s5)
+
+/** A fresh mode document: everything in the container. */
+export function initialModeState(at, by = 'svc:cli') {
+  return { $axf: MODE_FRAME, rev: 0, at: iso(at, '1970-01-01T00:00:00.000Z'), by, default: 'container', services: {} };
+}
+/** A document from disk with every field in shape (unknown modes fall back to container; a wrong frame is refused). */
+export function normModeState(v, at) {
+  if (!isObj(v) || (v.$axf && v.$axf !== MODE_FRAME)) fail('invalid_body', `not a ${MODE_FRAME} document`);
+  const s = initialModeState(at);
+  s.rev = Number.isInteger(v.rev) && v.rev >= 0 ? v.rev : 0; s.at = iso(v.at, s.at); s.by = typeof v.by === 'string' ? v.by : s.by;
+  s.default = v.default === 'container' ? 'container' : 'container';
+  for (const [id, e] of Object.entries(isObj(v.services) ? v.services : {})) {
+    if (!isObj(e) || !re(ID_PATTERN).test(id)) continue;
+    s.services[id] = {
+      mode: MODES.includes(e.mode) ? e.mode : 'container', since: iso(e.since, s.at), by: typeof e.by === 'string' ? e.by : s.by,
+      runs: Number.isInteger(e.runs) && e.runs >= 0 ? e.runs : 0, drift: Number.isInteger(e.drift) && e.drift >= 0 ? e.drift : 0, lastDriftAt: iso(e.lastDriftAt, ''),
+      rollbackOf: isObj(e.rollbackOf) && MODES.includes(e.rollbackOf.from) ? { from: e.rollbackOf.from, at: iso(e.rollbackOf.at, ''), by: String(e.rollbackOf.by || ''), why: String(e.rollbackOf.why || '').slice(0, LIMITS.textMax) } : null,
+    };
+  }
+  return s;
+}
+const modeEntry = (state, id) => state?.services?.[id] || { mode: 'container', since: state?.at || '', by: '', runs: 0, drift: 0, lastDriftAt: '', rollbackOf: null };
+/** The mode of one service: its own entry, else the document default (container). The host API is always host once it answers. */
+export function modeOf(state, id) { return id === DEFAULTS.hostApiId ? 'host' : modeEntry(state, id).mode; }
+
+/** What each side does in a mode: the one table both the console and the host runner read. */
+export const MODE_PLAN = Object.freeze({
+  container: { containerRuns: true, hostRuns: false, hostDryRun: false, unitEnabled: false, cronPresent: true, readsFrom: 'container', actionsOn: 'container' },
+  shadow: { containerRuns: true, hostRuns: true, hostDryRun: true, unitEnabled: true, cronPresent: true, readsFrom: 'container', actionsOn: 'container' },
+  host: { containerRuns: false, hostRuns: true, hostDryRun: false, unitEnabled: true, cronPresent: false, readsFrom: 'host', actionsOn: 'host' },
+});
+/** The plan for one service in a mode, with the concrete things to switch (its unit, timer, cron files, container loops). */
+export function modePlan(manifest, mode) {
+  const m = normManifest(manifest);
+  const p = MODE_PLAN[MODES.includes(mode) ? mode : 'container'];
+  return {
+    id: m.id, mode: MODES.includes(mode) ? mode : 'container', ...p,
+    unit: m.unit, timer: m.kind === 'tick' ? m.timer : '', units: p.unitEnabled ? [m.kind === 'tick' ? m.timer : m.unit] : [],
+    cron: m.replaces.filter((r) => r.kind === 'cron').map((r) => r.name), cronFiles: m.replaces.filter((r) => r.kind === 'cron').map((r) => `/etc/cron.d/${r.name}`),
+    containerLoops: m.replaces.filter((r) => r.kind !== 'cron').map((r) => ({ kind: r.kind, name: r.name, where: r.where, runs: p.containerRuns })),
+    env: { AXF_HOST_MODE: p.hostRuns ? (p.hostDryRun ? 'shadow' : 'host') : 'off' },
+  };
+}
+
+/**
+ * May `id` go `to`? ctx = { now (ISO), state (host-service-state@1 of this service now), modes (id → mode of the others,
+ * for `after`), unitInstalled, hostApiUp, acceptDrift: [ids…], minShadowMs?, minRuns? }. Answers { ok, event, reason }.
+ */
+export function canChangeMode(modeState, manifest, to, ctx = {}) {
+  const m = normManifest(manifest);
+  if (m.id === DEFAULTS.hostApiId) return { ok: false, event: '', reason: 'host-api has no mode: it is the host side' };
+  const from = modeOf(modeState, m.id);
+  if (!MODES.includes(to)) return { ok: false, event: '', reason: `unknown mode "${to}"` };
+  const event = Object.keys(MODE_TRANSITIONS).find((e) => MODE_TRANSITIONS[e][0] === from && MODE_TRANSITIONS[e][1] === to) || '';
+  if (!event) return { ok: false, event, reason: from === to ? `${m.id} is already ${to}` : `no way from ${from} to ${to}${from === 'container' && to === 'host' ? ': shadow first' : ''}` };
+  if (event === 'roll-back' || event === 'back-to-container') return { ok: true, event, reason: '' };
+  if (ctx.hostApiUp === false) return { ok: false, event, reason: 'the host API is down' };
+  if (event === 'start-shadow' && ctx.unitInstalled === false) return { ok: false, event, reason: `${m.unit} is not installed (run the host services installer)` };
+  if (event === 'cut-over') {
+    const e = modeEntry(modeState, m.id);
+    const now = Date.parse(iso(ctx.now, '')) || 0;
+    const minMs = Number.isFinite(ctx.minShadowMs) ? ctx.minShadowMs : MODE_GUARDS.minShadowMs;
+    const minRuns = Number.isInteger(ctx.minRuns) ? ctx.minRuns : MODE_GUARDS.minRuns;
+    const accepted = Array.isArray(ctx.acceptDrift) ? ctx.acceptDrift.length : 0;
+    for (const a of m.after) if ((ctx.modes || {})[a] !== 'host') return { ok: false, event, reason: `${a} must be in host first (it is ${(ctx.modes || {})[a] || 'container'})` };
+    if (!now) return { ok: false, event, reason: 'cut-over needs the clock (ctx.now)' };
+    if (e.drift > accepted + MODE_GUARDS.maxDrift) return { ok: false, event, reason: `${e.drift} shadow drift entr${e.drift === 1 ? 'y' : 'ies'} (accepted ${accepted}): read the shadow log first` };
+    const quietFrom = Math.max(Date.parse(e.since) || 0, Date.parse(e.lastDriftAt) || 0);
+    if (now - quietFrom < minMs) return { ok: false, event, reason: `shadow has been quiet for ${Math.max(0, Math.round((now - quietFrom) / 60000))} min, needs ${Math.round(minMs / 60000)}` };
+    if (e.runs < minRuns) return { ok: false, event, reason: `${e.runs} clean host run${e.runs === 1 ? '' : 's'} in shadow, needs ${minRuns}` };
+    if (!ctx.state || ctx.state.status !== 'up') return { ok: false, event, reason: `the host copy is ${ctx.state?.status || 'unknown'}${ctx.state?.reason ? ` (${ctx.state.reason})` : ''}, needs up` };
+  }
+  return { ok: true, event, reason: '' };
+}
+
+/** Move one service (or `ids`) to `to`; returns the new document and the changes; throws invalid_body when a guard refuses. */
+export function changeMode(modeState, manifests, { id, ids, to, at, by = 'svc:cli', why = '', ctx = {} }) {
+  const when = iso(at, '') || fail('invalid_body', 'changeMode needs `at` (ISO UTC)');
+  const set = normManifests(manifests).manifests;
+  const byId = new Map(set.map((m) => [m.id, m]));
+  const next = JSON.parse(JSON.stringify(modeState));
+  const list = Array.isArray(ids) ? ids : [id];
+  const changes = [];
+  for (const sid of list) {
+    const m = byId.get(sid) || fail('unknown_service', `no manifest for ${sid}`, { service: sid });
+    const modes = Object.fromEntries(set.map((x) => [x.id, modeOf(next, x.id)]));
+    const can = canChangeMode(next, m, to, { ...ctx, now: ctx.now || when, modes: { ...modes, ...(ctx.modes || {}) } });
+    if (!can.ok) fail('invalid_body', `${sid}: ${can.reason}`, { service: sid });
+    const prev = modeEntry(next, sid);
+    const rollback = can.event === 'roll-back' || can.event === 'step-back' || can.event === 'back-to-container';
+    next.services[sid] = {
+      mode: to, since: when, by, runs: 0, drift: 0, lastDriftAt: '',
+      rollbackOf: rollback ? { from: prev.mode, at: when, by, why: String(why || '').slice(0, LIMITS.textMax) } : null,
+    };
+    changes.push({ id: sid, from: prev.mode, to, event: can.event, at: when, by, why: String(why || '') });
+  }
+  next.rev = (Number.isInteger(next.rev) ? next.rev : 0) + 1; next.at = when; next.by = by;
+  return { state: next, changes };
+}
+
+/** Count a clean host run (shadow) or a drift entry on the service's mode entry. */
+export function recordShadowRun(modeState, id, { at, drift = null }) {
+  const next = JSON.parse(JSON.stringify(modeState));
+  const e = { ...modeEntry(next, id) };
+  if (drift) { e.drift += 1; e.lastDriftAt = iso(drift.at, iso(at, e.lastDriftAt)); } else e.runs += 1;
+  next.services[id] = e;
+  return next;
+}
+/** host-shadow-drift@1: the host's dry run and the container's real run disagree; null when they agree. */
+export function shadowDrift(id, host, container, at) {
+  const base = { $axf: DRIFT_FRAME, at: iso(at, '') || fail('invalid_body', 'drift needs `at`'), service: id };
+  const eff = (r) => JSON.stringify(Array.isArray(r?.effects) ? r.effects : []);
+  if (host && host.error) return { ...base, kind: 'host-error', host: { error: String(host.error).slice(0, 300) }, container: container ? { result: container.result } : null };
+  if (container && container.error) return { ...base, kind: 'container-error', host: host ? { result: host.result } : null, container: { error: String(container.error).slice(0, 300) } };
+  if (!host && container) return { ...base, kind: 'host-missing', host: null, container: { result: container.result } };
+  if (host && !container) return { ...base, kind: 'container-missing', host: { result: host.result }, container: null };
+  if (!host && !container) return null;
+  if (host.result !== container.result) return { ...base, kind: 'result-differs', host: { result: host.result }, container: { result: container.result } };
+  if (eff(host) !== eff(container)) return { ...base, kind: 'effect-differs', host: { effects: host.effects || [] }, container: { effects: container.effects || [] } };
+  return null;
+}
+
+/** The services in the order to cut them over: tier, then `after` (topological), then id; host-api first. */
+export function cutoverOrder(manifests) {
+  const set = normManifests(manifests).manifests;
+  const tierOf = (id) => { const t = CUTOVER_TIERS.find((x) => x.services.includes(id)); return t ? t.tier : CUTOVER_TIERS.find((x) => x.name === 'rest').tier; };
+  const ids = new Set(set.map((m) => m.id));
+  const byId = new Map(set.map((m) => [m.id, m]));
+  const out = [];
+  const seen = new Set();
+  const visit = (m, trail = []) => {
+    if (seen.has(m.id)) return;
+    if (trail.includes(m.id)) fail('invalid_manifest', `after cycle: ${[...trail, m.id].join(' → ')}`, { service: m.id });
+    for (const a of m.after) if (ids.has(a)) visit(byId.get(a), [...trail, m.id]);
+    seen.add(m.id); out.push(m);
+  };
+  for (const m of [...set].sort((a, b) => tierOf(a.id) - tierOf(b.id) || a.after.length - b.after.length || a.id.localeCompare(b.id))) visit(m);
+  return out.map((m, i) => ({ position: i + 1, id: m.id, tier: tierOf(m.id), tierName: CUTOVER_TIERS.find((x) => x.tier === tierOf(m.id)).name, kind: m.kind, plugin: m.plugin, after: m.after, replaces: m.replaces.map((r) => `${r.kind}:${r.name}`) }));
+}
+/** The next sensible step for each service: what the CLI and the console's Migration card offer. */
+export function migrationNext(modeState, manifests, ctxById = {}) {
+  return cutoverOrder(manifests).filter((r) => r.id !== DEFAULTS.hostApiId).map((r) => {
+    const m = normManifests(manifests).manifests.find((x) => x.id === r.id);
+    const mode = modeOf(modeState, r.id);
+    const ctx = ctxById[r.id] || {};
+    if (mode === 'container') { const c = canChangeMode(modeState, m, 'shadow', ctx); return { ...r, mode, next: c.ok ? 'shadow' : 'install', ...c }; }
+    if (mode === 'shadow') { const c = canChangeMode(modeState, m, 'host', ctx); return { ...r, mode, next: c.ok ? 'host' : 'wait', ...c }; }
+    return { ...r, mode, next: 'done', ok: true, event: '', reason: '' };
+  });
+}
+
+/**
+ * Rollback, in the order the host API runs it: flip the mode first (both sides read it before every tick, so the
+ * container copy resumes on its next tick and the host copy exits `skipped`), then stop the unit and disable the timer,
+ * then put the cron files back, then verify the container copy ran. Every step is idempotent; a failed step leaves
+ * mode = container (nothing runs twice, the systems check shows what is still off).
+ */
+export function rollbackSteps(manifest, { to = 'container', by = 'svc:cli', why = '' } = {}) {
+  const m = normManifest(manifest);
+  const plan = modePlan(m, to);
+  const steps = [{ step: 1, do: 'mode', detail: `PUT /v1/services/${m.id}/mode { to: ${to}, by: ${by}${why ? `, why: ${JSON.stringify(why)}` : ''} }`, verify: `GET /v1/services/${m.id}/mode → ${to}` }];
+  if (to === 'container') {
+    if (m.kind === 'tick') steps.push({ step: 2, do: 'unit', detail: `systemctl disable --now ${m.timer}; systemctl stop ${m.unit}`, verify: `timerState inactive, unitState inactive` });
+    else steps.push({ step: 2, do: 'unit', detail: `systemctl stop ${m.unit}`, verify: 'unitState inactive' });
+  } else steps.push({ step: 2, do: 'unit', detail: m.kind === 'tick' ? `${m.timer} stays enabled; the next tick runs dry (AXF_HOST_MODE=shadow)` : `systemctl reload-or-restart ${m.unit} (reads the mode, serves dry-run)`, verify: 'health up, shadow log growing' });
+  if (plan.cronPresent && plan.cronFiles.length) steps.push({ step: 3, do: 'cron', detail: `restore ${plan.cronFiles.join(', ')} from deploy/install-console.sh (axf_cron_file)`, verify: `${plan.cronFiles.length} cron file(s) present` });
+  if (plan.containerLoops.length) steps.push({ step: steps.length + 1, do: 'container', detail: `the console's ${plan.containerLoops.map((l) => `${l.name} (${l.kind})`).join(', ')} read mode ${to} and run again`, verify: `console GET /api/host-services/${m.id} → container.lastRun younger than ${m.health.staleSec} s` });
+  steps.push({ step: steps.length + 1, do: 'record', detail: `history.jsonl: roll-back ${m.id} ${by}${why ? `: ${why}` : ''}; health@1 item host-service:${m.id} cleared`, verify: 'the Migration card shows container' });
+  return { id: m.id, to, steps };
+}
+/** One plain line per service for Amber and the CLI. */
+export function modeSummary(modeState, manifests) {
+  return cutoverOrder(manifests).map((r) => { const e = modeEntry(modeState, r.id); const mode = modeOf(modeState, r.id); return `${r.position}. ${r.id}: ${mode}${r.id === DEFAULTS.hostApiId ? '' : ` since ${e.since || modeState.at}`}${mode === 'shadow' ? `, ${e.runs} clean run${e.runs === 1 ? '' : 's'}${e.drift ? `, ${e.drift} drift` : ''}` : ''}${e.rollbackOf ? ` (rolled back from ${e.rollbackOf.from}${e.rollbackOf.why ? `: ${e.rollbackOf.why}` : ''})` : ''}`; });
+}
+
+/** The JSON Schema of the mode file, written to framework/schemas/host-service-mode.json by `axf schemas`. */
+export function modeJsonSchema() {
+  const entry = {
+    type: 'object', required: ['mode', 'since'], additionalProperties: false,
+    properties: {
+      mode: { enum: MODES }, since: dateTime, by: { type: 'string', maxLength: 80 },
+      runs: { type: 'integer', minimum: 0, description: 'shadow: clean host dry-runs since the mode changed' },
+      drift: { type: 'integer', minimum: 0, description: `shadow: ${DRIFT_FRAME} entries since the mode changed` }, lastDriftAt: { type: 'string' },
+      rollbackOf: { type: ['object', 'null'], required: ['from', 'at'], properties: { from: { enum: MODES }, at: dateTime, by: { type: 'string' }, why: text() }, description: 'set by roll-back, step-back and back-to-container; cleared by the next forward move' },
+    },
+  };
+  return {
+    $schema, $id: $id('host-service-mode.json'), title: `${MODE_FRAME} (${SCHEMA}) — where each host service runs today`, type: 'object', additionalProperties: false,
+    required: ['$axf', 'rev', 'at', 'default', 'services'],
+    properties: {
+      $axf: { const: MODE_FRAME }, rev: { type: 'integer', minimum: 0 }, at: dateTime, by: { type: 'string', maxLength: 80 },
+      default: { const: 'container', description: 'a service with no entry is in the container; the default never moves (every cut-over is per service, by hand or by the migration CLI)' },
+      services: { type: 'object', propertyNames: { pattern: ID_PATTERN }, additionalProperties: entry },
+    },
+    $defs: { events: { enum: MODE_EVENTS }, transitions: { const: MODE_TRANSITIONS }, guards: { const: MODE_GUARDS }, tiers: { const: CUTOVER_TIERS.map((t) => ({ tier: t.tier, name: t.name, services: t.services })) } },
+  };
 }

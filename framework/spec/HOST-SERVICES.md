@@ -80,7 +80,8 @@ Rules:
   `<dataDir>/settings.json`, merged key by key, last save wins (the editor rule), read by the runner on every tick or on
   `SIGHUP`.
 - `replaces` names what the service takes over (a cron file, a console thread, a loop), so the migration knows what to
-  switch off in `host` mode and back on in `container` mode.
+  switch off in `host` mode and back on in `container` mode. `after` lists services that must be in `host` before this
+  one may cut over (→ Migration).
 - The host API itself is a service (`id: host-api`, `plugin: console`, daemon) and is the only one the console must find.
 
 Pattern per moved part (report § 2): the pure engine stays in `framework/core`, the host runner is `deploy/<service>/`,
@@ -113,6 +114,9 @@ All routes are JSON under `/v1` (`REGISTRY.routes`):
 | GET | `/services/{id}/logs?lines=&since=` | `{ lines: [{ at, line }] }` from `journalctl -u <unit>` (≤ 2000 lines) |
 | GET | `/services/{id}/mode`, PUT | the service's migration mode (→ Migration) |
 | GET | `/mode` | the whole `host-service-mode@1` document |
+| POST | `/services/{id}/shadow` | the console reports what its in-container copy did; the host API compares and logs drift (→ Migration) |
+| GET | `/services/{id}/shadow?since=` | `{ runs, drift: [host-shadow-drift@1] }` |
+| POST | `/services/{id}/rollback` | `{ ok, steps }`: mode → container, unit stopped, timer disabled, cron restored (→ Migration) |
 
 How a call reaches a service:
 
@@ -195,8 +199,100 @@ a warn item without a push. The state is pure: `serviceState(manifest, facts, pr
 
 ## Migration
 
-See s5 of this build: the per-service mode (`container`, `shadow`, `host`), the cut-over order and rollback are added
-here as "Migration" once the mode file schema (`framework/schemas/host-service-mode.json`) exists.
+Every service moves on its own, in three modes, the way data-store-mode@1 moves a namespace. The document is
+`host-service-mode@1` at `_data/host-services/mode.json` on the host (`/projects/amberx-axf/_data/...` from the console),
+schema `framework/schemas/host-service-mode.json`; both sides read it before every tick, so a flip takes effect within
+one tick and nothing waits for a restart. The default is always `container`: a service with no entry has not moved.
+
+```
+container ──start shadow──▶ shadow ──cut over──▶ host
+    ▲                         │  ▲                 │
+    └────back to container────┘  └───step back─────┤
+    ◀──────────────────roll back───────────────────┘
+```
+
+| mode | container copy | host copy | unit / timer | cron files in `replaces` | reads and actions go to |
+| --- | --- | --- | --- | --- | --- |
+| `container` | does the work | off (`AXF_HOST_MODE=off`: a tick exits `skipped`, a daemon serves health only) | installed, stopped, timer disabled | present | the container |
+| `shadow` | does the work | runs the same tick in dry-run (`AXF_HOST_MODE=shadow`): computes what it would do, performs nothing, writes `effects` to `<dataDir>/shadow.jsonl` | enabled and running | present | the container |
+| `host` | sees the mode and skips (its loop stays alive, idle) | does the work (`AXF_HOST_MODE=host`) | enabled and running | removed | the host API |
+
+`MODE_PLAN` / `modePlan(manifest, mode)` in the engine is that table with the concrete unit, timer, cron files and
+container loops of one service. The console's loops named in `replaces` (`thread`, `loop`) check the mode at the top
+of every iteration and return when it is `host`; the console's REST routes for the plugin read through the host API in
+`host` mode and from the local copy otherwise (`readsFrom`). An action called in a mode that does not allow it answers
+`mode_refused` (actions default to `shadow` and `host`; a destructive one like Clear Docker cache declares `modes:
+["host"]` so it never runs twice).
+
+### Shadow: proving the host copy
+
+In shadow the console posts what its copy did after every run (`POST /v1/services/{id}/shadow { at, result, effects,
+error? }`); the host API pairs it with the host's dry-run of the same tick and writes a `host-shadow-drift@1` entry when
+they differ (`result-differs`, `effect-differs`, `host-error`, `container-error`, `host-missing`, `container-missing`;
+`shadowDrift` in the engine). Each agreeing pair counts a clean run (`runs`), each entry counts `drift` and sets
+`lastDriftAt` on the service's mode entry (`recordShadowRun`). `GET /v1/services/{id}/shadow` lists both.
+
+### Guards (`canChangeMode`)
+
+| event | from → to | allowed when |
+| --- | --- | --- |
+| `start-shadow` | container → shadow | the host API is up and the unit is installed (`axf_host_services_install` ran) |
+| `cut-over` | shadow → host | every service in the manifest's `after` is in `host`; shadow quiet (no drift) for `minShadowMs` (30 min) and at least `minRuns` (3) clean runs; no drift entries beyond those accepted by id (`acceptDrift`); the host copy's state is `up` right now |
+| `step-back` | host → shadow | always |
+| `roll-back` | host → container | always |
+| `back-to-container` | shadow → container | always |
+
+There is no `container → host`: shadow first, every time. `host-api` has no mode (it is the host side; `host` once it
+answers). The whole document moves only one service at a time or a list (`changeMode`), each with `by`, `reason` and a
+`why` kept on the entry's `rollbackOf` for any backward move; `rev` grows on every change and `history.jsonl` records
+it.
+
+### The order to cut over (`cutoverOrder`)
+
+A tier at a time: every service of a tier is in `host` before the next tier starts shadow. `CUTOVER_TIERS` places the
+services from the audit; a manifest's `after` adds finer ordering inside a tier (and is a cut-over guard); anything a
+later build adds and does not place sits in `rest`, before the terminal.
+
+| tier | services | why |
+| --- | --- | --- |
+| 1 gateway | `host-api` | nothing else is reachable without it |
+| 2 credentials and alerts | `github-app`, `ai-keys`, `alerts` | every host caller needs a fresh GitHub App token and a way to reach the phone |
+| 3 ticks already on the host | `auto-lander`, `pipeline`, `stale-row-watchdog` | cron lines become units; adopted, not rewritten (`replaces: cron axf-auto-land, axf-pipeline`) |
+| 4 independent loops | `maintenance`, `shipped-features`, `activity`, `claude-settings`, `claude-handoff`, `session-checkin`, `notify-control` | no console coupling beyond their own data folder |
+| 5 host actions | `systems-check`, `container-access`, `project-wizard`, `agent-swarm`, `agent-manager-tools` | need alerts, the token keeper and the docker proxy in place |
+| 6 rest | (unplaced) | |
+| 7 terminal | `console-terminal` | the most visible change (sessions stop dying with the container), so it goes last with everything else proven |
+
+`migrationNext(modeState, manifests, ctxById)` gives the next step per service in that order: `install` (unit missing),
+`shadow`, `wait` (with the guard's reason), `host`, `done`. The CLI (`axf host migrate [next|status|<id> shadow|host|
+container]`), the console's Migration card (Settings → Plugins → Host services → Migration) and the MCP tool
+`host_service_mode` call the same functions; `PUT /v1/services/{id}/mode` is a `write`, backward moves ask `confirm`
+only when the service has an action running (`busy` otherwise).
+
+### Rollback (`rollbackSteps`)
+
+Rollback is `roll-back` (host → container) or `step-back` (host → shadow), always allowed, run by the host API in this
+order; every step is idempotent and a failed step leaves the mode at its new value so nothing runs twice:
+
+1. **Flip the mode** (`PUT /v1/services/{id}/mode`). Both sides read it before every tick: the container copy resumes
+   on its next iteration, the host tick exits `skipped`, a host daemon drops to health-only.
+2. **Stop the unit**: `systemctl disable --now axf-<id>.timer` and `systemctl stop axf-<id>.service` (daemon: stop
+   only). For `step-back` the unit stays up and serves dry-run.
+3. **Put the cron files back** from `deploy/install-console.sh` (`axf_cron_file` for each `replaces: cron` name).
+4. **Verify the container copy ran**: the console's `GET /api/host-services/{id}` carries `container: { lastRun }`; a
+   run younger than `staleSec` closes the rollback. Until then the systems check shows the service as `container
+   (resuming)`.
+5. **Record**: `history.jsonl` gets the roll-back with `by` and `why`; the health@1 item `host-service:<id>` clears
+   (the state is `down` by design in `container` mode, and `healthItem` gives it no fix and no push).
+
+A rollback of the whole tier (`changeMode` with `ids`) runs the steps per service in reverse cut-over order. Rolling back
+`host-api` is stopping the unit: every other service shows `unknown` until it is back, and their units keep running
+unchanged, so a dead host API never stops a service that was already in `host`.
+
+### What never moves
+
+The console's UI, its REST / MCP / CLI / voice surface, the read-only git views (crew-live, codebase-changes,
+whats-shipped), the plugin command registry, recorders and anything in audit § 1b stay in the container in every mode.
 
 ## Related contracts
 

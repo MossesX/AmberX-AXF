@@ -147,6 +147,7 @@
     ],
     "settings": {},
     "replaces": [],
+    "after": [],
     "dataDir": "_data/host-services/host-api",
     "log": "/var/log/axf-host-api.log"
    },
@@ -232,6 +233,7 @@
       "where": "apps/console-web/plugins/maintenance/server/routes.py"
      }
     ],
+    "after": [],
     "dataDir": "_data/host-services/maintenance",
     "log": "/var/log/axf-maintenance.log"
    },
@@ -266,6 +268,7 @@
       "where": ""
      }
     ],
+    "after": [],
     "dataDir": "_data/host-services/auto-lander",
     "log": "/var/log/axf-auto-lander.log"
    }
@@ -1994,6 +1997,911 @@
    "str": "string",
    "num": "number",
    "unknown": "unknown type"
+  },
+  "migration": {
+   "plans": {
+    "container": {
+     "maintenance": {
+      "id": "maintenance",
+      "mode": "container",
+      "containerRuns": true,
+      "hostRuns": false,
+      "hostDryRun": false,
+      "unitEnabled": false,
+      "cronPresent": true,
+      "readsFrom": "container",
+      "actionsOn": "container",
+      "unit": "axf-maintenance.service",
+      "timer": "",
+      "units": [],
+      "cron": [],
+      "cronFiles": [],
+      "containerLoops": [
+       {
+        "kind": "thread",
+        "name": "_loop",
+        "where": "apps/console-web/plugins/maintenance/server/routes.py",
+        "runs": true
+       }
+      ],
+      "env": {
+       "AXF_HOST_MODE": "off"
+      }
+     },
+     "lander": {
+      "id": "auto-lander",
+      "mode": "container",
+      "containerRuns": true,
+      "hostRuns": false,
+      "hostDryRun": false,
+      "unitEnabled": false,
+      "cronPresent": true,
+      "readsFrom": "container",
+      "actionsOn": "container",
+      "unit": "axf-auto-lander.service",
+      "timer": "axf-auto-lander.timer",
+      "units": [],
+      "cron": [
+       "axf-auto-land",
+       "axf-pipeline"
+      ],
+      "cronFiles": [
+       "/etc/cron.d/axf-auto-land",
+       "/etc/cron.d/axf-pipeline"
+      ],
+      "containerLoops": [],
+      "env": {
+       "AXF_HOST_MODE": "off"
+      }
+     }
+    },
+    "shadow": {
+     "maintenance": {
+      "id": "maintenance",
+      "mode": "shadow",
+      "containerRuns": true,
+      "hostRuns": true,
+      "hostDryRun": true,
+      "unitEnabled": true,
+      "cronPresent": true,
+      "readsFrom": "container",
+      "actionsOn": "container",
+      "unit": "axf-maintenance.service",
+      "timer": "",
+      "units": [
+       "axf-maintenance.service"
+      ],
+      "cron": [],
+      "cronFiles": [],
+      "containerLoops": [
+       {
+        "kind": "thread",
+        "name": "_loop",
+        "where": "apps/console-web/plugins/maintenance/server/routes.py",
+        "runs": true
+       }
+      ],
+      "env": {
+       "AXF_HOST_MODE": "shadow"
+      }
+     },
+     "lander": {
+      "id": "auto-lander",
+      "mode": "shadow",
+      "containerRuns": true,
+      "hostRuns": true,
+      "hostDryRun": true,
+      "unitEnabled": true,
+      "cronPresent": true,
+      "readsFrom": "container",
+      "actionsOn": "container",
+      "unit": "axf-auto-lander.service",
+      "timer": "axf-auto-lander.timer",
+      "units": [
+       "axf-auto-lander.timer"
+      ],
+      "cron": [
+       "axf-auto-land",
+       "axf-pipeline"
+      ],
+      "cronFiles": [
+       "/etc/cron.d/axf-auto-land",
+       "/etc/cron.d/axf-pipeline"
+      ],
+      "containerLoops": [],
+      "env": {
+       "AXF_HOST_MODE": "shadow"
+      }
+     }
+    },
+    "host": {
+     "maintenance": {
+      "id": "maintenance",
+      "mode": "host",
+      "containerRuns": false,
+      "hostRuns": true,
+      "hostDryRun": false,
+      "unitEnabled": true,
+      "cronPresent": false,
+      "readsFrom": "host",
+      "actionsOn": "host",
+      "unit": "axf-maintenance.service",
+      "timer": "",
+      "units": [
+       "axf-maintenance.service"
+      ],
+      "cron": [],
+      "cronFiles": [],
+      "containerLoops": [
+       {
+        "kind": "thread",
+        "name": "_loop",
+        "where": "apps/console-web/plugins/maintenance/server/routes.py",
+        "runs": false
+       }
+      ],
+      "env": {
+       "AXF_HOST_MODE": "host"
+      }
+     },
+     "lander": {
+      "id": "auto-lander",
+      "mode": "host",
+      "containerRuns": false,
+      "hostRuns": true,
+      "hostDryRun": false,
+      "unitEnabled": true,
+      "cronPresent": false,
+      "readsFrom": "host",
+      "actionsOn": "host",
+      "unit": "axf-auto-lander.service",
+      "timer": "axf-auto-lander.timer",
+      "units": [
+       "axf-auto-lander.timer"
+      ],
+      "cron": [
+       "axf-auto-land",
+       "axf-pipeline"
+      ],
+      "cronFiles": [
+       "/etc/cron.d/axf-auto-land",
+       "/etc/cron.d/axf-pipeline"
+      ],
+      "containerLoops": [],
+      "env": {
+       "AXF_HOST_MODE": "host"
+      }
+     }
+    }
+   },
+   "order": [
+    {
+     "position": 1,
+     "id": "host-api",
+     "tier": 1,
+     "tierName": "gateway",
+     "kind": "daemon",
+     "plugin": "console",
+     "after": [],
+     "replaces": []
+    },
+    {
+     "position": 2,
+     "id": "alerts",
+     "tier": 2,
+     "tierName": "credentials and alerts",
+     "kind": "daemon",
+     "plugin": "console",
+     "after": [],
+     "replaces": [
+      "thread:alerts"
+     ]
+    },
+    {
+     "position": 3,
+     "id": "auto-lander",
+     "tier": 3,
+     "tierName": "ticks already on the host",
+     "kind": "tick",
+     "plugin": "gate",
+     "after": [],
+     "replaces": [
+      "cron:axf-auto-land",
+      "cron:axf-pipeline"
+     ]
+    },
+    {
+     "position": 4,
+     "id": "maintenance",
+     "tier": 4,
+     "tierName": "independent loops",
+     "kind": "daemon",
+     "plugin": "maintenance",
+     "after": [],
+     "replaces": [
+      "thread:_loop"
+     ]
+    },
+    {
+     "position": 5,
+     "id": "zz-later",
+     "tier": 6,
+     "tierName": "rest",
+     "kind": "tick",
+     "plugin": "later",
+     "after": [
+      "maintenance"
+     ],
+     "replaces": []
+    },
+    {
+     "position": 6,
+     "id": "console-terminal",
+     "tier": 7,
+     "tierName": "terminal",
+     "kind": "daemon",
+     "plugin": "console-terminal",
+     "after": [
+      "alerts"
+     ],
+     "replaces": []
+    }
+   ],
+   "cycle": {
+    "error": "invalid_manifest",
+    "status": 500,
+    "message": "after cycle: alerts → console-terminal → alerts",
+    "service": "alerts"
+   },
+   "unknownAfter": [
+    "console-terminal: after names unknown service nope"
+   ],
+   "initial": {
+    "$axf": "host-service-mode@1",
+    "rev": 0,
+    "at": "2026-11-17T12:00:00.000Z",
+    "by": "svc:cli",
+    "default": "container",
+    "services": {}
+   },
+   "norm": {
+    "junk": {
+     "error": "invalid_body",
+     "status": 400,
+     "message": "not a host-service-mode@1 document"
+    },
+    "loose": {
+     "$axf": "host-service-mode@1",
+     "rev": 0,
+     "at": "2026-11-17T12:00:00.000Z",
+     "by": "svc:cli",
+     "default": "container",
+     "services": {
+      "maintenance": {
+       "mode": "container",
+       "since": "2026-11-17T12:00:00.000Z",
+       "by": "svc:cli",
+       "runs": 0,
+       "drift": 0,
+       "lastDriftAt": "",
+       "rollbackOf": null
+      },
+      "alerts": {
+       "mode": "host",
+       "since": "2026-11-17T12:00:00.000Z",
+       "by": "svc:cli",
+       "runs": 0,
+       "drift": 0,
+       "lastDriftAt": "",
+       "rollbackOf": {
+        "from": "shadow",
+        "at": "2026-11-17T12:00:00.000Z",
+        "by": "",
+        "why": "x"
+       }
+      }
+     }
+    }
+   },
+   "modeOf": {
+    "hostApi": "host",
+    "unknown": "container",
+    "alerts": "host"
+   },
+   "steps": [
+    {
+     "name": "hostApiNoMode",
+     "v": {
+      "ok": false,
+      "event": "",
+      "reason": "host-api has no mode: it is the host side"
+     }
+    },
+    {
+     "name": "hostFromContainer",
+     "v": {
+      "ok": false,
+      "event": "",
+      "reason": "no way from container to host: shadow first"
+     }
+    },
+    {
+     "name": "unknownMode",
+     "v": {
+      "ok": false,
+      "event": "",
+      "reason": "unknown mode \"sideways\""
+     }
+    },
+    {
+     "name": "shadowNoUnit",
+     "v": {
+      "ok": false,
+      "event": "start-shadow",
+      "reason": "axf-maintenance.service is not installed (run the host services installer)"
+     }
+    },
+    {
+     "name": "shadowApiDown",
+     "v": {
+      "ok": false,
+      "event": "start-shadow",
+      "reason": "the host API is down"
+     }
+    },
+    {
+     "name": "shadowRefusedThrows",
+     "v": {
+      "error": "invalid_body",
+      "status": 400,
+      "message": "maintenance: axf-maintenance.service is not installed (run the host services installer)",
+      "service": "maintenance"
+     }
+    },
+    {
+     "name": "unknownService",
+     "v": {
+      "error": "unknown_service",
+      "status": 404,
+      "message": "no manifest for nope",
+      "service": "nope"
+     }
+    },
+    {
+     "name": "noClock",
+     "v": {
+      "error": "invalid_body",
+      "status": 400,
+      "message": "changeMode needs `at` (ISO UTC)"
+     }
+    },
+    {
+     "name": "startShadow",
+     "v": {
+      "state": {
+       "$axf": "host-service-mode@1",
+       "rev": 1,
+       "at": "2026-11-17T12:00:00.000Z",
+       "by": "svc:console/brett",
+       "default": "container",
+       "services": {
+        "maintenance": {
+         "mode": "shadow",
+         "since": "2026-11-17T12:00:00.000Z",
+         "by": "svc:console/brett",
+         "runs": 0,
+         "drift": 0,
+         "lastDriftAt": "",
+         "rollbackOf": null
+        }
+       }
+      },
+      "changes": [
+       {
+        "id": "maintenance",
+        "from": "container",
+        "to": "shadow",
+        "event": "start-shadow",
+        "at": "2026-11-17T12:00:00.000Z",
+        "by": "svc:console/brett",
+        "why": ""
+       }
+      ]
+     }
+    },
+    {
+     "name": "shadowAgain",
+     "v": {
+      "ok": false,
+      "event": "",
+      "reason": "maintenance is already shadow"
+     }
+    },
+    {
+     "name": "cutoverTooSoon",
+     "v": {
+      "ok": false,
+      "event": "cut-over",
+      "reason": "shadow has been quiet for 10 min, needs 30"
+     }
+    },
+    {
+     "name": "cutoverNoClock",
+     "v": {
+      "ok": false,
+      "event": "cut-over",
+      "reason": "cut-over needs the clock (ctx.now)"
+     }
+    },
+    {
+     "name": "driftEffects",
+     "v": {
+      "$axf": "host-shadow-drift@1",
+      "at": "2026-11-17T12:05:00.000Z",
+      "service": "maintenance",
+      "kind": "effect-differs",
+      "host": {
+       "effects": [
+        "prune"
+       ]
+      },
+      "container": {
+       "effects": []
+      }
+     }
+    },
+    {
+     "name": "driftNone",
+     "v": null
+    },
+    {
+     "name": "driftResult",
+     "v": {
+      "$axf": "host-shadow-drift@1",
+      "at": "2026-11-17T12:05:00.000Z",
+      "service": "maintenance",
+      "kind": "result-differs",
+      "host": {
+       "result": "ok"
+      },
+      "container": {
+       "result": "skipped"
+      }
+     }
+    },
+    {
+     "name": "driftHostError",
+     "v": {
+      "$axf": "host-shadow-drift@1",
+      "at": "2026-11-17T12:05:00.000Z",
+      "service": "maintenance",
+      "kind": "host-error",
+      "host": {
+       "error": "EACCES /var/lib/docker"
+      },
+      "container": {
+       "result": "ok"
+      }
+     }
+    },
+    {
+     "name": "driftContainerError",
+     "v": {
+      "$axf": "host-shadow-drift@1",
+      "at": "2026-11-17T12:05:00.000Z",
+      "service": "maintenance",
+      "kind": "container-error",
+      "host": {
+       "result": "ok"
+      },
+      "container": {
+       "error": "timeout"
+      }
+     }
+    },
+    {
+     "name": "driftHostMissing",
+     "v": {
+      "$axf": "host-shadow-drift@1",
+      "at": "2026-11-17T12:05:00.000Z",
+      "service": "maintenance",
+      "kind": "host-missing",
+      "host": null,
+      "container": {
+       "result": "ok"
+      }
+     }
+    },
+    {
+     "name": "driftContainerMissing",
+     "v": {
+      "$axf": "host-shadow-drift@1",
+      "at": "2026-11-17T12:05:00.000Z",
+      "service": "maintenance",
+      "kind": "container-missing",
+      "host": {
+       "result": "ok"
+      },
+      "container": null
+     }
+    },
+    {
+     "name": "driftBothMissing",
+     "v": null
+    },
+    {
+     "name": "driftNoAt",
+     "v": {
+      "error": "invalid_body",
+      "status": 400,
+      "message": "drift needs `at`"
+     }
+    },
+    {
+     "name": "afterRuns",
+     "v": {
+      "mode": "shadow",
+      "since": "2026-11-17T12:00:00.000Z",
+      "by": "svc:console/brett",
+      "runs": 3,
+      "drift": 1,
+      "lastDriftAt": "2026-11-17T12:05:00.000Z",
+      "rollbackOf": null
+     }
+    },
+    {
+     "name": "cutoverWithDrift",
+     "v": {
+      "ok": false,
+      "event": "cut-over",
+      "reason": "1 shadow drift entry (accepted 0): read the shadow log first"
+     }
+    },
+    {
+     "name": "cutoverDriftAcceptedTooSoon",
+     "v": {
+      "ok": false,
+      "event": "cut-over",
+      "reason": "shadow has been quiet for 15 min, needs 30"
+     }
+    },
+    {
+     "name": "cutoverDriftAcceptedShortWindow",
+     "v": {
+      "ok": true,
+      "event": "cut-over",
+      "reason": ""
+     }
+    },
+    {
+     "name": "cutoverFewRuns",
+     "v": {
+      "ok": false,
+      "event": "cut-over",
+      "reason": "3 clean host runs in shadow, needs 5"
+     }
+    },
+    {
+     "name": "cutoverHostDegraded",
+     "v": {
+      "ok": false,
+      "event": "cut-over",
+      "reason": "the host copy is degraded (no health probe yet), needs up"
+     }
+    },
+    {
+     "name": "cutoverNoState",
+     "v": {
+      "ok": false,
+      "event": "cut-over",
+      "reason": "the host copy is unknown, needs up"
+     }
+    },
+    {
+     "name": "nextWait",
+     "v": {
+      "position": 4,
+      "id": "maintenance",
+      "tier": 4,
+      "tierName": "independent loops",
+      "kind": "daemon",
+      "plugin": "maintenance",
+      "after": [],
+      "replaces": [
+       "thread:_loop"
+      ],
+      "mode": "shadow",
+      "next": "wait",
+      "ok": false,
+      "event": "cut-over",
+      "reason": "1 shadow drift entry (accepted 0): read the shadow log first"
+     }
+    },
+    {
+     "name": "backToContainer",
+     "v": {
+      "mode": "container",
+      "since": "2026-11-17T12:21:40.000Z",
+      "by": "svc:cli",
+      "runs": 0,
+      "drift": 0,
+      "lastDriftAt": "",
+      "rollbackOf": {
+       "from": "shadow",
+       "at": "2026-11-17T12:21:40.000Z",
+       "by": "svc:cli",
+       "why": "not yet"
+      }
+     }
+    },
+    {
+     "name": "cutOver",
+     "v": {
+      "state": {
+       "$axf": "host-service-mode@1",
+       "rev": 2,
+       "at": "2026-11-17T12:50:00.000Z",
+       "by": "svc:console/brett",
+       "default": "container",
+       "services": {
+        "maintenance": {
+         "mode": "host",
+         "since": "2026-11-17T12:50:00.000Z",
+         "by": "svc:console/brett",
+         "runs": 0,
+         "drift": 0,
+         "lastDriftAt": "",
+         "rollbackOf": null
+        }
+       }
+      },
+      "changes": [
+       {
+        "id": "maintenance",
+        "from": "shadow",
+        "to": "host",
+        "event": "cut-over",
+        "at": "2026-11-17T12:50:00.000Z",
+        "by": "svc:console/brett",
+        "why": ""
+       }
+      ]
+     }
+    },
+    {
+     "name": "afterNeedsHost",
+     "v": {
+      "ok": false,
+      "event": "cut-over",
+      "reason": "maintenance must be in host first (it is shadow)"
+     }
+    },
+    {
+     "name": "afterSatisfied",
+     "v": {
+      "ok": true,
+      "event": "cut-over",
+      "reason": ""
+     }
+    },
+    {
+     "name": "afterChangeModeReadsDoc",
+     "v": [
+      {
+       "id": "zz-later",
+       "from": "shadow",
+       "to": "host",
+       "event": "cut-over",
+       "at": "2026-11-17T14:30:00.000Z",
+       "by": "svc:cli",
+       "why": ""
+      }
+     ]
+    },
+    {
+     "name": "actionInHostOnly",
+     "v": [
+      {
+       "error": "mode_refused",
+       "status": 409,
+       "message": "maintenance is in shadow: clear-docker-cache runs in host"
+      }
+     ]
+    },
+    {
+     "name": "nextDone",
+     "v": "done"
+    },
+    {
+     "name": "stepBack",
+     "v": {
+      "mode": "shadow",
+      "since": "2026-11-17T13:06:40.000Z",
+      "by": "svc:cli",
+      "runs": 0,
+      "drift": 0,
+      "lastDriftAt": "",
+      "rollbackOf": {
+       "from": "host",
+       "at": "2026-11-17T13:06:40.000Z",
+       "by": "svc:cli",
+       "why": "watch it again"
+      }
+     }
+    },
+    {
+     "name": "rollBack",
+     "v": {
+      "state": {
+       "$axf": "host-service-mode@1",
+       "rev": 3,
+       "at": "2026-11-17T13:23:20.000Z",
+       "by": "svc:console/brett",
+       "default": "container",
+       "services": {
+        "maintenance": {
+         "mode": "container",
+         "since": "2026-11-17T13:23:20.000Z",
+         "by": "svc:console/brett",
+         "runs": 0,
+         "drift": 0,
+         "lastDriftAt": "",
+         "rollbackOf": {
+          "from": "host",
+          "at": "2026-11-17T13:23:20.000Z",
+          "by": "svc:console/brett",
+          "why": "docker restart looped"
+         }
+        }
+       }
+      },
+      "changes": [
+       {
+        "id": "maintenance",
+        "from": "host",
+        "to": "container",
+        "event": "roll-back",
+        "at": "2026-11-17T13:23:20.000Z",
+        "by": "svc:console/brett",
+        "why": "docker restart looped"
+       }
+      ]
+     }
+    },
+    {
+     "name": "rollbackSteps",
+     "v": {
+      "id": "maintenance",
+      "to": "container",
+      "steps": [
+       {
+        "step": 1,
+        "do": "mode",
+        "detail": "PUT /v1/services/maintenance/mode { to: container, by: svc:console/brett, why: \"docker restart looped\" }",
+        "verify": "GET /v1/services/maintenance/mode → container"
+       },
+       {
+        "step": 2,
+        "do": "unit",
+        "detail": "systemctl stop axf-maintenance.service",
+        "verify": "unitState inactive"
+       },
+       {
+        "step": 3,
+        "do": "container",
+        "detail": "the console's _loop (thread) read mode container and run again",
+        "verify": "console GET /api/host-services/maintenance → container.lastRun younger than 180 s"
+       },
+       {
+        "step": 4,
+        "do": "record",
+        "detail": "history.jsonl: roll-back maintenance svc:console/brett: docker restart looped; health@1 item host-service:maintenance cleared",
+        "verify": "the Migration card shows container"
+       }
+      ]
+     }
+    },
+    {
+     "name": "rollbackStepsTick",
+     "v": {
+      "id": "auto-lander",
+      "to": "container",
+      "steps": [
+       {
+        "step": 1,
+        "do": "mode",
+        "detail": "PUT /v1/services/auto-lander/mode { to: container, by: svc:cli }",
+        "verify": "GET /v1/services/auto-lander/mode → container"
+       },
+       {
+        "step": 2,
+        "do": "unit",
+        "detail": "systemctl disable --now axf-auto-lander.timer; systemctl stop axf-auto-lander.service",
+        "verify": "timerState inactive, unitState inactive"
+       },
+       {
+        "step": 3,
+        "do": "cron",
+        "detail": "restore /etc/cron.d/axf-auto-land, /etc/cron.d/axf-pipeline from deploy/install-console.sh (axf_cron_file)",
+        "verify": "2 cron file(s) present"
+       },
+       {
+        "step": 4,
+        "do": "record",
+        "detail": "history.jsonl: roll-back auto-lander svc:cli; health@1 item host-service:auto-lander cleared",
+        "verify": "the Migration card shows container"
+       }
+      ]
+     }
+    },
+    {
+     "name": "stepBackSteps",
+     "v": {
+      "id": "auto-lander",
+      "to": "shadow",
+      "steps": [
+       {
+        "step": 1,
+        "do": "mode",
+        "detail": "PUT /v1/services/auto-lander/mode { to: shadow, by: svc:cli }",
+        "verify": "GET /v1/services/auto-lander/mode → shadow"
+       },
+       {
+        "step": 2,
+        "do": "unit",
+        "detail": "axf-auto-lander.timer stays enabled; the next tick runs dry (AXF_HOST_MODE=shadow)",
+        "verify": "health up, shadow log growing"
+       },
+       {
+        "step": 3,
+        "do": "cron",
+        "detail": "restore /etc/cron.d/axf-auto-land, /etc/cron.d/axf-pipeline from deploy/install-console.sh (axf_cron_file)",
+        "verify": "2 cron file(s) present"
+       },
+       {
+        "step": 4,
+        "do": "record",
+        "detail": "history.jsonl: roll-back auto-lander svc:cli; health@1 item host-service:auto-lander cleared",
+        "verify": "the Migration card shows container"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tierRollback",
+     "v": [
+      {
+       "id": "alerts",
+       "from": "shadow",
+       "to": "container",
+       "event": "back-to-container",
+       "at": "2026-11-17T12:00:10.000Z",
+       "by": "svc:cli",
+       "why": "tier back"
+      },
+      {
+       "id": "auto-lander",
+       "from": "shadow",
+       "to": "container",
+       "event": "back-to-container",
+       "at": "2026-11-17T12:00:10.000Z",
+       "by": "svc:cli",
+       "why": "tier back"
+      }
+     ]
+    },
+    {
+     "name": "summary",
+     "v": [
+      "1. host-api: host",
+      "2. alerts: container since 2026-11-17T13:23:20.000Z",
+      "3. auto-lander: container since 2026-11-17T13:23:20.000Z",
+      "4. maintenance: container since 2026-11-17T13:23:20.000Z (rolled back from host: docker restart looped)",
+      "5. zz-later: container since 2026-11-17T13:23:20.000Z",
+      "6. console-terminal: container since 2026-11-17T13:23:20.000Z"
+     ]
+    }
+   ]
   }
  }
 }

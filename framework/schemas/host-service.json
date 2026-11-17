@@ -52,6 +52,119 @@
     "shadow",
     "host"
   ],
+  "modeEvents": [
+    "start-shadow",
+    "back-to-container",
+    "cut-over",
+    "step-back",
+    "roll-back"
+  ],
+  "modeTransitions": {
+    "start-shadow": [
+      "container",
+      "shadow"
+    ],
+    "back-to-container": [
+      "shadow",
+      "container"
+    ],
+    "cut-over": [
+      "shadow",
+      "host"
+    ],
+    "step-back": [
+      "host",
+      "shadow"
+    ],
+    "roll-back": [
+      "host",
+      "container"
+    ]
+  },
+  "modeGuards": {
+    "minShadowMs": 1800000,
+    "minRuns": 3,
+    "maxDrift": 0
+  },
+  "cutoverTiers": [
+    {
+      "tier": 1,
+      "name": "gateway",
+      "why": "nothing else is reachable without it",
+      "services": [
+        "host-api"
+      ]
+    },
+    {
+      "tier": 2,
+      "name": "credentials and alerts",
+      "why": "every host caller needs a fresh GitHub App token and a way to reach the phone",
+      "services": [
+        "github-app",
+        "ai-keys",
+        "alerts"
+      ]
+    },
+    {
+      "tier": 3,
+      "name": "ticks already on the host",
+      "why": "cron lines become units; the lander and the pipeline tick are adopted, not rewritten",
+      "services": [
+        "auto-lander",
+        "pipeline",
+        "stale-row-watchdog"
+      ]
+    },
+    {
+      "tier": 4,
+      "name": "independent loops",
+      "why": "no console coupling beyond their own data folder",
+      "services": [
+        "maintenance",
+        "shipped-features",
+        "activity",
+        "claude-settings",
+        "claude-handoff",
+        "session-checkin",
+        "notify-control"
+      ]
+    },
+    {
+      "tier": 5,
+      "name": "host actions",
+      "why": "they need alerts, the token keeper and the docker proxy in place",
+      "services": [
+        "systems-check",
+        "container-access",
+        "project-wizard",
+        "agent-swarm",
+        "agent-manager-tools"
+      ]
+    },
+    {
+      "tier": 6,
+      "name": "rest",
+      "why": "anything a later build adds and does not place",
+      "services": []
+    },
+    {
+      "tier": 7,
+      "name": "terminal",
+      "why": "the most visible: sessions stop dying with the container, so it goes last with everything else proven",
+      "services": [
+        "console-terminal"
+      ]
+    }
+  ],
+  "driftKinds": [
+    "effect-differs",
+    "result-differs",
+    "host-error",
+    "container-error",
+    "host-missing",
+    "container-missing"
+  ],
+  "drift": "host-shadow-drift@1",
   "errors": {
     "host_service_down": {
       "http": 503,
@@ -214,6 +327,24 @@
       "path": "/mode",
       "auth": "token",
       "answers": "host-service-mode@1: the whole document"
+    },
+    {
+      "method": "POST",
+      "path": "/services/{id}/shadow",
+      "auth": "token",
+      "answers": "{ ok, drift } the console reports what its in-container copy did (shadow mode); the host API compares with the host run and logs host-shadow-drift@1"
+    },
+    {
+      "method": "GET",
+      "path": "/services/{id}/shadow?since=",
+      "auth": "token",
+      "answers": "{ runs, drift: [host-shadow-drift@1] } the shadow log"
+    },
+    {
+      "method": "POST",
+      "path": "/services/{id}/rollback",
+      "auth": "token",
+      "answers": "{ ok, steps } mode → container, unit stopped, timer disabled, cron restored; body { by, reason, why }"
     }
   ],
   "idPattern": "^[a-z0-9][a-z0-9-]{0,40}$",
