@@ -17,7 +17,7 @@
         "deploy"
       ],
       "events": 33,
-      "actions": 23,
+      "actions": 25,
       "connectors": {
         "email": {
           "id": "email",
@@ -42,7 +42,7 @@
         "sources": 11,
         "events": 33,
         "fields": 0,
-        "actions": 23
+        "actions": 25
       },
       "source": {
         "events": [
@@ -1565,6 +1565,33 @@
         ]
       ]
     },
+    "remote": {
+      "keys": [
+        "mcp.github.create-issue",
+        "axhub.vps.run",
+        "axhub.mail",
+        ""
+      ],
+      "allowed": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "validSet": true,
+      "planNoReason": [
+        "Call an axHub service (carries reason { title, description }) needs reason"
+      ],
+      "planHalfReason": 1,
+      "planReason": [
+        [
+          "axhub.call",
+          "axhub.vps.run",
+          "remote",
+          null
+        ]
+      ]
+    },
     "runs": {
       "id": [
         "run-pipeline-ship-20261113180000",
@@ -1916,7 +1943,9 @@
       ],
       "toolActions": [
         "tool.run",
-        "console.command"
+        "console.command",
+        "mcp.call",
+        "axhub.call"
       ],
       "consoleVerbs": [
         "open",
@@ -1993,6 +2022,8 @@
         "webhook.send",
         "tool.run",
         "console.command",
+        "mcp.call",
+        "axhub.call",
         "macro.run",
         "pipeline.run",
         "event.fire",

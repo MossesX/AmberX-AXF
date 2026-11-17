@@ -42,7 +42,7 @@ export const RUN = 'prompt-run@1';
 export const RUN_KINDS = ['tool', 'macro', 'pipeline', 'actions'];
 export const RUN_STATUSES = ['done', 'failed', 'waiting', 'stopped', 'dry'];
 /** Actions a tool set governs: a plugin command (`<plugin>.<command>`) and a console verb (`console.<verb>`). */
-export const TOOL_ACTIONS = ['tool.run', 'console.command'];
+export const TOOL_ACTIONS = ['tool.run', 'console.command', 'mcp.call', 'axhub.call'];
 export const CONSOLE_VERBS = ['open', 'press', 'set', 'focus', 'scroll', 'state', 'search', 'plugin.enable', 'plugin.disable'];
 export const TOOL_PATTERN = '^[a-z0-9][a-z0-9._-]{0,79}(\\.\\*)?$|^\\*$';
 const TOOL_RE = new RegExp(TOOL_PATTERN);
@@ -312,6 +312,8 @@ export const BUILTIN_MANIFESTS = Object.freeze([
     actions: [
       A('tool.run', 'Run a tool (a plugin command: REST / MCP / CLI)', 'write', [F('plugin', 'plugin', 'Plugin', { required: true }), F('command', 'command', 'Command', { required: true, dependsOn: 'plugin' }), F('input', 'object', 'Input')]),
       A('console.command', 'Console command (console-control@1 verb on an address)', 'navigate', [F('verb', 'enum', 'Verb', { required: true, enum: CONSOLE_VERBS }), F('address', 'address', 'Address'), F('value', 'string', 'Value')]),
+      A('mcp.call', 'Call a tool on an MCP server (MCP client plugin)', 'write', [F('server', 'string', 'MCP server id', { required: true }), F('tool', 'string', 'Tool', { required: true }), F('arguments', 'object', 'Arguments')]),
+      A('axhub.call', 'Call an axHub service (carries reason { title, description })', 'write', [F('service', 'string', 'Service', { required: true }), F('tool', 'string', 'Tool / action'), F('args', 'object', 'Arguments'), F('reason', 'object', 'Reason { title, description }', { required: true }), F('server', 'string', 'axHub MCP server id (default axhub)')]),
       A('macro.run', 'Run a macro', 'write', [F('macro', 'macro', 'Macro', { required: true }), F('params', 'object', 'Parameters')]),
       A('pipeline.run', 'Run a pipeline', 'write', [F('pipeline', 'pipeline', 'Pipeline', { required: true }), F('params', 'object', 'Parameters')]),
       A('event.fire', 'Fire another event (chain rules)', 'write', [F('source', 'string', 'Source', { required: true }), F('event', 'string', 'Event', { required: true }), F('payload', 'object', 'Payload')]),
@@ -537,9 +539,11 @@ export function toolKey(step) {
   const input = isObj(step.input) ? step.input : {};
   if (step.action === 'tool.run') return slug(input.plugin) && slug(input.command) ? `${slug(input.plugin)}.${slug(input.command)}` : '';
   if (step.action === 'console.command') return str(input.verb) ? `console.${str(input.verb, 40).toLowerCase()}` : '';
+  if (step.action === 'mcp.call') return slug(input.server) && slug(input.tool) ? `mcp.${slug(input.server)}.${slug(input.tool)}` : '';
+  if (step.action === 'axhub.call') return slug(input.service) ? `axhub.${slug(input.service)}${slug(input.tool) ? `.${slug(input.tool)}` : ''}` : '';
   return slug(step.action);
 }
-/** `a.b` matches `a.b`; `a.*` matches `a.b`, `a.b.c`; `*` matches everything. */
+/** Keys: `<plugin>.<command>` (tool.run), `console.<verb>`, `mcp.<server>.<tool>` (mcp.call), `axhub.<service>[.<tool>]` (axhub.call). `a.b` matches `a.b`; `a.*` matches `a.b`, `a.b.c`; `*` matches everything. */
 export function toolMatches(pattern, key) {
   const p = str(pattern, 90).toLowerCase(); const k = str(key, 90).toLowerCase();
   if (!p || !k) return false;
@@ -566,13 +570,13 @@ export function validateToolset(v) {
   if (!tools.length) errors.push({ field: 'tools', message: 'a tool set names at least one tool (plugin.command, plugin.*, console.verb, console.*)' });
   tools.forEach((t, i) => {
     const key = typeof t === 'string' ? str(t, 90).toLowerCase() : isObj(t) && slug(t.plugin) ? `${slug(t.plugin)}.${slug(t.command) || '*'}` : '';
-    if (!TOOL_RE.test(key)) errors.push({ field: `tools.${i}`, message: `a tool is plugin.command, plugin.*, console.verb or console.*, not ${JSON.stringify(t).slice(0, 60)}` });
+    if (!TOOL_RE.test(key)) errors.push({ field: `tools.${i}`, message: `a tool is plugin.command, plugin.*, console.verb, console.*, mcp.server.tool or axhub.service[.tool], not ${JSON.stringify(t).slice(0, 60)}` });
     else if (key.startsWith('console.') && key !== 'console.*' && !CONSOLE_VERBS.includes(key.slice('console.'.length))) errors.push({ field: `tools.${i}`, message: `console verbs: ${CONSOLE_VERBS.join(', ')}` });
   });
   return { ok: errors.length === 0, errors };
 }
 /**
- * Whether a step may run under the tool sets. Only tool actions (tool.run, console.command) are governed; with no
+ * Whether a step may run under the tool sets. Only tool actions (TOOL_ACTIONS: tool.run, console.command, mcp.call, axhub.call) are governed; with no
  * enabled set every tool may run. Returns { ok, set (the one that allows it), key, governed }.
  */
 export function toolAllowed(toolsets, step) {
@@ -911,6 +915,7 @@ export function plan(actions, opts = {}) {
       const input = renderDeep(a.input, c);
       const missingIn = def.input.filter((f) => f.required && (input[f.name] === undefined || input[f.name] === null || input[f.name] === '')).map((f) => f.name);
       if (missingIn.length) { errors.push({ at: [...trail, a.action].join(' > '), message: `${def.title} needs ${missingIn.join(', ')}` }); continue; }
+      if (a.action === 'axhub.call' && !(isObj(input.reason) && str(input.reason.title) && str(input.reason.description))) { errors.push({ at: [...trail, a.action].join(' > '), message: 'an axHub call carries reason { title, description } (title: what is about to happen; description: what it does and why)' }); continue; }
       if (a.action === 'macro.run') {
         const m = macros[slug(input.macro)];
         if (!m) { errors.push({ at: [...trail, a.action].join(' > '), message: `no macro ${input.macro}` }); continue; }

@@ -264,6 +264,17 @@ export const EXEC = {
     const r = node(args);
     return r.json?.ok ? { ok: true, result: r.json } : { ok: false, error: r.json?.error || r.stderr || `exit ${r.status}` };
   },
+  // MCP servers through the MCP client plugin (its Call tool command); axHub is the MCP server `axhub` there and every
+  // call carries reason { title, description } (the plan refuses one without it), shown first on the veto notice.
+  'mcp.call'(step, ctx) {
+    const { server, tool, arguments: args } = step.input;
+    return EXEC['tool.run']({ input: { plugin: 'mcp-client', command: 'servers-by-sid-call', input: { sid: E.slug(server), tool: String(tool), arguments: isObj(args) ? args : {} } } }, ctx);
+  },
+  'axhub.call'(step, ctx) {
+    const { service, tool, args, reason, server } = step.input;
+    const callArgs = { service: String(service), ...(tool ? { tool: String(tool) } : {}), args: isObj(args) ? args : {}, reason: { title: String(reason?.title ?? ''), description: String(reason?.description ?? '') } };
+    return EXEC['mcp.call']({ input: { server: server || 'axhub', tool: 'call', arguments: callArgs } }, ctx);
+  },
   'build.create'(step, ctx) {
     const { title, detail, priority, queue } = step.input;
     const change = { action: 'add', title: String(title), detail: String(detail ?? ''), ...(priority ? { priority } : {}), said: `Prompt engine rule ${ctx.rule || ''}: ${title}`.trim(), origin: { source: 'prompt-engine', by: ctx.by || 'prompt-engine' } };

@@ -139,7 +139,9 @@
   ],
   "toolActions": [
     "tool.run",
-    "console.command"
+    "console.command",
+    "mcp.call",
+    "axhub.call"
   ],
   "consoleVerbs": [
     "open",
@@ -216,6 +218,8 @@
     "webhook.send",
     "tool.run",
     "console.command",
+    "mcp.call",
+    "axhub.call",
     "macro.run",
     "pipeline.run",
     "event.fire",

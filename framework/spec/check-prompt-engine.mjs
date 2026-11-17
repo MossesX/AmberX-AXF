@@ -146,6 +146,17 @@ function run() {
     listOne: E.toolList(sets, [{ id: 'ui-review', commands: [{ id: 'list' }] }, { id: 'activity', commands: [{ id: 'items' }] }], { set: 'review' }).items.map((i) => i.key),
     listOpen: E.toolList([], [{ id: 'activity', commands: [{ id: 'items' }] }]).items.slice(0, 1).map((i) => [i.key, i.allowed]),
   };
+  // MCP and axHub calls (s5): governed by tool sets by server / service; an axHub call without a reason is refused
+  const remoteSets = [{ id: 'remote', title: 'Remote', tools: ['mcp.github.*', 'axhub.vps.run'] }];
+  const hubCall = (reason) => ({ action: 'axhub.call', input: { service: 'vps', tool: 'run', args: { cmd: 'uptime' }, ...(reason ? { reason } : {}) } });
+  out.remote = {
+    keys: [E.toolKey({ action: 'mcp.call', input: { server: 'GitHub', tool: 'create-issue' } }), E.toolKey(hubCall({})), E.toolKey({ action: 'axhub.call', input: { service: 'mail' } }), E.toolKey({ action: 'mcp.call', input: { server: 'x' } })],
+    allowed: [E.toolAllowed(remoteSets, { action: 'mcp.call', input: { server: 'github', tool: 'create-issue' } }).ok, E.toolAllowed(remoteSets, { action: 'mcp.call', input: { server: 'slack', tool: 'post' } }).ok, E.toolAllowed(remoteSets, hubCall({})).ok, E.toolAllowed(remoteSets, { action: 'axhub.call', input: { service: 'vps', tool: 'delete' } }).ok],
+    validSet: E.validateToolset(remoteSets[0]).ok,
+    planNoReason: plan([hubCall(null)], {}).errors.map((e) => e.message),
+    planHalfReason: plan([hubCall({ title: 'Restart' })], {}).errors.length,
+    planReason: plan([hubCall({ title: 'Check uptime', description: 'Reads the VPS uptime after a failed deploy.' })], { toolsets: remoteSets }).steps.map((x) => [x.action, x.tool, x.toolset ?? null, x.blocked ?? null]),
+  };
   // run records
   const runRes = { planned: 3, ran: [{ action: 'log.note', at: 'direct:pipeline:ship > pipeline:ship > prep > log.note', result: { note: 'x' } }], failed: [], asked: [{ id: 'i1', title: 'Go live?', resume: { pipeline: 'ship', stage: 1, params: { build: 'b7' } } }], errors: [], toolsBlocked: [], keysNeeded: [] };
   const waitingRun = E.runRecord({ kind: 'pipeline', target: 'ship', title: 'Ship it', params: { build: 'b7' }, by: 'brett', startedAt: AT, ...runRes }, { now: AT });
@@ -209,6 +220,12 @@ t('plan: a blocked tool is named, the allowed ones carry their set, other action
   assert.deepEqual(got.toolsets.planOpen, [['tool.run', null]]);
   assert.deepEqual(got.toolsets.list.items.map((i) => i[1]), [true, true, false, true, false, false, false, false, false, false, false, false]);
   assert.deepEqual(got.toolsets.listOne, ['ui-review.list', 'console.open']); assert.deepEqual(got.toolsets.listOpen, [['activity.items', true]]);
+});
+t('MCP and axHub calls: tool keys by server / service, governed by tool sets, an axHub call needs reason { title, description }', () => {
+  assert.deepEqual(got.remote.keys, ['mcp.github.create-issue', 'axhub.vps.run', 'axhub.mail', '']);
+  assert.deepEqual(got.remote.allowed, [true, false, true, false]); assert.equal(got.remote.validSet, true);
+  assert.equal(got.remote.planNoReason.length, 1); assert.match(got.remote.planNoReason[0], /reason|needs/); assert.equal(got.remote.planHalfReason, 1);
+  assert.deepEqual(got.remote.planReason, [['axhub.call', 'axhub.vps.run', 'remote', null]]);
 });
 t('run records: waiting at a gate (with resume), done, failed, stopped; continuing settles the status', () => {
   assert.equal(got.runs.waiting.status, 'waiting'); assert.deepEqual(got.runs.waiting.resume, { pipeline: 'ship', stage: 1, params: { build: 'b7' } }); assert.equal(got.runs.waiting.finishedAt, '');

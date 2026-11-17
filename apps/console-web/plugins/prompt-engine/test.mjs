@@ -274,6 +274,22 @@ await test('CLI: exit codes 0 / 1 / 2 / 3 and --json', async () => {
   assert.equal(tl.ok, true); assert.ok(tl.items.every((i) => i.set === 'review'));
 });
 
+await test('MCP and axHub calls go through the MCP client plugin; an answer can chain both', async () => {
+  const seen = []; const orig = R.EXEC['tool.run'];
+  R.EXEC['tool.run'] = (step) => { seen.push(step.input); return { ok: true, result: { called: step.input.input.tool } }; };
+  assert.equal(R.toolsets.add({ id: 'remote', title: 'Remote', tools: ['mcp.github.*', 'axhub.vps.*'] }).ok, true);
+  try {
+    const r = R.run([{ action: 'mcp.call', input: { server: 'github', tool: 'create-issue', arguments: { title: 'x' } } }, { action: 'axhub.call', input: { service: 'vps', tool: 'run', args: { cmd: 'uptime' }, reason: { title: 'Check uptime', description: 'Reads uptime after a failed deploy.' } } }], { kind: 'actions', target: 'remote' });
+    assert.equal(r.ran.length, 2, JSON.stringify(r.failed.concat(r.errors)));
+    assert.deepEqual(seen[0], { plugin: 'mcp-client', command: 'servers-by-sid-call', input: { sid: 'github', tool: 'create-issue', arguments: { title: 'x' } } });
+    assert.equal(seen[1].input.sid, 'axhub'); assert.equal(seen[1].input.tool, 'call'); assert.equal(seen[1].input.arguments.reason.title, 'Check uptime');
+    const refused = R.run([{ action: 'axhub.call', input: { service: 'vps', tool: 'run' } }], { kind: 'actions', target: 'remote' });
+    assert.equal(refused.ran.length, 0); assert.match(refused.errors[0].message, /reason/);
+    const blocked = R.run([{ action: 'mcp.call', input: { server: 'slack', tool: 'post' } }], { kind: 'actions', target: 'remote' });
+    assert.deepEqual(blocked.toolsBlocked, ['mcp.slack.post']);
+  } finally { R.EXEC['tool.run'] = orig; R.toolsets.remove('remote', 'remote'); }
+});
+
 await test('data stays in the data folder; audit lines are prompt-audit@1', async () => {
   for (const f of ['rules.json', 'macros.json', 'pipelines.json', 'toolsets.json', 'runs.json', 'instances.json', 'state.json', 'audit.jsonl', 'manifests.json']) assert.ok(readFileSync(join(T, f), 'utf8').length > 0, f);
   for (const l of R.readAudit()) { assert.equal(l.$axf, 'prompt-audit@1'); assert.ok(E.AUDIT_KINDS.includes(l.kind), l.kind); }
