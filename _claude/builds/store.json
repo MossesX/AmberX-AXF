@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7432,
- "updatedAt": "2026-11-17T13:05:20.617Z",
+ "rev": 7433,
+ "updatedAt": "2026-11-17T13:10:25.739Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223048,9 +223048,9 @@
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
-   "pr": "",
+   "pr": "#780",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T13:05:18.092Z",
+   "updatedAt": "2026-11-17T13:10:23.017Z",
    "builtAt": "",
    "notes": [
     {
@@ -223104,6 +223104,10 @@
     {
      "text": "Headless run axf-orchestrator-stale-row-watchdog-vps--earl: brief only · start 17.4K tokens ($0.06) · cost $11.38 · 180 turns · 6 tools, MCP none",
      "at": "2026-11-17T13:05:18.092Z"
+    },
+    {
+     "text": "Reconciler: PR #780",
+     "at": "2026-11-17T13:10:23.017Z"
     }
    ],
    "approvals": [
@@ -223747,7 +223751,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
