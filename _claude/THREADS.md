@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:02 UTC · `console-app-part-2-native-floating-2` note (all) · cli
 - 2026-11-17 19:02 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · cli
 - 2026-11-17 19:02 UTC · `token-registry-skin-editor-live-sandbox` note (all) · cli
 - 2026-11-17 19:02 UTC · `banner-widget-shapes-more-than-circle` note (all) · cli
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 - 2026-11-17 20:00 UTC · `console-app-part-2-native-floating` PR #813, note (all) · reconciler
 - 2026-11-17 20:00 UTC · `separate-settings-per-plugin-reset` PR #814, note (all) · reconciler
+- 2026-11-17 20:00 UTC · `terminal-main-tab-streaming-console-s` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
