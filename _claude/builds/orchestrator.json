@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:24:42.312Z",
+ "updatedAt": "2026-11-17T22:25:19.063Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131490,7 +131490,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T22:20:32.486Z",
+   "updatedAt": "2026-11-17T22:25:15.677Z",
    "builtAt": "",
    "notes": [
     {
@@ -131632,6 +131632,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T22:20:32.486Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: The build is complete (not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T22:25:15.677Z"
     }
    ],
    "approvals": [
@@ -181761,7 +181765,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T22:20:32.486Z",
+   "updatedAt": "2026-11-17T22:25:15.677Z",
    "builtAt": "",
    "notes": [
     {
@@ -181975,6 +181979,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T22:20:32.486Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: The build is complete (build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T22:25:15.677Z"
     }
    ],
    "approvals": [
