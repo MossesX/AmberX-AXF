@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7587,
- "updatedAt": "2026-11-17T18:34:48.570Z",
+ "rev": 7588,
+ "updatedAt": "2026-11-17T18:35:24.957Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -272346,9 +272346,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:34:36.995Z",
-   "updatedAt": "2026-11-17T18:34:38.756Z",
+   "updatedAt": "2026-11-17T18:35:22.774Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 1 steps (1 Fable).",
+     "at": "2026-11-17T18:35:22.774Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -272363,7 +272368,64 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-17T18:35:22.774Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 1,
+     "note": "Split by Claude into 1 steps (1 Fable)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwl18r9y01y368",
+     "title": "",
+     "text": "Design the grid-filter@1 contract: add the 'filter-preset' asset type to framework/schemas/asset-types.json (filters [{field, op, value}], search, sortBy [{field, dir}], groupBy, scope = grid id or '*'), with skin declaration, validators and the generated JSON Schema (node framework/cli/axf.mjs schemas)",
+     "model": "Fable",
+     "why": "New shared asset type + schema design used by every grid in every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/",
+      "framework/core/validate.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T18:35:22.774Z",
+     "updatedAt": "2026-11-17T18:35:22.774Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -272372,12 +272434,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-17T18:35:22.774Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

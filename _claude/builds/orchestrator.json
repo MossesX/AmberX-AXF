@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:34:48.570Z",
+ "updatedAt": "2026-11-17T18:35:24.957Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -178332,9 +178332,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:34:36.995Z",
-   "updatedAt": "2026-11-17T18:34:38.756Z",
+   "updatedAt": "2026-11-17T18:35:22.774Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 1 steps (1 Fable).",
+     "at": "2026-11-17T18:35:22.774Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -178349,7 +178354,31 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the grid-filter@1 contract: add the 'filter-preset' asset type to framework/schemas/asset-types.json (filters [{field, op, value}], search, sortBy [{field, dir}], groupBy, scope = grid id or '*'), with skin declaration, validators and the generated JSON Schema (node framework/cli/axf.mjs schemas)",
+     "model": "Fable",
+     "why": "New shared asset type + schema design used by every grid in every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/",
+      "framework/core/validate.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl18r9y01y368",
+     "createdAt": "2026-11-17T18:35:22.774Z"
+    }
+   ]
   }
  ]
 }
