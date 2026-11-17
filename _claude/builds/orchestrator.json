@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:25:17.711Z",
+ "updatedAt": "2026-11-17T18:26:57.634Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -177084,9 +177084,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:25:05.725Z",
-   "updatedAt": "2026-11-17T18:25:08.533Z",
+   "updatedAt": "2026-11-17T18:26:55.611Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 17 steps (5 Fable).",
+     "at": "2026-11-17T18:26:55.611Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -177101,7 +177106,393 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Recover #372: list what survives in git history and reports for settings-sections-everywhere (git log --all -S 'collapsible' / reflog / dangling commits, _claude/builds/reports/*372*, store origin/notes) and write a reuse inventory to _claude/builds/reports/rebuild-fresh-main-collapsible-sections.md (Recovered section). Commit.",
+     "model": "Fable",
+     "why": "Decides which parts of the old cross-app contract carry over before the schema is redesigned",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/rebuild-fresh-main-collapsible-sections.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy301evb2",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s2",
+     "text": "Schema: add the collapsible-section contract to the settings asset type in framework/schemas/asset-types.json (section.collapsible default true, section.defaultCollapsed, layout-level collapseAll toolbar flag), regenerate framework/schemas/json/ with axf schemas, and note the deferred Kotlin twin in framework/spec/PORTING.md. Commit.",
+     "model": "Fable",
+     "why": "Schema change to a shared asset type that every app's settings layouts use",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy302qfg7",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s3",
+     "text": "Engine: add framework/core/engines/settings-sections.ts (pure): resolve each section's collapsed state from asset defaults + saved state keyed axf.settings.sections.<screenId>.<sectionId>, plus collapseAll / expandAll / toggle and a state read. Export it from framework/core. Commit.",
+     "model": "Fable",
+     "why": "Reference engine internals shared by every settings screen and port",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/settings-sections.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy3035emh",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s4",
+     "text": "Fixtures: add framework/spec/fixtures/settings-sections.json golden cases (defaults, saved overrides, collapse all, expand all, unknown ids, level-toolbar interplay) through framework/spec/gen-fixtures.mts, plus framework/spec/check-settings-sections.mts. Commit.",
+     "model": "Fable",
+     "why": "Conformance contract for the new engine across ports",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/settings-sections.json",
+      "framework/spec/check-settings-sections.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy304obhs",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s5",
+     "text": "Migration: update every shipped settings asset (framework/assets/settings/*, chrome-<type> defaults and per-app copies, plugin settings assets) so sections declare stable ids; add a backfill in framework/cli/chrome-settings.mjs or a new framework/cli/settings-sections.mjs migrate that fills missing ids. Run it and validate with axf validate --framework. Commit.",
+     "model": "Fable",
+     "why": "Asset migration across every app's settings layouts",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/assets/settings/",
+      "framework/cli/settings-sections.mjs",
+      "apps/*/src/assets/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy3051rgq",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s6",
+     "text": "React: make the framework settings section component (framework/react settings renderer / Container section used by settings layouts) collapsible on the engine: header button with chevron icon from the icon map, aria-expanded/aria-controls, tokens only, data-axf-target per section for console control. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy306ujzr",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s7",
+     "text": "React: add the Collapse all / Expand all toolbar (role=toolbar, aria-label settings-sections, tap-confirm compatible) to every settings interface, next to the level toolbar; hideable through the settings asset flag. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/react/components/",
+      "framework/libs/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy307lqsx",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s8",
+     "text": "Persistence: wire the section state to SettingsRegistry (per-key last-save-wins, refreshFromSaved on focus via useEditorSync) so collapsed state is remembered per screen and survives reloads. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/",
+      "framework/libs/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy308tniy",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s9",
+     "text": "Console screens: switch Settings tabs and every plugin settings sub-tab (Settings → Plugins → *) that hand-draws sections onto the collapsible section component in apps/console-web/src; grep for remaining hand-made section headers and move them. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/",
+      "apps/console-web/plugins/*/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy309yrcm",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s10",
+     "text": "Floating settings window and chrome settings dialogs (axf.chrome.settings, per-instance settings windows) use the same collapsible sections and collapse-all toolbar. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy40aqs68",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s11",
+     "text": "Other apps: re-bake framework into apps on shared-assets.json (console, axHub web, AmberX, Molly, Expenses) with rebake.mjs and fix any app settings screens that bypass the component. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/rebake.mjs",
+      "apps/*/src/axf/",
+      "apps/*/axf.lock.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy40baeaw",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s12",
+     "text": "API (console REST + console control): register targets setting-section:<screen>/<section>; add routes GET /api/settings-sections/<screen> (state), POST toggle / collapse-all / expand-all; deep link console_show target view:settings/... with ?section= to open and expand one. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/",
+      "framework/spec/CONSOLE-CONTROL.md",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy40c6dt3",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s13",
+     "text": "API (MCP + CLI + voice): console_control / plugin-commands entries settings_sections_get|toggle|collapse_all|expand_all, axf settings-sections get|toggle|collapse-all|expand-all CLI, and AmberX voice actions settings.collapseAll / expandAll / toggleSection, all calling the same REST. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py",
+      "framework/cli/axf.mjs",
+      "framework/cli/settings-sections.mjs",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy40dnhbv",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s14",
+     "text": "CI guard: extend framework/cli/check-chrome-assets.mjs (or new check) to flag settings sections not rendered collapsible, with a ratchet baseline; add it plus check-settings-sections.mts to the CI workflow. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/check-chrome-assets.mjs",
+      "framework/spec/chrome-baseline.json",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy40e4c8z",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s15",
+     "text": "Tests: unit tests for the React section + toolbar, server route tests, check-console-control, check-toolbars, check-theme, check-controls, theme-swap; fix failures. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/",
+      "apps/console-web/server/tests/",
+      "apps/console-web/scripts/theme-swap.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy40fbqja",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s16",
+     "text": "UI Review: desktop + phone shots of Settings, a plugin sub-tab and the floating settings window (expanded, collapsed, collapse-all), submitted with 3 option assets (chevron left / chevron right / header-row toggle) via review.mjs submit --choices. Commit the option assets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "apps/console-web/plugins/settings/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy40g54do",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "id": "s17",
+     "text": "Wrap up: run full checks (axf validate --framework, tracker.mjs --check, check-fixtures, check-settings-sections), finish _claude/builds/reports/rebuild-fresh-main-collapsible-sections.md (what was reused from #372, API reach per surface: deep link, state, actions, REST/MCP/CLI/voice), update THREADS.md row and STATUS.md, push branch, open PR stating the UI Review hold and API parity, link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/rebuild-fresh-main-collapsible-sections.md",
+      "_claude/THREADS.md",
+      "_claude/memory/STATUS.md",
+      "framework/catalog/status.json",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0xvy40h5syg",
+     "createdAt": "2026-11-17T18:26:55.611Z"
+    }
+   ]
   }
  ]
 }
