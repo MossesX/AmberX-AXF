@@ -98,3 +98,62 @@ Already moving (reuse, don't duplicate): orchestrator tick, builds-live publishe
 stale-row watchdog (`orchestrator-stale-row-watchdog-vps`).
 
 Everything else stays in the container.
+
+## 2. What this build reuses, and where it overlaps (s2)
+
+### server-auto-lander-fixes-lands (status built, PR #774, branch `claude/server-auto-lander-fixes-lands`)
+
+What it put on the host:
+
+- `deploy/systemd/axf-auto-lander.service` (oneshot, `@DIR@` = `/opt/axf`, log `/var/log/axf-auto-lander.log`,
+  `Restart=on-failure`, `Nice=5`) + `axf-auto-lander.timer` (every 60 s, `OnBootSec=90s`, `Persistent=true`).
+- `framework/deploy/axf-deploy.sh`: `axf_systemd_unit SRC DIR` (installs a unit with `@DIR@` replaced, honours
+  `AXF_SYSTEMD_DIR`) and `axf_auto_lander_install DIR [--dry-run]` (daemon-reload + enable timer; dry run prints the
+  systemctl calls and does one tick against a temp dir).
+- `deploy/install-console.sh` calls the installer next to the host cron lines (tagged `# axf-plugin:gate`).
+- Tick lock (its own lock file), per-attempt log in `_data/auto-lander/attempts/<build>.jsonl`, escalation to a
+  health@1 item, status via `node deploy/auto-lander/auto-lander.mjs status`, REST in the gate plugin.
+
+What it did **not** build: no dedicated user (the unit runs as root), no sudo whitelist, no local socket (the console
+reads status from files and the CLI), no host-service-down state in the console beyond the escalation item, no
+migration/rollback (cron lines `axf-pipeline` and `axf-auto-land` still run beside it).
+
+Reuse here:
+
+- Every new unit goes in `deploy/systemd/` with `@DIR@` and is installed through `axf_systemd_unit`; a generic
+  `axf_host_services_install` replaces one-off installers and calls `axf_auto_lander_install` instead of copying it.
+- Same pattern for each moved part: pure engine in `framework/core`, host runner in `deploy/<service>/`, oneshot+timer
+  for ticks, `Type=simple` + `Restart=always` for long-runners (terminal host, alert delivery, Auto fix executor).
+- Same state location (`_data/<service>/`), same health@1 escalation shape.
+
+Overlap / what this build adds on top of it:
+
+- The dedicated user (`axf-host`) and sudo whitelist apply to `axf-auto-lander.service` too: this build adds
+  `User=`/`Group=` to that unit and the git/docker commands it needs to the whitelist. Its tick logic is not touched.
+- The host-service socket/API (`/run/axf-host/api.sock`) exposes the auto-lander's status as one of its services, so
+  the console's "host service down" state covers it; the gate REST routes keep working and read through it.
+- Retiring the `axf-pipeline` and `axf-auto-land` cron lines in favour of units is part of this build's migration,
+  with rollback re-adding the cron files. The push-banner `_auto_merge_loop` in the console is turned off once the
+  auto-lander lands everything (auto-lander@1 already hands green PRs to the merge queue).
+- `orchestrator-stale-row-watchdog-vps` (queued, on hold) becomes one more unit on the same installer; not built here.
+
+### maintenance-plugin-clear-docker-cache (status running, one step, branch not pushed yet)
+
+Its only step s1: "Move the Maintenance plugin's actions to run on the VPS host (systemd service or host runner), not
+inside the console container, so it can restart Docker and keep working when the console or Docker is down. The
+console UI just calls it." Its detail adds a Clear Docker cache action (`docker builder prune -af`, then
+`systemctl restart docker` when cache shows as in use, wait for containers, prune again, report before/after disk),
+behind a confirm, on UI/REST/MCP/CLI/voice, and in the disk systems-check Auto fix.
+
+Overlap: its s1 is this build's maintenance row (1a). Split so nothing is built twice:
+
+- That build owns the **Clear Docker cache action** (the engine call in `engine/maint.py`, the confirm, the routes,
+  the disk Auto fix wiring).
+- This build owns **where it runs**: the `axf-maintenance` host unit (monitor loop out of the console), the
+  `axf-host` user and the sudo whitelist entries `docker builder prune -af`, `docker image prune -af …`,
+  `systemctl restart docker`, and the socket route the console calls. If that build lands first with its own host
+  runner, this build adopts it under the shared installer instead of writing a second one.
+- Restarting Docker stops the console container, so the call must run on the host and report back through the host
+  API, never through a console thread: that is the clearest case for this build's socket.
+
+Clash notes were added to both builds (orchestrator notes).
