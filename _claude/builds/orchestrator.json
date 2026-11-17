@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:40:08.782Z",
+ "updatedAt": "2026-11-17T04:40:45.652Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -166742,7 +166742,7 @@
    "pr": "#774",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T04:39:46.468Z",
+   "updatedAt": "2026-11-17T04:40:41.012Z",
    "builtAt": "",
    "notes": [
     {
@@ -166792,6 +166792,10 @@
     {
      "text": "Postgres check (s24): Postgres holds 15992 keys in 48 namespaces; 44/47 source namespaces equal, the 3 that differ (sessions, plugins/activity, builds) are still local (not mirrored yet). builds table 985 rows = builds store. axf-data health green. Another actor started shadow moves at 04:30 UTC, so no cut-over from here; axf-data-postgres-real-tables-own owns the rest.",
      "at": "2026-11-17T04:39:42.631Z"
+    },
+    {
+     "text": "Headless run axf-server-auto-lander-fixes-lands--joey: brief only · start 18.3K tokens ($0.07) · cost $18.26 · 240 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:40:41.012Z"
     }
    ],
    "approvals": [
