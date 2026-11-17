@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `maintenance-plugin-clear-docker-cache` s1 done, → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `settings-opened-banners-nav-menu` added (12 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `rebuild-fresh-main-hide-any-asset` added (16 steps) (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:58 UTC · `fix-launcher-crash-duplicate-steps-brief` s10 done (all) · foreign-write
 - 2026-11-17 23:58 UTC · `move-server-side-console-parts-onto-vps` s17 done (all) · foreign-write
 - 2026-11-17 23:58 UTC · `fix-launcher-crash-duplicate-steps-brief` s11 done (all) · orchestrator
+- 2026-11-17 23:59 UTC · `move-server-side-console-parts-onto-vps` s18 done (all) · orchestrator
 
 ## Token passes (log)
 
