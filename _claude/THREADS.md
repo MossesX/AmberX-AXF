@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:33 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running, note (all) · pipeline
 - 2026-11-16 23:33 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` branch claude/server-watchdog-orchestrator-auto-recovers-stuck (all) · pipeline
 - 2026-11-16 23:33 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · orchestrator
 - 2026-11-16 23:34 UTC · `icon-packs-with-drag-drop-pack-designer` s6 done (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 04:04 UTC · `server-auto-lander-fixes-lands` s19 done (all) · orchestrator
 - 2026-11-17 04:04 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s11 done (all) · orchestrator
 - 2026-11-17 04:04 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s17 done (all) · orchestrator
+- 2026-11-17 04:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s17 done (all) · foreign-write
 
 ## Token passes (log)
 
