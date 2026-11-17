@@ -11,7 +11,7 @@
  * wrapper left on the build (pipeline.runEnd, the session-end event), and let the decision table say what to do.
  *
  * CLI: also `axf watchdog status|scan|run|set|settings|recoveries|requeue` (plugin.json "cli" names this file).
- *   node apps/console-web/plugins/build-orchestrator/watchdog.mjs scan [--json]     dry run: every stuck build, its cause and
+ *   node apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs scan [--json]     dry run: every stuck build, its cause and
  *                                                                                   the planned action; nothing changes
  *   … run [--build id] [--json]    one pass that applies the recoveries: a hung session is killed first, the build's agent
  *                                  slots, worker claim and build lock are released, the step it was on is reset, the build
@@ -447,9 +447,9 @@ export const CRON_LOG = '/var/log/axf-watchdog.log';
 
 /** The cron file: every minute, one pass at a time (flock), removes itself when the plugin is gone. */
 export function cronText(dir = resolve(HERE, '../../../..'), env = process.env) {
-  const w = join(dir, 'apps/console-web/plugins/build-orchestrator/watchdog.mjs');
+  const w = join(dir, 'apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs');
   return [
-    '# AXF build watchdog (apps/console-web/plugins/build-orchestrator/watchdog.mjs, build-watchdog@1). Removes itself when the plugin is gone.',
+    '# AXF build watchdog (apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs, build-watchdog@1). Removes itself when the plugin is gone.',
     'SHELL=/bin/sh', 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', '',
     `* * * * * root if [ -f "${w}" ]; then cd "${dir}" && flock -n /run/axf-watchdog.lock timeout 300 node "${w}" cron >> ${CRON_LOG} 2>&1; else rm -f ${cronFile(env)}; fi`, '',
   ].join('\n');
