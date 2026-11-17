@@ -55,6 +55,10 @@
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
  *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
+ *   axf drag list|zones|move|add|remove|preview …  [--reason "…"] [--json]
+ *                               drag-move@1: move, add or remove anything draggable on the open console (banner widgets,
+ *                               toolbar items, tabs, dock panes, grid columns / rows, list items, layout slots)
+ *                               (framework/cli/drag.mjs → the console's /api/drag routes)
  */
 import { join, relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
@@ -83,6 +87,11 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
+// drag-move@1: axf drag … (framework/cli/drag.mjs → /api/drag/*)
+if (cmd === 'drag') {
+  const { main } = await import('./drag.mjs');
+  process.exit(await main(rest));
+}
 if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice'].includes(rest[0] ?? '')) {
   const { main } = await import('./console-control.mjs');
   process.exit(await main(rest));
@@ -116,7 +125,7 @@ if (cmd === 'voice') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'drag']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
