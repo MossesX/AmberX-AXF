@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `ui-review-gate-switch-default-off` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `fix-toolbar-settings-doing-nothing` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `merge-all-ready-buttons-server-side` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `account-order-hulu-moses-x-api-account` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:50 UTC · `auto-lander-never-wait-missing-ui-review` branch claude/auto-lander-never-wait-missing-ui-review, note (all) · reconciler
 - 2026-11-17 23:50 UTC · `move-server-side-console-parts-onto-vps` s11 done, s12 done (all) · foreign-write
 - 2026-11-17 23:50 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
+- 2026-11-17 23:51 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
