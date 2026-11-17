@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:22:24.408Z",
+ "updatedAt": "2026-11-17T19:22:34.070Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101717,7 +101717,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -101725,8 +101725,8 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T19:20:56.400Z",
-   "builtAt": "2026-11-17T19:20:56.400Z",
+   "updatedAt": "2026-11-17T19:22:24.004Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -101827,6 +101827,10 @@
     {
      "text": "Headless run axf-pass-approval-hook-deep-link-amberx-notification--lenny: brief only · start 12.3K tokens ($0.03) · cost $10.32 · 209 turns · 6 tools, MCP none",
      "at": "2026-11-17T19:20:49.400Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:22:24.004Z"
     }
    ],
    "approvals": [
