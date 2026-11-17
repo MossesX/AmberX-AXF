@@ -822,29 +822,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:24 UTC · `gate-auto-lander-tab-and-controls` note (all) · orchestrator
-- 2026-11-17 00:24 UTC · `stop-auto-lander-committing-tracking` s3 done (all) · orchestrator
-- 2026-11-17 00:25 UTC · `console-app-part-2-native-floating` → running, note (all) · pipeline
-- 2026-11-17 00:25 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
-- 2026-11-17 00:25 UTC · `console-app-part-2-native-floating` branch claude/console-app-part-2-native-floating (all) · pipeline
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` note (all) · orchestrator
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s1 done, → running (all) · orchestrator
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s2 done (all) · orchestrator
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s3 done (all) · orchestrator
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s4 done (all) · orchestrator
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s5 done (all) · orchestrator
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s6 done (all) · orchestrator
-- 2026-11-17 00:26 UTC · `stop-auto-lander-committing-tracking` s4 done (all) · orchestrator
-- 2026-11-17 00:27 UTC · `skin-animations-animated-colour-swatches` note (all) · orchestrator
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s7 done (all) · orchestrator
-- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` s8 done (all) · orchestrator
-- 2026-11-17 00:27 UTC · `stop-auto-lander-committing-tracking` s4 done (all) · foreign-write
-- 2026-11-17 00:27 UTC · `stop-auto-lander-committing-tracking` s5 done (all) · orchestrator
-- 2026-11-17 00:27 UTC · `prompting-engine-control-panel-to-create` → running, note (all) · pipeline
-- 2026-11-17 00:27 UTC · `prompting-engine-control-panel-to-create` branch claude/prompting-engine-control-panel-to-create (all) · pipeline
-- 2026-11-17 00:27 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
-- 2026-11-17 00:27 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
-- 2026-11-17 00:28 UTC · `every-plugin-screen-gets-a-settings-gear` s8 done (all) · orchestrator
 - 2026-11-17 00:29 UTC · `stop-auto-lander-committing-tracking` s6 done (all) · orchestrator
 - 2026-11-17 00:29 UTC · `own-look-per-grid-and-tab-group` s15 done (all) · orchestrator
 - 2026-11-17 00:30 UTC · `stop-auto-lander-committing-tracking` s7 done (all) · orchestrator
@@ -1222,6 +1199,29 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:01 UTC · `rebuild-fresh-main-hide-any-asset` s3 done (all) · orchestrator
 - 2026-11-17 15:02 UTC · `auto-lander-drag-rows-to-set-merge-order` → running, note (all) · pipeline
 - 2026-11-17 15:03 UTC · `settings-opened-banners-nav-menu` s2 done (all) · orchestrator
+- 2026-11-17 15:04 UTC · `edit-ui-mode-inline-edit-anything-active` s3 done (all) · orchestrator
+- 2026-11-17 15:04 UTC · `rebuild-fresh-main-hide-any-asset` s4 done (all) · orchestrator
+- 2026-11-17 15:04 UTC · `server-rule-done-means-merged-working` → running (all) · mcp
+- 2026-11-17 15:04 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running (all) · mcp
+- 2026-11-17 15:04 UTC · `server-rule-done-means-merged-working` → queued (all) · mcp
+- 2026-11-17 15:05 UTC · `edit-ui-mode-inline-edit-anything-active` s4 done (all) · orchestrator
+- 2026-11-17 15:05 UTC · `auto-lander-drag-rows-to-set-merge-order` s1 done, → running (all) · orchestrator
+- 2026-11-17 15:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · mcp
+- 2026-11-17 15:05 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · foreign-write
+- 2026-11-17 15:05 UTC · `live-hot-refresh-every-grid-list-re` added (0 steps) (all) · console
+- 2026-11-17 15:05 UTC · `live-hot-refresh-every-grid-list-re` → queued, note (all) · console
+- 2026-11-17 15:06 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
+- 2026-11-17 15:06 UTC · `server-rule-done-means-merged-working` → running, note (all) · orchestrator
+- 2026-11-17 15:06 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → built, note (all) · orchestrator
+- 2026-11-17 15:06 UTC · `orchestrator-stale-row-watchdog-vps` → running, note (all) · orchestrator
+- 2026-11-17 15:07 UTC · `live-hot-refresh-every-grid-list-re` note (all) · orchestrator
+- 2026-11-17 15:07 UTC · `auto-lander-grid-one-row-per-build` note (all) · orchestrator
+- 2026-11-17 15:07 UTC · `maintenance-plugin-clear-docker-cache` note (all) · orchestrator
+- 2026-11-17 15:07 UTC · `orchestrator-runs-long-builds-across` → running, note (all) · orchestrator
+- 2026-11-17 15:07 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
+- 2026-11-17 15:07 UTC · `live-hot-refresh-every-grid-list-re` → running, note (all) · pipeline
+- 2026-11-17 15:07 UTC · `live-hot-refresh-every-grid-list-re` branch claude/live-hot-refresh-every-grid-list-re (all) · pipeline
+- 2026-11-17 15:07 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
 
 ## Token passes (log)
 
