@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7683,
- "updatedAt": "2026-11-17T19:38:34.099Z",
+ "rev": 7684,
+ "updatedAt": "2026-11-17T19:38:50.110Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -222878,7 +222878,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-17T19:38:22.344Z",
+   "updatedAt": "2026-11-17T19:38:47.821Z",
    "builtAt": "2026-11-17T19:38:22.344Z",
    "notes": [
     {
@@ -222948,6 +222948,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Headless run axf-group-chat-audio-hear-agents-talk-while--rhonda: brief only · start 18.2K tokens ($0.06) · cost $1.75 · 85 turns · 6 tools, MCP none",
+     "at": "2026-11-17T19:38:47.821Z"
     }
    ],
    "approvals": [],
@@ -223123,7 +223127,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
