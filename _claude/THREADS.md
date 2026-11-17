@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:36 UTC · `rebuild-every-toolbar-page-specific` note (all) · pipeline
 - 2026-11-17 19:37 UTC · `live-build-status-real-time-grids-15` note (all) · Brett
 - 2026-11-17 19:37 UTC · `auto-lander-settings-log-placeholder` added (0 steps) (all) · console
 - 2026-11-17 19:38 UTC · `group-chat-audio-hear-agents-talk-while` s5 done, → landing (all) · orchestrator
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:15 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 21:15 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
 - 2026-11-17 21:16 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
+- 2026-11-17 21:17 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
 
 ## Token passes (log)
 

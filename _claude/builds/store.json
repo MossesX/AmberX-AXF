@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7959,
- "updatedAt": "2026-11-17T21:16:36.420Z",
+ "rev": 7960,
+ "updatedAt": "2026-11-17T21:17:10.469Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275906,7 +275906,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275914,7 +275914,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:16:34.083Z",
+   "updatedAt": "2026-11-17T21:17:07.914Z",
    "builtAt": "",
    "notes": [
     {
@@ -276048,6 +276048,10 @@
     {
      "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s27): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:11:11.623Z"
+    },
+    {
+     "text": "Session stopped on its own with 2 steps left: back in Pending for Brett.",
+     "at": "2026-11-17T21:17:07.914Z"
     }
    ],
    "approvals": [
@@ -276084,7 +276088,16 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T21:17:07.034Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 2,
+     "account": "",
+     "session": "",
+     "phase": "Phase 2"
+    },
     "split": {
      "at": "2026-11-17T18:58:57.805Z",
      "by": "orchestrator",
@@ -276093,7 +276106,7 @@
      "note": "Split by Claude into 28 steps (7 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session stopped on its own with 2 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -276826,7 +276839,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
