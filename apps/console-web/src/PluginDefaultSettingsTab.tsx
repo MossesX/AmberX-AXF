@@ -105,7 +105,8 @@ export function withDefaultSettingsTab(folder: string, m: PluginManifest, lib: A
   const settingsTabs = own ? lib.settingsTabs! : [{ id: folder, label: want.label ?? m.name, icon: want.icon ?? 'package', order: want.order ?? 80, parent: 'plugins', description: m.description }];
   const panels = lib.settingsPanels ?? [];
   const extra = [
-    { id: `${folder}.default`, tab, title: m.name, icon: 'info', order: 1, render: () => <PluginDefaultSettingsTab folder={folder} manifest={m} /> },
+    // first when it is the whole tab; after the plugin's own settings (just above Install & uninstall) when it joins one
+    { id: `${folder}.default`, tab, title: own ? `About ${m.name}` : m.name, icon: 'info', order: own ? 85 : 1, render: () => <PluginDefaultSettingsTab folder={folder} manifest={m} /> },
     ...(panels.some((p) => p.tab === tab && isLifecycle(p)) ? [] : [{ id: `${folder}.lifecycle`, tab, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={folder} /> }]),
   ];
   return { ...lib, settingsTabs: settingsTabs.map((t) => ({ ...t, parent: 'plugins' })), settingsPanels: [...extra, ...panels] };
