@@ -1,6 +1,19 @@
 # Get main green, unblock the lander, land axf-data and Postgres
 
-Build: `get-main-green-unblock-lander-land-axf` · Phase 1 (Opus) · status: **draft**
+Build: `get-main-green-unblock-lander-land-axf` · Phase 1 (Opus) · status: **done** (2026-11-17)
+
+## Result
+
+- **Main is green.** It was red from 11-15 11:45 to 11-16 21:01 (33 h), and nothing landed in that time. #724 carried 10 CI fixes. Since then main has had five green CI runs in a row.
+- **The auto-lander is fixed, and it lands on its own again:** #724, #685, #723 (this build), #704, #713. That's one at a time, each after a green queue run.
+  - Five lander bugs fixed: lost queue moves, a stray worktree standing in for a build, builds-store files committed into branches, queue removals lapsing, and the GitHub auto-merge bypass (guarded by a banner item).
+  - Two new health items: `lander-idle` and "PRs land through the merge queue only".
+- **axf-data (#704) and Postgres (#713) landed through the merge queue.** axf-data runs on Postgres 16 in its own container.
+  - The console's data is copied into it and verified: builds 985 = 985, UI reviews 227 = 227, settings 9 = 9, notes 40 = 40, ledger tables equal.
+  - 43 of 47 namespaces are in shadow. builds, console and activity are still local: disk space and hot files. The exact next steps are under s17.
+- **#769 is queued:** the axf-data image build plus two data-migrate fixes for live data.
+- **Disk is at 99%.** I freed about 30 GB. The remaining weight is the Docker build cache (98 GB) and old build worktrees, and the systems-check disk item is red.
+- **Branches:** four were already level with GitHub. The stray merge-main branch's worktree was removed and held in auto-land. A stale checkout of `auto-lander-controls` was saved to the report and dropped.
 
 Brett said (2026-11-16 16:22):
 > We gotta migrate to Postgres to get this going, finish the migration for Postgres. Is the auto-lander fixed?
