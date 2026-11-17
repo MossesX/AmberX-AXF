@@ -231,7 +231,7 @@ function ClaudeInterface({ view }: { view: View }) {
       {hits ? (hits.length ? hits.map((s) => <SettingRow key={s.key} s={s} />) : <p className="axp-cs-group__desc">No setting matches.</p>)
         : prefs.mode === 'classic' ? tabs.map((t) => <Container key={t.id} title={t.label} icon={t.icon} collapsible><TabBody view={view} tab={t} /></Container>)
           : active ? (
-            <TabGroup id={TAB_GROUP_ID} label="Claude settings" value={active.id} onChange={(id) => change({ tab: id })} tabs={tabs.map((t) => ({ value: t.id, label: t.label, icon: t.icon, title: t.label }))}>
+            <TabGroup id="claude-settings.tabs" label="Claude settings" value={active.id} onChange={(id) => change({ tab: id })} tabs={tabs.map((t) => ({ value: t.id, label: t.label, icon: t.icon, title: t.label }))}>
               <TabBody view={view} tab={active} />
             </TabGroup>
           ) : null}

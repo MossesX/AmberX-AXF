@@ -1,6 +1,7 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
+import { toolbarStyle } from '../../core/engines/components';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
@@ -13,6 +14,7 @@ import { WidgetView } from './Widgets';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
+import { controlSlug } from '../controlTargets';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -59,6 +61,7 @@ export function MenuBar() {
           <div key={m.id} className="fx-menubar__item">
             <button
               type="button"
+              data-axf-target={`button:menu.${controlSlug(m.id)}`}
               className={`fx-menubar__btn ${open === m.id ? 'is-open' : ''}`}
               aria-haspopup="menu"
               aria-expanded={open === m.id}
@@ -74,7 +77,7 @@ export function MenuBar() {
       </div>
       {/* Help mode's switch (Brett, Nov 1 2026): a ? that lights up while it's on */}
       <HelpModeButton />
-      <button type="button" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
+      <button type="button" data-axf-target="button:chrome.account" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
         <Icon name="shield" size={13} />
         {role?.label ?? state.role}
       </button>
@@ -86,8 +89,10 @@ export function MenuBar() {
 
 export function Toolbar({ views }: { views: ViewMap }) {
   const rt = useRuntime();
-  const tb = useAsset('toolbar');
+  const asset = useAsset('toolbar');
   useAxfState();
+  // chrome-settings@1: the settings dialog's overrides for this toolbar (instance `app`) over the asset's data
+  const tb = { ...asset, data: rt.chromeData('toolbar', 'app', asset.data) ?? asset.data };
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
@@ -103,7 +108,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   if (collapsible && collapsed) {
     return (
       <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
-        <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
+        <button type="button" data-axf-target="button:toolbar.unfold" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
       </div>
     );
   }
@@ -144,7 +149,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to view or swap asset…" aria-label="Search views and assets" />
         </form>
       )}
-      {collapsible && <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Fold the toolbar" aria-expanded="true" onClick={() => fold(true)}><Icon name="chevron-up" size={14} /></button>}
+      {collapsible && <button type="button" data-axf-target="button:toolbar.fold" className="fx-toolbtn fx-toolbar__fold" aria-label="Fold the toolbar" aria-expanded="true" onClick={() => fold(true)}><Icon name="chevron-up" size={14} /></button>}
     </div>
   );
 }
@@ -222,11 +227,16 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
   if (!tb) return null;
-  const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
+  // chrome-settings@1: a page toolbar is its own instance (its asset id): its overrides apply to it alone, through the
+  // same style engine as the app toolbar, scoped by a layout-free wrapper carrying the attributes and vars
+  const data = (rt.chromeData('toolbar', tb.id, tb.data) ?? tb.data) as ToolbarData;
+  const out = toolbarStyle(data);
   return (
-    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
-      {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
-      {data.showSearch && search}
+    <div className="fx-toolbar-scope" style={out.vars as CSSProperties} {...out.attrs}>
+      <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id} data-fx-ctx-target="toolbar" data-fx-ctx-payload={tb.id}>
+        {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g as ToolbarGroup} variant={data.variant} />)}
+        {data.showSearch && search}
+      </div>
     </div>
   );
 }
@@ -280,7 +290,9 @@ function NavBadge({ badge }: { badge?: string }) {
 
 export function NavMenu({ views }: { views: ViewMap }) {
   const rt = useRuntime();
-  const nav = useAsset('nav-menu');
+  const navAsset = useAsset('nav-menu');
+  // chrome-settings@1: the settings dialog's overrides for the nav (instance `app`) over the asset's data
+  const nav = { ...navAsset, data: rt.chromeData('nav-menu', 'app', navAsset.data) ?? navAsset.data };
   const layout = useAsset('layout');
   const state = useAxfState();
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
@@ -304,6 +316,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                 <button
                   key={it.id}
                   type="button"
+                  data-axf-target={`button:tabbar.${controlSlug(it.id)}`}
                   className={`fx-nav__item ${state.view === it.view ? 'is-active' : ''}`}
                   aria-current={state.view === it.view ? 'page' : undefined}
                   disabled={locked}
