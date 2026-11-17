@@ -1,0 +1,985 @@
+{
+  "$axf": "step-groups-cases@1",
+  "note": "Golden cases for the step-groups@1 grouping engine (framework/core/build-groups.mjs planGroups). Each case gives a build's steps (id, estimate: default '10 min', files, dependsOn, done, skip) and options (splitOverMin: default 30, stepMinutes: default 10); `out` is what planGroups answers (split, minutes, groups with id / steps / dependsOn, mergeOrder, error). Regenerate the `out` blocks with: node framework/spec/check-build-groups.mjs --write",
+  "cases": [
+    {
+      "name": "independent steps: one group each, merge in step order",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "framework/core/a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "framework/core/b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "framework/spec/c.md"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "apps/console-web/d.tsx"
+          ]
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s2"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g3",
+            "steps": [
+              "s3"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g4",
+            "steps": [
+              "s4"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2",
+          "g3",
+          "g4"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "shared file chain: s1-s2-s3 share files pairwise and stay one sequence, s4 runs beside them",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "framework/core/a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "framework/core/a.mjs",
+            "framework/core/b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "framework/core/b.mjs"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "framework/spec/d.md"
+          ]
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1",
+              "s2",
+              "s3"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s4"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "explicit dependsOn: inside a group it orders the steps, across groups the group waits for the merge",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "c.mjs"
+          ],
+          "dependsOn": [
+            "s1"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "c.mjs"
+          ]
+        },
+        {
+          "id": "s5",
+          "files": [
+            "e.mjs"
+          ],
+          "dependsOn": [
+            "s4"
+          ]
+        },
+        {
+          "id": "s6",
+          "files": [
+            "f.mjs"
+          ],
+          "dependsOn": [
+            "s7"
+          ]
+        },
+        {
+          "id": "s7",
+          "files": [
+            "f.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 70,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s2"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g3",
+            "steps": [
+              "s3",
+              "s4"
+            ],
+            "dependsOn": [
+              "g1"
+            ]
+          },
+          {
+            "id": "g4",
+            "steps": [
+              "s5"
+            ],
+            "dependsOn": [
+              "g3"
+            ]
+          },
+          {
+            "id": "g5",
+            "steps": [
+              "s7",
+              "s6"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "g5"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "dependsOn on a later step moves that group after it in the merge order",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ],
+          "dependsOn": [
+            "s4"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "c.mjs"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "d.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s2"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s3"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g3",
+            "steps": [
+              "s4"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g4",
+            "steps": [
+              "s1"
+            ],
+            "dependsOn": [
+              "g3"
+            ]
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2",
+          "g3",
+          "g4"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "cycle refused: two steps that depend on each other",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ],
+          "dependsOn": [
+            "s2"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "a.mjs"
+          ],
+          "dependsOn": [
+            "s1"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "b.mjs"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "c.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": false,
+        "minutes": 40,
+        "groups": [],
+        "mergeOrder": [],
+        "error": "steps s1, s2 depend on each other in a circle"
+      }
+    },
+    {
+      "name": "cycle refused through a third step, even under the threshold",
+      "steps": [
+        {
+          "id": "s1",
+          "dependsOn": [
+            "s3"
+          ]
+        },
+        {
+          "id": "s2",
+          "dependsOn": [
+            "s1"
+          ]
+        },
+        {
+          "id": "s3",
+          "dependsOn": [
+            "s2"
+          ]
+        }
+      ],
+      "out": {
+        "split": false,
+        "minutes": 30,
+        "groups": [],
+        "mergeOrder": [],
+        "error": "steps s1, s2, s3 depend on each other in a circle"
+      }
+    },
+    {
+      "name": "refused: a dependsOn on a step the build lacks",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ],
+          "dependsOn": [
+            "s9"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "c.mjs"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "d.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": false,
+        "minutes": 40,
+        "groups": [],
+        "mergeOrder": [],
+        "error": "step s1 depends on \"s9\", which is not a step of the build"
+      }
+    },
+    {
+      "name": "refused: a step that depends on itself",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ],
+          "dependsOn": [
+            "s1"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": false,
+        "minutes": 20,
+        "groups": [],
+        "mergeOrder": [],
+        "error": "step s1 depends on itself"
+      }
+    },
+    {
+      "name": "build under 30 min stays one group",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "c.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": false,
+        "minutes": 30,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1",
+              "s2",
+              "s3"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "build at exactly 30 min is not over: one group",
+      "steps": [
+        {
+          "id": "s1",
+          "estimate": "15 min",
+          "files": [
+            "a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "estimate": "15 min",
+          "files": [
+            "b.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": false,
+        "minutes": 30,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1",
+              "s2"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "the threshold is a setting: 20 min splits a 30 min build",
+      "options": {
+        "splitOverMin": 20
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "c.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 30,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s2"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g3",
+            "steps": [
+              "s3"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2",
+          "g3"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "threshold 0 = splitting off",
+      "options": {
+        "splitOverMin": 0
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "c.mjs"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "d.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": false,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1",
+              "s2",
+              "s3",
+              "s4"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "done and skipped steps are left out: they are on the branch already; a dependsOn on a done step is satisfied",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ],
+          "done": true
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ],
+          "dependsOn": [
+            "s1"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "c.mjs"
+          ],
+          "skip": true
+        },
+        {
+          "id": "s4",
+          "files": [
+            "d.mjs"
+          ]
+        },
+        {
+          "id": "s5",
+          "files": [
+            "e.mjs"
+          ]
+        },
+        {
+          "id": "s6",
+          "files": [
+            "f.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s2"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s4"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g3",
+            "steps": [
+              "s5"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g4",
+            "steps": [
+              "s6"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2",
+          "g3",
+          "g4"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "every step shares a file with the next: over the threshold but one group",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "a.mjs",
+            "b.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "b.mjs",
+            "c.mjs"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "c.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": false,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1",
+              "s2",
+              "s3",
+              "s4"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "two groups that wait for each other collapse into one sequential group",
+      "steps": [
+        {
+          "id": "s1",
+          "files": [
+            "a.mjs"
+          ]
+        },
+        {
+          "id": "s2",
+          "files": [
+            "b.mjs"
+          ],
+          "dependsOn": [
+            "s1"
+          ]
+        },
+        {
+          "id": "s3",
+          "files": [
+            "a.mjs"
+          ],
+          "dependsOn": [
+            "s2"
+          ]
+        },
+        {
+          "id": "s4",
+          "files": [
+            "c.mjs"
+          ]
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1",
+              "s2",
+              "s3"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s4"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "steps without files or estimates: independent, each counted as the step cap",
+      "steps": [
+        {
+          "id": "s1",
+          "estimate": ""
+        },
+        {
+          "id": "s2",
+          "estimate": ""
+        },
+        {
+          "id": "s3",
+          "estimate": ""
+        },
+        {
+          "id": "s4",
+          "estimate": ""
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s2"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g3",
+            "steps": [
+              "s3"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g4",
+            "steps": [
+              "s4"
+            ],
+            "dependsOn": []
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2",
+          "g3",
+          "g4"
+        ],
+        "error": ""
+      }
+    },
+    {
+      "name": "this build (orchestrator-runs-long-builds-across, Phase 1 files): s1 and s2 share build-pipeline.mjs, s3 and s4 stand alone",
+      "steps": [
+        {
+          "id": "s1",
+          "model": "Fable",
+          "files": [
+            "framework/core/build-pipeline.mjs",
+            "framework/spec/BUILD-GROUPS.md"
+          ]
+        },
+        {
+          "id": "s2",
+          "model": "Fable",
+          "files": [
+            "framework/cli/builds-store.mjs",
+            "framework/core/build-pipeline.mjs",
+            "framework/spec/check-builds-store.mjs"
+          ]
+        },
+        {
+          "id": "s3",
+          "model": "Fable",
+          "files": [
+            "framework/core/build-groups.mjs"
+          ]
+        },
+        {
+          "id": "s4",
+          "model": "Fable",
+          "files": [
+            "framework/spec/fixtures/build-groups.json",
+            "framework/spec/check-build-groups.mjs"
+          ],
+          "dependsOn": [
+            "s3"
+          ]
+        }
+      ],
+      "out": {
+        "split": true,
+        "minutes": 40,
+        "groups": [
+          {
+            "id": "g1",
+            "steps": [
+              "s1",
+              "s2"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g2",
+            "steps": [
+              "s3"
+            ],
+            "dependsOn": []
+          },
+          {
+            "id": "g3",
+            "steps": [
+              "s4"
+            ],
+            "dependsOn": [
+              "g2"
+            ]
+          }
+        ],
+        "mergeOrder": [
+          "g1",
+          "g2",
+          "g3"
+        ],
+        "error": ""
+      }
+    }
+  ]
+}

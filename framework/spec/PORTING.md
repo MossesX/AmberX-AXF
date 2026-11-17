@@ -352,3 +352,14 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+## Deferred: step groups, one build over several slots (Nov 16 2026)
+
+Build orchestrator-runs-long-builds-across (Brett: "Any build that's over 30 minutes, split the steps up for multiple
+slots"). `framework/core/build-pipeline.mjs` gained the step-groups@1 contract (step `group` / `dependsOn` / `files`,
+`groups[]` on the build with `GROUP_STATES`, `groupsOf()` = one implicit group when unset) and
+`framework/core/build-groups.mjs` the pure engine `planGroups` (shared files = one sequence, dependsOn orders inside a group
+and makes a group wait across groups, topological merge order, cycles refused, at or under `splitOverMin` one group);
+golden cases in `spec/fixtures/build-groups.json` (`check-build-groups.mjs`). Kotlin twin deferred (no new Android work):
+the Android console reads `groups[]` as opaque data until a `BuildGroups.kt` replays the fixture; nothing on Android
+plans or runs groups, so builds there stay one sequential group.

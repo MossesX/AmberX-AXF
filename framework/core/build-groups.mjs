@@ -87,6 +87,7 @@ export function planGroups(build, { splitOverMin = DEFAULT_SPLIT_MINUTES, stepMi
     if (!all.has(d)) return refuse(`step ${s.id} depends on "${d}", which is not a step of the build`);
     if (rank.has(d)) explicit.push([d, s.id, `${s.id} depends on ${d}`]); // a done or skipped dependency is satisfied already
   }
+  { const { cycle } = topo(ids, explicit.map(([a, b]) => [a, b]), (id) => rank.get(id)); if (cycle.length) return refuse(`steps ${cycle.join(', ')} depend on each other in a circle`); }
   if (!ids.length) return one('nothing open to plan');
   if (ids.length < 2) return one('one open step: nothing to split');
   if (!threshold) return one('splitting is off (threshold 0)');
