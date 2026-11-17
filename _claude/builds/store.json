@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8476,
- "updatedAt": "2026-11-17T23:54:24.038Z",
+ "rev": 8477,
+ "updatedAt": "2026-11-17T23:54:32.612Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -313158,7 +313158,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-17T23:51:01.676Z",
+   "updatedAt": "2026-11-17T23:54:21.265Z",
    "builtAt": "",
    "notes": [
     {
@@ -313436,12 +313436,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:54:21.265Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T23:25:40.639Z",
-     "updatedAt": "2026-11-17T23:29:16.401Z"
+     "updatedAt": "2026-11-17T23:54:28.351Z"
     },
     {
      "id": "s10",
@@ -313606,10 +313606,37 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-17T23:19:42.353Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwlbqpta1kux9m": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1lyc6u": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1movdk": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1n4fvg": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1o7s9w": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1pf1f3": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1qrueq": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1rqfci": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1s9o0d": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1t2dkz": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1u5xix": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1v6rat": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1wytqw": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1xvdjw": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1y0z1u": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1zjs8w": "2026-11-17T23:25:40.639Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-17T23:21:46.506Z",
    "rearranged": false,
