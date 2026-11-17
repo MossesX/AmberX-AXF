@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:35 UTC · `separate-settings-per-plugin-reset` s1 done, → running (all) · orchestrator
 - 2026-11-17 19:36 UTC · `console-app-part-2-native-floating` s4 done (all) · orchestrator
 - 2026-11-17 19:36 UTC · `rebuild-every-toolbar-page-specific` note (all) · pipeline
 - 2026-11-17 19:37 UTC · `live-build-status-real-time-grids-15` note (all) · Brett
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:15 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-17 21:15 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 21:15 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:15 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
 
 ## Token passes (log)
 
