@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:28:19.614Z",
+ "updatedAt": "2026-11-17T23:28:32.532Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172842,7 +172842,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:28:15.445Z",
+   "updatedAt": "2026-11-17T23:28:23.289Z",
    "builtAt": "",
    "notes": [
     {
@@ -172916,6 +172916,10 @@
     {
      "text": "phase Phase 2 done, requeued for Opus: Session on mossesx-max- finished phase Phase 2 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T23:28:15.445Z"
+    },
+    {
+     "text": "Watchdog fixed Move server-side console parts onto the VPS host as services, UI stays in consol (step s6): session on mossesx-max- ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T23:28:23.289Z"
     }
    ],
    "approvals": [

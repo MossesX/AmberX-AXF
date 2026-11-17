@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8383,
- "updatedAt": "2026-11-17T23:28:19.614Z",
+ "rev": 8384,
+ "updatedAt": "2026-11-17T23:28:32.532Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268445,7 +268445,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:28:15.445Z",
+   "updatedAt": "2026-11-17T23:28:23.289Z",
    "builtAt": "",
    "notes": [
     {
@@ -268519,6 +268519,10 @@
     {
      "text": "phase Phase 2 done, requeued for Opus: Session on mossesx-max- finished phase Phase 2 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T23:28:15.445Z"
+    },
+    {
+     "text": "Watchdog fixed Move server-side console parts onto the VPS host as services, UI stays in consol (step s6): session on mossesx-max- ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T23:28:23.289Z"
     }
    ],
    "approvals": [
@@ -268601,6 +268605,22 @@
      "phase": "Phase 2"
     }
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T23:28:06.010Z",
+     "buildId": "move-server-side-console-parts-onto-vps",
+     "phase": "Phase 2",
+     "step": "s6",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "mossesx-max-",
+     "notified": "",
+     "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+     "note": "session on mossesx-max- ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -269273,7 +269293,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
