@@ -9670,6 +9670,18 @@
    "from": "",
    "addenda": []
   },
+  "toolbars-5-5-claude-accounts-glossary": {
+   "said": "Do it for all of them in the console that have toolbars, hide the toolbar on the rest, split it up into multiple builds.",
+   "at": "2026-11-17T20:41:37.028Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "toolbars-moved-to-side-become-vertical": {
    "said": "If I move the toolbar to the left instead of the top, it needs to run down the side like a column instead of pushing all the content down.",
    "at": "2026-11-16T19:20:10.281Z",

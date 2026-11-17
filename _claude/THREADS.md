@@ -829,8 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → fixing, note (all) · pipeline
-- 2026-11-17 19:11 UTC · `merge-review-one-by-one-every-built-but-unmerged` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `main-gate-nothing-reaches-main-without-passing` → fixing, note (all) · pipeline
@@ -1229,6 +1227,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:40 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 - 2026-11-17 20:40 UTC · `console-app-part-2-native-floating` merged, note (all) · reconciler
 - 2026-11-17 20:40 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
+- 2026-11-17 20:41 UTC · `toolbars-2-5-plan-studio-ui-review-2` added (0 steps) (all) · console
+- 2026-11-17 20:41 UTC · `toolbars-5-5-claude-accounts-glossary` added (0 steps) (all) · console
 
 ## Token passes (log)
 
