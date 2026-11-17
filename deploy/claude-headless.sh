@@ -289,6 +289,29 @@ ctx_plan() {   # $1 = session name
   return 0
 }
 
+# Run end (build-watchdog@1, Nov 13 2026, Brett: "Detect builds marked running with no live session (e.g. killed exit
+# 143, failed exit 1)"): the moment claude exits (or the wrapper is killed: HUP / TERM), the exit code, signal, exit kind,
+# account stop (usage | auth), account and time go onto the build's run record (builds-live.mjs run-end → pipeline.runEnd,
+# live on main) and into <slots dir>/runs/<build>.json (agent-slots.mjs run-end), so the watchdog has evidence even when
+# nothing after this line runs. Once per run; never fails the run. AXF_RUN_END=off skips it (tests).
+LIVE_JS="$HERE/../framework/cli/builds-live.mjs"
+run_end_done=""
+record_run_end() {   # $1 = exit code, $2 = signal name ('' = from the code)
+  [[ -n "$run_end_done" || "${AXF_RUN_END:-on}" == off ]] && return 0
+  run_end_done=1
+  command -v node >/dev/null || return 0
+  local code="$1" sig="${2:-}" kind lim="" bid="${AXF_BUILD_ID:-${run_build:-}}" ses
+  case "$code" in 0) kind=phase-done ;; 130|143) kind=stopped ;; *) kind=crash ;; esac
+  [[ -z "$sig" ]] && (( code > 128 && code < 160 )) && sig="$(kill -l $((code - 128)) 2>/dev/null)"
+  [[ -f "$WORKERS_JS" && -f "$log" ]] && lim="$(node "$WORKERS_JS" hit --log "$log" --exit "$code" 2>/dev/null | grep -xE 'usage|auth' | head -1)"
+  ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+  if [[ -z "$bid" ]]; then read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true; fi
+  [[ -n "$bid" ]] || return 0
+  slots_on && node "$SLOTS" run-end ${slot:+"$slot"} --build "$bid" --exit "$code" ${sig:+--signal "$sig"} --kind "$kind" ${lim:+--limit "$lim"} ${login_account:+--account "$login_account"} --session "$ses" --pid "$$" >/dev/null 2>&1
+  [[ -f "$LIVE_JS" ]] && node "$LIVE_JS" run-end "$bid" --exit "$code" ${sig:+--signal "$sig"} --kind "$kind" ${lim:+--limit "$lim"} ${login_account:+--account "$login_account"} --session "$ses" ${AXF_BUILD_PHASE:+--phase "$AXF_BUILD_PHASE"} --quiet >/dev/null 2>&1
+  return 0
+}
+
 LIMIT_JS="$HERE/../framework/cli/build-limit.mjs"
 limit_on() { [[ "${AXF_BUILD_LIMIT:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LIMIT_JS" ]]; }
 
@@ -384,6 +407,8 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
   run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
   read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+  # killed from outside (tmux kill-session = HUP, kill = TERM): leave the evidence, then go
+  [[ -n "$gate_ok" ]] && trap 'record_run_end 129 HUP; exit 129' HUP && trap 'record_run_end 143 TERM; exit 143' TERM
   while [[ -n "$gate_ok" ]]; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
@@ -429,6 +454,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
     switches=$((switches + 1))
   done
+  [[ -n "$gate_ok" ]] && record_run_end "$st"   # first, before anything that could be cut short
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
   [[ -n "${ctx_dir:-}" && -d "$ctx_dir" ]] && rm -rf "$ctx_dir"
   # per-build start tokens and cost: one note on the build (every build view shows its notes)

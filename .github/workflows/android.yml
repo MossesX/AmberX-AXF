@@ -109,7 +109,10 @@ jobs:
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
-      - run: node framework/spec/check-build-pipeline.mjs           # build-pipeline@1 exit transition: phase done → Queue (same place, no crash counted), crash → Queue until the limit → Pending, blocked upgrade → Pending, all done → built; fixtures/build-pipeline-exit.json
+      - run: node apps/console-web/plugins/build-orchestrator/test-watchdog.mjs   # build watchdog: killed / failed / hung builds requeued and retried, cap, other account, idle slots, phone FYI  # axf-plugin:build-orchestrator
+      - run: node framework/spec/check-build-watchdog.mjs           # build-watchdog@1 decision table: killed 143 / exit 1 / OOM / stale heartbeat → reset + requeue (retry) until maxRetries → Pending + banner (give-up), usage limit / dead login → another account, live session left alone; recoveries[] on builds@1, schemas/build-watchdog.json current; fixtures/build-watchdog.json
+      - run: node framework/spec/check-build-pipeline.mjs           # build-pipeline@1 exit transition: phase done → Queue (same place, no crash counted), crash → Queue until the limit → Pending, blocked upgrade → Pending, all done → landing; fixtures/build-pipeline-exit.json
+      - run: node framework/spec/check-done-means-merged.mjs        # done-means-merged@1: built / complete refused without merge + green CI + verify, migration loses nothing, the retry ladder never repeats a failed strategy, escalation only after N different attempts
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/groups.test.mjs   # build-groups@1: custom groups and tabs, state order and counts, smart rules, group actions, per project  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
@@ -124,6 +127,8 @@ jobs:
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
+      - run: node framework/spec/check-stale-rows.mjs               # stale-row@1: the VPS watchdog's classifier (landed via merge queue / direct merge commit / build complete → complete; closed PR / dead build → remove; live session / missing facts → keep), cleanup log record + schema; fixtures/stale-rows.json
+      - run: node apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs   # stale-row watchdog: table readers + apply against a temp store, merge-queue and UI Review fixtures (dry run writes nothing, running builds untouched, open PRs never completed, second run a no-op)  # axf-plugin:build-orchestrator
       - run: (git fetch -q --unshallow origin || true) && git fetch -q origin +refs/heads/main:refs/remotes/origin/main && node framework/cli/check-tracking-files.mjs   # tracking-paths@1: a PR branch never changes the builds store, orchestrator / origins / pending / queue exports or journal parts (builds-live status commits excepted); names the file
       - run: node framework/spec/check-data-store.mjs               # data-store@1: registry mirror, the client on memory + file backends (same answers), rev/etag conflicts, append-only journals, watch, count manifests, http error mapping + retries, migration map, mode transitions
       - name: axf-data service tests (CRUD, rev conflicts, append-only journals, history + restore, watch, auth refusal) and the wire contract replayed from Node
@@ -142,6 +147,7 @@ jobs:
       - run: python3 apps/console-web/server/test_data_store.py      # console server data layer (data_store.py): storage-shaped calls in local, shadow, cutover and rollback against an in-process axf-data
       - run: node framework/spec/check-landing-line.mjs              # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
       - run: node framework/spec/check-gate-rules.mjs                # gate-rules@1: default rule set, migration from the lander settings, verdicts (green, red CI, UI Review held, clash, draft, held by hand, warn / off / molly-owned rules), lander-state@1 from the merge queue, schema snapshots
+      - run: node framework/spec/check-auto-lander.mjs               # auto-lander@1: decide (clash → merge main, red → fix session, running → wait, green → land, maxAttempts → escalate), backoff, mid-flight + stale attempts, reset by hand, policy from the auto-lander rule, lander-state@1 migration, schema snapshots
       - run: node framework/spec/check-build-rules.mjs               # build-rules@1: schema validation, the inventory → seed migration losing nothing (home-card first), briefBlocks per build (VPS rules never in a brief), history on edit / toggle / add / remove / restore, disabled rules skipped, the locked store round trip, schema snapshots
       - run: node framework/cli/build-rules-migrate.mjs --check      # every inventoried builder rule is in the seed store
       - run: node framework/spec/check-feature-ledger.mjs            # feature-ledger@1 + deploy-log@1: one status lifecycle for features and edits, merge never loses a date / build / PR / prompt, live from the deploy log, grouping / sort / filter / export projections, schema snapshots
@@ -162,12 +168,18 @@ jobs:
         run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
         run: node framework/cli/check-plugin-pages.mjs
+      - name: Plugin settings — every plugin screen has a Settings → Plugins sub-tab and the host settings gear (opt-out only with plugin.json settingsGear false + settingsGearReason); file:line
+        run: node framework/cli/check-plugin-settings.mjs && node framework/spec/check-plugin-settings.test.mjs
       - name: Shipped features plugin (SQLite ledger, build-hook listener plans features and edits, importers, live dates from the deploy log)  # axf-plugin:shipped-features
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
+      - name: Plan Studio 2.0 plugin (plan-tree@1 nesting, moves, undo, links, export, build hand-off, voice parser, CLI on a scratch store)  # axf-plugin:plan-studio-2
+        run: node apps/console-web/plugins/plan-studio-2/test.mjs  # axf-plugin:plan-studio-2
       - name: Gate & rules plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate
+      - name: Server auto-lander (attempt log, clash resolver on a temp repo, red-CI reader, fix-session launcher, reconcile, the whole loop with a fake GitHub and claude-headless)
+        run: node --test 'deploy/auto-lander/test/*.test.mjs'
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
@@ -401,6 +413,7 @@ jobs:
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
+            python apps/console-web/plugins/gate/test_auto_lander.py   # server auto-lander: gate REST routes, MCP parity with the CLI, systems-check item  # axf-plugin:gate
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue
         if: failure()

@@ -95,6 +95,15 @@ def static_targets() -> list[dict[str, Any]]:
         for t in inv.get(key, []) or []:
             if isinstance(t, dict) and t.get("address"):
                 out.append({**t, "virtual": True})
+    # every plugin screen's settings gear (src/PluginSettingsGear.tsx) and the sub-tab it opens
+    known = {t["address"] for t in out}
+    for p in inv.get("plugins", []) or []:
+        if p.get("settingsGear") and p["settingsGear"] not in known:
+            out.append(_target(p["settingsGear"], "button", f"{p['label']} settings", detail=f"Settings gear · {p['label']}", keywords=["gear", "settings", p.get("folder")],
+                               opens=p.get("settingsTab"), plugin=p["id"], virtual=True))
+        if p.get("settingsTab") and p["settingsTab"] not in known:
+            known.add(p["settingsTab"])
+            out.append(_target(p["settingsTab"], "subtab", f"{p['label']} settings", detail="Settings › Plugins", keywords=["settings", p.get("folder")], plugin=p["id"], virtual=True))
     return out
 
 
@@ -469,6 +478,31 @@ def toggle_plugin(ref: str, enabled: bool, by: str = "", force: bool = False, is
     return ok(verb, p["address"], plugin=p["id"], enabled=enabled, changed=[p["address"]] if was != enabled else [], effects=effects,
               reload="the open console reloads its plugin list" if was != enabled else None, **({"by": by} if by else {}))
 
+
+
+def plugin_settings_state(ref: str, is_enabled: Any = None) -> dict[str, Any]:
+    """One plugin's settings without a browser (build every-plugin-screen-gets-a-settings-gear): its Settings → Plugins
+    sub-tab, the gear on its screen, whether it is on, and every setting in that tab (values the server can read; the
+    rest are read live with the `state` verb on their address). GET /api/console-control/plugins/<id>/settings."""
+    p = plugin_spec(ref)
+    if p is None:
+        near = [x["address"] for x in inventory().get("plugins", []) if (ref or "").lower().split(":")[-1][:4] in x["label"].lower()][:5]
+        raise ControlError("not_found", f"no plugin {ref}", nearest=near)
+    tab = p.get("settingsTab")
+    settings: list[dict[str, Any]] = []
+    for spec in inventory().get("settings", []) or []:
+        if spec.get("plugin") != p["id"] and not (tab and str(spec.get("address", "")).startswith(tab + "/")):
+            continue
+        try:
+            settings.append({"key": spec.get("key"), **setting_state(spec)})
+        except ControlError as e:  # a server setting whose plugin is off: listed, value unknown
+            settings.append({"key": spec.get("key"), "address": spec["address"], "kind": "setting", "label": spec.get("label"), "type": spec.get("type"), "unavailable": e.message})
+    return ok("state", tab or p["address"], plugin=p["id"], folder=p.get("folder"), label=p["label"], version=p.get("version"),
+              enabled=plugin_enabled(p, is_enabled),
+              tab={"address": tab, "id": p.get("settingsTabId")} if tab else None,
+              gear=p.get("settingsGear"), view=p.get("view"), settings=settings,
+              open={"action": f"plugin.settings.open:{p.get('folder')}", "address": tab} if tab else None,
+              can=["open", "state", "plugin.enable", "plugin.disable"] + (["set"] if settings else []))
 
 # ---------------------------------------------------------------------- voice (twin of core/engines/console-control-voice.mjs)
 

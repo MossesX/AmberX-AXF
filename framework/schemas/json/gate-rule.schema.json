@@ -133,6 +133,55 @@
         "directMerge": {
           "type": "boolean",
           "description": "merge-queue-only: false = nothing but the lander merges"
+        },
+        "maxAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "auto-lander: failures of one kind (clash, red-ci, land) on one build before it escalates"
+        },
+        "backoff": {
+          "type": "object",
+          "properties": {
+            "baseMin": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "factor": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "maxMin": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "description": "auto-lander: minutes before the next try after the n-th failure, min(maxMin, baseMin × factor^(n−1))"
+        },
+        "attemptTimeoutMin": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "auto-lander: a started attempt older than this counts as a timeout"
+        },
+        "mergeMain": {
+          "type": "boolean",
+          "description": "auto-lander: a clash merges main into the branch by itself"
+        },
+        "fixSessions": {
+          "type": "boolean",
+          "description": "auto-lander: red CI starts a fix session by itself"
+        },
+        "land": {
+          "type": "boolean",
+          "description": "auto-lander: green lands by itself"
+        },
+        "escalateTo": {
+          "enum": [
+            "banner",
+            "note",
+            "none"
+          ],
+          "description": "auto-lander: where maxAttempts reached is reported"
         }
       },
       "additionalProperties": true
