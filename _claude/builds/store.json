@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7221,
- "updatedAt": "2026-11-17T00:46:58.026Z",
+ "rev": 7222,
+ "updatedAt": "2026-11-17T00:47:24.844Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -260675,7 +260675,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T00:46:37.580Z",
+   "updatedAt": "2026-11-17T00:47:11.810Z",
    "builtAt": "",
    "notes": [
     {
@@ -260693,6 +260693,10 @@
     {
      "text": "Claude account: hulu0241 (axf-server-rule-done-means-merged-working--earl, shared account login)",
      "at": "2026-11-17T00:15:33.018Z"
+    },
+    {
+     "text": "Phase 1 done (Fable): done-means-merged@1 contract (spec/DONE-MEANS-MERGED.md), builds@1 statuses fixing / landing / landed / escalated + attempt@1, failure, landed, escalation records (core/build-pipeline.mjs, builds-store-core normBuild, liveStatus), guardStatus, migrateDone + CLI 'builds-store.mjs done-means-merged [--apply]', retry-ladder@1 (core/retry-ladder.mjs), fixture + spec/check-done-means-merged.mjs (267 checks). For the Opus phase: (1) the migration is dry-run only on purpose: it would move 216 records (192 built→landing, 23 complete→landing, 1 built→landed; 106 pre-pipeline complete records are unprovable and stay) — apply it with --apply once s7/s9 give landing builds a runner that moves them on, not before. (2) There is no plugins/auto-lander/ folder: the lander is framework/core/auto-lander.mjs (branch claude/server-auto-lander-fixes-lands, not yet on main), the gate plugin's lander.mjs and push-banner/land/. (3) check-done-means-merged.mjs already exists; s4 extends it and wires it into android.yml. (4) Every step done now lands in 'landing' (never built); merged = landed; complete only through the verify (s10). The Complete tab shows landing builds until s12 renames it Landing.",
+     "at": "2026-11-17T00:47:11.810Z"
     }
    ],
    "approvals": [],
@@ -261154,7 +261158,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
