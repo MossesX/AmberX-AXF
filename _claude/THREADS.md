@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:39 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → running, note (all) · pipeline
 - 2026-11-16 23:39 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` branch claude/drag-anything-by-api-and-voice-follow-up-to-full (all) · pipeline
 - 2026-11-16 23:39 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
 - 2026-11-16 23:39 UTC · `axhub-veto-countdown-setting-read-only` s6 done (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 04:15 UTC · `server-rule-done-means-merged-working` PR #771 (all) · builds-live
 - 2026-11-17 04:16 UTC · `builds-keep-their-slot-across-phases` s4 done (all) · orchestrator
 - 2026-11-17 04:16 UTC · `server-rule-done-means-merged-working` s16 done, → landing (all) · orchestrator
+- 2026-11-17 04:16 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
 
 ## Token passes (log)
 

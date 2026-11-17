@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7351,
- "updatedAt": "2026-11-17T04:16:42.981Z",
+ "rev": 7352,
+ "updatedAt": "2026-11-17T04:17:05.725Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -260987,7 +260987,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "landing",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -260995,8 +260995,8 @@
    "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T04:16:04.981Z",
-   "builtAt": "2026-11-17T04:16:04.982Z",
+   "updatedAt": "2026-11-17T04:16:42.077Z",
+   "builtAt": "2026-11-17T04:16:42.077Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -261033,6 +261033,10 @@
     {
      "text": "Brief only: brief is 24397 characters (~6100 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T03:33:34.450Z"
+    },
+    {
+     "text": "Headless run axf-server-rule-done-means-merged-working--earl: brief only · start 17.7K tokens ($0.12) · cost $27.76 · 365 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:16:42.077Z"
     }
    ],
    "approvals": [
