@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8478,
- "updatedAt": "2026-11-17T23:54:52.712Z",
+ "rev": 8479,
+ "updatedAt": "2026-11-17T23:55:14.639Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262745,7 +262745,7 @@
    "pr": "#779",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T19:56:32.078Z",
+   "updatedAt": "2026-11-17T23:54:50.070Z",
    "builtAt": "",
    "notes": [
     {
@@ -262791,6 +262791,10 @@
     {
      "text": "Watchdog: Merge queue entry 809 → Remove: The build was cancelled (PR #809 open; not on main; build maintenance-plugin-clear-docker-cache: archived)",
      "at": "2026-11-17T19:56:32.078Z"
+    },
+    {
+     "text": "Overlap with move-server-side-console-parts-onto-vps: that build's host service 'maintenance' (unit axf-maintenance-actions.service, deploy/host-services/services/maintenance.json) calls this branch's engine/hostd.py ops (docker-cache, docker-restart, status) through fixed sudo tasks instead of repeating the Docker commands. Keep the hostd.py op names stable; until this branch lands, the host service answers 'not in this checkout yet' (exit 69).",
+     "at": "2026-11-17T23:54:50.070Z"
     }
    ],
    "approvals": [],
@@ -262863,7 +262867,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262899,7 +262903,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:53:12.082Z",
+   "updatedAt": "2026-11-17T23:55:00.900Z",
    "builtAt": "",
    "notes": [
     {
@@ -263477,12 +263481,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:55:00.899Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T12:28:31.327Z"
+     "updatedAt": "2026-11-17T23:55:02.415Z"
     },
     {
      "id": "s16",
@@ -263771,7 +263775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
