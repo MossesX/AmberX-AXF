@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:40:45.652Z",
+ "updatedAt": "2026-11-17T04:41:00.811Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -166734,7 +166734,7 @@
    "title": "Server auto-lander fixes and lands everything on its own",
    "category": "",
    "detail": "Server-side rule enforced as a gate, runs as a VPS service (systemd), no console needed. Lands finished builds one at a time through the orchestrator. When a build clashes: merge main into it and resolve automatically (regenerate generated files), retry. When CI is red: automatically start a fix session for that build through the orchestrator on an available account, push the fix, re-run CI, retry until green, then land. Nothing ever sits blocked: every blocked build gets an automatic fix attempt, logged per attempt. Only after repeated failed attempts does it go to a banner item with what broke and a Fix button, plus a phone push. Merge with fix-red-ci-blocked-builds-they-land and get-main-green-unblock-lander-land-axf where they overlap. Status visible in Gate > Auto-lander; same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -166743,7 +166743,7 @@
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
    "updatedAt": "2026-11-17T04:40:41.012Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T04:40:41.012Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -167383,8 +167383,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:40:08.323Z",
      "note": "",
      "uid": "st-mwk51i5w010aak",
      "createdAt": "2026-11-17T03:33:55.664Z"
