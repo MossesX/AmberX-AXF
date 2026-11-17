@@ -330,7 +330,8 @@ function cliEntries() {
   const out = [];
   for (const f of readdirSync(dir).filter((n) => /\.(mjs|mts)$/.test(n) && !/\.test\./.test(n)).sort()) {
     const src = readFileSync(join(dir, f), 'utf8').slice(0, 4000);
-    const head = src.match(/\/\*\*([\s\S]*?)\*\//);
+    // the header doc block; a long one may close past the slice read here, so an unclosed block counts too
+    const head = src.match(/\/\*\*([\s\S]*?)(?:\*\/|$)/);
     const text = head ? head[1].split('\n').map((l) => l.replace(/^\s*\*\s?/, '')).join(' ') : '';
     const name = f.replace(/\.(mjs|mts)$/, '');
     out.push(entry({

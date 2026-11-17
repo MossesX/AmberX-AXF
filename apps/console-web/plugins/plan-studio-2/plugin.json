@@ -94,7 +94,8 @@
       {
         "route": "POST /rename",
         "id": "rename",
-        "title": "Rename an item"
+        "title": "Rename an item",
+        "description": "Give an item a new title: {id, title}; the id may be the item's words. Undo puts the old title back."
       },
       {
         "route": "POST /edit",
@@ -137,7 +138,8 @@
         "id": "delete",
         "title": "Delete an item (to the trash, undo brings it back)",
         "destructive": true,
-        "confirm": true
+        "confirm": true,
+        "description": "Moves an item and everything under it to the trash; undo brings it back where it was."
       },
       {
         "route": "POST /undo",
@@ -154,7 +156,8 @@
       {
         "route": "POST /unlink",
         "id": "unlink",
-        "title": "Remove a link"
+        "title": "Remove a link",
+        "description": "Removes one link from an item: {id, type, ref} (the same type and ref it was linked with)."
       },
       {
         "route": "POST /collapse",
@@ -185,7 +188,8 @@
         "id": "clear",
         "title": "Clear everything (the trash too)",
         "destructive": true,
-        "confirm": true
+        "confirm": true,
+        "description": "Empties Plan Studio 2.0: every item and the trash are gone and the store starts empty. Asks for confirmation first."
       }
     ]
   },
