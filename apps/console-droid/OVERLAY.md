@@ -1,6 +1,7 @@
 # The floating overlay and approvals bar (`overlay@1`)
 
-Console app part 2 (build `console-app-part-2-native-floating-2`), on the shell contract from part 1
+Console app part 2 (build `console-app-part-2-native-floating`, first written on branch
+`claude/console-app-part-2-native-floating-2`), on the shell contract from part 1
 (`apps/console-droid`, package `ai.amberx.consoleapp`, `window.axfNativeHost` wrapped by the console as
 `window.axfNative`, `native.*` console actions, `ShellRules`, `Perms`, `Insets`).
 

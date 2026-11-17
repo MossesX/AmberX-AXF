@@ -32,3 +32,7 @@ catalog bundle as `console-droid.apk`).
   (MediaProjection, upload queue, consent activity, about 1,400 lines tied to Capacitor) still lives in AmberX, and
   AmberX keeps answering those calls. The console app doesn't announce `recorder@1`, so the hub never sends it a
   recorder call it can't run. Moving it needs a session with a Java toolchain to compile and test the port.
+- **Not yet:** the wake listener's on-device backend. The console's `wake-listener` plugin looks for `listener.start`,
+  `listener.stop` and `listener.status` in the bridge's `tools` list and a `listener` event (`plugins/wake-listener/web/engine.ts`).
+  `NativeBridge` doesn't carry them, so the plugin reports no native backend and stays on Web Speech. The bridge reads
+  both call styles (answer at once or a promise), so adding the tools needs no console change.
