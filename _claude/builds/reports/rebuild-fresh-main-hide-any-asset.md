@@ -82,6 +82,43 @@ Three tries, none on main. Only `git log` / `git diff` against main were used he
 - The DOM-scanning host as the owner of the state (it becomes a reader of `rt.hidden()`).
 - `MenuItem.swatch` / `current` and the type colour settings (not asked for).
 
+## Phase 1 (Fable): schema, engine, fixture, runtime
+
+| Step | What landed |
+| --- | --- |
+| s2 | `hiddenAssets` on every app-look@1 look part (`framework/core/engines/hidden-assets-rules.mjs` + `.d.mts`: entry format, `hiddenAssetKinds()`, `normalizeHiddenAssets`, the list's JSON Schema; `normalizeLookPart` keeps it, absent or empty = nothing hidden). `asset-types.json` → top-level `hiddenAssets` block. `axf schemas` now writes `schemas/json/app-look.schema.json` (`appLookSchema()` in `skin-rules.mjs`, the whole document). |
+| s3 | `framework/core/engines/hidden-assets.ts`: `hide`, `unhide`, `unhideAll`, `isHidden`, `listHidden`, `hiddenEntry`, `hiddenOfKind`, `hiddenCount`, `setHidden`, `hiddenAssetTarget`, `hiddenAssetTargetError`. Pure; a refused target or a no-op returns the same document. Exported from `core/index.ts`. |
+| s4 | `spec/fixtures/hidden-assets.json` (from `gen-fixtures.mts`), `spec/check-hidden-assets.mts` (242 checks: hide, unhide, unhide all, unknown kind refused, old document migrates, the list rides with the look through pick / Restore / undo, kinds derived from the chrome kind list, no app named in the engine, the written JSON Schema is current). CI line in `android.yml`. PORTING.md row: Kotlin twin deferred. |
+| s5 | `AxfRuntime.hidden()`, `hiddenCount()`, `isHidden(ref)`, `hideableKinds()`, `hide(ref, { by?, assetRef? })`, `unhide(ref)`, `unhideAll()`, `setHidden(ref, on)`. The list is read from the app's look document (hub store or the local look setting), saved through `changeLook` → the look writer (stamped `updatedBy`, so it reaches axHub and survives reloads), repainted through `bumpLook` with no skin-switch sweep. `refreshFromSaved` (what `useEditorSync` calls on focus / visibility / storage) now also calls `AppLookStore.refresh?()`; `HubAppLookStore.refresh()` re-reads the document and notifies on change (a save in flight wins). Default `by` = the app id; default `assetRef` = the piece's own pick (`axf.chrome.<kind>.<id>.asset`) else the kind's slot. |
+
+Kinds: `tab-group`, `toolbar`, `banner`, `nav-menu`, `app-menu` (the chrome-settings@1 kinds whose `CHROME_TARGETS` is non-empty) plus `widget`. A context menu has no region on the page and is refused.
+
+### How it is reached (so far)
+
+Phase 1 is the contract and the runtime. Every surface is one call on the runtime, so the later phases attach to it without
+touching the state:
+
+| What | Phase 1 | Later phases |
+| --- | --- | --- |
+| Read what is hidden | `rt.hidden()`, `rt.isHidden('toolbar:main')`; the document itself at `shared/settings/looks/<app>.json` → `own.hiddenAssets` | console `here.assets`, `console_where`, `skins.mjs`, voice "what's hidden" |
+| Hide / show / show all | `rt.hide('tab-group:settings.tabs', { by })`, `rt.unhide(...)`, `rt.unhideAll()` | actions `assets.hide | assets.unhide | assets.unhide-all` (REST `/api/console/action`, MCP `console_action`, `console.mjs action`, AmberX), the context menu entry, the Hide button in the chrome settings dialog |
+| Deep link | — | `assets.open`, Settings → Appearance → Assets (Visible / Hidden lists) |
+
+### Checks (this phase)
+
+- `npx -y tsx framework/spec/check-hidden-assets.mts`: 94 + 148 checks.
+- `check-skin` (500), `check-skin-switch` (392), `check-hub-look` (110), `check-look-migration` (241), `check-skin-config`, `check-chrome-settings` (304): unchanged, green.
+- `node framework/cli/check-theme.mjs`, `check-controls.mjs`: green (no UI in this phase).
+- tsc (strict) over `core/runtime.ts`, `react/hubAppLook.ts`, `core/engines/hidden-assets.ts`: no errors in the changed files.
+- `node framework/cli/axf.mjs schemas`: only `app-look.schema.json` is new; no other schema moved.
+
+### Notes
+
+- Baked copies (`apps/*/src/axf`) were not touched: `rebake.mjs status` reports the console's copy as *edited* on main
+  (files changed in place), so an apply would clobber those edits; CI re-bakes every app from `framework/` before it builds.
+- Under tsx, names re-exported from a `.mjs` through a `.ts` wrapper do not surface through `core/index.ts` (the same holds
+  for `APP_LOOK_FRAME` today); vite bundles are fine. Spec checks import the engine module directly, as `check-skin` does.
+
 ## Clashes checked
 
 Pending list and queue, Nov 17: `every-banner-title-bar-and-toolbar-snappable-ass` and `terminal-toolbar-responsive-overflow-every-item-`
