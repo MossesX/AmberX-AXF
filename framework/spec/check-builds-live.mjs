@@ -116,7 +116,11 @@ async function main() {
   check(y.status === 'landing' && y.pr === '#12' && y.branch === 'claude/y', `link: landing, awaiting merge (${y.status} ${y.pr} ${y.branch})`);
   r = run(A, LIVE, ['link', 'y', '--merged']);
   fetchA(); m = mainStore(); y = m.builds.find((b) => b.id === 'y');
-  check(y.status === 'landed' && !!y.mergedAt, `merged: landed (${y.status})`);
+  // the store guard: merged without CI on the merge commit is not landed; the refusal is a note
+  check(y.status === 'landing' && !!y.mergedAt && y.notes.some((n) => /^Refused landing → landed/.test(n.text)), `merged, no CI evidence: refused, stays landing with a note (${y.status})`);
+  r = run(A, LIVE, ['link', 'y', '--sha', 'abc1234', '--ci', 'success']);
+  fetchA(); m = mainStore(); y = m.builds.find((b) => b.id === 'y');
+  check(y.status === 'landed' && y.landed?.sha === 'abc1234' && y.landed?.ci === 'success', `merged + CI green on the merge commit: landed (${y.status})`);
   check(core.validateStore(m).ok, 'main\'s store is valid builds@1 after every live write');
 
   // 6. a feature branch with its own (older) copy merges main with the driver: clean, newer wins, nothing regresses

@@ -47,7 +47,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
-import { normAttempts, normEscalation, normFailure, normLanded, normPipeline } from '../core/build-pipeline.mjs';
+import { guardStatus, normAttempts, normEscalation, normFailure, normLanded, normPipeline } from '../core/build-pipeline.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 
 export const SCHEMA = 'builds@1';
@@ -1055,4 +1055,46 @@ export function proposeSplit(steps, n) {
   });
   if (cur.length) out.push(cur);
   return out.map((g) => ({ title: suggestName(g), uids: g.map((x) => x.uid), steps: g }));
+}
+
+// ------------------------------------------------------------------ done-means-merged@1 guard on every write
+
+/** Statuses only proof may set (DONE-MEANS-MERGED.md → When landed, built and complete are allowed). */
+export const GUARDED = Object.freeze(['landed', 'built', 'complete']);
+
+/**
+ * Set one build's status through the guard, pure: { ok, why, build }. A refused landed / built / complete keeps the
+ * status it had and records the refusal as a note (who asked, what was missing), so nobody reads a silent no.
+ */
+export function guardedStatus(b, to, { at = nowIso(), by = 'store', from } = {}) {
+  const x = clone(b); const prev = from ?? x.status;
+  const g = guardStatus({ ...x, status: prev }, to);
+  if (g.ok || !GUARDED.includes(to)) { x.status = to; return { ok: true, why: '', build: x }; }
+  x.status = prev;
+  const text = `Refused ${prev} → ${to} (asked by ${by}): ${g.why}. Done means merged, CI green on main and verified (done-means-merged@1).`;
+  const notes = Array.isArray(x.notes) ? x.notes : [];
+  // the same refusal is noted once (a merge that keeps re-deriving the status must not grow the notes)
+  x.notes = notes.some((n) => n?.text === text) ? notes : [...notes, { text, at }];
+  return { ok: false, why: g.why, build: x };
+}
+
+/**
+ * Every write of the store passes this (builds-store withStore): a build whose status CHANGED to landed / built /
+ * complete without the evidence goes back to the status it had, with a note. A record already at rest in one of
+ * them is never touched (old records are grandfathered; the migration moved the unprovable ones).
+ * → { store, refused: [{ id, from, to, why }] }
+ */
+export function enforceDoneGuard(before, after, { at = nowIso(), by = 'store' } = {}) {
+  const old = new Map((before?.builds ?? []).map((b) => [b.id, b]));
+  const refused = [];
+  const builds = (after?.builds ?? []).map((b) => {
+    if (b.deleted || !GUARDED.includes(b.status)) return b;
+    const prev = old.get(b.id)?.status ?? 'landing';
+    if (prev === b.status || (GUARDED.includes(prev) && b.status === 'built')) return b;
+    const r = guardedStatus(b, b.status, { at, by, from: prev });
+    if (r.ok) return b;
+    refused.push({ id: b.id, from: prev, to: b.status, why: r.why });
+    return { ...r.build, builtAt: ['landing', 'landed', 'built', 'complete'].includes(prev) ? r.build.builtAt : '' };
+  });
+  return { store: refused.length ? { ...after, builds } : after, refused };
 }

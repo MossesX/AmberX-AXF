@@ -14,6 +14,8 @@
  *   … export                                                regenerate the old files (read-only exports of the store)
  *   … done-means-merged [--apply] [--report <file>]         done-means-merged@1: built / complete records with no merged PR
  *                                                            back to landing / fixing, once (dry run without --apply)
+ *   … set-status <build> <status> [--by who]             set a status through the done-means-merged@1 guard: landed / built /
+ *                                                        complete without merge + green CI + verify are refused (a note says why)
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
@@ -282,6 +284,8 @@ export function adoptStore(next, { journals = {} } = {}) {
     // their events fire now, so the ledger hears about ticks, PRs and shipped manifests made elsewhere (ids are the
     // writer's revs, so an event a listener already took is skipped)
     let before = null; try { before = existsSync(f) ? core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))) : null; } catch { /* unreadable: nothing to compare */ }
+    // done-means-merged@1: a status that arrives as landed / built / complete without the evidence is refused here too
+    if (before) next = core.enforceDoneGuard(before, next, { by: 'builds-live' }).store;
     if (before) { const changes = adoptedChanges(before, next); if (changes.length) emitChanges(changes, { at: new Date().toISOString(), by: 'builds-live' }); }
     healOrigins(next);
     const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(next)); renameSync(tmp, f);
@@ -334,10 +338,12 @@ export function withStore(fn, meta = {}) {
     const start = foreign.length ? readStore() : before;
     // nothing new from outside, but the files still differ from the store (e.g. older): the export below rewrites them
     const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
-    const next = r && r.$axf ? r : r.store;
+    const guarded = core.enforceDoneGuard(start, r && r.$axf ? r : r.store, { by: meta.by || 'cli' });
+    const next = guarded.store;
+    if (guarded.refused.length) process.stderr.write(guarded.refused.map((x) => `builds-store: refused ${x.id} ${x.from} → ${x.to}: ${x.why}\n`).join(''));
     const saved = saveStore(start, next, meta);
     if (exportsOn()) exportAll(saved.store);
-    return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign };
+    return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: guarded.refused };
   } finally { unlock(); flushLiveSoon(); }
 }
 
@@ -453,6 +459,21 @@ async function main(argv) {
     const i = rest.indexOf('--report');
     if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${dryRunMarkdown(r)}\n`); }
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
+  }
+  if (cmd === 'set-status') {
+    const [id, to] = rest; const bi = rest.indexOf('--by'); const by = (bi >= 0 && rest[bi + 1]) || 'cli';
+    if (!id || !core.STATUSES.includes(to)) { process.exitCode = 2; return out({ ok: false, error: `usage: set-status <build> <${core.STATUSES.join('|')}> [--by who]` }, `usage: set-status <build> <status> [--by who]`); }
+    let why = ''; let ok = true;
+    const r = withStore((x) => {
+      const b = core.findBuild(x, id); if (!b) throw new Error(`no build "${id}"`);
+      const g = core.guardedStatus(b, to, { by });
+      ok = g.ok; why = g.why;
+      Object.assign(b, g.build, { updatedAt: new Date().toISOString() });
+      return x;
+    }, { by, action: 'set-status', note: `${id} → ${to}` });
+    const b = core.findBuild(r.store, id);
+    if (!ok) process.exitCode = 1;
+    return out({ ok, why, id: b.id, status: b.status }, ok ? `${b.id}: ${b.status}` : `refused: ${b.id} stays ${b.status}: ${why}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
   if (cmd === 'done-means-merged') {
