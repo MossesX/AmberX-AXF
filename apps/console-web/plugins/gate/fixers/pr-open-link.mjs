@@ -59,6 +59,8 @@ export async function check(ctx = {}) {
 export async function fix(ctx = {}, { dryRun = false } = {}) {
   const b = ctx.build || {};
   if (!b.id || !b.branch) return result(id, { ok: true, detail: 'no build branch named: nothing to fix' });
+  // a step group's sub-branch (step-groups@1) never gets a PR: the build lands as one PR from its build branch
+  if (/--g\d+$/.test(b.branch)) return result(id, { ok: true, detail: `${b.branch} is a step group's branch: no PR of its own` });
   const repo = repoOf(ctx);
   const tok = token(ctx);
   if (!repo || !tok) return result(id, { ok: false, unfixable: !repo ? 'no GitHub origin remote' : 'no GitHub token (framework/cli/github-token.mjs status)' });

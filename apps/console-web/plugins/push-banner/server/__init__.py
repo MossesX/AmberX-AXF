@@ -97,6 +97,9 @@ DEFAULT_REPOS = ["MossesX/AmberX-AXF", "MossesX/axHub"]
 ALWAYS_HIDDEN = {"site", "gh-pages"}
 # Branches that never get a PR opened by autoPr (the go-pass branch is axHub's pass file, never merged).
 NO_AUTO_PR = ALWAYS_HIDDEN | {"main", "master", "go-pass"}
+# Step-group sub-branches (step-groups@1, `<build branch>--g<n>`): merged onto their build branch by the orchestrator,
+# never a PR of their own; the build lands as one PR from its build branch.
+GROUP_BRANCH = re.compile(r"--g\d+$")
 PROTECT_EVERY_S = 6 * 3600
 CACHE_S = 120
 GITHUB_CAP = "axf.github@1"   # GitHub through axHub first, local GITHUB_TOKEN fallback (systems check, githubsvc.py)
@@ -762,6 +765,8 @@ class Pushes:
             raise HTTPException(400, "that repo isn't watched here")
         if not valid_branch(branch):
             raise HTTPException(400, "that isn't a branch name")
+        if GROUP_BRANCH.search(branch):
+            raise HTTPException(400, "that is a step group's branch: the orchestrator merges it onto its build branch, which lands as one PR")
         gh = self.gh()
         try:
             info = gh.repo(repo)
@@ -895,7 +900,7 @@ class Pushes:
             for r in state.get("repos", []):
                 for b in r.get("branches", []):
                     name = b.get("name")
-                    if b.get("pr") or b.get("hidden") or b.get("error") or not valid_branch(name) or name in NO_AUTO_PR or name == r.get("base"):
+                    if b.get("pr") or b.get("hidden") or b.get("error") or not valid_branch(name) or name in NO_AUTO_PR or GROUP_BRANCH.search(name or "") or name == r.get("base"):
                         continue
                     try:
                         res = self.open_pr({"repo": r["repo"], "branch": name})

@@ -152,8 +152,8 @@ function buildWorktree(b, env) {
 
 /**
  * Merge one finished group's sub-branch onto the build branch: `git merge --no-ff` (merge, never rebase) in the build
- * worktree with the builds store's merge driver (THREADS and the memory files merge by union through .gitattributes),
- * then push the build branch. Clean = `merged` (mergedAt), its worktree and sub-branch removed. A conflict is aborted
+ * worktree with the builds store's merge driver (THREADS and the memory files merge by union through .gitattributes);
+ * the build branch is pushed once, after the last group (pushBuildBranch). Clean = `merged` (mergedAt), its worktree and sub-branch removed. A conflict is aborted
  * (the build branch stays as it was) and marks the group `conflict` with the files in its note. `force` (Merge now)
  * merges a ready group out of its turn. Returns { id, group, merged, conflict: [files], note, pushed }.
  */
@@ -177,7 +177,8 @@ export function mergeGroup(id, gid, { env = process.env, by = process.env.AXF_AC
       conflict = git(dir, 'diff', '--name-only', '--diff-filter=U').stdout.split('\n').filter(Boolean);
       git(dir, 'merge', '--abort');
       if (!conflict.length) error = (m.stderr || m.stdout).trim().slice(-300) || 'git merge failed';
-    } else pushed = git(dir, 'push', '-q', 'origin', `HEAD:${buildBranchOf(b)}`).status === 0;
+    }
+    // not pushed here: the build branch reaches GitHub once, after the last merge (landSplitBuild), so no PR opens early
   }
   if (conflict.length || error) {
     const note = conflict.length ? `merge conflict in ${conflict.slice(0, 6).join(', ')}${conflict.length > 6 ? ` +${conflict.length - 6}` : ''}: Fix with Claude merges ${buildBranchOf(b)} into ${branch} and resolves it` : `merge failed: ${error}`;
@@ -185,9 +186,17 @@ export function mergeGroup(id, gid, { env = process.env, by = process.env.AXF_AC
     return { id: b.id, group: gid, merged: false, conflict, note, pushed: false };
   }
   const now = nowIso();
-  updateGroup(b.id, gid, { state: 'merged', mergedAt: now, note: `merged onto ${buildBranchOf(b)}${pushed ? ' and pushed' : ''}` }, { by, action: 'pipeline:group-merged', note: `${b.id}/${gid} merged` });
+  updateGroup(b.id, gid, { state: 'merged', mergedAt: now, note: `merged onto ${buildBranchOf(b)}` }, { by, action: 'pipeline:group-merged', note: `${b.id}/${gid} merged` });
   try { removeGroupWorktree(b.id, gid, { env, by }); } catch { /* cleaned up on the next merge or by hand */ }
   return { id: b.id, group: gid, merged: true, conflict: [], note: `${gid} merged onto ${buildBranchOf(b)}`, pushed };
+}
+
+/** Push the build branch from its worktree (after the last merge-back): { pushed, error }. */
+export function pushBuildBranch(id, { env = process.env } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw err(`no build "${id}"`);
+  if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') return { pushed: true, error: '', branch: buildBranchOf(b) };
+  const r = git(buildWorktree(b, env), 'push', '-q', 'origin', `HEAD:${buildBranchOf(b)}`);
+  return { pushed: r.status === 0, error: r.status === 0 ? '' : (r.stderr || r.stdout).trim().slice(-300), branch: buildBranchOf(b) };
 }
 
 /**

@@ -900,6 +900,7 @@ export function checkGroupEnds({ alert = () => {}, env = process.env, state = lo
 export function mergeTick({ alert = () => {}, env = process.env } = {}) {
   const out = [];
   for (const b of live(loadStore()).filter((x) => BP.isSplit(x) && !['built', 'complete', 'archived'].includes(x.status))) {
+    if (b.status === 'running' && BP.groupsOf(b).every((g) => g.state === 'merged')) { out.push(landSplitBuild(b.id, { alert, env })); continue; }
     if (!SG.mergeQueue(b).length) continue;
     const r = SG.mergeReady(b.id, { env });
     out.push(r);
@@ -915,12 +916,24 @@ export function mergeTick({ alert = () => {}, env = process.env } = {}) {
   return out;
 }
 
-/** Every group merged: the build is built (its PR comes from the build branch, step s11's landing). */
+/**
+ * Every group merged: the build branch is pushed (the first time it reaches GitHub as a whole), the build is built, and
+ * its 'after' build rules run (pr-open-link opens the ONE PR from the build branch and links it; the merge queue takes
+ * it as one entry like any build). A push that fails keeps the build running with a note; the next tick tries again.
+ */
 export function landSplitBuild(id, { alert = () => {}, env = process.env } = {}) {
-  const b = setPipeline(id, { note: '' }, { status: 'built', note: 'Every step group is merged onto the build branch: built.', action: 'pipeline:groups-merged' });
-  alert('ended', { id, title: b.title, outcome: 'finished', note: `Every step group of ${id} is merged onto ${SG.buildBranchOf(b)}.` });
+  const p = SG.pushBuildBranch(id, { env });
+  if (!p.pushed) {
+    setPipeline(id, { note: `every group merged; pushing ${p.branch} failed: ${str(p.error, 200)}` }, { note: `Every step group is merged, but pushing ${p.branch} failed: ${str(p.error, 300)}. Tried again next tick.`, action: 'pipeline:groups-push-failed' });
+    logLine({ event: 'groups-push-failed', build: id, error: p.error });
+    return { id, status: 'running', pushed: false, error: p.error };
+  }
+  const b = setPipeline(id, { note: '' }, { status: 'built', note: `Every step group is merged onto ${p.branch} and pushed: built, one PR from the build branch.`, action: 'pipeline:groups-merged' });
+  runBuildRules(id, 'after', { env });
+  alert('ended', { id, title: b.title, outcome: 'finished', note: `Every step group of ${id} is merged onto ${p.branch}; its PR opens from that branch.` });
   logLine({ event: 'groups-merged', build: id });
-  return { id, status: b.status };
+  crewSay('dispatcher', 'done', `${id}: every step group merged onto ${p.branch}; one PR from the build branch.`, { ref: id });
+  return { id, status: b.status, pushed: true };
 }
 
 /**
