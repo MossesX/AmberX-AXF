@@ -877,8 +877,11 @@ export function checkGroupEnds({ alert = () => {}, env = process.env, state = lo
         out.push({ id: b.id, group: g.id, outcome: 'finished', state: 'ready-to-merge' }); continue;
       }
       if (!['running', 'conflict'].includes(g.state) || !g.session) continue;
-      const since = Date.parse(state.groupRuns?.[key]?.launchedAt || g.startedAt || 0) - 5000;
-      const end = events.filter((e) => e.event === 'session-end' && e.session === g.session && Date.parse(e.at || 0) >= since).pop();
+      const run = state.groupRuns?.[key] ?? {};
+      const since = Date.parse(run.launchedAt || g.startedAt || 0) - 5000;
+      // only the events after this run's launch (a relaunch reuses the session name); by time when the file was rotated
+      const mine = Number.isInteger(run.eventsFrom) && run.eventsFrom <= events.length ? events.slice(run.eventsFrom) : events.filter((e) => Date.parse(e.at || 0) >= since);
+      const end = mine.filter((e) => e.event === 'session-end' && e.session === g.session).pop();
       let exit = null; let kind = '';
       if (end) { exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0; kind = end.kind || ''; }
       else {
@@ -951,12 +954,12 @@ export function fixGroupConflict(id, gid, { env = process.env, by = process.env.
   const settings = loadSettings(); const accounts = accountsNow(store, settings);
   const options = P.routeOptions(b, accounts, 'Opus', settings);
   if (!options.length) throw Object.assign(new Error(`no account can take the fix now: ${P.routeFor(b, accounts, 'Opus', settings).why}`), { code: 2 });
-  let lastErr = null;
+  let lastErr = null; const eventsBefore = readEvents(env).length;
   for (const o of options.slice(0, MAX_PICK_TRIES)) {
     try {
       const r = launchGroup(b, gid, { account: o.account, model: 'Opus', kind: o.kind, fix: true }, { rules: rulesOf(store), env });
       SG.updateGroup(b.id, gid, {}, { by, action: 'pipeline:group-fix', fn: (x) => Object.assign(x, { account: o.account, session: r.session, slot: r.slot, note: `Fix with Claude on ${o.account}: merging ${SG.buildBranchOf(b)} into ${x.branch || 'the group branch'}` }) });
-      const st = loadState(); st.groupRuns = { ...(st.groupRuns ?? {}), [groupKey(b.id, gid)]: { ...(st.groupRuns?.[groupKey(b.id, gid)] ?? {}), launchedAt: nowIso(), fix: true, account: o.account, session: r.session } }; saveState(st);
+      const st = loadState(); st.groupRuns = { ...(st.groupRuns ?? {}), [groupKey(b.id, gid)]: { ...(st.groupRuns?.[groupKey(b.id, gid)] ?? {}), launchedAt: nowIso(), eventsFrom: eventsBefore, fix: true, account: o.account, session: r.session } }; saveState(st);
       logLine({ event: 'group-fix', build: b.id, group: gid, account: o.account, session: r.session, by });
       return { id: b.id, group: gid, account: o.account, session: r.session };
     } catch (e) { lastErr = e; if (e.code === 'live') break; }
@@ -1394,6 +1397,7 @@ function dispatchGroup(first, { store, accounts, settings, rules, env, state, al
   const b = live(store).find((x) => x.id === first.id);
   const options = [first, ...P.routeOptions(b, accounts, first.model, settings).filter((o) => o.account !== first.account).map((o) => ({ ...first, ...o }))].slice(0, MAX_PICK_TRIES);
   const tried = []; let l = first; let r = null; let lastErr = null;
+  const eventsBefore = readEvents(env).length;
   for (const o of options) {
     l = o;
     try { r = launchGroup(b, first.group, l, { rules, env }); break; }
@@ -1410,7 +1414,8 @@ function dispatchGroup(first, { store, accounts, settings, rules, env, state, al
     return;
   }
   const prev = state.groupRuns[key] ?? {};
-  state.groupRuns[key] = { runs: (prev.runs ?? 0) + 1, crashes: prev.crashes ?? 0, model: l.model, phase: l.phase || '', account: l.account, session: r.session, launchedAt: now };
+  // eventsFrom: the session-end events before this launch belong to earlier runs (a relaunch reuses the session name)
+  state.groupRuns[key] = { runs: (prev.runs ?? 0) + 1, crashes: prev.crashes ?? 0, model: l.model, phase: l.phase || '', account: l.account, session: r.session, launchedAt: now, eventsFrom: eventsBefore };
   SG.updateGroup(b.id, first.group, {}, { action: 'pipeline:group-launch', note: `${b.id}/${first.group} on ${l.account}`, fn: (g) => { Object.assign(g, { state: 'running', account: l.account, session: r.session, slot: r.slot, startedAt: g.startedAt || now, endedAt: '', note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : '' }); } });
   if (b.status === 'queued') setPipeline(b.id, { launchedAt: b.pipeline?.launchedAt || now, dispatchedAt: now, note: '' }, { status: 'running', note: `Started as step groups: ${first.group} on ${l.account} (${l.model}).`, action: 'pipeline:launch' });
   else setPipeline(b.id, { dispatchedAt: now }, { note: `Started group ${first.group} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:group-launch' });
