@@ -8190,6 +8190,18 @@
    "from": "",
    "addenda": []
   },
+  "right-click-running-build-open-headless": {
+   "said": "If I right click on an active build, I want a context menu item to open its headless session in a terminal where I can eavesdrop on the headless session.",
+   "at": "2026-11-17T19:32:52.965Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "saved-claude-logins-never-end-up-on-a-spent-refr": {
    "said": "Why is it expiring when it gets a new refresh token every time? ... Okay, we need to do something about that so it doesn't happen.",
    "at": "2026-11-09T20:14:49.766Z",

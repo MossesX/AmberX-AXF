@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:32:51.794Z",
+ "updatedAt": "2026-11-17T19:33:04.022Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181758,6 +181758,37 @@
    "origin": {
     "said": "I want to watch these grids in real time. I want to watch it die, fail, and show what failed. I want to see it cross off steps as it goes. Make a test so I can watch it in real time everything it can possibly do. Give it at least 30 seconds between each thing. Give me an overlay before it starts with a button to continue or pause. If I have pause between steps on, bring me to the focus of what I need to see and wait until I click next, then another 30 seconds, and bring me to focus again.",
     "at": "2026-11-17T19:31:58.777Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "right-click-running-build-open-headless",
+   "title": "Right-click a running build: open its headless session in a terminal to watch it live",
+   "category": "",
+   "detail": "Right-click a running/active build in any build grid → context menu item 'Watch session' that opens that build's live headless session (its tmux session on the VPS) in a console terminal tab, read-only by default so Brett can eavesdrop without disturbing it, with an option to take over/type. Shows which account and phase. If no live session, the item is disabled with the reason. Same action through REST, MCP, CLI and voice ('watch the skins session'). Fits into the dynamic section of the rebuilt context menus (rebuild-every-context-menu-toolbar-nav).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T19:32:52.965Z",
+   "updatedAt": "2026-11-17T19:32:52.965Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If I right click on an active build, I want a context menu item to open its headless session in a terminal where I can eavesdrop on the headless session.",
+    "at": "2026-11-17T19:32:52.965Z",
     "source": "",
     "session": "",
     "link": "",

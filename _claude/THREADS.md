@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:07 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
 - 2026-11-17 15:07 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `amberx-open-url-must-open-page-even-when` → running, note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:30 UTC · `live-build-status-real-time-grids-15` added (0 steps) (all) · console
 - 2026-11-17 19:31 UTC · `guided-live-demo-test-watch-orchestrator` added (0 steps) (all) · console
 - 2026-11-17 19:32 UTC · `console-app-part-2-native-floating` s2 done, → running (all) · orchestrator
+- 2026-11-17 19:32 UTC · `right-click-running-build-open-headless` added (0 steps) (all) · console
 
 ## Token passes (log)
 

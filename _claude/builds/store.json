@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7666,
- "updatedAt": "2026-11-17T19:32:51.794Z",
+ "rev": 7667,
+ "updatedAt": "2026-11-17T19:33:04.022Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276526,6 +276526,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "right-click-running-build-open-headless",
+   "title": "Right-click a running build: open its headless session in a terminal to watch it live",
+   "category": "",
+   "detail": "Right-click a running/active build in any build grid → context menu item 'Watch session' that opens that build's live headless session (its tmux session on the VPS) in a console terminal tab, read-only by default so Brett can eavesdrop without disturbing it, with an option to take over/type. Shows which account and phase. If no live session, the item is disabled with the reason. Same action through REST, MCP, CLI and voice ('watch the skins session'). Fits into the dynamic section of the rebuilt context menus (rebuild-every-context-menu-toolbar-nav).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T19:32:52.965Z",
+   "updatedAt": "2026-11-17T19:32:52.965Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If I right click on an active build, I want a context menu item to open its headless session in a terminal where I can eavesdrop on the headless session.",
+    "at": "2026-11-17T19:32:52.965Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 964
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
