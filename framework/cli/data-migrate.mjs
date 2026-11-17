@@ -104,7 +104,10 @@ function sourceItem(src) {
   const ns = src.key.split('/')[0];
   const nsid = src.ns || nsIdOf(src.key);
   const path = src.key.slice(nsid.length + 1);
-  const raw = sqliteFile(src.key) ? sqliteSnapshot(src.file) : readFileSync(src.file);
+  let raw;
+  // live data: a file listed by the walk can be gone by the time it is read (rotated reports); it is simply not part of
+  // this source any more (left out of M0, like a file that never existed)
+  try { raw = sqliteFile(src.key) ? sqliteSnapshot(src.file) : readFileSync(src.file); } catch (e) { if (e?.code === 'ENOENT') return { ...src, vanished: true, notes: [] }; throw e; }
   let kind = kindOfKey(src.key);
   const notes = [];
   if (kind === 'record') {
@@ -161,7 +164,7 @@ export function plan(scanned, only = []) {
   const rank = (ns) => { const i = ORDER.indexOf(ns.split('/')[0]); return i < 0 ? 99 : i; };
   const out = [];
   for (const ns of [...byNs.keys()].sort((a, b) => rank(a) - rank(b) || (a < b ? -1 : 1))) {
-    const all = byNs.get(ns).map(sourceItem).flatMap((i) => [i, ...(i.extras || [])]);
+    const all = byNs.get(ns).map(sourceItem).filter((i) => !i.vanished).flatMap((i) => [i, ...(i.extras || [])]);
     const items = all.filter((i) => !i.local);
     const ok = items.filter((i) => !i.error);
     out.push({
