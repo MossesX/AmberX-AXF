@@ -24,7 +24,8 @@
  *   node deploy/auto-lander/auto-lander.mjs tick [--dry-run] [--only <build>] [--json]   one tick
  *   … daemon [--every <sec>]          tick forever (default 60 s); SIGTERM ends it after the current tick
  *   … status [--json]                 service, current build, queue, per-build state and attempts
- *   … run                             one tick now (same as tick)
+ *   … run [--request]                 one tick now (same as tick); --request asks the service for one (the console's way)
+ *   … show <build>                    one build: its record and every attempt
  *   … retry <build> [--by who]        reset its attempts and escalation; the next tick tries again at once
  *   … fix <build> [--by who]          retry + start a fix session now (the escalation item's Fix button)
  *   … pause [--by who] | resume [--by who]
@@ -70,7 +71,7 @@ export const writeState = (s) => writeJson(files().state, s);
 /** The runner's control: { paused, pausedBy, pausedAt, settings: {…}, resets: { build: at } }. */
 export function readControl() {
   const c = readJson(files().control, {}) || {};
-  return { paused: c.paused === true, pausedBy: String(c.pausedBy || ''), pausedAt: String(c.pausedAt || ''), settings: { ...SETTINGS_DEFAULTS, ...(c.settings || {}) }, resets: c.resets || {}, fixNow: Array.isArray(c.fixNow) ? c.fixNow : [] };
+  return { runRequested: String(c.runRequested || ''), paused: c.paused === true, pausedBy: String(c.pausedBy || ''), pausedAt: String(c.pausedAt || ''), settings: { ...SETTINGS_DEFAULTS, ...(c.settings || {}) }, resets: c.resets || {}, fixNow: Array.isArray(c.fixNow) ? c.fixNow : [] };
 }
 const writeControl = (c) => writeJson(files().control, { $axf: 'auto-lander-control@1', ...c });
 
@@ -281,7 +282,8 @@ export async function daemon({ everySec = 60, log = (m) => process.stderr.write(
   process.env.AXF_AUTO_LANDER_MODE = 'daemon';
   while (!stop) {
     try { const r = await tick({ log }); if (r.skipped) log(r.skipped); } catch (e) { log(`tick: ${e.message}`); }
-    for (let i = 0; i < everySec && !stop; i += 1) await new Promise((r) => setTimeout(r, 1000));
+    const asked = readControl().runRequested || '';
+    for (let i = 0; i < everySec && !stop && (readControl().runRequested || '') === asked; i += 1) await new Promise((r) => setTimeout(r, 1000));
   }
 }
 
@@ -311,6 +313,8 @@ export async function main(argv) {
   const [cmd = 'status', ...rest] = pos; const by = opt('by') || process.env.AXF_ACTOR || 'cli';
   const say = (obj, text) => process.stdout.write(`${json ? JSON.stringify(obj, null, 1) : text}\n`);
   const log = json ? () => {} : (m) => process.stderr.write(`${m}\n`);
+  if (cmd === 'run' && a.includes('--request')) { const c = readControl(); writeControl({ ...c, runRequested: nowIso(), runRequestedBy: by }); return say({ ok: true, requested: true, by }, 'a tick runs within a minute'); }
+  if (cmd === 'show') { const id = rest[0]; if (!id) throw Object.assign(new Error('show <build>'), { code: 'invalid' }); const b = status().builds.find((x) => x.build === id) || null; return say({ ok: true, build: id, record: b, attempts: attempts.list(id), count: attempts.count(id) }, attempts.list(id).map((x) => `${x.at}  ${x.kind} #${x.n}  ${x.result}  ${x.log.split('\n')[0].slice(0, 100)}`).join('\n') || '(no attempts)'); }
   if (cmd === 'tick' || cmd === 'run') { const r = await tick({ dry: a.includes('--dry-run'), only: opt('only'), log }); return say(r, r.skipped || `${r.builds.length} build(s) tracked${r.paused ? ' (paused)' : ''}`); }
   if (cmd === 'daemon') return daemon({ everySec: Number(opt('every')) || 60 });
   if (cmd === 'status') { const s = status(); return say(s, [`service: ${s.service.up ? 'up' : 'down'}${s.service.paused ? ' (paused)' : ''}, last tick ${s.service.lastTick || 'never'}`, `current: ${s.current || '—'}`, ...s.builds.map((b) => `${b.build}  ${b.state}  ${b.reason}`)].join('\n')); }
