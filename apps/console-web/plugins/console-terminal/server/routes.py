@@ -35,7 +35,12 @@ def kinds_of(kind: str | list[str] | None) -> list[str]:
 def build(bus: Callable[[], claude_link.Bus], view: dict[str, Any] | None = None) -> APIRouter:
     """The routes over a bus (a getter, so tests and a resize can swap it)."""
     r = APIRouter()
-    v: dict[str, Any] = view if view is not None else {"paused": False, "kinds": [], "q": ""}
+    v: dict[str, Any] = view if view is not None else {"paused": False, "kinds": [], "q": "", "rev": 0}
+    watchers: list[Callable[[dict[str, Any]], None]] = []
+
+    def watch(fn: Callable[[dict[str, Any]], None]) -> Callable[[], None]:
+        watchers.append(fn)
+        return lambda: watchers.remove(fn) if fn in watchers else None
 
     @r.get("/claude-link")
     def snapshot(since: int = 0, kind: str = "", q: str = "", limit: int = 200, all: bool = False) -> dict[str, Any]:
@@ -62,6 +67,8 @@ def build(bus: Callable[[], claude_link.Bus], view: dict[str, Any] | None = None
         if "q" in body:
             v["q"] = str(body.get("q") or "")[:200]
         v["rev"] = int(v.get("rev") or 0) + 1
+        for fn in list(watchers):
+            fn(dict(v))
         return dict(v)
 
     @r.post("/claude-link/ingest")
@@ -86,7 +93,7 @@ def build(bus: Callable[[], claude_link.Bus], view: dict[str, Any] | None = None
             last = int(request.headers.get("last-event-id") or since or 0)
         except ValueError:
             last = 0
-        return StreamingResponse(sse(bus(), last, ks, q, once, request.is_disconnected), media_type="text/event-stream",
+        return StreamingResponse(sse(bus(), last, ks, q, once, request.is_disconnected, view=lambda: dict(v), watch=watch), media_type="text/event-stream",
                                  headers={"cache-control": "no-store", "x-accel-buffering": "no"})
 
     return r
@@ -97,8 +104,10 @@ def frame(e: dict[str, Any]) -> str:
 
 
 async def sse(b: claude_link.Bus, last: int, kinds: list[str], q: str, once: bool = False,
-              gone: Callable[[], Any] | None = None, heartbeat: float = HEARTBEAT_S) -> AsyncIterator[str]:
-    """hello, the backlog after `last`, then live events; a ping comment when quiet."""
+              gone: Callable[[], Any] | None = None, heartbeat: float = HEARTBEAT_S, view: Callable[[], dict[str, Any]] | None = None,
+              watch: Callable[[Callable[[dict[str, Any]], None]], Callable[[], None]] | None = None) -> AsyncIterator[str]:
+    """hello (state + the shared view), the backlog after `last`, then live events and `event: view` when the view
+    changes (pause / filters set from the API or voice); a ping comment when quiet."""
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue = asyncio.Queue(maxsize=5000)
 
@@ -109,8 +118,9 @@ async def sse(b: claude_link.Bus, last: int, kinds: list[str], q: str, once: boo
             pass
 
     stop = b.subscribe(push)
+    unwatch = watch(lambda nv: push({"$view": nv})) if watch else (lambda: None)
     try:
-        yield "retry: 3000\n" + f"event: hello\ndata: {json.dumps(b.state(), default=str)}\n\n"
+        yield "retry: 3000\n" + f"event: hello\ndata: {json.dumps({**b.state(), **({'view': view()} if view else {})}, default=str)}\n\n"
         backlog = b.snapshot(since=last, kinds=kinds, q=q, limit=claude_link.MAX_SIZE, all=last > 0)["items"]
         for e in backlog:
             last = e["id"]
@@ -125,9 +135,13 @@ async def sse(b: claude_link.Bus, last: int, kinds: list[str], q: str, once: boo
                     return
                 yield ": ping\n\n"
                 continue
+            if "$view" in e:
+                yield f"event: view\ndata: {json.dumps(e['$view'])}\n\n"
+                continue
             if e["id"] <= last or not claude_link.matches(e, kinds, q):
                 continue
             last = e["id"]
             yield frame(e)
     finally:
         stop()
+        unwatch()

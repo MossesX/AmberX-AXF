@@ -41,7 +41,7 @@ export const snapshot = () => version;
 const emit = () => { version++; save(); listeners.forEach((f) => f()); };
 
 export const sessionId = () => `ts-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-const TITLES: Record<string, string> = { console: 'Console', vps: 'VPS', claude: 'Claude Code', axhub: 'axHub' };
+const TITLES: Record<string, string> = { console: 'Console', vps: 'VPS', claude: 'Claude Code', axhub: 'axHub', link: 'Claude link' };
 export const titleFor = (o: Open) => o.title || (o.kind === 'container' ? o.container ?? 'Container' : TITLES[o.kind] ?? 'Terminal');
 
 export function host(id: string, seed?: HostSession[]): HostState {
@@ -63,7 +63,9 @@ export function addSession(hostId: string, s: HostSession, at?: number, backgrou
 /** Take a session out of its host (closing or moving it). Returns it. */
 export function removeSession(sid: string): HostSession | null {
   const hid = hostOf(sid); if (!hid) return null;
-  const h = hosts.get(hid)!; const i = h.sessions.findIndex((s) => s.id === sid); const [s] = h.sessions.splice(i, 1);
+  const h = hosts.get(hid)!; const i = h.sessions.findIndex((s) => s.id === sid);
+  if (isLink(h.sessions[i])) return null; // pinned: it only goes with its window (dropHost)
+  const [s] = h.sessions.splice(i, 1);
   h.sessions = [...h.sessions];
   if (h.active === sid) h.active = h.sessions[Math.min(i, h.sessions.length - 1)]?.id ?? null;
   emit(); return s ?? null;
@@ -75,8 +77,25 @@ export function patchSession(sid: string, p: Partial<HostSession>) {
 export function activate(hostId: string, sid: string) { const h = hosts.get(hostId); if (h && h.active !== sid) { h.active = sid; emit(); } }
 export function move(hostId: string, from: number, to: number) {
   const h = hosts.get(hostId); if (!h || from === to) return;
+  if (isLink(h.sessions[0]) && (from === 0 || to === 0)) { if (from === 0) return; to = 1; } // the Claude link tab stays first
   const list = [...h.sessions]; const [s] = list.splice(from, 1); if (!s) return; list.splice(Math.max(0, Math.min(to, list.length)), 0, s); h.sessions = list; emit();
 }
+/** The pinned Claude link tab: first in every host, can't be closed, moved or dragged out (terminal-main-tab-streaming-console-s). */
+export const isLink = (s: HostSession | null | undefined) => s?.open.kind === 'link';
+export const linkIdOf = (hostId: string) => `${hostId}-claude-link`;
+/** Put the Claude link tab first in a host if it isn't there (in the background unless the host has nothing in front). */
+export function ensureLink(hostId: string) {
+  const h = host(hostId);
+  const i = h.sessions.findIndex(isLink);
+  if (i === 0) return;
+  const link = i > 0 ? h.sessions[i]! : { id: linkIdOf(hostId), title: 'Claude link', open: { kind: 'link' as const } };
+  h.sessions = [link, ...h.sessions.filter((s) => !isLink(s))];
+  if (!h.active) h.active = link.id;
+  emit();
+}
+/** Bring the Claude link tab to the front of a host. */
+export function showLink(hostId: string) { ensureLink(hostId); activate(hostId, host(hostId).sessions[0]!.id); }
+
 export function dropHost(hostId: string) { if (hosts.delete(hostId)) emit(); }
 
 /** Store a session's handle. The host re-renders only when what it shows changed (state, badge, modes, size), never
