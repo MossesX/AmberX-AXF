@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7412,
- "updatedAt": "2026-11-17T12:39:29.556Z",
+ "rev": 7423,
+ "updatedAt": "2026-11-17T12:48:47.594Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223050,7 +223050,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T12:37:31.152Z",
+   "updatedAt": "2026-11-17T12:47:24.716Z",
    "builtAt": "",
    "notes": [
     {
@@ -223323,12 +223323,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:40:12.518Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:47:32.020Z",
-     "updatedAt": "2026-11-14T17:47:32.020Z"
+     "updatedAt": "2026-11-17T12:40:13.081Z"
     },
     {
      "id": "s8",
@@ -223348,12 +223348,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:41:57.932Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:47:32.020Z",
-     "updatedAt": "2026-11-14T17:47:32.020Z"
+     "updatedAt": "2026-11-17T12:41:58.609Z"
     },
     {
      "id": "s9",
@@ -223373,12 +223373,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:42:56.182Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:47:32.020Z",
-     "updatedAt": "2026-11-14T17:47:32.020Z"
+     "updatedAt": "2026-11-17T12:42:56.511Z"
     },
     {
      "id": "s10",
@@ -223399,12 +223399,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:43:48.892Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:47:32.020Z",
-     "updatedAt": "2026-11-14T17:47:32.020Z"
+     "updatedAt": "2026-11-17T12:43:49.358Z"
     },
     {
      "id": "s11",
@@ -223424,12 +223424,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:45:37.676Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:47:32.020Z",
-     "updatedAt": "2026-11-14T17:47:32.020Z"
+     "updatedAt": "2026-11-17T12:45:38.305Z"
     },
     {
      "id": "s12",
@@ -223450,12 +223450,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:47:24.716Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:47:32.020Z",
-     "updatedAt": "2026-11-14T17:47:32.020Z"
+     "updatedAt": "2026-11-17T12:47:25.077Z"
     },
     {
      "id": "s13",
@@ -223739,7 +223739,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -244621,7 +244621,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-17T12:28:51.223Z",
+   "updatedAt": "2026-11-17T12:48:45.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -244690,7 +244690,7 @@
     "session": "axf-fix-console-deep-links-open-page-lands--gina",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 1",
+    "phase": "",
     "launchedAt": "2026-11-17T12:28:43.007Z",
     "runs": 1,
     "crashes": 0,
@@ -244804,12 +244804,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:48:45.001Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T22:51:15.161Z",
-     "updatedAt": "2026-11-16T22:51:16.365Z"
+     "updatedAt": "2026-11-17T12:48:45.406Z"
     },
     {
      "id": "s4",
@@ -244842,7 +244842,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -262240,10 +262240,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T03:43:07.803Z",
+     "at": "2026-11-17T12:40:12.153Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -262634,7 +262634,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -262650,16 +262650,16 @@
    "title": "Maintenance plugin: Clear Docker cache button, restarts Docker if needed",
    "category": "",
    "detail": "Add a 'Clear Docker cache' action to the Maintenance plugin. It runs docker builder prune -af and shows space freed. If the cache is reported as in use (reclaimable 0 while cache size > 0), it offers/does a Docker restart (systemctl restart docker), waits for every container to come back on its restart policy, verifies them, then prunes again and reports before/after disk. Context: on Nov 17 the disk hit 100%; 87 GB of build cache showed as 'active' and prune freed nothing until Docker was restarted, which dropped disk from 96% to 78%. Confirm before restart (it drops all apps ~1-2 min). Reachable from UI, REST, MCP, CLI and voice; log to systems check. Also add to the disk systems-check item's Auto fix.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/maintenance-plugin-clear-docker-cache",
-   "pr": "",
+   "pr": "#779",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T12:33:04.136Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T12:42:26.545Z",
+   "builtAt": "2026-11-17T12:41:36.636Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -262680,6 +262680,14 @@
     {
      "text": "Clash note (move-server-side-console-parts-onto-vps): that build moves the Maintenance monitor onto the host as the axf-maintenance unit under a dedicated axf-host user with a sudo whitelist (docker builder/image prune, systemctl restart docker) and a host API socket the console calls. This build keeps the Clear Docker cache action itself (engine, confirm, routes, disk Auto fix). If you add a host runner for your s1, put the unit in deploy/systemd/ with @DIR@ and install it through axf_systemd_unit (framework/deploy/axf-deploy.sh) so the host-services installer adopts it. Report: _claude/builds/reports/move-server-side-console-parts-onto-vps.md §2.",
      "at": "2026-11-17T12:33:04.136Z"
+    },
+    {
+     "text": "Headless run axf-maintenance-plugin-clear-docker-cache--joey: brief only · start 17.0K tokens ($0.06) · cost $2.96 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-17T12:42:10.829Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-17T12:42:17.902Z"
     }
    ],
    "approvals": [],
@@ -262699,29 +262707,23 @@
    "pipeline": {
     "queuedAt": "2026-11-17T12:22:24.534Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-maintenance-plugin-clear-docker-cache--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T12:23:23.274Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "waiting for the split before it can start",
     "route": "",
-    "dispatchedAt": "2026-11-17T12:23:23.274Z",
-    "planned": {
-     "model": "Opus",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-17T12:23:05.909Z",
-     "why": "subscription account hulu0241"
-    },
+    "dispatchedAt": "",
+    "planned": null,
     "tried": [],
-    "pickedAt": "2026-11-17T12:23:23.274Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -262742,12 +262744,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:41:36.636Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T12:22:35.624Z",
-     "updatedAt": "2026-11-17T12:22:35.906Z"
+     "updatedAt": "2026-11-17T12:41:37.356Z"
     }
    ],
    "profiles": [
@@ -262758,7 +262760,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

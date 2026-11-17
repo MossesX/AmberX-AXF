@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T12:39:29.556Z",
+ "updatedAt": "2026-11-17T12:48:47.594Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142941,7 +142941,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T12:37:31.152Z",
+   "updatedAt": "2026-11-17T12:47:24.716Z",
    "builtAt": "",
    "notes": [
     {
@@ -143158,8 +143158,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:40:12.518Z",
      "note": "",
      "uid": "st-mwgp7o6s075nbw",
      "createdAt": "2026-11-14T17:47:32.020Z"
@@ -143180,8 +143180,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:41:57.932Z",
      "note": "",
      "uid": "st-mwgp7o6s08z79v",
      "createdAt": "2026-11-14T17:47:32.020Z"
@@ -143202,8 +143202,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:42:56.182Z",
      "note": "",
      "uid": "st-mwgp7o6s09b4by",
      "createdAt": "2026-11-14T17:47:32.020Z"
@@ -143225,8 +143225,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:43:48.892Z",
      "note": "",
      "uid": "st-mwgp7o6s0a1q0m",
      "createdAt": "2026-11-14T17:47:32.020Z"
@@ -143247,8 +143247,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:45:37.676Z",
      "note": "",
      "uid": "st-mwgp7o6s0byebm",
      "createdAt": "2026-11-14T17:47:32.020Z"
@@ -143270,8 +143270,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:47:24.716Z",
      "note": "",
      "uid": "st-mwgp7o6s0cxzp2",
      "createdAt": "2026-11-14T17:47:32.020Z"
@@ -159214,7 +159214,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-17T12:28:51.223Z",
+   "updatedAt": "2026-11-17T12:48:45.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -159350,8 +159350,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:48:45.001Z",
      "note": "",
      "uid": "st-mwjuxzil01ndup",
      "createdAt": "2026-11-16T22:51:15.161Z"
@@ -170444,16 +170444,16 @@
    "title": "Maintenance plugin: Clear Docker cache button, restarts Docker if needed",
    "category": "",
    "detail": "Add a 'Clear Docker cache' action to the Maintenance plugin. It runs docker builder prune -af and shows space freed. If the cache is reported as in use (reclaimable 0 while cache size > 0), it offers/does a Docker restart (systemctl restart docker), waits for every container to come back on its restart policy, verifies them, then prunes again and reports before/after disk. Context: on Nov 17 the disk hit 100%; 87 GB of build cache showed as 'active' and prune freed nothing until Docker was restarted, which dropped disk from 96% to 78%. Confirm before restart (it drops all apps ~1-2 min). Reachable from UI, REST, MCP, CLI and voice; log to systems check. Also add to the disk systems-check item's Auto fix.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/maintenance-plugin-clear-docker-cache",
-   "pr": "",
+   "pr": "#779",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T12:33:04.136Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T12:42:26.545Z",
+   "builtAt": "2026-11-17T12:41:36.636Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -170474,6 +170474,14 @@
     {
      "text": "Clash note (move-server-side-console-parts-onto-vps): that build moves the Maintenance monitor onto the host as the axf-maintenance unit under a dedicated axf-host user with a sudo whitelist (docker builder/image prune, systemctl restart docker) and a host API socket the console calls. This build keeps the Clear Docker cache action itself (engine, confirm, routes, disk Auto fix). If you add a host runner for your s1, put the unit in deploy/systemd/ with @DIR@ and install it through axf_systemd_unit (framework/deploy/axf-deploy.sh) so the host-services installer adopts it. Report: _claude/builds/reports/move-server-side-console-parts-onto-vps.md §2.",
      "at": "2026-11-17T12:33:04.136Z"
+    },
+    {
+     "text": "Headless run axf-maintenance-plugin-clear-docker-cache--joey: brief only · start 17.0K tokens ($0.06) · cost $2.96 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-17T12:42:10.829Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-17T12:42:17.902Z"
     }
    ],
    "approvals": [],
@@ -170504,8 +170512,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:41:36.636Z",
      "note": "",
      "uid": "st-mwknxcw201loc2",
      "createdAt": "2026-11-17T12:22:35.624Z"
