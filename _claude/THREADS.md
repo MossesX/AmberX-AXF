@@ -821,11 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:53 UTC · `land-per-instance-settings-picker` → pending, note (all) · pipeline
-- 2026-11-17 00:55 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` s1 done, → running (all) · orchestrator
-- 2026-11-17 00:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` s2 done, → complete (all) · orchestrator
-- 2026-11-17 00:56 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` s1 done, → running (all) · orchestrator
-- 2026-11-17 00:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` note (all) · orchestrator
 - 2026-11-17 00:56 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` s2 done (all) · orchestrator
 - 2026-11-17 00:57 UTC · `every-plugin-screen-gets-a-settings-gear` s20 done, → complete (all) · orchestrator
 - 2026-11-17 00:57 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
@@ -1221,6 +1216,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:12 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-17 15:12 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
 - 2026-11-17 15:12 UTC · `projects-own-everything-per-project` note (all) · orchestrator
+- 2026-11-17 15:12 UTC · `projects-own-everything-per-project` note (all) · foreign-write
+- 2026-11-17 15:12 UTC · `new-asset-type-animated-expanding-row` note (all) · foreign-write
+- 2026-11-17 15:12 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
+- 2026-11-17 15:12 UTC · `auto-lander-drag-rows-to-set-merge-order` s3 done (all) · foreign-write
+- 2026-11-17 15:12 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
 
 ## Token passes (log)
 

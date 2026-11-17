@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:12:35.649Z",
+ "updatedAt": "2026-11-17T15:12:44.259Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -119870,7 +119870,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-16T23:16:33.461Z",
+   "updatedAt": "2026-11-17T15:12:40.188Z",
    "builtAt": "2026-11-16T23:14:33.790Z",
    "notes": [
     {
@@ -120012,6 +120012,10 @@
     {
      "text": "Headless run axf-always-fill-every-slot-when-slots-are--gina: brief only · start 14.3K tokens ($0.05) · cost $0.29 · 14 turns · 6 tools, MCP none",
      "at": "2026-11-16T23:16:33.461Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:40.188Z"
     }
    ],
    "approvals": [
