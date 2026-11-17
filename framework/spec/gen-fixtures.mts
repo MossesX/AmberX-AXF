@@ -54,6 +54,7 @@ import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WI
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
 import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAnimationPrefs } from '../core/engines/behavior';
 import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
+import { DEFAULT_RUN_INDICATOR, RUN_DEFAULTS, RUN_RANGES, normalizeRunIndicator, runIndicatorErrors, runIndicatorStyle } from '../core/engines/run-indicator';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
@@ -2554,3 +2555,32 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     },
   });
 }
+
+// Run indicator (run-indicator@1, build live-build-status-real-time-grids-15): defaults, every starter's --fx-run-* tokens
+// and attributes (motion on and under reduced motion), clamping, errors. Tokens are opacity and colour-mix only.
+write('run-indicator.json', {
+  defaults: DEFAULT_RUN_INDICATOR,
+  ranges: RUN_RANGES,
+  defaultStyle: runIndicatorStyle(undefined),
+  starters: Object.fromEntries(load('run-indicator').map((a) => [a.id, { normalized: normalizeRunIndicator(a.data), style: runIndicatorStyle(a.data), reduced: runIndicatorStyle(a.data, true) }])),
+  normalized: {
+    partial: normalizeRunIndicator({ animation: 'glow', tones: { running: 'info' } }),
+    clamped: normalizeRunIndicator({ speed: 9000, durationMs: 1, intensity: -4 }),
+    junk: normalizeRunIndicator({ animation: 'wobble', icon: 'Not An Icon', tones: 'red', iconAnimation: 7, reducedMotion: 'maybe' }),
+    'not-an-object': normalizeRunIndicator('nope'),
+  },
+  styles: {
+    fast: runIndicatorStyle({ speed: 200 }),
+    slow: runIndicatorStyle({ speed: 50, durationMs: 4000, intensity: 0.8 }),
+    'reduced-off': runIndicatorStyle({ reducedMotion: 'off' }, true),
+  },
+  errors: {
+    ok: runIndicatorErrors('run-indicator', RUN_DEFAULTS),
+    'bad-enums': runIndicatorErrors('run-indicator', { animation: 'wobble', iconAnimation: 'spin!', brokeAnimation: 'glow', reducedMotion: 'maybe' }),
+    'bad-tones': runIndicatorErrors('run-indicator', { tones: { running: '#ff0000', idle: 'accent' } }),
+    'bad-numbers': runIndicatorErrors('run-indicator', { speed: 1, durationMs: '2400', intensity: 2 }),
+    'bad-icon': runIndicatorErrors('run-indicator', { icon: 'Zap Icon' }),
+    'not-an-object': runIndicatorErrors('run-indicator', 'nope'),
+    'other-type': runIndicatorErrors('button', { animation: 'wobble' }),
+  },
+});

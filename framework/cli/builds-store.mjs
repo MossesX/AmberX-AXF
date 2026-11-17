@@ -50,6 +50,7 @@ import { mergeOrigin } from '../core/build-origin.mjs';
 import { migrateDoneStore } from '../core/build-pipeline.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
+import { publishChanges } from './build-live-channel.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, journalReadDirs, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 import * as files from '../core/data-files.mjs';
 import { DataStoreError } from '../core/data-store.mjs';
@@ -461,6 +462,8 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
   // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
   if (changes.length) emitChanges(changes, { at: now, by });
+  // build-live@1: the same write goes out on the console live channel (status, step, note, branch, PR: any field)
+  if (changes.length && !worktreeHome()) publishChanges(changes, { at: now, by });
   return { store: after, changes, rev: after.rev };
 }
 

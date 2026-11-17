@@ -21,9 +21,9 @@
   "extrasCategory": "extras",
   "global": "global",
   "summary": {
-    "categories": 48,
-    "groups": 289,
-    "options": 1147,
+    "categories": 49,
+    "groups": 291,
+    "options": 1155,
     "limits": 4,
     "sections": [
       "Themes",
@@ -3374,6 +3374,35 @@
             "interactive",
             "build",
             "keywords"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "type": "run-indicator",
+      "label": "Run indicator",
+      "section": "Themes",
+      "by": "slot",
+      "groups": [
+        {
+          "id": "pick",
+          "kind": "pick",
+          "options": [
+            "asset"
+          ]
+        },
+        {
+          "id": "fields",
+          "kind": "fields",
+          "options": [
+            "animation",
+            "icon",
+            "tones.running",
+            "tones.broke",
+            "tones",
+            "speed",
+            "intensity"
           ]
         }
       ],

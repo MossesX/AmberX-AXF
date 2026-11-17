@@ -1910,6 +1910,63 @@
         "keywords": "words for search (up to 200)"
       }
     },
+    "run-indicator": {
+      "label": "Run indicator",
+      "group": "Themes",
+      "icon": "zap",
+      "description": "How a running job shows in every grid (run-indicator@1, engine core/engines/run-indicator.ts; Brett, Nov 17 2026: \"Every running job in any grid has a spinning or animated icon, and building rows flash slowly; configure the animation, flash, pulse, colors. When it stops it goes red, a pink background\"). The row animation while running (flash, pulse, glow, spin or none), the icon and how it moves, the running / broke / stale / done tones as colour-theme token ids (never a fixed colour: the engine compiles --fx-run-* tokens from opacity and colour-mix over the theme), speed over the theme motion token, one cycle's duration and how deep the flash goes, what a broke row does, and the reduced-motion fallback (still: the icon stops and the row keeps its tint; tint: the tint only; off: nothing beyond the text tone). Read by the Build manager grids, the Watchdog panel, Home cards and the build-live@1 alert and dialog.",
+      "required": [
+        "animation",
+        "icon",
+        "tones"
+      ],
+      "enums": {
+        "animation": [
+          "flash",
+          "pulse",
+          "glow",
+          "spin",
+          "none"
+        ],
+        "iconAnimation": [
+          "spin",
+          "pulse",
+          "bounce",
+          "blink",
+          "none"
+        ],
+        "brokeAnimation": [
+          "flash",
+          "pulse",
+          "none"
+        ],
+        "reducedMotion": [
+          "still",
+          "tint",
+          "off"
+        ]
+      },
+      "nested": {
+        "tones": [
+          "running",
+          "broke"
+        ]
+      },
+      "optional": true,
+      "optional_fields": {
+        "tones": "{ running, broke, stale?, done? } — colour-theme token ids: accent | info | success | warning | danger | text | muted (defaults: running accent, broke danger, stale warning, done success)",
+        "iconAnimation": "spin (default) | pulse | bounce | blink | none — how the icon moves while running",
+        "brokeAnimation": "flash | pulse | none (default) — a broke row is steady red unless it says otherwise",
+        "speed": "number 25–400 — percent of the theme motion token (default 100)",
+        "durationMs": "number 400–8000 — one cycle of the row animation (default 2400: a slow flash)",
+        "intensity": "number 0.05–1 — how deep the flash goes: the opacity swing and the tint strength (default 0.35)",
+        "reducedMotion": "still (default) | tint | off — what shows when the system or the behaviour theme asks for reduced motion"
+      },
+      "skin": {
+        "by": "slot",
+        "why": "A skin picks the run indicator like any look slot; every app's grids follow it."
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",

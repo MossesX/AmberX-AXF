@@ -18,6 +18,7 @@ import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
 import { navStyleErrors } from './engines/navstyle-rules.mjs';
+import { runIndicatorErrors } from './engines/run-indicator-rules.mjs';
 
 export interface ValidationResult {
   ok: boolean;
@@ -132,6 +133,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...cardErrors(raw.type, data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, data));
+  // run-indicator@1: ONE validator shared with the build engine (core/engines/run-indicator-rules.mjs)
+  errors.push(...runIndicatorErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);

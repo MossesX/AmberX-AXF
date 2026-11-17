@@ -1,0 +1,1725 @@
+{
+  "$axf": "build-live-cases@1",
+  "note": "Golden cases for build-live@1 (framework/core/engines/build-live.mjs, spec/BUILD-LIVE.md). `events` replays normEvent() on a raw frame (`out` = the normalised build-live-event@1, null = refused); `invalid` replays validateEvent() (`errors` = the field list); `alive` replays aliveOf(cause, processAlive, markedRunning); `fold` replays fold() over a sequence of frames for one build (`out.state` = the build-live-state@1 after the last frame, `out.changed` = the changed flag per frame). Regenerate the `out` blocks with: node framework/spec/check-build-live.mjs --write",
+  "now": "2026-11-17T20:00:00.000Z",
+  "everySec": 15,
+  "events": [
+    {
+      "name": "liveness: alive, every field",
+      "in": {
+        "$axf": "build-live-event@1",
+        "id": "skins:liveness:4812",
+        "seq": 4812,
+        "kind": "liveness",
+        "build": "skins",
+        "title": "Skins",
+        "at": "2026-11-17T20:00:00.000Z",
+        "by": "liveness",
+        "status": "running",
+        "step": {
+          "id": "s3",
+          "title": "Add the engine",
+          "phase": "Fable",
+          "index": 3,
+          "total": 6
+        },
+        "lastStep": {
+          "id": "s2",
+          "title": "Write the schema",
+          "doneAt": "2026-11-17T19:52:10.000Z"
+        },
+        "alive": "alive",
+        "cause": "live",
+        "exit": null,
+        "signal": "",
+        "watchdog": {
+          "action": "none",
+          "attempt": 0,
+          "note": "alive: pid, tmux, heartbeat",
+          "at": "2026-11-17T19:59:00.000Z"
+        },
+        "stale": {
+          "action": "keep",
+          "reason": "live"
+        },
+        "change": "",
+        "everySec": 15,
+        "note": "alive: pid, tmux, heartbeat"
+      },
+      "out": {
+        "$axf": "build-live-event@1",
+        "id": "skins:liveness:4812",
+        "seq": 4812,
+        "kind": "liveness",
+        "build": "skins",
+        "title": "Skins",
+        "at": "2026-11-17T20:00:00.000Z",
+        "by": "liveness",
+        "status": "running",
+        "step": {
+          "id": "s3",
+          "title": "Add the engine",
+          "phase": "Fable",
+          "index": 3,
+          "total": 6
+        },
+        "lastStep": {
+          "id": "s2",
+          "title": "Write the schema",
+          "doneAt": "2026-11-17T19:52:10.000Z"
+        },
+        "alive": "alive",
+        "cause": "live",
+        "exit": null,
+        "signal": "",
+        "watchdog": {
+          "action": "none",
+          "attempt": 0,
+          "note": "alive: pid, tmux, heartbeat",
+          "at": "2026-11-17T19:59:00.000Z"
+        },
+        "stale": {
+          "action": "keep",
+          "reason": "live"
+        },
+        "change": "",
+        "everySec": 15,
+        "note": "alive: pid, tmux, heartbeat"
+      }
+    },
+    {
+      "name": "change: step ticked, the rest filled in",
+      "in": {
+        "kind": "change",
+        "seq": 4813,
+        "build": "skins",
+        "at": "2026-11-17T20:00:05Z",
+        "by": "store:cli",
+        "status": "running",
+        "change": "step-done",
+        "step": {
+          "id": "s4",
+          "index": 4,
+          "total": 6
+        },
+        "lastStep": {
+          "id": "s3",
+          "title": "Add the engine",
+          "doneAt": "2026-11-17T20:00:05Z"
+        }
+      },
+      "out": {
+        "$axf": "build-live-event@1",
+        "id": "skins:change:4813",
+        "seq": 4813,
+        "kind": "change",
+        "build": "skins",
+        "title": "",
+        "at": "2026-11-17T20:00:05.000Z",
+        "by": "store:cli",
+        "status": "running",
+        "step": {
+          "id": "s4",
+          "title": "",
+          "phase": "",
+          "index": 4,
+          "total": 6
+        },
+        "lastStep": {
+          "id": "s3",
+          "title": "Add the engine",
+          "doneAt": "2026-11-17T20:00:05.000Z"
+        },
+        "alive": "unknown",
+        "cause": "",
+        "exit": null,
+        "signal": "",
+        "watchdog": {
+          "action": "",
+          "attempt": 0,
+          "note": "",
+          "at": ""
+        },
+        "stale": null,
+        "change": "step-done",
+        "everySec": 0,
+        "note": ""
+      }
+    },
+    {
+      "name": "liveness: dead, killed 143, the signal named from the exit",
+      "in": {
+        "kind": "liveness",
+        "seq": 4820,
+        "build": "skins",
+        "title": "Skins",
+        "at": "2026-11-17T20:01:00Z",
+        "by": "liveness",
+        "status": "running",
+        "step": {
+          "id": "s4",
+          "title": "Starter assets",
+          "index": 4,
+          "total": 6
+        },
+        "alive": "dead",
+        "cause": "exit-killed",
+        "exit": 143,
+        "everySec": 15
+      },
+      "out": {
+        "$axf": "build-live-event@1",
+        "id": "skins:liveness:4820",
+        "seq": 4820,
+        "kind": "liveness",
+        "build": "skins",
+        "title": "Skins",
+        "at": "2026-11-17T20:01:00.000Z",
+        "by": "liveness",
+        "status": "running",
+        "step": {
+          "id": "s4",
+          "title": "Starter assets",
+          "phase": "",
+          "index": 4,
+          "total": 6
+        },
+        "lastStep": null,
+        "alive": "dead",
+        "cause": "exit-killed",
+        "exit": 143,
+        "signal": "TERM",
+        "watchdog": {
+          "action": "",
+          "attempt": 0,
+          "note": "",
+          "at": ""
+        },
+        "stale": null,
+        "change": "",
+        "everySec": 15,
+        "note": ""
+      }
+    },
+    {
+      "name": "watchdog: retry 1 of 3",
+      "in": {
+        "kind": "watchdog",
+        "seq": 4821,
+        "build": "skins",
+        "at": "2026-11-17T20:01:30Z",
+        "by": "watchdog",
+        "status": "queued",
+        "alive": "dead",
+        "cause": "exit-killed",
+        "exit": 143,
+        "signal": "TERM",
+        "watchdog": {
+          "action": "retry",
+          "attempt": 1,
+          "note": "session on hulu0241 was killed (exit 143): step s4 reset, slot released, back in the Queue (retry 1 of 3).",
+          "at": "2026-11-17T20:01:30Z"
+        }
+      },
+      "out": {
+        "$axf": "build-live-event@1",
+        "id": "skins:watchdog:4821",
+        "seq": 4821,
+        "kind": "watchdog",
+        "build": "skins",
+        "title": "",
+        "at": "2026-11-17T20:01:30.000Z",
+        "by": "watchdog",
+        "status": "queued",
+        "step": null,
+        "lastStep": null,
+        "alive": "dead",
+        "cause": "exit-killed",
+        "exit": 143,
+        "signal": "TERM",
+        "watchdog": {
+          "action": "retry",
+          "attempt": 1,
+          "note": "session on hulu0241 was killed (exit 143): step s4 reset, slot released, back in the Queue (retry 1 of 3).",
+          "at": "2026-11-17T20:01:30.000Z"
+        },
+        "stale": null,
+        "change": "",
+        "everySec": 0,
+        "note": ""
+      }
+    },
+    {
+      "name": "snapshot: a pending build, nothing to check",
+      "in": {
+        "kind": "snapshot",
+        "seq": 4800,
+        "build": "banner-fix",
+        "title": "Banner fix",
+        "at": "2026-11-17T19:59:00Z",
+        "by": "snapshot",
+        "status": "pending",
+        "alive": "none",
+        "everySec": 15
+      },
+      "out": {
+        "$axf": "build-live-event@1",
+        "id": "banner-fix:snapshot:4800",
+        "seq": 4800,
+        "kind": "snapshot",
+        "build": "banner-fix",
+        "title": "Banner fix",
+        "at": "2026-11-17T19:59:00.000Z",
+        "by": "snapshot",
+        "status": "pending",
+        "step": null,
+        "lastStep": null,
+        "alive": "none",
+        "cause": "",
+        "exit": null,
+        "signal": "",
+        "watchdog": {
+          "action": "",
+          "attempt": 0,
+          "note": "",
+          "at": ""
+        },
+        "stale": null,
+        "change": "",
+        "everySec": 15,
+        "note": ""
+      }
+    },
+    {
+      "name": "junk in the optional fields is dropped, never a claim",
+      "in": {
+        "kind": "liveness",
+        "seq": "4830",
+        "build": "skins",
+        "at": "2026-11-17T20:02:00Z",
+        "status": "nope",
+        "alive": "maybe",
+        "cause": "gremlins",
+        "exit": "lots",
+        "watchdog": {
+          "action": "shout",
+          "attempt": -2,
+          "note": 7
+        },
+        "stale": {
+          "action": "burn",
+          "reason": "live"
+        },
+        "change": "exploded",
+        "everySec": 1,
+        "step": {
+          "title": "no id"
+        },
+        "title": 12
+      },
+      "out": {
+        "$axf": "build-live-event@1",
+        "id": "skins:liveness:4830",
+        "seq": 4830,
+        "kind": "liveness",
+        "build": "skins",
+        "title": "",
+        "at": "2026-11-17T20:02:00.000Z",
+        "by": "",
+        "status": "pending",
+        "step": null,
+        "lastStep": null,
+        "alive": "unknown",
+        "cause": "",
+        "exit": null,
+        "signal": "",
+        "watchdog": {
+          "action": "",
+          "attempt": 0,
+          "note": "",
+          "at": ""
+        },
+        "stale": null,
+        "change": "",
+        "everySec": 0,
+        "note": ""
+      }
+    },
+    {
+      "name": "refused: unknown kind",
+      "in": {
+        "kind": "poke",
+        "seq": 1,
+        "build": "skins",
+        "at": "2026-11-17T20:00:00Z",
+        "status": "running"
+      },
+      "out": null
+    },
+    {
+      "name": "refused: bad build id",
+      "in": {
+        "kind": "change",
+        "seq": 1,
+        "build": "Skins Build",
+        "at": "2026-11-17T20:00:00Z",
+        "status": "running"
+      },
+      "out": null
+    },
+    {
+      "name": "refused: no time",
+      "in": {
+        "kind": "change",
+        "seq": 1,
+        "build": "skins",
+        "status": "running"
+      },
+      "out": null
+    },
+    {
+      "name": "refused: no seq",
+      "in": {
+        "kind": "change",
+        "build": "skins",
+        "at": "2026-11-17T20:00:00Z",
+        "status": "running"
+      },
+      "out": null
+    },
+    {
+      "name": "refused: not an object",
+      "in": "skins is running",
+      "out": null
+    }
+  ],
+  "invalid": [
+    {
+      "name": "a valid frame has no errors",
+      "in": {
+        "$axf": "build-live-event@1",
+        "id": "skins:liveness:1",
+        "seq": 1,
+        "kind": "liveness",
+        "build": "skins",
+        "at": "2026-11-17T20:00:00.000Z",
+        "status": "running",
+        "alive": "alive"
+      },
+      "errors": []
+    },
+    {
+      "name": "every required field wrong",
+      "in": {
+        "$axf": "nope",
+        "id": 5,
+        "seq": 0,
+        "kind": "poke",
+        "build": "Skins",
+        "at": "yesterday",
+        "status": "going",
+        "alive": "maybe"
+      },
+      "errors": [
+        "$axf",
+        "id",
+        "seq",
+        "kind",
+        "build",
+        "at",
+        "status",
+        "alive"
+      ]
+    },
+    {
+      "name": "optional fields out of shape",
+      "in": {
+        "$axf": "build-live-event@1",
+        "id": "skins:change:2",
+        "seq": 2,
+        "kind": "change",
+        "build": "skins",
+        "at": "2026-11-17T20:00:00.000Z",
+        "status": "running",
+        "alive": "none",
+        "cause": "gremlins",
+        "exit": "lots",
+        "watchdog": {
+          "action": "shout"
+        },
+        "stale": {
+          "action": "keep"
+        },
+        "change": "exploded",
+        "everySec": 1,
+        "step": {
+          "title": "no id"
+        }
+      },
+      "errors": [
+        "step",
+        "cause",
+        "exit",
+        "watchdog",
+        "stale",
+        "change",
+        "everySec"
+      ]
+    },
+    {
+      "name": "not an object",
+      "in": null,
+      "errors": [
+        "event"
+      ]
+    }
+  ],
+  "alive": [
+    {
+      "name": "not marked running",
+      "in": {
+        "cause": "live",
+        "processAlive": true,
+        "markedRunning": false
+      },
+      "out": "none"
+    },
+    {
+      "name": "live",
+      "in": {
+        "cause": "live",
+        "processAlive": true,
+        "markedRunning": true
+      },
+      "out": "alive"
+    },
+    {
+      "name": "starting",
+      "in": {
+        "cause": "starting",
+        "processAlive": false,
+        "markedRunning": true
+      },
+      "out": "alive"
+    },
+    {
+      "name": "stale heartbeat, process alive = hung",
+      "in": {
+        "cause": "stale-heartbeat",
+        "processAlive": true,
+        "markedRunning": true
+      },
+      "out": "stale"
+    },
+    {
+      "name": "stale heartbeat, nothing alive",
+      "in": {
+        "cause": "stale-heartbeat",
+        "processAlive": false,
+        "markedRunning": true
+      },
+      "out": "dead"
+    },
+    {
+      "name": "unknown: not probed",
+      "in": {
+        "cause": "unknown",
+        "processAlive": false,
+        "markedRunning": true
+      },
+      "out": "unknown"
+    },
+    {
+      "name": "exit killed",
+      "in": {
+        "cause": "exit-killed",
+        "processAlive": false,
+        "markedRunning": true
+      },
+      "out": "dead"
+    },
+    {
+      "name": "exit clean",
+      "in": {
+        "cause": "exit-clean",
+        "processAlive": false,
+        "markedRunning": true
+      },
+      "out": "dead"
+    },
+    {
+      "name": "pid gone",
+      "in": {
+        "cause": "pid-gone",
+        "processAlive": false,
+        "markedRunning": true
+      },
+      "out": "dead"
+    },
+    {
+      "name": "usage limit",
+      "in": {
+        "cause": "usage-limit",
+        "processAlive": false,
+        "markedRunning": true
+      },
+      "out": "dead"
+    },
+    {
+      "name": "junk cause",
+      "in": {
+        "cause": "gremlins",
+        "processAlive": null,
+        "markedRunning": true
+      },
+      "out": "unknown"
+    }
+  ],
+  "fold": [
+    {
+      "name": "running build: a liveness pass that changes nothing only moves checkedAt",
+      "in": [
+        {
+          "kind": "change",
+          "seq": 1,
+          "build": "skins",
+          "title": "Skins",
+          "at": "2026-11-17T19:58:00Z",
+          "by": "store:headless",
+          "status": "running",
+          "change": "status",
+          "step": {
+            "id": "s3",
+            "title": "Add the engine",
+            "index": 3,
+            "total": 6
+          },
+          "lastStep": {
+            "id": "s2",
+            "title": "Write the schema",
+            "doneAt": "2026-11-17T19:52:10Z"
+          }
+        },
+        {
+          "kind": "liveness",
+          "seq": 2,
+          "build": "skins",
+          "at": "2026-11-17T19:58:15Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s3",
+            "title": "Add the engine",
+            "index": 3,
+            "total": 6
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        },
+        {
+          "kind": "liveness",
+          "seq": 3,
+          "build": "skins",
+          "at": "2026-11-17T19:58:30Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s3",
+            "title": "Add the engine",
+            "index": 3,
+            "total": 6
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        },
+        {
+          "kind": "liveness",
+          "seq": 3,
+          "build": "skins",
+          "at": "2026-11-17T19:58:30Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s3",
+            "title": "Add the engine",
+            "index": 3,
+            "total": 6
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "skins",
+          "title": "Skins",
+          "status": "running",
+          "state": "running",
+          "step": {
+            "id": "s3",
+            "title": "Add the engine",
+            "phase": "",
+            "index": 3,
+            "total": 6
+          },
+          "lastStep": {
+            "id": "s2",
+            "title": "Write the schema",
+            "doneAt": "2026-11-17T19:52:10.000Z"
+          },
+          "alive": "alive",
+          "cause": "live",
+          "exit": null,
+          "signal": "",
+          "watchdog": {
+            "action": "",
+            "attempt": 0,
+            "note": "",
+            "at": ""
+          },
+          "stale": null,
+          "broke": null,
+          "lastBroke": null,
+          "recovering": false,
+          "lastChange": {
+            "event": "status",
+            "at": "2026-11-17T19:58:00.000Z",
+            "by": "store:headless"
+          },
+          "at": "2026-11-17T19:58:30.000Z",
+          "checkedAt": "2026-11-17T19:58:30.000Z",
+          "seen": {
+            "change": "2026-11-17T19:58:00.000Z",
+            "liveness": "2026-11-17T19:58:30.000Z",
+            "watchdog": "",
+            "snapshot": ""
+          },
+          "seq": 3,
+          "events": 3,
+          "note": "",
+          "line": "Skins · running · s3 (3 of 6) · alive"
+        },
+        "changed": [
+          true,
+          true,
+          false,
+          false
+        ],
+        "dropped": [
+          "",
+          "",
+          "",
+          "replay"
+        ],
+        "states": [
+          "running",
+          "running",
+          "running",
+          "running"
+        ]
+      }
+    },
+    {
+      "name": "killed 143: broke, then the watchdog retries and the row goes back to idle with lastBroke kept",
+      "in": [
+        {
+          "kind": "liveness",
+          "seq": 10,
+          "build": "skins",
+          "title": "Skins",
+          "at": "2026-11-17T20:00:00Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s4",
+            "title": "Starter assets",
+            "index": 4,
+            "total": 6
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        },
+        {
+          "kind": "liveness",
+          "seq": 11,
+          "build": "skins",
+          "title": "Skins",
+          "at": "2026-11-17T20:01:00Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s4",
+            "title": "Starter assets",
+            "index": 4,
+            "total": 6
+          },
+          "alive": "dead",
+          "cause": "exit-killed",
+          "exit": 143,
+          "everySec": 15
+        },
+        {
+          "kind": "liveness",
+          "seq": 12,
+          "build": "skins",
+          "title": "Skins",
+          "at": "2026-11-17T20:01:15Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s4",
+            "title": "Starter assets",
+            "index": 4,
+            "total": 6
+          },
+          "alive": "dead",
+          "cause": "exit-killed",
+          "exit": 143,
+          "everySec": 15
+        },
+        {
+          "kind": "watchdog",
+          "seq": 13,
+          "build": "skins",
+          "title": "Skins",
+          "at": "2026-11-17T20:01:30Z",
+          "by": "watchdog",
+          "status": "queued",
+          "alive": "dead",
+          "cause": "exit-killed",
+          "exit": 143,
+          "watchdog": {
+            "action": "retry",
+            "attempt": 1,
+            "note": "session was killed (exit 143): step s4 reset, slot released, back in the Queue (retry 1 of 3).",
+            "at": "2026-11-17T20:01:30Z"
+          }
+        },
+        {
+          "kind": "change",
+          "seq": 14,
+          "build": "skins",
+          "title": "Skins",
+          "at": "2026-11-17T20:01:31Z",
+          "by": "store:watchdog",
+          "status": "queued",
+          "change": "status",
+          "alive": "none",
+          "step": {
+            "id": "s4",
+            "title": "Starter assets",
+            "index": 4,
+            "total": 6
+          }
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "skins",
+          "title": "Skins",
+          "status": "queued",
+          "state": "idle",
+          "step": {
+            "id": "s4",
+            "title": "Starter assets",
+            "phase": "",
+            "index": 4,
+            "total": 6
+          },
+          "lastStep": null,
+          "alive": "none",
+          "cause": "",
+          "exit": null,
+          "signal": "",
+          "watchdog": {
+            "action": "",
+            "attempt": 0,
+            "note": "",
+            "at": ""
+          },
+          "stale": null,
+          "broke": null,
+          "lastBroke": {
+            "at": "2026-11-17T20:01:00.000Z",
+            "cause": "exit-killed",
+            "exit": 143,
+            "signal": "TERM",
+            "what": "the session was killed (exit 143, TERM)",
+            "recovering": true
+          },
+          "recovering": false,
+          "lastChange": {
+            "event": "status",
+            "at": "2026-11-17T20:01:31.000Z",
+            "by": "store:watchdog"
+          },
+          "at": "2026-11-17T20:01:31.000Z",
+          "checkedAt": "2026-11-17T20:01:15.000Z",
+          "seen": {
+            "change": "2026-11-17T20:01:31.000Z",
+            "liveness": "2026-11-17T20:01:15.000Z",
+            "watchdog": "2026-11-17T20:01:30.000Z",
+            "snapshot": ""
+          },
+          "seq": 14,
+          "events": 5,
+          "note": "",
+          "line": "Skins · idle · s4 (4 of 6) · queued"
+        },
+        "changed": [
+          true,
+          true,
+          false,
+          true,
+          true
+        ],
+        "dropped": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "states": [
+          "running",
+          "broke",
+          "broke",
+          "broke",
+          "idle"
+        ]
+      }
+    },
+    {
+      "name": "clean exit while still marked running is not broke: the row stays running until the store moves it",
+      "in": [
+        {
+          "kind": "liveness",
+          "seq": 20,
+          "build": "dock",
+          "title": "Dock",
+          "at": "2026-11-17T20:00:00Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s6",
+            "title": "Last step",
+            "index": 6,
+            "total": 6
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        },
+        {
+          "kind": "liveness",
+          "seq": 21,
+          "build": "dock",
+          "title": "Dock",
+          "at": "2026-11-17T20:00:15Z",
+          "by": "liveness",
+          "status": "running",
+          "step": null,
+          "lastStep": {
+            "id": "s6",
+            "title": "Last step",
+            "doneAt": "2026-11-17T20:00:10Z"
+          },
+          "alive": "dead",
+          "cause": "exit-clean",
+          "exit": 0,
+          "everySec": 15
+        },
+        {
+          "kind": "change",
+          "seq": 22,
+          "build": "dock",
+          "title": "Dock",
+          "at": "2026-11-17T20:00:20Z",
+          "by": "store:headless",
+          "status": "landing",
+          "change": "status",
+          "alive": "none",
+          "lastStep": {
+            "id": "s6",
+            "title": "Last step",
+            "doneAt": "2026-11-17T20:00:10Z"
+          }
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "dock",
+          "title": "Dock",
+          "status": "landing",
+          "state": "done",
+          "step": null,
+          "lastStep": {
+            "id": "s6",
+            "title": "Last step",
+            "doneAt": "2026-11-17T20:00:10.000Z"
+          },
+          "alive": "none",
+          "cause": "",
+          "exit": null,
+          "signal": "",
+          "watchdog": {
+            "action": "",
+            "attempt": 0,
+            "note": "",
+            "at": ""
+          },
+          "stale": null,
+          "broke": null,
+          "lastBroke": null,
+          "recovering": false,
+          "lastChange": {
+            "event": "status",
+            "at": "2026-11-17T20:00:20.000Z",
+            "by": "store:headless"
+          },
+          "at": "2026-11-17T20:00:20.000Z",
+          "checkedAt": "2026-11-17T20:00:15.000Z",
+          "seen": {
+            "change": "2026-11-17T20:00:20.000Z",
+            "liveness": "2026-11-17T20:00:15.000Z",
+            "watchdog": "",
+            "snapshot": ""
+          },
+          "seq": 22,
+          "events": 3,
+          "note": "",
+          "line": "Dock · done · landing"
+        },
+        "changed": [
+          true,
+          true,
+          true
+        ],
+        "dropped": [
+          "",
+          "",
+          ""
+        ],
+        "states": [
+          "running",
+          "running",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "hung: stale heartbeat with a process alive, then kill-retry",
+      "in": [
+        {
+          "kind": "liveness",
+          "seq": 30,
+          "build": "hung",
+          "title": "Hung",
+          "at": "2026-11-17T20:00:00Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s1",
+            "title": "First",
+            "index": 1,
+            "total": 2
+          },
+          "alive": "stale",
+          "cause": "stale-heartbeat",
+          "everySec": 15,
+          "note": "no heartbeat for 22 min (limit 20), pid and tmux still alive: hung"
+        },
+        {
+          "kind": "watchdog",
+          "seq": 31,
+          "build": "hung",
+          "title": "Hung",
+          "at": "2026-11-17T20:00:40Z",
+          "by": "watchdog",
+          "status": "running",
+          "alive": "stale",
+          "cause": "stale-heartbeat",
+          "watchdog": {
+            "action": "kill-retry",
+            "attempt": 1,
+            "note": "no heartbeat for 22 min (limit 20), pid and tmux still alive: hung: session killed, step s1 reset, slot released, back in the Queue (retry 1 of 3).",
+            "at": "2026-11-17T20:00:40Z"
+          }
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "hung",
+          "title": "Hung",
+          "status": "running",
+          "state": "stale",
+          "step": {
+            "id": "s1",
+            "title": "First",
+            "phase": "",
+            "index": 1,
+            "total": 2
+          },
+          "lastStep": null,
+          "alive": "stale",
+          "cause": "stale-heartbeat",
+          "exit": null,
+          "signal": "",
+          "watchdog": {
+            "action": "kill-retry",
+            "attempt": 1,
+            "note": "no heartbeat for 22 min (limit 20), pid and tmux still alive: hung: session killed, step s1 reset, slot released, back in the Queue (retry 1 of 3).",
+            "at": "2026-11-17T20:00:40.000Z"
+          },
+          "stale": null,
+          "broke": null,
+          "lastBroke": null,
+          "recovering": true,
+          "lastChange": null,
+          "at": "2026-11-17T20:00:40.000Z",
+          "checkedAt": "2026-11-17T20:00:00.000Z",
+          "seen": {
+            "change": "",
+            "liveness": "2026-11-17T20:00:00.000Z",
+            "watchdog": "2026-11-17T20:00:40.000Z",
+            "snapshot": ""
+          },
+          "seq": 31,
+          "events": 2,
+          "note": "no heartbeat for 22 min (limit 20), pid and tmux still alive: hung",
+          "line": "Hung · stale · s1 (1 of 2) · no heartbeat for 22 min (limit 20), pid and tmux still alive: hung · watchdog: kill-retry 1"
+        },
+        "changed": [
+          true,
+          true
+        ],
+        "dropped": [
+          "",
+          ""
+        ],
+        "states": [
+          "stale",
+          "stale"
+        ]
+      }
+    },
+    {
+      "name": "usage limit: broke, recovering on another account",
+      "in": [
+        {
+          "kind": "liveness",
+          "seq": 40,
+          "build": "limit",
+          "title": "Limit",
+          "at": "2026-11-17T20:00:00Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s2",
+            "title": "Second",
+            "index": 2,
+            "total": 3
+          },
+          "alive": "dead",
+          "cause": "usage-limit",
+          "exit": 1,
+          "everySec": 15
+        },
+        {
+          "kind": "watchdog",
+          "seq": 41,
+          "build": "limit",
+          "title": "Limit",
+          "at": "2026-11-17T20:00:30Z",
+          "by": "watchdog",
+          "status": "queued",
+          "alive": "dead",
+          "cause": "usage-limit",
+          "exit": 1,
+          "watchdog": {
+            "action": "retry-other-account",
+            "attempt": 0,
+            "note": "hulu0241 hit its usage limit: the build is fine, it goes back to the Queue for another account (mosses free).",
+            "at": "2026-11-17T20:00:30Z"
+          }
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "limit",
+          "title": "Limit",
+          "status": "queued",
+          "state": "broke",
+          "step": {
+            "id": "s2",
+            "title": "Second",
+            "phase": "",
+            "index": 2,
+            "total": 3
+          },
+          "lastStep": null,
+          "alive": "dead",
+          "cause": "usage-limit",
+          "exit": 1,
+          "signal": "",
+          "watchdog": {
+            "action": "retry-other-account",
+            "attempt": 0,
+            "note": "hulu0241 hit its usage limit: the build is fine, it goes back to the Queue for another account (mosses free).",
+            "at": "2026-11-17T20:00:30.000Z"
+          },
+          "stale": null,
+          "broke": {
+            "at": "2026-11-17T20:00:00.000Z",
+            "cause": "usage-limit",
+            "exit": 1,
+            "signal": "",
+            "what": "its account hit the usage limit",
+            "recovering": true
+          },
+          "lastBroke": null,
+          "recovering": true,
+          "lastChange": null,
+          "at": "2026-11-17T20:00:30.000Z",
+          "checkedAt": "2026-11-17T20:00:00.000Z",
+          "seen": {
+            "change": "",
+            "liveness": "2026-11-17T20:00:00.000Z",
+            "watchdog": "2026-11-17T20:00:30.000Z",
+            "snapshot": ""
+          },
+          "seq": 41,
+          "events": 2,
+          "note": "",
+          "line": "Limit · broke · s2 (2 of 3) · its account hit the usage limit · watchdog: retry-other-account"
+        },
+        "changed": [
+          true,
+          true
+        ],
+        "dropped": [
+          "",
+          ""
+        ],
+        "states": [
+          "broke",
+          "broke"
+        ]
+      }
+    },
+    {
+      "name": "the watchdog gives up: broke, not recovering, Pending",
+      "in": [
+        {
+          "kind": "liveness",
+          "seq": 50,
+          "build": "flaky",
+          "title": "Flaky",
+          "at": "2026-11-17T20:00:00Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s2",
+            "title": "Second",
+            "index": 2,
+            "total": 3
+          },
+          "alive": "dead",
+          "cause": "exit-failed",
+          "exit": 1,
+          "everySec": 15
+        },
+        {
+          "kind": "watchdog",
+          "seq": 51,
+          "build": "flaky",
+          "title": "Flaky",
+          "at": "2026-11-17T20:00:30Z",
+          "by": "watchdog",
+          "status": "pending",
+          "alive": "dead",
+          "cause": "exit-failed",
+          "exit": 1,
+          "watchdog": {
+            "action": "give-up",
+            "attempt": 4,
+            "note": "session failed (exit 1): retry 3 of 3 was the last one, giving up: back in Pending for Brett.",
+            "at": "2026-11-17T20:00:30Z"
+          }
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "flaky",
+          "title": "Flaky",
+          "status": "pending",
+          "state": "broke",
+          "step": {
+            "id": "s2",
+            "title": "Second",
+            "phase": "",
+            "index": 2,
+            "total": 3
+          },
+          "lastStep": null,
+          "alive": "dead",
+          "cause": "exit-failed",
+          "exit": 1,
+          "signal": "",
+          "watchdog": {
+            "action": "give-up",
+            "attempt": 4,
+            "note": "session failed (exit 1): retry 3 of 3 was the last one, giving up: back in Pending for Brett.",
+            "at": "2026-11-17T20:00:30.000Z"
+          },
+          "stale": null,
+          "broke": {
+            "at": "2026-11-17T20:00:00.000Z",
+            "cause": "exit-failed",
+            "exit": 1,
+            "signal": "",
+            "what": "the watchdog gave up after 3 retries (exit 1)",
+            "recovering": false
+          },
+          "lastBroke": null,
+          "recovering": false,
+          "lastChange": null,
+          "at": "2026-11-17T20:00:30.000Z",
+          "checkedAt": "2026-11-17T20:00:00.000Z",
+          "seen": {
+            "change": "",
+            "liveness": "2026-11-17T20:00:00.000Z",
+            "watchdog": "2026-11-17T20:00:30.000Z",
+            "snapshot": ""
+          },
+          "seq": 51,
+          "events": 2,
+          "note": "",
+          "line": "Flaky · broke · s2 (2 of 3) · the watchdog gave up after 3 retries (exit 1) · watchdog: give-up 4"
+        },
+        "changed": [
+          true,
+          true
+        ],
+        "dropped": [
+          "",
+          ""
+        ],
+        "states": [
+          "broke",
+          "broke"
+        ]
+      }
+    },
+    {
+      "name": "status failed from the store is broke, whatever liveness said",
+      "in": [
+        {
+          "kind": "liveness",
+          "seq": 60,
+          "build": "ci-red",
+          "title": "CI red",
+          "at": "2026-11-17T20:00:00Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s3",
+            "title": "Third",
+            "index": 3,
+            "total": 3
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        },
+        {
+          "kind": "change",
+          "seq": 61,
+          "build": "ci-red",
+          "title": "CI red",
+          "at": "2026-11-17T20:00:05Z",
+          "by": "store:pipeline",
+          "status": "failed",
+          "change": "status",
+          "alive": "none",
+          "note": "crash-limit: 3 crashes on s3"
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "ci-red",
+          "title": "CI red",
+          "status": "failed",
+          "state": "broke",
+          "step": null,
+          "lastStep": null,
+          "alive": "none",
+          "cause": "",
+          "exit": null,
+          "signal": "",
+          "watchdog": {
+            "action": "",
+            "attempt": 0,
+            "note": "",
+            "at": ""
+          },
+          "stale": null,
+          "broke": {
+            "at": "2026-11-17T20:00:05.000Z",
+            "cause": "",
+            "exit": null,
+            "signal": "",
+            "what": "the build failed: crash-limit: 3 crashes on s3",
+            "recovering": false
+          },
+          "lastBroke": null,
+          "recovering": false,
+          "lastChange": {
+            "event": "status",
+            "at": "2026-11-17T20:00:05.000Z",
+            "by": "store:pipeline"
+          },
+          "at": "2026-11-17T20:00:05.000Z",
+          "checkedAt": "2026-11-17T20:00:00.000Z",
+          "seen": {
+            "change": "2026-11-17T20:00:05.000Z",
+            "liveness": "2026-11-17T20:00:00.000Z",
+            "watchdog": "",
+            "snapshot": ""
+          },
+          "seq": 61,
+          "events": 2,
+          "note": "crash-limit: 3 crashes on s3",
+          "line": "CI red · broke · the build failed: crash-limit: 3 crashes on s3"
+        },
+        "changed": [
+          true,
+          true
+        ],
+        "dropped": [
+          "",
+          ""
+        ],
+        "states": [
+          "running",
+          "broke"
+        ]
+      }
+    },
+    {
+      "name": "done: built then complete",
+      "in": [
+        {
+          "kind": "change",
+          "seq": 70,
+          "build": "done",
+          "title": "Done",
+          "at": "2026-11-17T20:00:00Z",
+          "by": "store:headless",
+          "status": "built",
+          "change": "status",
+          "alive": "none",
+          "lastStep": {
+            "id": "s2",
+            "title": "Last",
+            "doneAt": "2026-11-17T19:59:00Z"
+          }
+        },
+        {
+          "kind": "change",
+          "seq": 71,
+          "build": "done",
+          "title": "Done",
+          "at": "2026-11-17T20:30:00Z",
+          "by": "store:reconcile",
+          "status": "complete",
+          "change": "pr-merged",
+          "alive": "none"
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "done",
+          "title": "Done",
+          "status": "complete",
+          "state": "done",
+          "step": null,
+          "lastStep": null,
+          "alive": "none",
+          "cause": "",
+          "exit": null,
+          "signal": "",
+          "watchdog": {
+            "action": "",
+            "attempt": 0,
+            "note": "",
+            "at": ""
+          },
+          "stale": null,
+          "broke": null,
+          "lastBroke": null,
+          "recovering": false,
+          "lastChange": {
+            "event": "pr-merged",
+            "at": "2026-11-17T20:30:00.000Z",
+            "by": "store:reconcile"
+          },
+          "at": "2026-11-17T20:30:00.000Z",
+          "checkedAt": "",
+          "seen": {
+            "change": "2026-11-17T20:30:00.000Z",
+            "liveness": "",
+            "watchdog": "",
+            "snapshot": ""
+          },
+          "seq": 71,
+          "events": 2,
+          "note": "",
+          "line": "Done · done · complete"
+        },
+        "changed": [
+          true,
+          true
+        ],
+        "dropped": [
+          "",
+          ""
+        ],
+        "states": [
+          "done",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "replay: the same id twice and an older frame are dropped",
+      "in": [
+        {
+          "kind": "liveness",
+          "seq": 80,
+          "build": "replay",
+          "title": "Replay",
+          "at": "2026-11-17T20:00:30Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s1",
+            "title": "One",
+            "index": 1,
+            "total": 1
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        },
+        {
+          "kind": "liveness",
+          "seq": 80,
+          "build": "replay",
+          "title": "Replay",
+          "at": "2026-11-17T20:00:30Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s1",
+            "title": "One",
+            "index": 1,
+            "total": 1
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        },
+        {
+          "kind": "liveness",
+          "seq": 79,
+          "build": "replay",
+          "title": "Replay",
+          "at": "2026-11-17T20:00:15Z",
+          "by": "liveness",
+          "status": "running",
+          "step": {
+            "id": "s1",
+            "title": "One",
+            "index": 1,
+            "total": 1
+          },
+          "alive": "dead",
+          "cause": "pid-gone",
+          "everySec": 15
+        },
+        {
+          "kind": "snapshot",
+          "seq": 81,
+          "build": "replay",
+          "title": "Replay",
+          "at": "2026-11-17T20:00:45Z",
+          "by": "snapshot",
+          "status": "running",
+          "step": {
+            "id": "s1",
+            "title": "One",
+            "index": 1,
+            "total": 1
+          },
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "replay",
+          "title": "Replay",
+          "status": "running",
+          "state": "running",
+          "step": {
+            "id": "s1",
+            "title": "One",
+            "phase": "",
+            "index": 1,
+            "total": 1
+          },
+          "lastStep": null,
+          "alive": "alive",
+          "cause": "live",
+          "exit": null,
+          "signal": "",
+          "watchdog": {
+            "action": "",
+            "attempt": 0,
+            "note": "",
+            "at": ""
+          },
+          "stale": null,
+          "broke": null,
+          "lastBroke": null,
+          "recovering": false,
+          "lastChange": null,
+          "at": "2026-11-17T20:00:45.000Z",
+          "checkedAt": "2026-11-17T20:00:30.000Z",
+          "seen": {
+            "change": "",
+            "liveness": "2026-11-17T20:00:30.000Z",
+            "watchdog": "",
+            "snapshot": "2026-11-17T20:00:45.000Z"
+          },
+          "seq": 81,
+          "events": 2,
+          "note": "",
+          "line": "Replay · running · s1 (1 of 1) · alive"
+        },
+        "changed": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "dropped": [
+          "",
+          "replay",
+          "replay",
+          ""
+        ],
+        "states": [
+          "running",
+          "running",
+          "running",
+          "running"
+        ]
+      }
+    },
+    {
+      "name": "a frame for another build is refused by fold",
+      "in": [
+        {
+          "kind": "liveness",
+          "seq": 90,
+          "build": "one",
+          "title": "One",
+          "at": "2026-11-17T20:00:00Z",
+          "by": "liveness",
+          "status": "running",
+          "alive": "alive",
+          "cause": "live",
+          "everySec": 15
+        },
+        {
+          "kind": "liveness",
+          "seq": 91,
+          "build": "two",
+          "title": "Two",
+          "at": "2026-11-17T20:00:15Z",
+          "by": "liveness",
+          "status": "running",
+          "alive": "dead",
+          "cause": "pid-gone",
+          "everySec": 15
+        }
+      ],
+      "out": {
+        "state": {
+          "$axf": "build-live-state@1",
+          "build": "one",
+          "title": "One",
+          "status": "running",
+          "state": "running",
+          "step": null,
+          "lastStep": null,
+          "alive": "alive",
+          "cause": "live",
+          "exit": null,
+          "signal": "",
+          "watchdog": {
+            "action": "",
+            "attempt": 0,
+            "note": "",
+            "at": ""
+          },
+          "stale": null,
+          "broke": null,
+          "lastBroke": null,
+          "recovering": false,
+          "lastChange": null,
+          "at": "2026-11-17T20:00:00.000Z",
+          "checkedAt": "2026-11-17T20:00:00.000Z",
+          "seen": {
+            "change": "",
+            "liveness": "2026-11-17T20:00:00.000Z",
+            "watchdog": "",
+            "snapshot": ""
+          },
+          "seq": 90,
+          "events": 1,
+          "note": "",
+          "line": "One · running · alive"
+        },
+        "changed": [
+          true,
+          false
+        ],
+        "dropped": [
+          "",
+          "other-build"
+        ],
+        "states": [
+          "running",
+          "running"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "run-indicator",
+  "id": "pulse",
+  "name": "Pulse",
+  "version": "1.0.0",
+  "description": "The default: a building row breathes slowly in the accent tint while its icon spins; a broke row goes steady red on a pink tint.",
+  "author": "AmberX AXF",
+  "tags": [
+    "run-indicator",
+    "default"
+  ],
+  "data": {
+    "animation": "pulse",
+    "icon": "refresh",
+    "tones": {
+      "running": "accent",
+      "broke": "danger",
+      "stale": "warning",
+      "done": "success"
+    },
+    "iconAnimation": "spin",
+    "brokeAnimation": "none",
+    "speed": 100,
+    "durationMs": 2400,
+    "intensity": 0.35,
+    "reducedMotion": "still"
+  }
+}

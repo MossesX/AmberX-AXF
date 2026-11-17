@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/run-indicator.schema.json",
+  "title": "AmberX AXF Run indicator asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "run-indicator"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "animation",
+        "icon",
+        "tones"
+      ],
+      "properties": {
+        "animation": {
+          "enum": [
+            "flash",
+            "pulse",
+            "glow",
+            "spin",
+            "none"
+          ],
+          "description": "the row while running"
+        },
+        "icon": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,39}$",
+          "description": "framework icon name shown on a running row"
+        },
+        "tones": {
+          "type": "object",
+          "required": [
+            "running",
+            "broke"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "running": {
+              "enum": [
+                "accent",
+                "info",
+                "success",
+                "warning",
+                "danger",
+                "text",
+                "muted"
+              ],
+              "description": "a colour-theme token id, never a colour"
+            },
+            "broke": {
+              "enum": [
+                "accent",
+                "info",
+                "success",
+                "warning",
+                "danger",
+                "text",
+                "muted"
+              ],
+              "description": "a colour-theme token id, never a colour"
+            },
+            "stale": {
+              "enum": [
+                "accent",
+                "info",
+                "success",
+                "warning",
+                "danger",
+                "text",
+                "muted"
+              ],
+              "description": "a colour-theme token id, never a colour"
+            },
+            "done": {
+              "enum": [
+                "accent",
+                "info",
+                "success",
+                "warning",
+                "danger",
+                "text",
+                "muted"
+              ],
+              "description": "a colour-theme token id, never a colour"
+            }
+          },
+          "description": "per live state (defaults: running accent, broke danger, stale warning, done success)"
+        },
+        "iconAnimation": {
+          "enum": [
+            "spin",
+            "pulse",
+            "bounce",
+            "blink",
+            "none"
+          ],
+          "default": "spin",
+          "description": "how the icon moves while running"
+        },
+        "brokeAnimation": {
+          "enum": [
+            "flash",
+            "pulse",
+            "none"
+          ],
+          "default": "none",
+          "description": "a broke row is steady red unless it says otherwise"
+        },
+        "speed": {
+          "type": "number",
+          "minimum": 25,
+          "maximum": 400,
+          "default": 100,
+          "description": "percent of the theme motion"
+        },
+        "durationMs": {
+          "type": "number",
+          "minimum": 400,
+          "maximum": 8000,
+          "default": 2400,
+          "description": "one cycle of the row animation"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0.05,
+          "maximum": 1,
+          "default": 0.35,
+          "description": "how deep the flash goes: the opacity swing and the glow strength"
+        },
+        "reducedMotion": {
+          "enum": [
+            "still",
+            "tint",
+            "off"
+          ],
+          "default": "still",
+          "description": "what shows under reduced motion: still = the icon stops, the tints stay; tint = tints only; off = nothing beyond the text tone"
+        }
+      }
+    }
+  }
+}

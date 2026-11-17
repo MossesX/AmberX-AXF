@@ -7,7 +7,7 @@
  * Parts (installed config `libraries.datagrid.parts`): groups, column-menu {hidden}, sort, expand, drag {trash}, compact.
  */
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
-import { ControlScope, Icon, IconButton, Meter, Slot, escapeSelector, useControlTarget, useControlTargets, useRuntime, type ControlTargetDef } from '../../react';
+import { ControlScope, Icon, IconButton, Meter, Slot, escapeSelector, runRowAttrs, useControlTarget, useRowRunState, useControlTargets, useRuntime, type ControlTargetDef, type RowRunState } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
@@ -65,6 +65,14 @@ export interface DataGridProps<R> {
   renderDetail?: (r: R) => ReactNode;
   /** status edge tone: muted / success / accent / danger / warning / info */
   rowTone?: (r: R) => string;
+  /**
+   * Live run state of a row (build-live@1 + run-indicator@1): the row carries data-fx-run-state / data-axf-run
+   * (running | stale | broke | done; '' / null = nothing) and axf.css draws the animation, tint and broke edge from the
+   * --fx-run-* tokens. Usually `(r) => rowRunState(liveState(r.id))` from react/liveBuilds.ts, or the per-row hook.
+   */
+  rowState?: (r: R) => RowRunState | null | undefined;
+  /** The build a row stands for: the row subscribes to its live state itself (useRowRunState) and re-renders alone. */
+  rowBuild?: (r: R) => string | null | undefined;
   selected?: string | null;
   multi?: readonly string[];
   onRowClick?: (r: R, e: RMouseEvent) => void;
@@ -247,11 +255,13 @@ function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r
   if (ref && ctx) noteDrawnRef(ctx.target, ctx.payload ?? '', ref, p.dataset === false ? undefined : p.dataset ?? p.id);
   // the row's buttons and its detail (a nested grid, say) compose under the row's address (console-control@1)
   const rowScope = (p.rowKind ?? 'row') === 'step' ? `step:${id}` : `grid:${p.id}/row:${id}`;
+  const live = useRowRunState(p.rowBuild?.(r) ?? null);
+  const run = p.rowState?.(r) || live.state;
   const expand = config.expand && p.renderDetail ? <IconButton icon={open ? 'chevron-up' : 'chevron-down'} label={open ? 'Collapse row' : 'Expand row'} onClick={(e) => { e.stopPropagation(); p.onToggleExpand?.(id); }} /> : null;
   return (
     <>
       <div className={`axf-grid-row ${p.selected === id ? 'is-active' : ''} ${p.multi?.includes(id) ? 'is-multi' : ''} axf-grid-edge--${p.rowTone?.(r) ?? 'muted'}`} role="row" aria-selected={p.selected === id}
-        data-axf-drop={drop} data-axf-drop-id={`row:${id}`} data-axf-row={id} data-fx-ctx-target={ctx?.target} data-fx-ctx-payload={ctx?.payload}
+        data-axf-drop={drop} data-axf-drop-id={`row:${id}`} data-axf-row={id} {...runRowAttrs(run)} data-fx-ctx-target={ctx?.target} data-fx-ctx-payload={ctx?.payload}
         {...dragProps} onClick={(e) => p.onRowClick?.(r, e)} onDoubleClick={() => config.expand && p.onToggleExpand?.(id)}>
         <ControlScope address={rowScope}>
           <span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span>

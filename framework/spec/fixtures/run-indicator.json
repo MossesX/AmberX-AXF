@@ -1,0 +1,431 @@
+{
+  "defaults": {
+    "animation": "pulse",
+    "icon": "refresh",
+    "tones": {
+      "running": "accent",
+      "broke": "danger",
+      "stale": "warning",
+      "done": "success"
+    },
+    "iconAnimation": "spin",
+    "brokeAnimation": "none",
+    "speed": 100,
+    "durationMs": 2400,
+    "intensity": 0.35,
+    "reducedMotion": "still"
+  },
+  "ranges": {
+    "speed": [
+      25,
+      400
+    ],
+    "durationMs": [
+      400,
+      8000
+    ],
+    "intensity": [
+      0.05,
+      1
+    ]
+  },
+  "defaultStyle": {
+    "vars": {
+      "--fx-run-running": "var(--fx-accent)",
+      "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+      "--fx-run-broke": "var(--fx-danger)",
+      "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+      "--fx-run-stale": "var(--fx-warning)",
+      "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+      "--fx-run-done": "var(--fx-success)",
+      "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+      "--fx-run-intensity": "0.350",
+      "--fx-run-flash-min": "0.650",
+      "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+      "--fx-run-duration": "2400ms",
+      "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+      "--fx-run-ease": "var(--fx-ease)"
+    },
+    "attrs": {
+      "data-fx-run-anim": "pulse",
+      "data-fx-run-icon": "refresh",
+      "data-fx-run-icon-anim": "spin",
+      "data-fx-run-broke-anim": "none",
+      "data-fx-run-reduced": ""
+    }
+  },
+  "starters": {
+    "flash": {
+      "normalized": {
+        "animation": "flash",
+        "icon": "zap",
+        "tones": {
+          "running": "accent",
+          "broke": "danger",
+          "stale": "warning",
+          "done": "success"
+        },
+        "iconAnimation": "blink",
+        "brokeAnimation": "flash",
+        "speed": 100,
+        "durationMs": 3000,
+        "intensity": 0.45,
+        "reducedMotion": "still"
+      },
+      "style": {
+        "vars": {
+          "--fx-run-running": "var(--fx-accent)",
+          "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-broke": "var(--fx-danger)",
+          "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-stale": "var(--fx-warning)",
+          "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-done": "var(--fx-success)",
+          "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-intensity": "0.450",
+          "--fx-run-flash-min": "0.550",
+          "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+          "--fx-run-duration": "3000ms",
+          "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+          "--fx-run-ease": "var(--fx-ease)"
+        },
+        "attrs": {
+          "data-fx-run-anim": "flash",
+          "data-fx-run-icon": "zap",
+          "data-fx-run-icon-anim": "blink",
+          "data-fx-run-broke-anim": "flash",
+          "data-fx-run-reduced": ""
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-run-running": "var(--fx-accent)",
+          "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-broke": "var(--fx-danger)",
+          "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-stale": "var(--fx-warning)",
+          "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-done": "var(--fx-success)",
+          "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-intensity": "0.450",
+          "--fx-run-flash-min": "0.550",
+          "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+          "--fx-run-duration": "0ms",
+          "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+          "--fx-run-ease": "var(--fx-ease)"
+        },
+        "attrs": {
+          "data-fx-run-anim": "none",
+          "data-fx-run-icon": "zap",
+          "data-fx-run-icon-anim": "none",
+          "data-fx-run-broke-anim": "none",
+          "data-fx-run-reduced": "still"
+        }
+      }
+    },
+    "glow": {
+      "normalized": {
+        "animation": "glow",
+        "icon": "sparkles",
+        "tones": {
+          "running": "info",
+          "broke": "danger",
+          "stale": "warning",
+          "done": "success"
+        },
+        "iconAnimation": "pulse",
+        "brokeAnimation": "pulse",
+        "speed": 100,
+        "durationMs": 2000,
+        "intensity": 0.5,
+        "reducedMotion": "tint"
+      },
+      "style": {
+        "vars": {
+          "--fx-run-running": "var(--fx-info)",
+          "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-broke": "var(--fx-danger)",
+          "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-stale": "var(--fx-warning)",
+          "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-done": "var(--fx-success)",
+          "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-intensity": "0.500",
+          "--fx-run-flash-min": "0.500",
+          "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+          "--fx-run-duration": "2000ms",
+          "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+          "--fx-run-ease": "var(--fx-ease)"
+        },
+        "attrs": {
+          "data-fx-run-anim": "glow",
+          "data-fx-run-icon": "sparkles",
+          "data-fx-run-icon-anim": "pulse",
+          "data-fx-run-broke-anim": "pulse",
+          "data-fx-run-reduced": ""
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-run-running": "var(--fx-info)",
+          "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-broke": "var(--fx-danger)",
+          "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-stale": "var(--fx-warning)",
+          "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-done": "var(--fx-success)",
+          "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-intensity": "0.500",
+          "--fx-run-flash-min": "0.500",
+          "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+          "--fx-run-duration": "0ms",
+          "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+          "--fx-run-ease": "var(--fx-ease)"
+        },
+        "attrs": {
+          "data-fx-run-anim": "none",
+          "data-fx-run-icon": "sparkles",
+          "data-fx-run-icon-anim": "none",
+          "data-fx-run-broke-anim": "none",
+          "data-fx-run-reduced": "tint"
+        }
+      }
+    },
+    "pulse": {
+      "normalized": {
+        "animation": "pulse",
+        "icon": "refresh",
+        "tones": {
+          "running": "accent",
+          "broke": "danger",
+          "stale": "warning",
+          "done": "success"
+        },
+        "iconAnimation": "spin",
+        "brokeAnimation": "none",
+        "speed": 100,
+        "durationMs": 2400,
+        "intensity": 0.35,
+        "reducedMotion": "still"
+      },
+      "style": {
+        "vars": {
+          "--fx-run-running": "var(--fx-accent)",
+          "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-broke": "var(--fx-danger)",
+          "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-stale": "var(--fx-warning)",
+          "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-done": "var(--fx-success)",
+          "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-intensity": "0.350",
+          "--fx-run-flash-min": "0.650",
+          "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+          "--fx-run-duration": "2400ms",
+          "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+          "--fx-run-ease": "var(--fx-ease)"
+        },
+        "attrs": {
+          "data-fx-run-anim": "pulse",
+          "data-fx-run-icon": "refresh",
+          "data-fx-run-icon-anim": "spin",
+          "data-fx-run-broke-anim": "none",
+          "data-fx-run-reduced": ""
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-run-running": "var(--fx-accent)",
+          "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-broke": "var(--fx-danger)",
+          "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-stale": "var(--fx-warning)",
+          "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-done": "var(--fx-success)",
+          "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+          "--fx-run-intensity": "0.350",
+          "--fx-run-flash-min": "0.650",
+          "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+          "--fx-run-duration": "0ms",
+          "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+          "--fx-run-ease": "var(--fx-ease)"
+        },
+        "attrs": {
+          "data-fx-run-anim": "none",
+          "data-fx-run-icon": "refresh",
+          "data-fx-run-icon-anim": "none",
+          "data-fx-run-broke-anim": "none",
+          "data-fx-run-reduced": "still"
+        }
+      }
+    }
+  },
+  "normalized": {
+    "partial": {
+      "animation": "glow",
+      "icon": "refresh",
+      "tones": {
+        "running": "info",
+        "broke": "danger",
+        "stale": "warning",
+        "done": "success"
+      },
+      "iconAnimation": "spin",
+      "brokeAnimation": "none",
+      "speed": 100,
+      "durationMs": 2400,
+      "intensity": 0.35,
+      "reducedMotion": "still"
+    },
+    "clamped": {
+      "animation": "pulse",
+      "icon": "refresh",
+      "tones": {
+        "running": "accent",
+        "broke": "danger",
+        "stale": "warning",
+        "done": "success"
+      },
+      "iconAnimation": "spin",
+      "brokeAnimation": "none",
+      "speed": 400,
+      "durationMs": 400,
+      "intensity": 0.05,
+      "reducedMotion": "still"
+    },
+    "junk": {
+      "animation": "pulse",
+      "icon": "refresh",
+      "tones": {
+        "running": "accent",
+        "broke": "danger",
+        "stale": "warning",
+        "done": "success"
+      },
+      "iconAnimation": "spin",
+      "brokeAnimation": "none",
+      "speed": 100,
+      "durationMs": 2400,
+      "intensity": 0.35,
+      "reducedMotion": "still"
+    },
+    "not-an-object": {
+      "animation": "pulse",
+      "icon": "refresh",
+      "tones": {
+        "running": "accent",
+        "broke": "danger",
+        "stale": "warning",
+        "done": "success"
+      },
+      "iconAnimation": "spin",
+      "brokeAnimation": "none",
+      "speed": 100,
+      "durationMs": 2400,
+      "intensity": 0.35,
+      "reducedMotion": "still"
+    }
+  },
+  "styles": {
+    "fast": {
+      "vars": {
+        "--fx-run-running": "var(--fx-accent)",
+        "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-broke": "var(--fx-danger)",
+        "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-stale": "var(--fx-warning)",
+        "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-done": "var(--fx-success)",
+        "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-intensity": "0.350",
+        "--fx-run-flash-min": "0.650",
+        "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+        "--fx-run-duration": "calc(2400ms * 0.500)",
+        "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+        "--fx-run-ease": "var(--fx-ease)"
+      },
+      "attrs": {
+        "data-fx-run-anim": "pulse",
+        "data-fx-run-icon": "refresh",
+        "data-fx-run-icon-anim": "spin",
+        "data-fx-run-broke-anim": "none",
+        "data-fx-run-reduced": ""
+      }
+    },
+    "slow": {
+      "vars": {
+        "--fx-run-running": "var(--fx-accent)",
+        "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-broke": "var(--fx-danger)",
+        "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-stale": "var(--fx-warning)",
+        "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-done": "var(--fx-success)",
+        "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-intensity": "0.800",
+        "--fx-run-flash-min": "0.200",
+        "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+        "--fx-run-duration": "calc(4000ms * 2.000)",
+        "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+        "--fx-run-ease": "var(--fx-ease)"
+      },
+      "attrs": {
+        "data-fx-run-anim": "pulse",
+        "data-fx-run-icon": "refresh",
+        "data-fx-run-icon-anim": "spin",
+        "data-fx-run-broke-anim": "none",
+        "data-fx-run-reduced": ""
+      }
+    },
+    "reduced-off": {
+      "vars": {
+        "--fx-run-running": "var(--fx-accent)",
+        "--fx-run-running-bg": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-broke": "var(--fx-danger)",
+        "--fx-run-broke-bg": "color-mix(in srgb, var(--fx-run-broke) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-stale": "var(--fx-warning)",
+        "--fx-run-stale-bg": "color-mix(in srgb, var(--fx-run-stale) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-done": "var(--fx-success)",
+        "--fx-run-done-bg": "color-mix(in srgb, var(--fx-run-done) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface))",
+        "--fx-run-intensity": "0.350",
+        "--fx-run-flash-min": "0.650",
+        "--fx-run-glow": "color-mix(in srgb, var(--fx-run-running) calc(var(--fx-run-intensity) * 100%), transparent)",
+        "--fx-run-duration": "0ms",
+        "--fx-run-icon-duration": "calc(var(--fx-run-duration) * 0.5)",
+        "--fx-run-ease": "var(--fx-ease)"
+      },
+      "attrs": {
+        "data-fx-run-anim": "none",
+        "data-fx-run-icon": "refresh",
+        "data-fx-run-icon-anim": "none",
+        "data-fx-run-broke-anim": "none",
+        "data-fx-run-reduced": "off"
+      }
+    }
+  },
+  "errors": {
+    "ok": [],
+    "bad-enums": [
+      "data.animation must be one of: flash, pulse, glow, spin, none",
+      "data.iconAnimation must be one of: spin, pulse, bounce, blink, none",
+      "data.brokeAnimation must be one of: flash, pulse, none",
+      "data.reducedMotion must be one of: still, tint, off"
+    ],
+    "bad-tones": [
+      "data.tones.running must be a colour-theme token: accent, info, success, warning, danger, text, muted (never a colour)",
+      "data.tones.idle: not a live state (running, broke, stale, done)"
+    ],
+    "bad-numbers": [
+      "data.speed must be a number 25–400",
+      "data.durationMs must be a number 400–8000",
+      "data.intensity must be a number 0.05–1"
+    ],
+    "bad-icon": [
+      "data.icon must be a framework icon name (lowercase, dashes)"
+    ],
+    "not-an-object": [
+      "data must be an object"
+    ],
+    "other-type": []
+  }
+}

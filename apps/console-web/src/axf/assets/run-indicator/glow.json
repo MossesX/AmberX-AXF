@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "run-indicator",
+  "id": "glow",
+  "name": "Glow",
+  "version": "1.0.0",
+  "description": "A building row glows at its edge in the info tone while its icon pulses; a broke row pulses red on the pink tint.",
+  "author": "AmberX AXF",
+  "tags": [
+    "run-indicator"
+  ],
+  "data": {
+    "animation": "glow",
+    "icon": "sparkles",
+    "tones": {
+      "running": "info",
+      "broke": "danger",
+      "stale": "warning",
+      "done": "success"
+    },
+    "iconAnimation": "pulse",
+    "brokeAnimation": "pulse",
+    "speed": 100,
+    "durationMs": 2000,
+    "intensity": 0.5,
+    "reducedMotion": "tint"
+  }
+}

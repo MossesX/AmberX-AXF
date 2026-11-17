@@ -63,11 +63,12 @@ export const ASSET_TYPES = [
   'book',
   'clip',
   'docs',
+  'run-indicator',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs', 'run-indicator'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -606,6 +607,36 @@ export interface UACPolicyData {
 
 /* ---------- maps ---------- */
 
+/**
+ * run-indicator@1 (engine engines/run-indicator.ts): how a running job shows in every grid. Tones are colour-theme
+ * token ids, never colours: the engine compiles --fx-run-* tokens from opacity and colour-mix over the theme.
+ */
+export type RunAnimation = 'flash' | 'pulse' | 'glow' | 'spin' | 'none';
+export type RunIconAnimation = 'spin' | 'pulse' | 'bounce' | 'blink' | 'none';
+export type RunBrokeAnimation = 'flash' | 'pulse' | 'none';
+export type RunReducedMotion = 'still' | 'tint' | 'off';
+export type RunTone = 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'text' | 'muted';
+export interface RunIndicatorData {
+  /** the row while running */
+  animation: RunAnimation;
+  /** framework icon name shown on a running row */
+  icon: string;
+  /** colour-theme token ids per live state (defaults: running accent, broke danger, stale warning, done success) */
+  tones: { running: RunTone; broke: RunTone; stale?: RunTone; done?: RunTone };
+  /** how the icon moves while running (default spin) */
+  iconAnimation?: RunIconAnimation;
+  /** a broke row is steady red unless it says otherwise (default none) */
+  brokeAnimation?: RunBrokeAnimation;
+  /** percent of the theme motion token, 25–400 (default 100) */
+  speed?: number;
+  /** one cycle of the row animation, 400–8000 ms (default 2400) */
+  durationMs?: number;
+  /** how deep the flash goes: the opacity swing and the tint strength, 0.05–1 (default 0.35) */
+  intensity?: number;
+  /** what shows under reduced motion (default still) */
+  reducedMotion?: RunReducedMotion;
+}
+
 export interface AssetDataMap {
   'color-theme': ColorThemeData;
   'style-theme': StyleThemeData;
@@ -661,6 +692,7 @@ export interface AssetDataMap {
   book: import('./engines/demo-rules.mjs').BookData;
   clip: import('./engines/demo-rules.mjs').ClipData;
   docs: import('./engines/demo-rules.mjs').DocsData;
+  'run-indicator': RunIndicatorData;
   'uac-policy': UACPolicyData;
 }
 
@@ -668,7 +700,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs' | 'run-indicator';
 
 export interface AxfManifest {
   $axf: 'manifest@1';
