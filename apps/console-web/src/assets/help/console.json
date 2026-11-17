@@ -1045,6 +1045,76 @@
         "title": "What to search",
         "kind": "tab",
         "text": "Narrows the hits: everything, screens and tabs, settings, buttons, plugins, or the rows and steps loaded right now."
+      },
+      {
+        "target": "action:drag.list",
+        "title": "Draggable things on this screen",
+        "kind": "control",
+        "text": "Lists every draggable host on the screen in front (banner widgets, toolbar items, tab strips, window tab stacks, dock panes, grid columns and rows, lists, layout regions) with its items in order. Same thing without the console: REST /api/drag, the console_drag_* MCP tools, axf drag, or say it to AmberX.",
+        "tryIt": "axf drag list banner-widget",
+        "related": [
+          "action:drag.move",
+          "action:drag.zones"
+        ]
+      },
+      {
+        "target": "action:drag.zones",
+        "title": "Where can it go",
+        "kind": "control",
+        "text": "Every place one item may be dropped: before or after another item, at the end of a container, a side of the banner or the toolbar. Each answer is ready to send to Drag: move. Same thing without the console: REST /api/drag, the console_drag_* MCP tools, axf drag, or say it to AmberX.",
+        "tryIt": "axf drag zones tab settings.tabs plugins"
+      },
+      {
+        "target": "action:drag.move",
+        "title": "Move it",
+        "kind": "control",
+        "text": "Moves an item exactly as dragging it would: the same command the pointer drop sends, so the result is the same. Reorder, move to another container (a tab to another stack, a session to another Terminal window, a card to another Plan Studio column) or to a side of the banner. Same thing without the console: REST /api/drag, the console_drag_* MCP tools, axf drag, or say it to AmberX.",
+        "tryIt": "Say \"move the clock widget to the left of the banner\".",
+        "related": [
+          "action:drag.preview",
+          "drag-anything"
+        ]
+      },
+      {
+        "target": "action:drag.add",
+        "title": "Add it",
+        "kind": "control",
+        "text": "Puts an item on a host: a hidden banner widget back on the banner, a command on a workspace toolbar, a hidden grid column, a hidden layout slot. Same thing without the console: REST /api/drag, the console_drag_* MCP tools, axf drag, or say it to AmberX."
+      },
+      {
+        "target": "action:drag.remove",
+        "title": "Remove it",
+        "kind": "control",
+        "text": "Takes an item off a host: hides a banner widget, a grid column or a layout slot, takes a command off a toolbar, closes a dock pane (that one asks to confirm first). Nothing is deleted: Add brings it back. Same thing without the console: REST /api/drag, the console_drag_* MCP tools, axf drag, or say it to AmberX."
+      },
+      {
+        "target": "action:drag.preview",
+        "title": "Show where it would land",
+        "kind": "control",
+        "text": "Plans a move without making it and draws the item and its landing spot on the screen (Follow Amber). Escape or a click clears it. Same thing without the console: REST /api/drag, the console_drag_* MCP tools, axf drag, or say it to AmberX."
+      },
+      {
+        "target": "action:drag.show",
+        "title": "Open and highlight a draggable",
+        "kind": "control",
+        "text": "The deep link drag:<kind>:<container>:<item>: opens the page the item is on, highlights it and every place it can go, and answers the host's current order. console_show and console_open take it too."
+      },
+      {
+        "target": "action:drag.voice",
+        "title": "Drag by voice",
+        "kind": "control",
+        "text": "Says what to move and where: \"drag the Logs tab first\", \"put the search bar after the clock\", \"remove the CPU widget\", \"add the clock widget\". The names are matched against what is on the screen, then the move runs. Also POST /api/drag/voice, /api/console-control/voice and console_control_voice."
+      },
+      {
+        "target": "drag-anything",
+        "title": "Drag anything (drag-move@1)",
+        "kind": "concept",
+        "text": "Whatever can be dragged can be moved by command. How each kind is reached: banner widgets (container banner, items type:id; move, add, remove), the app toolbar's widgets (toolbar; move) and workspace toolbars (<workspace>.<toolbar>; move, add, remove), tab strips (Terminal terminal.<window>, workspace panes workspace.<id>.<area>, window tab stacks by group id; move across stacks), dock panes (window id; split to a side, join a stack, close), grid columns and rows (grid id; columns move, show, hide on every grid), lists (build-manager.queue, merge-queue, plan-studio.<status>, ai-keys.accounts), layout regions (show, hide). Each is reached by deep link drag:<kind>:<container>:<item>, REST /api/drag, the console_drag_* MCP tools, axf drag and voice.",
+        "related": [
+          "action:drag.list",
+          "action:drag.move",
+          "action:drag.show"
+        ]
       }
     ],
     "intros": [
