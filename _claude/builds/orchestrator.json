@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:06:57.929Z",
+ "updatedAt": "2026-11-17T15:07:09.129Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142938,14 +142938,14 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "#780",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T13:40:22.024Z",
+   "updatedAt": "2026-11-17T15:06:58.323Z",
    "builtAt": "",
    "notes": [
     {
@@ -143007,6 +143007,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T13:40:22.024Z"
+    },
+    {
+     "text": "Brett: land after server-watchdog-orchestrator-auto-recovers-stuck",
+     "at": "2026-11-17T15:06:58.322Z"
     }
    ],
    "approvals": [
@@ -162486,7 +162490,7 @@
    "pr": "#778",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-17T12:37:15.479Z",
+   "updatedAt": "2026-11-17T15:07:05.158Z",
    "builtAt": "2026-11-17T12:35:01.131Z",
    "notes": [
     {
@@ -162544,6 +162548,10 @@
     {
      "text": "Session axf-auto-lander-grid-one-row-per-build--paulie on hulu0241 ended (exit 0); the build was already built.",
      "at": "2026-11-17T12:37:15.479Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-stale-row-watchdog-vps",
+     "at": "2026-11-17T15:07:05.158Z"
     }
    ],
    "approvals": [],
@@ -172902,12 +172910,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T15:05:47.233Z",
-   "updatedAt": "2026-11-17T15:05:51.332Z",
+   "updatedAt": "2026-11-17T15:07:02.790Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T15:05:51.332Z"
+    },
+    {
+     "text": "Split by Claude into 20 steps (4 Fable).",
+     "at": "2026-11-17T15:07:02.790Z"
     }
    ],
    "approvals": [],
@@ -172924,7 +172936,458 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Write the live-change@1 contract: change event shape (namespace, key, op upsert|delete|reorder, rev, origin session/surface, ts), resume-from-rev semantics, and the rule that the grid keeps scroll, selection, sort, filters and open dialogs. Spec doc plus its entry in the schema registry.",
+     "model": "Fable",
+     "why": "New cross-port contract every app and data writer will speak",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/LIVE-CHANGES.md",
+      "framework/schemas/live-change.json",
+      "framework/schemas/asset-types.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu8601xod9",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s2",
+     "text": "Reference engine framework/core/engines/live-rows.ts: apply a batch of change events to a keyed row set and return the changed keys only (upsert, delete, reorder, rev gaps → needs resync). Pure TS, no React.",
+     "model": "Fable",
+     "why": "Engine internals shared by every grid and later the Kotlin twin",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/live-rows.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu8602k8xy",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s3",
+     "text": "Optimistic layer in live-rows.ts: pending local ops by client op id, show them at once, reconcile when the server echo arrives (match by op id), roll back with a reason on reject or timeout.",
+     "model": "Fable",
+     "why": "Engine internals: optimistic/reconcile rules every app relies on",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/live-rows.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu8603zhlz",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s4",
+     "text": "Golden fixtures framework/spec/fixtures/live-rows.json (apply, reorder, delete, gap → resync, optimistic confirm, optimistic rollback) via gen-fixtures; record the Kotlin twin as a deferred gap in PORTING.md (Android on hold).",
+     "model": "Fable",
+     "why": "Conformance contract for the new engine",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/live-rows.json",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu8604o03g",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s5",
+     "text": "axf-data change feed: every data-store@1 write appends a live-change@1 event (namespace, key, op, rev, origin) to an in-memory ring with a monotonic rev; GET /changes?since=<rev>&ns=… returns the backlog.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "services/axf-data/",
+      "framework/spec/DATA-STORE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu8605ba9k",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s6",
+     "text": "axf-data SSE endpoint /changes/stream (namespace filter, Last-Event-ID resume, heartbeat every 15 s, backlog replay after a reconnect); unit test.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "services/axf-data/",
+      "services/axf-data/tests/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu8606kscn",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s7",
+     "text": "Console server relay: data_store.py subscribes to the axf-data feed (polling fallback while axf-data is down) and re-serves it at GET /api/live/stream with console auth, so the browser has one stream.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/data_store.py",
+      "apps/console-web/server/live_stream.py",
+      "apps/console-web/server/main.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu86075uu8",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s8",
+     "text": "Builds store and lander emit too: builds-store.mjs writes, builds-live.mjs and the VPS lander/merge-queue state writes publish change events (namespace builds, landing-line, merge-queue) through data-files.mjs, so CLI, MCP, voice and VPS changes reach the stream.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/data-files.mjs",
+      "framework/cli/builds-store.mjs",
+      "framework/cli/builds-live.mjs",
+      "framework/cli/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu8608th7s",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s9",
+     "text": "Framework client framework/react/live/LiveFeed.ts: one shared EventSource per app, auto-reconnect with backoff, resume by last rev, full resync on a gap, state connected|reconnecting|offline exposed as a hook useLiveFeed().",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/live/LiveFeed.ts",
+      "framework/react/live/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu8609tqx2",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s10",
+     "text": "useLiveRows(namespace, keyOf, load) hook on the live-rows engine: initial load, apply events, return rows plus changedKeys; mutate(op) helper for optimistic local actions with server reconcile.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/live/useLiveRows.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu860af0nd",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s11",
+     "text": "DataGrid live mode: a `live` prop (namespace + key) re-renders only changed rows (memoised rows keyed by id), keeps scroll position, selection, sort, filters and open dialogs; brief changed-row flash from a theme token (no hardcoded colours).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu860bv30a",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s12",
+     "text": "Lists and tables get the same: the framework list/table components take `live` too, and drag-and-drop reorder in DataGrid/lists goes through mutate() so the drop shows instantly and reconciles.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/",
+      "framework/react/components/DataGrid.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu860c6uik",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s13",
+     "text": "Live indicator: banner status widget (connected / reconnecting / offline, last event time) as an asset-driven chip registered with the banner frame, plus a per-grid dot; tokens only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/live/LiveIndicator.tsx",
+      "framework/assets/",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu860d4u2r",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s14",
+     "text": "Live API parity: GET /api/live/state (connection, rev, subscribers per namespace), POST /api/live/resync; console actions live.state / live.resync / live.show; MCP tools via plugin-commands; `axf live state|resync|tail`; AmberX voice phrases; console_show target view for the indicator; register control@1 targets (append-only).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/live_stream.py",
+      "apps/console-web/server/mcp_server.py",
+      "framework/cli/axf.mjs",
+      "framework/cli/live.mjs",
+      "framework/schemas/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu860ez29z",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s15",
+     "text": "Wire the Build orchestrator tabs and Pending list to live mode (namespace builds); drag-reorder in the queue and Auto-lander rows use mutate().",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu860fhi34",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s16",
+     "text": "Wire Auto-lander / merge queue grid (landing-line, merge-queue namespaces), including drag-to-set merge order, optimistic with reconcile.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "apps/console-web/plugins/gate/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu860gj15e",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s17",
+     "text": "Wire Plan Studio and UI Review grids (plan-studio, ui-review namespaces); archive/edit actions optimistic.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio/",
+      "apps/console-web/plugins/ui-review/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu870hrqi2",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s18",
+     "text": "Sweep the remaining console grids/lists (Codebase changes, Screenshots, Breakroom, Plugin Manager…) onto live mode; add a CI check that fails a DataGrid over store data without `live` (ratchet baseline that only goes down).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/",
+      "framework/cli/check-live-grids.mjs",
+      "framework/spec/live-grid-baseline.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu870if33r",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s19",
+     "text": "Re-bake the framework into the console and other shared apps (rebake.mjs), run theme-swap, check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets; fix findings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "framework/cli/rebake.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu870jfu43",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    },
+    {
+     "id": "s20",
+     "text": "Tests: live-rows fixtures check, axf-data stream test, an end-to-end test that a CLI store write shows in an open grid with scroll and selection kept and that it reconnects after a server restart; UI Review submit with 3 indicator options as assets; report _claude/builds/reports/live-hot-refresh-every-grid-list-re.md (incl. how each part is reached: REST, MCP, CLI, voice, deep link); THREADS row; PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-live-rows.mts",
+      "services/axf-data/tests/",
+      "apps/console-web/scripts/",
+      "_claude/builds/reports/live-hot-refresh-every-grid-list-re.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktsu870k3iqf",
+     "createdAt": "2026-11-17T15:07:02.790Z"
+    }
+   ]
   }
  ]
 }
