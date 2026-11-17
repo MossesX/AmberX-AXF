@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `tokens.looks` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -51,6 +51,11 @@ and range. The static targets (theme, style, layout, typography, density, sizing
 `tokens.instances` (same build) is one tab row's or one grid's own values on top of them: path `<grid|tabs>.<instance>[.<token>]`;
 `set` a token, `reset` a token / a whole instance / everything, `act <family>.<instance> restore-previous` (the values before the
 last edit) or `restore-hub` (drop the instance's values so it follows the shared look). One setting, `axf.tokens.instances`.
+`tokens.looks` (instance-look@1, build own-look-per-grid-and-tab-group) is one grid's or tab row's own look: path
+`<tab-group|grid>.<instance>[.<key>]` (instance `-` = every instance of the kind in the app), `input.app` (default `axf-console`);
+`set` a key (a colour-theme token, `transparent` on backgrounds, or the key's step; `skin` drops it), `reset` a key or the whole
+record (Reset to skin, one undo), `act <kind>.<instance> undo`. It writes `axf.chrome.<kind>.<id>.look` in the app's look document
+through `framework/cli/instance-look.mjs`, the library the theme-manager routes and `axf look` share.
 `tokens.nav` (nav-style@1, `core/engines/navstyle-rules.mjs`) tunes the navigation menu with sub menus: colours, font, icons,
 density, width, the sub-menu animation, behaviour, pinned / hidden / ordered items and `accents.<item id>`; only navs that opt in
 (nav-menu `navStyle: true`) read it.

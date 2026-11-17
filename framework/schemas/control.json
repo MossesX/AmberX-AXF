@@ -3168,6 +3168,27 @@
         "restore-hub": {}
       },
       "doc": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look."
+    },
+    "tokens.looks": {
+      "domain": "tokens",
+      "label": "Own look of one grid or tab row",
+      "ops": [
+        "list",
+        "get",
+        "set",
+        "reset",
+        "act"
+      ],
+      "paths": "pattern",
+      "pathShape": "<tab-group|grid>.<instance>[.<key>]",
+      "value": "field",
+      "select": {
+        "app": "string"
+      },
+      "acts": {
+        "undo": {}
+      },
+      "doc": "instance-look@1 (core/engines/instance-look-rules.mjs): the own look of one grid (its DataGrid id) or one tab row (its TabGroup id), stored as axf.chrome.<kind>.<id>.look in the app's look document (input.app, default axf-console). Keys rowBg rowAltBg textSize spacing borderW borderColor radius hoverBg selectedBg selectedFg; values a colour-theme token name, transparent (backgrounds) or a step, never a raw px or colour. set <kind>.<id>.<key> value (value skin or empty = drop the key); reset <kind>.<id> = Reset to skin (keeps one undo); act <kind>.<id> undo. Instance id - = every instance of the kind in the app. Console addresses setting:chrome.<kind>.<id>.look.<key> and function:chrome.look.reset; deep link action:chrome.look.open:<kind>:<id>."
     }
   },
   "aliases": {
@@ -3253,7 +3274,8 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "tokens.looks"
             ],
             "description": "what to control"
           },
@@ -3309,7 +3331,8 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "tokens.looks"
             ],
             "description": "what to control"
           },
@@ -3366,7 +3389,8 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "tokens.looks"
             ],
             "description": "what to control"
           },
@@ -3430,7 +3454,8 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "tokens.looks"
             ],
             "description": "what to control"
           },
@@ -3494,7 +3519,8 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "tokens.looks"
             ],
             "description": "what to control"
           },
@@ -3558,7 +3584,8 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "tokens.looks"
             ],
             "description": "what to control"
           },
@@ -3626,7 +3653,8 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "tokens.looks"
             ],
             "description": "what to control"
           },
@@ -3759,7 +3787,8 @@
       "plugins.reads",
       "tokens.nav",
       "console.control",
-      "tokens.instances"
+      "tokens.instances",
+      "tokens.looks"
     ]
   },
   "schema": {
@@ -3812,7 +3841,8 @@
           "plugins.reads",
           "tokens.nav",
           "console.control",
-          "tokens.instances"
+          "tokens.instances",
+          "tokens.looks"
         ]
       },
       "path": {
@@ -5095,6 +5125,25 @@
         "acts": {
           "restore-previous": {},
           "restore-hub": {}
+        },
+        "paths": "pattern"
+      },
+      "tokens.looks": {
+        "description": "instance-look@1 (core/engines/instance-look-rules.mjs): the own look of one grid (its DataGrid id) or one tab row (its TabGroup id), stored as axf.chrome.<kind>.<id>.look in the app's look document (input.app, default axf-console). Keys rowBg rowAltBg textSize spacing borderW borderColor radius hoverBg selectedBg selectedFg; values a colour-theme token name, transparent (backgrounds) or a step, never a raw px or colour. set <kind>.<id>.<key> value (value skin or empty = drop the key); reset <kind>.<id> = Reset to skin (keeps one undo); act <kind>.<id> undo. Instance id - = every instance of the kind in the app. Console addresses setting:chrome.<kind>.<id>.look.<key> and function:chrome.look.reset; deep link action:chrome.look.open:<kind>:<id>.",
+        "ops": [
+          "list",
+          "get",
+          "set",
+          "reset",
+          "act"
+        ],
+        "select": {
+          "app": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "undo": {}
         },
         "paths": "pattern"
       }

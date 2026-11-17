@@ -13,7 +13,9 @@
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { INSTANCE_TOKENS_TARGET, controlPaths } from '../../../../../framework/core/engines/control-rules.mjs';
+import { INSTANCE_LOOK_TARGET, INSTANCE_TOKENS_TARGET, controlPaths } from '../../../../../framework/core/engines/control-rules.mjs';
+import { INSTANCE_LOOK_KEY_IDS } from '../../../../../framework/core/engines/instance-look-rules.mjs';
+import { getLook, listLooks, resetLook, setLook, undoLook } from '../../../../../framework/cli/instance-look.mjs';
 import { INSTANCE_TOKENS_KEY, componentToken, instanceTokenList, instanceTokenValues, parseInstanceTokenPath, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken } from '../../../../../framework/core/engines/component-tokens.mjs';
 import { CONTROL_TOKEN_SLOTS, effectiveTokenOverrides, normalizeTokenOverrides, tokenValueIn, withTokenOverride, withoutTokenOverride } from '../../../../../framework/core/engines/control-tokens.mjs';
 import { ROOT, DATA_DIR, ControlError } from './common.mjs';
@@ -102,6 +104,7 @@ export function runTokens(c) {
   }
   if (c.target === 'tokens.slots') return runSlots(c, doc);
   if (c.target === INSTANCE_TOKENS_TARGET) return runInstances(c, doc);
+  if (c.target === INSTANCE_LOOK_TARGET) return runInstanceLooks(c);
   const spec = CONTROL_TOKEN_SLOTS[c.target];
   const paths = controlPaths(c.target) ?? [];
   switch (c.op) {
@@ -210,5 +213,55 @@ function runInstances(c, doc) {
       return { changed, action: c.action, values: instanceTokenValues(next, parsed.family, parsed.instance) };
     }
     default: throw new ControlError('invalid', `${INSTANCE_TOKENS_TARGET} does not take ${c.op}`);
+  }
+}
+
+/**
+ * tokens.looks (instance-look@1): the app's look document (framework/cli/instance-look.mjs, the same library the
+ * theme-manager routes and `axf look` call). path <kind>.<instance>[.<key>]; the instance may hold dots, the key is the
+ * last segment when it names a look key. input.app (or select app) picks the app, default axf-console.
+ */
+export function parseInstanceLookPath(path) {
+  if (typeof path !== 'string' || !path) return null;
+  const dot = path.indexOf('.');
+  if (dot < 1) return null;
+  const kind = path.slice(0, dot);
+  let id = path.slice(dot + 1), key = '';
+  const last = id.lastIndexOf('.');
+  if (last > 0 && INSTANCE_LOOK_KEY_IDS.includes(id.slice(last + 1))) { key = id.slice(last + 1); id = id.slice(0, last); }
+  else if (INSTANCE_LOOK_KEY_IDS.includes(id)) { key = id; id = '-'; }
+  return { kind, id, key };
+}
+function runInstanceLooks(c) {
+  const app = c.input?.app ?? c.select?.app ?? '';
+  const p = c.path ? parseInstanceLookPath(c.path) : null;
+  if (c.path && !p) throw new ControlError('validation', `${INSTANCE_LOOK_TARGET} wants a path <tab-group|grid>.<instance>[.<key>], not ${c.path}`);
+  const wrap = (fn) => { try { return fn(); } catch (e) { throw new ControlError(e.code === 'not_found' ? 'not_found' : 'validation', e.message); } };
+  const by = c.by || 'control';
+  switch (c.op) {
+    case 'list': { const items = wrap(() => listLooks(app || undefined)).filter((r) => !p || (r.kind === p.kind && (p.id === '-' ? r.id === '' : r.id === p.id))); return { items, total: items.length }; }
+    case 'get': {
+      if (!p) throw new ControlError('validation', 'get needs a path <kind>.<instance>[.<key>]');
+      const r = wrap(() => getLook(app, p.kind, p.id));
+      return p.key ? { item: r, value: r.look[p.key] ?? null } : { item: r, value: r.look };
+    }
+    case 'set': {
+      if (!p) throw new ControlError('validation', 'set needs a path <kind>.<instance>.<key> (or <kind>.<instance> with an object value)');
+      const values = p.key ? { [p.key]: c.value } : c.value;
+      if (!values || typeof values !== 'object') throw new ControlError('validation', 'set on <kind>.<instance> wants an object value { key: value }');
+      return { changed: true, item: wrap(() => setLook(app, p.kind, p.id, values, by)) };
+    }
+    case 'reset': {
+      if (!p) throw new ControlError('validation', 'reset needs a path <kind>.<instance>[.<key>]: a look is reset one instance at a time');
+      if (p.key) return { changed: true, item: wrap(() => setLook(app, p.kind, p.id, { [p.key]: null }, by)) };
+      const r = wrap(() => resetLook(app, p.kind, p.id, by));
+      return { changed: r.changed, item: r, dropped: r.dropped };
+    }
+    case 'act': {
+      if (!p || p.key) throw new ControlError('validation', 'act needs a path <kind>.<instance>');
+      if (c.action !== 'undo') throw new ControlError('validation', `${INSTANCE_LOOK_TARGET} knows undo, not ${c.action}`);
+      return { changed: true, action: 'undo', item: wrap(() => undoLook(app, p.kind, p.id, by)) };
+    }
+    default: throw new ControlError('invalid', `${INSTANCE_LOOK_TARGET} does not take ${c.op}`);
   }
 }
