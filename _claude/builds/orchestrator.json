@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:51:53.298Z",
+ "updatedAt": "2026-11-17T21:52:04.498Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -187088,7 +187088,7 @@
    "pr": "#803",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:51:48.576Z",
+   "updatedAt": "2026-11-17T21:51:57.240Z",
    "builtAt": "2026-11-17T21:36:44.501Z",
    "notes": [
     {
@@ -187122,6 +187122,14 @@
     {
      "text": "PR #803 was blocked: the merge queue maps PRs to builds by branch, and the archived build reset-all-button-every-asset-override claimed the same branch, so the watchdog removed #803 as 'build cancelled'. Released the branch on the archived record (note kept there) and re-added #803. It now waits only on its PR checks. Follow-up: merge-queue.mjs buildOf should prefer a live build over an archived one.",
      "at": "2026-11-17T21:51:20.771Z"
+    },
+    {
+     "text": "Headless run axf-land-pr-730-reset-all-button-far-right--gina: brief only · start 16.4K tokens ($0.05) · cost $7.74 · 84 turns · 6 tools, MCP none",
+     "at": "2026-11-17T21:51:54.501Z"
+    },
+    {
+     "text": "Session axf-land-pr-730-reset-all-button-far-right--gina on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-17T21:51:57.240Z"
     }
    ],
    "approvals": [],

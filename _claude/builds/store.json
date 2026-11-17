@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8093,
- "updatedAt": "2026-11-17T21:51:53.298Z",
+ "rev": 8094,
+ "updatedAt": "2026-11-17T21:52:04.498Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -283160,7 +283160,7 @@
    "pr": "#803",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:51:48.576Z",
+   "updatedAt": "2026-11-17T21:51:57.240Z",
    "builtAt": "2026-11-17T21:36:44.501Z",
    "notes": [
     {
@@ -283194,6 +283194,14 @@
     {
      "text": "PR #803 was blocked: the merge queue maps PRs to builds by branch, and the archived build reset-all-button-every-asset-override claimed the same branch, so the watchdog removed #803 as 'build cancelled'. Released the branch on the archived record (note kept there) and re-added #803. It now waits only on its PR checks. Follow-up: merge-queue.mjs buildOf should prefer a live build over an archived one.",
      "at": "2026-11-17T21:51:20.771Z"
+    },
+    {
+     "text": "Headless run axf-land-pr-730-reset-all-button-far-right--gina: brief only · start 16.4K tokens ($0.05) · cost $7.74 · 84 turns · 6 tools, MCP none",
+     "at": "2026-11-17T21:51:54.501Z"
+    },
+    {
+     "text": "Session axf-land-pr-730-reset-all-button-far-right--gina on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-17T21:51:57.240Z"
     }
    ],
    "approvals": [],
@@ -283214,14 +283222,23 @@
     "queuedAt": "2026-11-17T21:26:43.431Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-land-pr-730-reset-all-button-far-right--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T21:27:56.788Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T21:51:53.587Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "hulu0241",
+     "session": "axf-land-pr-730-reset-all-button-far-right--gina",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-17T21:35:58.659Z",
      "by": "orchestrator",
@@ -283380,7 +283397,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
