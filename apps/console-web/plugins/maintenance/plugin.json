@@ -2,11 +2,11 @@
  "$axf": "plugin@1",
  "id": "ai.amberx.axf.console.maintenance",
  "name": "Maintenance",
- "version": "0.2.0",
+ "version": "0.3.0",
  "kind": "module",
  "apiLevel": 1,
  "author": "Brett",
- "description": "Server health and safe clean-up for the VPS (maintenance@1). A dashboard of disk, memory, swap, load, Docker images, volumes and build cache, build worktrees, logs and /tmp, with the biggest space users. Clean-up jobs (finished build worktrees, dangling Docker images and build cache, old logs, /tmp leftovers, containers stuck in Created) always preview first, then go to axHub as one held call: nothing is removed until Brett approves it, and the VPS re-checks every item before removing it. Never running containers, volumes in use or app data. Nightly auto-clean of the safe jobs (off by default), alerts at 80/85/90% disk and when swap stays nearly full (console and phone), the systems check row Server health with Auto fix, and a Server disk card for Home (server health is plain code, no AI). Clean up build profiles: audits every build profile (open builds, steps, copied tracker checklists and plans) against merged PRs, git history, reports, the catalog and the other profiles; each item gets keep / done already / not needed / duplicate / merge with a reason and proof. Preview first, untick anything, then apply: done → complete, the rest archived (never deleted), one undo per run, running builds never touched. Deep (AI) mode when a model is set up, Basic (exact matches) otherwise.",
+ "description": "Server health and safe clean-up for the VPS (maintenance@1). Its actions run on the VPS host through the host runner (systemd axf-maintenance.service, maintenance-host@1), outside every container, so they work while the console or Docker is down; the console only calls it. Clear Docker cache empties the Docker build cache and dangling images and restarts Docker when it is stuck. A dashboard of disk, memory, swap, load, Docker images, volumes and build cache, build worktrees, logs and /tmp, with the biggest space users. Clean-up jobs (finished build worktrees, dangling Docker images and build cache, old logs, /tmp leftovers, containers stuck in Created) always preview first, then go to axHub as one held call: nothing is removed until Brett approves it, and the VPS re-checks every item before removing it. Never running containers, volumes in use or app data. Nightly auto-clean of the safe jobs (off by default), alerts at 80/85/90% disk and when swap stays nearly full (console and phone), the systems check row Server health with Auto fix, and a Server disk card for Home (server health is plain code, no AI). Clean up build profiles: audits every build profile (open builds, steps, copied tracker checklists and plans) against merged PRs, git history, reports, the catalog and the other profiles; each item gets keep / done already / not needed / duplicate / merge with a reason and proof. Preview first, untick anything, then apply: done → complete, the rest archived (never deleted), one undo per run, running builds never touched. Deep (AI) mode when a model is set up, Basic (exact matches) otherwise.",
  "targets": [
   "axf-console"
  ],
@@ -36,7 +36,8 @@
    "AXF_MAINT_BUILD_ROOTS",
    "AXF_MAINT_TMP_ROOTS",
    "AXF_MAINT_LOG_ROOTS",
-   "AXF_MAINT_AREAS"
+   "AXF_MAINT_AREAS",
+   "AXF_MAINT_SOCKET"
   ],
   "mentions": [
    "apps/console-web/plugins/README.md",
@@ -177,6 +178,72 @@
     "title": "Check server health now (alerts and the nightly run)"
    },
    {
+    "route": "GET /host",
+    "id": "host",
+    "title": "Host runner: whether it answers, Docker's state, jobs running, last heartbeat",
+    "readOnly": true
+   },
+   {
+    "route": "GET /host/jobs",
+    "id": "host-jobs",
+    "title": "Host runner jobs (clear Docker cache, restart Docker, measure), newest first",
+    "readOnly": true,
+    "input": {
+     "type": "object",
+     "properties": {
+      "kind": {
+       "type": "string",
+       "enum": [
+        "docker-cache",
+        "docker-restart",
+        "snapshot"
+       ]
+      }
+     }
+    }
+   },
+   {
+    "route": "GET /docker-cache",
+    "id": "docker-cache-status",
+    "title": "Clear Docker cache: the latest (or one) job with its steps and result, and the build cache size now",
+    "readOnly": true,
+    "input": {
+     "type": "object",
+     "properties": {
+      "job": {
+       "type": "string",
+       "description": "a job id; the latest when left out"
+      }
+     }
+    }
+   },
+   {
+    "route": "POST /docker-cache",
+    "id": "docker-cache",
+    "title": "Clear the Docker cache on the VPS (all build cache and dangling images); restarts Docker if it is stuck",
+    "description": "Runs on the VPS host through the host runner. Docker is restarted only when it doesn't answer or a prune fails, then the prune runs again (every container restarts with it; the console comes back by itself). restart: false never restarts. Volumes, tagged images and anything in use are never removed.",
+    "destructive": true,
+    "confirm": true,
+    "input": {
+     "type": "object",
+     "properties": {
+      "restart": {
+       "type": "boolean",
+       "default": true,
+       "description": "allow restarting Docker when it is stuck"
+      }
+     }
+    }
+   },
+   {
+    "route": "POST /docker-restart",
+    "id": "docker-restart",
+    "title": "Restart Docker on the VPS (every container restarts; the console comes back by itself)",
+    "description": "Runs on the VPS host through the host runner, so it works while Docker or the console is down.",
+    "destructive": true,
+    "confirm": true
+   },
+   {
     "route": "POST /profiles/preview",
     "id": "profiles-preview",
     "title": "Clean up build profiles, step 1: audit every profile and save a preview (verdict, reason and proof per item; mode auto | basic | deep). Nothing changes"
@@ -206,7 +273,7 @@
  },
  "builtWith": {
   "model": "opus",
-  "builtAt": "2026-11-04"
+  "builtAt": "2026-11-17"
  },
  "help": "help.json",
  "opens": "main"

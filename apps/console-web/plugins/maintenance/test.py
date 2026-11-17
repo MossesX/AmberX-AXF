@@ -148,6 +148,7 @@ def fake(cmd: list[str], timeout: int = 60) -> tuple[int, str]:
     return 127, "unexpected"
 
 
+fake_run = fake  # `fake` is reused for the AI stand-in further down
 ctx = M.Ctx(S, fake)
 P = M.plan(ctx, M.JOBS)
 refs = lambda job: {Path(i["ref"]).name if "/" in i["ref"] else i["ref"] for i in P[job]["items"]}  # noqa: E731
@@ -415,6 +416,108 @@ ok("profilePreview" not in srv.tick(), "… once a day")
 ok(PC.due({"profileSchedule": "weekly", "profileHour": lt.tm_hour, "profileWeekday": (lt.tm_wday + 1) % 7}, None, time.time()) is False, "weekly waits for its day")
 ok(PC.due({"profileSchedule": "off", "profileHour": lt.tm_hour}, None, time.time()) is False, "off by default")
 ok(M.normalize_settings({"profileMode": "magic", "profileSchedule": "hourly"})["profileMode"] == "auto", "unknown profile settings fall back")
+
+# ---------------------------------------------------------------- clear the Docker cache (engine)
+
+def docker_fake(alive_after: int = 0, prune_fails: int = 0, restart_ok: bool = True):
+    """A Docker that is dead for `alive_after` info calls and whose build-cache prune fails `prune_fails` times."""
+    st = {"info": 0, "prune": 0, "cmds": []}
+
+    def run(cmd: list[str], timeout: int = 60) -> tuple[int, str]:
+        st["cmds"].append(cmd)
+        if cmd[:2] == ["docker", "info"]:
+            st["info"] += 1
+            return (0, "27.3.1\n") if st["info"] > alive_after else (1, "Cannot connect to the Docker daemon")
+        if cmd[:3] == ["docker", "builder", "prune"]:
+            st["prune"] += 1
+            return (127, "TimeoutExpired") if st["prune"] <= prune_fails else (0, "ID\tRECLAIMABLE\nabc\t1GB\nTotal:\t1.5GB\n")
+        if cmd[:3] == ["docker", "image", "prune"]:
+            return 0, "Deleted Images:\nsha256:x\n\nTotal reclaimed space: 500MB\n"
+        if cmd[:3] == ["systemctl", "restart", "docker"]:
+            return (0, "") if restart_ok else (1, "Failed to restart docker.service")
+        if cmd[:3] == ["service", "docker", "restart"]:
+            return 1, "no init script"
+        return fake_run(cmd, timeout)
+    return run, st
+
+
+nosleep = lambda s: None  # noqa: E731
+ok(M.reclaimed("Total:\t1.5GB\nTotal reclaimed space: 500MB\n") == 2_000_000_000 and M.reclaimed("") == 0, "reclaimed() sums prune totals")
+r, st = docker_fake()
+res = M.clear_docker_cache(r, sleep=nosleep)
+ok(res["ok"] and res["freed"] == 2_000_000_000 and not res["restarted"], f"healthy Docker: cache cleared without a restart ({res.get('error')})")
+ok(["docker", "builder", "prune", "--all", "--force"] in st["cmds"] and not any(c[0] == "systemctl" for c in st["cmds"]), "prunes all build cache, never restarts when not needed")
+ok(not any("volume" in c for c in st["cmds"]), "never touches volumes")
+r, st = docker_fake(prune_fails=1)
+res = M.clear_docker_cache(r, sleep=nosleep)
+ok(res["ok"] and res["restarted"] and st["prune"] == 2, f"a stuck prune restarts Docker and tries again ({[x['step'] for x in res['steps']]})")
+r, st = docker_fake(prune_fails=1)
+res = M.clear_docker_cache(r, allow_restart=False, sleep=nosleep)
+ok(not res["ok"] and not res["restarted"] and not any(c[0] == "systemctl" for c in st["cmds"]), "restart: false never restarts Docker")
+r, st = docker_fake(alive_after=1)
+res = M.clear_docker_cache(r, sleep=nosleep)
+ok(res["ok"] and res["restarted"], "a dead Docker is restarted first, then cleared")
+r, st = docker_fake(alive_after=10**6)
+res = M.clear_docker_cache(r, sleep=nosleep)
+ok(not res["ok"] and res["restarted"] and "answering" in res.get("error", ""), "Docker that never comes back: fails with a reason")
+r, st = docker_fake(alive_after=1, restart_ok=False)
+res = M.clear_docker_cache(r, sleep=nosleep)
+ok(not res["ok"] and any(x["step"] == "docker-up" and not x["ok"] for x in res["steps"]), "a failed restart is reported")
+
+# ---------------------------------------------------------------- the host runner (socket, jobs) and the console side
+
+hspec = importlib.util.spec_from_file_location("maint_hostd_under_test", HERE / "engine" / "hostd.py")
+H = importlib.util.module_from_spec(hspec)
+hspec.loader.exec_module(H)
+import threading  # noqa: E402
+
+(H.host_dir(DATA) / "jobs").mkdir(parents=True, exist_ok=True)
+M.write_json(H.host_dir(DATA) / "jobs" / "old-stuck.json", {"id": "old-stuck", "kind": "docker-cache", "state": "running", "at": M.now_iso()})
+sock_missing = c.post(f"{B}/docker-cache", json={})
+ok(sock_missing.status_code == 503 and "host runner" in sock_missing.text, "no runner: Clear Docker cache says so (503)")
+ok(c.get(f"{B}/host").json()["reachable"] is False, "no runner: GET host says not reachable")
+ok(srv._runner_probe()["status"] == "warn", "no runner: the systems check row warns")
+ok(srv.RUNNER_HEALTH_ID in HEALTH.items and HEALTH.items[srv.RUNNER_HEALTH_ID].get("autoFix"), "the host runner row is registered with Auto fix")
+hub_calls.clear()
+af = HEALTH.items[srv.RUNNER_HEALTH_ID]["autoFix"]["run"]()
+ok(af["state"] == "started" and any("deploy/host.sh up" in json.dumps(p) for _m, p in hub_calls), f"Auto fix sends host.sh up to axHub as a held call ({af})")
+
+hr, hst = docker_fake(prune_fails=1)
+RUNNER = H.Runner(DATA, run=hr, sleep=nosleep)
+RUNNER._refresh_snapshot = lambda: None  # the full measurement is covered above
+ok(RUNNER.job("old-stuck")["state"] == "failed", "a job the runner died in is marked failed on start")
+SRV = H._server(RUNNER, H.socket_path(DATA))
+threading.Thread(target=SRV.serve_forever, daemon=True).start()
+ok(oct(H.socket_path(DATA).stat().st_mode & 0o777) == "0o600", "the socket is owner-only")
+ok(H.call("ping", DATA)["ok"], "the runner answers ping over the socket")
+ok(H.call("bogus", DATA)["ok"] is False, "unknown ops are refused")
+ok(c.get(f"{B}/host").json()["reachable"] is True and c.get(f"{B}/host").json()["docker"]["alive"], "GET host: reachable, Docker answers")
+ok(srv._runner_probe()["status"] == "ok", "the systems check row is ok with the runner up")
+first = c.post(f"{B}/docker-cache", json={})
+ok(first.status_code == 200 and first.json()["job"]["kind"] == "docker-cache", f"POST docker-cache starts a host job ({first.text[:200]})")
+jid = first.json()["job"]["id"]
+for _ in range(100):
+    cur = c.get(f"{B}/docker-cache", params={"job": jid}).json()["job"]
+    if cur["state"] != "running":
+        break
+    time.sleep(0.05)
+ok(cur["state"] == "done" and cur["result"]["restarted"] and cur["result"]["freed"] == 2_500_000_000, f"the job finishes on the host: restarted Docker once, freed the cache ({cur.get('error')})")
+ok(c.get(f"{B}/docker-cache").json()["job"]["id"] == jid, "GET docker-cache: the latest job")
+ok(c.get(f"{B}/docker-cache", params={"job": "../x"}).status_code == 404, "bad job ids are refused")
+nr = c.post(f"{B}/docker-cache", json={"restart": False}).json()["job"]
+for _ in range(100):
+    nr = H.call("job", DATA, id=nr["id"])["job"]
+    if nr["state"] != "running":
+        break
+    time.sleep(0.05)
+ok(nr["opts"]["restart"] is False and nr["state"] == "done", "restart: false is passed to the host")
+dr = c.post(f"{B}/docker-restart", json={}).json()["job"]
+ok(dr["kind"] == "docker-restart", "POST docker-restart starts a host job")
+ok(len(c.get(f"{B}/host/jobs", params={"kind": "docker-cache"}).json()["jobs"]) >= 2, "host jobs are listed")
+ck = c.post(f"{B}/check", json={}).json()
+ok(ck.get("measure"), "Check now also measures on the host")
+ok("runner" in c.get(f"{B}/status").json(), "status carries the runner state")
+SRV.shutdown()
 
 # plugin.json commands name only routes that exist
 pj = json.loads((HERE / "plugin.json").read_text())

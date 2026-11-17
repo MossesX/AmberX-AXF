@@ -823,6 +823,105 @@ def run_plan(run_id: str, sha: str, data_dir: Path = DATA_DIR, run: Runner = _ru
     return res
 
 
+# ------------------------------------------------------------------ clear the Docker cache (host runner)
+
+DOCKER_TIMEOUT_CODES = (124, 127)  # _run answers 127 on a timeout or a missing binary
+DOCKER_UP_WAIT_S = 180
+
+
+def docker_alive(run: Runner = _run, timeout: int = 20) -> tuple[bool, str]:
+    """Whether the Docker daemon answers (``docker info``), with its version or the error."""
+    code, out = run(["docker", "info", "--format", "{{.ServerVersion}}"], timeout)
+    return code == 0 and bool(out.strip()), out.strip()[-300:]
+
+
+def reclaimed(text: str) -> int:
+    """Sum of every ``Total reclaimed space: X`` / ``Total: X`` line a prune printed (bytes)."""
+    total = 0
+    for m in re.finditer(r"(?:Total reclaimed space|^Total):\s*([0-9.]+\s*[kKMGT]?i?B)", text or "", re.M):
+        total += parse_size(m.group(1).replace(" ", ""))
+    return total
+
+
+def restart_docker(run: Runner = _run, sleep: Callable[[float], None] = time.sleep, wait_s: int = DOCKER_UP_WAIT_S) -> tuple[bool, str]:
+    """Restart the Docker daemon (systemd, else the init script) and wait until it answers again.
+
+    Containers with a restart policy (the console, Coolify and its apps) come back by themselves once the daemon is up.
+    """
+    code, out = run(["systemctl", "restart", "docker"], 240)
+    if code != 0:
+        code, out = run(["service", "docker", "restart"], 240)
+        if code != 0:
+            return False, f"couldn't restart Docker: {out.strip()[-300:]}"
+    waited = 0.0
+    while waited <= wait_s:
+        alive, info = docker_alive(run)
+        if alive:
+            return True, f"Docker {info} is back after {int(waited)} s"
+        sleep(5)
+        waited += 5
+    return False, f"Docker didn't answer within {wait_s} s after the restart"
+
+
+def clear_docker_cache(run: Runner = _run, allow_restart: bool = True, sleep: Callable[[float], None] = time.sleep,
+                       progress: Callable[[dict[str, Any]], None] | None = None) -> dict[str, Any]:
+    """Clear the Docker build cache (all of it) and dangling images; restart Docker when it is stuck and allowed.
+
+    Docker is restarted only when it has to be: the daemon doesn't answer, or a prune fails or hangs (a prune already
+    running, a locked cache). After a restart the prune runs once more. Volumes, tagged images and anything a container
+    uses are never removed (Docker itself refuses cache records and images in use).
+    """
+    steps: list[dict[str, Any]] = []
+    res: dict[str, Any] = {"restarted": False, "freed": 0, "steps": steps}
+
+    def step(name: str, ok: bool, detail: str) -> None:
+        steps.append({"at": now_iso(), "step": name, "ok": ok, "detail": detail[-400:]})
+        if progress:
+            progress(res)
+
+    def restart(why: str) -> bool:
+        if not allow_restart:
+            step("restart", False, f"{why}; restarting Docker isn't allowed for this run")
+            return False
+        step("restart", True, f"{why}: restarting Docker")
+        ok, msg = restart_docker(run, sleep)
+        res["restarted"] = True
+        step("docker-up", ok, msg)
+        return ok
+
+    alive, info = docker_alive(run)
+    step("check", alive, f"Docker {info} answers" if alive else f"Docker doesn't answer: {info or 'no reply'}")
+    if not alive and not restart("Docker doesn't answer"):
+        res.update(ok=False, error="Docker isn't answering, so the cache couldn't be cleared")
+        return res
+    before = docker_info(run)
+    res["before"] = before
+
+    def prune() -> tuple[bool, int, str]:
+        freed, errors = 0, []
+        for name, cmd, t in (("build-cache", ["docker", "builder", "prune", "--all", "--force"], 900),
+                             ("dangling-images", ["docker", "image", "prune", "--force"], 300)):
+            code, out = run(cmd, t)
+            got = reclaimed(out) if code == 0 else 0
+            freed += got
+            step(name, code == 0, f"freed {human(got)}" if code == 0 else
+                 ("timed out" if code in DOCKER_TIMEOUT_CODES else f"failed: {out.strip()[-300:]}"))
+            if code != 0:
+                errors.append(name)
+        return not errors, freed, ", ".join(errors)
+
+    ok, freed, failed = prune()
+    if not ok and not res["restarted"]:
+        if restart(f"the {failed} prune failed"):
+            ok, more, failed = prune()
+            freed += more
+    after = docker_info(run)
+    res.update(ok=ok, freed=freed, after=after, diskAfter=disk("/"))
+    if not ok:
+        res["error"] = f"the {failed} prune still failed" + (" after restarting Docker" if res["restarted"] else "")
+    return res
+
+
 # ------------------------------------------------------------------ CLI
 
 def _main(argv: list[str]) -> int:
