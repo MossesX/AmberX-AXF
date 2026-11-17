@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7216,
- "updatedAt": "2026-11-17T00:44:19.713Z",
+ "rev": 7217,
+ "updatedAt": "2026-11-17T00:44:38.919Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -186326,20 +186326,28 @@
    "title": "axHub: raise per-project memory file cap from 500 to 750",
    "category": "axhub",
    "detail": "Brett said: \"We'll keep that at 750. Yeah, 750.\" In MossesX/axHub packages/core/src/memory-files.ts, MEMORY_LIMITS.filesPerRepo 500 -> 750 (keep it a safety limit). Update any tests that assert 500. Run tests, merge to main, redeploy axHub on the VPS (Coolify) so the live hub uses it. Note amberx-axf _claude already holds 662 files, so writes are blocked until this is live. Then append two rules to amberx-axf rules/RULES.md: (1) whenever you mention a build to Brett, say in one plain sentence what it does; (2) framework work is web + Android only for now, Python and other stacks get placeholders only.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "alias": "axhub-raise-per-project-memory-file-cap",
-   "branch": "",
+   "branch": "claude/axhub-raise-per-project-memory-file-cap-from-500-to-750",
    "pr": "",
    "createdAt": "2026-11-13T16:58:18.760Z",
-   "updatedAt": "2026-11-17T00:44:17.490Z",
+   "updatedAt": "2026-11-17T00:44:31.954Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:21:01.232Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-axhub-raise-per-project-memory-file-cap-from-500--earl.",
+     "at": "2026-11-17T00:44:24.154Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-axhub-raise-per-project-memory-file-cap-from-500--earl, shared account login)",
+     "at": "2026-11-17T00:44:31.954Z"
     }
    ],
    "approvals": [],
@@ -186359,20 +186367,20 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:20:58.645Z",
     "queuedBy": "brett",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-axhub-raise-per-project-memory-file-cap-from-500--earl",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T00:44:23.495Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T00:44:23.495Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -186381,7 +186389,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T00:44:23.495Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -186462,7 +186470,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222846,7 +222854,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T00:43:59.320Z",
+   "updatedAt": "2026-11-17T00:44:34.661Z",
    "builtAt": "",
    "notes": [
     {
@@ -222868,6 +222876,10 @@
     {
      "text": "Clash note: the prompt engine (prompt-engine@1, framework/core/engines/prompt-engine.mjs, plugin prompt-engine, branch claude/prompting-engine-control-panel-to-create) is the general rules engine: triggers + conditions + limits + what to ask + actions, with manifests every source registers. Watch rules here should register a manifest and fire events through axf.prompt-engine@1 rather than ship a second rules engine.",
      "at": "2026-11-17T00:41:56.359Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-stale-row-watchdog-vps--paulie: brief only · start 17.3K tokens ($0.12) · cost $4.09 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:44:34.661Z"
     }
    ],
    "approvals": [],
@@ -223502,7 +223514,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
