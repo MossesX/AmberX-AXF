@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:19:32.321Z",
+ "updatedAt": "2026-11-17T00:19:48.973Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -167462,10 +167462,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/stop-auto-lander-committing-tracking",
-   "pr": "",
+   "pr": "#765",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:17:14.294Z",
+   "updatedAt": "2026-11-17T00:19:39.922Z",
    "builtAt": "",
    "notes": [
     {

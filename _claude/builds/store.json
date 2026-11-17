@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7149,
- "updatedAt": "2026-11-17T00:19:32.321Z",
+ "rev": 7150,
+ "updatedAt": "2026-11-17T00:19:48.973Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259038,10 +259038,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/stop-auto-lander-committing-tracking",
-   "pr": "",
+   "pr": "#765",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:17:14.294Z",
+   "updatedAt": "2026-11-17T00:19:39.922Z",
    "builtAt": "",
    "notes": [
     {
@@ -259082,13 +259082,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T00:04:36.246Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-stop-auto-lander-committing-tracking--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T00:07:51.523Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -259101,7 +259101,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T00:07:51.523Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -259110,7 +259110,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T00:07:51.523Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
