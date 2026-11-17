@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:43:14.644Z",
+ "updatedAt": "2026-11-17T19:43:49.117Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -183230,9 +183230,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T19:33:17.840Z",
-   "updatedAt": "2026-11-17T19:33:17.841Z",
+   "updatedAt": "2026-11-17T19:43:46.240Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 14 steps (0 Fable).",
+     "at": "2026-11-17T19:43:46.240Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -183247,7 +183252,316 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read the existing pieces first and write a short design note: how headless sessions get their console terminal tab (console-terminal plugin, session ids like axf-<agent>-<job>), how a build record maps to its live session (builds store fields, claude-headless.sh, agent-slots/pipeline run records), and where the dynamic section of the rebuilt build-grid context menus is defined. Put it in _claude/builds/reports/right-click-running-build-pop-open.md (design section).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/",
+      "apps/console-web/plugins/build-orchestrator/",
+      "deploy/claude-headless.sh",
+      "framework/react/components/ChromeContext.tsx",
+      "_claude/builds/reports/right-click-running-build-pop-open.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj401q0hn",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s2",
+     "text": "Server resolver: add build→session lookup in the console-terminal plugin server (given a build id, find its live headless session and terminal tab id, or return {live:false, reason}). Covers running, queued-relaunch and finished builds; never creates a session.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/server/",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj402snie",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s3",
+     "text": "Unit tests for the resolver: live session found, build with no session, session ended, two runs of one build (newest live wins), unknown build id.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/server/test_build_session.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj4035j1u",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s4",
+     "text": "REST: GET /api/plugins/console-terminal/build-session/<build> (state read) and POST .../build-session/<build>/open (focuses the existing tab in the open console via the console-control channel; 409 with the reason when there is no live session). Register them so plugin-commands exposes them as MCP tools.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/server/",
+      "apps/console-web/plugins/console-terminal/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj404vytl",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s5",
+     "text": "Console-control address + deep link: register target 'view:terminal/session:<sessionId>' and alias 'row:<build>/session' so console_show / console_open / Ctrl+K open the terminal focused on that tab; append the new targets at the end of the control@1 registry (append-only).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/",
+      "framework/spec/CONSOLE-CONTROL.md",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj405v43s",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s6",
+     "text": "Terminal front end: handle the focus request: open (or pop open) the terminal panel and select the existing session tab by id, never spawning a new session; show a short toast when the tab is gone.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj40610pe",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s7",
+     "text": "Context menu item: add 'Open session' to the dynamic section of the build-grid context menus (Build manager, orchestrator, pipeline/queue grids, Live list) as a runtime contribution (rt.addContextItems), enabled only for builds with a live session, disabled with the reason as its hint otherwise; it calls the open route.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/web/",
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj407hyqg",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s8",
+     "text": "Live state for the menu item: cache build→session liveness per grid (one batched GET for visible running rows, refreshed on build-store events) so the menu opens instantly and the disabled reason is current.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/web/",
+      "apps/console-web/plugins/console-terminal/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj408y2k8",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s9",
+     "text": "CLI: 'axf console session <build>' (prints live/reason) and 'axf console session <build> --open' through the same REST routes; help text in the CLI header.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/console-terminal/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj409swrm",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s10",
+     "text": "Voice: console action 'build.session.open' with phrases ('show me the <build> session', 'open the <build> session') resolving a spoken build name to an id by fuzzy title/id match, then the open route; ambiguous names ask back with the top matches.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj40a8kgq",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s11",
+     "text": "Plugin docs + notify/lifecycle bookkeeping: README section (UI, REST, MCP, CLI, voice), plugin.json command descriptions for the glossary, lifecycle markers on any line outside the plugin folder, help stub.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/README.md",
+      "apps/console-web/plugins/console-terminal/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj40bwbxp",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s12",
+     "text": "Web smoke test: render a build grid with one running build (mocked live session) and one finished build, right-click both, assert enabled/disabled + reason, click Open session and assert the terminal focuses the existing tab and no new session is created.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj40c9cno",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s13",
+     "text": "Screenshots for UI Review: desktop + phone shots of the menu (enabled and disabled) and the focused terminal; submit with 3 options for the item placement (top of dynamic section / under build actions / with icon only) as context-menu assets, group named after the build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/assets/context-menu/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj40dhswn",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "id": "s14",
+     "text": "Run the checks (check-console-control, check-controls, check-theme, check-toolbars, check-chrome-assets, plugin-lifecycle check, glossary catalog --check, plugin tests), finish the report _claude/builds/reports/right-click-running-build-pop-open.md, THREADS row, push branch and open the PR stating how each piece is reached (deep link, REST, MCP, CLI, voice) and that UI Review is waiting.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/right-click-running-build-pop-open.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3opj40e54c6",
+     "createdAt": "2026-11-17T19:43:46.240Z"
+    }
+   ]
   },
   {
    "id": "terminal-main-tab-streaming-console-s",
