@@ -363,6 +363,8 @@ export interface ToolbarData {
   showSearch: boolean;
   /** page-toolbar@1: `app` (default, the frame toolbar) · `view:<view id>` · `plugin:<plugin id>` */
   scope?: string;
+  /** page-toolbar@1: the place on its page this toolbar fills when the page has several (default `main`) */
+  slot?: string;
   /** page-toolbar@1 overflow rule (default auto: lowest priority folds into More) */
   overflow?: ToolbarOverflowMode | ToolbarOverflowRule;
   window?: string;

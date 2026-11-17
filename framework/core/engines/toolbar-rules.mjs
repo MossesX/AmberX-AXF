@@ -38,7 +38,9 @@ export const TOOLBAR_OVERFLOW = ['auto', 'never', 'always'];
 export const WHEN_OPERATORS = ['!=', '>=', '<=', '=', '>', '<'];
 
 export const TOOLBAR_LIMITS = { whenTerms: 8, keyLength: 80, confirmLength: 200, groups: 24, items: 48, priority: [0, 1000] };
-export const TOOLBAR_DEFAULTS = { scope: 'app', priority: 100, overflow: { when: 'auto', keep: 0, label: 'More' }, confirmText: 'Are you sure?' };
+export const TOOLBAR_DEFAULTS = { scope: 'app', slot: 'main', priority: 100, overflow: { when: 'auto', keep: 0, label: 'More' }, confirmText: 'Are you sure?' };
+/** The place on a page a toolbar fills (`slot`), when a page has several toolbars. */
+export const SLOT_PATTERN = /^[a-z0-9][a-z0-9-]{0,47}$/;
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[a-z0-9][a-z0-9._:-]{0,79}$/i;
@@ -58,6 +60,19 @@ export function parseToolbarScope(scope) {
 
 /** The scope string of a page: `view:<id>` / `plugin:<id>` / 'app'. */
 export const formatToolbarScope = (s) => (!s || s.kind === 'app' ? 'app' : `${s.kind}:${s.id}`);
+
+/**
+ * The settings id (chrome-settings@1 instance, tap-to-confirm id, console-control `toolbar:<id>`) of a page toolbar:
+ * `<scope id>` for the main slot, `<scope id>.<slot>` otherwise (`gate`, `gate.auto-lander`); the frame toolbar is `app`.
+ * Scope ids are slugged the way toolbarIdOf slugs (lowercase, runs of other characters → `.` kept, `-` kept).
+ */
+export function pageToolbarSettingsId(scope, slot) {
+  const s = typeof scope === 'string' ? parseToolbarScope(scope) : scope;
+  if (!s || s.kind === 'app') return 'app';
+  const id = String(s.id).toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '');
+  const sl = typeof slot === 'string' && slot && slot !== TOOLBAR_DEFAULTS.slot ? `.${slot}` : '';
+  return `${id}${sl}`;
+}
 
 /**
  * An action ref. `command:gate/lander-run` → { kind: 'command', id: 'gate/lander-run', plugin: 'gate', command: 'lander-run' };
@@ -210,6 +225,7 @@ export function toolbarErrors(type, data) {
   if (!isObj(data)) return ['data must be an object'];
   const errors = [];
   if ('scope' in data && parseToolbarScope(data.scope) === null) errors.push(`data.scope must be app, view:<view id> or plugin:<plugin id>`);
+  if ('slot' in data && (typeof data.slot !== 'string' || !SLOT_PATTERN.test(data.slot))) errors.push('data.slot must be a lowercase slot name (letters, digits, dashes; up to 48)');
   if ('overflow' in data) {
     const o = data.overflow;
     if (typeof o === 'string') errors.push(...overflowErrors(data, 'data'));
@@ -281,6 +297,7 @@ export function toolbarItemSchema() {
 export function toolbarSchemaProperties() {
   return {
     scope: { type: 'string', pattern: '^(app|view:[A-Za-z0-9._:-]+|plugin:[A-Za-z0-9._:-]+)$', description: 'the page this toolbar is for: app (default, the frame toolbar), view:<view id> or plugin:<plugin id>' },
+    slot: { type: 'string', pattern: SLOT_PATTERN.source, description: 'the place on its page this toolbar fills when the page has several (default main); settings id <scope id>.<slot>' },
     groups: {
       type: 'array', maxItems: TOOLBAR_LIMITS.groups,
       items: {

@@ -672,6 +672,9 @@
                         },
                         "overflow": {
                           "$ref": "#/$defs/mode"
+                        },
+                        "slot": {
+                          "$ref": "#/$defs/mode"
                         }
                       }
                     }

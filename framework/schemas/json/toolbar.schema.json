@@ -239,6 +239,11 @@
           "pattern": "^(app|view:[A-Za-z0-9._:-]+|plugin:[A-Za-z0-9._:-]+)$",
           "description": "the page this toolbar is for: app (default, the frame toolbar), view:<view id> or plugin:<plugin id>"
         },
+        "slot": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,47}$",
+          "description": "the place on its page this toolbar fills when the page has several (default main); settings id <scope id>.<slot>"
+        },
         "overflow": {
           "description": "what happens when the bar is too narrow: auto folds lowest-priority items into a More menu, never clips nothing (scrolls), always keeps only `keep` items on the bar",
           "oneOf": [

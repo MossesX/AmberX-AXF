@@ -23,10 +23,12 @@ export const TOOLBAR_CHECKED_KINDS: readonly ToolbarCheckedKind[];
 export const TOOLBAR_OVERFLOW: readonly ToolbarOverflow[];
 export const WHEN_OPERATORS: readonly string[];
 export const TOOLBAR_LIMITS: { whenTerms: number; keyLength: number; confirmLength: number; groups: number; items: number; priority: [number, number] };
-export const TOOLBAR_DEFAULTS: { scope: 'app'; priority: number; overflow: Required<ToolbarOverflowOption>; confirmText: string };
+export const TOOLBAR_DEFAULTS: { scope: 'app'; slot: 'main'; priority: number; overflow: Required<ToolbarOverflowOption>; confirmText: string };
+export const SLOT_PATTERN: RegExp;
 
 export function parseToolbarScope(scope: unknown): ToolbarScope | null;
 export function formatToolbarScope(scope: ToolbarScope | null | undefined): string;
+export function pageToolbarSettingsId(scope: ToolbarScope | string | null | undefined, slot?: string | null): string;
 export function parseActionRef(action: unknown): ToolbarActionRef | null;
 export function parseBadge(badge: unknown): ToolbarBadge | null;
 export function parseToolbarChecked(binding: unknown): ToolbarChecked | null;

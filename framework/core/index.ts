@@ -37,6 +37,7 @@ export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from 
 // page-toolbar@1 (toolbar assets bound to a page, buttons bound to action refs): rules shared with the build engine
 export * from './engines/toolbar-rules.mjs';
 export * from './engines/toolbar-migrate.mjs';
+export * from './engines/toolbar-actions';
 export * from './engines/help';
 export * from './engines/appearance';
 export * from './engines/banner';
