@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7654,
- "updatedAt": "2026-11-17T19:27:21.385Z",
+ "rev": 7655,
+ "updatedAt": "2026-11-17T19:27:35.609Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275215,20 +275215,32 @@
    "title": "Separate settings per plugin + reset confirm dialog",
    "category": "",
    "detail": "1) Every plugin gets its OWN settings interface showing only that plugin's settings; stop opening the console settings and jumping to the plugin's tab. The console keeps its own separate settings interface. Settings interfaces are not shared. 2) Sweep every page/plugin so each opens its correct default settings interface. 3) Clicking Reset in any settings interface opens a confirmation dialog with an 'Include assets' switch (on = also reset assets/skins to default; off = settings only) and a scrollable table listing every changed asset, same as the table in the settings panel.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/separate-settings-per-plugin-reset",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T19:27:18.689Z",
+   "updatedAt": "2026-11-17T19:27:30.297Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 18 steps (3 Fable).",
      "at": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-separate-settings-per-plugin-reset--earl.",
+     "at": "2026-11-17T19:27:23.639Z"
+    },
+    {
+     "text": "Brief only: brief is 27393 characters (~6849 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T19:27:25.880Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-separate-settings-per-plugin-reset--earl, shared account login)",
+     "at": "2026-11-17T19:27:30.297Z"
     }
    ],
    "approvals": [],
@@ -275248,13 +275260,13 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-separate-settings-per-plugin-reset--earl",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T19:27:22.709Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -275267,7 +275279,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T19:27:22.709Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -275276,7 +275288,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T19:27:22.709Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -275750,7 +275762,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
