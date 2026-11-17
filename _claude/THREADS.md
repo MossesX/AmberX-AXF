@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `axhub-veto-countdown-setting-read-only` note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `every-plugin-screen-gets-a-settings-gear` → running, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `settings-interface-gear-every-plugin` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `amberx-open-url-must-open-page-even-when` → complete, note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:54 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · orchestrator
 - 2026-11-17 23:54 UTC · `maintenance-plugin-clear-docker-cache` note (all) · orchestrator
 - 2026-11-17 23:55 UTC · `move-server-side-console-parts-onto-vps` s15 done (all) · orchestrator
+- 2026-11-17 23:55 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
+- 2026-11-17 23:55 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · foreign-write
 
 ## Token passes (log)
 
