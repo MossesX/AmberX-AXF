@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:48 UTC · `move-server-side-console-parts-onto-vps` s10 done (all) · orchestrator
 - 2026-11-17 23:48 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · foreign-write
 - 2026-11-17 23:48 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · orchestrator
+- 2026-11-17 23:49 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · foreign-write
 
 ## Token passes (log)
 
