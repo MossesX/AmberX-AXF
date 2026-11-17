@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7825,
- "updatedAt": "2026-11-17T20:34:12.400Z",
+ "rev": 7826,
+ "updatedAt": "2026-11-17T20:34:21.528Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275024,7 +275024,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:34:09.545Z",
+   "updatedAt": "2026-11-17T20:34:11.764Z",
    "builtAt": "",
    "notes": [
     {
@@ -275130,6 +275130,10 @@
     {
      "text": "Session stopped on its own with 2 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:34:09.545Z"
+    },
+    {
+     "text": "Watchdog fixed Separate settings per plugin + reset confirm dialog (step s17): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:34:11.764Z"
     }
    ],
    "approvals": [
@@ -275216,6 +275220,20 @@
      "buildId": "separate-settings-per-plugin-reset",
      "phase": "",
      "step": "s4",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:34:08.588Z",
+     "buildId": "separate-settings-per-plugin-reset",
+     "phase": "",
+     "step": "s17",
      "cause": "exit-clean",
      "exit": 0,
      "action": "requeue",
@@ -275695,7 +275713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -275711,7 +275729,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275719,7 +275737,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:32:50.026Z",
+   "updatedAt": "2026-11-17T20:34:18.133Z",
    "builtAt": "",
    "notes": [
     {
@@ -275737,6 +275755,10 @@
     {
      "text": "Headless run axf-rebuild-every-toolbar-page-specific--lenny: brief only · start 20.3K tokens ($0.16) · cost $18.81 · 94 turns · 6 tools, MCP none",
      "at": "2026-11-17T20:30:53.819Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 18 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T20:34:18.133Z"
     }
    ],
    "approvals": [],
@@ -275764,7 +275786,16 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T20:34:12.885Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "reason": "phase-done",
+     "stepsLeft": 18,
+     "account": "",
+     "session": "",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-17T18:58:57.805Z",
      "by": "orchestrator",
@@ -275773,7 +275804,7 @@
      "note": "Split by Claude into 28 steps (7 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session finished phase Phase 1 with 18 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -276506,7 +276537,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
