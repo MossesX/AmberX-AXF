@@ -96,6 +96,10 @@ function WidgetIconList() {
 export const iconPickerDialog: DialogMap = {
   [WIDGET_ICONS_DIALOG]: {
     title: 'Widget icon', icon: 'star', searchable: true,
-    render: (props) => (typeof props.widget === 'string' && props.widget ? <IconPicker widget={props.widget} label={typeof props.label === 'string' ? props.label : undefined} /> : <WidgetIconList />),
+    // { widget } from the menus; { arg } from console_dialog / the console-commands relay (`<id>` or `widget=<id>`)
+    render: (props) => {
+      const raw = typeof props.widget === 'string' ? props.widget : typeof props.arg === 'string' ? props.arg.replace(/^\??widget=/, '') : '';
+      return raw ? <IconPicker widget={raw} label={typeof props.label === 'string' ? props.label : undefined} /> : <WidgetIconList />;
+    },
   },
 };
