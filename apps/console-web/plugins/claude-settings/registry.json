@@ -53,6 +53,8 @@
       "description": "On: Claude starts a build as soon as it is in the orchestrator, without a card asking first." },
     { "key": "builds.maxParallel", "group": "builds", "label": "Max parallel builds", "kind": "number", "default": 3, "min": 1, "max": 12, "step": 1, "owner": "raise", "level": "developer",
       "description": "How many builds Claude runs at once (the VPS agent cap still applies on top)." },
+    { "key": "builds.briefMaxBytes", "group": "builds", "label": "Max launch brief size (bytes)", "kind": "number", "default": 122880, "min": 16384, "max": 1048576, "step": 1024, "level": "developer",
+      "description": "A launch brief bigger than this is trimmed (the step list first, then the rules block) and the build gets a note saying so. Brett's own words are never cut." },
     { "key": "builds.budgetPerBuildUsd", "group": "builds", "label": "Budget per build (USD)", "kind": "number", "default": 15, "min": 0, "max": 500, "step": 1, "owner": "raise", "level": "basic",
       "description": "A build that reaches this cost stops and notifies Brett. 0 = no cap. Anyone may lower it; only Brett raises it." },
     { "key": "builds.budgetDailyUsd", "group": "builds", "label": "Daily budget (USD)", "kind": "number", "default": 60, "min": 0, "max": 2000, "step": 5, "owner": "raise", "level": "basic",

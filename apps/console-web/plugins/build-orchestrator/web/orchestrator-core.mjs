@@ -248,7 +248,26 @@ export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
  * Brief for the next session: only the current phase (fewest tokens), the token rules, what to read first and how
  * to report. Paste it as the first message, or `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>`.
  */
-export function brief(build, rules = DEFAULT_RULES, { blocks = null } = {}) {
+/** A phase with more steps than this lists only its done count and the next this-many open steps (brief size cap). */
+export const BRIEF_STEPS = 40;
+
+/**
+ * The phase's step lines for a brief. Up to `limit` steps: every step, as always. More: the done ones as one count
+ * line, the next `limit` open ones, and how many more are in the store (a 2,000-step phase made a brief no exec takes).
+ */
+export function briefStepLines(p, limit = BRIEF_STEPS) {
+  const line = (s, prev) => `${s.group && s.group !== prev?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`;
+  if (p.steps.length <= limit) return p.steps.map((s, i) => line(s, p.steps[i - 1]));
+  const done = p.steps.filter((s) => s.done || s.skip); const left = p.steps.filter((s) => !s.done && !s.skip);
+  const shown = left.slice(0, Math.max(1, limit));
+  return [
+    ...(done.length ? [`[x] ${done.length} step${done.length === 1 ? '' : 's'} done or skipped (not listed)`] : []),
+    ...shown.map((s, i) => line(s, shown[i - 1])),
+    ...(left.length > shown.length ? [`… ${left.length - shown.length} more step${left.length - shown.length === 1 ? '' : 's'} in the store (\`orchestrator.mjs next <build>\` after each tick).`] : []),
+  ];
+}
+
+export function brief(build, rules = DEFAULT_RULES, { blocks = null, stepLimit = BRIEF_STEPS } = {}) {
   // blocks = brief-blocks@1 from the build rules store (the dispatcher and `orchestrator.mjs brief` pass it): its
   // Checkpoints / Look / API lines are the only ones, so the Build rules tab decides what a session is told. The brief
   // carries no rule text of its own; without blocks it has none of those lines.
@@ -273,7 +292,7 @@ export function brief(build, rules = DEFAULT_RULES, { blocks = null } = {}) {
     bl.api,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
-    ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
+    ...briefStepLines(p, stepLimit),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
     `Tick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).`,

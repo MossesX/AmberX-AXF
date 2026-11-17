@@ -131,6 +131,7 @@ export function loadSettings(env = process.env) {
   const fromClaude = {};
   if (file.parallelPerAccount === undefined && Number.isFinite(Number(cs['builds.maxParallel']))) fromClaude.parallelPerAccount = Number(cs['builds.maxParallel']);
   if (typeof cs['builds.launchWithoutAsking'] === 'boolean') fromClaude.autoQueue = cs['builds.launchWithoutAsking'];
+  if (file.briefMaxBytes === undefined && Number.isFinite(Number(cs['builds.briefMaxBytes']))) fromClaude.briefMaxBytes = Number(cs['builds.briefMaxBytes']);
   let patch = {}; try { patch = env.AXF_PIPELINE_SETTINGS ? JSON.parse(env.AXF_PIPELINE_SETTINGS) : {}; } catch { patch = {}; }
   return P.normSettings({ ...fromClaude, ...file, ...patch });
 }
@@ -582,20 +583,49 @@ export function runBuildRules(id, phase, { env = process.env, by = 'dispatcher' 
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief, then the rules. */
-export function briefFor(b, rules, { account, model, kind = '', retry = '' }, { blocks = storeBlocks(b) } = {}) {
+export function briefFor(b, rules, opts, more = {}) { return fitBriefFor(b, rules, opts, more).text; }
+
+const bytes = (t) => Buffer.byteLength(t, 'utf8');
+/** `t` cut to at most `max` bytes on a character boundary. */
+const cutBytes = (t, max) => { if (bytes(t) <= max) return t; let s = Buffer.from(t, 'utf8').subarray(0, Math.max(0, max)).toString('utf8'); if (s.endsWith('�')) s = s.slice(0, -1); return s; };
+
+/**
+ * The brief and how it was fitted under the byte cap (opts.maxBytes, default settings briefMaxBytes): { text, bytes,
+ * maxBytes, trimmed: [what was cut] }. Trimmed in this order until it fits: fewer steps listed (40 → 20 → 10 → 5), the
+ * rules block, then the end of the phase brief. "Brett said (verbatim)", the addenda, the header and the Pipeline
+ * paragraph are never cut.
+ */
+export function fitBriefFor(b, rules, { account, model, kind = '', retry = '', maxBytes = 0 }, { blocks = storeBlocks(b) } = {}) {
+  const cap = maxBytes > 0 ? maxBytes : P.DEFAULTS.briefMaxBytes;
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
-  return [
-    `# Build: ${b.id}`, '',
-    saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
-    '## What to build', orch.brief(b, rules, { blocks }), '',
-    `## Pipeline`,
-    `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
-    // the session's rules from the Build rules tab; with this block the launcher appends no second one
-    ...(blocks?.blocks?.rules ? ['', blocks.blocks.rules] : []),
-    // done-means-merged@1: a relaunch by the retry runner says what failed, what was tried and what to do differently
-    ...(retry ? ['', retry] : []),
-  ].join('\n');
+  const head = [`# Build: ${b.id}`, '', saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '', '## What to build'].join('\n');
+  const pipeline = ['', '## Pipeline',
+    `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`].join('\n');
+  // the session's rules from the Build rules tab; with this block the launcher appends no second one
+  let rulesText = blocks?.blocks?.rules ? `\n\n${blocks.blocks.rules}` : '';
+  // done-means-merged@1: a relaunch by the retry runner says what failed, what was tried and what to do differently
+  const retryText = retry ? `\n\n${retry}` : '';
+  const compose = (body) => `${head}\n${body}\n${pipeline}${rulesText}${retryText}`;
+  const trimmed = [];
+  let body = orch.brief(b, rules, { blocks });
+  let text = compose(body);
+  for (const lim of [20, 10, 5]) {
+    if (bytes(text) <= cap) break;
+    body = orch.brief(b, rules, { blocks, stepLimit: lim }); text = compose(body); trimmed.push(`step list to ${lim} open steps`);
+  }
+  if (bytes(text) > cap && rulesText) {
+    const room = cap - bytes(compose(body)) + bytes(rulesText);
+    const note = '\n… (rules block trimmed to fit the brief size cap, builds.briefMaxBytes)';
+    rulesText = room > bytes(note) + 200 ? `${cutBytes(rulesText, room - bytes(note))}${note}` : '';
+    text = compose(body); trimmed.push('rules block');
+  }
+  if (bytes(text) > cap) {
+    const note = '\n… (phase brief trimmed to fit the brief size cap, builds.briefMaxBytes)';
+    const room = cap - bytes(compose('')) - bytes(note);
+    body = `${cutBytes(body, Math.max(0, room))}${note}`; text = compose(body); trimmed.push('phase brief');
+  }
+  return { text, bytes: bytes(text), maxBytes: cap, trimmed };
 }
 
 /** Start one headless session for a queued build on an account. */
@@ -607,7 +637,14 @@ export function launch(b, { account, model, kind = '', phase = '', retry = '' },
   // the VPS's own 'before' rules (Build rules tab): run beside the launch, results in History
   runBuildRules(b.id, 'before', { env });
   const briefFile = join(dir, '.axf-brief.md');
-  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind, retry })}\n`);
+  const fit = fitBriefFor(b, rules, { account, model, kind, retry, maxBytes: loadSettings(env).briefMaxBytes });
+  if (fit.trimmed.length) {
+    const why = `Launch brief trimmed to ${fit.bytes} bytes (cap ${fit.maxBytes}, builds.briefMaxBytes): ${fit.trimmed.join(', ')}.`;
+    logLine({ event: 'brief-trimmed', build: b.id, bytes: fit.bytes, cap: fit.maxBytes, trimmed: fit.trimmed });
+    process.stderr.write(`pipeline: ${b.id}: ${why}\n`);
+    try { withStore((s) => { const r = storeCore.findBuild(s, b.id); if (r) { r.notes.push({ text: why, at: nowIso() }); r.updatedAt = nowIso(); } return s; }, { by: 'pipeline', action: 'pipeline:brief-trimmed', note: b.id }); } catch { /* the note is best effort */ }
+  }
+  writeFileSync(briefFile, `${fit.text}\n`);
   // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
   const token = issueDispatch(b.id, { account, model, env });
   const key = modelKey(model) || 'opus';
