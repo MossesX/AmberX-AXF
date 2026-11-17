@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8065,
- "updatedAt": "2026-11-17T21:43:23.463Z",
+ "rev": 8066,
+ "updatedAt": "2026-11-17T21:43:37.376Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -269041,7 +269041,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:43:11.522Z"
+     "updatedAt": "2026-11-17T21:43:32.919Z"
     },
     {
      "id": "s20",
@@ -284942,7 +284942,7 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -284950,7 +284950,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-17T21:43:20.764Z",
+   "updatedAt": "2026-11-17T21:43:29.345Z",
    "builtAt": "",
    "notes": [
     {
@@ -284960,6 +284960,10 @@
     {
      "text": "Split by Claude into 11 steps (0 Fable).",
      "at": "2026-11-17T21:38:35.623Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-fix-refreshing-console-jumps-back--rhonda.",
+     "at": "2026-11-17T21:43:29.345Z"
     }
    ],
    "approvals": [],
@@ -284979,13 +284983,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T21:36:58.759Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-fix-refreshing-console-jumps-back--rhonda",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T21:43:26.212Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -284998,7 +285002,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T21:43:26.212Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -285007,7 +285011,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T21:43:26.212Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -285304,7 +285308,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
