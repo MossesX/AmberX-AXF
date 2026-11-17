@@ -831,12 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:55 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
-- 2026-11-17 20:55 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 20:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 20:55 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
-- 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` → running, note (all) · pipeline
-- 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
 - 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` branch claude/toolbars-1-5-build-orchestrator-incl (all) · pipeline
 - 2026-11-17 20:56 UTC · `guided-live-demo-test-watch-orchestrator` s20 done (all) · orchestrator
 - 2026-11-17 20:56 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
@@ -1231,6 +1225,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:26 UTC · `terminal-main-tab-streaming-console-s` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `land-pr-730-reset-all-button-far-right` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · builds-live
+- 2026-11-17 22:26 UTC · `console-app-part-2-native-floating` → landed, note (all) · foreign-write
+- 2026-11-17 22:26 UTC · `banner-widget-shapes-plus-change-icon` s10 done, s11 done (all) · foreign-write
+- 2026-11-17 22:26 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:26 UTC · `rebuild-every-toolbar-page-specific` → landed, note (all) · foreign-write
+- 2026-11-17 22:26 UTC · `flagship-professional-skin-covering-2` s6 done, note (all) · foreign-write
+- 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 

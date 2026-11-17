@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:26:30.057Z",
+ "updatedAt": "2026-11-17T22:26:51.261Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181768,7 +181768,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181778,7 +181778,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
    "updatedAt": "2026-11-17T22:25:15.677Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:25:15.677Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -181999,6 +181999,10 @@
     {
      "text": "Refused pending → landed (asked by pending): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T22:26:13.280Z"
+    },
+    {
+     "text": "Refused pending → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T21:42:49.843Z"
     }
    ],
    "approvals": [
@@ -189401,9 +189405,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-17T22:26:09.371Z",
+   "updatedAt": "2026-11-17T22:26:30.295Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:26:30.295Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
