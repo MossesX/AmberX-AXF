@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 21:20 UTC · `fable-rebuild-to-do-manager-unlimited` → pending, note (all) · reconciler
 - 2026-11-16 21:30 UTC · `fable-rebuild-plan-studio-cleared-out` → pending, note (all) · reconciler
 - 2026-11-16 22:20 UTC · `get-main-green-unblock-lander-land-axf` s14 done, note (all) · reconciler
 - 2026-11-16 22:43 UTC · `rebuild-ui-manager-floating-window-to` added (0 steps) (all) · console
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:25 UTC · `console-app-part-2-native-floating` → running, note (all) · pipeline
 - 2026-11-17 00:25 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
 - 2026-11-17 00:25 UTC · `console-app-part-2-native-floating` branch claude/console-app-part-2-native-floating (all) · pipeline
+- 2026-11-17 00:26 UTC · `skin-animations-animated-colour-swatches` note (all) · orchestrator
 
 ## Token passes (log)
 

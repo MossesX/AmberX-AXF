@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7168,
- "updatedAt": "2026-11-17T00:25:50.437Z",
+ "rev": 7169,
+ "updatedAt": "2026-11-17T00:26:14.093Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210905,7 +210905,7 @@
    "title": "Skin animations: animated colour swatches, skin-switch sweep, swatch picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210913,7 +210913,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-17T00:21:48.809Z",
+   "updatedAt": "2026-11-17T00:26:10.843Z",
    "builtAt": "",
    "notes": [
     {
@@ -210923,6 +210923,10 @@
     {
      "text": "Queued by brett.",
      "at": "2026-11-16T23:20:43.631Z"
+    },
+    {
+     "text": "Duplicate of #652 (skin-animations-swatches-skin-switch, merged Nov 14): s1, s3-s7 already shipped there. Only gap: Skins plugin gallery cards had no swatch rows; fixed in d26e2c0fa.",
+     "at": "2026-11-17T00:26:10.843Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-skin-animations-animated-colour-swatches--rhonda.",
@@ -210954,13 +210958,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:20:37.554Z",
     "queuedBy": "brett",
-    "account": "hulu0241",
-    "session": "axf-skin-animations-animated-colour-swatches--rhonda",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T00:21:30.050Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -210973,7 +210977,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T00:21:30.050Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -210982,7 +210986,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T00:21:30.050Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
