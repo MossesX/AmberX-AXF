@@ -43,7 +43,7 @@ import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppear
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
-import { colourTokensOf, migrateLegacyInstanceLooks } from './engines/instance-look';
+import { colourTokensOf, instanceLookSettingsKey, kindLookSettingsKey, migrateLegacyInstanceLooks, resolveFromSettings, type InstanceLookKind, type ResolvedInstanceLook } from './engines/instance-look';
 import assetTypeSpec from '../schemas/asset-types.json';
 import { OutputTerminal } from './terminal';
 import {
@@ -786,6 +786,20 @@ export class AxfRuntime {
     for (const k of Object.keys(values)) if (!(k in r.settings)) this.settings.clear(k);
     for (const [k, v] of Object.entries(r.settings)) if (JSON.stringify(values[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
     this.terminal.ok('appearance', `instance looks: ${r.moved.length} legacy per-row value(s) moved into own-look records (axf.chrome.<kind>.<id>.look); ${r.kept.length} kept as token values`);
+  }
+
+  /** The colour-theme token names a look value may name (registry: asset-types.json → color-theme.nested.tokens). */
+  instanceLookColourTokens(): string[] { return colourTokensOf(assetTypeSpec); }
+
+  /**
+   * One grid's / tab row's resolved own look (instance-look@1): the skin's style theme family maps, then the app-wide
+   * record axf.chrome.<kind>.look, then the instance's axf.chrome.<kind>.<id>.look. The component puts vars + bind on its root.
+   */
+  instanceLook(kind: InstanceLookKind, id: string): ResolvedInstanceLook {
+    const saved: Record<string, unknown> = { [kindLookSettingsKey(kind)]: this.settings.get(kindLookSettingsKey(kind)) };
+    if (id) saved[instanceLookSettingsKey(kind, id)] = this.settings.get(instanceLookSettingsKey(kind, id));
+    const style = this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data) as { grid?: Record<string, unknown>; tabs?: Record<string, unknown> };
+    return resolveFromSettings(saved, kind, id, style, colourTokensOf(assetTypeSpec));
   }
 
   /** The pure fold of one document against this app's skins and registry (engines/look-migration.mjs). */

@@ -545,6 +545,24 @@
           "family": "grid"
         },
         {
+          "id": "grid.fontSize",
+          "token": "--fx-grid-font-size",
+          "kind": "string",
+          "default": "inherit",
+          "level": "pro",
+          "description": "Text size of the rows and headers (inherit = the text around the grid; instance-look@1 textSize sets it).",
+          "family": "grid"
+        },
+        {
+          "id": "grid.borderW",
+          "token": "--fx-grid-border-w",
+          "kind": "string",
+          "default": "var(--fx-border-w)",
+          "level": "pro",
+          "description": "Thickness of the grid lines (instance-look@1 borderW sets it).",
+          "family": "grid"
+        },
+        {
           "id": "grid.groupHeaderBg",
           "token": "--fx-grid-group-header-bg",
           "kind": "color",
@@ -641,6 +659,15 @@
           "default": "var(--fx-dens-gap-md)",
           "level": "pro",
           "description": "Space between tabs.",
+          "family": "tabs"
+        },
+        {
+          "id": "tabs.fontSize",
+          "token": "--fx-tab-font-size",
+          "kind": "string",
+          "default": "inherit",
+          "level": "pro",
+          "description": "Text size of the tabs (inherit = the text around the row; instance-look@1 textSize sets it).",
           "family": "tabs"
         },
         {
@@ -3913,6 +3940,8 @@
           "grid.cellPadX",
           "grid.rowHeight",
           "grid.radius",
+          "grid.fontSize",
+          "grid.borderW",
           "grid.groupHeaderBg",
           "grid.groupHeaderBgNested",
           "grid.groupHeaderBgDeep",
@@ -3924,6 +3953,7 @@
           "tabs.barBg",
           "tabs.barBorder",
           "tabs.gap",
+          "tabs.fontSize",
           "tabs.text",
           "tabs.bg",
           "tabs.border",

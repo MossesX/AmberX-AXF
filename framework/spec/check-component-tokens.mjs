@@ -65,7 +65,8 @@ for (const [v, d] of Object.entries(componentTokenDefaults())) ok(css.includes(`
 const GRID_SEL = /\.fx-table\b|\.fx-tablewrap\b|\.axf-grid/;
 const TAB_SEL = /\.fx-tabs\b|\.fx-tab\b|\.fx-tabgroup__bar|\[data-fx-tabs/;
 const COLOUR_PROPS = /(?:^|;|\{)\s*(color|background(?:-color)?|border(?:-[a-z]+)?(?:-color)?|outline(?:-color)?|box-shadow)\s*:\s*([^;}]+)/g;
-const GENERAL = /var\(--fx-(?!grid-|tab-|border-w\b|opacity-(?:panel|settings|disabled|muted|tint)\b|space\b|dens-|size-|radius-|shadow-|type-)[a-z0-9-]+\)/;
+// --fx-inst-* (instance-look@1) are compiled from token refs and scaled steps only, so a rule may read them like a family token
+const GENERAL = /var\(--fx-(?!grid-|tab-|inst-|border-w\b|opacity-(?:panel|settings|disabled|muted|tint)\b|space\b|dens-|size-|radius-|shadow-|type-)[a-z0-9-]+\)/;
 const STATUS_EDGE = /--axf-grid-edge: var\(--fx-(success|accent|danger|warning|info)\)/;
 const LITERAL = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(|\b(?:white|black|red|green|blue|gray|grey|orange|yellow)\b/;
 function ruleFindings(file, sel) {

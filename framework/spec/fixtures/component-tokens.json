@@ -4,12 +4,12 @@
     "grid": {
       "label": "Grid",
       "prefix": "--fx-grid-",
-      "tokens": 32
+      "tokens": 34
     },
     "tabs": {
       "label": "Tab group",
       "prefix": "--fx-tab-",
-      "tokens": 58
+      "tokens": 59
     }
   },
   "tokens": [
@@ -255,6 +255,26 @@
     },
     {
       "family": "grid",
+      "key": "fontSize",
+      "kind": "length",
+      "default": "inherit",
+      "level": "pro",
+      "description": "Text size of the rows and headers (inherit = the text around the grid; instance-look@1 textSize sets it).",
+      "path": "grid.fontSize",
+      "var": "--fx-grid-font-size"
+    },
+    {
+      "family": "grid",
+      "key": "borderW",
+      "kind": "length",
+      "default": "var(--fx-border-w)",
+      "level": "pro",
+      "description": "Thickness of the grid lines (instance-look@1 borderW sets it).",
+      "path": "grid.borderW",
+      "var": "--fx-grid-border-w"
+    },
+    {
+      "family": "grid",
       "key": "groupHeaderBg",
       "kind": "colour",
       "default": "var(--fx-surface3)",
@@ -362,6 +382,16 @@
       "description": "Space between tabs.",
       "path": "tabs.gap",
       "var": "--fx-tab-gap"
+    },
+    {
+      "family": "tabs",
+      "key": "fontSize",
+      "kind": "length",
+      "default": "inherit",
+      "level": "pro",
+      "description": "Text size of the tabs (inherit = the text around the row; instance-look@1 textSize sets it).",
+      "path": "tabs.fontSize",
+      "var": "--fx-tab-font-size"
     },
     {
       "family": "tabs",
@@ -939,6 +969,8 @@
     "--fx-grid-cell-pad-x": "var(--fx-size-table-pad-x)",
     "--fx-grid-row-height": "auto",
     "--fx-grid-radius": "0",
+    "--fx-grid-font-size": "inherit",
+    "--fx-grid-border-w": "var(--fx-border-w)",
     "--fx-grid-group-header-bg": "var(--fx-surface3)",
     "--fx-grid-group-header-bg-nested": "var(--fx-surface2)",
     "--fx-grid-group-header-bg-deep": "var(--fx-surface)",
@@ -950,6 +982,7 @@
     "--fx-tab-bar-bg": "transparent",
     "--fx-tab-bar-border": "var(--fx-border)",
     "--fx-tab-gap": "var(--fx-dens-gap-md)",
+    "--fx-tab-font-size": "inherit",
     "--fx-tab-text": "var(--fx-muted)",
     "--fx-tab-bg": "transparent",
     "--fx-tab-border": "transparent",
@@ -1224,6 +1257,24 @@
       "family": "grid"
     },
     {
+      "id": "grid.fontSize",
+      "token": "--fx-grid-font-size",
+      "kind": "string",
+      "default": "inherit",
+      "level": "pro",
+      "description": "Text size of the rows and headers (inherit = the text around the grid; instance-look@1 textSize sets it).",
+      "family": "grid"
+    },
+    {
+      "id": "grid.borderW",
+      "token": "--fx-grid-border-w",
+      "kind": "string",
+      "default": "var(--fx-border-w)",
+      "level": "pro",
+      "description": "Thickness of the grid lines (instance-look@1 borderW sets it).",
+      "family": "grid"
+    },
+    {
       "id": "grid.groupHeaderBg",
       "token": "--fx-grid-group-header-bg",
       "kind": "color",
@@ -1320,6 +1371,15 @@
       "default": "var(--fx-dens-gap-md)",
       "level": "pro",
       "description": "Space between tabs.",
+      "family": "tabs"
+    },
+    {
+      "id": "tabs.fontSize",
+      "token": "--fx-tab-font-size",
+      "kind": "string",
+      "default": "inherit",
+      "level": "pro",
+      "description": "Text size of the tabs (inherit = the text around the row; instance-look@1 textSize sets it).",
       "family": "tabs"
     },
     {
@@ -1843,6 +1903,8 @@
     "grid.cellPadX": "string",
     "grid.rowHeight": "string",
     "grid.radius": "string",
+    "grid.fontSize": "string",
+    "grid.borderW": "string",
     "grid.groupHeaderBg": "string",
     "grid.groupHeaderBgNested": "string",
     "grid.groupHeaderBgDeep": "string",
@@ -1854,6 +1916,7 @@
     "tabs.barBg": "string",
     "tabs.barBorder": "string",
     "tabs.gap": "string",
+    "tabs.fontSize": "string",
     "tabs.text": "string",
     "tabs.bg": "string",
     "tabs.border": "string",

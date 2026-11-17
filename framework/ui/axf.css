@@ -49,6 +49,8 @@
   --fx-grid-cell-pad-x: var(--fx-size-table-pad-x);
   --fx-grid-row-height: auto;
   --fx-grid-radius: 0;
+  --fx-grid-font-size: inherit;
+  --fx-grid-border-w: var(--fx-border-w);
   --fx-grid-group-header-bg: var(--fx-surface3);
   --fx-grid-group-header-bg-nested: var(--fx-surface2);
   --fx-grid-group-header-bg-deep: var(--fx-surface);
@@ -61,6 +63,7 @@
   --fx-tab-bar-bg: transparent;
   --fx-tab-bar-border: var(--fx-border);
   --fx-tab-gap: var(--fx-dens-gap-md);
+  --fx-tab-font-size: inherit;
   --fx-tab-text: var(--fx-muted);
   --fx-tab-bg: transparent;
   --fx-tab-border: transparent;
@@ -1417,6 +1420,17 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-tabs--group > .fx-tab.is-dragging { opacity: var(--fx-opacity-muted); }
 .fx-tabs--group > .fx-tab.is-drop-before { box-shadow: inset var(--fx-tab-indicator-size) 0 0 var(--fx-tab-indicator); }
 .fx-tabs--group > .fx-tab.is-drop-after { box-shadow: inset calc(var(--fx-tab-indicator-size) * -1) 0 0 var(--fx-tab-indicator); }
+/* instance-look@1 (one row's own look, TabGroup → react/instanceLook.ts): the root carries the scoped --fx-inst-* variables,
+   the --fx-tab-* family tokens bound to them, and data-fx-inst = the keys someone set. These rules read only --fx-inst-*
+   and only for a key that is set; any other key falls through to the family tokens, i.e. the skin cascade. No fallbacks. */
+.fx-tabs--group[data-fx-inst~='textSize'] { font-size: var(--fx-inst-text-size); }
+.fx-tabs--group[data-fx-inst~='spacing'] { gap: var(--fx-inst-spacing); }
+.fx-tabs--group[data-fx-inst~='borderColor'] { border-color: var(--fx-inst-border-color); }
+.fx-tabs--group[data-fx-inst~='rowBg'] > .fx-tab:not(.is-active):not([aria-selected='true']) { background: var(--fx-inst-row-bg); }
+.fx-tabs--group[data-fx-inst~='hoverBg'] > .fx-tab:not(.is-active):not([aria-selected='true']):hover { background: var(--fx-inst-hover-bg); }
+.fx-tabs--group[data-fx-inst~='selectedBg'] > .fx-tab.is-active, .fx-tabs--group[data-fx-inst~='selectedBg'] > .fx-tab[aria-selected='true'] { background: var(--fx-inst-selected-bg); }
+.fx-tabs--group[data-fx-inst~='selectedFg'] > .fx-tab.is-active, .fx-tabs--group[data-fx-inst~='selectedFg'] > .fx-tab[aria-selected='true'] { color: var(--fx-inst-selected-fg); }
+.fx-tabs--group[data-fx-inst~='radius'] > .fx-tab { border-radius: var(--fx-inst-radius); }
 .fx-tabframe { display: flex; min-width: 0; min-height: 0; }
 .fx-tabframe[data-fx-tabs-position='top'] { flex-direction: column; }
 .fx-tabframe[data-fx-tabs-position='bottom'] { flex-direction: column-reverse; }
