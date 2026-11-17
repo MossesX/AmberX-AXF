@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T12:32:26.092Z",
+ "updatedAt": "2026-11-17T12:33:08.436Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -170362,7 +170362,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T12:23:32.217Z",
+   "updatedAt": "2026-11-17T12:33:04.136Z",
    "builtAt": "",
    "notes": [
     {
@@ -170380,6 +170380,10 @@
     {
      "text": "Brief only: brief is 24181 characters (~6046 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T12:23:32.217Z"
+    },
+    {
+     "text": "Clash note (move-server-side-console-parts-onto-vps): that build moves the Maintenance monitor onto the host as the axf-maintenance unit under a dedicated axf-host user with a sudo whitelist (docker builder/image prune, systemctl restart docker) and a host API socket the console calls. This build keeps the Clear Docker cache action itself (engine, confirm, routes, disk Auto fix). If you add a host runner for your s1, put the unit in deploy/systemd/ with @DIR@ and install it through axf_systemd_unit (framework/deploy/axf-deploy.sh) so the host-services installer adopts it. Report: _claude/builds/reports/move-server-side-console-parts-onto-vps.md §2.",
+     "at": "2026-11-17T12:33:04.136Z"
     }
    ],
    "approvals": [],
