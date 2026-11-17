@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7476,
- "updatedAt": "2026-11-17T15:01:44.324Z",
+ "rev": 7477,
+ "updatedAt": "2026-11-17T15:02:09.053Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265197,7 +265197,7 @@
    "title": "Auto-lander: drag rows to set merge order, lander follows it",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: drag-and-drop rows (and Move to top / Move up / Move down / Move to bottom in each row's menu, multi-select) to set the order PRs get merged in. The order is stored server-side on the VPS and the lander (server-auto-lander) always lands strictly in that order, one at a time, merging main in before each. New PRs join at the bottom; default order is closest-to-main first until Brett reorders. Show a position number column. Same reorder via REST, MCP, CLI, voice ('land #774 next'). Coordinate with auto-lander-grid-one-row-per-build and server-auto-lander-fixes-lands.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -265205,7 +265205,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T15:01:21.829Z",
+   "updatedAt": "2026-11-17T15:02:06.901Z",
    "builtAt": "",
    "notes": [
     {
@@ -265223,6 +265223,10 @@
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-auto-lander-drag-rows-to-set-merge-order--sully.",
      "at": "2026-11-17T15:01:15.413Z"
+    },
+    {
+     "text": "Dispatch gate: auto-lander-drag-rows-to-set-merge-order still has axf-auto-lander-drag-rows-to-set-merge-order--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-17T15:02:06.901Z"
     }
    ],
    "approvals": [],
@@ -265243,7 +265247,7 @@
     "queuedAt": "2026-11-17T14:59:47.027Z",
     "queuedBy": "console",
     "account": "",
-    "session": "",
+    "session": "axf-auto-lander-drag-rows-to-set-merge-order--sully",
     "slot": "",
     "model": "",
     "phase": "",
@@ -265660,7 +265664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
