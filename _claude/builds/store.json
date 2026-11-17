@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7602,
- "updatedAt": "2026-11-17T18:49:15.252Z",
+ "rev": 7603,
+ "updatedAt": "2026-11-17T18:50:37.614Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -272928,7 +272928,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:47:36.225Z",
-   "updatedAt": "2026-11-17T18:49:04.476Z",
+   "updatedAt": "2026-11-17T18:50:35.499Z",
    "builtAt": "",
    "notes": [
     {
@@ -272946,6 +272946,10 @@
     {
      "text": "Split by Claude into 20 steps (5 Fable).",
      "at": "2026-11-17T18:49:04.476Z"
+    },
+    {
+     "text": "Brett: optimizer limits as preference settings: max projected work per combined build (estimated minutes, default 3 h), plus max steps and max projected tokens as backstops, whichever hits first. The optimizer is a dialog (Optimize button + Use Claude switch + ? tooltip + these limits) that pops up from hooks in the application menu, the context menu and the Pending toolbar.",
+     "at": "2026-11-17T18:50:35.499Z"
     }
    ],
    "approvals": [],
@@ -273513,7 +273517,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
