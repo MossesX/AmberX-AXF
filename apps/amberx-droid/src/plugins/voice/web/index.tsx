@@ -18,6 +18,7 @@ import { dbText, graphPoints, levelOf, listens, overlayColors, pushLevel, voiceC
 import { flatTree, isOwnReply, localDay, parseIntent, type Intent } from '../../notes/web/core';
 import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
 import { aiReady, parseNote } from '../../ai/web/client';
+import { hiddenAssetsVoice } from './hidden';
 import {
   GROUPS, NOTE_EXAMPLES, TASK_EXAMPLES, actionCommands, afterWake, applyOverrides, checkMine, decide, describeIntent, fillReply,
   navigationCommands, openSpec, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
@@ -745,6 +746,8 @@ export const library: AxfWebLibrary = {
   appMenu: [{ id: 'amberx.voice', menu: 'axhub', items: [{ id: 'voice.listen', label: 'Speak a command', icon: 'mic', action: 'voice.listen' }, { id: 'voice.commands', label: 'Voice commands', icon: 'sliders', action: 'voice.commands' }] }],
   register(rt) {
     rt.actions.register('voice.listen', () => void listenOnce(rt), { label: 'Speak a command' });
+    // hidden-assets@1: "hide the toolbar", "what's hidden", "unhide everything" → the same chrome.* actions as the console
+    registerVoiceRouter('axf.hidden-assets', (r, heard) => hiddenAssetsVoice(r, heard, (text) => say(r, text)));
     rt.actions.register('voice.commands', () => rt.navigate('voice-commands'), { label: 'Voice commands' });
     // A wake phrase was heard (hands-free, on screen or with the app closed): the rest of the sentence may already be the
     // command. An empty phrase = no wake phrase in it (always armed on Android, or any final result in a browser).
