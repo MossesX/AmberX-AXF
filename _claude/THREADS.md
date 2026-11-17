@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:02 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · cli
 - 2026-11-17 19:02 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · cli
 - 2026-11-17 19:02 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · cli
 - 2026-11-17 19:02 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · cli
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:56 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `own-look-per-grid-and-tab-group` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `maintenance-plugin-clear-docker-cache` note (all) · watchdog
+- 2026-11-17 19:57 UTC · `rebuild-every-toolbar-page-specific` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
