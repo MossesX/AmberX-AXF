@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `merge-main-land-server-gate-one-session` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `merge-main-land-console-app-part-2` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `pending-tab-one-collapsed-row-per-2` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `shipped-features-organized-sortable` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
 - 2026-11-17 20:55 UTC · `toolbars-1-5-build-orchestrator-incl` branch claude/toolbars-1-5-build-orchestrator-incl (all) · pipeline
 - 2026-11-17 20:56 UTC · `guided-live-demo-test-watch-orchestrator` s20 done (all) · orchestrator
+- 2026-11-17 20:56 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
 
 ## Token passes (log)
 
