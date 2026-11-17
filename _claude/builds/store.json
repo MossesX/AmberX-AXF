@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7501,
- "updatedAt": "2026-11-17T15:09:08.548Z",
+ "rev": 7536,
+ "updatedAt": "2026-11-17T15:51:09.520Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140483,7 +140483,7 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-17T15:08:32.347Z",
+   "updatedAt": "2026-11-17T15:10:02.856Z",
    "builtAt": "",
    "notes": [
     {
@@ -140537,6 +140537,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:32.347Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:02.856Z"
     }
    ],
    "approvals": [],
@@ -140671,7 +140675,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151726,7 +151730,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-15T00:37:53.279Z",
+   "updatedAt": "2026-11-17T15:12:00.171Z",
    "builtAt": "2026-11-14T23:13:42.882Z",
    "notes": [
     {
@@ -151792,6 +151796,10 @@
     {
      "text": "Phase 2 done, PR #681. UI Review shots not taken: rebuild-shots rendered blank (Chromium ERR_NETWORK_CHANGED on every module load in this session); the pass-approval view needs desktop + phone shots before the PR is ready. AmberX native Approve/Deny = PORTING.md deferred gap. ntfy http actions may need axHub to let POST /api/passes/action through.",
      "at": "2026-11-14T23:13:19.519Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:00.170Z"
     }
    ],
    "approvals": [
@@ -152085,7 +152093,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -177267,7 +177275,7 @@
    "branch": "claude/rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou",
    "pr": "#768",
    "createdAt": "2026-11-12T23:25:43.887Z",
-   "updatedAt": "2026-11-17T15:07:42.512Z",
+   "updatedAt": "2026-11-17T15:09:16.157Z",
    "builtAt": "2026-11-17T01:01:11.971Z",
    "notes": [
     {
@@ -177297,6 +177305,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:07:42.512Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:16.157Z"
     }
    ],
    "approvals": [],
@@ -177428,7 +177440,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179690,7 +179702,7 @@
    "pr": "#762",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-17T15:08:15.479Z",
+   "updatedAt": "2026-11-17T15:09:34.581Z",
    "builtAt": "2026-11-16T23:37:25.374Z",
    "notes": [
     {
@@ -179756,6 +179768,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:15.479Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:34.581Z"
     }
    ],
    "approvals": [],
@@ -180084,7 +180100,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -181844,7 +181860,7 @@
    "pr": "#776",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T15:07:31.747Z",
+   "updatedAt": "2026-11-17T15:09:08.572Z",
    "builtAt": "2026-11-17T04:52:40.322Z",
    "notes": [
     {
@@ -181894,6 +181910,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:07:31.747Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:08.572Z"
     }
    ],
    "approvals": [
@@ -182494,7 +182514,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -187417,7 +187437,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-16T23:16:33.461Z",
+   "updatedAt": "2026-11-17T15:12:40.188Z",
    "builtAt": "2026-11-16T23:14:33.790Z",
    "notes": [
     {
@@ -187559,6 +187579,10 @@
     {
      "text": "Headless run axf-always-fill-every-slot-when-slots-are--gina: brief only · start 14.3K tokens ($0.05) · cost $0.29 · 14 turns · 6 tools, MCP none",
      "at": "2026-11-16T23:16:33.461Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:40.188Z"
     }
    ],
    "approvals": [
@@ -188287,7 +188311,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196411,7 +196435,7 @@
    "branch": "claude/projects-own-everything-per-project",
    "pr": "#605",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-15T01:39:43.872Z",
+   "updatedAt": "2026-11-17T15:12:32.306Z",
    "builtAt": "2026-11-15T01:39:19.969Z",
    "notes": [
     {
@@ -196485,6 +196509,10 @@
     {
      "text": "Headless run axf-projects-own-everything-per-project--rhonda: brief only · start 11.3K tokens ($0.03) · cost $2.71 · 53 turns · 6 tools, MCP none",
      "at": "2026-11-15T01:39:43.872Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:32.306Z"
     }
    ],
    "approvals": [
@@ -196662,7 +196690,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -197812,7 +197840,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-17T15:08:29.557Z",
+   "updatedAt": "2026-11-17T15:09:58.298Z",
    "builtAt": "",
    "notes": [
     {
@@ -197890,6 +197918,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:29.557Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:58.298Z"
     }
    ],
    "approvals": [],
@@ -198065,7 +198097,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -202324,7 +202356,7 @@
    "pr": "#698",
    "priority": "P1",
    "createdAt": "2026-11-13T18:07:49.026Z",
-   "updatedAt": "2026-11-15T01:09:09.454Z",
+   "updatedAt": "2026-11-17T15:11:46.911Z",
    "builtAt": "2026-11-15T01:09:09.454Z",
    "notes": [
     {
@@ -202362,6 +202394,10 @@
     {
      "text": "Phase 2 done, PR #698. UI Review shots are in _claude/builds/reports/quick-settings-pinned-collapsible-pane/ and were not submitted because the headless session has no AXF_TOKEN. To submit: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --app console-web --screen settings --pr 698 --console --single-option '...'. The s1 asset-gate files conflict with main (runtime.ts, build-engine, PORTING, android.yml).",
      "at": "2026-11-15T01:08:48.744Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:46.911Z"
     }
    ],
    "approvals": [
@@ -202634,7 +202670,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -202678,7 +202714,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-16T18:34:44.105Z",
+   "updatedAt": "2026-11-17T15:12:23.916Z",
    "builtAt": "2026-11-15T01:05:23.539Z",
    "notes": [
     {
@@ -202732,6 +202768,10 @@
     {
      "text": "Brett Nov 16: merged into themed-native-controls-plugin (one plugin for all browser-replacement controls + animations). Don't land separately.",
      "at": "2026-11-16T18:34:44.105Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:23.916Z"
     }
    ],
    "approvals": [
@@ -203057,7 +203097,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -203800,7 +203840,7 @@
    "pr": "#770",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-17T15:07:38.328Z",
+   "updatedAt": "2026-11-17T15:09:12.492Z",
    "builtAt": "2026-11-17T03:54:31.292Z",
    "notes": [
     {
@@ -203854,6 +203894,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:07:38.328Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:12.492Z"
     }
    ],
    "approvals": [
@@ -204104,7 +204148,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204983,7 +205027,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-16T22:44:41.832Z",
+   "updatedAt": "2026-11-17T15:10:43.918Z",
    "builtAt": "",
    "notes": [
     {
@@ -205161,6 +205205,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: rebuild fresh on main.",
      "at": "2026-11-16T22:44:41.832Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:43.918Z"
     }
    ],
    "approvals": [
@@ -205570,7 +205618,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206080,7 +206128,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-15T01:21:59.421Z",
+   "updatedAt": "2026-11-17T15:12:18.490Z",
    "builtAt": "2026-11-15T01:21:59.421Z",
    "notes": [
     {
@@ -206142,6 +206190,10 @@
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--paulie: brief only · start 11.5K tokens ($0.03) · cost $5.48 · 122 turns · 6 tools, MCP none",
      "at": "2026-11-15T01:21:59.421Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:18.490Z"
     }
    ],
    "approvals": [
@@ -206392,7 +206444,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206730,7 +206782,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-16T19:26:34.432Z",
+   "updatedAt": "2026-11-17T15:10:39.119Z",
    "builtAt": "",
    "notes": [
     {
@@ -206804,6 +206856,10 @@
     {
      "text": "Session axf-console-app-part-3-native-bridge-mic--gina on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T19:43:04.738Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:39.119Z"
     }
    ],
    "approvals": [
@@ -207041,7 +207097,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -207083,7 +207139,7 @@
    "pr": "#640",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-16T22:53:09.377Z",
+   "updatedAt": "2026-11-17T15:10:35.613Z",
    "builtAt": "",
    "notes": [
     {
@@ -207113,6 +207169,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T22:53:09.377Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:35.613Z"
     }
    ],
    "approvals": [],
@@ -207332,7 +207392,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -207374,7 +207434,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-17T00:39:18.617Z",
+   "updatedAt": "2026-11-17T15:10:30.427Z",
    "builtAt": "",
    "notes": [
     {
@@ -207416,6 +207476,10 @@
     {
      "text": "Superseded: build console-app-part-2-native-floating (branch claude/console-app-part-2-native-floating) carries this branch's commits plus the type-check fix the lander needed. Land that one; PR #750 shrinks to nothing once it merges.",
      "at": "2026-11-17T00:39:18.616Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:30.427Z"
     }
    ],
    "approvals": [],
@@ -207644,7 +207708,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210266,7 +210330,7 @@
    "branch": "claude/land-per-instance-settings-picker",
    "pr": "#766",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-17T15:07:56.051Z",
+   "updatedAt": "2026-11-17T15:09:23.120Z",
    "builtAt": "2026-11-17T00:53:13.094Z",
    "notes": [
     {
@@ -210300,6 +210364,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:07:56.051Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:23.120Z"
     }
    ],
    "approvals": [],
@@ -210440,7 +210508,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214548,7 +214616,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-16T13:10:22.649Z",
+   "updatedAt": "2026-11-17T15:12:14.753Z",
    "builtAt": "2026-11-15T01:26:56.489Z",
    "notes": [
     {
@@ -214606,6 +214674,10 @@
     {
      "text": "Brett (Nov 16): KEEP. Menus must be fully DYNAMIC: built at runtime from what every installed/enabled plugin registers for the right-clicked thing (no hardcoded lists). Enabling, disabling or installing a plugin adds/removes its items instantly with no rebuild, and items follow the current skin. Verify before landing.",
      "at": "2026-11-16T13:10:22.649Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:14.753Z"
     }
    ],
    "approvals": [
@@ -214865,7 +214937,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -215268,7 +215340,7 @@
    "pr": "#662",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-17T15:08:44.372Z",
+   "updatedAt": "2026-11-17T15:10:18.596Z",
    "builtAt": "",
    "notes": [
     {
@@ -215302,6 +215374,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:44.372Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:18.596Z"
     }
    ],
    "approvals": [],
@@ -215433,7 +215509,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -220674,7 +220750,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "#670",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-17T15:08:39.917Z",
+   "updatedAt": "2026-11-17T15:10:13.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -220756,6 +220832,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:39.917Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:13.809Z"
     }
    ],
    "approvals": [
@@ -220896,7 +220976,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222089,7 +222169,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-16T13:26:04.940Z",
+   "updatedAt": "2026-11-17T15:12:09.369Z",
    "builtAt": "2026-11-16T13:24:35.134Z",
    "notes": [
     {
@@ -222135,6 +222215,10 @@
     {
      "text": "Session axf-group-chat-audio-hear-agents-talk-while--joey on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-16T13:25:13.946Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:09.369Z"
     }
    ],
    "approvals": [],
@@ -222288,7 +222372,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222642,7 +222726,7 @@
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-17T15:08:35.255Z",
+   "updatedAt": "2026-11-17T15:10:10.275Z",
    "builtAt": "",
    "notes": [
     {
@@ -222668,6 +222752,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:35.255Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:10.275Z"
     }
    ],
    "approvals": [],
@@ -222799,7 +222887,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -223087,14 +223175,14 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "#780",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T15:06:58.323Z",
+   "updatedAt": "2026-11-17T15:30:22.248Z",
    "builtAt": "",
    "notes": [
     {
@@ -223160,6 +223248,10 @@
     {
      "text": "Brett: land after server-watchdog-orchestrator-auto-recovers-stuck",
      "at": "2026-11-17T15:06:58.322Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:30:22.248Z"
     }
    ],
    "approvals": [
@@ -223803,7 +223895,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -223862,7 +223954,7 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-15T00:30:24.925Z",
+   "updatedAt": "2026-11-17T15:12:05.959Z",
    "builtAt": "2026-11-15T00:08:17.045Z",
    "notes": [
     {
@@ -223908,6 +224000,10 @@
     {
      "text": "Phase 2 done (s6–s22). PR #676 waits on UI Review r-20261115-d87ad27e (3 looks). Open gaps: skin-swap restyle of the picker not verified (server-less preview never put the skin in force); listbox/combobox swap not built; picker: control kind deferred (pickers use button:picker-<id>); 30 hand-made selects held by the check-pickers baseline.",
      "at": "2026-11-15T00:07:59.294Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:12:05.959Z"
     }
    ],
    "approvals": [
@@ -224540,7 +224636,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -224564,7 +224660,7 @@
    "pr": "#690",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-16T23:21:41.524Z",
+   "updatedAt": "2026-11-17T15:11:55.378Z",
    "builtAt": "",
    "notes": [
     {
@@ -224626,6 +224722,10 @@
     {
      "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
      "at": "2026-11-16T23:21:41.524Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:55.378Z"
     }
    ],
    "approvals": [
@@ -225480,7 +225580,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -227857,7 +227957,7 @@
    "pr": "#717",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-16T14:17:06.592Z",
+   "updatedAt": "2026-11-17T15:11:21.496Z",
    "builtAt": "2026-11-16T14:16:08.095Z",
    "notes": [
     {
@@ -227979,6 +228079,10 @@
     {
      "text": "Session axf-console-look-becomes-default-axhub-skin--rhonda on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-16T14:17:06.592Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:21.496Z"
     }
    ],
    "approvals": [
@@ -228578,7 +228682,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -231599,7 +231703,7 @@
    "pr": "#705",
    "priority": "P0",
    "createdAt": "2026-11-15T04:17:06.158Z",
-   "updatedAt": "2026-11-16T23:13:05.011Z",
+   "updatedAt": "2026-11-17T15:10:26.507Z",
    "builtAt": "",
    "notes": [
     {
@@ -231685,6 +231789,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:13:05.011Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:26.507Z"
     }
    ],
    "approvals": [],
@@ -232168,7 +232276,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -234181,7 +234289,7 @@
    "pr": "#706",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T12:22:24.475Z",
+   "updatedAt": "2026-11-17T15:11:41.668Z",
    "builtAt": "2026-11-15T12:21:00.568Z",
    "notes": [
     {
@@ -234219,6 +234327,10 @@
     {
      "text": "Session axf-pending-tab-one-collapsed-row-per-2--paulie on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-15T12:22:24.475Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:41.668Z"
     }
    ],
    "approvals": [],
@@ -234641,7 +234753,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -236144,7 +236256,7 @@
    "pr": "#708",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-15T14:55:07.913Z",
+   "updatedAt": "2026-11-17T15:11:36.266Z",
    "builtAt": "2026-11-15T12:33:21.985Z",
    "notes": [
     {
@@ -236178,6 +236290,10 @@
     {
      "text": "TO THE RUNNING SESSION, re-read the build. Brett (09:56): every feature row in Shipped features gets an 'Open' button (and a context-menu item) that opens that feature in the live console app at the exact screen, tab or setting, using its console_show deep link. Features with no screen show the button disabled with the reason. The same button appears in the Gate plugin's Pending features expanded rows once the build has landed. Reachable by API/voice too ('open feature X').",
      "at": "2026-11-15T14:55:07.913Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:36.266Z"
     }
    ],
    "approvals": [],
@@ -236309,7 +236425,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -236333,7 +236449,7 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-16T14:29:14.787Z",
+   "updatedAt": "2026-11-17T15:11:32.865Z",
    "builtAt": "2026-11-16T14:29:14.787Z",
    "notes": [
     {
@@ -236407,6 +236523,10 @@
     {
      "text": "Reconciler: PR #709 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17 done",
      "at": "2026-11-16T14:29:14.787Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:32.865Z"
     }
    ],
    "approvals": [
@@ -236916,7 +237036,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -238458,7 +238578,7 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-16T17:28:03.893Z",
+   "updatedAt": "2026-11-17T15:11:27.725Z",
    "builtAt": "2026-11-16T17:08:51.405Z",
    "notes": [
     {
@@ -238580,6 +238700,10 @@
     {
      "text": "Session axf-phone-connect-small-android-companion--sully on mossesx-max- ended (exit 143); the build was already built.",
      "at": "2026-11-16T17:28:03.893Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:27.725Z"
     }
    ],
    "approvals": [
@@ -239537,7 +239661,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -239561,7 +239685,7 @@
    "pr": "#714",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-15T16:17:04.005Z",
+   "updatedAt": "2026-11-17T15:11:24.505Z",
    "builtAt": "2026-11-15T16:15:56.589Z",
    "notes": [
     {
@@ -239587,6 +239711,10 @@
     {
      "text": "Session axf-shipped-features-open-button-views-each--sully on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-15T16:17:04.005Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:24.505Z"
     }
    ],
    "approvals": [],
@@ -240035,7 +240163,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -242387,7 +242515,7 @@
    "pr": "#720",
    "priority": "P1",
    "createdAt": "2026-11-16T16:17:05.624Z",
-   "updatedAt": "2026-11-17T15:08:21.884Z",
+   "updatedAt": "2026-11-17T15:09:41.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -242425,6 +242553,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:21.884Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:41.722Z"
     }
    ],
    "approvals": [],
@@ -242899,7 +243031,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244332,7 +244464,7 @@
    "pr": "#718",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:34.116Z",
-   "updatedAt": "2026-11-17T15:08:25.259Z",
+   "updatedAt": "2026-11-17T15:09:48.925Z",
    "builtAt": "",
    "notes": [
     {
@@ -244362,6 +244494,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:25.259Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:48.925Z"
     }
    ],
    "approvals": [],
@@ -244669,7 +244805,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -244963,7 +245099,7 @@
    "pr": "#722",
    "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-16T17:20:54.142Z",
+   "updatedAt": "2026-11-17T15:11:16.616Z",
    "builtAt": "2026-11-16T17:11:44.616Z",
    "notes": [
     {
@@ -244993,6 +245129,10 @@
     {
      "text": "Reconciler: PR #722",
      "at": "2026-11-16T17:20:54.142Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:16.616Z"
     }
    ],
    "approvals": [],
@@ -245124,7 +245264,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -245148,7 +245288,7 @@
    "pr": "#764",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-17T15:08:03.528Z",
+   "updatedAt": "2026-11-17T15:09:28.357Z",
    "builtAt": "2026-11-16T23:55:24.132Z",
    "notes": [
     {
@@ -245214,6 +245354,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:03.528Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:28.357Z"
     }
    ],
    "approvals": [
@@ -245602,7 +245746,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -245626,7 +245770,7 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T15:07:49.223Z",
+   "updatedAt": "2026-11-17T15:09:19.867Z",
    "builtAt": "2026-11-17T00:57:48.057Z",
    "notes": [
     {
@@ -245660,6 +245804,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:07:49.223Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:19.867Z"
     }
    ],
    "approvals": [],
@@ -246225,7 +246373,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246249,7 +246397,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T20:50:14.801Z",
+   "updatedAt": "2026-11-17T15:11:13.156Z",
    "builtAt": "2026-11-16T20:49:51.102Z",
    "notes": [
     {
@@ -246331,6 +246479,10 @@
     {
      "text": "Headless run axf-settings-interface-gear-every-plugin--sully: brief only · start 19.2K tokens ($0.07) · cost $26.28 · 341 turns · 6 tools, MCP none",
      "at": "2026-11-16T20:50:14.801Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:13.156Z"
     }
    ],
    "approvals": [
@@ -247118,7 +247270,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247142,7 +247294,7 @@
    "pr": "#729",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-16T19:44:20.879Z",
+   "updatedAt": "2026-11-17T15:10:59.028Z",
    "builtAt": "2026-11-16T19:44:20.879Z",
    "notes": [
     {
@@ -247172,6 +247324,10 @@
     {
      "text": "Phase 1 done: PR #729, in the merge queue. Header and rows share one column definition (subgrid); 1 or 2 lines per row via setting:axf.grid.rowLines. grid-align 420 cases, 0 failures (was 52). UI Review r-20261116-k7rk501 waiting. Still to do after landing + redeploy: hand check on the live console signed in.",
      "at": "2026-11-16T19:43:57.392Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:59.028Z"
     }
    ],
    "approvals": [],
@@ -247514,7 +247670,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247530,7 +247686,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -247538,7 +247694,7 @@
    "pr": "#763",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-17T15:08:07.513Z",
+   "updatedAt": "2026-11-17T15:30:22.248Z",
    "builtAt": "",
    "notes": [
     {
@@ -247608,6 +247764,14 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:07.513Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:31.522Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:30:22.248Z"
     }
    ],
    "approvals": [
@@ -248066,7 +248230,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -248090,7 +248254,7 @@
    "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:52:10.001Z",
+   "updatedAt": "2026-11-17T15:10:55.743Z",
    "builtAt": "2026-11-16T19:52:10.001Z",
    "notes": [
     {
@@ -248128,6 +248292,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-16T19:52:10.001Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:55.743Z"
     }
    ],
    "approvals": [],
@@ -248477,7 +248645,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -248501,7 +248669,7 @@
    "pr": "#728",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:33:56.029Z",
+   "updatedAt": "2026-11-17T15:11:05.444Z",
    "builtAt": "2026-11-16T19:30:30.748Z",
    "notes": [
     {
@@ -248543,6 +248711,10 @@
     {
      "text": "Session axf-alert-every-time-build-falls-back-to--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-16T19:33:56.029Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:05.444Z"
     }
    ],
    "approvals": [],
@@ -248683,7 +248855,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -249363,7 +249535,7 @@
    "pr": "#732",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-16T20:06:07.446Z",
+   "updatedAt": "2026-11-17T15:10:51.825Z",
    "builtAt": "2026-11-16T20:03:57.558Z",
    "notes": [
     {
@@ -249393,6 +249565,10 @@
     {
      "text": "Session axf-every-settings-interface-gets--paulie on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-16T20:06:07.446Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:51.825Z"
     }
    ],
    "approvals": [],
@@ -249533,7 +249709,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -249927,7 +250103,7 @@
    "pr": "#733",
    "priority": "P0",
    "createdAt": "2026-11-16T20:22:23.083Z",
-   "updatedAt": "2026-11-16T20:41:09.683Z",
+   "updatedAt": "2026-11-17T15:10:48.784Z",
    "builtAt": "2026-11-16T20:39:27.617Z",
    "notes": [
     {
@@ -249965,6 +250141,10 @@
     {
      "text": "Session axf-to-do-manager-fully-voice-mcp-controlled--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-16T20:41:09.683Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:48.784Z"
     }
    ],
    "approvals": [],
@@ -250105,7 +250285,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -250819,7 +250999,7 @@
    "pr": "#761",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-17T15:08:18.732Z",
+   "updatedAt": "2026-11-17T15:09:37.994Z",
    "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
@@ -250917,6 +251097,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:18.732Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:37.994Z"
     }
    ],
    "approvals": [
@@ -251066,7 +251250,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -251850,7 +252034,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:33:18.736Z",
+   "updatedAt": "2026-11-17T15:10:22.915Z",
    "builtAt": "2026-11-17T00:32:45.876Z",
    "notes": [
     {
@@ -251924,6 +252108,10 @@
     {
      "text": "Session axf-own-look-per-grid-and-tab-group--lenny on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-17T00:33:18.736Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:22.915Z"
     }
    ],
    "approvals": [
@@ -252413,7 +252601,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -259090,7 +259278,7 @@
    "title": "Orchestrator runs long builds across multiple slots",
    "category": "",
    "detail": "Any build estimated over 30 minutes is split into independent step groups that run in parallel in separate slots (separate sessions on their own worktrees or sub-branches), then merged back onto the build's branch in order before landing. The splitter marks which steps are independent (no shared files) vs must run in sequence; dependent steps wait for their group. Uses free slots on any usable account. Shows per-group progress in the orchestrator. Server-gate rule. Same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -259098,7 +259286,7 @@
    "pr": "#773",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-17T15:07:13.017Z",
+   "updatedAt": "2026-11-17T15:30:22.248Z",
    "builtAt": "",
    "notes": [
     {
@@ -259148,6 +259336,10 @@
     {
      "text": "Brett: land after maintenance-plugin-clear-docker-cache",
      "at": "2026-11-17T15:07:13.017Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:30:22.248Z"
     }
    ],
    "approvals": [
@@ -259767,7 +259959,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -261334,7 +261526,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -261342,7 +261534,7 @@
    "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T15:06:51.577Z",
+   "updatedAt": "2026-11-17T15:30:22.248Z",
    "builtAt": "",
    "notes": [
     {
@@ -261388,6 +261580,10 @@
     {
      "text": "Brett: land after stop-auto-lander-committing-tracking",
      "at": "2026-11-17T15:06:51.577Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:30:22.248Z"
     }
    ],
    "approvals": [
@@ -261437,10 +261633,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T00:13:53.396Z",
+     "at": "2026-11-17T15:31:06.207Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -261880,7 +262076,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -263757,7 +263953,7 @@
    "title": "Settings opened from banners, nav menu and toolbars must open in the floating window",
    "category": "",
    "detail": "#628 (all-settings-interfaces-open-floating) landed, but settings opened from chrome (right-click/long-press Settings… on any banner, nav menu, toolbar, tab group, menu bar; the axf.chrome.settings dialogs and any plugin settings gear reached from them) still open in the main content area. Route every settings entry point through the same floating settings window #628 uses. First check the live console runs a build that includes #628; if not, redeploy. Test each entry point (banner, nav, toolbar, tab group, plugin gear) on desktop and phone. Same through REST, MCP, CLI, voice.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -263765,7 +263961,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T15:08:12.622Z",
+   "updatedAt": "2026-11-17T15:50:18.946Z",
    "builtAt": "",
    "notes": [
     {
@@ -263787,6 +263983,14 @@
     {
      "text": "Brief only: brief is 25740 characters (~6435 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T14:49:21.292Z"
+    },
+    {
+     "text": "Headless run axf-settings-opened-banners-nav-menu--joey: brief only · start 19.3K tokens ($0.18) · cost $19.74 · 160 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:26:55.284Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:50:18.946Z"
     }
    ],
    "approvals": [],
@@ -263827,10 +264031,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T14:49:00.995Z",
+     "at": "2026-11-17T15:51:06.747Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -263840,28 +264044,6 @@
     "heldWhy": ""
    },
    "steps": [
-    {
-     "id": "s13",
-     "uid": "st-mwktucdv01v4h4",
-     "title": "",
-     "text": "Bring back the 'Open in' choice that #628 dropped: every settings interface (and a global default in Settings) lets Brett pick where it opens: floating window (default), main area, or new tab. Each entry point (banner, nav, toolbar, tab group, plugin gear, app menu) honours it. Shown in the settings interface itself and reachable via REST, MCP, CLI, voice.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-17T15:08:12.623Z",
-     "updatedAt": "2026-11-17T15:08:12.982Z"
-    },
     {
      "id": "s1",
      "uid": "st-mwkt5lq401tjwn",
@@ -263932,12 +264114,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:26:09.604Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:48:58.684Z",
-     "updatedAt": "2026-11-17T14:48:58.684Z"
+     "updatedAt": "2026-11-17T15:26:09.879Z"
     },
     {
      "id": "s4",
@@ -264176,7 +264358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -264192,7 +264374,7 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -264200,7 +264382,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T15:04:37.972Z",
+   "updatedAt": "2026-11-17T15:40:17.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -264218,6 +264400,14 @@
     {
      "text": "Claude account: hulu0241 (axf-rebuild-fresh-main-hide-any-asset--rhonda, shared account login)",
      "at": "2026-11-17T14:52:05.272Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--rhonda: brief only · start 18.5K tokens ($0.13) · cost $9.66 · 103 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:10:28.408Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:40:17.557Z"
     }
    ],
    "approvals": [],
@@ -264258,10 +264448,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T14:51:44.575Z",
+     "at": "2026-11-17T15:41:07.355Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -264393,12 +264583,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:09:37.909Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T14:51:42.630Z"
+     "updatedAt": "2026-11-17T15:09:38.237Z"
     },
     {
      "id": "s6",
@@ -264694,7 +264884,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -264710,7 +264900,7 @@
    "title": "Edit UI mode: inline-edit anything, active only while Ctrl is held",
    "category": "",
    "detail": "Add an 'Edit UI' toggle (banner/toolbar button + setting). When it's on, holding Ctrl (long-press equivalent on phone) makes any element editable in place: labels/text, grid cells and row data where the data source allows writes, column headers, asset properties (toolbar, tab group, banner, widgets: size, colour, icon, order, hide). Releasing Ctrl ends editing; with Edit UI off, Ctrl does nothing special. Hovered element gets an outline; click edits inline; Enter/blur saves, Esc cancels; every change undoable. Edits save through the normal owner (asset system for looks, data API for data), never as one-off overrides. Works in console, axHub web and AmberX. Same toggle and edits via REST, MCP, CLI, voice. Coordinate with rebuild-fresh-main-hide-any-asset (hide/unhide should be one of the inline actions).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -264718,7 +264908,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T15:08:39.586Z",
+   "updatedAt": "2026-11-17T15:40:17.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -264740,6 +264930,18 @@
     {
      "text": "Claude account: hulu0241 (axf-edit-ui-mode-inline-edit-anything-active--paulie, shared account login)",
      "at": "2026-11-17T14:55:25.758Z"
+    },
+    {
+     "text": "Fable phase done (s1-s6): edit-ui@1 contract (framework/spec/EDIT-UI.md), schema + registry (framework/schemas/edit-ui.json, schemas/json/edit-ui-*.schema.json), engines (core/engines/edit-ui.ts, edit-ui-undo.ts), fixture + check-edit-ui.mts in CI, PORTING.md gap, rt.editUi with owner adapters (core/edit-ui-owners.ts) and the editui.on/off/toggle/state/set/undo/redo actions. Reach today: setting axf.editUi.enabled (setting: address, console-control set), actions through rt.actions; the hidden-assets owner is registered by rebuild-fresh-main-hide-any-asset (hide resolves owner-unavailable until it lands). Next phase (Opus): React gate (Ctrl / long-press / Esc), Editable wrappers, REST/MCP/CLI/voice transports, the look-writer path for non-chrome asset fields.",
+     "at": "2026-11-17T15:15:14.321Z"
+    },
+    {
+     "text": "Headless run axf-edit-ui-mode-inline-edit-anything-active--paulie: brief only · start 18.5K tokens ($0.13) · cost $10.70 · 80 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:16:11.973Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:40:17.557Z"
     }
    ],
    "approvals": [],
@@ -264780,10 +264982,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T14:54:12.007Z",
+     "at": "2026-11-17T15:41:07.355Z",
      "why": "subscription account hulu0241"
     },
     "tried": [
@@ -264936,12 +265138,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:15:11.387Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:54:09.749Z",
-     "updatedAt": "2026-11-17T14:54:09.749Z"
+     "updatedAt": "2026-11-17T15:15:11.739Z"
     },
     {
      "id": "s7",
@@ -265325,7 +265527,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -265341,7 +265543,7 @@
    "title": "Auto-lander: drag rows to set merge order, lander follows it",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: drag-and-drop rows (and Move to top / Move up / Move down / Move to bottom in each row's menu, multi-select) to set the order PRs get merged in. The order is stored server-side on the VPS and the lander (server-auto-lander) always lands strictly in that order, one at a time, merging main in before each. New PRs join at the bottom; default order is closest-to-main first until Brett reorders. Show a position number column. Same reorder via REST, MCP, CLI, voice ('land #774 next'). Coordinate with auto-lander-grid-one-row-per-build and server-auto-lander-fixes-lands.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -265349,7 +265551,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T15:07:48.947Z",
+   "updatedAt": "2026-11-17T15:40:17.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -265371,6 +265573,14 @@
     {
      "text": "Dispatch gate: auto-lander-drag-rows-to-set-merge-order still has axf-auto-lander-drag-rows-to-set-merge-order--sully alive: not launched again, tracking that session.",
      "at": "2026-11-17T15:02:06.901Z"
+    },
+    {
+     "text": "Headless run axf-auto-lander-drag-rows-to-set-merge-order--sully: brief only · start 17.8K tokens ($0.12) · cost $6.40 · 65 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:12:46.173Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:40:17.557Z"
     }
    ],
    "approvals": [],
@@ -265410,7 +265620,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T15:41:07.355Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -265487,12 +265703,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:12:12.190Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T15:00:55.483Z",
-     "updatedAt": "2026-11-17T15:00:55.483Z"
+     "updatedAt": "2026-11-17T15:12:38.952Z"
     },
     {
      "id": "s4",
@@ -265802,7 +266018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -265818,7 +266034,7 @@
    "title": "Live hot refresh: every grid and list re-renders instantly when its data changes",
    "category": "",
    "detail": "Every grid, list and table in the console (Auto-lander, orchestrator tabs, Pending, Plan Studio, UI Review, etc.) updates live without a reload whenever its data changes: server pushes change events (SSE/WebSocket from the data store / axf-data change feed), the framework DataGrid subscribes and re-renders only changed rows, keeping scroll, selection, sort, filters and open dialogs. Local actions (drag and drop, reorder, edit, archive) re-render instantly (optimistic) and reconcile with the server. Changes made from REST/MCP/CLI/voice or by the VPS lander show up live too. Reconnects automatically. Add a live indicator. Framework-level so every app gets it.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -265826,7 +266042,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T15:05:47.233Z",
-   "updatedAt": "2026-11-17T15:07:28.321Z",
+   "updatedAt": "2026-11-17T15:50:18.946Z",
    "builtAt": "",
    "notes": [
     {
@@ -265844,6 +266060,14 @@
     {
      "text": "Claude account: hulu0241 (axf-live-hot-refresh-every-grid-list-re--earl, shared account login)",
      "at": "2026-11-17T15:07:28.321Z"
+    },
+    {
+     "text": "Headless run axf-live-hot-refresh-every-grid-list-re--earl: brief only · start 18.1K tokens ($0.13) · cost $7.17 · 68 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:21:25.351Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-17T15:50:18.946Z"
     }
    ],
    "approvals": [],
@@ -265863,13 +266087,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T15:05:50.410Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-live-hot-refresh-every-grid-list-re--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T15:07:21.736Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -265882,16 +266106,16 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T15:07:21.736Z",
+    "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T15:07:05.772Z",
+     "at": "2026-11-17T15:51:06.747Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T15:07:21.736Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -265916,12 +266140,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:11:46.475Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T15:07:02.790Z",
-     "updatedAt": "2026-11-17T15:07:02.790Z"
+     "updatedAt": "2026-11-17T15:11:47.071Z"
     },
     {
      "id": "s2",
@@ -265941,12 +266165,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:15:41.091Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T15:07:02.790Z",
-     "updatedAt": "2026-11-17T15:07:02.790Z"
+     "updatedAt": "2026-11-17T15:15:41.536Z"
     },
     {
      "id": "s3",
@@ -265965,12 +266189,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:16:54.642Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T15:07:02.790Z",
-     "updatedAt": "2026-11-17T15:07:02.790Z"
+     "updatedAt": "2026-11-17T15:16:54.956Z"
     },
     {
      "id": "s4",
@@ -265991,12 +266215,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:21:02.913Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T15:07:02.790Z",
-     "updatedAt": "2026-11-17T15:07:02.790Z"
+     "updatedAt": "2026-11-17T15:21:03.488Z"
     },
     {
      "id": "s5",
@@ -266416,7 +266640,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
