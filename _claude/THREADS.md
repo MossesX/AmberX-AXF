@@ -830,11 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:56 UTC · `shipped-features-organized-sortable` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `vps-sends-shipped-features-every-merge` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `phone-connect-small-android-companion` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `shipped-features-open-button-views-each` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `fix-console-deep-links-open-page-lands` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `orchestrator-on-hold-status-and-tab` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `axhub-veto-countdown-setting-read-only` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `settings-interface-gear-every-plugin` note (all) · watchdog
@@ -1230,6 +1225,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:39 UTC · `fix-banner-settings-interface-tab` s10 done (all) · orchestrator
 - 2026-11-17 21:39 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
 - 2026-11-17 21:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:40 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:40 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:40 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:40 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 21:40 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 
 ## Token passes (log)
 

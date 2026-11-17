@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:40:10.500Z",
+ "updatedAt": "2026-11-17T21:40:30.641Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131490,7 +131490,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T21:35:18.029Z",
+   "updatedAt": "2026-11-17T21:40:27.307Z",
    "builtAt": "",
    "notes": [
     {
@@ -131596,6 +131596,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: The build is complete (not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T21:35:18.029Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: The build is complete (not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T21:40:27.307Z"
     }
    ],
    "approvals": [
@@ -181516,7 +181520,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:38:09.026Z",
+   "updatedAt": "2026-11-17T21:40:27.307Z",
    "builtAt": "",
    "notes": [
     {
@@ -181682,6 +181686,14 @@
     {
      "text": "Refused pending → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T21:38:09.027Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: The build is complete (build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T21:40:27.307Z"
+    },
+    {
+     "text": "Refused pending → landed (asked by watchdog): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T21:40:27.310Z"
     }
    ],
    "approvals": [
@@ -186546,7 +186558,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T21:39:27.056Z",
+   "updatedAt": "2026-11-17T21:40:22.517Z",
    "builtAt": "",
    "notes": [
     {
@@ -186600,6 +186612,18 @@
     {
      "text": "Brett: add many more toolbar options to the Gizmo X AI Studio toolbar settings (for the toolbar itself, these stay live): button size, icon size, icon-only / icon+text / text, label position, spacing and padding, height, alignment, grouping and separators, overflow menu behaviour, max visible buttons, button order (drag), show/hide each button, add buttons from the page's actions, colours/background/border/radius/shadow, transparency, hover/press effects, animations, tooltips, sticky, position (top/bottom/left/right/floating), vertical mode, auto-hide, density, tap-to-confirm, keyboard shortcuts per button, per-button colour. Pick whatever else a pro app offers.",
      "at": "2026-11-17T21:39:27.056Z"
+    },
+    {
+     "text": "Brett: right next to the 'Settings interface' row in each toolbar's settings, add an Override switch. Defaults: every toolbar's settings match Gizmo X AI Studio; Reset puts that toolbar back to the Gizmo X AI Studio values. The Override switch is ON by default for all toolbars.",
+     "at": "2026-11-17T21:40:15.425Z"
+    },
+    {
+     "text": "Brett: Override ON = that toolbar's settings are editable. Override OFF = locked to the Gizmo X AI Studio values (greyed out).",
+     "at": "2026-11-17T21:40:18.785Z"
+    },
+    {
+     "text": "Brett (correction, final): the Override switch is OFF by default for every toolbar (locked to Gizmo X AI Studio, greyed out). Flip it on to make that toolbar editable.",
+     "at": "2026-11-17T21:40:22.517Z"
     }
    ],
    "approvals": [],
