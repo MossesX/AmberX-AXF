@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7239,
- "updatedAt": "2026-11-17T00:57:03.841Z",
+ "rev": 7240,
+ "updatedAt": "2026-11-17T00:57:31.087Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -245329,7 +245329,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -245337,8 +245337,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T00:48:50.850Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T00:57:28.589Z",
+   "builtAt": "2026-11-17T00:57:28.590Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -245908,12 +245908,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:57:28.589Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T18:29:38.397Z",
-     "updatedAt": "2026-11-16T18:29:38.397Z"
+     "updatedAt": "2026-11-17T00:57:28.875Z"
     }
    ],
    "profiles": [
@@ -245924,7 +245924,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

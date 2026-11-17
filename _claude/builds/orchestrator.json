@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:57:03.841Z",
+ "updatedAt": "2026-11-17T00:57:31.087Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -159679,7 +159679,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -159687,8 +159687,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T00:48:50.850Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T00:57:28.589Z",
+   "builtAt": "2026-11-17T00:57:28.590Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -160163,8 +160163,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:57:28.589Z",
      "note": "",
      "uid": "st-mwjllivx0kp8oj",
      "createdAt": "2026-11-16T18:29:38.397Z"
