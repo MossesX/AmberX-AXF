@@ -15,6 +15,10 @@ import ai.amberx.axf.ui.components.AxfText
 import ai.amberx.axf.ui.components.AxfTextField
 import ai.amberx.axf.ui.components.ButtonTone
 import ai.amberx.axf.ui.theme.Axf
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,8 +55,14 @@ fun PairView() {
     var busy by remember { mutableStateOf(false) }
     var msg by remember { mutableStateOf("") }
     var watch by remember { mutableStateOf(store.watch) }
+    // notifications (Android 13+) and RECORD_AUDIO (Android files playback capture under it): asked once paired
+    val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
+    val wanted = remember { listOfNotNull(Manifest.permission.RECORD_AUDIO, if (Build.VERSION.SDK_INT >= 33) Manifest.permission.POST_NOTIFICATIONS else null).toTypedArray() }
     // the app is in front: (re)start the watch if it should run (a background start could be refused by Android)
-    LaunchedEffect(Unit) { if (store.paired && store.watch) WatchService.start(ctx) }
+    LaunchedEffect(paired) {
+        if (store.paired) ask.launch(wanted)
+        if (store.paired && store.watch) WatchService.start(ctx)
+    }
 
     if (signIn) {
         Column(Modifier.padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.one)) {
