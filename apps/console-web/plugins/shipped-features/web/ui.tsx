@@ -1,30 +1,30 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Container, Icon, IconButton, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
-import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import * as L from '@console/axf/core/feature-ledger.mjs';
 import type { Manifest } from '@console/axf/core/shipped-manifest.mjs';
+import * as T from '../ledger/table.mjs';
 import './shipped-features.css';
 
 /*
- * Shipped features (feature-ledger@1). Three levels on one grid:
- *   1. groups (View by: PR, build, day, app, plugin, type, repo, or flat) with counts that follow the filters
- *   2. features: status chip, edited chip, app / plugin, type, planned / merged / live dates, last edited
- *   3. details: what Brett said (verbatim), builds, PRs, live per target, the Edits timeline (newest first, each
- *      opens to its prompt, summary, files and links) and earlier versions (the original is kept), and the shipped
- *      manifest the orchestrator sent when the build landed (shipped-manifest@1: his prompt first, then collapsible
- *      sections: brief, steps, models and accounts, branch / PR / commit, files, tests, UI Review, cost, report, open)
- * Deep link: ?shipped=<build or feature id> (or #…?shipped=…) opens the grid on that build with its rows expanded.
- * Every rule (filter, sort, group, chips, export) is the framework's: framework/core/feature-ledger.mjs.
- * The view (grouping, sort, quick filters, open rows) is remembered per device.
+ * Shipped features: one table of every feature on the shared framework grid (lib-datagrid), rows from
+ * ../ledger/table.mjs (shipped-table@1; the same projection REST GET /table, the MCP tool, the CLI and voice read).
+ *   - groups: plugin / area (default), date, build, PR, status or none; collapsible headers with counts per status
+ *   - columns: feature, area, description, status, build, PR, commit, shipped, on main, deployed, how to reach it,
+ *     settings key, help, version, who asked, tests; shown / hidden and reordered in the column picker
+ *   - sort: tap a header (again to reverse), shift-click or the header menu's "Then by" (long-press) for more keys
+ *   - search, filter chips (status, has API, not deployed, plugin, date range), row count, CSV of what is shown
+ *   - each row expands (status, reach, settings, tests, then the feature's prompt, edits and shipped manifest);
+ *     right-click / long-press a row or a cell: open feature, open build, open PR, copy link, mark removed
+ * The view is remembered per viewer (this browser). Deep link: ?shipped=<feature, build or PR>.
  */
 
 export const FOLDER = 'shipped-features';
 export const VIEW = 'shipped-features';
 const api = pluginApi(FOLDER, 'Shipped features', { unavailable: 'Shipped features is switched off or its server part is not running.' });
-const VIEW_KEY = 'axp-shipped-features.view';
-type Ledger = L.Ledger & { meta?: { syncing?: boolean; importing?: boolean; empty?: boolean; error?: string; counts?: Record<string, number>; importedAt?: string } };
+type Ledger = L.Ledger & { manifests?: T.ManifestSummary[]; meta?: { syncing?: boolean; importing?: boolean; empty?: boolean; error?: string; counts?: Record<string, number>; importedAt?: string } };
 type Detail = { feature: L.Feature; edits: L.Edit[]; prompts: L.Prompt[]; history: { rev: number; at: string; why: string; doc: L.Feature }[]; manifests?: Manifest[] };
 
 /** Deep link + the shipped-features.show action: the build or feature to open the grid on. */
@@ -33,12 +33,9 @@ let pendingFocus = '';
 export function focusShipped(id: string) { pendingFocus = id.trim(); window.dispatchEvent(new CustomEvent(FOCUS_EVENT)); }
 const focusFromUrl = () => { const read = (k: string) => new URLSearchParams(location.search).get(k) ?? new URLSearchParams(location.hash.split('?')[1] ?? '').get(k); return (read('shipped') ?? '').trim(); };
 
-const loadView = (): L.View => { try { return L.normView(JSON.parse(localStorage.getItem(VIEW_KEY) || '{}')); } catch { return L.normView({}); } };
-const saveView = (v: L.View) => { try { localStorage.setItem(VIEW_KEY, JSON.stringify(v)); } catch { /* private window: the view just isn't remembered */ } };
 const TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { ok: 'success', warn: 'warning', accent: 'accent', info: 'accent', danger: 'danger', muted: undefined };
 const fmtDay = (v: string, guessed = false) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : `${guessed ? '~' : ''}${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`; };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
-const firstLiveGuessed = (f: L.Feature) => { const e = Object.values(f.liveAt).sort((a, b) => a.at.localeCompare(b.at))[0]; return !!e?.guessed; };
 const prUrl = (repo: string, n: number) => (L.REPOS[repo] ? `https://github.com/${L.REPOS[repo].github}/pull/${n}` : '');
 
 export function StatusChip({ rec }: { rec: { status: string; stalled?: boolean; liveAt?: Record<string, L.LiveEntry>; mergedAtGuessed?: boolean } }) {
@@ -46,27 +43,6 @@ export function StatusChip({ rec }: { rec: { status: string; stalled?: boolean; 
 }
 export function EditedChip({ f }: { f: L.Feature }) {
   const c = L.editedChip(f); return c ? <Chip tone={TONE[c.tone]}>{c.label}</Chip> : null;
-}
-
-/** Quick filters: hide completed / pending, status multi-select, edit filters. Each change is remembered on this device. */
-function Filters({ view, set }: { view: L.View; set: (p: Partial<L.View>) => void }) {
-  const toggleStatus = (s: L.Status) => set({ statuses: view.statuses.includes(s) ? view.statuses.filter((x) => x !== s) : [...view.statuses, s] });
-  return (
-    <div className="axp-shipped__filters" role="toolbar" aria-label="Shipped features filters">
-      <Checkbox label="Hide completed" checked={view.hideCompleted} onChange={(v) => set({ hideCompleted: v })} title="Hide Merged, Live and Removed features (and edits)" />
-      <Checkbox label="Hide pending" checked={view.hidePending} onChange={(v) => set({ hidePending: v })} title="Hide Planned, Queued, Building and In PR features (and edits)" />
-      <Checkbox label="Show cancelled" checked={!view.hideCancelled} onChange={(v) => set({ hideCancelled: !v })} title="Cancelled builds keep their features as Cancelled; hidden by default" />
-      <Checkbox label="Has edits" checked={view.hasEdits === true} onChange={(v) => set({ hasEdits: v ? true : null })} title="Only features something later changed" />
-      <Checkbox label="Being edited now" checked={view.beingEdited} onChange={(v) => set({ beingEdited: v })} title="Only features with an edit still in progress" />
-      <span className="axp-shipped__statuses" role="group" aria-label="Status">
-        {L.STATUSES.map((s) => (
-          <button key={s} type="button" className={`fx-chip ${view.statuses.includes(s) ? 'fx-chip--accent' : ''}`} aria-pressed={view.statuses.includes(s)} onClick={() => toggleStatus(s)} title={`Show only ${L.STATUS_LABEL[s]} (pick several)`}>{L.STATUS_LABEL[s]}</button>
-        ))}
-      </span>
-      <SelectField label="Edit status" value={view.editStatus} onChange={(v) => set({ editStatus: v as L.Status | '' })} options={[{ value: '', label: 'Any edit status' }, ...L.STATUSES.map((s) => ({ value: s, label: L.STATUS_LABEL[s] }))]} />
-      {(view.statuses.length || view.hideCompleted || view.hidePending || !view.hideCancelled || view.hasEdits !== null || view.beingEdited || view.editStatus || view.search) ? <Button icon="x" onClick={() => set({ ...L.DEFAULT_VIEW, by: view.by, sort: view.sort, expanded: view.expanded })}>Clear filters</Button> : null}
-    </div>
-  );
 }
 
 const mins = (n: number) => (n >= 60 ? `${Math.floor(n / 60)} h${n % 60 ? ` ${n % 60} min` : ''}` : `${n} min`);
@@ -205,92 +181,199 @@ function FeatureDetail({ f, ledger }: { f: L.Feature; ledger: Ledger }) {
   );
 }
 
+
+/* ------------------------------------------------------------------ the table (shipped-table@1, ../ledger/table.mjs) */
+
+const TABLE_KEY = 'axp-shipped-features.table';
+const VIEW_EVENT = 'axp-shipped-view';
+let pendingView: Partial<T.TableView> | null = null;
+/** The shipped-features.view action (MCP / voice / CLI through the console): merge a view into the open table. */
+export function applyShippedView(v: Partial<T.TableView>) { pendingView = v; window.dispatchEvent(new CustomEvent(VIEW_EVENT)); }
+const loadTable = (): T.TableView => { try { return T.normTableView(JSON.parse(localStorage.getItem(TABLE_KEY) || 'null') ?? T.DEFAULT_VIEW); } catch { return T.normTableView(T.DEFAULT_VIEW); } };
+const saveTable = (v: T.TableView) => { try { localStorage.setItem(TABLE_KEY, JSON.stringify(v)); } catch { /* private window: not remembered */ } };
+/** Rows on screen, for the row / cell context menu (index.tsx). */
+export const shownRows = new Map<string, T.Row>();
+export const ROW_TARGET = 'shipped-features.row';
+export const CELL_TARGET = 'shipped-features.cell';
+const REACH_ICON: Record<T.Reach, string> = { deeplink: 'external', rest: 'cloud', mcp: 'sparkles', cli: 'terminal', voice: 'mic' };
+const COL_LABEL: Record<string, string> = Object.fromEntries(T.COLUMNS.map((c) => [c.id, c.label]));
+const fmtHm = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }); };
+export const rowLink = (r: T.Row) => `${location.origin}${location.pathname}${r.deepLink}`;
+
+export function ShipBadge({ status }: { status: T.ShipStatus }) { return <Chip tone={T.SHIP_STATUS_TONE[status]}>{T.SHIP_STATUS_LABEL[status]}</Chip>; }
+/** A filter chip (framework chip class, pressed state for screen readers). */
+const ChipToggle = ({ on, onClick, children, title }: { on: boolean; onClick: () => void; children: ReactNode; title?: string }) => (
+  <button type="button" className={`fx-chip ${on ? 'fx-chip--accent' : ''}`} aria-pressed={on} onClick={onClick} title={title}>{children}</button>
+);
+const YesNo = ({ v, yes, no }: { v: boolean; yes: string; no: string }) => <Chip tone={v ? 'success' : undefined}>{v ? yes : no}</Chip>;
+
+/** Column picker: show / hide every column and move it up or down; remembered with the view. */
+function ColumnPicker({ view, set, close }: { view: T.TableView; set: (p: Partial<T.TableView>) => void; close: () => void }) {
+  const move = (id: string, d: -1 | 1) => { const o = [...view.order]; const i = o.indexOf(id); const j = i + d; if (j < 1 || j >= o.length) return; [o[i], o[j]] = [o[j]!, o[i]!]; set({ order: o }); };
+  return (
+    <Container className="axp-shipped__picker">
+      <div className="axp-shipped__pickhead" role="toolbar" aria-label="Column picker">
+        <b>Columns</b>
+        <Button size="sm" onClick={() => set({ hidden: [] })}>Show all</Button>
+        <Button size="sm" onClick={() => set({ hidden: [...T.DEFAULT_HIDDEN], order: [...T.COLUMN_IDS] })}>Reset</Button>
+        <IconButton icon="x" label="Close the column picker" onClick={close} />
+      </div>
+      <ol className="axp-shipped__picklist">
+        {view.order.map((id, i) => (
+          <li key={id}>
+            <Checkbox label={COL_LABEL[id] ?? id} checked={id === 'name' || !view.hidden.includes(id)} disabled={id === 'name'} onChange={(on) => set({ hidden: on ? view.hidden.filter((x) => x !== id) : [...view.hidden, id] })} />
+            <IconButton icon="chevron-left" label={`Move ${COL_LABEL[id]} left`} disabled={i <= 1} onClick={() => move(id, -1)} />
+            <IconButton icon="chevron-right" label={`Move ${COL_LABEL[id]} right`} disabled={i === 0 || i === view.order.length - 1} onClick={() => move(id, 1)} />
+          </li>
+        ))}
+      </ol>
+    </Container>
+  );
+}
+
+/** Filter chips: plugin, status, date range, has API, not deployed. */
+function TableFilters({ view, set, plugins }: { view: T.TableView; set: (p: Partial<T.TableView>) => void; plugins: string[] }) {
+  const tog = <K extends 'statuses' | 'plugins'>(k: K, v: string) => set({ [k]: (view[k] as string[]).includes(v) ? (view[k] as string[]).filter((x) => x !== v) : [...view[k], v] } as Partial<T.TableView>);
+  const any = view.statuses.length || view.plugins.length || view.from || view.to || view.hasApi || view.notDeployed || view.search;
+  return (
+    <div className="axp-shipped__filters" role="toolbar" aria-label="Shipped features filters">
+      <span className="axp-shipped__statuses" role="group" aria-label="Status">
+        {T.SHIP_STATUSES.map((s) => <ChipToggle key={s} on={view.statuses.includes(s)} onClick={() => tog('statuses', s)}>{T.SHIP_STATUS_LABEL[s]}</ChipToggle>)}
+      </span>
+      <ChipToggle on={view.hasApi} onClick={() => set({ hasApi: !view.hasApi })} title="Only features reachable by REST, MCP, CLI or voice">Has API</ChipToggle>
+      <ChipToggle on={view.notDeployed} onClick={() => set({ notDeployed: !view.notDeployed })} title="Only features not live anywhere yet">Not deployed</ChipToggle>
+      <SelectField label="Plugin" value="" onChange={(v) => v && tog('plugins', v)} options={[{ value: '', label: view.plugins.length ? `${view.plugins.length} picked` : 'Any plugin' }, ...plugins.map((p) => ({ value: p, label: `${view.plugins.includes(p) ? '✓ ' : ''}${p}` }))]} />
+      {view.plugins.map((p) => <ChipToggle key={p} on onClick={() => tog('plugins', p)} title={`Stop filtering on ${p}`}>{p} ×</ChipToggle>)}
+      <TextField label="From" type="date" className="axp-shipped__date" value={view.from} onChange={(from) => set({ from })} />
+      <TextField label="To" type="date" className="axp-shipped__date" value={view.to} onChange={(to) => set({ to })} />
+      {any ? <Button icon="x" size="sm" onClick={() => set({ statuses: [], plugins: [], from: '', to: '', hasApi: false, notDeployed: false, search: '' })}>Clear filters</Button> : null}
+    </div>
+  );
+}
+
+function RowDetail({ r, ledger }: { r: T.Row; ledger: Ledger }) {
+  const f = ledger.features.find((x) => x.id === r.id);
+  return (
+    <div className="axp-shipped__detail">
+      <dl className="axp-shipped__facts">
+        <dt>Status</dt><dd><ShipBadge status={r.status} />{f && L.statusChip(f).label !== T.SHIP_STATUS_LABEL[r.status] ? <span className="fx-muted">ledger: {L.statusChip(f).label}</span> : null}</dd>
+        <dt>How to reach it</dt><dd>{r.reach.length ? r.reach.map((x) => <span key={x} className="axp-shipped__ref"><Icon name={REACH_ICON[x]} /> {T.REACH_LABEL[x]}</span>) : '—'}<code>{r.deepLink}</code></dd>
+        <dt>Settings key</dt><dd>{r.settings ? <code>{r.settings}</code> : '—'}</dd>
+        <dt>Help</dt><dd>{r.help ? <a href={r.help} target="_blank" rel="noreferrer">{r.help}</a> : '—'}</dd>
+        <dt>Tests</dt><dd>{r.tests.total ? `${r.tests.pass}/${r.tests.total} pass` : 'none recorded'}</dd>
+        <dt>Version</dt><dd>{r.version}{r.duplicates.length ? ` · ${r.duplicates.length} repeated row${r.duplicates.length > 1 ? 's' : ''} folded in` : ''}</dd>
+      </dl>
+      {f ? <FeatureDetail f={f} ledger={ledger} /> : null}
+    </div>
+  );
+}
+
 export function ShippedFeaturesPage() {
   const rt = useRuntime();
   const [ledger, setLedger] = useState<Ledger | null>(null);
   const [error, setError] = useState('');
-  const [view, setViewState] = useState<L.View>(loadView);
+  const [view, setViewState] = useState<T.TableView>(loadTable);
   const [busy, setBusy] = useState(false);
-  const set = (p: Partial<L.View>) => setViewState((v) => { const n = L.normView({ ...v, ...p }); saveView(n); return n; });
+  const [picker, setPicker] = useState(false);
+  const set = (p: Partial<T.TableView>) => setViewState((v) => { const n = T.normTableView({ ...v, ...p }); saveTable(n); return n; });
 
   const load = async () => { try { setLedger(await api.call<Ledger>('ledger')); setError(''); } catch (e) { setError((e as Error).message); } };
-  // deep link (?shipped=<build or feature id>) and the shipped-features.show action: group by build, search it, open its rows
   const [focus, setFocus] = useState(() => { const u = focusFromUrl(); if (u) pendingFocus = u; return pendingFocus; });
   useEffect(() => { const on = () => setFocus(pendingFocus); window.addEventListener(FOCUS_EVENT, on); return () => window.removeEventListener(FOCUS_EVENT, on); }, []);
-  useEffect(() => {
-    if (!ledger || !focus) return;
-    const id = focus.toLowerCase();
-    const hits = ledger.features.filter((f) => f.id === id || f.builds.some((b) => b.id === id));
-    const groups = hits.flatMap((f) => (f.builds.length ? f.builds.map((b) => `g:${b.profile || 'main-framework'}:${b.id}`) : []));
-    set({ by: 'build', search: hits.length && !hits.some((f) => f.id === id) ? id : hits[0]?.name ?? id, hideCancelled: false, hideCompleted: false, hidePending: false, statuses: [], expanded: [...new Set([...hits.map((f) => f.id), ...groups])] });
-    pendingFocus = ''; setFocus('');
-  }, [ledger, focus]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { const on = () => { if (pendingView) set(pendingView); pendingView = null; }; on(); window.addEventListener(VIEW_EVENT, on); return () => window.removeEventListener(VIEW_EVENT, on); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { void load(); const t = window.setInterval(() => { void load(); }, 60_000); return () => window.clearInterval(t); }, []);
   useEffect(() => { if (ledger?.meta?.importing || ledger?.meta?.syncing) { const t = window.setTimeout(() => { void load(); }, 5_000); return () => window.clearTimeout(t); } return undefined; }, [ledger]);
 
-  const ctx = useMemo(() => (ledger ? { prompts: ledger.prompts, edits: ledger.edits, prs: ledger.prs, builds: ledger.builds } : {}), [ledger]);
-  const shown = useMemo(() => (ledger ? L.filterFeatures(ledger.features, view, ctx) : []), [ledger, view, ctx]);
-  const groups = useMemo(() => (ledger ? L.groupFeatures(shown, view, ctx) : []), [ledger, shown, view, ctx]);
-  const total = useMemo(() => ({ all: ledger?.features.length ?? 0, pending: shown.filter((f) => L.isPending(f.status)).length, live: shown.filter((f) => f.status === 'live').length, editing: shown.filter((f) => f.beingEdited).length }), [ledger, shown]);
+  const all = useMemo(() => (ledger ? T.toRows(ledger, ledger.manifests ?? []) : { rows: [], folded: 0 }), [ledger]);
+  const plugins = useMemo(() => [...new Set(all.rows.map((r) => r.area))].sort(), [all]);
+  const shown = useMemo(() => T.sortRows(T.filterRows(all.rows, view), view.sorts), [all, view]);
+  const groups = useMemo(() => T.groupRows(shown, view.by), [shown, view.by]);
+  useEffect(() => { shownRows.clear(); for (const r of all.rows) shownRows.set(r.id, r); }, [all]);
+  // deep link (?shipped=<build or feature id>) and shipped-features.show: search it, open its group and rows
+  useEffect(() => {
+    if (!ledger || !focus) return;
+    const id = focus.toLowerCase();
+    const hits = all.rows.filter((r) => r.id === id || r.builds.includes(id) || `#${r.pr}` === id || String(r.pr) === id);
+    const byBuild = hits.length && !hits.some((r) => r.id === id);
+    set({ by: byBuild ? 'build' : view.by, search: byBuild ? id : hits[0]?.name ?? id, statuses: [], plugins: [], from: '', to: '', hasApi: false, notDeployed: false, collapsed: [], expanded: [...new Set([...view.expanded, ...hits.map((r) => r.id)])] });
+    pendingFocus = ''; setFocus('');
+  }, [ledger, focus]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sync = async () => { setBusy(true); try { await api.post('sync', {}); rt.toast('Syncing builds, PRs and deploys…', 'info'); window.setTimeout(() => { void load(); }, 4000); } catch (e) { rt.toast((e as Error).message, 'danger'); } finally { setBusy(false); } };
-  const exportAs = (kind: 'csv' | 'md') => { void api.download(`export?kind=${kind}&view=${encodeURIComponent(JSON.stringify(view))}`, `shipped-features.${kind}`).catch((e: Error) => rt.toast(e.message, 'danger')); };
+  const exportCsv = () => { void api.download(`table?kind=csv&view=${encodeURIComponent(JSON.stringify(view))}`, 'shipped-features.csv').catch((e: Error) => rt.toast(e.message, 'danger')); };
 
   if (!ledger && !error) return <LoadingSkeleton rows={6} label="Loading shipped features" />;
   if (!ledger) return <EmptyState icon="alert">{error}</EmptyState>;
 
-  const sortCol = ({ name: 'name', status: 'status', app: 'app', type: 'type', planned: 'plannedAt', merged: 'mergedAt', live: 'liveAt', edited: 'lastEditAt', edits: 'editCount' } as Record<string, L.SortKey>);
-  const colOf: Record<string, string> = Object.fromEntries(Object.entries(sortCol).map(([k, v]) => [v, k]));
-  const sortedCol = colOf[view.sort.by];
-  const sort: GridSort = sortedCol ? { col: sortedCol, dir: view.sort.dir === 'asc' ? 1 : -1 } : null;
-  const onSort = (col: string | null) => { const by = col ? sortCol[col] : undefined; if (!by) return set({ sort: L.DEFAULT_VIEW.sort }); set({ sort: { by, dir: view.sort.by === by && view.sort.dir === 'desc' ? 'asc' : 'desc' } }); };
+  const onSort = (col: string | null, opts?: { add?: boolean }) => {
+    if (!col) return set({ sorts: [] });
+    const cur = view.sorts.find((s) => s.col === col);
+    const flip = (s: T.SortKey): T.SortKey => ({ col, dir: s.dir === 'desc' ? 'asc' : 'desc' });
+    if (opts?.add) return set({ sorts: cur ? view.sorts.map((s) => (s.col === col ? flip(s) : s)) : [...view.sorts, { col, dir: 'asc' }] });
+    set({ sorts: [cur && view.sorts[0]?.col === col ? flip(cur) : { col, dir: col === 'shipped' || col === 'tests' || col === 'version' ? 'desc' : 'asc' }] });
+  };
   const W = (n: number) => `calc(var(--fx-space) * ${n})`;
-  const columns: GridColumn<L.Feature>[] = [
-    { id: 'name', label: 'Feature', width: `minmax(${W(30)}, 3fr)`, fixed: true, sortable: true, render: (f) => <span className="axp-shipped__name">{f.name}</span> },
-    { id: 'status', label: 'Status', width: W(14), sortable: true, render: (f) => <StatusChip rec={f} /> },
-    { id: 'edits', label: 'Edited', width: W(18), sortable: true, sortValue: (f) => f.editCount, render: (f) => <EditedChip f={f} /> },
-    { id: 'app', label: 'App / plugin', width: W(18), sortable: true, render: (f) => <span className="fx-muted">{[f.app, f.plugin].filter(Boolean).join(' · ') || '—'}</span> },
-    { id: 'type', label: 'Type', width: W(14), sortable: true, render: (f) => L.TYPE_LABEL[f.type] },
-    { id: 'planned', label: 'Planned', width: W(13), sortable: true, render: (f) => fmtDay(f.plannedAt) },
-    { id: 'merged', label: 'Merged', width: W(13), sortable: true, render: (f) => fmtDay(f.mergedAt, f.mergedAtGuessed) },
-    { id: 'live', label: 'Live', width: W(13), sortable: true, render: (f) => fmtDay(f.firstLiveAt, firstLiveGuessed(f)) },
-    { id: 'edited', label: 'Last edited', width: W(13), sortable: true, render: (f) => fmtDay(f.lastEditAt) },
+  const cell = (id: string) => (r: T.Row) => ({ target: CELL_TARGET, payload: `${r.id}|${id}` });
+  const sv = (id: string) => (r: T.Row) => T.sortValue(r, id);
+  const col = (id: string, width: string, render: (r: T.Row) => ReactNode, extra: Partial<GridColumn<T.Row>> = {}): GridColumn<T.Row> => ({ id, label: COL_LABEL[id] ?? id, width, sortable: true, sortValue: sv(id), render, cellCtx: cell(id), ...extra });
+  const columns: GridColumn<T.Row>[] = [
+    col('name', W(64), (r) => <span className="axp-shipped__name" title={r.name}>{r.name}</span>, { fixed: true, sub: (r) => r.description || r.asked || null }),
+    col('area', W(30), (r) => <span className="axp-shipped__clip" title={r.area}>{r.area}</span>, { sub: (r) => L.TYPE_LABEL[r.type as L.FeatureType] ?? null }),
+    col('description', W(56), (r) => <span className="axp-shipped__clip" title={r.description}>{r.description || '—'}</span>),
+    col('status', W(24), (r) => <ShipBadge status={r.status} />),
+    col('build', W(36), (r) => (r.build ? <a className="axp-shipped__clip" title={r.build} href={`?shipped=${encodeURIComponent(r.build)}`} onClick={(e) => { e.preventDefault(); focusShipped(r.build); }}>{r.build}</a> : '—'), { sub: (r) => (r.builds.length > 1 ? `+${r.builds.length - 1} more` : null), cellCtx: (r) => (r.build ? { target: 'axf-build-item', payload: r.build } : cell('build')(r)) }),
+    col('pr', W(16), (r) => (r.pr ? <a href={r.prUrl} target="_blank" rel="noreferrer">#{r.pr}</a> : '—'), { sub: (r) => (r.prs.length > 1 ? `+${r.prs.length - 1}` : null) }),
+    col('commit', W(20), (r) => (r.commit ? <code>{r.commit.slice(0, 9)}</code> : '—')),
+    col('shipped', W(28), (r) => fmtDay(r.shipped, r.shippedGuessed), { sub: (r) => (r.shipped ? fmtHm(r.shipped) : null) }),
+    col('onMain', W(18), (r) => <YesNo v={r.onMain} yes="Yes" no="No" />),
+    col('deployed', W(20), (r) => <YesNo v={r.deployed} yes="Yes" no="No" />, { sub: (r) => (r.deployed ? Object.keys(r.liveAt).join(', ') : null) }),
+    col('reach', W(26), (r) => (r.reach.length ? <span className="axp-shipped__reach">{r.reach.map((x) => <span key={x} title={T.REACH_LABEL[x]} aria-label={T.REACH_LABEL[x]}><Icon name={REACH_ICON[x]} /></span>)}</span> : <span className="fx-muted">UI only</span>)),
+    col('settings', W(40), (r) => (r.settings ? <code className="axp-shipped__clip">{r.settings}</code> : '—')),
+    col('help', W(14), (r) => (r.help ? <a href={r.help} target="_blank" rel="noreferrer">Help</a> : '—')),
+    col('version', W(14), (r) => r.version),
+    col('asked', W(56), (r) => (r.asked ? <span className="axp-shipped__clip" title={r.asked}>“{r.asked}”</span> : '—')),
+    col('tests', W(16), (r) => (r.tests.total ? <Chip tone={r.tests.pass === r.tests.total ? 'success' : 'warning'}>{r.tests.pass}/{r.tests.total}</Chip> : '—')),
   ];
-  const gridGroups: GridGroup<L.Feature>[] = groups.map((g) => ({
-    id: `g:${g.key}`, title: g.label, rows: g.features, groups: [], collapsed: !view.expanded.includes(`g:${g.key}`) && groups.length > 1,
-    counts: <span className="axp-shipped__counts">{g.count} · {g.counts.pending} pending · {g.counts.completed} done{g.counts.cancelled ? ` · ${g.counts.cancelled} cancelled` : ''}{g.counts.edited ? ` · ${g.counts.edited} edited` : ''}</span>,
+  const single = groups.length < 2 || view.by === 'none';
+  const gridGroups: GridGroup<T.Row>[] = groups.map((g) => ({
+    id: `g:${g.key}`, title: g.title, rows: g.rows, groups: [], collapsed: !single && view.collapsed.includes(`g:${g.key}`), fixed: true,
+    counts: <span className="axp-shipped__counts">{g.count} · {T.SHIP_STATUSES.filter((s) => g.counts[s]).map((s) => `${g.counts[s]} ${T.SHIP_STATUS_LABEL[s].toLowerCase()}`).join(' · ')}</span>,
   }));
-  const toggle = (id: string) => set({ expanded: view.expanded.includes(id) ? view.expanded.filter((x) => x !== id) : [...view.expanded, id] });
+  const toggleGroup = (id: string) => set({ collapsed: view.collapsed.includes(id) ? view.collapsed.filter((x) => x !== id) : [...view.collapsed, id] });
+  const toggleRow = (id: string) => set({ expanded: view.expanded.includes(id) ? view.expanded.filter((x) => x !== id) : [...view.expanded, id] });
   const m = ledger.meta ?? {};
   return (
     <div className="fx-stack axp-shipped">
       <header className="fx-pagehead">
         <div>
-          <p className="fx-eyebrow">AmberX-AXF + axHub · {shown.length} of {total.all} features · {total.pending} pending · {total.live} live{total.editing ? ` · ${total.editing} being edited` : ''}{m.syncing ? ' · syncing…' : ''}{m.importing ? ' · importing history…' : ''}</p>
+          <p className="fx-eyebrow">AmberX-AXF + axHub · {shown.length} of {all.rows.length} features{all.folded ? ` · ${all.folded} repeated rows folded` : ''} · {shown.filter((r) => r.status === 'live').length} live · {shown.filter((r) => !r.deployed).length} not deployed{m.syncing ? ' · syncing…' : ''}{m.importing ? ' · importing history…' : ''}</p>
           <h1>Shipped features</h1>
-          <p className="fx-muted">Every feature from the moment a build plans it to when it went live, with every later edit. ~ marks a date reconstructed from history.</p>
         </div>
         <div className="axp-shipped__actions" role="toolbar" aria-label="Shipped features actions">
           <Button icon="refresh" disabled={busy || m.syncing} onClick={() => void sync()} title="Pick up new build events, merged PRs and deploys now">Sync</Button>
-          <Button icon="download" onClick={() => exportAs('csv')} title="The rows you see, as CSV">CSV</Button>
-          <Button icon="file" onClick={() => exportAs('md')} title="The rows you see, as a Markdown table">Markdown</Button>
+          <Button icon="sliders" aria-pressed={picker} onClick={() => setPicker((x) => !x)} title="Show, hide and reorder columns">Columns</Button>
+          <Button icon="download" onClick={exportCsv} title="The rows and columns you see, as CSV">Export CSV</Button>
         </div>
       </header>
       {m.error ? <p className="axp-shipped__warn" role="status"><Icon name="alert" /> Last sync failed: {m.error}</p> : null}
       <div className="axp-shipped__bar" role="toolbar" aria-label="Shipped features view">
-        <Segmented size="sm" label="View by" value={view.by} onChange={(by) => set({ by })} options={L.GROUPINGS.map((g) => ({ value: g, label: L.GROUPING_LABEL[g] }))} />
-        <TextField label="Search" type="search" placeholder="Search names, prompts, PR #, builds…" value={view.search} onChange={(search) => set({ search })} />
+        <TextField label="Search" type="search" placeholder="Name, area, build, PR #, commit, Brett's words…" value={view.search} onChange={(search) => set({ search })} />
+        <Segmented size="sm" label="Group by" value={view.by} onChange={(by) => set({ by, collapsed: [] })} options={T.GROUP_BY.map((g) => ({ value: g, label: T.GROUP_LABEL[g] }))} />
+        <span className="axp-shipped__count" role="status">{shown.length} row{shown.length === 1 ? '' : 's'}{view.sorts.length ? ` · sorted by ${view.sorts.map((s) => `${COL_LABEL[s.col]} ${s.dir === 'asc' ? '↑' : '↓'}`).join(', then ')}` : ''}</span>
       </div>
-      <Filters view={view} set={set} />
+      <TableFilters view={view} set={set} plugins={plugins} />
+      {picker ? <ColumnPicker view={view} set={set} close={() => setPicker(false)} /> : null}
       {m.empty ? <EmptyState icon="clock">Building the ledger from history (builds journal, merged PRs, early commits)… this takes a minute the first time.</EmptyState> : (
-        <DataGrid<L.Feature>
-          id="shipped-features" label="Shipped features" groups={gridGroups} columns={columns} rowId={(f) => f.id} rowLabel={(f) => f.name}
-          hidden={view.hiddenColumns} onToggleColumn={(c, show) => set({ hiddenColumns: show === false || (show === undefined && !view.hiddenColumns.includes(c)) ? [...view.hiddenColumns, c] : view.hiddenColumns.filter((x) => x !== c) })}
-          onShowAll={() => set({ hiddenColumns: [] })} sort={sort} onSort={onSort}
-          expanded={view.expanded} onToggleExpand={toggle} onToggleGroup={toggle}
-          renderDetail={(f) => <FeatureDetail f={f} ledger={ledger} />}
-          rowTone={(f) => ({ ok: 'success', warn: 'warning', accent: 'accent', info: 'info', danger: 'danger', muted: 'muted' } as Record<string, string>)[L.statusChip(f).tone] ?? 'muted'}
-          rowRef={(f) => ({ kind: 'feature', id: f.id })}
+        <DataGrid<T.Row>
+          id="shipped-features" label="Shipped features" groups={gridGroups} columns={columns} rowId={(r) => r.id} rowLabel={(r) => r.name}
+          hidden={view.hidden} order={view.order}
+          onToggleColumn={(c, show) => set({ hidden: show === false || (show === undefined && !view.hidden.includes(c)) ? [...view.hidden, c] : view.hidden.filter((x) => x !== c) })}
+          onShowAll={() => set({ hidden: [] })} onChooseColumns={() => setPicker(true)}
+          sorts={view.sorts.map((s) => ({ col: s.col, dir: s.dir === 'asc' ? 1 : -1 }))} onSort={onSort}
+          expanded={view.expanded} onToggleExpand={toggleRow} onToggleGroup={toggleGroup}
+          renderDetail={(r) => <RowDetail r={r} ledger={ledger} />}
+          rowTone={(r) => ({ live: 'success', switch: 'accent', partial: 'warning', pending: 'info', removed: 'danger' } as Record<string, string>)[r.status] ?? 'muted'}
+          rowCtx={(r) => ({ target: ROW_TARGET, payload: r.id })}
           empty={<EmptyState icon="search" compact>No feature matches these filters.</EmptyState>}
         />
       )}

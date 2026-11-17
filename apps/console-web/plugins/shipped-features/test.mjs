@@ -146,5 +146,57 @@ t('the build-hook `shipped` event reads the sidecar; the sync takes manifests th
   delete process.env.AXF_SHIPPED_DIR; D.closeDb(':memory:');
 });
 
+t('table: repeated rows fold, ship status, reach, tests from manifests', async () => {
+  const T = await import('./ledger/table.mjs');
+  const led = { prompts: [{ id: 'p-b1-0', said: 'make it sortable', verbatim: true, index: 0 }], features: [
+    { id: 'f-a', name: 'Grid', plugin: 'shipped-features', status: 'live', firstLiveAt: '2026-11-10T10:00:00Z', mergedAt: '2026-11-10T09:00:00Z', liveAt: { console: { at: '2026-11-10T10:00:00Z' } }, prs: [{ repo: 'amberx-axf', number: 5 }], builds: [{ id: 'b1' }], prompts: [{ id: 'p-b1-0' }], files: ['apps/console-web/plugins/shipped-features/plugin.json', 'apps/console-web/plugins/shipped-features/web/ui.tsx'], tags: [], links: {}, rev: 3, commits: [] },
+    { id: 'f-a2', name: 'grid', plugin: 'shipped-features', status: 'merged', mergedAt: '2026-11-09T00:00:00Z', prs: [{ repo: 'amberx-axf', number: 4 }], builds: [{ id: 'b0' }], prompts: [], files: [], tags: [], links: {}, rev: 1, commits: [] },
+    { id: 'f-b', name: 'Banner', plugin: 'banner', status: 'merged', mergedAt: '2026-11-11T00:00:00Z', prs: [], builds: [], prompts: [], files: [], tags: ['behind-switch'], links: {}, rev: 1, commits: [] },
+    { id: 'f-c', name: 'Old thing', app: 'console', status: 'removed', prs: [], builds: [], prompts: [], files: ['framework/cli/x.mjs'], tags: [], links: { help: 'https://h' }, rev: 2, commits: [] },
+    { id: 'f-d', name: 'Half', plugin: 'banner', status: 'merged', mergedAt: '2026-11-12T00:00:00Z', prs: [{ repo: 'amberx-axf', number: 9 }], builds: [], prompts: [], files: [], tags: [], links: {}, rev: 1, commits: [] },
+  ] };
+  const { rows, folded } = T.toRows(led, [{ build: 'b1', tests: { pass: 3, total: 4 } }]);
+  assert.equal(folded, 1); assert.equal(rows.length, 4);
+  const g = rows.find((r) => r.name.toLowerCase() === 'grid');
+  assert.equal(g.id, 'f-a', 'the live one wins'); assert.deepEqual(g.prs.map((p) => p.number), [5, 4]); assert.deepEqual(g.duplicates, ['f-a2']);
+  assert.equal(g.status, 'live'); assert.equal(g.onMain, true); assert.equal(g.deployed, true); assert.deepEqual(g.reach, ['deeplink', 'rest', 'mcp', 'voice']);
+  assert.deepEqual(g.tests, { pass: 3, total: 4 }); assert.equal(g.asked, 'make it sortable'); assert.equal(g.settings, 'plugins.shipped-features'); assert.equal(g.version, 'v3');
+  assert.equal(rows.find((r) => r.id === 'f-b').status, 'switch'); assert.equal(rows.find((r) => r.id === 'f-c').status, 'removed'); assert.equal(rows.find((r) => r.id === 'f-d').status, 'partial');
+  assert.deepEqual(rows.find((r) => r.id === 'f-c').reach, ['cli']); assert.equal(rows.find((r) => r.id === 'f-c').help, 'https://h');
+});
+t('table: multi-sort, filters, groups, view normalising, CSV', async () => {
+  const T = await import('./ledger/table.mjs');
+  const r = (id, area, status, shipped, pr = 0, deployed = false, hasApi = false) => ({ id, name: id, area, description: '', status, shipped, pr, prs: pr ? [{ repo: 'amberx-axf', number: pr }] : [], builds: [], build: '', commit: '', asked: '', deployed, onMain: true, hasApi, reach: hasApi ? ['rest'] : [], tests: { pass: 0, total: 0 }, version: 'v1', settings: '', help: '' });
+  const rows = [r('a', 'x', 'live', '2026-11-10T01:00:00Z', 1, true, true), r('b', 'y', 'partial', '2026-11-12T01:00:00Z', 2), r('c', 'x', 'partial', '2026-11-11T01:00:00Z', 3), r('d', 'y', 'live', '', 0, true)];
+  assert.deepEqual(T.sortRows(rows, [{ col: 'area', dir: 'asc' }, { col: 'shipped', dir: 'desc' }]).map((x) => x.id), ['c', 'a', 'b', 'd'], 'area, then newest; empty dates last');
+  assert.deepEqual(T.sortRows(rows, [{ col: 'shipped', dir: 'asc' }]).map((x) => x.id), ['a', 'c', 'b', 'd']);
+  assert.deepEqual(T.filterRows(rows, { notDeployed: true }).map((x) => x.id), ['b', 'c']);
+  assert.deepEqual(T.filterRows(rows, { hasApi: true }).map((x) => x.id), ['a']);
+  assert.deepEqual(T.filterRows(rows, { statuses: ['live'], plugins: ['y'] }).map((x) => x.id), ['d']);
+  assert.deepEqual(T.filterRows(rows, { from: '2026-11-11', to: '2026-11-11' }).map((x) => x.id), ['c']);
+  assert.deepEqual(T.filterRows(rows, { search: '#2' }).map((x) => x.id), ['b'], 'a PR number finds its row');
+  const gs = T.groupRows(rows, 'status'); assert.deepEqual(gs.map((g) => g.key), ['live', 'partial']); assert.equal(gs[0].counts.live, 2);
+  assert.deepEqual(T.groupRows(rows, 'date').map((g) => g.title), ['2026-11-10', '2026-11-12', '2026-11-11', 'No date yet']);
+  const v = T.normTableView({ by: 'nope', sorts: [{ col: 'zzz' }, { col: 'pr', dir: 'asc' }, { col: 'pr' }], hidden: ['name', 'tests'], order: ['tests', 'name'] });
+  assert.equal(v.by, 'area'); assert.deepEqual(v.sorts, [{ col: 'pr', dir: 'asc' }]); assert.deepEqual(v.hidden, ['tests'], 'the name column never hides');
+  assert.equal(v.order[0], 'name'); assert.equal(v.order[1], 'tests'); assert.equal(v.order.length, T.COLUMN_IDS.length);
+  assert.deepEqual(T.normTableView(null).hidden, T.DEFAULT_HIDDEN);
+  const csv = T.toCsv([rows[0]], ['name', 'status', 'deployed', 'pr', 'reach']).split('\n');
+  assert.equal(csv[0], 'Feature,Status,Deployed,PR,How to reach it'); assert.equal(csv[1], 'a,Live,yes,#1,REST');
+});
+t('table CLI + mark removed: the REST / MCP / CLI path', async () => {
+  const { execFileSync } = await import('node:child_process'); const { mkdtempSync, rmSync } = await import('node:fs'); const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
+  const dir = mkdtempSync(join(tmpdir(), 'sf-table-')); const env = { ...process.env, AXF_SHIPPED_FEATURES_DIR: dir };
+  const cli = (...a) => execFileSync('node', [new URL('./ledger/ledger.mjs', import.meta.url).pathname, ...a], { env, encoding: 'utf8' });
+  try {
+    const db = D.openDb(join(dir, 'ledger.sqlite')); D.putFeature(db, { name: 'Grid', plugin: 'shipped-features', status: 'merged', mergedAt: '2026-11-10T00:00:00Z', prs: [7] }); D.closeDb(join(dir, 'ledger.sqlite'));
+    const out = JSON.parse(cli('table', '--view', JSON.stringify({ by: 'status', sorts: [{ col: 'pr', dir: 'asc' }] }), '--json'));
+    assert.equal(out.$axf, 'shipped-table@1'); assert.equal(out.count, 1); assert.equal(out.rows[0].status, 'partial'); assert.equal(out.groups[0].key, 'partial');
+    assert.match(cli('table', '--csv'), /^Feature,Plugin \/ area,Status/);
+    const id = out.rows[0].id; assert.equal(JSON.parse(cli('mark-removed', id, '--by', 'test')).feature.status, 'removed');
+    assert.equal(JSON.parse(cli('table', '--json')).rows[0].status, 'removed');
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 for (const [name, fn] of tests) { try { await fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } }
 console.log(`shipped-features: ${n} checks passed`);

@@ -36,17 +36,30 @@ build step), `edits` (feature_id, build, pr, commit, prompt, model, agent, sessi
 
 ## Page
 
-Builds → Shipped features (`view:shipped-features`). Three levels: groups (View by PR, plugin, app, type, build, day,
-repo, flat) → features (status chip, edited chip, dates) → details (what Brett said, builds, PRs, live per target,
-model / agent, commit, files, the Edits timeline newest first, earlier versions). Quick filters: Hide completed, Hide
-pending, Show cancelled, status chips (multi-select), Has edits, Being edited now, edit status; remembered per device.
-CSV / Markdown export of what is shown. Menu badge: features building or in a PR plus features being edited.
+Builds → Shipped features (`view:shipped-features`): one table on the shared framework grid (lib-datagrid), rows from
+`ledger/table.mjs` (shipped-table@1). Repeated rows (same area + name) fold into one. Grouped by plugin / area (or
+date, build, PR, status, none) with collapsible headers and counts per status. Columns: feature, plugin / area,
+description, status (Live, Behind a switch, Partial, In progress, Removed), build, PR, commit, shipped (date + time),
+on main, deployed, how to reach it (deep link, REST, MCP, CLI, voice icons), settings key, help, version, who asked,
+tests; the column picker shows, hides and reorders them. Tap a header to sort, shift-click or the header menu's
+"Then by" (long-press on a phone) for more keys. Search, filter chips (status, has API, not deployed, plugin, date
+range), row count, CSV of what is shown. Rows expand to their full details (status, reach, tests, then Brett's words,
+edits and the shipped manifest); right-click / long-press a row or cell: open feature, open build, open PR, copy link,
+copy value, mark removed. Rows show two lines where the app's datagrid `two-line` part is on (the console default).
+The view (group, sorts, columns, filters, open rows) is remembered per viewer (this browser). Menu badge: features
+building or in a PR plus features being edited.
+
+Without the UI: `GET /table?view=<json>[&kind=csv]` and `POST /remove` (REST, and MCP through plugin commands), the
+CLI (`ledger.mjs table --view '<json>' [--csv|--json]`, `ledger.mjs mark-removed <id>`), the console actions
+`shipped-features.view` (JSON or `by=area;sort=shipped:desc,pr:asc;statuses=live`), `shipped-features.show`
+and `shipped-features.row`, voice through the MCP tools. The grid is the control target `grid:shipped-features`.
 
 ## CLI
 
 ```bash
 node apps/console-web/plugins/shipped-features/ledger/ledger.mjs import [--repo amberx-axf|axhub|all]
 node apps/console-web/plugins/shipped-features/ledger/ledger.mjs sync | stats | list [--status s,s] | show <id> | export csv|md|json
+node apps/console-web/plugins/shipped-features/ledger/ledger.mjs table [--view '<json>'] [--csv|--json] | mark-removed <id>
 node framework/cli/build-hooks.mjs listeners | tail | replay --to shipped-features
 ```
 

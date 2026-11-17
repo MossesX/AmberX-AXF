@@ -99,4 +99,13 @@ ok(c.post(f"{base}/link", json={"build": "direct-launch"}).status_code == 400, "
 bf = c.post(f"{base}/backfill", json={"since": "2000-01-01", "dry": True})
 ok(bf.status_code == 200 and bf.json()["dry"] is True and bf.json()["found"] == 0, f"backfill dry: nothing landed without a manifest ({bf.text[:200]})")
 ok(c.post(f"{base}/backfill", json={}).status_code == 400, "backfill needs since")
+tb = c.get(f"{base}/table", params={"view": json.dumps({"by": "status", "sorts": [{"col": "name", "dir": "asc"}], "hidden": []})})
+ok(tb.status_code == 200 and tb.json()["$axf"] == "shipped-table@1" and tb.json()["view"]["by"] == "status" and "tests" in tb.json()["columns"], f"GET /table: grouped, sorted, every column ({tb.text[:200]})")
+ok(any(r["tests"]["total"] == 1 for r in tb.json()["rows"]), "the table reads test results from the shipped manifest")
+ok(c.get(f"{base}/table", params={"kind": "csv"}).text.startswith("Feature,"), "GET /table?kind=csv: the shown columns as CSV")
+ok(c.get(f"{base}/table", params={"view": "{nope"}).status_code == 400, "a bad view is refused")
+fid = tb.json()["rows"][0]["id"]
+rm = c.post(f"{base}/remove", json={"feature": fid, "by": "test"})
+ok(rm.status_code == 200 and rm.json()["feature"]["status"] == "removed", f"POST /remove marks a feature removed ({rm.text[:200]})")
+ok(c.post(f"{base}/remove", json={"feature": "f-nope"}).status_code == 400, "remove: an unknown feature is refused")
 print(f"shipped-features server: {n} checks passed")
