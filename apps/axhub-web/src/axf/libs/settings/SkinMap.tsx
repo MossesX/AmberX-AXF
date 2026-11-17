@@ -9,8 +9,8 @@
  * `extends` folded) through skinMapFor (core/engines/skin-map.mjs), so the view works the same in the console, axHub
  * web and AmberX with no server.
  *
- * API parity: deep link `settings.open:skin-map` (console-control `view:settings/tab:appearance/skin-map`), rows
- * `row:skin-map/<slot>`; actions `skin.map` (open) and `skin.map.slot:<slot>` (open on one row, say what the skin sets);
+ * API parity: deep link `settings.open:skin-map` (console-control
+ * `view:settings/tab:settings.tabs=appearance/subtab:settings.subtabs=skin-map`), rows `grid:skin-map/row:<slot>`; actions `skin.map` (open) and `skin.map.slot:<slot>` (open on one row, say what the skin sets);
  * REST `GET /api/plugins/theme-manager/skin-map[/<slot>]?skin=` (MCP through plugin-commands); CLI
  * `node framework/cli/skins.mjs map [<skin>] [--slot <s>]`.
  */
@@ -22,9 +22,15 @@ import { skinMapFor, skinMapRowValue } from '../../core/engines/skin-map.mjs';
 
 /** The Appearance sub-tab id (settings.open:skin-map). */
 export const SKIN_MAP_TAB = 'skin-map';
-/** Console-control addresses (CONSOLE-CONTROL.md): the view and one row per slot. */
-export const SKIN_MAP_TARGET = 'view:settings/tab:appearance/skin-map';
-export const skinMapRowTarget = (slot: string) => `row:skin-map/${slot}`;
+/**
+ * Console-control addresses (spec/CONSOLE-CONTROL.md). The sub-tab registers itself through the TabGroup, every slot
+ * row through the DataGrid (`grid:skin-map/row:<slot>`; `row:<slot>` alone resolves on the open screen); the dataset
+ * and layout tables are drawn by hand, so their rows carry data-axf-target themselves.
+ */
+export const SKIN_MAP_TARGET = 'view:settings/tab:settings.tabs=appearance/subtab:settings.subtabs=skin-map';
+export const SKIN_MAP_GRID = 'skin-map';
+export const skinMapRowTarget = (slot: string) => `grid:${SKIN_MAP_GRID}/row:${slot}`;
+export const skinMapTableRowTarget = (table: 'datasets' | 'layouts', id: string) => `grid:${SKIN_MAP_GRID}-${table}/row:${id}`;
 export const SKIN_MAP_ACTIONS = { open: 'skin.map', slot: 'skin.map.slot' } as const;
 
 type MapDoc = { slots: MapRow[]; datasets: Record<string, unknown>[]; layouts: Record<string, unknown>[]; summary: Record<string, number> };
@@ -178,22 +184,22 @@ export function SkinMapView() {
       <div className="fx-row"><Button size="sm" icon="external" onClick={() => openSkinMapRow(rt, r, skinId)}>Open {typeof r.value === 'string' && r.kind !== 'extras' ? r.value : skinId || 'asset'}</Button></div>
     </div>
   );
-  const table = (head: string[], body: string[][]) => (
+  const table = (name: 'datasets' | 'layouts', head: string[], body: string[][]) => (
     <div className="axf-skinmap__table" role="table">
       <div role="row" className="axf-skinmap__tr axf-skinmap__th">{head.map((h) => <span role="columnheader" key={h}>{h}</span>)}</div>
-      {body.map((cells, i) => <div role="row" key={i} className="axf-skinmap__tr" data-axf-target={skinMapRowTarget(cells[0] ?? '')}>{cells.map((c, j) => <span role="cell" key={j} className={j ? 'fx-mono fx-muted axf-skinmap__clip' : ''}>{c}</span>)}</div>)}
+      {body.map((cells, i) => <div role="row" key={i} className="axf-skinmap__tr" data-axf-target={skinMapTableRowTarget(name, cells[0] ?? '')}>{cells.map((c, j) => <span role="cell" key={j} className={j ? 'fx-mono fx-muted axf-skinmap__clip' : ''}>{c}</span>)}</div>)}
     </div>
   );
   return (
-    <div className="axf-skinmap" data-axf-target={SKIN_MAP_TARGET}>
+    <div className="axf-skinmap">
       <div className="axf-skinmap__bar">
         <span className="axf-skinmap__sum">{skinId ? <>Skin <strong>{skinId}</strong>: {map.skin!.filled} of {map.skin!.rows} slots set</> : <>No skin in force: every slot shows what it controls</>} · {map.summary.tokens} tokens · {map.summary.settings} settings keys</span>
         <TextField label="Find" className="axf-skinmap__find" name="skin-map-find" value={query} onChange={setQuery} placeholder="Find a slot, token, key or component" />
       </div>
       <TabGroup id="settings.skin-map.surfaces" label="Skin map surfaces" size="sm" value={surface} onChange={setSurface} tabs={tabs} />
-      {surface === 'datasets' ? table(['Dataset', 'Contract', 'Hub', 'Data store', 'Repo'], map.datasets.map((d) => [String(d.id), String(d.contract ?? ''), String(d.hub ?? '-'), String(d.dataStore ?? '-'), String(d.repo ?? '')]))
-        : surface === 'layouts' ? table(['Layout type', 'Assets', 'Pick', 'Engine', 'Repo'], map.layouts.map((l) => [String(l.type), String((l.ids as string[] | undefined)?.length ?? 0), String((l.pick as { field?: string } | undefined)?.field ?? ''), String(l.engine ?? ''), String(l.repo ?? '')]))
-        : <DataGrid<MapRow> id="skin-map" label="Skin map" groups={groups} columns={columns} rowId={(r) => r.slot} rowLabel={(r) => r.label} hidden={[]}
+      {surface === 'datasets' ? table('datasets', ['Dataset', 'Contract', 'Hub', 'Data store', 'Repo'], map.datasets.map((d) => [String(d.id), String(d.contract ?? ''), String(d.hub ?? '-'), String(d.dataStore ?? '-'), String(d.repo ?? '')]))
+        : surface === 'layouts' ? table('layouts', ['Layout type', 'Assets', 'Pick', 'Engine', 'Repo'], map.layouts.map((l) => [String(l.type), String((l.ids as string[] | undefined)?.length ?? 0), String((l.pick as { field?: string } | undefined)?.field ?? ''), String(l.engine ?? ''), String(l.repo ?? '')]))
+        : <DataGrid<MapRow> id={SKIN_MAP_GRID} label="Skin map" groups={groups} columns={columns} rowId={(r) => r.slot} rowLabel={(r) => r.label} hidden={[]}
             expanded={expanded} onToggleExpand={(id) => setExpanded((e) => (e.includes(id) ? e.filter((x) => x !== id) : [...e, id]))} renderDetail={detail}
             selected={focused || null} rowTone={(r) => (r.filled ? 'success' : 'muted')} onRowClick={(r) => openSkinMapRow(rt, r, skinId)}
             empty={<Note>No slot matches "{query}".</Note>} />}

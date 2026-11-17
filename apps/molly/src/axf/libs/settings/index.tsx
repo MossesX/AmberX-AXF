@@ -23,7 +23,7 @@ import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
 import { registerSkinMapActions, SKIN_MAP_CSS, SKIN_MAP_TAB, SkinMapView } from './SkinMap';
-export { SKIN_MAP_TAB, SKIN_MAP_TARGET, SkinMapView, skinMapRowTarget } from './SkinMap';
+export { SKIN_MAP_ACTIONS, SKIN_MAP_GRID, SKIN_MAP_TAB, SKIN_MAP_TARGET, SkinMapView, skinMapRowTarget, skinMapTableRowTarget } from './SkinMap';
 export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
