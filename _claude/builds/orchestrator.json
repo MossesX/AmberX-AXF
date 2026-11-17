@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:52:23.590Z",
+ "updatedAt": "2026-11-17T04:52:42.446Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122576,8 +122576,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T04:52:21.540Z",
-   "builtAt": "2026-11-17T04:52:21.541Z",
+   "updatedAt": "2026-11-17T04:52:40.322Z",
+   "builtAt": "2026-11-17T04:52:40.322Z",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (4 Fable).",
@@ -122610,6 +122610,10 @@
     {
      "text": "Claude account: hulu0241 (axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie, shared account login)",
      "at": "2026-11-17T03:32:57.432Z"
+    },
+    {
+     "text": "Headless run axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie: brief only · start 17.8K tokens ($0.12) · cost $25.31 · 285 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:52:40.322Z"
     }
    ],
    "approvals": [
