@@ -13,7 +13,7 @@
     "compact"
   ],
   "data": {
-    "layoutTheme": "axhub-console",
+    "layoutTheme": "flagship",
     "colorTheme": "flagship-dark",
     "colorThemes": {
       "light": "flagship-light",
@@ -22,11 +22,22 @@
     "styleTheme": "flagship",
     "behaviorTheme": "standard",
     "assets": {
-      "typography": "flagship"
+      "typography": "flagship",
+      "density": "flagship",
+      "sizing": "flagship"
     },
     "preview": {
       "caption": "Blue-black and amber, compact, quiet motion: one product across console, axHub and AmberX."
     },
-    "iconPack": "amberx-outline"
+    "iconPack": "amberx-outline",
+    "extras": {
+      "spacing": "compact",
+      "hidden": {
+        "banner": false,
+        "app-menu": false,
+        "toolbar": false,
+        "nav-menu": false
+      }
+    }
   }
 }
