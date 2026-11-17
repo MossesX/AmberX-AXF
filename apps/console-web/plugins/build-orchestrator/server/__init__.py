@@ -675,19 +675,42 @@ async def step_groups_ungroup(build: str, request: Request) -> dict[str, Any]:
     return _pipeline("groups", "ungroup", _build_id(build), who=_who(request))
 
 
-@router.post("/step-groups/{build}/{group}/{action}")
-async def step_groups_action(build: str, group: str, action: str, request: Request) -> dict[str, Any]:
-    """start (now) | rerun | merge (now) | reorder {to: up|down|first|last|index} | fix (Fix with Claude on a merge conflict)."""
-    if action not in ("start", "rerun", "merge", "reorder", "fix"):
-        raise HTTPException(404, "action is start, rerun, merge, reorder or fix")
-    extra: list[str] = []
-    if action == "reorder":
-        body = await _json_body(request)
-        to = str(body.get("to", "up"))
-        if not re.match(r"^(up|down|first|last|\d{1,2})$", to):
-            raise HTTPException(400, "to is up, down, first, last or a position")
-        extra = [to]
+def _group_act(action: str, build: str, group: str, request: Request, *extra: str) -> dict[str, Any]:
     return _pipeline("groups", action, _build_id(build), _group_id(group), *extra, who=_who(request))
+
+
+@router.post("/step-groups/{build}/{group}/start")
+async def step_groups_start(build: str, group: str, request: Request) -> dict[str, Any]:
+    """Start the group's next session now (the dispatcher's own launch); refused while it waits on another group."""
+    return _group_act("start", build, group, request)
+
+
+@router.post("/step-groups/{build}/{group}/rerun")
+async def step_groups_rerun(build: str, group: str, request: Request) -> dict[str, Any]:
+    """A failed or stopped group back in the queue, crash count cleared."""
+    return _group_act("rerun", build, group, request)
+
+
+@router.post("/step-groups/{build}/{group}/merge")
+async def step_groups_merge(build: str, group: str, request: Request) -> dict[str, Any]:
+    """Merge a finished group onto the build branch now (out of its turn when need be)."""
+    return _group_act("merge", build, group, request)
+
+
+@router.post("/step-groups/{build}/{group}/reorder")
+async def step_groups_reorder(build: str, group: str, request: Request) -> dict[str, Any]:
+    """{to: up | down | first | last | position}: move the group in the merge order."""
+    body = await _json_body(request)
+    to = str(body.get("to", "up"))
+    if not re.match(r"^(up|down|first|last|\d{1,2})$", to):
+        raise HTTPException(400, "to is up, down, first, last or a position")
+    return _group_act("reorder", build, group, request, to)
+
+
+@router.post("/step-groups/{build}/{group}/fix")
+async def step_groups_fix(build: str, group: str, request: Request) -> dict[str, Any]:
+    """Fix with Claude on a group in merge conflict."""
+    return _group_act("fix", build, group, request)
 
 
 @router.post("/pipeline/route")

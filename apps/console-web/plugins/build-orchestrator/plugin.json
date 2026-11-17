@@ -755,6 +755,223 @@
           ]
         },
         "output": "{ group, action, done: [id], refused: [{ id, error }], skipped: [{ id, state }] }"
+      },
+      {
+        "id": "orchestrator-groups-list",
+        "route": "GET /step-groups/{build}",
+        "title": "A build's step groups",
+        "readOnly": true,
+        "description": "The step groups of a long build (step-groups@1: split over 30 min to run in parallel slots): each group's state (waiting and on what), steps done/total, slot, account, branch and merge order. Say 'show the groups of skins'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, split, groups: [{ id, state, shown, label, waitingOn, steps, slot, account, branch, mergeOrder, note }], line, mergeQueue }"
+      },
+      {
+        "id": "orchestrator-groups-plan",
+        "route": "POST /step-groups/{build}/plan",
+        "title": "Plan a build's step groups",
+        "description": "Work out (or redo) a build's step groups from its steps' files and dependsOn, before any group runs. Builds under the threshold stay one group.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, split, groups, mergeOrder, minutes, threshold, reason, written }"
+      },
+      {
+        "id": "orchestrator-groups-start",
+        "route": "POST /step-groups/{build}/{group}/start",
+        "title": "Start a step group now",
+        "description": "Start one group's next session now instead of on the next tick (the dispatcher's own launch: account for its model, agent slot, token). Refused while it waits on another group's merge.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            },
+            "group": {
+              "type": "string",
+              "description": "Step group id (g1, g2 …)"
+            }
+          },
+          "required": [
+            "build",
+            "group"
+          ]
+        },
+        "output": "{ id, group, account, model, session }"
+      },
+      {
+        "id": "orchestrator-groups-rerun",
+        "route": "POST /step-groups/{build}/{group}/rerun",
+        "title": "Re-run a step group",
+        "description": "Put a failed or stopped group back in the queue with its crash count cleared.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            },
+            "group": {
+              "type": "string",
+              "description": "Step group id (g1, g2 …)"
+            }
+          },
+          "required": [
+            "build",
+            "group"
+          ]
+        },
+        "output": "{ id, group, state }"
+      },
+      {
+        "id": "orchestrator-groups-merge",
+        "route": "POST /step-groups/{build}/{group}/merge",
+        "title": "Merge a step group now",
+        "description": "Merge a group whose steps are all done onto the build branch now, out of its turn if need be (merge, never rebase). The last merge makes the build built and opens its one PR.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            },
+            "group": {
+              "type": "string",
+              "description": "Step group id (g1, g2 …)"
+            }
+          },
+          "required": [
+            "build",
+            "group"
+          ]
+        },
+        "output": "{ id, group, merged, conflict, note, landed }"
+      },
+      {
+        "id": "orchestrator-groups-reorder",
+        "route": "POST /step-groups/{build}/{group}/reorder",
+        "title": "Move a step group in the merge order",
+        "description": "Move a group up, down, first, last or to a position in the merge order (never before a group it depends on, never across a merged one).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            },
+            "group": {
+              "type": "string",
+              "description": "Step group id (g1, g2 …)"
+            },
+            "to": {
+              "type": "string",
+              "description": "up, down, first, last or a 0-based position"
+            }
+          },
+          "required": [
+            "build",
+            "group",
+            "to"
+          ]
+        },
+        "output": "{ id, group, mergeOrder }"
+      },
+      {
+        "id": "orchestrator-groups-ungroup",
+        "route": "POST /step-groups/{build}/ungroup",
+        "title": "Ungroup a build (run sequential)",
+        "description": "Run a build as one sequential session again: its step groups are removed. Only before any group runs or merges.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, ungrouped, note }"
+      },
+      {
+        "id": "orchestrator-groups-fix",
+        "route": "POST /step-groups/{build}/{group}/fix",
+        "title": "Fix a step group's merge conflict",
+        "description": "Fix with Claude: a session on the group's branch merges the build branch in, resolves the conflict and stops; the next tick merges the group again.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            },
+            "group": {
+              "type": "string",
+              "description": "Step group id (g1, g2 …)"
+            }
+          },
+          "required": [
+            "build",
+            "group"
+          ]
+        },
+        "output": "{ id, group, account, session }"
+      },
+      {
+        "id": "orchestrator-groups-settings",
+        "route": "GET /step-groups/settings",
+        "title": "Step group settings",
+        "readOnly": true,
+        "description": "Split builds over (min) (splitOverMin, 30), Max parallel groups per build (maxParallelGroups, 3) and Parallel groups on/off (parallelGroups).",
+        "output": "{ settings: { splitOverMin, maxParallelGroups, parallelGroups } }"
+      },
+      {
+        "id": "orchestrator-groups-settings-set",
+        "route": "PUT /step-groups/settings",
+        "title": "Change step group settings",
+        "description": "Change Split builds over (min), Max parallel groups per build or Parallel groups on/off.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "splitOverMin": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1440
+            },
+            "maxParallelGroups": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "parallelGroups": {
+              "type": "boolean"
+            }
+          },
+          "required": []
+        },
+        "output": "{ settings }"
       }
     ]
   },

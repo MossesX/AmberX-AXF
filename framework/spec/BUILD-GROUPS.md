@@ -9,7 +9,7 @@ Groups that share nothing run at the same time, each in its own slot, session, s
 steps are all done it waits for its turn in the **merge order** and is merged onto the build branch; when every group
 is merged the build lands as one PR, as today.
 
-Not to be confused with `build-groups@1` (`apps/console-web/plugins/build-orchestrator/groups-core.mjs`): those are
+Not to be confused with `build-groups@1` (the Build orchestrator plugin's `groups-core.mjs`): those are
 the custom groups and tabs on the builds board. This spec is about splitting ONE build's steps.
 
 ## Contract (`framework/core/build-pipeline.mjs`, section step-groups@1)
@@ -69,12 +69,23 @@ mergeOrder, minutes, reason }`.
 
 Golden cases: `framework/spec/fixtures/build-groups.json`, run by `framework/spec/check-build-groups.mjs`.
 
-## Later steps of the same build (open, nothing here constrains them)
+## Surfaces (every one calls the same functions in the orchestrator plugin's pipeline.mjs)
 
-Splitter prompt fills `files` and `dependsOn`; group worktrees and sub-branches; dispatcher fan-out of ready groups;
-headless launch per group (`--group`); group lifecycle and merge-back in order; landing as one PR; server-gate rule
-`parallel-groups`; setting `Split builds over (min)`; per-group progress panel and group actions in the UI; REST under
-`/api/plugins/build-orchestrator/groups`, MCP / CLI / voice commands `orchestrator-groups-*`; tests.
+| What | REST (the orchestrator plugin's API) | MCP (plugin-commands) | CLI (`pipeline.mjs groups …`) | Voice / console action |
+|---|---|---|---|---|
+| read a build's groups | `GET step-groups/<build>` | `orchestrator-groups-list` | `list <build>` | `groups.show:<build>` |
+| plan / re-plan | `POST step-groups/<build>/plan` | `orchestrator-groups-plan` | `plan <build>` | (panel: Plan again) |
+| start now | `POST step-groups/<build>/<g>/start` | `orchestrator-groups-start` | `start <build> <g>` | `groups.start:<build>/group:<g>` |
+| re-run | `POST …/<g>/rerun` | `orchestrator-groups-rerun` | `rerun <build> <g>` | (panel) |
+| merge now | `POST …/<g>/merge` | `orchestrator-groups-merge` | `merge <build> [<g>]` | `groups.merge:<build>/group:<g>` |
+| merge order | `POST …/<g>/reorder {to}` | `orchestrator-groups-reorder` | `reorder <build> <g> <to>` | (panel: Up / Down) |
+| Fix with Claude | `POST …/<g>/fix` | `orchestrator-groups-fix` | `fix <build> <g>` | banner item Auto fix |
+| ungroup | `POST step-groups/<build>/ungroup` | `orchestrator-groups-ungroup` | `ungroup <build>` | (panel) |
+| settings | `GET` / `PUT step-groups/settings` | `orchestrator-groups-settings(-set)` | `settings [k=v …]` | Settings → Plugins → Build orchestrator → Step groups |
+
+Deep link: `build-orchestrator.focus:<build>/group:<g>` opens the build and flashes the group's row; the row carries
+`data-axf-target="row:<build>/group:<g>"` and registers that address once console-control@1 has the `group` segment kind.
+The step groups' routes sit under `step-groups/` because `groups/` is the board's custom groups (build-groups@1).
 
 ## Porting
 
