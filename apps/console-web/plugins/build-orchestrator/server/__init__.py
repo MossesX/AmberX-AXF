@@ -393,6 +393,12 @@ def ensure_health() -> bool:
 
 ensure_health()
 
+# ---- the stale-row watchdog (stale-row@1): its routes under /watchdog and its systems check item (server/watchdog.py)
+from . import watchdog as _watchdog  # noqa: E402
+
+router.include_router(_watchdog.router_for(FOLDER, brett_click))
+_watchdog.ensure_health(FOLDER)
+
 
 
 # ---- the build pipeline (Brett, Nov 8 2026): Pending → Queue → Building, run by pipeline.mjs on the VPS host
