@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8041,
- "updatedAt": "2026-11-17T21:36:58.913Z",
+ "rev": 8042,
+ "updatedAt": "2026-11-17T21:37:13.497Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266377,7 +266377,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:36:29.603Z"
+     "updatedAt": "2026-11-17T21:37:05.997Z"
     },
     {
      "id": "s14",
@@ -282859,7 +282859,7 @@
    "pr": "#803",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:36:44.500Z",
+   "updatedAt": "2026-11-17T21:37:02.069Z",
    "builtAt": "2026-11-17T21:36:44.501Z",
    "notes": [
     {
@@ -282885,6 +282885,10 @@
     {
      "text": "Split by Claude into 3 steps (0 Fable).",
      "at": "2026-11-17T21:35:58.659Z"
+    },
+    {
+     "text": "Steps s3-s5 come from a re-split at 21:35: builds-live link run from the PR branch worktree wrote back a stale record with no steps. Restored s1-s2; s3-s5 repeat the same merge, inventory/checks and report/queue work, already done on claude/reset-all-button-every-asset-override and PR #803.",
+     "at": "2026-11-17T21:37:02.069Z"
     }
    ],
    "approvals": [],
@@ -283061,7 +283065,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -284750,6 +284754,85 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T21:34:10.438Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-refreshing-console-jumps-back",
+   "title": "Fix: refreshing the console jumps back instead of staying put",
+   "category": "",
+   "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-17T21:36:54.206Z",
+   "updatedAt": "2026-11-17T21:37:07.527Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T21:37:07.527Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "when are we fixing the refresh bug",
+    "at": "2026-11-17T21:36:54.206Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-17T21:36:58.759Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 979
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
