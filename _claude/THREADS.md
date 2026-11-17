@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:02 UTC · `phone-connect-small-android-companion` note (all) · cli
 - 2026-11-17 19:02 UTC · `shipped-features-open-button-views-each` note (all) · cli
 - 2026-11-17 19:02 UTC · `settings-interface-gear-every-plugin` note (all) · cli
 - 2026-11-17 19:02 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · cli
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:07 UTC · `live-build-status-real-time-grids-15` s4 done (all) · orchestrator
 - 2026-11-17 20:07 UTC · `separate-settings-per-plugin-reset` s8 done (all) · orchestrator
 - 2026-11-17 20:08 UTC · `live-build-status-real-time-grids-15` note (all) · orchestrator
+- 2026-11-17 20:08 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
