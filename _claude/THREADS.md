@@ -821,9 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:43 UTC · `orchestrator-stale-row-watchdog-vps` s2 done (all) · orchestrator
-- 2026-11-17 00:44 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` → running, note (all) · pipeline
-- 2026-11-17 00:44 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` branch claude/axhub-raise-per-project-memory-file-cap-from-500-to-750 (all) · pipeline
 - 2026-11-17 00:44 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` note (all) · orchestrator
 - 2026-11-17 00:44 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
 - 2026-11-17 00:45 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` → running, note (all) · pipeline
@@ -1221,6 +1218,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:10 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `every-settings-interface-gets` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `reset-all-button-every-asset-override` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · orchestrator
+- 2026-11-17 15:11 UTC · `alert-every-time-build-falls-back-to` note (all) · orchestrator
 
 ## Token passes (log)
 

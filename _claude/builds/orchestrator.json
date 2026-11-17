@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:10:55.775Z",
+ "updatedAt": "2026-11-17T15:11:11.246Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -161304,7 +161304,7 @@
    "pr": "#729",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-16T19:44:20.879Z",
+   "updatedAt": "2026-11-17T15:10:59.028Z",
    "builtAt": "2026-11-16T19:44:20.879Z",
    "notes": [
     {
@@ -161334,6 +161334,10 @@
     {
      "text": "Phase 1 done: PR #729, in the merge queue. Header and rows share one column definition (subgrid); 1 or 2 lines per row via setting:axf.grid.rowLines. grid-align 420 cases, 0 failures (was 52). UI Review r-20261116-k7rk501 waiting. Still to do after landing + redeploy: hand check on the live console signed in.",
      "at": "2026-11-16T19:43:57.392Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:59.028Z"
     }
    ],
    "approvals": [],
@@ -162067,7 +162071,7 @@
    "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-16T19:52:10.001Z",
+   "updatedAt": "2026-11-17T15:10:55.743Z",
    "builtAt": "2026-11-16T19:52:10.001Z",
    "notes": [
     {
@@ -162105,6 +162109,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-16T19:52:10.001Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:55.743Z"
     }
    ],
    "approvals": [],
@@ -162382,7 +162390,7 @@
    "pr": "#728",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-16T19:33:56.029Z",
+   "updatedAt": "2026-11-17T15:11:05.444Z",
    "builtAt": "2026-11-16T19:30:30.748Z",
    "notes": [
     {
@@ -162424,6 +162432,10 @@
     {
      "text": "Session axf-alert-every-time-build-falls-back-to--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-16T19:33:56.029Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:05.444Z"
     }
    ],
    "approvals": [],
