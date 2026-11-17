@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8291,
- "updatedAt": "2026-11-17T22:55:53.411Z",
+ "rev": 8292,
+ "updatedAt": "2026-11-17T22:56:05.527Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -290417,7 +290417,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T22:54:16.354Z",
+   "updatedAt": "2026-11-17T22:55:30.153Z",
    "builtAt": "",
    "notes": [
     {
@@ -290526,13 +290526,13 @@
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T21:58:22.524Z",
     "runs": 2,
-    "crashes": 3,
+    "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T22:54:14.803Z",
+     "at": "2026-11-17T22:44:09.502Z",
      "exit": 129,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 12,
+     "stepsLeft": 19,
      "account": "hulu0241",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "phase": "Phase 1"
@@ -290545,7 +290545,7 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
@@ -290585,20 +290585,6 @@
      "notified": "2026-11-17T22:44:32.474Z",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3)."
-    },
-    {
-     "at": "2026-11-17T22:54:14.803Z",
-     "buildId": "flagship-professional-skin-covering-2",
-     "phase": "Phase 1",
-     "step": "s17",
-     "cause": "exit-failed",
-     "exit": 129,
-     "action": "retry",
-     "attempt": 1,
-     "account": "hulu0241",
-     "notified": "2026-11-17T22:54:18.677Z",
-     "session": "axf-flagship-professional-skin-covering-2--earl",
-     "note": "session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -291029,12 +291015,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-17T22:54:16.354Z",
+     "done": true,
+     "doneAt": "2026-11-17T22:55:30.153Z",
+     "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T22:54:16.355Z"
+     "updatedAt": "2026-11-17T22:55:30.948Z"
     },
     {
      "id": "s18",
