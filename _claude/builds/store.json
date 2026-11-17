@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8198,
- "updatedAt": "2026-11-17T22:29:07.879Z",
+ "rev": 8199,
+ "updatedAt": "2026-11-17T22:29:20.660Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151823,7 +151823,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:28:27.285Z",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -152252,7 +152252,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 124,
+   "rev": 125,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152262,7 +152262,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-10T17:10:29.492Z",
-    "builtAt": "",
+    "builtAt": "2026-11-17T22:28:27.285Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwb00qda6gus4d": "2026-11-10T18:03:26.974Z",
@@ -207778,7 +207778,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:28:27.285Z",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -208143,7 +208143,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208153,7 +208153,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-13T18:41:12.834Z",
-    "builtAt": "",
+    "builtAt": "2026-11-17T22:28:27.285Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfbqn7f016rdh": "2026-11-13T18:42:36.411Z",
@@ -224189,7 +224189,7 @@
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:28:27.285Z",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--lenny.",
@@ -224449,17 +224449,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-14T04:20:23.886Z",
-    "builtAt": "",
+    "builtAt": "2026-11-17T22:28:27.285Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfwdp4y04a733": "2026-11-14T04:20:23.888Z",
@@ -226059,7 +226059,7 @@
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
    "updatedAt": "2026-11-17T22:28:15.534Z",
-   "builtAt": "2026-11-17T22:28:27.285Z",
+   "builtAt": "2026-11-17T22:26:09.371Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -226744,7 +226744,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -226754,7 +226754,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-14T18:13:15.368Z",
-    "builtAt": "",
+    "builtAt": "2026-11-17T22:28:27.285Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwgq79uk01ntsv": "2026-11-14T18:15:13.052Z",
@@ -290546,7 +290546,7 @@
    "title": "Settings fix part 2: blank toolbars, locked settings layout",
    "category": "",
    "detail": "Follow-up to PR #822 (fix-banner-settings-interface-tab), which finished before Brett's later notes. 1) Strip EVERY page toolbar in the console to blank: remove all buttons (New, Open, Save, Undo, Redo, Cut, Theme, etc. from PR #817); each keeps only one small gear that opens its settings. 2) Gizmo X AI Studio is the one fixed interface for every settings window: remove the settings-interface picker, the 'This settings window' fold and any way to edit the settings window's own layout or look. 3) Each toolbar's settings: Override switch next to the settings row, OFF by default (locked to Gizmo X AI Studio, greyed, sections collapsed); ON makes it editable and sections expandable; turning it OFF resets to defaults; a toolbar shows as edited in main Settings only while Override is on. 4) Console toolbars use the same shared toolbar asset axHub uses. 5) Owner must be allowed every chrome reset (fix 'Permission denied ... reset a chrome piece'). Everything token-driven. Console only. Skins must not restyle toolbars.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "settings-fix-part-2-blank-toolbars",
@@ -290579,10 +290579,34 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-17T22:26:29.126Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwl9ki4h476lei",
+     "uid": "st-mwl9lctl01po6g",
      "title": "",
      "text": "Skins must not restyle toolbars: in the skin-coverage registry, declare the toolbar asset type as not reached by skins (skin by:none, with why), so resolveLookSkin and SkinScope leave toolbar tokens alone; update the coverage check and its fixture",
      "model": "Fable",
@@ -290599,12 +290623,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.497Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwl9ki4h487ggk",
+     "uid": "st-mwl9lctl02opta",
      "title": "",
      "text": "Settings windows are locked to one interface: the chrome-settings rules always resolve the Gizmo X AI Studio settings interface for every kind and ignore per-app picks (axf.chrome.settings.<type>); old stored picks are read and ignored, never deleted; regenerate the fixtures",
      "model": "Fable",
@@ -290621,12 +290645,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.497Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwl9ki4h49f7fv",
+     "uid": "st-mwl9lctl03dlb2",
      "title": "",
      "text": "Toolbar override contract: add per-toolbar override (axf.toolbar.<id>.override, off by default). Off means the toolbar uses the shared defaults and counts as not edited. On makes it editable. Turning it off resets that toolbar's keys to defaults. Write the pure helper (isEdited, reset on off) and its unit test",
      "model": "Fable",
@@ -290643,12 +290667,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.497Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwl9ki4h4ae7af",
+     "uid": "st-mwl9lctl04s2iw",
      "title": "",
      "text": "Shared toolbar asset: make the console's toolbars resolve the same framework toolbar asset axHub web uses (framework/assets/toolbar), drop the console-only toolbar asset copies or overrides that diverge, and run shared-assets bake/check",
      "model": "Fable",
@@ -290665,12 +290689,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.497Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwl9ki4h4bcr89",
+     "uid": "st-mwl9lctl051cjn",
      "title": "",
      "text": "Inventory every page toolbar in the console (role=toolbar / data-axf-toolbar) and the buttons PR #817 added (New, Open, Save, Undo, Redo, Cut, Theme, …) with file:line; write the list into the report draft",
      "model": "Fable",
@@ -290687,12 +290711,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.497Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwl9ki4h4c4z8j",
+     "uid": "st-mwl9lctl0638kq",
      "title": "",
      "text": "Add a framework BlankToolbar (or a blank mode of the page toolbar component): keeps role=toolbar, aria-label and settings id, and shows only one small token-sized gear that opens that toolbar's settings dialog (axf.chrome.settings). Register a control@1 target for the gear",
      "model": "Fable",
@@ -290709,12 +290733,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.497Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwl9ki4h4dup73",
+     "uid": "st-mwl9lctm076nl2",
      "title": "",
      "text": "Strip the console shell's page toolbars (the main views) to the blank gear-only toolbar and remove the #817 file and edit buttons and their handlers",
      "model": "Fable",
@@ -290731,12 +290755,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwl9ki4h4e95ta",
+     "uid": "st-mwl9lctm08pubm",
      "title": "",
      "text": "Strip the plugin page toolbars, first half (alphabetical A–M plugin folders), to the blank gear-only toolbar",
      "model": "Fable",
@@ -290753,12 +290777,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwl9ki4h4ffmhg",
+     "uid": "st-mwl9lctm09b8va",
      "title": "",
      "text": "Strip the plugin page toolbars, second half (N–Z plugin folders), to the blank gear-only toolbar",
      "model": "Fable",
@@ -290775,12 +290799,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwl9ki4h4gyvg5",
+     "uid": "st-mwl9lctm0a10on",
      "title": "",
      "text": "Toolbar CI follow-up: update check-toolbars, check-chrome-assets and the console-control registry for the removed buttons (append-only control@1 targets kept as retired), and lower chrome-baseline only where counts went down",
      "model": "Fable",
@@ -290797,12 +290821,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s11",
-     "uid": "st-mwl9ki4h4hgyzf",
+     "uid": "st-mwl9lctm0bto19",
      "title": "",
      "text": "Remove the settings-interface picker (Change settings interface… / Choose settings asset) from the chrome right-click menu and the settings dialog; the menu keeps Settings… and Move",
      "model": "Fable",
@@ -290819,12 +290843,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s12",
-     "uid": "st-mwl9ki4h4i8esg",
+     "uid": "st-mwl9lctm0ci93p",
      "title": "",
      "text": "Remove the 'This settings window' fold and every control that edits the settings window's own layout or look (level-editor layout edits, interface asset swap, look tokens) from the settings dialogs",
      "model": "Fable",
@@ -290841,12 +290865,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s13",
-     "uid": "st-mwl9ki4h4j4axo",
+     "uid": "st-mwl9lctm0d773v",
      "title": "",
      "text": "Lock the settings layout's API: chrome.interface and setting writes to axf.chrome.settings.<type> are refused with a plain message in console actions, the REST routes, MCP and the CLI (chrome-settings.mjs), and voice says it is locked",
      "model": "Fable",
@@ -290863,12 +290887,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s14",
-     "uid": "st-mwl9ki4h4kwf96",
+     "uid": "st-mwl9lctm0e5rf4",
      "title": "",
      "text": "Toolbar settings UI: an Override switch next to the settings row, off by default. Off shows everything greyed out with sections collapsed, locked to the Gizmo X AI Studio defaults. On makes it editable and the sections expandable. Turning it off confirms, then resets. All values come from tokens",
      "model": "Fable",
@@ -290885,12 +290909,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s15",
-     "uid": "st-mwl9ki4h4lvmb9",
+     "uid": "st-mwl9lctm0fdwdb",
      "title": "",
      "text": "In main Settings → Plugins → Toolbars (and the edited markers), show a toolbar as edited only while its Override is on, using the isEdited helper",
      "model": "Fable",
@@ -290907,12 +290931,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s16",
-     "uid": "st-mwl9ki4h4moadb",
+     "uid": "st-mwl9lctm0g7mbc",
      "title": "",
      "text": "Override API: deep link to each toolbar's settings (console_show target view:…/toolbar:<id>/settings), read the override state, and set override on/off (off = reset) through REST, MCP plugin commands, axf console CLI and voice actions; same behaviour on all four",
      "model": "Fable",
@@ -290929,12 +290953,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s17",
-     "uid": "st-mwl9ki4h4nqux6",
+     "uid": "st-mwl9lctm0hsswi",
      "title": "",
      "text": "Owner chrome reset: fix 'Permission denied … reset a chrome piece' so Brett's own session (owner role) can run every chrome reset (chrome.reset, Reset custom to default, toolbar override off) in the UAC policy and the server check; sessions and agents keep their current limits",
      "model": "Fable",
@@ -290951,12 +290975,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s18",
-     "uid": "st-mwl9ki4h4o6hu9",
+     "uid": "st-mwl9lctm0in7c6",
      "title": "",
      "text": "Tests: the owner reset is allowed and a session's reset is refused; override off resets and clears edited; the picker and interface writes are refused; every console toolbar renders only the gear",
      "model": "Fable",
@@ -290973,12 +290997,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s19",
-     "uid": "st-mwl9ki4h4pki00",
+     "uid": "st-mwl9lctm0jpo56",
      "title": "",
      "text": "Re-bake the framework into the console (rebake.mjs apply console-web), then run theme-swap.mjs, check-theme, check-controls, check-toolbars and check-skin-coverage and fix what they flag",
      "model": "Fable",
@@ -290995,12 +291019,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s20",
-     "uid": "st-mwl9ki4h4qm5hl",
+     "uid": "st-mwl9lctm0kt0vb",
      "title": "",
      "text": "Desktop and phone shots of a blank toolbar, toolbar settings with Override off and on, and a settings window without the picker. Submit them to UI Review with three option assets (gear placement variants) under the build's group",
      "model": "Fable",
@@ -291017,12 +291041,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     },
     {
      "id": "s21",
-     "uid": "st-mwl9ki4h4rbvwd",
+     "uid": "st-mwl9lctm0lhmf8",
      "title": "",
      "text": "Final step: run the full CI sweep (validate, tracker --check, chrome-settings check, console-control check). Write the report _claude/builds/reports/settings-fix-part-2-blank-toolbars.md (what was removed, kept and changed, plus the API reach for each feature). Add the THREADS row, push the branch and open the PR, saying how each feature is reached by deep link, REST, MCP, CLI and voice and that it is waiting in UI Review",
      "model": "Fable",
@@ -291039,8 +291063,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-17T22:28:13.190Z",
-     "updatedAt": "2026-11-17T22:28:27.285Z"
+     "createdAt": "2026-11-17T22:29:06.966Z",
+     "updatedAt": "2026-11-17T22:29:07.498Z"
     }
    ],
    "profiles": [
@@ -291051,7 +291075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291064,31 +291088,31 @@
     "builtAt": "",
     "prefixSteps": false,
     "stepAt": {
-     "st-mwl9ki4h476lei": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h487ggk": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h49f7fv": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4ae7af": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4bcr89": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4c4z8j": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4dup73": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4e95ta": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4ffmhg": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4gyvg5": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4hgyzf": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4i8esg": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4j4axo": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4kwf96": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4lvmb9": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4moadb": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4nqux6": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4o6hu9": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4pki00": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4qm5hl": "2026-11-17T22:28:13.190Z",
-     "st-mwl9ki4h4rbvwd": "2026-11-17T22:28:13.190Z"
+     "st-mwl9lctl01po6g": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctl02opta": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctl03dlb2": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctl04s2iw": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctl051cjn": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctl0638kq": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm076nl2": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm08pubm": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm09b8va": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0a10on": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0bto19": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0ci93p": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0d773v": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0e5rf4": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0fdwdb": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0g7mbc": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0hsswi": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0in7c6": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0jpo56": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0kt0vb": "2026-11-17T22:28:13.190Z",
+     "st-mwl9lctm0lhmf8": "2026-11-17T22:28:13.190Z"
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-17T22:28:27.285Z",
+   "defaultAt": "2026-11-17T22:29:06.966Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
