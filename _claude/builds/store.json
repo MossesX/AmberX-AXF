@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8196,
- "updatedAt": "2026-11-17T22:28:24.469Z",
+ "rev": 8197,
+ "updatedAt": "2026-11-17T22:28:42.279Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151822,8 +151822,8 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T19:22:24.004Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "updatedAt": "2026-11-17T22:28:15.534Z",
+   "builtAt": "2026-11-17T22:28:27.285Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -152262,7 +152262,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-10T17:10:29.492Z",
-    "builtAt": "2026-11-17T22:26:09.371Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mwb00qda6gus4d": "2026-11-10T18:03:26.974Z",
@@ -207777,8 +207777,8 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T19:29:07.332Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "updatedAt": "2026-11-17T22:28:15.534Z",
+   "builtAt": "2026-11-17T22:28:27.285Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -208153,7 +208153,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-13T18:41:12.834Z",
-    "builtAt": "2026-11-17T22:26:09.371Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfbqn7f016rdh": "2026-11-13T18:42:36.411Z",
@@ -208179,7 +208179,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build. If the contract isn't there yet, define the overlay side against the names in the parent's detail and note them.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208189,7 +208189,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
    "updatedAt": "2026-11-17T22:25:15.677Z",
-   "builtAt": "",
+   "builtAt": "2026-11-17T22:25:15.677Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"7eb278c6-794b-4b54-ba95-2f9723ef61d4\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
@@ -208536,7 +208536,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T18:44:41.589Z",
-     "updatedAt": "2026-11-17T19:46:44.436Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s7",
@@ -208561,7 +208561,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T18:44:41.589Z",
-     "updatedAt": "2026-11-17T19:47:21.985Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     }
    ],
    "profiles": [
@@ -224188,8 +224188,8 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-17T19:45:29.921Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "updatedAt": "2026-11-17T22:28:15.534Z",
+   "builtAt": "2026-11-17T22:28:27.285Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--lenny.",
@@ -224454,12 +224454,12 @@
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "complete",
+    "status": "pending",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-14T04:20:23.886Z",
-    "builtAt": "2026-11-17T22:26:09.371Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfwdp4y04a733": "2026-11-14T04:20:23.888Z",
@@ -226058,8 +226058,8 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-17T19:11:35.654Z",
-   "builtAt": "2026-11-17T22:26:09.371Z",
+   "updatedAt": "2026-11-17T22:28:15.534Z",
+   "builtAt": "2026-11-17T22:28:27.285Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -226754,7 +226754,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-14T18:13:15.368Z",
-    "builtAt": "2026-11-17T22:26:09.371Z",
+    "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
      "st-mwgq79uk01ntsv": "2026-11-14T18:15:13.052Z",
@@ -262242,10 +262242,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-17T22:15:54.050Z",
-     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T22:09:09.958Z",
-     "rev": 4,
+     "note": "",
+     "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:15:54.498Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s6",
@@ -262269,7 +262269,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:16:48.377Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s7",
@@ -262294,7 +262294,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:18:18.105Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s8",
@@ -262319,7 +262319,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:20:19.845Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s9",
@@ -262344,7 +262344,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:22:05.915Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s10",
@@ -262369,7 +262369,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:27:08.490Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s11",
@@ -262394,7 +262394,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:27:08.490Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s12",
@@ -269173,10 +269173,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-17T21:18:06.950Z",
-     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T21:11:04.164Z",
-     "rev": 3,
+     "note": "",
+     "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:18:07.428Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s7",
@@ -269200,7 +269200,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:20:05.803Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s8",
@@ -269226,7 +269226,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:22:28.051Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s9",
@@ -269252,7 +269252,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:24:26.989Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s10",
@@ -269277,7 +269277,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:26:42.022Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s11",
@@ -269303,7 +269303,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:29:41.466Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s12",
@@ -269329,7 +269329,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:32:24.018Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s13",
@@ -269356,7 +269356,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:37:05.997Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s14",
@@ -269382,7 +269382,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T21:38:46.886Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s15",
@@ -269407,7 +269407,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T22:03:07.892Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s16",
@@ -269434,7 +269434,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T22:10:18.575Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     }
    ],
    "profiles": [
@@ -271838,7 +271838,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T20:51:21.580Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s4",
@@ -271863,7 +271863,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T20:58:18.722Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s5",
@@ -271888,7 +271888,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:06:21.479Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s6",
@@ -271912,7 +271912,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:13:33.542Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s7",
@@ -271937,7 +271937,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:19:42.144Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s8",
@@ -271961,7 +271961,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:22:33.130Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s9",
@@ -271986,7 +271986,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:23:23.822Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s10",
@@ -272011,7 +272011,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:24:31.385Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s11",
@@ -272036,7 +272036,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:26:09.836Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s12",
@@ -272062,7 +272062,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:27:58.195Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s13",
@@ -272086,7 +272086,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:34:10.826Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s14",
@@ -272111,7 +272111,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:37:13.786Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s15",
@@ -272159,7 +272159,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:38:53.304Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s17",
@@ -272183,7 +272183,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:41:17.389Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s18",
@@ -272207,7 +272207,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:42:35.223Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s19",
@@ -272231,7 +272231,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:43:32.919Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s20",
@@ -272255,7 +272255,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:45:12.290Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s21",
@@ -272279,7 +272279,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:48:35.826Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s22",
@@ -272303,7 +272303,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:49:11.711Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s23",
@@ -272328,7 +272328,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:51:43.386Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s24",
@@ -272356,7 +272356,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:58:44.088Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s25",
@@ -272383,7 +272383,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T21:59:46.592Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s26",
@@ -272408,7 +272408,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T22:27:08.490Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s27",
@@ -279187,7 +279187,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T19:45:13.329Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s4",
@@ -279212,7 +279212,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T19:56:29.543Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s5",
@@ -279238,7 +279238,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T19:58:54.693Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s6",
@@ -279263,7 +279263,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:02:56.693Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s7",
@@ -279288,7 +279288,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:06:01.008Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s8",
@@ -279313,7 +279313,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:07:46.248Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s9",
@@ -279339,7 +279339,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:15:57.854Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s10",
@@ -279366,7 +279366,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:20:05.360Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s11",
@@ -279390,7 +279390,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:21:23.838Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s12",
@@ -279415,7 +279415,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:25:15.940Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s13",
@@ -279440,7 +279440,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:25:36.290Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s14",
@@ -279465,7 +279465,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:27:55.787Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s15",
@@ -279491,7 +279491,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:30:12.605Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s16",
@@ -279517,7 +279517,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:32:10.518Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s17",
@@ -279542,7 +279542,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:51:56.692Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s18",
@@ -279567,7 +279567,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:57:54.015Z",
-     "updatedAt": "2026-11-17T20:57:15.446Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     }
    ],
    "profiles": [
@@ -279977,7 +279977,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T19:47:56.881Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s3",
@@ -280003,7 +280003,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T19:51:12.104Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s4",
@@ -280028,7 +280028,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T19:57:43.753Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s5",
@@ -280055,7 +280055,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:08:35.532Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s6",
@@ -280081,7 +280081,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:14:21.943Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s7",
@@ -280108,7 +280108,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:30:10.351Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s8",
@@ -280134,7 +280134,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:48:58.965Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s9",
@@ -280157,9 +280157,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:53:26.725Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:53:50.131Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s10",
@@ -280181,9 +280181,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:54:04.179Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:54:04.607Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s11",
@@ -280206,9 +280206,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:57:22.415Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:57:40.551Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s12",
@@ -280231,9 +280231,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:57:30.662Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:57:30.999Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s13",
@@ -280256,9 +280256,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:58:45.740Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:58:46.084Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s14",
@@ -280283,7 +280283,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:59:45.202Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s15",
@@ -280308,7 +280308,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:01:08.835Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s16",
@@ -280331,9 +280331,9 @@
      "done": true,
      "doneAt": "2026-11-17T21:02:16.716Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:02:17.055Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s17",
@@ -280356,9 +280356,9 @@
      "done": true,
      "doneAt": "2026-11-17T21:03:32.576Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:03:32.877Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s18",
@@ -280381,9 +280381,9 @@
      "done": true,
      "doneAt": "2026-11-17T21:04:39.628Z",
      "note": "",
-     "rev": 3,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:27:29.667Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s19",
@@ -280408,7 +280408,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:06:06.273Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s20",
@@ -280434,7 +280434,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:07:41.612Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s21",
@@ -280459,7 +280459,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:08:47.456Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s22",
@@ -280484,7 +280484,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:32:43.549Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s23",
@@ -280509,7 +280509,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:32:47.061Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s24",
@@ -280534,7 +280534,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T20:32:50.314Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s25",
@@ -280559,7 +280559,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:09:59.690Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s26",
@@ -280584,7 +280584,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:10:42.501Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s27",
@@ -280606,10 +280606,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-17T21:20:40.525Z",
-     "note": "PR #817 (claude/rebuild-every-toolbar-page-specific)",
+     "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:20:40.530Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s28",
@@ -280631,10 +280631,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-17T21:20:40.525Z",
-     "note": "PR #817 (claude/rebuild-every-toolbar-page-specific)",
+     "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T21:20:40.530Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     }
    ],
    "profiles": [
@@ -281405,7 +281405,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T19:51:11.028Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s2",
@@ -281431,7 +281431,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T19:59:00.000Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s3",
@@ -281457,7 +281457,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T20:02:06.787Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s4",
@@ -281484,7 +281484,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T20:07:28.636Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s5",
@@ -281508,7 +281508,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T20:18:12.315Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s6",
@@ -281534,7 +281534,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T20:22:14.174Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s7",
@@ -281560,7 +281560,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T20:26:08.507Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s8",
@@ -281585,7 +281585,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T20:27:58.559Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s9",
@@ -281611,7 +281611,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:38:27.971Z",
-     "updatedAt": "2026-11-17T20:29:18.518Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s10",
@@ -282359,7 +282359,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T19:47:20.854Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s2",
@@ -282384,7 +282384,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T19:56:29.543Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s3",
@@ -282410,7 +282410,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:12:22.174Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s4",
@@ -282437,7 +282437,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:18:57.468Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s5",
@@ -282461,7 +282461,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:20:12.290Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s6",
@@ -282485,7 +282485,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:21:26.223Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s7",
@@ -282510,7 +282510,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:22:44.622Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s8",
@@ -282534,7 +282534,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:24:10.747Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s9",
@@ -282559,7 +282559,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:26:18.199Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s10",
@@ -282583,7 +282583,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:28:16.907Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s11",
@@ -282608,7 +282608,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:28:58.757Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s12",
@@ -282630,10 +282630,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-17T20:35:23.065Z",
-     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T20:32:05.715Z",
-     "rev": 3,
+     "note": "",
+     "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:35:23.482Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s13",
@@ -282657,7 +282657,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:37:13.898Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s14",
@@ -282681,7 +282681,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:38:23.144Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s15",
@@ -282705,7 +282705,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:39:17.917Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s16",
@@ -282730,7 +282730,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:48:43.310Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s17",
@@ -282755,7 +282755,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:50:34.434Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s18",
@@ -282780,7 +282780,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:51:29.969Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s19",
@@ -282805,7 +282805,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:54:31.742Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s20",
@@ -282830,7 +282830,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:56:09.944Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s21",
@@ -282852,9 +282852,9 @@
      "done": true,
      "doneAt": "2026-11-17T21:13:34.389Z",
      "note": "",
-     "rev": 6,
+     "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T21:14:06.916Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s22",
@@ -282878,7 +282878,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T21:18:08.912Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     },
     {
      "id": "s23",
@@ -282928,7 +282928,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T22:05:07.320Z"
+     "updatedAt": "2026-11-17T22:28:29.814Z"
     }
    ],
    "profiles": [
@@ -284039,6 +284039,314 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwl9ki3w01hqbu",
+     "title": "",
+     "text": "Read the Terminal plugin (apps/console-web/plugins/console-terminal: plugin.json, web/, server/, README) and the existing places that touch Claude: deploy/claude-headless.sh, deploy/claude-workers.mjs, framework/cli/agent-slots.mjs, the console server's axHub/MCP call paths (apps/console-web/server). Write a short design note listing each event source and the event fields (ts, kind: launch|exit|account|mcp|axhub|connect|disconnect|error, source, session, account, model, summary, detail, level) in apps/console-web/plugins/console-terminal/docs/claude-link.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T19:51:34.620Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwl9ki3x02l82u",
+     "title": "",
+     "text": "Server event bus: add an in-memory ring buffer (default 2000 events, set from the plugin's settings) plus a JSONL tail under the plugin's dataDir, written through data_store (data-store@1, namespace plugins/console-terminal). Add an append(event) function that redacts tokens and keys. Include unit tests for the ring and the redaction",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T19:54:15.835Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwl9ki3x03a72u",
+     "title": "",
+     "text": "REST: GET /api/plugins/console-terminal/claude-link (snapshot, with since, kind, q and limit filters), GET .../claude-link/stream (SSE live feed with heartbeat and Last-Event-ID resume), POST .../claude-link/clear (clears the view marker, not the log), GET .../claude-link/state (connected, last event, counts per kind). Add route tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T19:55:33.683Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwl9ki3x040n8u",
+     "title": "",
+     "text": "Hook the console server's own Claude and axHub traffic into the bus: outgoing axHub /mcp calls (tool name, held/veto/result state, timing, errors), connect and disconnect, and auth failures, through a small wrapper at the existing call sites. Register it as capability axf.claude-link@1 in plugin_services so no other plugin imports it by folder",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T19:57:50.782Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwl9ki3x051jpe",
+     "title": "",
+     "text": "Hook the headless launches: deploy/claude-headless.sh and claude-workers.mjs route send launch, account-pick, limit-handoff, exit-code and stderr-error events to the bus. When the console can't be reached they POST to an ingest route (POST .../claude-link/ingest, console token) and append to the JSONL on failure. Add the ingest route and a test with a fake launch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T20:00:55.393Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwl9ki3x06vqqv",
+     "title": "",
+     "text": "Hook the agent-slot and MCP events: agent-slots.mjs take, queue and release, and the console's own /mcp server tool calls from Claude sessions (session, tool, ok/error), sent to the bus through the same ingest helper (framework-side helper takes the URL from env, never names the plugin folder)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T20:01:57.805Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwl9ki3x07auyy",
+     "title": "",
+     "text": "Web UI: a pinned main tab 'Claude link' (first in the Terminal's TabGroup, can't be closed) with a read-only live log view on framework controls and tokens only. EventSource with reconnect and a connected/disconnected chip; each row shows time, a kind chip, source, account/model and summary, and expands to show the detail",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T20:08:17.196Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwl9ki3x08z11w",
+     "title": "",
+     "text": "UI controls on a role=toolbar Toolbars-plugin toolbar (aria-label, settings id): auto-scroll with Pause/Resume (pauses by itself when scrolled up, shows a 'N new' jump button), a kind filter (multi-select), a text filter, and Clear. Register every control with data-axf-target / control@1 addresses (view:terminal/tab:claude-link, its actions and filters)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T20:10:27.919Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwl9ki3x098hjw",
+     "title": "",
+     "text": "Settings: add a sub-tab in Settings → Plugins → Terminal for buffer size, the default kind filter, auto-scroll on/off and showing detail by default, with a level for each setting in the level toolbar. Persist them through the settings registry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T20:12:38.439Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwl9ki3x0a0l09",
+     "title": "",
+     "text": "API parity: add console actions and plugin commands for open (console_show target view:terminal/tab:claude-link), state, tail (with filters), pause/resume, filter set and clear. Expose them as MCP tools (console-terminal_claude_link_*), the CLI (axf claude-link tail|state|clear|open [--follow] [--kind] [--q]) and voice phrases for AmberX ('show the Claude link', 'what's Claude doing'). Add a deep link ?view=terminal&tab=claude-link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T20:16:28.189Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwl9ki3x0bdovk",
+     "title": "",
+     "text": "Lifecycle and registries: update install.mjs/uninstall.mjs so the dataDir and JSONL are removed, add axf-plugin:console-terminal markers on lines outside the plugin, add help and README sections, give glossary descriptions to the new commands and CLI, and add a notify.json entry for disconnect/error alerts (off by default)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T20:19:30.889Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwl9ki3x0cwi8h",
+     "title": "",
+     "text": "UI Review: capture desktop and phone shots of the tab (live, paused, filtered, empty) through a vite preview with mocked SSE. Ship 3 layout options as assets in plugins/console-terminal/assets/ (dense rows / cards / split detail) and submit them with review.mjs --choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T20:58:27.223Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwl9ki3x0dpdkd",
+     "title": "",
+     "text": "Tests and CI checks: python tests, the plugin-commands parity test, check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, plugin-lifecycle check --after-uninstall, the glossary catalog --check and the console typecheck/build. Fix anything red",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T21:00:38.742Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwl9ki3x0en98q",
+     "title": "",
+     "text": "Write the report _claude/builds/reports/terminal-main-tab-streaming-console-s.md: what was added, the event sources, and how each part is reached (deep link, REST, MCP, CLI, voice). Add the THREADS.md row, push the branch, open the PR (it says the UI Review is waiting) and link it with builds-live.mjs link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T21:01:32.193Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s15-14",
      "uid": "st-mwl3q09y0fuvqp",
      "title": "",
      "text": "Read the Terminal plugin (apps/console-web/plugins/console-terminal: plugin.json, web/, server/, README) and the existing places that touch Claude: deploy/claude-headless.sh, deploy/claude-workers.mjs, framework/cli/agent-slots.mjs, the console server's axHub/MCP call paths (apps/console-web/server). Write a short design note listing each event source and the event fields (ts, kind: launch|exit|account|mcp|axhub|connect|disconnect|error, source, session, account, model, summary, detail, level) in apps/console-web/plugins/console-terminal/docs/claude-link.md",
@@ -284062,7 +284370,7 @@
      "updatedAt": "2026-11-17T19:51:35.478Z"
     },
     {
-     "id": "s2",
+     "id": "s16-15",
      "uid": "st-mwl3q09y0guipe",
      "title": "",
      "text": "Server event bus: add an in-memory ring buffer (default 2000 events, set from the plugin's settings) plus a JSONL tail under the plugin's dataDir, written through data_store (data-store@1, namespace plugins/console-terminal). Add an append(event) function that redacts tokens and keys. Include unit tests for the ring and the redaction",
@@ -284088,7 +284396,7 @@
      "updatedAt": "2026-11-17T19:54:16.468Z"
     },
     {
-     "id": "s3",
+     "id": "s17-16",
      "uid": "st-mwl3q09y0hwgrd",
      "title": "",
      "text": "REST: GET /api/plugins/console-terminal/claude-link (snapshot, with since, kind, q and limit filters), GET .../claude-link/stream (SSE live feed with heartbeat and Last-Event-ID resume), POST .../claude-link/clear (clears the view marker, not the log), GET .../claude-link/state (connected, last event, counts per kind). Add route tests",
@@ -284113,7 +284421,7 @@
      "updatedAt": "2026-11-17T19:56:15.649Z"
     },
     {
-     "id": "s4",
+     "id": "s18-17",
      "uid": "st-mwl3q09y0iq4q0",
      "title": "",
      "text": "Hook the console server's own Claude and axHub traffic into the bus: outgoing axHub /mcp calls (tool name, held/veto/result state, timing, errors), connect and disconnect, and auth failures, through a small wrapper at the existing call sites. Register it as capability axf.claude-link@1 in plugin_services so no other plugin imports it by folder",
@@ -284138,7 +284446,7 @@
      "updatedAt": "2026-11-17T19:57:51.321Z"
     },
     {
-     "id": "s5",
+     "id": "s19-18",
      "uid": "st-mwl3q09y0j1qvk",
      "title": "",
      "text": "Hook the headless launches: deploy/claude-headless.sh and claude-workers.mjs route send launch, account-pick, limit-handoff, exit-code and stderr-error events to the bus. When the console can't be reached they POST to an ingest route (POST .../claude-link/ingest, console token) and append to the JSONL on failure. Add the ingest route and a test with a fake launch",
@@ -284164,7 +284472,7 @@
      "updatedAt": "2026-11-17T20:01:22.427Z"
     },
     {
-     "id": "s6",
+     "id": "s20-19",
      "uid": "st-mwl3q09y0kxaem",
      "title": "",
      "text": "Hook the agent-slot and MCP events: agent-slots.mjs take, queue and release, and the console's own /mcp server tool calls from Claude sessions (session, tool, ok/error), sent to the bus through the same ingest helper (framework-side helper takes the URL from env, never names the plugin folder)",
@@ -284190,7 +284498,7 @@
      "updatedAt": "2026-11-17T20:01:58.379Z"
     },
     {
-     "id": "s7",
+     "id": "s21-20",
      "uid": "st-mwl3q09y0lvr1f",
      "title": "",
      "text": "Web UI: a pinned main tab 'Claude link' (first in the Terminal's TabGroup, can't be closed) with a read-only live log view on framework controls and tokens only. EventSource with reconnect and a connected/disconnected chip; each row shows time, a kind chip, source, account/model and summary, and expands to show the detail",
@@ -284215,7 +284523,7 @@
      "updatedAt": "2026-11-17T20:08:17.749Z"
     },
     {
-     "id": "s8",
+     "id": "s22-21",
      "uid": "st-mwl3q09y0m029i",
      "title": "",
      "text": "UI controls on a role=toolbar Toolbars-plugin toolbar (aria-label, settings id): auto-scroll with Pause/Resume (pauses by itself when scrolled up, shows a 'N new' jump button), a kind filter (multi-select), a text filter, and Clear. Register every control with data-axf-target / control@1 addresses (view:terminal/tab:claude-link, its actions and filters)",
@@ -284240,7 +284548,7 @@
      "updatedAt": "2026-11-17T20:10:28.630Z"
     },
     {
-     "id": "s9",
+     "id": "s23-22",
      "uid": "st-mwl3q09y0nr6gl",
      "title": "",
      "text": "Settings: add a sub-tab in Settings → Plugins → Terminal for buffer size, the default kind filter, auto-scroll on/off and showing detail by default, with a level for each setting in the level toolbar. Persist them through the settings registry",
@@ -284265,7 +284573,7 @@
      "updatedAt": "2026-11-17T20:12:39.030Z"
     },
     {
-     "id": "s10",
+     "id": "s24-23",
      "uid": "st-mwl3q09y0ol198",
      "title": "",
      "text": "API parity: add console actions and plugin commands for open (console_show target view:terminal/tab:claude-link), state, tail (with filters), pause/resume, filter set and clear. Expose them as MCP tools (console-terminal_claude_link_*), the CLI (axf claude-link tail|state|clear|open [--follow] [--kind] [--q]) and voice phrases for AmberX ('show the Claude link', 'what's Claude doing'). Add a deep link ?view=terminal&tab=claude-link",
@@ -284292,7 +284600,7 @@
      "updatedAt": "2026-11-17T20:16:28.677Z"
     },
     {
-     "id": "s11",
+     "id": "s25-24",
      "uid": "st-mwl3q09y0p45qi",
      "title": "",
      "text": "Lifecycle and registries: update install.mjs/uninstall.mjs so the dataDir and JSONL are removed, add axf-plugin:console-terminal markers on lines outside the plugin, add help and README sections, give glossary descriptions to the new commands and CLI, and add a notify.json entry for disconnect/error alerts (off by default)",
@@ -284319,7 +284627,7 @@
      "updatedAt": "2026-11-17T20:19:31.351Z"
     },
     {
-     "id": "s12",
+     "id": "s26-25",
      "uid": "st-mwl3q09y0qahca",
      "title": "",
      "text": "UI Review: capture desktop and phone shots of the tab (live, paused, filtered, empty) through a vite preview with mocked SSE. Ship 3 layout options as assets in plugins/console-terminal/assets/ (dense rows / cards / split detail) and submit them with review.mjs --choices",
@@ -284344,7 +284652,7 @@
      "updatedAt": "2026-11-17T20:58:27.592Z"
     },
     {
-     "id": "s13",
+     "id": "s27-26",
      "uid": "st-mwl3q09y0r50mo",
      "title": "",
      "text": "Tests and CI checks: python tests, the plugin-commands parity test, check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, plugin-lifecycle check --after-uninstall, the glossary catalog --check and the console typecheck/build. Fix anything red",
@@ -284369,7 +284677,7 @@
      "updatedAt": "2026-11-17T21:00:39.305Z"
     },
     {
-     "id": "s14",
+     "id": "s28-27",
      "uid": "st-mwl3q09y0s2zt3",
      "title": "",
      "text": "Write the report _claude/builds/reports/terminal-main-tab-streaming-console-s.md: what was added, the event sources, and how each part is reached (deep link, REST, MCP, CLI, voice). Add the THREADS.md row, push the branch, open the PR (it says the UI Review is waiting) and link it with builds-live.mjs link",
@@ -284511,6 +284819,204 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwl9ki3x0fcjdf",
+     "title": "",
+     "text": "Design the generic settings-slot contract (settings-slot@1): a slot id like 'log', a host key (plugin id plus settings section), what a provider registers (render component, label, priority), and what shows when nobody fills it (placeholder text plus fallback links). Write it to framework/spec/SETTINGS-SLOTS.md so any plugin's settings can host a slot and a future Log plugin can fill one for any host.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwl9ki3x0gft5h",
+     "title": "",
+     "text": "Add the settings-slot registry core: register, unregister, list for a host, and resolve to the provider or the placeholder. Keep it pure, with no React. Add a fixture and a check script.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwl9ki3x0h2qda",
+     "title": "",
+     "text": "Add the React SettingsSlot component. It reads the registry and renders the provider when one is registered, otherwise the placeholder with its fallback links. Use framework controls and tokens only, plus a data-axf-target address. Export it from framework/react and re-bake it into the console's src/axf.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwl9ki3x0ijdle",
+     "title": "",
+     "text": "Add a 'Log' section to the Gate plugin's AutoLanderSettings using <SettingsSlot host=\"gate.auto-lander\" slot=\"log\">. The placeholder reads 'Log viewer coming with the Log plugin' and links to the existing Attempts list. List what the future log will hold (every tick, decision, merge-main, fix attempt, land, error) as the slot's declared contents.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwl9ki3x0jlkts",
+     "title": "",
+     "text": "Add the API side. Give the Log section and the Attempts link control@1 / console-control addresses (deep link view:settings/tab:plugins/gate/auto-lander#log) so console_show and console_open open them. Add a REST route GET /api/plugins/gate/settings-slots that returns which slots exist and whether each is filled.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwl9ki3x0ko5cl",
+     "title": "",
+     "text": "Reach the slot state through every API surface: an MCP plugin command (gate_settings_slots), the CLI (axf gate slots [--host]) and a voice action (settings.slots), all returning the same thing as REST. Add descriptions so the glossary picks them up.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwl9ki3x0lxbpg",
+     "title": "",
+     "text": "Add a register API for future providers: a capability service axf.settings-slots@1 (register/list) so the Log plugin can attach to any plugin's settings without naming folders. Add lifecycle markers, and document it in the Gate plugin README.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwl9ki3x0mnz75",
+     "title": "",
+     "text": "Prepare the UI Review submission: 3 placeholder options (inline note, collapsed card, empty-state panel), each as an asset under apps/console-web/plugins/gate/assets/, with desktop and phone shots. Submit them with review.mjs --choices.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.693Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwl9ki3x0n0pmq",
+     "title": "",
+     "text": "Run the tests (check-settings-slots, check-console-control, check-theme, check-controls, check-chrome-assets, plugin-lifecycle check gate, console typecheck/build). Write the report to _claude/builds/reports/auto-lander-settings-log-placeholder.md, add the THREADS row and open the PR, saying how the slot is reached through REST, MCP, CLI, voice and deep link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:27.285Z",
+     "updatedAt": "2026-11-17T22:28:27.694Z"
+    },
+    {
+     "id": "s10-9",
      "uid": "st-mwl3qvy60tqbw8",
      "title": "",
      "text": "Design the generic settings-slot contract (settings-slot@1): a slot id like 'log', a host key (plugin id plus settings section), what a provider registers (render component, label, priority), and what shows when nobody fills it (placeholder text plus fallback links). Write it to framework/spec/SETTINGS-SLOTS.md so any plugin's settings can host a slot and a future Log plugin can fill one for any host.",
@@ -284534,7 +285040,7 @@
      "updatedAt": "2026-11-17T19:45:27.870Z"
     },
     {
-     "id": "s2",
+     "id": "s11-10",
      "uid": "st-mwl3qvy60unitn",
      "title": "",
      "text": "Add the settings-slot registry core: register, unregister, list for a host, and resolve to the provider or the placeholder. Keep it pure, with no React. Add a fixture and a check script.",
@@ -284560,7 +285066,7 @@
      "updatedAt": "2026-11-17T19:45:27.870Z"
     },
     {
-     "id": "s3",
+     "id": "s12-11",
      "uid": "st-mwl3qvy70vomd3",
      "title": "",
      "text": "Add the React SettingsSlot component. It reads the registry and renders the provider when one is registered, otherwise the placeholder with its fallback links. Use framework controls and tokens only, plus a data-axf-target address. Export it from framework/react and re-bake it into the console's src/axf.",
@@ -284586,7 +285092,7 @@
      "updatedAt": "2026-11-17T19:45:27.870Z"
     },
     {
-     "id": "s4",
+     "id": "s13-12",
      "uid": "st-mwl3qvy70wv1z0",
      "title": "",
      "text": "Add a 'Log' section to the Gate plugin's AutoLanderSettings using <SettingsSlot host=\"gate.auto-lander\" slot=\"log\">. The placeholder reads 'Log viewer coming with the Log plugin' and links to the existing Attempts list. List what the future log will hold (every tick, decision, merge-main, fix attempt, land, error) as the slot's declared contents.",
@@ -284610,7 +285116,7 @@
      "updatedAt": "2026-11-17T19:45:27.870Z"
     },
     {
-     "id": "s5",
+     "id": "s14-13",
      "uid": "st-mwl3qvy70x5n8r",
      "title": "",
      "text": "Add the API side. Give the Log section and the Attempts link control@1 / console-control addresses (deep link view:settings/tab:plugins/gate/auto-lander#log) so console_show and console_open open them. Add a REST route GET /api/plugins/gate/settings-slots that returns which slots exist and whether each is filled.",
@@ -284636,7 +285142,7 @@
      "updatedAt": "2026-11-17T19:45:27.870Z"
     },
     {
-     "id": "s6",
+     "id": "s15-14",
      "uid": "st-mwl3qvy70yt3cj",
      "title": "",
      "text": "Reach the slot state through every API surface: an MCP plugin command (gate_settings_slots), the CLI (axf gate slots [--host]) and a voice action (settings.slots), all returning the same thing as REST. Add descriptions so the glossary picks them up.",
@@ -284661,7 +285167,7 @@
      "updatedAt": "2026-11-17T19:45:27.870Z"
     },
     {
-     "id": "s7",
+     "id": "s16-15",
      "uid": "st-mwl3qvy70zn4mz",
      "title": "",
      "text": "Add a register API for future providers: a capability service axf.settings-slots@1 (register/list) so the Log plugin can attach to any plugin's settings without naming folders. Add lifecycle markers, and document it in the Gate plugin README.",
@@ -284687,7 +285193,7 @@
      "updatedAt": "2026-11-17T19:45:27.870Z"
     },
     {
-     "id": "s8",
+     "id": "s17-16",
      "uid": "st-mwl3qvy710f3iq",
      "title": "",
      "text": "Prepare the UI Review submission: 3 placeholder options (inline note, collapsed card, empty-state panel), each as an asset under apps/console-web/plugins/gate/assets/, with desktop and phone shots. Submit them with review.mjs --choices.",
@@ -284712,7 +285218,7 @@
      "updatedAt": "2026-11-17T19:45:27.870Z"
     },
     {
-     "id": "s9",
+     "id": "s18-17",
      "uid": "st-mwl3qvy711xfc2",
      "title": "",
      "text": "Run the tests (check-settings-slots, check-console-control, check-theme, check-controls, check-chrome-assets, plugin-lifecycle check gate, console typecheck/build). Write the report to _claude/builds/reports/auto-lander-settings-log-placeholder.md, add the THREADS row and open the PR, saying how the slot is reached through REST, MCP, CLI, voice and deep link.",
@@ -289725,6 +290231,160 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwl9ki4g404ast",
+     "title": "",
+     "text": "Gate: confirm Phone Connect is paired and online (systems check item 'phone-connect' green, GET /api/plugins/phone-connect/status paired+online) and CI built phone-connect-debug.apk; stop with a note otherwise.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:58:19.850Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwl9ki4g417mei",
+     "title": "",
+     "text": "Remove apps/amberx-droid (Capacitor shell + amberx-web), its project manifest and the AmberX CI job in .github/workflows/android.yml; ci-scope, watch-live and app-bundle entries.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:58:19.850Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwl9ki4g42qjam",
+     "title": "",
+     "text": "Drop AmberX from framework/schemas/shared-assets.json, re-bake (shared-assets.mjs bake|check), chrome-settings check, check-chrome-assets baseline only down.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:58:19.850Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwl9ki4g43qa6o",
+     "title": "",
+     "text": "Notify routes: notify-control types/channels naming the AmberX app (amberx.* types, app 'amberx'), the phone=True alert feed for AmberX, approvals-banner target amberx-droid; keep channel id 'amberx' as the phone push channel or migrate it with a settings migration.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:58:19.850Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwl9ki4g44u15b",
+     "title": "",
+     "text": "Plugins and code naming apps/amberx-droid (amberx-listeners, wake-listener, output-recorder, console-commands wake fallback, molly/axhub-web/walkthrough references): remove or point at Phone Connect; plugin-lifecycle check, project validate --all.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:58:19.850Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwl9ki4g45j7vm",
+     "title": "",
+     "text": "Docs and rules mentions (CLAUDE.md, STATUS.md, THREADS, memory docs, RULES.md exceptions naming AmberX); help coverage, tracker.mjs, catalog status.json.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:58:19.850Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwl9ki4g465e7k",
+     "title": "",
+     "text": "Tests: full CI sweep green, report _claude/builds/reports/remove-amberx-app-code-once-phone.md, PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T21:58:19.850Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s8-7",
      "uid": "st-mwl8hrhz08b6h2",
      "title": "",
      "text": "Gate: confirm Phone Connect is paired and online (systems check item 'phone-connect' green, GET /api/plugins/phone-connect/status paired+online) and CI built phone-connect-debug.apk; stop with a note otherwise.",
@@ -289746,7 +290406,7 @@
      "updatedAt": "2026-11-17T21:58:19.850Z"
     },
     {
-     "id": "s2",
+     "id": "s9-8",
      "uid": "st-mwl8hrhz09fdry",
      "title": "",
      "text": "Remove apps/amberx-droid (Capacitor shell + amberx-web), its project manifest and the AmberX CI job in .github/workflows/android.yml; ci-scope, watch-live and app-bundle entries.",
@@ -289768,7 +290428,7 @@
      "updatedAt": "2026-11-17T21:58:19.850Z"
     },
     {
-     "id": "s3",
+     "id": "s10-9",
      "uid": "st-mwl8hrhz0alfu4",
      "title": "",
      "text": "Drop AmberX from framework/schemas/shared-assets.json, re-bake (shared-assets.mjs bake|check), chrome-settings check, check-chrome-assets baseline only down.",
@@ -289790,7 +290450,7 @@
      "updatedAt": "2026-11-17T21:58:19.850Z"
     },
     {
-     "id": "s4",
+     "id": "s11-10",
      "uid": "st-mwl8hrhz0brqpq",
      "title": "",
      "text": "Notify routes: notify-control types/channels naming the AmberX app (amberx.* types, app 'amberx'), the phone=True alert feed for AmberX, approvals-banner target amberx-droid; keep channel id 'amberx' as the phone push channel or migrate it with a settings migration.",
@@ -289812,7 +290472,7 @@
      "updatedAt": "2026-11-17T21:58:19.850Z"
     },
     {
-     "id": "s5",
+     "id": "s12-11",
      "uid": "st-mwl8hrhz0c45tw",
      "title": "",
      "text": "Plugins and code naming apps/amberx-droid (amberx-listeners, wake-listener, output-recorder, console-commands wake fallback, molly/axhub-web/walkthrough references): remove or point at Phone Connect; plugin-lifecycle check, project validate --all.",
@@ -289834,7 +290494,7 @@
      "updatedAt": "2026-11-17T21:58:19.850Z"
     },
     {
-     "id": "s6",
+     "id": "s13-12",
      "uid": "st-mwl8hrhz0d7rol",
      "title": "",
      "text": "Docs and rules mentions (CLAUDE.md, STATUS.md, THREADS, memory docs, RULES.md exceptions naming AmberX); help coverage, tracker.mjs, catalog status.json.",
@@ -289856,7 +290516,7 @@
      "updatedAt": "2026-11-17T21:58:19.850Z"
     },
     {
-     "id": "s7",
+     "id": "s14-13",
      "uid": "st-mwl8hrhz0esz2f",
      "title": "",
      "text": "Tests: full CI sweep green, report _claude/builds/reports/remove-amberx-app-code-once-phone.md, PR.",
@@ -289920,19 +290580,23 @@
    "title": "Settings fix part 2: blank toolbars, locked settings layout",
    "category": "",
    "detail": "Follow-up to PR #822 (fix-banner-settings-interface-tab), which finished before Brett's later notes. 1) Strip EVERY page toolbar in the console to blank: remove all buttons (New, Open, Save, Undo, Redo, Cut, Theme, etc. from PR #817); each keeps only one small gear that opens its settings. 2) Gizmo X AI Studio is the one fixed interface for every settings window: remove the settings-interface picker, the 'This settings window' fold and any way to edit the settings window's own layout or look. 3) Each toolbar's settings: Override switch next to the settings row, OFF by default (locked to Gizmo X AI Studio, greyed, sections collapsed); ON makes it editable and sections expandable; turning it OFF resets to defaults; a toolbar shows as edited in main Settings only while Override is on. 4) Console toolbars use the same shared toolbar asset axHub uses. 5) Owner must be allowed every chrome reset (fix 'Permission denied ... reset a chrome piece'). Everything token-driven. Console only. Skins must not restyle toolbars.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "settings-fix-part-2-blank-toolbars",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-17T22:26:30.295Z",
+   "updatedAt": "2026-11-17T22:28:13.190Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T22:26:30.295Z"
+    },
+    {
+     "text": "Split by Claude into 21 steps (3 Fable).",
+     "at": "2026-11-17T22:28:13.190Z"
     }
    ],
    "approvals": [],
@@ -289949,31 +290613,470 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "2026-11-17T22:26:29.126Z",
-    "queuedBy": "console",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
-    "crashes": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "waiting for the split before it can start",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": "",
-    "heldAt": "",
-    "heldBy": "",
-    "heldWhy": ""
-   },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwl9ki4h476lei",
+     "title": "",
+     "text": "Skins must not restyle toolbars: in the skin-coverage registry, declare the toolbar asset type as not reached by skins (skin by:none, with why), so resolveLookSkin and SkinScope leave toolbar tokens alone; update the coverage check and its fixture",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwl9ki4h487ggk",
+     "title": "",
+     "text": "Settings windows are locked to one interface: the chrome-settings rules always resolve the Gizmo X AI Studio settings interface for every kind and ignore per-app picks (axf.chrome.settings.<type>); old stored picks are read and ignored, never deleted; regenerate the fixtures",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwl9ki4h49f7fv",
+     "title": "",
+     "text": "Toolbar override contract: add per-toolbar override (axf.toolbar.<id>.override, off by default). Off means the toolbar uses the shared defaults and counts as not edited. On makes it editable. Turning it off resets that toolbar's keys to defaults. Write the pure helper (isEdited, reset on off) and its unit test",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwl9ki4h4ae7af",
+     "title": "",
+     "text": "Shared toolbar asset: make the console's toolbars resolve the same framework toolbar asset axHub web uses (framework/assets/toolbar), drop the console-only toolbar asset copies or overrides that diverge, and run shared-assets bake/check",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwl9ki4h4bcr89",
+     "title": "",
+     "text": "Inventory every page toolbar in the console (role=toolbar / data-axf-toolbar) and the buttons PR #817 added (New, Open, Save, Undo, Redo, Cut, Theme, …) with file:line; write the list into the report draft",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwl9ki4h4c4z8j",
+     "title": "",
+     "text": "Add a framework BlankToolbar (or a blank mode of the page toolbar component): keeps role=toolbar, aria-label and settings id, and shows only one small token-sized gear that opens that toolbar's settings dialog (axf.chrome.settings). Register a control@1 target for the gear",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwl9ki4h4dup73",
+     "title": "",
+     "text": "Strip the console shell's page toolbars (the main views) to the blank gear-only toolbar and remove the #817 file and edit buttons and their handlers",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwl9ki4h4e95ta",
+     "title": "",
+     "text": "Strip the plugin page toolbars, first half (alphabetical A–M plugin folders), to the blank gear-only toolbar",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwl9ki4h4ffmhg",
+     "title": "",
+     "text": "Strip the plugin page toolbars, second half (N–Z plugin folders), to the blank gear-only toolbar",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwl9ki4h4gyvg5",
+     "title": "",
+     "text": "Toolbar CI follow-up: update check-toolbars, check-chrome-assets and the console-control registry for the removed buttons (append-only control@1 targets kept as retired), and lower chrome-baseline only where counts went down",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwl9ki4h4hgyzf",
+     "title": "",
+     "text": "Remove the settings-interface picker (Change settings interface… / Choose settings asset) from the chrome right-click menu and the settings dialog; the menu keeps Settings… and Move",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwl9ki4h4i8esg",
+     "title": "",
+     "text": "Remove the 'This settings window' fold and every control that edits the settings window's own layout or look (level-editor layout edits, interface asset swap, look tokens) from the settings dialogs",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwl9ki4h4j4axo",
+     "title": "",
+     "text": "Lock the settings layout's API: chrome.interface and setting writes to axf.chrome.settings.<type> are refused with a plain message in console actions, the REST routes, MCP and the CLI (chrome-settings.mjs), and voice says it is locked",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwl9ki4h4kwf96",
+     "title": "",
+     "text": "Toolbar settings UI: an Override switch next to the settings row, off by default. Off shows everything greyed out with sections collapsed, locked to the Gizmo X AI Studio defaults. On makes it editable and the sections expandable. Turning it off confirms, then resets. All values come from tokens",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwl9ki4h4lvmb9",
+     "title": "",
+     "text": "In main Settings → Plugins → Toolbars (and the edited markers), show a toolbar as edited only while its Override is on, using the isEdited helper",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwl9ki4h4moadb",
+     "title": "",
+     "text": "Override API: deep link to each toolbar's settings (console_show target view:…/toolbar:<id>/settings), read the override state, and set override on/off (off = reset) through REST, MCP plugin commands, axf console CLI and voice actions; same behaviour on all four",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwl9ki4h4nqux6",
+     "title": "",
+     "text": "Owner chrome reset: fix 'Permission denied … reset a chrome piece' so Brett's own session (owner role) can run every chrome reset (chrome.reset, Reset custom to default, toolbar override off) in the UAC policy and the server check; sessions and agents keep their current limits",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwl9ki4h4o6hu9",
+     "title": "",
+     "text": "Tests: the owner reset is allowed and a session's reset is refused; override off resets and clears edited; the picker and interface writes are refused; every console toolbar renders only the gear",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mwl9ki4h4pki00",
+     "title": "",
+     "text": "Re-bake the framework into the console (rebake.mjs apply console-web), then run theme-swap.mjs, check-theme, check-controls, check-toolbars and check-skin-coverage and fix what they flag",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s20",
+     "uid": "st-mwl9ki4h4qm5hl",
+     "title": "",
+     "text": "Desktop and phone shots of a blank toolbar, toolbar settings with Override off and on, and a settings window without the picker. Submit them to UI Review with three option assets (gear placement variants) under the build's group",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwl9ki4h4rbvwd",
+     "title": "",
+     "text": "Final step: run the full CI sweep (validate, tracker --check, chrome-settings check, console-control check). Write the report _claude/builds/reports/settings-fix-part-2-blank-toolbars.md (what was removed, kept and changed, plus the API reach for each feature). Add the THREADS row, push the branch and open the PR, saying how each feature is reached by deep link, REST, MCP, CLI and voice and that it is waiting in UI Review",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:28:13.190Z",
+     "updatedAt": "2026-11-17T22:28:27.285Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -289986,7 +291089,7 @@
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
+    "model": "Fable",
     "status": "pending",
     "estimate": "",
     "source": "mcp",
@@ -289994,10 +291097,32 @@
     "createdAt": "2026-11-17T22:26:09.371Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mwl9ki4h476lei": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h487ggk": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h49f7fv": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4ae7af": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4bcr89": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4c4z8j": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4dup73": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4e95ta": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4ffmhg": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4gyvg5": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4hgyzf": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4i8esg": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4j4axo": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4kwf96": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4lvmb9": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4moadb": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4nqux6": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4o6hu9": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4pki00": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4qm5hl": "2026-11-17T22:28:13.190Z",
+     "st-mwl9ki4h4rbvwd": "2026-11-17T22:28:13.190Z"
+    }
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-17T22:28:27.285Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -290015,7 +291140,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:27:03.346Z",
-   "updatedAt": "2026-11-17T22:27:33.253Z",
+   "updatedAt": "2026-11-17T22:28:08.807Z",
    "builtAt": "",
    "notes": [
     {
@@ -290029,6 +291154,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-17T22:27:31.549Z"
+    },
+    {
+     "text": "Brett: the only real cap is the VPS total of 8 builds at once (agent-slots maxBuilds 8). Per-account building/queue limits: 0 means no limit. Set both subscription accounts (hulu0241, mossesx-max-) to 0 in claude-accounts workers.json so they're unlimited, and the total 8 is split evenly between them (4 and 4).",
+     "at": "2026-11-17T22:28:08.807Z"
     }
    ],
    "approvals": [],
