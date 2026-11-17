@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7731,
- "updatedAt": "2026-11-17T20:00:28.096Z",
+ "rev": 7732,
+ "updatedAt": "2026-11-17T20:00:38.923Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -274996,15 +274996,15 @@
    "title": "Separate settings per plugin + reset confirm dialog",
    "category": "",
    "detail": "1) Every plugin gets its OWN settings interface showing only that plugin's settings; stop opening the console settings and jumping to the plugin's tab. The console keeps its own separate settings interface. Settings interfaces are not shared. 2) Sweep every page/plugin so each opens its correct default settings interface. 3) Clicking Reset in any settings interface opens a confirmation dialog with an 'Include assets' switch (on = also reset assets/skins to default; off = settings only) and a scrollable table listing every changed asset, same as the table in the settings panel.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/separate-settings-per-plugin-reset",
-   "pr": "",
+   "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:00:23.347Z",
+   "updatedAt": "2026-11-17T20:00:32.772Z",
    "builtAt": "",
    "notes": [
     {
@@ -275087,14 +275087,14 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-17T20:00:12.968Z",
+     "at": "2026-11-17T19:46:04.590Z",
      "exit": 0,
-     "outcome": "returned",
-     "reason": "stopped",
-     "stepsLeft": 13,
+     "outcome": "requeued",
+     "reason": "phase-done",
+     "stepsLeft": 15,
      "account": "",
      "session": "",
-     "phase": "Phase 2"
+     "phase": "Phase 1"
     },
     "split": {
      "at": "2026-11-17T18:57:54.015Z",
@@ -275104,7 +275104,7 @@
      "note": "Split by Claude into 18 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session stopped on its own with 13 steps left: back in Pending for Brett.",
+    "note": "Session finished phase Phase 1 with 15 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
