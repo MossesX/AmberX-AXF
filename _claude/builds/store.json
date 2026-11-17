@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7659,
- "updatedAt": "2026-11-17T19:28:25.037Z",
+ "rev": 7660,
+ "updatedAt": "2026-11-17T19:28:34.629Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183369,7 +183369,7 @@
    "mergedAt": "2026-11-17T19:07:59Z",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T19:20:41.874Z",
+   "updatedAt": "2026-11-17T19:28:19Z",
    "builtAt": "",
    "notes": [
     {
@@ -183427,6 +183427,10 @@
     {
      "text": "Reconciler: PR #772 merged",
      "at": "2026-11-17T19:20:41.874Z"
+    },
+    {
+     "text": "Shipped manifest sm-server-watchdog-orchestrator-auto-recovers-stuck rev 1 sent to Shipped features (orchestrator): PR #772, 47 file(s), 0 test line(s), 7 open.",
+     "at": "2026-11-17T19:28:19Z"
     }
    ],
    "approvals": [
@@ -183495,6 +183499,12 @@
     "head": "e8e115303e3a8783e4f5d2039cbe269d9213e4ae",
     "step": "",
     "exit": null
+   },
+   "shipped": {
+    "id": "sm-server-watchdog-orchestrator-auto-recovers-stuck",
+    "rev": 1,
+    "at": "2026-11-17T19:28:19Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -184076,7 +184086,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
