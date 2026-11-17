@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:52:57.950Z",
+ "updatedAt": "2026-11-17T14:53:07.171Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171967,16 +171967,22 @@
    "title": "Edit UI mode: inline-edit anything, active only while Ctrl is held",
    "category": "",
    "detail": "Add an 'Edit UI' toggle (banner/toolbar button + setting). When it's on, holding Ctrl (long-press equivalent on phone) makes any element editable in place: labels/text, grid cells and row data where the data source allows writes, column headers, asset properties (toolbar, tab group, banner, widgets: size, colour, icon, order, hide). Releasing Ctrl ends editing; with Edit UI off, Ctrl does nothing special. Hovered element gets an outline; click edits inline; Enter/blur saves, Esc cancels; every change undoable. Edits save through the normal owner (asset system for looks, data API for data), never as one-off overrides. Works in console, axHub web and AmberX. Same toggle and edits via REST, MCP, CLI, voice. Coordinate with rebuild-fresh-main-hide-any-asset (hide/unhide should be one of the inline actions).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T14:52:56.126Z",
+   "updatedAt": "2026-11-17T14:52:58.974Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T14:52:58.974Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
