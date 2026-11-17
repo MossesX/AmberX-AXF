@@ -58,3 +58,4 @@ export * from './engines/plugins';
 export * from './library';
 export * from './engines/work';
 export * from './engines/placement';
+export * from './engines/console-control';

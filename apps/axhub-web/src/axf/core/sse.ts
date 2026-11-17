@@ -98,12 +98,30 @@ export interface FollowSseOptions {
   initialDelayMs?: number;
   /** longest wait (ms, default 60000); each failure doubles the wait up to this */
   maxDelayMs?: number;
+  /**
+   * Nothing at all (not even a keep-alive comment) for this long (ms) = the stream is dead without saying so (a laptop
+   * that slept, a phone that changed networks, a proxy that dropped it): abort it and reconnect. Default off.
+   */
+  idleTimeoutMs?: number;
   /** called when a stream opened (2xx with a body) */
   onOpen?: () => void;
   /** called after a stream ended or failed, before waiting `delayMs` */
   onDrop?: (error: unknown, delayMs: number) => void;
   /** wait implementation (tests); default setTimeout */
   sleep?: (ms: number) => Promise<void>;
+  /** clock (tests); default Date.now */
+  now?: () => number;
+}
+
+/** What followSse returns: call it to stop; `reconnect()` drops the stream and opens a new one now (no back-off). */
+export interface SseFollower {
+  (): void;
+  /** drop the current stream (or the back-off wait) and open a new one right away */
+  reconnect: () => void;
+  /** ms since the stream last delivered anything (bytes or keep-alive); Infinity while it isn't open */
+  idleMs: () => number;
+  /** is a stream open right now */
+  open: () => boolean;
 }
 
 /** Wait before the next attempt: `initial · 2^(failures-1)`, capped (failures ≥ 1). */
@@ -114,31 +132,57 @@ export function sseBackoffMs(failures: number, initialMs = 2000, maxMs = 60_000)
 /**
  * Keep an event stream open: `open(signal)` makes the request (with the app's auth), every frame goes to `onFrame`,
  * and when the stream ends or fails it reconnects after a back-off (2 s, 4 s … 60 s; reset once a stream opens).
- * Returns `stop()`, which aborts the open request and ends the loop.
+ * With `idleTimeoutMs`, a stream that delivers nothing for that long is dropped and reopened. Returns a stop function
+ * that also has `reconnect()` (e.g. when the page wakes) and `idleMs()`.
  */
-export function followSse(open: (signal: AbortSignal) => Promise<Response>, onFrame: (f: SseFrame) => void, opts: FollowSseOptions = {}): () => void {
+export function followSse(open: (signal: AbortSignal) => Promise<Response>, onFrame: (f: SseFrame) => void, opts: FollowSseOptions = {}): SseFollower {
   const initial = opts.initialDelayMs ?? 2000;
   const max = opts.maxDelayMs ?? 60_000;
+  const clock = opts.now ?? Date.now;
   const sleep = opts.sleep ?? ((ms: number) => new Promise<void>((res) => setTimeout(res, ms)));
   let stopped = false;
   let ctrl: AbortController | null = null;
   let delay = initial;
+  let lastByte = 0;
+  let isOpen = false;
+  let wakeUp: (() => void) | null = null;
+  let skip = false;
+  let watchdog: ReturnType<typeof setInterval> | null = null;
+  const touch = () => { lastByte = clock(); };
   void (async () => {
     while (!stopped) {
       ctrl = new AbortController();
+      const mine = ctrl;
       let error: unknown = null;
       try {
-        const r = await open(ctrl.signal);
+        const r = await open(mine.signal);
         if (!r.ok || !r.body) throw new SseHttpError(`stream ${r.status}`, r.status);
         delay = initial;
+        isOpen = true;
+        touch();
         opts.onOpen?.();
-        await readSse(r.body, onFrame, ctrl.signal);
+        if (opts.idleTimeoutMs && opts.idleTimeoutMs > 0) {
+          const limit = opts.idleTimeoutMs;
+          watchdog = setInterval(() => { if (clock() - lastByte > limit) mine.abort(); }, Math.max(250, Math.min(5_000, limit / 4)));
+        }
+        // every chunk (keep-alive comments too) proves the stream is alive
+        const counted = r.body.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({ transform(chunk, c) { touch(); c.enqueue(chunk); } }));
+        await readSse(counted, onFrame, mine.signal);
       } catch (e) { error = e; /* aborted or offline: fall through to back-off */ }
+      isOpen = false;
+      if (watchdog) { clearInterval(watchdog); watchdog = null; }
       if (stopped) break;
+      if (skip) { skip = false; continue; }
       opts.onDrop?.(error, delay);
-      await sleep(delay);
+      await Promise.race([sleep(delay), new Promise<void>((res) => { wakeUp = res; })]);
+      wakeUp = null;
+      if (skip) { skip = false; delay = initial; continue; }
       delay = Math.min(delay * 2, max);
     }
   })();
-  return () => { stopped = true; ctrl?.abort(); };
+  const stop = (() => { stopped = true; ctrl?.abort(); wakeUp?.(); }) as SseFollower;
+  stop.reconnect = () => { if (stopped) return; skip = true; delay = initial; ctrl?.abort(); wakeUp?.(); };
+  stop.idleMs = () => (isOpen ? clock() - lastByte : Infinity);
+  stop.open = () => isOpen;
+  return stop;
 }
