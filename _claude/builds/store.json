@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8178,
- "updatedAt": "2026-11-17T22:24:10.856Z",
+ "rev": 8179,
+ "updatedAt": "2026-11-17T22:24:21.113Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268400,7 +268400,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:20:41.350Z",
+   "updatedAt": "2026-11-17T22:24:13.869Z",
    "builtAt": "",
    "notes": [
     {
@@ -268664,6 +268664,10 @@
      "at": "2026-11-17T21:59:14.803Z"
     },
     {
+     "text": "s26: UI Review item r-20261117-xqg8m01 (3 layouts × desktop/phone, ui-choices@1 assets in the PR) was submitted locally: this dispatched session has no AXF_TOKEN/AXF_CONSOLE_URL, so review.mjs --console could not upload it. Re-run: cd apps/console-web && node scripts/phone-connect-shots.mjs <dir>, then review.mjs submit --console --choices <dir>/choices.json. Android pairing screen: no emulator on the VPS, reviewed from the CI APK.",
+     "at": "2026-11-17T22:24:13.869Z"
+    },
+    {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T22:00:32.371Z"
     },
@@ -268743,7 +268747,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -268751,13 +268755,13 @@
     "runs": 2,
     "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T22:20:15.828Z",
+     "at": "2026-11-17T21:06:39.726Z",
      "exit": 0,
      "outcome": "requeued",
      "reason": "phase-done",
-     "stepsLeft": 3,
+     "stepsLeft": 23,
      "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
      "phase": "Phase 1"
     },
     "split": {
@@ -268768,7 +268772,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on hulu0241 finished phase Phase 1 with 3 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "requeued after phase Phase 1: next phase Opus waits for a slot and an account",
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
@@ -268782,52 +268786,18 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
-   },
-   "recoveries": [
-    {
-     "at": "2026-11-17T22:09:11.344Z",
-     "buildId": "rebuild-fresh-main-phone-connect-small",
-     "phase": "Phase 1",
-     "step": "s15",
-     "cause": "exit-clean",
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T21:06:34.794Z",
      "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
      "account": "hulu0241",
-     "notified": "2026-11-17T22:09:23.059Z",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    },
-    {
-     "at": "2026-11-17T22:15:12.527Z",
-     "buildId": "rebuild-fresh-main-phone-connect-small",
-     "phase": "Phase 1",
-     "step": "s15",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "hulu0241",
-     "notified": "2026-11-17T22:15:31.289Z",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    },
-    {
-     "at": "2026-11-17T22:20:15.818Z",
-     "buildId": "rebuild-fresh-main-phone-connect-small",
-     "phase": "Phase 1",
-     "step": "s15",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "hulu0241",
-     "notified": "2026-11-17T22:20:46.356Z",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
+     "phase": "Phase 1"
     }
-   ],
+   },
    "steps": [
     {
      "id": "s1",
