@@ -2158,6 +2158,18 @@
    "from": "",
    "addenda": []
   },
+  "ci-run-only-what-changed-no-second-run": {
+   "said": "Make that a rule in, in a settings to disable that.",
+   "at": "2026-11-17T18:43:16.825Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "claude-account-switcher": {
    "said": "Can you store that key so I can use it to switch back and forth from the console? ... You're gonna build the switcher now... at least something temporary. ... Make a quick plugin so I can do it all from the console.",
    "at": "2026-11-04T23:57:00.641Z",

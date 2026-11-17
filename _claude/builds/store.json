@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7591,
- "updatedAt": "2026-11-17T18:41:11.187Z",
+ "rev": 7592,
+ "updatedAt": "2026-11-17T18:43:18.709Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -272458,6 +272458,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T18:35:22.774Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "ci-run-only-what-changed-no-second-run",
+   "title": "CI: run only what changed, no second run on main after merge (Gate setting to switch it)",
+   "category": "",
+   "detail": "Implement VPS rule ci-only-what-changed in .github/workflows/android.yml: ci-scope runs only jobs for touched parts; Android/Gradle/console APK only on Android/Kotlin/Gradle changes; drop the AmberX Capacitor APK job; main does not re-run CI after a merge (PR already tested with latest main, lands one at a time). Add a Gate setting (Settings > Plugins > Gate, checkbox) 'Run CI on main after a merge' default OFF, that the workflow honors (read via ci-scope from the gate settings / a committed config), same over REST/MCP/CLI/voice. Tests.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:43:16.825Z",
+   "updatedAt": "2026-11-17T18:43:16.825Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make that a rule in, in a settings to disable that.",
+    "at": "2026-11-17T18:43:16.825Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 956
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
