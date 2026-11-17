@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:07:57.528Z",
+ "updatedAt": "2026-11-17T15:08:05.765Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133274,7 +133274,7 @@
    "branch": "claude/land-per-instance-settings-picker",
    "pr": "#766",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-17T12:39:27.078Z",
+   "updatedAt": "2026-11-17T15:07:56.051Z",
    "builtAt": "2026-11-17T00:53:13.094Z",
    "notes": [
     {
@@ -133304,6 +133304,10 @@
     {
      "text": "Reconciler: branch claude/land-per-instance-settings-picker (PR #766); PR #766; PR #766 names s3 done",
      "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:07:56.051Z"
     }
    ],
    "approvals": [],
@@ -159929,7 +159933,7 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T12:39:27.078Z",
+   "updatedAt": "2026-11-17T15:07:49.223Z",
    "builtAt": "2026-11-17T00:57:48.057Z",
    "notes": [
     {
@@ -159959,6 +159963,10 @@
     {
      "text": "Reconciler: PR #767; PR #767 names s1, s2, s3, s4, s5, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20 done",
      "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:07:49.223Z"
     }
    ],
    "approvals": [],
