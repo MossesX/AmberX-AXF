@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:15:18.790Z",
+ "updatedAt": "2026-11-17T22:15:30.679Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131490,7 +131490,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T22:10:24.780Z",
+   "updatedAt": "2026-11-17T22:15:17.721Z",
    "builtAt": "",
    "notes": [
     {
@@ -131624,6 +131624,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T22:10:24.780Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T22:15:17.721Z"
     }
    ],
    "approvals": [
@@ -175336,7 +175340,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175344,7 +175348,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:15:14.537Z",
+   "updatedAt": "2026-11-17T22:15:25.466Z",
    "builtAt": "",
    "notes": [
     {
@@ -175638,6 +175642,14 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 3 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T22:15:14.537Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T22:15:20.722Z"
+    },
+    {
+     "text": "Dispatch gate: rebuild-fresh-main-phone-connect-small still has axf-rebuild-fresh-main-phone-connect-small--earl alive: not launched again, tracking that session.",
+     "at": "2026-11-17T22:15:25.466Z"
     }
    ],
    "approvals": [
@@ -181712,7 +181724,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T22:10:24.780Z",
+   "updatedAt": "2026-11-17T22:15:17.721Z",
    "builtAt": "",
    "notes": [
     {
@@ -181918,6 +181930,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T22:10:24.780Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T22:15:17.721Z"
     }
    ],
    "approvals": [
