@@ -499,6 +499,24 @@
         "title": "N new",
         "text": "New events came while paused. Tap to jump to the newest and follow again.",
         "kind": "button"
+      },
+      {
+        "target": "follow-new-events-auto-scroll",
+        "title": "Follow new events (auto-scroll)",
+        "text": "Claude link: when on, the log scrolls to each new event as it arrives. Scrolling up pauses it either way; the 'N new' button jumps back.",
+        "kind": "toggle"
+      },
+      {
+        "target": "rows-open-with-their-detail-shown",
+        "title": "Rows open with their detail shown",
+        "text": "Claude link: when on, every row shows its detail (tool, timing, error text) without a tap.",
+        "kind": "toggle"
+      },
+      {
+        "target": "events-kept-in-memory-the-log-on-disk-keeps-more",
+        "title": "Events kept in memory (the log on disk keeps more)",
+        "text": "Claude link: how many recent events the console keeps in memory for the live view and the snapshot API. Older events stay in the JSONL log on disk.",
+        "kind": "slider"
       }
     ],
     "intros": []
