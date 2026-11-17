@@ -1791,6 +1791,12 @@ app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 import console_control_api  # noqa: E402
 
 app.include_router(console_control_api.router_for(auth))
+
+# ---- Drag (drag-move@1, framework/spec/DRAG-MOVE.md): /api/drag/hosts|zones|move|add|remove|preview (drag_api.py),
+# relayed to the open console over the console-commands relay like console-control
+import drag_api  # noqa: E402
+
+app.include_router(drag_api.router_for(auth))
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch)
 
 
