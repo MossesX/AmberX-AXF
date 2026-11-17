@@ -831,12 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:45 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · orchestrator
-- 2026-11-17 20:46 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · builds-live
-- 2026-11-17 20:46 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · orchestrator
-- 2026-11-17 20:46 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:47 UTC · `rebuild-every-toolbar-page-specific` → queued, note (all) · pipeline
-- 2026-11-17 20:47 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 20:47 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 - 2026-11-17 20:47 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
 - 2026-11-17 20:47 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
@@ -1231,6 +1225,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:19 UTC · `icon-picker-every-banner-settings-widget` s5 done (all) · orchestrator
 - 2026-11-17 22:20 UTC · `banner-widget-shapes-plus-change-icon` s8 done (all) · orchestrator
 - 2026-11-17 22:20 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 22:20 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 22:20 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 22:20 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 22:20 UTC · `banner-widget-shapes-plus-change-icon` note (all) · reconciler
+- 2026-11-17 22:20 UTC · `rebuild-fresh-main-hide-any-asset` PR #824, note (all) · reconciler
+- 2026-11-17 22:20 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
 
 ## Token passes (log)
 
