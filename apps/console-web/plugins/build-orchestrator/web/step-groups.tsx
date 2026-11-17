@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Button, Note, Switch, TextField, useRuntime } from '@console/axf/react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Button, Chip, Note, Switch, TextField, useControlTargets, useRuntime } from '@console/axf/react';
+import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
+import { CONSOLE_CONTROL_KINDS } from '@console/axf/core/engines/console-control-rules.mjs';
 import { pluginApi } from '@console/plugins';
 import { FOLDER } from './ui';
 
@@ -47,5 +49,48 @@ export function StepGroupsSettings() {
       <WholeNumber anchor="setting:build-orchestrator.splitOverMin" label="Split builds over (min)" value={s.splitOverMin} min={0} max={1440} hint="0 = never split. Default 30 (Brett, Nov 16 2026)." onSave={(n) => void save({ splitOverMin: n }, `Builds over ${n} min are split`)} />
       <WholeNumber anchor="setting:build-orchestrator.maxParallelGroups" label="Max parallel groups per build" value={s.maxParallelGroups} min={1} max={12} hint="Each group takes one agent slot, so the agent cap still holds. Default 3." onSave={(n) => void save({ maxParallelGroups: n }, `At most ${n} groups of a build at once`)} />
     </div>
+  );
+}
+
+// ------------------------------------------------------------------ the Groups panel (a split build's expanded card)
+
+/** One group as pipeline.mjs status rows carry it (pipeline-core groupRow). */
+export type GroupRow = {
+  id: string; state: string; shown: string; label: string; waitingOn: string[]; steps: { done: number; total: number; ids: string[] }; nextModel: string;
+  slot: string; account: string; session: string; branch: string; worktree: string; mergeOrder: number; dependsOn: string[]; startedAt: string; endedAt: string; mergedAt: string; note: string;
+};
+
+const TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { running: 'accent', merging: 'warning', 'ready-to-merge': 'success', merged: 'success', conflict: 'danger', failed: 'danger' };
+/** The address a group answers to (console-control@1): `row:<build>/group:<gid>`. */
+export const groupAddress = (build: string, gid: string) => `row:${build}/group:${gid}`;
+/** Registered with the control registry once the address grammar has the `group` kind (build step s21); the DOM carries it already. */
+const GRAMMAR_HAS_GROUP = (CONSOLE_CONTROL_KINDS as readonly string[]).includes('group');
+
+export function GroupsPanel({ build, groups, actions }: { build: string; groups: GroupRow[]; actions?: (g: GroupRow) => ReactNode }) {
+  const rt = useRuntime();
+  useControlTargets(GRAMMAR_HAS_GROUP ? groups.map((g) => ({
+    address: groupAddress(build, g.id), kind: 'row' as const, label: `${build} group ${g.id}`, detail: `Step group · ${g.label}`, keywords: [g.id, g.state, g.account, g.branch].filter(Boolean),
+    element: () => document.querySelector(`[data-axf-target="${groupAddress(build, g.id)}"]`), get: () => g,
+    open: () => rt.dispatch(`build-orchestrator.focus:${encodeURIComponent(build)}`),
+  })) : [], `groups|${build}|${groups.map((g) => `${g.id}:${g.state}`).join(',')}`);
+  const cols: GridColumn<GroupRow>[] = [
+    { id: 'id', label: 'Group', width: 'calc(var(--fx-font-size) * 4)', render: (g) => <span className="fx-mono fx-small" data-axf-target={groupAddress(build, g.id)}>{g.id}</span> },
+    { id: 'state', label: 'State', width: 'calc(var(--fx-font-size) * 8)', render: (g) => <Chip tone={TONE[g.shown]}>{g.label}</Chip> },
+    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 4)', align: 'end', render: (g) => <span className="fx-small" title={g.steps.ids.join(', ')}>{g.steps.done}/{g.steps.total}</span> },
+    { id: 'merge', label: 'Merge', width: 'calc(var(--fx-font-size) * 4)', align: 'end', render: (g) => <span className="fx-small">#{g.mergeOrder + 1}</span> },
+    { id: 'run', label: 'Slot · account', width: 'minmax(calc(var(--fx-font-size) * 8), 1fr)', render: (g) => <span className="fx-small" title={g.session}>{g.account ? `${g.slot || 'queued'} · ${g.account}` : <span className="fx-muted">—</span>}</span> },
+    { id: 'branch', label: 'Branch', width: 'minmax(calc(var(--fx-font-size) * 10), 1.4fr)', render: (g) => <span className="fx-mono fx-small fx-muted">{g.branch || '—'}</span> },
+    { id: 'waits', label: 'Waiting on', width: 'calc(var(--fx-font-size) * 6)', render: (g) => <span className="fx-small">{g.waitingOn.join(', ') || <span className="fx-muted">—</span>}</span> },
+    ...(actions ? [{ id: 'act', label: '', width: 'minmax(calc(var(--fx-font-size) * 10), auto)', render: (g: GroupRow) => <div className="fx-row fx-row--wrap">{actions(g)}</div> }] : []),
+  ];
+  const merged = groups.filter((g) => g.state === 'merged').length;
+  const notes = groups.filter((g) => g.note && (g.state === 'conflict' || g.state === 'failed'));
+  return (
+    <section className="fx-stack" aria-label={`${build} step groups`}>
+      <DataGrid<GroupRow> id={`build-orchestrator.groups.${build}`} label={`${build} step groups`}
+        groups={[{ id: `${build}-groups`, title: `${groups.length} step groups · ${merged} merged`, rows: groups, groups: [], fixed: true }]}
+        columns={cols} rowId={(g) => g.id} rowLabel={(g) => `group ${g.id}`} hidden={[]} />
+      {notes.map((g) => <Note key={g.id} tone="danger">{g.id}: {g.note}</Note>)}
+    </section>
   );
 }
