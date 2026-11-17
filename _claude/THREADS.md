@@ -824,8 +824,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 04:06 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s12 done (all) · orchestrator
-- 2026-11-17 04:07 UTC · `server-rule-done-means-merged-working` s13 done (all) · orchestrator
 - 2026-11-17 04:07 UTC · `orchestrator-runs-long-builds-across` s15 done (all) · orchestrator
 - 2026-11-17 04:07 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s18 done (all) · orchestrator
 - 2026-11-17 04:08 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s13 done (all) · orchestrator
@@ -1224,6 +1222,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:06 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · auto-lander
 - 2026-11-17 19:06 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · auto-lander
 - 2026-11-17 19:06 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
+- 2026-11-17 19:06 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
+- 2026-11-17 19:06 UTC · `always-fill-every-slot-when-slots-are` → running (all) · auto-lander
 
 ## Token passes (log)
 
