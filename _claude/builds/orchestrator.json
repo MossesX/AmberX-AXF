@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T13:04:59.582Z",
+ "updatedAt": "2026-11-17T13:05:12.927Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142941,7 +142941,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T13:04:57.572Z",
+   "updatedAt": "2026-11-17T13:05:00.027Z",
    "builtAt": "",
    "notes": [
     {
@@ -143340,8 +143340,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T13:05:00.027Z",
      "note": "",
      "uid": "st-mwgp7o6s0felsc",
      "createdAt": "2026-11-14T17:47:32.020Z"

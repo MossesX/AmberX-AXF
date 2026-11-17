@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7430,
- "updatedAt": "2026-11-17T13:04:59.582Z",
+ "rev": 7431,
+ "updatedAt": "2026-11-17T13:05:12.927Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223050,7 +223050,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T13:04:57.572Z",
+   "updatedAt": "2026-11-17T13:05:00.027Z",
    "builtAt": "",
    "notes": [
     {
@@ -223529,12 +223529,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T13:05:00.027Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:47:32.020Z",
-     "updatedAt": "2026-11-14T17:47:32.020Z"
+     "updatedAt": "2026-11-17T13:05:00.462Z"
     },
     {
      "id": "s31",
@@ -223743,7 +223743,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
