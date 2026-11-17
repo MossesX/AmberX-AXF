@@ -211,6 +211,32 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 @keyframes fx-banner-bounce { 50% { transform: translateY(calc(var(--fx-space) * -0.3)); } }
 @keyframes fx-banner-blink { 50% { opacity: var(--fx-opacity-muted); } }
 @media (prefers-reduced-motion: reduce) { .fx-banner-icon[data-fx-working] > * { animation: none; } }
+/* run indicator (run-indicator@1, core/engines/run-indicator.ts): a grid row carries data-fx-run-state from its build-live@1
+   state and draws it from the --fx-run-* tokens only; the root's data-fx-run-anim / -icon-anim / -broke-anim pick the keyframes */
+[data-fx-run-state] { --fx-run-tone: var(--fx-run-running); --fx-run-bg: var(--fx-run-running-bg); color: var(--fx-run-tone); background: var(--fx-run-bg); transition: background var(--fx-motion) var(--fx-run-ease), color var(--fx-motion) var(--fx-run-ease); }
+[data-fx-run-state='broke'] { --fx-run-tone: var(--fx-run-broke); --fx-run-bg: var(--fx-run-broke-bg); }
+[data-fx-run-state='stale'] { --fx-run-tone: var(--fx-run-stale); --fx-run-bg: var(--fx-run-stale-bg); }
+[data-fx-run-state='done'] { --fx-run-tone: var(--fx-run-done); --fx-run-bg: var(--fx-run-done-bg); }
+[data-fx-run-anim='flash'] [data-fx-run-state='running'] { animation: fx-run-flash var(--fx-run-duration) var(--fx-run-ease) infinite; }
+[data-fx-run-anim='pulse'] [data-fx-run-state='running'] { animation: fx-run-pulse var(--fx-run-duration) var(--fx-run-ease) infinite; }
+[data-fx-run-anim='glow'] [data-fx-run-state='running'] { animation: fx-run-glow var(--fx-run-duration) var(--fx-run-ease) infinite; }
+[data-fx-run-anim='spin'] [data-fx-run-state='running'] { background: linear-gradient(90deg, var(--fx-surface), var(--fx-run-bg), var(--fx-surface)); background-size: 200% 100%; animation: fx-run-spin var(--fx-run-duration) linear infinite; }
+[data-fx-run-broke-anim='flash'] [data-fx-run-state='broke'] { animation: fx-run-flash var(--fx-run-duration) var(--fx-run-ease) infinite; }
+[data-fx-run-broke-anim='pulse'] [data-fx-run-state='broke'] { animation: fx-run-pulse var(--fx-run-duration) var(--fx-run-ease) infinite; }
+[data-fx-run-state] .fx-run-icon { display: inline-flex; align-items: center; justify-content: center; color: var(--fx-run-tone); }
+[data-fx-run-state] .fx-run-icon > * { transform-origin: 50% 50%; }
+[data-fx-run-icon-anim='spin'] [data-fx-run-state='running'] .fx-run-icon > * { animation: fx-spin var(--fx-run-icon-duration) linear infinite; }
+[data-fx-run-icon-anim='pulse'] [data-fx-run-state='running'] .fx-run-icon > * { animation: fx-banner-pulse var(--fx-run-icon-duration) var(--fx-run-ease) infinite; }
+[data-fx-run-icon-anim='bounce'] [data-fx-run-state='running'] .fx-run-icon > * { animation: fx-banner-bounce var(--fx-run-icon-duration) var(--fx-run-ease) infinite; }
+[data-fx-run-icon-anim='blink'] [data-fx-run-state='running'] .fx-run-icon > * { animation: fx-banner-blink var(--fx-run-icon-duration) steps(2, jump-none) infinite; }
+@keyframes fx-run-flash { 50% { background: var(--fx-surface); opacity: var(--fx-run-flash-min); } }
+@keyframes fx-run-pulse { 50% { opacity: var(--fx-run-flash-min); } }
+@keyframes fx-run-glow { 50% { box-shadow: inset 0 0 0 var(--fx-border-w) var(--fx-run-glow), 0 0 calc(var(--fx-space) * 1.5) var(--fx-run-glow); } }
+@keyframes fx-run-spin { to { background-position: -200% 0; } }
+/* reduced motion: the engine sets every -anim attribute to none and data-fx-run-reduced says what stays */
+[data-fx-run-reduced] [data-fx-run-state], [data-fx-run-reduced] [data-fx-run-state] .fx-run-icon > *, [data-fx-motion='reduced'] [data-fx-run-state], [data-fx-motion='reduced'] [data-fx-run-state] .fx-run-icon > * { animation: none; }
+[data-fx-run-reduced='off'] [data-fx-run-state] { background: none; }
+@media (prefers-reduced-motion: reduce) { [data-fx-run-state], [data-fx-run-state] .fx-run-icon > * { animation: none; } }
 /* Banner settings dialog */
 .fx-banner-settings { display: grid; gap: var(--fx-dens-gap-xl); }
 .fx-banner-settings__indent { margin-inline-start: var(--fx-dens-gap-3xl); }

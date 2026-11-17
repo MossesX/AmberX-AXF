@@ -10,6 +10,7 @@ import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
+import { runIndicatorStyle } from './engines/run-indicator';
 import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
@@ -2855,6 +2856,8 @@ export class AxfRuntime {
     const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
     // Settings → Appearance → Animations: this app's own animation picks over the skin's (engines/behavior.ts)
     parts.push(behaviorStyle(withAnimationPrefs(behavior, this.settings.get(ANIMATION_PREFS_KEY)), reducedMotion));
+    // run-indicator@1 (core/engines/run-indicator.ts): the --fx-run-* tokens every grid row draws a running / broke job with; the pulse defaults when an app has none
+    parts.push(runIndicatorStyle(this.assetOrNull('run-indicator' as AssetType)?.data, reducedMotion));
     // nav-style@1 last (core/engines/navstyle.ts): only for a nav that opts in (nav-menu `navStyle: true`); it may set
     // the nav width (resized or collapsed to icons), so it wins over the layout's
     const navStyle = this.navStyleData();

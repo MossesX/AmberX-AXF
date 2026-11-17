@@ -54,6 +54,7 @@
     "book": false,
     "clip": false,
     "docs": false,
+    "run-indicator": true,
     "uac-policy": false
   },
   "cases": {
@@ -469,6 +470,11 @@
           "compact",
           "standard",
           "touch"
+        ],
+        "run-indicator": [
+          "flash",
+          "glow",
+          "pulse"
         ]
       }
     },
@@ -888,6 +894,11 @@
           "compact",
           "standard",
           "touch"
+        ],
+        "run-indicator": [
+          "flash",
+          "glow",
+          "pulse"
         ]
       }
     },
@@ -1313,6 +1324,11 @@
           "compact",
           "standard",
           "touch"
+        ],
+        "run-indicator": [
+          "flash",
+          "glow",
+          "pulse"
         ]
       }
     },
@@ -1732,6 +1748,11 @@
           "compact",
           "standard",
           "touch"
+        ],
+        "run-indicator": [
+          "flash",
+          "glow",
+          "pulse"
         ]
       }
     },
@@ -2122,6 +2143,11 @@
           "compact",
           "standard",
           "touch"
+        ],
+        "run-indicator": [
+          "flash",
+          "glow",
+          "pulse"
         ]
       }
     },
@@ -2541,6 +2567,11 @@
           "compact",
           "standard",
           "touch"
+        ],
+        "run-indicator": [
+          "flash",
+          "glow",
+          "pulse"
         ]
       }
     }

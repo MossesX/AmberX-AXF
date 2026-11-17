@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "run-indicator",
+  "id": "flash",
+  "name": "Flash",
+  "version": "1.0.0",
+  "description": "A building row flashes slowly between the surface and the accent tint while its icon blinks; a broke row flashes red on the pink tint.",
+  "author": "AmberX AXF",
+  "tags": [
+    "run-indicator"
+  ],
+  "data": {
+    "animation": "flash",
+    "icon": "zap",
+    "tones": {
+      "running": "accent",
+      "broke": "danger",
+      "stale": "warning",
+      "done": "success"
+    },
+    "iconAnimation": "blink",
+    "brokeAnimation": "flash",
+    "speed": 100,
+    "durationMs": 3000,
+    "intensity": 0.45,
+    "reducedMotion": "still"
+  }
+}

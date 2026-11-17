@@ -330,6 +330,7 @@ jobs:
             npx -y tsx framework/spec/check-settings-open.mts          # every settings interface opens in a floating glass dialog by default; fails on code that navigates to the Settings page instead
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
+            npx -y tsx framework/spec/check-run-indicator.mts          # run-indicator@1: registry (slot, before uac-policy), defaults, --fx-run-* tokens opacity + colour-mix only, reduced motion, fixture, starters, validators agree, every app ships the starters
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
             npx -y tsx framework/spec/check-control.mts                # control@1: one command schema for tokens, AmberX entities and the planner: registry, gate (roles × ops), confirm flow, errors, projections, snapshot, fixture
             npx -y tsx framework/spec/check-console-commands.mts       # console commands (control@1 console domain): catalog, resolve by id/title/words, action policy, clients, runner, messages, screen focus, late commands
