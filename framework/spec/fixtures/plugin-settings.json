@@ -1,0 +1,703 @@
+{
+  "contract": "plugin-settings@1",
+  "prefix": "plugin-",
+  "interfaceKey": "axf.settings.interface",
+  "generatedLevel": "basic",
+  "ids": [
+    {
+      "pluginId": "molly-guide",
+      "slug": "molly-guide",
+      "assetId": "plugin-molly-guide"
+    },
+    {
+      "pluginId": "ai.amberx.Plugin_X",
+      "slug": "ai-amberx-plugin-x",
+      "assetId": "plugin-ai-amberx-plugin-x"
+    },
+    {
+      "pluginId": "A--B",
+      "slug": "a-b",
+      "assetId": "plugin-a-b"
+    },
+    {
+      "pluginId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "slug": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "assetId": "plugin-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "pluginId": "",
+      "slug": "plugin",
+      "assetId": "plugin-plugin"
+    }
+  ],
+  "owners": [
+    {
+      "input": "app",
+      "owner": {
+        "kind": "app"
+      },
+      "key": "app",
+      "interfaceId": "console"
+    },
+    {
+      "input": "console",
+      "owner": {
+        "kind": "app"
+      },
+      "key": "app",
+      "interfaceId": "console"
+    },
+    {
+      "input": "plugin:molly-guide",
+      "owner": {
+        "kind": "plugin",
+        "id": "molly-guide"
+      },
+      "key": "plugin:molly-guide",
+      "interfaceId": "plugin-molly-guide"
+    },
+    {
+      "input": "molly-guide",
+      "owner": {
+        "kind": "plugin",
+        "id": "molly-guide"
+      },
+      "key": "plugin:molly-guide",
+      "interfaceId": "plugin-molly-guide"
+    },
+    {
+      "input": "plugin:",
+      "owner": null,
+      "key": null,
+      "interfaceId": null
+    },
+    {
+      "input": "plugin:bad id",
+      "owner": null,
+      "key": null,
+      "interfaceId": null
+    },
+    {
+      "input": "",
+      "owner": {
+        "kind": "app"
+      },
+      "key": "app",
+      "interfaceId": "console"
+    },
+    {
+      "input": 7,
+      "owner": null,
+      "key": null,
+      "interfaceId": null
+    },
+    {
+      "input": {
+        "kind": "app"
+      },
+      "owner": {
+        "kind": "app"
+      },
+      "key": "app",
+      "interfaceId": "console"
+    },
+    {
+      "input": {
+        "kind": "plugin",
+        "id": "feature-matrix"
+      },
+      "owner": {
+        "kind": "plugin",
+        "id": "feature-matrix"
+      },
+      "key": "plugin:feature-matrix",
+      "interfaceId": "plugin-feature-matrix"
+    },
+    {
+      "input": {
+        "kind": "plugin"
+      },
+      "owner": null,
+      "key": null,
+      "interfaceId": null
+    },
+    {
+      "input": {
+        "kind": "chrome"
+      },
+      "owner": null,
+      "key": null,
+      "interfaceId": null
+    }
+  ],
+  "ownerOf": [
+    {
+      "id": "console",
+      "owner": {
+        "kind": "app"
+      }
+    },
+    {
+      "id": "standard",
+      "owner": {
+        "kind": "app"
+      }
+    },
+    {
+      "id": "chrome-toolbar",
+      "owner": {
+        "kind": "chrome",
+        "for": "toolbar"
+      }
+    },
+    {
+      "id": "plugin-molly-guide",
+      "owner": {
+        "kind": "plugin",
+        "id": "molly-guide"
+      }
+    },
+    {
+      "id": "plugin-rogue",
+      "owner": {
+        "kind": "plugin",
+        "id": "feature-matrix"
+      }
+    },
+    {
+      "id": "plugin-orphan",
+      "owner": null
+    },
+    {
+      "id": "plugin-not-a-plugin",
+      "owner": {
+        "kind": "app"
+      }
+    }
+  ],
+  "isOwn": [
+    {
+      "id": "console",
+      "pluginId": "molly-guide",
+      "own": false
+    },
+    {
+      "id": "standard",
+      "pluginId": "molly-guide",
+      "own": false
+    },
+    {
+      "id": "chrome-toolbar",
+      "pluginId": "molly-guide",
+      "own": false
+    },
+    {
+      "id": "plugin-molly-guide",
+      "pluginId": "molly-guide",
+      "own": true
+    },
+    {
+      "id": "plugin-rogue",
+      "pluginId": "molly-guide",
+      "own": false
+    },
+    {
+      "id": "plugin-orphan",
+      "pluginId": "molly-guide",
+      "own": false
+    },
+    {
+      "id": "plugin-not-a-plugin",
+      "pluginId": "molly-guide",
+      "own": false
+    }
+  ],
+  "tabs": [
+    {
+      "pluginId": "molly-guide",
+      "tabs": [
+        "molly-guide-voice",
+        "molly-guide"
+      ],
+      "groups": [
+        "molly-guide.voiceopts",
+        "molly-guide.general"
+      ]
+    },
+    {
+      "pluginId": "feature-matrix",
+      "tabs": [
+        "feature-matrix"
+      ],
+      "groups": [
+        "feature-matrix.view"
+      ]
+    },
+    {
+      "pluginId": "none",
+      "tabs": [],
+      "groups": []
+    }
+  ],
+  "generated": {
+    "molly-guide": {
+      "scope": "plugin",
+      "owner": "molly-guide",
+      "layout": "list",
+      "header": "compact",
+      "search": false,
+      "descriptions": true,
+      "tabs": [
+        {
+          "id": "molly-guide-voice",
+          "parent": "molly-guide"
+        },
+        {
+          "id": "molly-guide",
+          "parent": "plugins"
+        }
+      ],
+      "hide": [],
+      "groups": [],
+      "levels": true,
+      "defaultLevel": "basic",
+      "levelOf": {
+        "molly-guide-voice": "basic",
+        "molly-guide": "basic",
+        "molly-guide.voiceopts": "basic",
+        "molly-guide.rate": "basic",
+        "molly-guide.general": "basic",
+        "molly-guide.autoplay": "basic",
+        "molly-guide.voice": "basic"
+      },
+      "visible": {}
+    },
+    "feature-matrix": {
+      "scope": "plugin",
+      "owner": "feature-matrix",
+      "layout": "list",
+      "header": "compact",
+      "search": false,
+      "descriptions": true,
+      "tabs": [
+        {
+          "id": "feature-matrix",
+          "parent": "plugins"
+        }
+      ],
+      "hide": [],
+      "groups": [],
+      "levels": true,
+      "defaultLevel": "basic",
+      "levelOf": {
+        "feature-matrix": "basic",
+        "feature-matrix.view": "basic",
+        "feature-matrix.compact": "basic"
+      },
+      "visible": {}
+    },
+    "none": {
+      "scope": "plugin",
+      "owner": "none",
+      "layout": "list",
+      "header": "compact",
+      "search": false,
+      "descriptions": true,
+      "tabs": [],
+      "hide": [],
+      "groups": [],
+      "levels": true,
+      "defaultLevel": "basic",
+      "levelOf": {},
+      "visible": {}
+    }
+  },
+  "resolve": [
+    {
+      "name": "app page: the app pick (scope app)",
+      "owner": {
+        "kind": "app"
+      },
+      "appPick": "console",
+      "assets": [
+        "console",
+        "standard",
+        "chrome-toolbar",
+        "plugin-molly-guide",
+        "plugin-rogue",
+        "plugin-orphan",
+        "plugin-not-a-plugin"
+      ],
+      "result": {
+        "id": "console",
+        "source": "asset",
+        "owner": {
+          "kind": "app"
+        },
+        "ui": {
+          "scope": "app",
+          "layout": "list",
+          "header": "compact",
+          "search": true,
+          "descriptions": true,
+          "tabs": [],
+          "hide": [],
+          "groups": [],
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {},
+          "visible": {}
+        }
+      },
+      "own": true
+    },
+    {
+      "name": "app page: no pick = framework default",
+      "owner": {
+        "kind": "app"
+      },
+      "appPick": null,
+      "assets": [
+        "console",
+        "standard",
+        "chrome-toolbar",
+        "plugin-molly-guide",
+        "plugin-rogue",
+        "plugin-orphan",
+        "plugin-not-a-plugin"
+      ],
+      "result": {
+        "id": "standard",
+        "source": "default",
+        "owner": {
+          "kind": "app"
+        },
+        "ui": {
+          "layout": "tabs-top",
+          "header": "full",
+          "search": false,
+          "descriptions": true,
+          "tabs": [],
+          "hide": [],
+          "groups": [],
+          "levels": false,
+          "defaultLevel": "basic",
+          "levelOf": {},
+          "visible": {},
+          "scope": "app"
+        }
+      },
+      "own": true
+    },
+    {
+      "name": "app page: a plugin interface picked is never used for the app",
+      "owner": {
+        "kind": "app"
+      },
+      "appPick": "plugin-molly-guide",
+      "assets": [
+        "console",
+        "standard",
+        "chrome-toolbar",
+        "plugin-molly-guide",
+        "plugin-rogue",
+        "plugin-orphan",
+        "plugin-not-a-plugin"
+      ],
+      "result": {
+        "id": "standard",
+        "source": "default",
+        "owner": {
+          "kind": "app"
+        },
+        "ui": {
+          "layout": "tabs-top",
+          "header": "full",
+          "search": false,
+          "descriptions": true,
+          "tabs": [],
+          "hide": [],
+          "groups": [],
+          "levels": false,
+          "defaultLevel": "basic",
+          "levelOf": {},
+          "visible": {},
+          "scope": "app"
+        }
+      },
+      "own": true
+    },
+    {
+      "name": "app page: a chrome interface picked is never used for the app",
+      "owner": {
+        "kind": "app"
+      },
+      "appPick": "chrome-toolbar",
+      "assets": [
+        "console",
+        "standard",
+        "chrome-toolbar",
+        "plugin-molly-guide",
+        "plugin-rogue",
+        "plugin-orphan",
+        "plugin-not-a-plugin"
+      ],
+      "result": {
+        "id": "standard",
+        "source": "default",
+        "owner": {
+          "kind": "app"
+        },
+        "ui": {
+          "layout": "tabs-top",
+          "header": "full",
+          "search": false,
+          "descriptions": true,
+          "tabs": [],
+          "hide": [],
+          "groups": [],
+          "levels": false,
+          "defaultLevel": "basic",
+          "levelOf": {},
+          "visible": {},
+          "scope": "app"
+        }
+      },
+      "own": true
+    },
+    {
+      "name": "plugin with its own asset",
+      "owner": {
+        "kind": "plugin",
+        "id": "molly-guide"
+      },
+      "appPick": "console",
+      "assets": [
+        "console",
+        "standard",
+        "chrome-toolbar",
+        "plugin-molly-guide",
+        "plugin-rogue",
+        "plugin-orphan",
+        "plugin-not-a-plugin"
+      ],
+      "result": {
+        "id": "plugin-molly-guide",
+        "source": "asset",
+        "owner": {
+          "kind": "plugin",
+          "id": "molly-guide"
+        },
+        "ui": {
+          "scope": "plugin",
+          "owner": "molly-guide",
+          "layout": "list",
+          "header": "compact",
+          "search": true,
+          "descriptions": true,
+          "tabs": [],
+          "hide": [],
+          "groups": [],
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {
+            "molly-guide.voice": "developer"
+          },
+          "visible": {}
+        }
+      },
+      "own": true
+    },
+    {
+      "name": "plugin with no asset: generated from its tabs, sub-tabs and keys; never the console",
+      "owner": {
+        "kind": "plugin",
+        "id": "feature-matrix"
+      },
+      "appPick": "console",
+      "assets": [
+        "console",
+        "standard",
+        "chrome-toolbar",
+        "plugin-molly-guide",
+        "plugin-rogue",
+        "plugin-orphan",
+        "plugin-not-a-plugin"
+      ],
+      "result": {
+        "id": "plugin-feature-matrix",
+        "source": "generated",
+        "owner": {
+          "kind": "plugin",
+          "id": "feature-matrix"
+        },
+        "ui": {
+          "scope": "plugin",
+          "owner": "feature-matrix",
+          "layout": "list",
+          "header": "compact",
+          "search": false,
+          "descriptions": true,
+          "tabs": [
+            {
+              "id": "feature-matrix",
+              "parent": "plugins"
+            }
+          ],
+          "hide": [],
+          "groups": [],
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {
+            "feature-matrix": "basic",
+            "feature-matrix.view": "basic",
+            "feature-matrix.compact": "basic"
+          },
+          "visible": {}
+        }
+      },
+      "own": true
+    },
+    {
+      "name": "plugin with nothing registered: generated, empty keys",
+      "owner": {
+        "kind": "plugin",
+        "id": "wake-listener"
+      },
+      "appPick": "console",
+      "assets": [
+        "console",
+        "standard",
+        "chrome-toolbar",
+        "plugin-molly-guide",
+        "plugin-rogue",
+        "plugin-orphan",
+        "plugin-not-a-plugin"
+      ],
+      "result": {
+        "id": "plugin-wake-listener",
+        "source": "generated",
+        "owner": {
+          "kind": "plugin",
+          "id": "wake-listener"
+        },
+        "ui": {
+          "scope": "plugin",
+          "owner": "wake-listener",
+          "layout": "list",
+          "header": "compact",
+          "search": false,
+          "descriptions": true,
+          "tabs": [],
+          "hide": [],
+          "groups": [],
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {},
+          "visible": {}
+        }
+      },
+      "own": true
+    },
+    {
+      "name": "plugin: a wrongly named asset for it is ignored (plugin-rogue owns feature-matrix)",
+      "owner": {
+        "kind": "plugin",
+        "id": "feature-matrix"
+      },
+      "appPick": "console",
+      "assets": [
+        "console",
+        "standard",
+        "chrome-toolbar",
+        "plugin-rogue",
+        "plugin-orphan",
+        "plugin-not-a-plugin"
+      ],
+      "result": {
+        "id": "plugin-feature-matrix",
+        "source": "generated",
+        "owner": {
+          "kind": "plugin",
+          "id": "feature-matrix"
+        },
+        "ui": {
+          "scope": "plugin",
+          "owner": "feature-matrix",
+          "layout": "list",
+          "header": "compact",
+          "search": false,
+          "descriptions": true,
+          "tabs": [
+            {
+              "id": "feature-matrix",
+              "parent": "plugins"
+            }
+          ],
+          "hide": [],
+          "groups": [],
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {
+            "feature-matrix": "basic",
+            "feature-matrix.view": "basic",
+            "feature-matrix.compact": "basic"
+          },
+          "visible": {}
+        }
+      },
+      "own": true
+    },
+    {
+      "name": "plugin: dotted id slugs",
+      "owner": {
+        "kind": "plugin",
+        "id": "ai.amberx.Plugin_X"
+      },
+      "appPick": null,
+      "assets": [],
+      "result": {
+        "id": "plugin-ai-amberx-plugin-x",
+        "source": "generated",
+        "owner": {
+          "kind": "plugin",
+          "id": "ai.amberx.Plugin_X"
+        },
+        "ui": {
+          "scope": "plugin",
+          "owner": "ai.amberx.Plugin_X",
+          "layout": "list",
+          "header": "compact",
+          "search": false,
+          "descriptions": true,
+          "tabs": [],
+          "hide": [],
+          "groups": [],
+          "levels": true,
+          "defaultLevel": "basic",
+          "levelOf": {},
+          "visible": {}
+        }
+      },
+      "own": true
+    }
+  ],
+  "errors": {
+    "all": [
+      "settings/plugin-rogue: a plugin interface for \"feature-matrix\" must have the id plugin-feature-matrix",
+      "settings/plugin-orphan: scope plugin with no owner (data.owner = the plugin id)",
+      "settings/plugin-not-a-plugin: the plugin- id is reserved for plugin interfaces (data.scope = plugin, data.owner = the plugin id); this one is scope app"
+    ],
+    "badPick": [
+      "settings/plugin-rogue: a plugin interface for \"feature-matrix\" must have the id plugin-feature-matrix",
+      "settings/plugin-orphan: scope plugin with no owner (data.owner = the plugin id)",
+      "settings/plugin-not-a-plugin: the plugin- id is reserved for plugin interfaces (data.scope = plugin, data.owner = the plugin id); this one is scope app",
+      "settings/plugin-molly-guide: the app's settings pick must be an app interface (scope app); this one is scope plugin"
+    ],
+    "clean": [],
+    "twoForOne": [
+      "settings/plugin-molly-guide-2: a plugin interface for \"molly-guide\" must have the id plugin-molly-guide",
+      "plugin \"molly-guide\" has 2 interfaces (plugin-molly-guide, plugin-molly-guide-2); one per plugin"
+    ]
+  }
+}

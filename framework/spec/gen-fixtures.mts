@@ -34,6 +34,7 @@ import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, contextExtra, frameToEvent, normalizeChatContext, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
+import { GENERATED_LEVEL, PLUGIN_SETTINGS_CONTRACT, PLUGIN_SETTINGS_PREFIX, SETTINGS_INTERFACE_KEY, generatedPluginSettings, isPluginSettingsAsset, parseSettingsOwner, pluginSettingsErrors, pluginSettingsGroups, pluginSettingsId, pluginSettingsTabs, pluginSlug, resolveSettingsInterface, settingsInterfaceId, settingsInterfaceIsOwn, settingsOwnerKey, settingsOwnerOf, type ResolveSettingsEnv, type SettingsOwner } from '../core/engines/plugin-settings';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
@@ -2552,5 +2553,58 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
       sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
+  });
+}
+// plugin-settings@1: which settings interface a page renders through (core/engines/plugin-settings.ts; spec/PLUGIN-SETTINGS.md, Nov 17 2026).
+{
+  const tabs = [
+    { id: 'appearance', label: 'Appearance', icon: 'palette', order: 10 },
+    { id: 'plugins', label: 'Plugins', icon: 'package', order: 40 },
+    { id: 'molly-guide', label: 'Gizmo guide', icon: 'sparkles', order: 60, parent: 'plugins', plugin: 'molly-guide' },
+    { id: 'molly-guide-voice', label: 'Voice', icon: 'mic', order: 2, parent: 'molly-guide' },
+    { id: 'feature-matrix', label: 'Feature matrix', icon: 'grid', order: 50, parent: 'plugins', plugin: 'feature-matrix' },
+    { id: 'about', label: 'About', icon: 'info', order: 90 },
+  ];
+  const groups = [
+    { id: 'axf.display', label: 'Display', tab: 'appearance', settings: [{ key: 'axf.display.fontScale', label: 'Text size', kind: 'slider' }] },
+    { id: 'molly-guide.general', label: 'General', tab: 'molly-guide', order: 1, settings: [{ key: 'molly-guide.autoplay', label: 'Autoplay', kind: 'toggle' }, { key: 'molly-guide.voice', label: 'Voice', kind: 'choice', options: [{ value: 'a', label: 'A' }] }] },
+    { id: 'molly-guide.voiceopts', label: 'Voice options', tab: 'molly-guide-voice', settings: [{ key: 'molly-guide.rate', label: 'Rate', kind: 'slider' }] },
+    { id: 'feature-matrix.view', label: 'View', tab: 'feature-matrix', settings: [{ key: 'feature-matrix.compact', label: 'Compact', kind: 'toggle' }] },
+  ] as never[];
+  const base = { layout: 'list', header: 'compact', search: true, descriptions: true, levels: true, defaultLevel: 'basic' };
+  const assets = [
+    { id: 'console', data: { ...base, scope: 'app' } },
+    { id: 'standard', data: { layout: 'tabs-top', header: 'full', search: false, descriptions: true } },
+    { id: 'chrome-toolbar', data: { ...base, for: 'toolbar' } },
+    { id: 'plugin-molly-guide', data: { ...base, scope: 'plugin', owner: 'molly-guide', levelOf: { 'molly-guide.voice': 'developer' } } },
+    { id: 'plugin-rogue', data: { ...base, scope: 'plugin', owner: 'feature-matrix' } },
+    { id: 'plugin-orphan', data: { ...base, scope: 'plugin' } },
+    { id: 'plugin-not-a-plugin', data: { ...base, scope: 'app' } },
+  ];
+  const owners: unknown[] = ['app', 'console', 'plugin:molly-guide', 'molly-guide', 'plugin:', 'plugin:bad id', '', 7, { kind: 'app' }, { kind: 'plugin', id: 'feature-matrix' }, { kind: 'plugin' }, { kind: 'chrome' }];
+  const cases: { name: string; owner: SettingsOwner; env: ResolveSettingsEnv }[] = [
+    { name: 'app page: the app pick (scope app)', owner: { kind: 'app' }, env: { assets, appPick: 'console', tabs, groups } },
+    { name: 'app page: no pick = framework default', owner: { kind: 'app' }, env: { assets, tabs, groups } },
+    { name: 'app page: a plugin interface picked is never used for the app', owner: { kind: 'app' }, env: { assets, appPick: 'plugin-molly-guide', tabs, groups } },
+    { name: 'app page: a chrome interface picked is never used for the app', owner: { kind: 'app' }, env: { assets, appPick: 'chrome-toolbar', tabs, groups } },
+    { name: 'plugin with its own asset', owner: { kind: 'plugin', id: 'molly-guide' }, env: { assets, appPick: 'console', tabs, groups } },
+    { name: 'plugin with no asset: generated from its tabs, sub-tabs and keys; never the console', owner: { kind: 'plugin', id: 'feature-matrix' }, env: { assets, appPick: 'console', tabs, groups } },
+    { name: 'plugin with nothing registered: generated, empty keys', owner: { kind: 'plugin', id: 'wake-listener' }, env: { assets, appPick: 'console', tabs, groups } },
+    { name: 'plugin: a wrongly named asset for it is ignored (plugin-rogue owns feature-matrix)', owner: { kind: 'plugin', id: 'feature-matrix' }, env: { assets: assets.filter((a) => a.id !== 'plugin-molly-guide'), appPick: 'console', tabs, groups } },
+    { name: 'plugin: dotted id slugs', owner: { kind: 'plugin', id: 'ai.amberx.Plugin_X' }, env: { assets: [], tabs: [], groups: [] } },
+  ];
+  write('plugin-settings.json', {
+    contract: PLUGIN_SETTINGS_CONTRACT,
+    prefix: PLUGIN_SETTINGS_PREFIX,
+    interfaceKey: SETTINGS_INTERFACE_KEY,
+    generatedLevel: GENERATED_LEVEL,
+    ids: ['molly-guide', 'ai.amberx.Plugin_X', 'A--B', 'x'.repeat(60), ''].map((id) => ({ pluginId: id, slug: pluginSlug(id), assetId: pluginSettingsId(id) })),
+    owners: owners.map((o) => ({ input: o, owner: parseSettingsOwner(o), key: parseSettingsOwner(o) ? settingsOwnerKey(parseSettingsOwner(o)!) : null, interfaceId: parseSettingsOwner(o) ? settingsInterfaceId(parseSettingsOwner(o)!, 'console') : null })),
+    ownerOf: assets.map((a) => ({ id: a.id, owner: settingsOwnerOf(a.data) })),
+    isOwn: assets.map((a) => ({ id: a.id, pluginId: 'molly-guide', own: isPluginSettingsAsset(a, 'molly-guide') })),
+    tabs: ['molly-guide', 'feature-matrix', 'none'].map((id) => ({ pluginId: id, tabs: pluginSettingsTabs(id, tabs).map((t) => t.id), groups: pluginSettingsGroups(id, tabs, groups).map((g) => g.id) })),
+    generated: { 'molly-guide': generatedPluginSettings('molly-guide', tabs, groups), 'feature-matrix': generatedPluginSettings('feature-matrix', tabs, groups), none: generatedPluginSettings('none', tabs, groups) },
+    resolve: cases.map((c) => { const r = resolveSettingsInterface(c.owner, c.env); return { name: c.name, owner: c.owner, appPick: c.env.appPick ?? null, assets: c.env.assets.map((a) => a.id), result: r, own: settingsInterfaceIsOwn(r) }; }),
+    errors: { all: pluginSettingsErrors(assets, 'console'), badPick: pluginSettingsErrors(assets, 'plugin-molly-guide'), clean: pluginSettingsErrors(assets.slice(0, 4), 'console'), twoForOne: pluginSettingsErrors([...assets.slice(0, 4), { id: 'plugin-molly-guide-2', data: { ...base, scope: 'plugin', owner: 'molly-guide' } }], 'console') },
   });
 }
