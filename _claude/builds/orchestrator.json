@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:10:58.314Z",
+ "updatedAt": "2026-11-17T19:11:33.650Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -180963,9 +180963,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:09:13.799Z",
-   "updatedAt": "2026-11-17T19:09:18.475Z",
+   "updatedAt": "2026-11-17T19:11:27.800Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 10 steps (0 Fable).",
+     "at": "2026-11-17T19:11:27.800Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -180980,7 +180985,226 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Declare the notify type: add apps/console-web/plugins/build-orchestrator/notify.json (notify-types@1) with type `pipeline.build-started` (label 'Queue build started', default on, channel AmberX push, not guarded). Check that notify-control's registry picks it up.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "apps/console-web/plugins/notify-control/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm01qi2p",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add a setting to turn it off: `pipeline.notifyOnStart` (default on) in the build-orchestrator plugin settings, shown as a switch under Settings → Plugins → Build orchestrator, with a lifecycle marker and a control@1 / console-control target.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/plugin.json",
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm02rv6q",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s3",
+     "text": "Write the sender in apps/console-web/plugins/build-orchestrator/queue-notify.mjs. It builds the message (build title + id, step/phase, model, Claude account, queue position left) and a deep link to row:<build>. It sends through axf.notify@1 via the console's notify route, using the container token, and does nothing when the setting or the notify type is off. It sends once per build run (keyed on build id + run number).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/queue-notify.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm03e8ne",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s4",
+     "text": "Hook the sender into the dispatcher: in pipeline.mjs tick, call queue-notify only after claude-headless.sh --account has actually started the run. Never call it on a refused launch (no slot, model gate exit 3, no account). A notify failure only gets a log line and never blocks the launch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm04zutx",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s5",
+     "text": "Make the notification also go out when a build starts outside the tick (relaunch after a crash, 'Launch builds without asking' auto-queue). Put the call where those starts happen, reuse the same once-per-run key, and leave a note on the build record.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "deploy/claude-headless.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm05dvwj",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s6",
+     "text": "API for the setting and a test send. REST: GET/POST /api/plugins/build-orchestrator/pipeline/notify (state: on/off, last sent) and POST .../notify/test. CLI: `pipeline.mjs notify status|on|off|test`. MCP: through plugin-commands (static route descriptions). Voice: console action `pipeline.notify` (AmberX). All four do the same thing.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/commands.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm06shnu",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s7",
+     "text": "Deep links: tapping the notification opens the console on that build's row (console_show target row:<build>). The setting has its own address (setting:pipeline.notifyOnStart), so check-console-control.mjs passes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/queue-notify.mjs",
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm07pukw",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s8",
+     "text": "Tests in apps/console-web/plugins/build-orchestrator/test/queue-notify.test.mjs. Use a fake notify endpoint to check: it sends on launch, skips a refused launch, does nothing when the setting is off, does nothing when the type is off in notify-control, sends once per run, and the message names the build, model and account.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/queue-notify.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm08ahwt",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s9",
+     "text": "Docs and checks: update the build-orchestrator README and help (the notification, the setting, the API). Run python apps/console-web/plugins/notify-control/test.py, plugin-lifecycle check build-orchestrator, check-console-control.mjs and glossary catalog --check, and fix any findings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/README.md",
+      "apps/console-web/plugins/build-orchestrator/help/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm09tri5",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "id": "s10",
+     "text": "Final step: run the tests again, write the report _claude/builds/reports/notify-phone-when-queue-starts-building.md (what was added, how each part is reached by REST, MCP, CLI and voice, and a test send to the phone if one is available), add the THREADS row, push the branch and open the PR, link it with builds-live.mjs link, and add it to the merge queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/notify-phone-when-queue-starts-building.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2j5tm0a7xtl",
+     "createdAt": "2026-11-17T19:11:27.800Z"
+    }
+   ]
   }
  ]
 }
