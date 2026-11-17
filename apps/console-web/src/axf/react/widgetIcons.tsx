@@ -126,6 +126,10 @@ export function installWidgetIcons(rt: AxfRuntime, module: string): void {
       if (id) { if (bad(parseWidgetIconId(id) ? null : `"${id}" is not a widget id`)) resetWidgetIcon(rt, id); return; }
       for (const w of widgetIconsSeen(rt)) resetWidgetIcon(rt, w.id);
     }, { label: 'Put a widget\'s icon back to its default (widget.icons.reset[:<widget id>]; no id = every widget)', params: true });
+    rt.actions.register('widget.icons.layout', ([layout = '']) => {
+      if (!['grid', 'list', 'compact'].includes(layout)) { bad('layout must be grid, list or compact'); return; }
+      rt.settings.set('axf.widget.icons.layout', layout === 'grid' ? null : layout);
+    }, { label: 'Icon picker layout: grid, list or compact (widget.icons.layout:<layout>)', params: true });
   });
   // Right-click a banner widget: Choose icon… and Show as, after Widget settings
   rt.contextExtras.set('*:widget-icons', (target) => {

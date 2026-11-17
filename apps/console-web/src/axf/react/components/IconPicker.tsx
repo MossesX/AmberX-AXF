@@ -14,6 +14,9 @@ import { Button, IconButton } from './Controls';
 import { Note, SelectField, TextField } from './Forms';
 import type { DialogMap } from './Overlays';
 
+/** The picker's layout (UI Review choices: grid, list, compact popover); appearance setting, default grid. */
+export const ICON_PICKER_LAYOUT_KEY = 'axf.widget.icons.layout';
+export const ICON_PICKER_LAYOUTS = ['grid', 'list', 'compact'] as const;
 const MODE_LABEL: Record<string, string> = { auto: 'Automatic (icon when the text is long)', icon: 'Icon only', 'icon+text': 'Icon and text', text: 'Text only' };
 
 /** One section of the grid: a source (the framework set or a pack) and its glyph refs. */
@@ -40,6 +43,8 @@ export function IconPicker({ widget, label }: { widget: string; label?: string }
   const q = query.trim().toLowerCase();
   const shown = all.map((s) => ({ ...s, refs: q ? s.refs.filter((ref) => ref.toLowerCase().includes(q)) : s.refs })).filter((s) => s.refs.length);
   const pick = (ref: string) => setError(setWidgetIcon(rt, widget, ref) ?? '');
+  const raw = String(rt.settings.get(ICON_PICKER_LAYOUT_KEY) ?? '');
+  const layout = (ICON_PICKER_LAYOUTS as readonly string[]).includes(raw) ? raw : 'grid';
   return (
     <ControlScope address={`dialog:${WIDGET_ICONS_DIALOG}`}>
       <div className="fx-stack fx-icon-picker" data-fx-icon-picker={widget}>
@@ -60,7 +65,9 @@ export function IconPicker({ widget, label }: { widget: string; label?: string }
               <div className="fx-icon-picker__grid" role="toolbar" aria-label={`${s.label} icons`}>
                 {s.refs.map((ref) => (
                   <span key={ref} className={`fx-icon-picker__cell${ref === r.icon ? ' is-on' : ''}`}>
-                    <IconButton id={`icon-picker.${ref.replace('/', '.')}`} icon={ref} label={`Use ${ref}`} title={ref} aria-pressed={ref === r.icon} onClick={() => pick(ref)} />
+                    {layout === 'list'
+                      ? <Button size="sm" tone="ghost" id={`icon-picker.${ref.replace('/', '.')}`} icon={ref} aria-pressed={ref === r.icon} onClick={() => pick(ref)}>{ref}</Button>
+                      : <IconButton id={`icon-picker.${ref.replace('/', '.')}`} icon={ref} label={`Use ${ref}`} title={ref} aria-pressed={ref === r.icon} onClick={() => pick(ref)} />}
                   </span>
                 ))}
               </div>
