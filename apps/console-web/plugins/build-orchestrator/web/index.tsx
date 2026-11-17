@@ -83,6 +83,17 @@ export const plugin: AxfWebLibrary = {
         .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} is in the Queue: the dispatcher starts it when its turn comes.`, 'success'); void open('queue'); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Start a build (put it in the Queue)' });
+    rt.actions.register('build-orchestrator.requeue-stuck', ([arg]) => {
+      const apply = decodeURIComponent(arg ?? '') === 'apply';
+      void pipeApi.post<{ ok: boolean; error?: string; found?: { id: string }[]; moved?: string[] }>('pipeline/requeue-stuck', { apply })
+        .then((r) => {
+          if (!r.ok) throw new Error(r.error);
+          const found = r.found?.length ?? 0;
+          rt.toast(apply ? `${r.moved?.length ?? 0} build(s) back in the Queue: their next phase starts when a slot frees.` : found ? `${found} build(s) parked after a finished phase: build-orchestrator.requeue-stuck:apply moves them.` : 'No build is parked after a finished phase.', found || apply ? 'success' : 'info');
+          void open(apply ? 'queue' : 'pending');
+        })
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: requeue builds parked in Pending after a finished phase (":apply" moves them)', params: true });
     for (const action of BUILD_ACTIONS) {
       rt.actions.register(`build-orchestrator.${action}`, ([arg]) => {
         const ids = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);

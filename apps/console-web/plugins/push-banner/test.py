@@ -633,6 +633,31 @@ os.environ["GITHUB_TOKEN"] = ""
 fg.hub.on = False
 r = spec_["run"]()
 check(r["status"] == "error" and "AXHUB_TOKEN" in r["summary"], "health: no route at all = red, says which keys")
+check(mod.LANDER_HEALTH_ID in fh.specs and fh.specs[mod.LANDER_HEALTH_ID][1] == "push-banner", "health@1: lander-idle item registered too")
+check(mod.AUTOMERGE_HEALTH_ID in fh.specs, "health@1: auto-merge bypass item registered")
+class FakeP:
+    def __init__(self, q, allow): self.q, self.allow = q, allow
+    def config(self): return {"mergeQueue": self.q}
+    def gh(self):
+        allow = self.allow
+        class G:
+            def get(self, path, timeout=10): return {"allow_auto_merge": allow}
+        return G()
+check(mod.auto_merge_bypass_health(FakeP(True, True))["status"] == "warn", "auto-merge allowed with the queue on = amber")
+check(mod.auto_merge_bypass_health(FakeP(True, False))["status"] == "ok", "auto-merge off = green")
+check(mod.auto_merge_bypass_health(FakeP(False, True))["status"] == "ok", "queue off: not a bypass")
+T0 = 1_800_000_000.0
+iso = lambda m: time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(T0 - m * 60))  # noqa: E731
+q = lambda **k: {"on": True, "items": [{"pr": 1}], "at": iso(2), "merged": [{"pr": 9, "at": iso(30)}], "avgMin": 14, "stack": [{"pr": 1, "ci": "running", "builtAt": iso(5)}], **k}  # noqa: E731
+check(mod.lander_health(q(items=[]), T0)["status"] == "ok", "lander: empty queue = green")
+check(mod.lander_health(q(on=False), T0)["status"] == "ok", "lander: queue off = green")
+r = mod.lander_health(q(at=iso(40)), T0)
+check(r["status"] == "error" and "idle while the queue is ready" in r["summary"] and "40 min" in r["summary"], "lander: PRs wait, no round for 40 min = red")
+r = mod.lander_health(q(merged=[{"pr": 9, "at": iso(32 * 60)}]), T0)
+check(r["status"] == "warn" and "32 h" in r["summary"], "lander: rounds run but nothing merged for 32 h = amber")
+r = mod.lander_health(q(stack=[{"pr": 1, "ci": "running", "builtAt": iso(60)}]), T0)
+check(r["status"] == "warn" and "#1" in r["summary"], "lander: head testing 60 min against ~14 = amber")
+check(mod.lander_health(q(), T0)["status"] == "ok", "lander: recent round, recent merge, head on time = green")
 plugin_services.withdraw("fake-github")
 plugin_services.withdraw("fake-health")
 

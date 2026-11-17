@@ -20,6 +20,8 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
     GET  /land | GET /land/blocked  auto-land: every finished build in landing order (PR, head, state, reason) | only the
                                     blocked ones (land/land.mjs writes land.json on the VPS host every 3 minutes)
     POST /land/now | /land/hold | /land/release {build, why?}
+    GET  /land/tracking[?build=]    what the lander did with each build's tracking files (last reset / take-main / regenerate)
+    POST /land/tracking/show {show} show that on the merge queue rows (setting landShowTracking, off by default)
                                     land one now (next round, first) | keep it from landing | let it land again; the
                                     same land.mjs command the CLI runs (commands declared once in land/land-core.mjs)
     GET  /detail?repo=&number= | ?repo=&branch=
@@ -223,6 +225,9 @@ class Pushes:
                 "autoLand": raw.get("autoLand") is True,
                 # UI Review stays the gate: a held PR waits and merges by itself once Brett approves. On unless off.
                 "landWaitUi": raw.get("landWaitUi") is not False,
+                # Tracking files (build stop-auto-lander-committing-tracking): show, on each merge queue row, when the lander
+                # last reset a build's tracking files, took main's copy in a merge or regenerated generated files. Off by default.
+                "landShowTracking": raw.get("landShowTracking") is True,
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
                 # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
                 "mergeQueue": raw.get("mergeQueue") is not False,
@@ -234,7 +239,7 @@ class Pushes:
                 "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "landShowTracking", "mergeQueue", "queueDepth", "queueMode", "batchSize"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -251,7 +256,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "landShowTracking", "mergeQueue"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -378,6 +383,16 @@ class Pushes:
                 "holds": holds, "now": ctl.get("now") if isinstance(ctl.get("now"), list) else [],
                 "order": [n for n in st.get("order", []) if isinstance(n, int)] if isinstance(st.get("order"), list) else [],
                 "managed": [n for n in st.get("managed", []) if isinstance(n, int)] if isinstance(st.get("managed"), list) else []}
+
+    def land_tracking(self, build: str = "") -> dict[str, Any]:
+        """What the lander did with each build's tracking files (tracking-paths@1): last reset to main's base copy, last
+        take-main in a merge, last regenerate. Read from land.json (land/land.mjs writes item.tracking)."""
+        if build and not LAND_ID.match(build):
+            raise HTTPException(400, "build is a build id")
+        st = self.land()
+        rows = [{"build": x.get("id"), "pr": x.get("pr"), "branch": x.get("branch"), "tracking": x.get("tracking") or {},
+                 "show": "function:push-banner.queue"} for x in st["items"] if not build or x.get("id") == build]
+        return {"$axf": "auto-land-tracking@1", "show": self.config()["landShowTracking"], "at": st.get("at"), "items": rows}
 
     def land_command(self, cmd: str, body: Any) -> dict[str, Any]:
         """now | hold | release: one implementation, land/land.mjs (the same file the CLI and the host runner use)."""
@@ -1295,6 +1310,70 @@ def health_probe(p: "Pushes") -> dict[str, Any]:
                                        "(tested by the GitHub token item)."}
 
 
+LANDER_HEALTH_ID = "lander-idle"
+LANDER_ROUND_STALE_MIN = 15      # the VPS cron runs a round every 3 minutes; 15 without one = the lander stopped
+LANDER_NO_MERGE_H = 6            # PRs waiting and nothing merged for this long = the line is stuck (usually main is red)
+
+
+def _age_min(iso: Any, now: float) -> float | None:
+    try:
+        from datetime import datetime
+        return (now - datetime.fromisoformat(str(iso).replace("Z", "+00:00")).timestamp()) / 60
+    except (TypeError, ValueError):
+        return None
+
+
+def lander_health(st: dict[str, Any], now: float | None = None) -> dict[str, Any]:
+    """health@1 run() for the merge queue (lander-state from land/merge-queue.mjs's merge-queue.json): red when PRs wait
+    and no round has run lately, amber when nothing has merged for hours or the head PR has tested far longer than usual."""
+    now = time.time() if now is None else now
+    st = st if isinstance(st, dict) else {}
+    items = [x for x in st.get("items", []) if isinstance(x, dict)] if isinstance(st.get("items"), list) else []
+    if st.get("on") is False:
+        return {"status": "ok", "summary": "Merge queue is off (Settings → Plugins → Push banner): nothing to watch."}
+    if not items:
+        return {"status": "ok", "summary": "Lander: the merge queue is empty."}
+    n = len(items)
+    rnd = _age_min(st.get("at"), now)
+    if rnd is None or rnd > LANDER_ROUND_STALE_MIN:
+        when = "never" if rnd is None else f"{int(rnd)} min ago"
+        return {"status": "error", "summary": f"Lander idle while the queue is ready: {n} PR(s) wait and the last queue round ran {when}.",
+                "breaks": "Nothing lands: finished builds pile up in the queue and branches drift from main."}
+    merged = [x for x in st.get("merged", []) if isinstance(x, dict)] if isinstance(st.get("merged"), list) else []
+    last = _age_min(merged[-1].get("at"), now) if merged else None
+    if last is None or last > LANDER_NO_MERGE_H * 60:
+        since = "nothing has merged yet" if last is None else f"the last merge was {int(last // 60)} h ago (#{merged[-1].get('pr')})"
+        return {"status": "warn", "summary": f"Lander runs but lands nothing: {n} PR(s) in the queue and {since}.",
+                "breaks": "Builds stay unlanded. Usually CI is red on main (see the CI on main item) or every PR is kicked out."}
+    avg = st.get("avgMin") if isinstance(st.get("avgMin"), (int, float)) and st.get("avgMin") else 14
+    stack = [x for x in st.get("stack", []) if isinstance(x, dict)] if isinstance(st.get("stack"), list) else []
+    head = stack[0] if stack else None
+    took = _age_min(head.get("builtAt"), now) if head else None
+    if head and head.get("ci") == "running" and took is not None and took > 3 * avg:
+        return {"status": "warn", "summary": f"Lander: #{head.get('pr')} has been testing for {int(took)} min (usually ~{int(avg)}).",
+                "breaks": "The PRs behind it wait. Its CI run may be stuck or waiting for a GitHub runner."}
+    return {"status": "ok", "summary": f"Lander: {n} PR(s) in the queue, last round {int(rnd)} min ago, last merge {int(last // 60)} h ago."}
+
+
+AUTOMERGE_HEALTH_ID = "github-auto-merge-bypass"
+
+
+def auto_merge_bypass_health(p: "Pushes") -> dict[str, Any]:
+    """health@1 run(): with the merge queue on, GitHub's own auto-merge (`gh pr merge --auto`) lands a PR as soon as the
+    branch-protection checks (the light ones) pass, skipping the queue's full CI run. Nov 16 2026: #628 landed that way
+    with red CI and broke main. Amber while the repo still allows it."""
+    if not p.config().get("mergeQueue"):
+        return {"status": "ok", "summary": "Merge queue is off: GitHub auto-merge is not a bypass."}
+    try:
+        repo = p.gh().get(f"/repos/{UI_REVIEW_REPO}", timeout=10) or {}
+    except Exception as e:  # noqa: BLE001
+        return {"status": "warn", "summary": f"Can't read {UI_REVIEW_REPO}'s settings to check auto-merge: {_text(str(e), 160)}."}
+    if repo.get("allow_auto_merge"):
+        return {"status": "warn", "summary": f"GitHub auto-merge is allowed on {UI_REVIEW_REPO}: a session's `gh pr merge --auto` lands a PR after the light checks only, skipping the merge queue's full CI.",
+                "breaks": "Red code can reach main without the full CI run (it did on Nov 16: #628)."}
+    return {"status": "ok", "summary": f"GitHub auto-merge is off on {UI_REVIEW_REPO}: PRs land through the merge queue only."}
+
+
 _health_done = False
 
 
@@ -1315,6 +1394,20 @@ def ensure_health() -> bool:
                       "instructions": ["Reads go through axHub when the console has AXHUB_TOKEN (Settings → Plugins → Systems check → GitHub route).",
                                        "PRs, merges and branch protection need the console's GITHUB_TOKEN (Contents, Pull requests, "
                                        "Administration: read and write); set it and tap Check now."]}, "push-banner")
+        reg.register({"id": LANDER_HEALTH_ID, "label": "Lander lands the merge queue", "service": "github", "order": 15, "severity": "error",
+                      "run": lambda: lander_health(storage.read_json(data_dir() / "merge-queue.json", {}) or {}),
+                      "breaks": "Finished builds don't land on main by themselves.",
+                      "instructions": ["Rounds run from the VPS cron (/etc/cron.d, land.mjs run every 3 minutes, log /var/log/axf-auto-land.log).",
+                                       "Idle: check the cron line is there and that no stale /run/axf-auto-land.lock holder hangs (ps aux | grep land.mjs).",
+                                       "Lands nothing: open Builds → Merge queue; if CI on main is red, fix main first (the CI on main item).",
+                                       "Stuck head: open its run; re-run it, or move it down (land.mjs queue move <pr> <index>)."]}, "push-banner")
+        reg.register({"id": AUTOMERGE_HEALTH_ID, "label": "PRs land through the merge queue only", "service": "github", "order": 16, "severity": "warn",
+                      "run": lambda: auto_merge_bypass_health(PUSHES),
+                      "breaks": "A PR can land after the light checks only, without the queue's full CI run.",
+                      "links": [{"label": "GitHub → repo settings → General → Pull Requests", "url": f"https://github.com/{UI_REVIEW_REPO}/settings"}],
+                      "instructions": ["Open the repo's Settings → General → Pull Requests and untick “Allow auto-merge”.",
+                                       "Or, with an admin token: gh api -X PATCH repos/" + UI_REVIEW_REPO + " -F allow_auto_merge=false",
+                                       "Then tap Check now. The console's own auto-merge and the merge queue don't use GitHub auto-merge."]}, "push-banner")
     except Exception:  # noqa: BLE001 — the banner works without its health item
         return False
     _health_done = True
@@ -1452,6 +1545,19 @@ def land_list() -> dict[str, Any]:
 def land_blocked() -> dict[str, Any]:
     st = PUSHES.land()
     return {**st, "items": [x for x in st["items"] if x.get("state") == "blocked"]}
+
+
+@router.get("/land/tracking")
+def land_tracking(build: str = "") -> dict[str, Any]:
+    return PUSHES.land_tracking(build)
+
+
+@router.post("/land/tracking/show")
+def land_tracking_show(body: Any = Body(None)) -> dict[str, Any]:
+    if not isinstance(body, dict) or set(body) - {"show"} or not isinstance(body.get("show"), bool):
+        raise HTTPException(400, "send {show: true|false}")
+    PUSHES.save_config({"landShowTracking": body["show"]})
+    return PUSHES.land_tracking()
 
 
 @router.get("/ui-hold")
