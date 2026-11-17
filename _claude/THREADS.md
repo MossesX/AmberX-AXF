@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 21:11 UTC · `fix-build-whose-session-finishes-phase-e` → complete, merged, note (all) · reconciler
 - 2026-11-16 21:12 UTC · `fix-build-whose-session-finishes-phase-e` note (all) · orchestrator
 - 2026-11-16 21:18 UTC · `get-main-green-unblock-lander-land-axf` s9 done (all) · orchestrator
 - 2026-11-16 21:19 UTC · `get-main-green-unblock-lander-land-axf` s18 done (all) · orchestrator
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:24 UTC · `gate-auto-lander-tab-and-controls` s1 done, → running (all) · orchestrator
 - 2026-11-17 00:24 UTC · `every-plugin-screen-gets-a-settings-gear` s7 done (all) · orchestrator
 - 2026-11-17 00:24 UTC · `gate-auto-lander-tab-and-controls` note (all) · orchestrator
+- 2026-11-17 00:24 UTC · `stop-auto-lander-committing-tracking` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
