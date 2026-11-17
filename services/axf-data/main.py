@@ -21,8 +21,13 @@ Routes (base /v1, spec framework/spec/DATA-STORE.md → Operations):
   GET    /v1/_meta/counts                   live keys per namespace (backup verify; read on `_meta`)
   GET    /v1/_meta/backup                   last backup + verify result, kept files, the running job
   POST   /v1/_meta/backup  { verify? }      back up now (or re-verify the newest) in the background (write on `_meta/backup`)
+  GET    /v1/_meta/tables                   data-tables@1: the Postgres tables, rows and bytes, the SQLite mirrors (read on `_meta`)
+  POST   /v1/_meta/tables/sync { source }   mirror a SQLite file the console writes (AXF_DATA_MIRROR_DIR) into rows, in the background
+  GET    /v1/_meta/engine                   data-engine@1: sqlite | shadow | postgres, drift, counts on both sides, the next move
+  POST   /v1/_meta/engine { mode, acceptDrift? }   move the engine (admin): sqlite → shadow → postgres, back, or roll back to shadow
 
-Run: uvicorn main:app --host 0.0.0.0 --port 7700 (one worker: writes serialise in-process).
+Engine: AXF_DATA_DSN set → Postgres (pg.py, real tables); unset → SQLite (store.py); both with an existing SQLite store →
+staged move (engine.py). Run: uvicorn main:app --host 0.0.0.0 --port 7700 (one worker: writes serialise in-process).
 """
 from __future__ import annotations
 
@@ -35,6 +40,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse, Response
 
 from auth import Auth, Principal
+from engine import open_store
 from store import Caller, DataError, Store, parse_key, parse_namespace
 
 DATA_DIR = Path(os.environ.get('AXF_DATA_DIR', '/data'))
@@ -42,7 +48,7 @@ PORT = int(os.environ.get('AXF_DATA_PORT', '7700'))
 
 
 def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> FastAPI:
-    st = store or Store(data_dir)
+    st = store or open_store(data_dir)
     auth = Auth(Path(data_dir), revoked=lambda jti: _revoked(st, jti))
     app = FastAPI(title='axf-data', version='1', docs_url=None, redoc_url=None, openapi_url=None)
     app.state.store = st
@@ -101,7 +107,39 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
         p = who(req)
         p.need('put', '_meta', 'backup')
         body = await _json(req)
-        return _backup_start('verify' if body.get('verify') else 'run', p.sub, st.dir)
+        return _backup_start('verify' if body.get('verify') else 'run', p.sub, st)
+
+    @app.get('/v1/_meta/tables')
+    def tables(req: Request):
+        who(req).need('read', '_meta')
+        pg = _pg_of(st)
+        if not pg:
+            return {'$axf': 'data-tables@1', 'engine': 'sqlite', 'tables': [], 'mirrors': [], 'note': 'SQLite engine: set AXF_DATA_DSN for Postgres tables'}
+        return st.tables() if hasattr(st, 'tables') else pg.tables()
+
+    @app.post('/v1/_meta/tables/sync')
+    async def tables_sync(req: Request):
+        p = who(req)
+        p.need('put', '_meta', 'tables')
+        body = await _json(req)
+        pg = _pg_of(st)
+        if not pg:
+            raise DataError('invalid_body', 'the SQLite engine has no tables to mirror into: set AXF_DATA_DSN')
+        return _mirror_start(pg, str(body.get('source') or ''), p.sub)
+
+    @app.get('/v1/_meta/engine')
+    def engine_get(req: Request):
+        who(req).need('read', '_meta')
+        return _engine_state(st)
+
+    @app.post('/v1/_meta/engine')
+    async def engine_set(req: Request):
+        p = who(req)
+        p.need('put', '_meta', 'engine')  # write on _meta, like a namespace move: the console's token may run it, a reader may not
+        body = await _json(req)
+        if not hasattr(st, 'set_mode'):
+            raise DataError('invalid_body', f"this axf-data runs on {_engine_state(st)['mode']} only: there is no second store to move to (AXF_DATA_DSN + a SQLite file on the volume make the staged move)")
+        return st.set_mode(str(body.get('mode') or ''), Caller(p.sub), accept_drift=bool(body.get('acceptDrift')))
 
     @app.delete('/v1/_meta/tokens/{jti}')
     def revoke(jti: str, req: Request):
@@ -212,25 +250,32 @@ def _backup_state() -> dict:
             'job': dict(_backup_job)}
 
 
-def _backup_start(kind: str, by: str, data: Path) -> dict:
-    """Backup now / Verify (Settings → Plugins → Data store, `axf data backup`): one job at a time, in a thread."""
+def _backup_start(kind: str, by: str, st) -> dict:
+    """Backup now / Verify (Settings → Plugins → Data store, `axf data backup`): one job at a time, in a thread.
+    The engine reads come from is the one backed up: pg_dump on Postgres, the online copy on SQLite (and in shadow)."""
     import threading
     import backup
     from store import now_iso
     out = _backups()
+    data = Path(st.dir)
+    pg = _pg_of(st)
+    dsn, schema = '', ''
+    if pg and _engine_state(st)['mode'] == 'postgres':
+        from pg import _dsn_with_schema
+        dsn, schema = _dsn_with_schema(pg.dsn, pg.schema), pg.schema
     if _backup_job.get('state') == 'running':
         return {'$axf': 'data-backup-job@1', **_backup_job}
 
     def work():
         try:
             if kind == 'run':
-                r = backup.run(data, out)
+                r = backup.run(data, out, dsn=dsn, schema=schema)
                 _backup_job.update(state='done', ok=bool(r['verify']['ok']), file=r['file'], finishedAt=now_iso())
             else:
                 f = (backup.backups(out) or [None])[0]
                 if not f:
                     raise RuntimeError('no backups yet')
-                r = backup.verify(f, data)
+                r = backup.verify(f, data, dsn=dsn)
                 last = out / 'last.json'
                 if last.is_file():
                     doc = json.loads(last.read_text('utf-8'))
@@ -238,13 +283,69 @@ def _backup_start(kind: str, by: str, data: Path) -> dict:
                         doc['verify'] = r
                         last.write_text(json.dumps(doc, indent=1), 'utf-8')
                 _backup_job.update(state='done', ok=bool(r['ok']), file=f.name, finishedAt=now_iso())
-        except Exception as e:  # noqa: BLE001 — reported on the job, never raised into the server
+        except BaseException as e:  # noqa: BLE001 — reported on the job (SystemExit included), never raised into the server
             _backup_job.update(state='failed', ok=False, error=f'{type(e).__name__}: {e}'[:300], finishedAt=now_iso())
 
     _backup_job.clear()
     _backup_job.update(state='running', kind=kind, by=by, startedAt=now_iso())
     threading.Thread(target=work, name=f'axf-data-{kind}', daemon=True).start()
     return {'$axf': 'data-backup-job@1', **_backup_job}
+
+
+def _pg_of(st):
+    """The Postgres store behind `st` (PgStore itself, the EngineStore's pg, or None on SQLite)."""
+    if getattr(st, 'engine', '') == 'postgres' and hasattr(st, 'tables') and not hasattr(st, 'set_mode'):
+        return st
+    return getattr(st, 'pg', None)
+
+
+def _engine_state(st) -> dict:
+    if hasattr(st, 'engine_state'):
+        return st.engine_state()
+    kind = 'postgres' if _pg_of(st) else 'sqlite'
+    return {'$axf': 'data-engine@1', 'mode': kind, 'since': '', 'by': '', 'drift': 0, 'lastDriftAt': '', 'counts': {kind: st.counts()}, 'countsEqual': True,
+            'next': 'done', 'moves': [], 'drift_tail': []}
+
+
+_mirror_job: dict = {'state': 'idle'}
+
+
+def _mirror_dir() -> Path:
+    return Path(os.environ.get('AXF_DATA_MIRROR_DIR', '/mnt/console-plugins'))
+
+
+def _mirror_start(pg, source: str, by: str) -> dict:
+    """Mirror a SQLite file the console still writes (chats.db is bigger than a blob may be) into <prefix>_<table> rows."""
+    import threading
+    import tables as T
+    from store import now_iso
+    prefix = pg.mirror_map.get(source)
+    if not prefix:
+        raise DataError('invalid_body', f'{source or "(none)"} is not a mirrored source: one of {", ".join(sorted(pg.mirror_map))} (AXF_DATA_MIRROR)')
+    rel = source.split('/', 1)[1] if source.startswith('plugins/') else source
+    file = _mirror_dir() / rel
+    if not file.is_file():
+        raise DataError('not_found', f'{file} is not mounted into axf-data (AXF_DATA_MIRROR_DIR, deploy/install-data.sh mounts the console plugin folders read-only)')
+    if _mirror_job.get('state') == 'running':
+        return {'$axf': 'data-mirror-job@1', **_mirror_job}
+
+    def work():
+        try:
+            # its own connection: a big file copies for a while and must not hold the store's lock
+            import psycopg
+            from psycopg.rows import dict_row
+            from pg import _dsn_with_schema
+            with psycopg.connect(_dsn_with_schema(pg.dsn, pg.schema), row_factory=dict_row) as conn:
+                with conn.transaction():
+                    run = T.mirror_sqlite_file(conn.cursor(), prefix, str(file), source, now_iso())
+            _mirror_job.update(state='done', ok=True, tables=run['tables'], finishedAt=now_iso())
+        except Exception as e:  # noqa: BLE001 — reported on the job, never raised into the server
+            _mirror_job.update(state='failed', ok=False, error=f'{type(e).__name__}: {e}'[:300], finishedAt=now_iso())
+
+    _mirror_job.clear()
+    _mirror_job.update(state='running', source=source, prefix=prefix, by=by, startedAt=now_iso())
+    threading.Thread(target=work, name=f'axf-data-mirror-{prefix}', daemon=True).start()
+    return {'$axf': 'data-mirror-job@1', **_mirror_job}
 
 
 def _revoked(st: Store, jti: str) -> bool:

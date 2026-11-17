@@ -9,6 +9,10 @@ builds keep running. That's what I need."
   POST backup                   Backup now on axf-data (a background job; GET state shows it)
   POST verify                   re-check the newest backup against the live store
   POST mode {ns, to, window?, acceptDrift?}   to = shadow | cutover | rollback | local (data-mode.mjs: same guards)
+  GET  tables                   data-tables@1: the Postgres tables axf-data keeps (rows, bytes, what each holds), SQLite mirrors
+  POST tables/sync {source}     mirror a SQLite file the console writes (chats.db, ledger.sqlite) into rows now
+  GET  engine                   data-engine@1: sqlite | shadow | postgres, drift, counts on both sides, the next move
+  POST engine {mode, acceptDrift?}   move the store engine (sqlite → shadow → postgres; back; roll back to shadow)
   POST voice {phrase, confirm?}  AmberX: a spoken phrase → one of the above (a move needs confirm: true)
 
 The same calls are plugin commands (MCP), `axf data …` on the CLI and voice actions; Settings → Plugins → Data store
@@ -131,6 +135,55 @@ def mode(body: ModeBody) -> dict[str, Any]:
     return r
 
 
+# ── the Postgres tables and the store engine (axf-data /v1/_meta/tables, /v1/_meta/engine) ──────────────────────────
+ENGINES = ("sqlite", "shadow", "postgres")
+MIRROR_SOURCES = {"chats": "plugins/chat-viewer/chats.db", "chat viewer": "plugins/chat-viewer/chats.db",
+                  "ledger": "plugins/shipped-features/ledger.sqlite", "shipped features": "plugins/shipped-features/ledger.sqlite"}
+
+
+def _need_remote() -> None:
+    if not data_store.REMOTE.configured:
+        raise HTTPException(409, "axf-data isn't connected to this console (AXF_DATA_URL)")
+
+
+@router.get("/tables")
+def tables() -> dict[str, Any]:
+    """data-tables@1: every table on axf-data's Postgres (rows, bytes, what it holds) and the newest SQLite mirror runs."""
+    _need_remote()
+    return _remote("GET", "_meta/tables")
+
+
+class SyncBody(BaseModel):
+    source: str
+
+
+@router.post("/tables/sync")
+def tables_sync(body: SyncBody) -> dict[str, Any]:
+    _need_remote()
+    src = MIRROR_SOURCES.get(body.source.strip().lower(), body.source.strip())
+    return _remote("POST", "_meta/tables/sync", {"source": src})
+
+
+@router.get("/engine")
+def engine() -> dict[str, Any]:
+    """data-engine@1: which engine axf-data reads from (sqlite | shadow | postgres), drift, counts on both sides, next move."""
+    _need_remote()
+    return _remote("GET", "_meta/engine")
+
+
+class EngineBody(BaseModel):
+    mode: str
+    acceptDrift: bool = False
+
+
+@router.post("/engine")
+def engine_set(body: EngineBody) -> dict[str, Any]:
+    if body.mode not in ENGINES:
+        raise HTTPException(400, f"mode must be one of {', '.join(ENGINES)}")
+    _need_remote()
+    return _remote("POST", "_meta/engine", {"mode": body.mode, "acceptDrift": body.acceptDrift})
+
+
 # ── voice (AmberX): a phrase → one of the routes above ───────────────────────────────────────────────────────────────
 _NS_WORDS = {"settings": "settings", "setting": "settings", "changes": "changes", "change log": "changes", "notes": "notes", "note": "notes",
              "planner": "planner", "plans": "planner", "plan studio": "planner", "ui review": "ui-review", "reviews": "ui-review",  # namespace words, not plugins: axf-not-plugin:ui-review
@@ -146,6 +199,19 @@ def parse_phrase(phrase: str) -> dict[str, Any]:
         return {"action": "verify"}
     if "back up" in p or "backup" in p.replace("backups", "") and "roll" not in p:
         return {"action": "backup"}
+    if any(w in p for w in ("sync", "mirror", "refresh")) and any(w in p for w in MIRROR_SOURCES):
+        src = next(v for k, v in sorted(MIRROR_SOURCES.items(), key=lambda kv: -len(kv[0])) if k in p)
+        return {"action": "sync", "source": src}
+    if "table" in p:
+        return {"action": "tables"}
+    if "engine" in p or "postgres" in p or "sqlite" in p:
+        if "postgres" in p and any(w in p for w in ("cut", "move", "switch", "go")):
+            return {"action": "engine", "to": "postgres"}
+        if "shadow" in p:
+            return {"action": "engine", "to": "shadow"}
+        if "sqlite" in p and any(w in p for w in ("back", "roll", "return")):
+            return {"action": "engine", "to": "sqlite"}
+        return {"action": "engine"}
     for words, to in _MOVES:
         if words in p:
             ns = next((v for k, v in sorted(_NS_WORDS.items(), key=lambda kv: -len(kv[0])) if k in p), "")
@@ -178,6 +244,24 @@ def voice(body: VoiceBody) -> dict[str, Any]:
             return {"did": "nothing", "say": "Which namespace's drift log? Settings, planner, notes, builds…"}
         d = drift(a["ns"], 5)
         return {"did": "drift", "entries": d["entries"], "say": f"{len(d['entries'])} recent drift entries for {a['ns']}." if d["entries"] else f"No drift logged for {a['ns']}."}
+    if a["action"] == "tables":
+        t = tables()
+        rows = [x for x in t.get("tables", []) if x.get("group") != "core"]
+        top = sorted(rows, key=lambda x: -x.get("rows", 0))[:4]
+        return {"did": "tables", "tables": t, "say": (f"axf-data runs on {t.get('engine')}: {len(t.get('tables', []))} tables. Biggest: " + ", ".join(f"{x['name']} {x['rows']} rows" for x in top) + ".") if rows else f"axf-data runs on {t.get('engine')}: no Postgres tables yet."}
+    if a["action"] == "sync":
+        if not body.confirm:
+            return {"did": "ask", "would": a, "say": f"That mirrors {a['source']} into Postgres rows now. Say yes to go ahead."}
+        j = tables_sync(SyncBody(source=a["source"]))
+        return {"did": "sync", "job": j, "say": f"Mirroring {a['source']} into rows; the tables list shows the result."}
+    if a["action"] == "engine":
+        if not a.get("to"):
+            e = engine()
+            return {"did": "engine", "engine": e, "say": f"axf-data reads from {e.get('mode')}; drift {e.get('drift', 0)}; next: {e.get('next', '')}."}
+        if not body.confirm:
+            return {"did": "ask", "would": a, "say": f"That moves the store engine to {a['to']}. Say yes to go ahead."}
+        e = engine_set(EngineBody(mode=a["to"]))
+        return {"did": "engine", "engine": e, "say": f"Done: axf-data is on {e.get('mode')}."}
     if a["action"] == "mode":
         if not a["ns"]:
             return {"did": "nothing", "say": "Which namespace? Settings, planner, notes, builds, or a plugin."}
