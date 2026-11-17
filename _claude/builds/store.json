@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7813,
- "updatedAt": "2026-11-17T20:30:31.275Z",
+ "rev": 7814,
+ "updatedAt": "2026-11-17T20:30:48.616Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275024,7 +275024,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:30:27.594Z",
+   "updatedAt": "2026-11-17T20:30:36.082Z",
    "builtAt": "",
    "notes": [
     {
@@ -275122,6 +275122,10 @@
     {
      "text": "Session stopped on its own with 4 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:30:27.594Z"
+    },
+    {
+     "text": "Watchdog fixed Separate settings per plugin + reset confirm dialog (step s15): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:30:36.082Z"
     }
    ],
    "approvals": [
@@ -275214,6 +275218,20 @@
      "attempt": 0,
      "account": "",
      "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:30:17.424Z",
+     "buildId": "separate-settings-per-plugin-reset",
+     "phase": "",
+     "step": "s15",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-17T20:30:38.260Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -275687,7 +275705,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -275711,7 +275729,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:30:09.647Z",
+   "updatedAt": "2026-11-17T20:30:39.890Z",
    "builtAt": "",
    "notes": [
     {
@@ -275775,7 +275793,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T20:30:39.890Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-rebuild-every-toolbar-page-specific--lenny",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
