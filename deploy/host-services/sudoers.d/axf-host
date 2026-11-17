@@ -12,16 +12,26 @@ axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task builds-
 # host-api
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-host-api.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-hub-sync.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl start axf-shipped-features.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-host-api.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-hub-sync.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl stop axf-shipped-features.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-builds-live.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-host-api.service
+axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-hub-sync.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/systemctl restart axf-shipped-features.service
 axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-builds-live.service -n 500 -o short-iso --no-pager
 axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-host-api.service -n 500 -o short-iso --no-pager
+axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-hub-sync.service -n 500 -o short-iso --no-pager
 axf-host ALL=(root) NOPASSWD: /usr/bin/journalctl -u axf-shipped-features.service -n 500 -o short-iso --no-pager
+
+# hub-sync
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task hub-sync
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task hub-status
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task persist-push
+axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task persist-pull
 
 # shipped-features
 axf-host ALL=(root) NOPASSWD: /opt/axf/deploy/host-services/bin/axf-task shipped-sync

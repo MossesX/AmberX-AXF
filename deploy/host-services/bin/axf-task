@@ -17,6 +17,10 @@ case "${1:-}" in
   builds-live-sync) exec node framework/cli/builds-live.mjs sync ;;
   shipped-sync) export AXF_SHIPPED_FEATURES_DIR="$DIR/.axf-console/plugins/shipped-features"; exec node apps/console-web/plugins/shipped-features/ledger/ledger.mjs sync ;;
   shipped-landed) exec node framework/cli/shipped.mjs landed ;;
+  hub-sync) export HOME=/root; CS="$(command -v claude-sync || echo /root/.local/bin/claude-sync)"; exec "$CS" sync ;;
+  hub-status) export HOME=/root; CS="$(command -v claude-sync || echo /root/.local/bin/claude-sync)"; exec "$CS" status ;;
+  persist-push) exec node framework/cli/persist.mjs push ;;
+  persist-pull) exec node framework/cli/persist.mjs pull ;;
   git-fetch) exec git -C "$DIR" fetch -q origin ;;
   git-worktree-prune) exec git -C "$DIR" worktree prune ;;
   *) echo "axf-task: unknown task '${1:-}'" >&2; exit 64 ;;
