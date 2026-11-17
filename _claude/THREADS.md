@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:24 UTC · `attach-widgets-to-any-toolbar-banner` s5 done (all) · orchestrator
 - 2026-11-16 23:24 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-16 23:25 UTC · `axhub-veto-countdown-setting-read-only` s2 done (all) · orchestrator
 - 2026-11-16 23:24 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:47 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s7 done (all) · orchestrator
 - 2026-11-17 03:45 UTC · `server-auto-lander-fixes-lands` s11 done (all) · orchestrator
 - 2026-11-17 03:47 UTC · `server-auto-lander-fixes-lands` s12 done (all) · orchestrator
+- 2026-11-17 03:47 UTC · `prompting-engine-control-panel-to-create` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
