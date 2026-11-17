@@ -20,6 +20,8 @@
  *   … wait <id> [--pid N]          block until the entry starts (exit 0) or is cancelled (exit 4)
  *   … claim <id>                   one try: exit 0 started, 3 still waiting, 4 gone
  *   … bind <id> --pid N [--session s] · finish <id> [--exit N] · release <id>
+ *   … run-end [<slot>] --build b --exit N [--signal s] [--kind k] [--limit usage|auth] [--account a] [--session s]
+ *                                  how a run ended: <dir>/runs/<build>.json (run-status@1) + the slot's exit (watchdog evidence)
  *   … cancel <id> · up <id>        queue actions (the console's Builds page)
  *   … reprioritise <build> <level> a build's priority changed: its waiting entries follow it (Move up still wins)
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
@@ -374,6 +376,18 @@ export const release = (id, exit = null) => withState((st) => {
   return Boolean(r);
 });
 
+/** <dir>/runs/<build>.json: how the newest run of a build ended (run-status@1), read by the watchdog. */
+export const runStatusFile = (build) => join(slotsDir(), 'runs', `${String(build).replace(/[^A-Za-z0-9._-]/g, '-').slice(0, 80)}.json`);
+export function readRunStatus(build) { return build ? readJson(runStatusFile(build), null) : null; }
+export function writeRunStatus(slot, o = {}) {
+  const exit = o.exit === '' || o.exit == null || o.exit === true ? null : Number(o.exit);
+  const rec = { $axf: 'run-status@1', build: clip(o.build, 80), slot: clip(slot, 60), session: clip(o.session, 120), exit: Number.isInteger(exit) ? exit : null,
+    signal: clip(o.signal, 8), kind: clip(o.kind, 20), limit: ['usage', 'auth'].includes(o.limit) ? o.limit : '', account: clip(o.account, 40), host: HOST(), pid: Number(o.pid) || null, endedAt: new Date().toISOString() };
+  if (rec.build) { mkdirSync(join(slotsDir(), 'runs'), { recursive: true }); writeJson(runStatusFile(rec.build), rec); }
+  if (slot) withState((st) => { const r = st.running.find((x) => x.id === slot); if (r) { r.exit = rec.exit; r.signal = rec.signal; r.endedAt = rec.endedAt; } });
+  return rec;
+}
+
 export const cancel = (id, by = '') => withState((st) => {
   const q = st.queue.find((x) => x.id === id && x.state === 'waiting');
   if (!q) throw new Error(`${id} isn't waiting in the queue`);
@@ -518,6 +532,7 @@ async function cli(argv) {
     case 'bind': return void (bind(f._[0], { pid: f.pid, session: f.session }) || (process.exitCode = 4));
     case 'finish': return void (finish(f._[0], f.exit) || (process.exitCode = 4));
     case 'release': return void (release(f._[0], f.exit) || (process.exitCode = 4));
+    case 'run-end': return json(writeRunStatus(f._[0] ?? '', { build: f.build, exit: f.exit, signal: f.signal, kind: f.kind, limit: f.limit, account: f.account, session: f.session, pid: f.pid }));
     case 'cancel': cancel(f._[0], f.by); return console.log(`cancelled ${f._[0]}`);
     case 'up': return console.log(up(f._[0]) ? `moved ${f._[0]} up` : `${f._[0]} is already first`);
     case 'reprioritise': return console.log(`${reprioritise(f._[0], f._[1])} waiting entr(ies) of ${f._[0]} now ${f._[1]}`);
@@ -542,7 +557,7 @@ async function cli(argv) {
       process.exitCode = code; return;
     }
     case 'sweep': return json(sweep());
-    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, cancel, up, reprioritise, settings, set, get, heavy, sweep)`);
+    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, run-end, cancel, up, reprioritise, settings, set, get, heavy, sweep)`);
   }
 }
 

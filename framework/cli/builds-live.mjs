@@ -25,6 +25,9 @@
  *   … pull                                                    take main's newer builds into this checkout
  *   … sync                                                    flush, send builds newer here than on main, then pull (session start)
  *   … link <build> [--branch b] [--pr n|url] [--merged [iso]]  set a build's branch / PR / merged (live)
+ *   … run-end <build> --exit n [--signal TERM] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]
+ *                                                             record how a session ended on the build (pipeline.runEnd, live):
+ *                                                             the headless wrapper calls it as claude exits (watchdog evidence)
  *   … install                                                 git merge driver for the builds files (this clone)
  *   … merge-driver <base> <ours> <theirs> <path>              (git calls it) newer-wins merge of a builds file
  *   … heal <branch>                                           merge main into a branch whose PR conflicts only in builds files
@@ -45,6 +48,7 @@ import { gitAuthEnv, githubToken, scrub } from './github.mjs';
 import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
+import { normRunEnd } from '../core/build-pipeline.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
@@ -412,6 +416,24 @@ export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-li
   }, { by, action: 'link', note: id });
   return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes };
 }
+/**
+ * How a session ended, on the build's run record (pipeline.runEnd; build-pipeline@1): exit code, signal, exit kind, the
+ * account stop (usage | auth), account, session, phase, time. Written the moment claude exits so a killed (143) or failed
+ * (1) run leaves evidence the watchdog (build-watchdog@1) reads even when nothing after it runs. Live like every write.
+ */
+export function recordRunEnd(id, end = {}, by = 'claude-headless') {
+  const rec = normRunEnd({ at: new Date().toISOString(), ...end });
+  if (!rec) throw new Error('run-end needs a time');
+  let found = null;
+  const r = withStore((s) => {
+    const b = core.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
+    found = b;
+    b.pipeline = { ...(b.pipeline ?? {}), runEnd: rec };
+    b.updatedAt = rec.at;
+    return s;
+  }, { by, action: 'run-end', note: `${id}: exit ${rec.exit ?? '?'}${rec.signal ? ` (SIG${rec.signal})` : ''}${rec.kind ? ` ${rec.kind}` : ''}${rec.limit ? ` ${rec.limit}` : ''}${rec.account ? ` on ${rec.account}` : ''}` });
+  return { build: r.store.builds.find((b) => b.id === found.id), runEnd: rec, changes: r.changes };
+}
 /** "#245", "245" and a PR URL all become "#245" (the form the orchestrator shows); other text is kept. */
 export function normPr(pr) {
   const t = String(pr).trim();
@@ -487,6 +509,12 @@ async function main(argv) {
     const merged = opt('merged');
     const r = linkBuild(id, { branch: typeof opt('branch') === 'string' ? opt('branch') : undefined, pr: typeof opt('pr') === 'string' ? opt('pr') : undefined, mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined });
     return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt } }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}`);
+  }
+  if (cmd === 'run-end') {
+    const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('run-end <build> --exit n [--signal s] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]');
+    const s = (n) => (typeof opt(n) === 'string' ? opt(n) : '');
+    const r = recordRunEnd(id, { exit: s('exit'), signal: s('signal'), kind: s('kind'), limit: s('limit'), account: s('account'), session: s('session'), phase: s('phase') });
+    return out({ ok: true, build: r.build.id, runEnd: r.runEnd }, `${r.build.id}: run ended exit ${r.runEnd.exit ?? '?'}${r.runEnd.signal ? ` (SIG${r.runEnd.signal})` : ''}${r.runEnd.kind ? ` · ${r.runEnd.kind}` : ''}${r.runEnd.limit ? ` · ${r.runEnd.limit}` : ''}`);
   }
   if (cmd === 'install') { const r = install(); return out(r, r.ok ? `merge driver ${DRIVER} registered` : 'git config failed'); }
   if (cmd === 'merge-driver') {

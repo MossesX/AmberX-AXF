@@ -35,6 +35,10 @@
  *              Nov 10 2026: "He'll plan what model, what account"); refreshed while it waits
  *   tried      accounts the final pick tried and that refused this run (launch failed), in order; '' list on a clean pick
  *   pickedAt   ISO of the final account decision (the moment the build's turn came in the Queue)
+ *   runEnd     { at, exit, signal, kind, limit, account, session, phase }  how the newest session really ended, written by
+ *              deploy/claude-headless.sh (builds-live.mjs run-end) the moment claude exits, before anything else runs:
+ *              exit 143 / signal TERM = killed, 1 = failed; kind = phase-done | crash | stopped; limit = usage | auth when
+ *              the account stopped it. Evidence for the watchdog (build-watchdog@1); absent until a run ends.
  *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"): the build stays
  *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
  *
@@ -53,6 +57,17 @@ export const EXIT_REASONS = ['all-done', 'phase-done', 'crash', 'crash-limit', '
 export const ROUTES = ['', 'api', 'subscription'];
 export const SPLIT_PROVIDERS = ['claude', 'rules', 'hand'];
 export const DEFAULT_MAX_RUNS = 3;
+/** runEnd.kind / runEnd.limit values (the headless wrapper's exit kind; the account stop it detected). */
+export const RUN_END_KINDS = ['', 'phase-done', 'crash', 'stopped'];
+export const RUN_END_LIMITS = ['', 'usage', 'auth'];
+/** The signal an exit code stands for (128 + n), '' for none. */
+export function signalOf(exit) { return ({ 129: 'HUP', 130: 'INT', 131: 'QUIT', 134: 'ABRT', 137: 'KILL', 139: 'SEGV', 143: 'TERM' })[exit] ?? ''; }
+/** A runEnd record in shape, or null. */
+export function normRunEnd(r) {
+  if (!r || typeof r !== 'object' || !iso(r.at)) return null;
+  const exit = Number.isInteger(r.exit) ? r.exit : (typeof r.exit === 'string' && /^\d{1,3}$/.test(r.exit) ? Number(r.exit) : null);
+  return { at: iso(r.at), exit, signal: /^[A-Z]{2,6}$/.test(str(r.signal, 8)) ? str(r.signal, 8) : signalOf(exit), kind: RUN_END_KINDS.includes(r.kind) ? r.kind : '', limit: RUN_END_LIMITS.includes(r.limit) ? r.limit : '', account: accountName(r.account), session: str(r.session, 120), phase: str(r.phase, 80) };
+}
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const iso = (v) => { const s = str(v, 40).trim(); return s && Number.isFinite(Date.parse(s)) ? s : ''; };
@@ -81,6 +96,7 @@ export function normPipeline(p) {
     planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
     heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
+    ...(normRunEnd(p.runEnd) ? { runEnd: normRunEnd(p.runEnd) } : {}), // optional: absent until a run ends (old records unchanged)
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
