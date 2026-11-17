@@ -164,7 +164,7 @@ export function mergeJson3(b, o, t, prefer = 'theirs') {
 
 /**
  * What to do with each line of `git status --porcelain` in a finished build's worktree. A tracking file is never
- * committed for the build (the auto-land commit of them dragged store/journal churn into build branches, #733).
+ * committed for the build (the auto-land commit of them dragged store/journal churn into build branches, PR 733).
  *   reset    a tracking file (tracking-paths@1) changed here: backed up, then put back to the branch's merge-base copy
  *            with main (main and the hub keep the live copy; the build branch never carries it)
  *   commit   other synced data the build wrote (a report, memory, catalog status): committed on its own branch
@@ -311,6 +311,8 @@ export const LAND_COMMANDS = Object.freeze([
   { id: 'land-now', method: 'POST', path: '/land/now', cli: 'now', title: 'Auto-land: land a build now', description: 'Land one finished build at the next round (within 3 minutes), ahead of the rest; a hold on it is released.', effect: 'write', input: { build: 'build id' } },
   { id: 'land-hold', method: 'POST', path: '/land/hold', cli: 'hold', title: 'Auto-land: hold a build', description: 'Keep a finished build from landing until it is released.', effect: 'write', input: { build: 'build id', why: 'optional reason' } },
   { id: 'land-release', method: 'POST', path: '/land/release', cli: 'release', title: 'Auto-land: release a held build', description: 'Let a held build land again.', effect: 'write', input: { build: 'build id' } },
+  { id: 'land-tracking', method: 'GET', path: '/land/tracking', cli: 'tracking', title: 'Auto-land: tracking files per build', description: "What the lander did with each build's tracking files (store, orchestrator, origins, journal, pending and queue exports): when it last reset them to main's base copy, took main's copy in a merge, or regenerated generated files.", effect: 'read', input: { build: 'optional build id' } },
+  { id: 'land-tracking-show', method: 'POST', path: '/land/tracking/show', cli: 'tracking-show', title: 'Auto-land: show tracking-file handling on the queue', description: 'Show or hide, on each merge queue row, the last tracking-file reset, take-main and regenerate.', effect: 'write', input: { show: 'true | false' } },
 ]);
 
 /** Apply one control command to the control document (holds, now, after). Returns the new document. */

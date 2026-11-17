@@ -79,7 +79,7 @@ check(core.regenFor('changes/2026/11/x.json') === null && core.regenFor('framewo
   check(core.mergeJson3(undefined, { k: 1 }, { k: 2 }, 'ours').k === 1 && core.mergeJson3(undefined, [1, 2], [2, 3]).join('') === '123', 'no base: prefer picks a scalar, plain lists union');
 }
 const sp = core.strayPlan(' M _claude/builds/store.json\n?? .brief.md\n?? auto-land.jsonl\n?? _claude/dup.md\n M framework/core/a.ts\n?? notes.txt\n M changes/2026/11/c.json\n M _claude/shared/x.md', (p) => p === '_claude/dup.md' || p === '_claude/shared/x.md');
-check(sp.reset.join() === '_claude/builds/store.json' && sp.commit.join() === 'changes/2026/11/c.json', 'tracking files are reset, never committed (#733); other synced data the build wrote is committed');
+check(sp.reset.join() === '_claude/builds/store.json' && sp.commit.join() === 'changes/2026/11/c.json', 'tracking files are reset, never committed (PR 733); other synced data the build wrote is committed');
 check(sp.skip.join() === '.brief.md,auto-land.jsonl', '.brief.md and top-level jsonl/logs are skipped');
 check(sp.archive.join() === '_claude/dup.md' && sp.restore.join() === '_claude/shared/x.md', 'copies of hub files are backed up (untracked moved, tracked put back)');
 check(sp.code.join() === 'framework/core/a.ts' && sp.keep.join() === 'notes.txt', 'uncommitted code is reported, other untracked files left alone');

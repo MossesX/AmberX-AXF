@@ -13,10 +13,12 @@
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
  *   … merge-main <build|branch> [--dry-run] [--json]   merge main into one build's branch now (same rules as a round)
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
+ *   … tracking [<build>] [--json] | tracking-show on|off   what the lander did with each build's tracking files (last reset,
+ *                                        take-main, regenerate); shown on the merge queue rows or not (landShowTracking)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
  *   1. its worktree: tracking files (framework/core/tracking-paths.mjs) reset to the branch's merge-base copy with
- *      main, never committed (#733); other synced files committed on its own branch; scratch files skipped, untracked copies of hub files
+ *      main, never committed (PR 733); other synced files committed on its own branch; scratch files skipped, untracked copies of hub files
  *      moved to /root/archive/auto-land/<build>/, `.claude-sync-hold` written so claude-sync stops dropping files in;
  *      code changes never committed stop it (reason `code`); the branch is pushed when it is ahead of GitHub;
  *   2. main merged in (a temporary worktree, never the build's): only when main moved in code (status-only `[skip ci]`
@@ -158,6 +160,17 @@ export function control(s, cmd, build, opts = {}) {
   const d = core.applyControl(readControl(s), cmd, build, opts);
   writeJson(controlFile(s), d);
   return d;
+}
+
+/**
+ * What the lander did with each build's tracking files (tracking-paths@1), from land.json: { $axf, show, at, items:
+ * [{ build, pr, branch, tracking: { reset?, takeMain?, regenerate? }, show }] }. `show` is the console_show target of
+ * the merge queue view. The same shape as the push banner's GET /land/tracking.
+ */
+export function trackingState(s, build = '') {
+  const st = readState(s); const cfg = readJson(join(s.dataDir, 'config.json'), {}) || {};
+  const items = (st.items || []).filter((x) => !build || x.id === build).map((x) => ({ build: x.id, pr: x.pr || null, branch: x.branch || '', tracking: x.tracking || {}, show: 'function:push-banner.queue' }));
+  return { $axf: 'auto-land-tracking@1', show: cfg.landShowTracking === true, at: st.at || null, items };
 }
 
 // ------------------------------------------------------------------ the build's worktree
@@ -606,6 +619,17 @@ export async function main(argv) {
     if (!m.merged) process.exitCode = 1;
     return print({ build: b.id, branch: b.branch, ...m }, text);
   }
+  if (cmd === 'tracking') {
+    // what the lander did with each build's tracking files (item.tracking in land.json): REST GET /land/tracking, MCP land-tracking
+    const t = trackingState(s, rest[0] && !rest[0].startsWith('--') ? rest[0] : '');
+    const when = (x) => (x ? `${x.at.slice(0, 16).replace('T', ' ')} (${(x.files || x.generators || []).length})` : '-');
+    return print(t, t.items.map((x) => `${x.build}${x.pr ? ` #${x.pr}` : ''}: reset ${when(x.tracking.reset)} · take-main ${when(x.tracking.takeMain)} · regenerate ${when(x.tracking.regenerate)}`).join('\n') || 'no finished builds to land');
+  }
+  if (cmd === 'tracking-show') {
+    const v = rest[0]; if (!['on', 'off', 'true', 'false'].includes(v)) throw new Error('tracking-show on|off');
+    const f = join(s.dataDir, 'config.json'); writeJson(f, { ...(readJson(f, {}) || {}), landShowTracking: v === 'on' || v === 'true' });
+    return print(trackingState(s), `tracking-file handling on the merge queue rows: ${v === 'on' || v === 'true' ? 'shown' : 'hidden'}`);
+  }
   if (cmd === 'list' || cmd === 'blocked') {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');
     return print({ ...st, items }, items.map(line).join('\n') || (cmd === 'blocked' ? 'nothing blocked' : 'no finished builds to land'));
@@ -615,7 +639,7 @@ export async function main(argv) {
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other> | merge-main <build> [--dry-run]');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | tracking [<build>] | tracking-show on|off | now <build> | hold <build> [--why …] | release <build> | after <build> <other> | merge-main <build> [--dry-run]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

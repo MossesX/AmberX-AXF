@@ -4,7 +4,7 @@
  * (framework/core/tracking-paths.mjs, tracking-paths@1: the builds store, orchestrator exports, origins, journal parts,
  * pending and build-queue exports). They carry live build status; builds-live publishes them on main as status-only
  * `[skip ci]` commits and the hub keeps the live copy. A build branch that carries them drags stale status into main
- * when it merges (#733: green → red).
+ * when it merges (PR 733: green → red).
  *
  *   node framework/cli/check-tracking-files.mjs [--base <ref>] [--head <ref>] [--json]
  *
