@@ -4,11 +4,11 @@
   "counts": {
     "views": 65,
     "nav": 16,
-    "tabGroups": 27,
-    "tabs": 78,
+    "tabGroups": 28,
+    "tabs": 80,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 275,
+    "functions": 281,
     "buttons": 62,
     "plugins": 71
   },
@@ -1401,6 +1401,27 @@
           "address": "tab:terminal.connection-mode=shell",
           "value": "shell",
           "label": "Shell"
+        }
+      ]
+    },
+    {
+      "address": "view:gate/tab:gate.auto-lander.tabs",
+      "id": "gate.auto-lander.tabs",
+      "dynamic": false,
+      "view": "gate",
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/AutoLanderTab.tsx",
+      "line": 36,
+      "tabs": [
+        {
+          "address": "view:gate/tab:gate.auto-lander.tabs=server",
+          "value": "server",
+          "label": "Server"
+        },
+        {
+          "address": "view:gate/tab:gate.auto-lander.tabs=line",
+          "value": "line",
+          "label": "Merge line"
         }
       ]
     },
@@ -5520,6 +5541,110 @@
         "build",
         "rules",
         "run"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.auto-lander.status",
+      "kind": "function",
+      "id": "gate.auto-lander.status",
+      "label": "What the server auto-lander is doing",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.auto-lander.status",
+        "gate",
+        "auto",
+        "lander",
+        "status"
+      ],
+      "effect": "read",
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.auto-lander.open",
+      "kind": "function",
+      "id": "gate.auto-lander.open",
+      "label": "Open the server auto-lander",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.auto-lander.open",
+        "gate",
+        "auto",
+        "lander",
+        "open"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.auto-lander.run",
+      "kind": "function",
+      "id": "gate.auto-lander.run",
+      "label": "Run the server auto-lander now",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.auto-lander.run",
+        "gate",
+        "auto",
+        "lander",
+        "run"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.auto-lander.pause",
+      "kind": "function",
+      "id": "gate.auto-lander.pause",
+      "label": "Pause the server auto-lander",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.auto-lander.pause",
+        "gate",
+        "auto",
+        "lander",
+        "pause"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.auto-lander.resume",
+      "kind": "function",
+      "id": "gate.auto-lander.resume",
+      "label": "Resume the server auto-lander",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.auto-lander.resume",
+        "gate",
+        "auto",
+        "lander",
+        "resume"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.gate",
+      "file": "plugins/gate/web/actions.ts"
+    },
+    {
+      "address": "function:gate.auto-lander.set",
+      "kind": "function",
+      "id": "gate.auto-lander.set",
+      "label": "Change a server auto-lander setting",
+      "detail": "Action · Gate & rules",
+      "keywords": [
+        "gate.auto-lander.set",
+        "gate",
+        "auto",
+        "lander",
+        "set"
       ],
       "effect": "write",
       "params": true,
