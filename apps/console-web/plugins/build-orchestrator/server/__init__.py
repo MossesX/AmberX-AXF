@@ -437,6 +437,10 @@ ensure_health()
 from . import live as _live  # noqa: E402
 
 router.include_router(_live.router())
+from . import routes_live as _routes_live  # noqa: E402
+
+router.include_router(_routes_live.router_for(FOLDER, brett_click))
+_routes_live.ensure_health(FOLDER)
 
 # ---- the stale-row watchdog (stale-row@1): its routes under /watchdog and its systems check item (server/watchdog.py)
 from . import watchdog as _watchdog  # noqa: E402

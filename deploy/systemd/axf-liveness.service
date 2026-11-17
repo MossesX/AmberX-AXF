@@ -1,0 +1,23 @@
+# axf-liveness.service — the 15-second liveness pass (build-live@1, framework/spec/BUILD-LIVE.md): every build marked
+# Building is probed the way the recovery watchdog probes it (pid, tmux, heartbeat) and the console live channel gets a
+# liveness event only when a row changes, plus one heartbeat summary per pass. Never recovers, never writes the store.
+# Light: no agent slot, no heavy lock (agent-slots rules); Nice 10, capped CPU and memory, one pass at a time (flock).
+# Installed next to the axf-pipeline cron by deploy/install-console.sh; @DIR@ is the checkout (/opt/axf).
+# Started every 15 seconds by axf-liveness.timer. Log: /var/log/axf-liveness.log. The systems check item build-live
+# goes red when no pass ran for 3 × 15 s (Auto fix restarts the timer).
+[Unit]
+Description=AXF build liveness pass (every 15 s)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@DIR@
+Environment=AXF_CONSOLE_ROOT=@DIR@
+Environment=AXF_ACTOR=liveness
+ExecStart=/usr/bin/flock -n /run/axf-liveness.lock /usr/bin/env node @DIR@/apps/console-web/plugins/build-orchestrator/liveness.mjs pass
+StandardOutput=append:/var/log/axf-liveness.log
+StandardError=append:/var/log/axf-liveness.log
+TimeoutStartSec=60s
+Nice=10
+CPUQuota=25%
+MemoryMax=256M

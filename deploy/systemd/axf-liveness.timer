@@ -1,0 +1,11 @@
+# axf-liveness.timer — runs axf-liveness.service every 15 seconds (build-live@1). Installed with the service.
+[Unit]
+Description=AXF build liveness pass, every 15 seconds
+
+[Timer]
+OnBootSec=60s
+OnUnitActiveSec=15s
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target
