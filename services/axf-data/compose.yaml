@@ -1,0 +1,61 @@
+# axf-data as a Coolify "Docker Compose" resource (the same shape deploy/install-data.sh runs by hand).
+# Private app: no ports, no domain, no Traefik labels. Two containers on the internal `axf-data` network:
+#   axf-data-db   Postgres 16 in its own container, persistent volume axf-data-pg, never published
+#   axf-data      the data-store@1 API (http://axf-data:7700 for the console, axHub, headless build sessions)
+# Set AXF_DATA_PG_PASSWORD in the resource's environment (install-data.sh writes it once to conf/env/postgres.env).
+# Build context: run deploy/install-data.sh --context first, or point Coolify at a build folder that holds this folder
+# plus framework/schemas/data-store.json. Backups: deploy/axf-data-backup.cron (pg_dump inside axf-data, daily).
+services:
+  axf-data-db:
+    image: postgres:16-alpine
+    container_name: axf-data-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: axf
+      POSTGRES_DB: axfdata
+      POSTGRES_PASSWORD: ${AXF_DATA_PG_PASSWORD:?set AXF_DATA_PG_PASSWORD}
+      POSTGRES_INITDB_ARGS: --data-checksums
+    command: ["postgres", "-c", "shared_buffers=256MB", "-c", "max_connections=40", "-c", "log_min_duration_statement=2000"]
+    volumes:
+      - axf-data-pg:/var/lib/postgresql/data
+    networks: [axf-data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U axf -d axfdata"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    labels:
+      traefik.enable: "false"
+  axf-data:
+    build: .
+    image: axf-data:latest
+    container_name: axf-data
+    restart: unless-stopped
+    depends_on:
+      axf-data-db:
+        condition: service_healthy
+    environment:
+      AXF_DATA_DIR: /data
+      AXF_DATA_DSN: postgresql://axf:${AXF_DATA_PG_PASSWORD:?set AXF_DATA_PG_PASSWORD}@axf-data-db:5432/axfdata
+      AXF_DATA_ENGINE: ${AXF_DATA_ENGINE:-}
+      AXF_DATA_TOKENS_FILE: /run/axf-data/tokens.json
+      AXF_DATA_KEYS_URL: ${AXF_DATA_KEYS_URL:-}
+      AXF_DATA_BACKUPS: /backups
+      AXF_DATA_MIRROR_DIR: /mnt/console-plugins
+    volumes:
+      - axf-data:/data
+      - /root/hub/data/axf-data/conf/tokens.json:/run/axf-data/tokens.json:ro
+      - /root/hub/data/axf-data/backups:/backups
+      - /opt/axf/.axf-console/plugins:/mnt/console-plugins:ro
+    networks: [axf-data]
+    labels:
+      traefik.enable: "false"
+volumes:
+  axf-data:
+    name: axf-data
+  axf-data-pg:
+    name: axf-data-pg
+networks:
+  axf-data:
+    name: axf-data
+    internal: true

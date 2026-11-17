@@ -109,6 +109,7 @@ jobs:
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
+      - run: node framework/spec/check-build-pipeline.mjs           # build-pipeline@1 exit transition: phase done → Queue (same place, no crash counted), crash → Queue until the limit → Pending, blocked upgrade → Pending, all done → built; fixtures/build-pipeline-exit.json
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/groups.test.mjs   # build-groups@1: custom groups and tabs, state order and counts, smart rules, group actions, per project  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
@@ -123,6 +124,22 @@ jobs:
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
+      - run: (git fetch -q --unshallow origin || true) && git fetch -q origin +refs/heads/main:refs/remotes/origin/main && node framework/cli/check-tracking-files.mjs   # tracking-paths@1: a PR branch never changes the builds store, orchestrator / origins / pending / queue exports or journal parts (builds-live status commits excepted); names the file
+      - run: node framework/spec/check-data-store.mjs               # data-store@1: registry mirror, the client on memory + file backends (same answers), rev/etag conflicts, append-only journals, watch, count manifests, http error mapping + retries, migration map, mode transitions
+      - name: axf-data service tests (CRUD, rev conflicts, append-only journals, history + restore, watch, auth refusal) and the wire contract replayed from Node
+        run: |
+          python3 -m pip install --quiet -r services/axf-data/requirements.txt httpx
+          python3 services/axf-data/test_store.py
+      - name: axf-data on Postgres (real tables, SQLite mirrors, SQLite → Postgres migration with count checks, staged engine move, pg_dump backups, the wire contract replayed)
+        run: |
+          docker run -d --name axf-pg -e POSTGRES_PASSWORD=axf -e POSTGRES_DB=axfdata -p 127.0.0.1:5432:5432 postgres:16-alpine
+          for i in $(seq 1 30); do docker exec axf-pg pg_isready -U postgres -d axfdata && break; sleep 1; done
+          AXF_DATA_TEST_DSN=postgresql://postgres:axf@127.0.0.1:5432/axfdata AXF_DATA_PG_TOOLS="docker exec -i axf-pg" AXF_DATA_PG_TOOLS_DSN=postgresql://postgres:axf@127.0.0.1:5432/axfdata \
+            python3 services/axf-data/test_pg.py
+          docker rm -f axf-pg
+      - run: node framework/spec/check-data-migrate.mjs             # data-migrate on a seeded copy of real data: dry run by default, backup first, copy, verify M0 = M1, roll back from the backup, idempotent re-run, forced mismatches fail
+      - run: node framework/spec/check-builds-store-data.mjs        # builds store on data-store@1: local, shadow (mirrored store + journal), cutover (axf-data only, lock = rev check, history from the remote journal), rollback refused
+      - run: python3 apps/console-web/server/test_data_store.py      # console server data layer (data_store.py): storage-shaped calls in local, shadow, cutover and rollback against an in-process axf-data
       - run: node framework/spec/check-landing-line.mjs              # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
       - run: node framework/spec/check-gate-rules.mjs                # gate-rules@1: default rule set, migration from the lander settings, verdicts (green, red CI, UI Review held, clash, draft, held by hand, warn / off / molly-owned rules), lander-state@1 from the merge queue, schema snapshots
       - run: node framework/spec/check-build-rules.mjs               # build-rules@1: schema validation, the inventory → seed migration losing nothing (home-card first), briefBlocks per build (VPS rules never in a brief), history on edit / toggle / add / remove / restore, disabled rules skipped, the locked store round trip, schema snapshots
@@ -178,6 +195,8 @@ jobs:
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs  # axf-plugin:push-banner
+      - name: Tracking files (push banner) — reset before land, tracking conflicts take main, generated files regenerate, code conflicts stop, CI guard; real git  # axf-plugin:push-banner
+        run: node apps/console-web/plugins/push-banner/land/tracking.test.mjs  # axf-plugin:push-banner
       - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
         run: node framework/spec/check-ci-scope.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
@@ -296,6 +315,7 @@ jobs:
             node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
             npx -y tsx framework/spec/check-skin-switch.mts            # skin-switch@1: use / back-to-skin / restore-default / undo per scope (hub, app, ui, plugin): fixture replay, scope precedence, undo after restore, back clears only the overridden part
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
+            npx -y tsx framework/spec/check-settings-open.mts          # every settings interface opens in a floating glass dialog by default; fails on code that navigates to the Settings page instead
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
