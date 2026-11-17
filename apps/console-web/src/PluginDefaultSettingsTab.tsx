@@ -7,8 +7,8 @@
  *   "settingsTab": { "default": true }            (optional label / icon / order)
  * The console (App.tsx → withDefaultSettingsTab) adds the sub-tab when the plugin has none (id = its folder, parent
  * always 'plugins'), else puts these panels at the top of its first own tab, so the plugin's real settings stay where
- * they are. Every press here is a REST call the CLI, MCP and voice make too: POST /api/plugins/<folder>/enabled,
- * GET /api/plugins/plugin-manager/inventory, GET /api/plugins/plugin-manager/logs/<folder>,
+ * they are. Every press here is a REST call the CLI, MCP and voice make too: POST /api/plugins/<folder>/enabled, the
+ * Plugin Manager's own inventory and logs routes (found by what it provides, never by folder), and
  * GET /api/console-control/plugins/<folder>/settings.
  */
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
@@ -16,25 +16,32 @@ import type { AxfWebLibrary } from './axf/react/library';
 import { Button, Chip, ModelBadge, Note, Switch, useRuntime } from './axf/react';
 import { post } from './api';
 import { PluginLifecyclePanel } from './pluginLifecycle';
-import { PLUGINS_CHANGED, pluginFetch, type PluginManifest } from './plugins';
+import { PLUGINS_CHANGED, pluginFetch, pluginProviding, type PluginManifest } from './plugins';
 import './pluginSettingsGear.css';
 
 interface Dep { kind: string; name: string; required: boolean; status: string; detail: string }
 interface Item { folder: string; name?: string; version?: string; enabled?: boolean; builtWith?: { model?: string; builtAt?: string }; dependencies?: Dep[]; dependents?: { folder: string; name: string; required: boolean }[] }
 interface LogLine { at: number; channel: string; level: string; text: string }
 
+/** The plugin that runs the plugin-inventory@1 engine (the Plugin Manager), by what it provides. */
+const manager = () => pluginProviding('view:plugin-manager');
+
 /** One plugin's row from the plugin-inventory@1 engine (the Plugin Manager's server part), or null when it isn't running. */
 async function loadItem(folder: string): Promise<Item | null> {
+  const pm = manager();
+  if (!pm) return null;
   try {
-    const r = await pluginFetch('plugin-manager', 'inventory');
+    const r = await pluginFetch(pm, 'inventory');
     if (!r.ok || !(r.headers.get('content-type') ?? '').includes('json')) return null;
     return ((await r.json()) as { items: Item[] }).items.find((i) => i.folder === folder) ?? null;
   } catch { return null; }
 }
 
 async function loadLogs(folder: string): Promise<LogLine[]> {
+  const pm = manager();
+  if (!pm) return [];
   try {
-    const r = await pluginFetch('plugin-manager', `logs/${folder}?limit=20`);
+    const r = await pluginFetch(pm, `logs/${folder}?limit=20`);
     return r.ok ? ((await r.json()) as { lines: LogLine[] }).lines : [];
   } catch { return []; }
 }

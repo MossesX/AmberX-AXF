@@ -1,4 +1,27 @@
-# Every plugin screen gets a settings gear (draft)
+# Every plugin screen gets a settings gear
+
+**Result:** 44 of 44 plugin screens have exactly one settings gear (before: 4), each opening that plugin's
+Settings → Plugins sub-tab; 44 of 44 have a sub-tab (they already did). CI now fails on a screen without either.
+The gear's placement (icon / icon + label / ⋯ menu) is waiting for Brett in UI Review (`r-20261117-5e4c1d9c`);
+icon ships until he picks.
+
+| | Before | After |
+|---|---|---|
+| Plugin screens | 44 | 44 |
+| …with a Settings → Plugins sub-tab | 44 | 44 |
+| …with a settings gear on the screen | 4 (hand-made) | 44 (host gear), 0 hand-made |
+| Plugins with a sub-tab in the control inventory | 58 of 71 | 71 of 71 |
+| Plugins with the default panel (on/off, logs, info) | 0 | 10 |
+
+## API reach per feature
+
+| Feature | Deep link | State | Actions | REST | MCP | CLI | Voice (AmberX) |
+|---|---|---|---|---|---|---|---|
+| Settings gear on a plugin screen | `view:<screen>/button:settings-gear` (console_show / console_open) | `state` on the address | press = open the sub-tab | `POST /api/console-control/do {verb: press}` | `console_control_do` | `axf console do press view:<screen>/button:settings-gear` | "press <plugin> settings" |
+| A plugin's settings sub-tab | `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=<tab>` | `GET /api/console-control/plugins/<id>/settings` | `plugin.settings.open:<plugin>`; set; enable / disable | `GET …/plugins/<id>/settings`, `POST …/settings/open`, `POST …/settings/set {key, value}`, `POST …/plugins/<id>/enable\|disable` | `console_control_plugin_settings`; control@1 `console.pluginsettings` (list / get / act open\|set\|enable\|disable) | `axf console plugin-settings <id> [--get\|--open\|--set k=v\|--enable\|--disable]` | "open <plugin> settings" |
+| Default settings panel | inside the sub-tab above | same state read (`enabled`, `version`) | on/off as above; logs via the Plugin Manager's routes | as above | as above | as above | "enable / disable plugin <x>" |
+| Gear placement setting | `setting:axf.plugins.settingsGear.placement` | `state` on the setting | `set` icon \| label \| menu | `POST /api/console-control/do {verb: set}` | `console_control_do` | `axf console do set setting:axf.plugins.settingsGear.placement --value label` | "set settings gear to label" |
+
 
 Brett, 2026-11-16: "Every one has a gear icon to open its settings, right? Yeah, check and fix."
 
@@ -168,3 +191,18 @@ Console plugins → Plugin screens; default `icon`): **icon** (gear at the right
 `apps/console-web/plugins/plugin-manager/assets/settings/plugin-screen-settings-g-mwjz4jca-{icon,label,menu}.json`.
 Whichever Brett picks only needs the setting's default changed. Note: on the phone shot of the menu option the Gate
 grid is wider than the screen and scrolls sideways; that grid width predates this build.
+
+
+## Wrap-up (s20)
+
+Sweep, all green: check-plugin-settings (+ unit test), check-console-control, check-toolbars, check-theme,
+check-controls, check-chrome-assets, check-plugin-pages, check-banner-widgets, help-coverage, glossary catalog,
+plugins.mjs, plugin-commands, chrome-settings, check-control (control@1), console-control server tests, MCP tool
+tests, console-control parity, console-commands, plugin-manager and ui-review self-tests, menu-reach. `npm run build`
+(includes tsc) passes; `scripts/plugin-gear.e2e.mjs` on the build: 48 screens × 2 viewports, 0 problems.
+
+Left over, not from this build: the plugin-lifecycle check still lists older unmarked mentions (android.yml lines for
+project-wizard / session-checkin tests, STATUS.md, docs/session-checkin.md, console-terminal nav.tsx, plan.json);
+theme-manager throws offline without the axHub look (`rt.asset(type).data`); the Gate grid scrolls sideways on a phone.
+Deferred: the Kotlin twin of `console.pluginsettings` (PORTING.md); documenting `settingsGear` / `settingsTab` in
+plugin.schema.json (a schema change, left for a Fable pass; the root is open, so nothing fails today).
