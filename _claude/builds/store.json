@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7815,
- "updatedAt": "2026-11-17T20:30:58.723Z",
+ "rev": 7816,
+ "updatedAt": "2026-11-17T20:31:56.939Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275721,7 +275721,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275729,7 +275729,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:30:53.819Z",
+   "updatedAt": "2026-11-17T20:31:54.966Z",
    "builtAt": "",
    "notes": [
     {
@@ -276516,7 +276516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
