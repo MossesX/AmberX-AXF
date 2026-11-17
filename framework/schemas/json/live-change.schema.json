@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/live-change.schema.json",
+  "title": "AmberX AXF live change (live-change@1)",
+  "description": "Generated from framework/core/engines/live-rows.ts (spec/LIVE-CHANGES.md). One change to one row of one keyed, ordered row set; revs are contiguous per namespace.",
+  "type": "object",
+  "required": [
+    "ns",
+    "key",
+    "op",
+    "rev",
+    "origin",
+    "ts"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "live-change@1"
+    },
+    "ns": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+(/[A-Za-z0-9._:-]+)*$",
+      "maxLength": 160
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[^/]{1,128}$"
+    },
+    "op": {
+      "enum": [
+        "upsert",
+        "delete",
+        "reorder"
+      ]
+    },
+    "rev": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "epoch": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "row": {
+      "type": "object"
+    },
+    "before": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "origin": {
+      "type": "object",
+      "required": [
+        "session",
+        "surface"
+      ],
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "surface": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "client": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "opId": {
+          "type": "string",
+          "maxLength": 64
+        }
+      }
+    },
+    "ts": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "upsert"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "row"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "op": {
+            "const": "reorder"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "before"
+        ]
+      }
+    }
+  ]
+}

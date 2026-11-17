@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/live-change-batch.schema.json",
+  "title": "AmberX AXF live change batch and resync (live-change-batch@1, live-change-resync@1)",
+  "description": "Generated from framework/core/engines/live-rows.ts (spec/LIVE-CHANGES.md). What a store answers to since(ns, rev): a batch of contiguous events, or the whole row set when the consumer must resync.",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "$axf",
+        "ns",
+        "events",
+        "rev"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "live-change-batch@1"
+        },
+        "ns": {
+          "type": "string"
+        },
+        "events": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "$ref": "axf/live-change.schema.json"
+          }
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "epoch": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "$axf",
+        "ns",
+        "reason",
+        "rev",
+        "rows",
+        "order"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "live-change-resync@1"
+        },
+        "ns": {
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "gap",
+            "epoch",
+            "history",
+            "behind"
+          ]
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "epoch": {
+          "type": "string"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

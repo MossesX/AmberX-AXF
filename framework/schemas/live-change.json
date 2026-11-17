@@ -1,0 +1,72 @@
+{
+  "$axf": "live-change@1",
+  "note": "Snapshot of the live-change@1 contract (spec/LIVE-CHANGES.md): the one change event every row store emits and every grid consumes. Generated from framework/core/engines/live-rows.ts; spec/check-live-rows.mts fails when they drift.",
+  "frames": [
+    "live-change@1",
+    "live-change-batch@1",
+    "live-change-resync@1",
+    "live-rows@1",
+    "optimistic@1"
+  ],
+  "ops": [
+    "upsert",
+    "delete",
+    "reorder"
+  ],
+  "surfaces": [
+    "console",
+    "cli",
+    "mcp",
+    "voice",
+    "api",
+    "orchestrator",
+    "hub",
+    "plugin",
+    "server"
+  ],
+  "surfacesOpen": true,
+  "resyncReasons": [
+    "gap",
+    "epoch",
+    "history",
+    "behind"
+  ],
+  "rollbackReasons": [
+    "rejected",
+    "timeout",
+    "resync",
+    "superseded"
+  ],
+  "keepOnChange": [
+    "scroll",
+    "selection",
+    "sort",
+    "filters",
+    "expanded",
+    "columns",
+    "dialogs",
+    "focus"
+  ],
+  "limits": {
+    "ns": 160,
+    "key": 128,
+    "session": 64,
+    "batch": 1000,
+    "pending": 256
+  },
+  "patterns": {
+    "ns": "^[a-z0-9_-]+(/[A-Za-z0-9._:-]+)*$",
+    "key": "^[^/]{1,128}$"
+  },
+  "optimisticTimeoutMs": 8000,
+  "capability": "axf.live-changes@1",
+  "dataStoreMap": {
+    "ns": "ns",
+    "path": "key",
+    "put": "upsert",
+    "delete": "delete",
+    "rev": "rev",
+    "by": "origin",
+    "at": "ts"
+  }
+}
