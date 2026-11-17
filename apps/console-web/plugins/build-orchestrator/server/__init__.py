@@ -364,6 +364,38 @@ def sees_probe(summary: dict[str, Any] | None = None, running: list[str] | None 
     return {"status": "ok", "summary": f"The console sees {total} build(s) ({run_store} running in the store, {len(running)} live in the Build manager).", "details": []}
 
 
+ESCALATED_ID = "builds-escalated"
+
+
+def escalated_probe(rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """done-means-merged@1: red while any build is escalated (the retry ladder ran out): what broke, every try, since when."""
+    if rows is None:
+        try:
+            r = _pipeline("escalated")
+        except Exception:  # noqa: BLE001 — the probe answers unknown, never throws
+            r = None
+        rows = r.get("escalated") if isinstance(r, dict) else None
+        if rows is None:
+            return {"status": "unknown", "summary": "Couldn't read the builds store.", "unreachable": True}
+    if not rows:
+        return {"status": "ok", "summary": "No build is stuck: every failure is being retried or is fixed."}
+    lines = [f"{x.get('id')}: {x.get('why') or x.get('kind')} Tried: {', '.join(x.get('tried') or []) or 'nothing'}. Since {x.get('since')}." for x in rows[:10]]
+    names = ", ".join(str(x.get("id")) for x in rows[:5]) + ("…" if len(rows) > 5 else "")
+    return {"status": "error", "summary": f"{len(rows)} build{'s' if len(rows) != 1 else ''} stuck after every retry: {names}. Press Retry to start the ladder over.",
+            "details": lines, "link": f"row:{rows[0].get('id')}/tab:attempts"}
+
+
+def _retry_escalated() -> dict[str, Any]:
+    try:
+        r = _pipeline("retry-all", "--by", "systems-check", "--why", "Retry from the systems check banner")
+    except Exception as e:  # noqa: BLE001
+        return {"state": "failed", "message": str(e)[:200]}
+    done = r.get("retried") if isinstance(r, dict) else None
+    if not isinstance(done, list):
+        return {"state": "failed", "message": str((r or {}).get("error") or "retry failed")[:200]}
+    return {"state": "done", "message": f"Retrying {len(done)} build(s): the ladder starts over."}
+
+
 _health_done = False
 
 
@@ -385,6 +417,14 @@ def ensure_health() -> bool:
                       "run": lambda: sees_probe(), "interval": 300,
                       "breaks": "Overview, Build queue and Plan (console and MCP) show 0 builds, so nobody sees what is running.",
                       "instructions": ["`node framework/cli/builds-store.mjs verify` on the VPS.", "`node framework/cli/builds-live.mjs sync` in /opt/axf brings main's store in."]}, FOLDER)
+        reg.register({"id": ESCALATED_ID, "label": "Builds that need you", "service": "builds", "order": 54, "severity": "error",
+                      "run": lambda: escalated_probe(), "interval": 60,
+                      "breaks": "A build Brett asked for is not being built: the server tried every retry and stopped.",
+                      "fix": {"type": "action", "label": "Retry"},
+                      "autoFix": {"label": "Retry", "run": _retry_escalated, "mode": "ask"},
+                      "links": [{"label": "Open the Build orchestrator", "href": "view:build-orchestrator"}],
+                      "instructions": ["`node apps/console-web/plugins/build-orchestrator/pipeline.mjs escalated` lists them with every try.",
+                                       "`… pipeline.mjs retry <build> [strategy]` retries one (the ladder starts over); `retry-all` retries every one."]}, FOLDER)
     except Exception:  # noqa: BLE001 — the orchestrator works without its health item
         return False
     _health_done = True
