@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:19 UTC · `terminal-main-tab-streaming-console-s` s11 done (all) · orchestrator
 - 2026-11-17 20:20 UTC · `separate-settings-per-plugin-reset` s10 done (all) · orchestrator
 - 2026-11-17 20:20 UTC · `guided-live-demo-test-watch-orchestrator` s5 done (all) · orchestrator
 - 2026-11-17 20:21 UTC · `separate-settings-per-plugin-reset` s11 done (all) · orchestrator
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` → running, note (all) · pipeline
 - 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` branch claude/flagship-professional-skin-covering-2 (all) · pipeline
 - 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
