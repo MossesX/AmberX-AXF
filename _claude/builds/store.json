@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7638,
- "updatedAt": "2026-11-17T19:17:11.303Z",
+ "rev": 7639,
+ "updatedAt": "2026-11-17T19:17:34.785Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247189,7 +247189,7 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T19:17:00.186Z",
+   "updatedAt": "2026-11-17T19:17:30.623Z",
    "builtAt": "",
    "notes": [
     {
@@ -247255,6 +247255,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T19:11:35.654Z"
+    },
+    {
+     "text": "Headless run axf-every-plugin-screen-gets-a-settings-gear--gina: brief only · start 20.1K tokens ($0.07) · cost $1.05 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-17T19:17:30.623Z"
     }
    ],
    "approvals": [],
@@ -247864,7 +247868,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
