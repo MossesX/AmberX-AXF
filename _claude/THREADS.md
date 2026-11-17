@@ -821,9 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:33 UTC · `own-look-per-grid-and-tab-group` note (all) · orchestrator
-- 2026-11-17 00:33 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
-- 2026-11-17 00:33 UTC · `every-plugin-screen-gets-a-settings-gear` s9 done (all) · orchestrator
 - 2026-11-17 00:34 UTC · `orchestrator-stale-row-watchdog-vps` → running, note (all) · pipeline
 - 2026-11-17 00:34 UTC · `orchestrator-stale-row-watchdog-vps` branch claude/orchestrator-stale-row-watchdog-vps (all) · pipeline
 - 2026-11-17 00:34 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
@@ -1221,6 +1218,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:07 UTC · `auto-lander-drag-rows-to-set-merge-order` s2 done (all) · orchestrator
 - 2026-11-17 15:07 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
 - 2026-11-17 15:07 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
+- 2026-11-17 15:08 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
+- 2026-11-17 15:08 UTC · `amberx-open-url-must-open-page-even-when` → running, note (all) · orchestrator
+- 2026-11-17 15:08 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
 
 ## Token passes (log)
 

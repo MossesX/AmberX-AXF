@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:08:05.765Z",
+ "updatedAt": "2026-11-17T15:08:18.568Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120595,7 +120595,7 @@
    "pr": "#762",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-16T23:39:05.420Z",
+   "updatedAt": "2026-11-17T15:08:15.479Z",
    "builtAt": "2026-11-16T23:37:25.374Z",
    "notes": [
     {
@@ -120657,6 +120657,10 @@
     {
      "text": "Session axf-remove-molly-completely-delete-the-molly-add-on---earl on hulu0241 ended (exit 0); the build was already built.",
      "at": "2026-11-16T23:39:05.420Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:15.479Z"
     }
    ],
    "approvals": [],
@@ -159564,7 +159568,7 @@
    "pr": "#764",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-16T23:58:05.933Z",
+   "updatedAt": "2026-11-17T15:08:03.528Z",
    "builtAt": "2026-11-16T23:55:24.132Z",
    "notes": [
     {
@@ -159626,6 +159630,10 @@
     {
      "text": "Session axf-axhub-veto-countdown-setting-read-only--sully on hulu0241 ended (exit 0); the build was already built.",
      "at": "2026-11-16T23:58:05.933Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:03.528Z"
     }
    ],
    "approvals": [
@@ -161495,7 +161503,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -161503,7 +161511,7 @@
    "pr": "#763",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-16T23:57:14.703Z",
+   "updatedAt": "2026-11-17T15:08:07.513Z",
    "builtAt": "",
    "notes": [
     {
@@ -161569,6 +161577,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 2 steps left: back in Pending for Brett.",
      "at": "2026-11-16T23:56:06.192Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:07.513Z"
     }
    ],
    "approvals": [
@@ -171307,7 +171319,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T15:03:09.520Z",
+   "updatedAt": "2026-11-17T15:08:12.622Z",
    "builtAt": "",
    "notes": [
     {
@@ -171346,6 +171358,25 @@
     "addenda": []
    },
    "steps": [
+    {
+     "id": "s13",
+     "text": "Bring back the 'Open in' choice that #628 dropped: every settings interface (and a global default in Settings) lets Brett pick where it opens: floating window (default), main area, or new tab. Each entry point (banner, nav, toolbar, tab group, plugin gear, app menu) honours it. Shown in the settings interface itself and reachable via REST, MCP, CLI, voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktucdv01v4h4",
+     "createdAt": "2026-11-17T15:08:12.623Z"
+    },
     {
      "id": "s1",
      "text": "Find the floating settings window that #628 (all-settings-interfaces-open-floating) added: run git show on the #628 merge to get its open function and route. Then list every chrome entry point that still opens settings in the main area: right-click and long-press Settings… on banner, nav menu, toolbar, tab group and menu bar; the axf.chrome.settings dialog; and plugin settings gears reached from those menus. Write the list to _claude/builds/reports/settings-opened-banners-nav-menu.md (inventory section).",
