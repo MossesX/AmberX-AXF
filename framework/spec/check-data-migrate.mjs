@@ -35,8 +35,10 @@ const put = (f, text) => { mkdirSync(dirname(f), { recursive: true }); writeFile
 const copy = (from, to) => { mkdirSync(dirname(to), { recursive: true }); copyFileSync(from, to); };
 const B = join(ROOT, '_claude/builds');
 copy(join(B, 'store.json'), join(R.repo, '_claude/builds/store.json'));
-const journals = readdirSync(join(B, 'journal')).filter((f) => f.endsWith('.jsonl')).sort((a, b) => statSync(join(B, 'journal', a)).size - statSync(join(B, 'journal', b)).size);
-copy(join(B, 'journal', journals[0]), join(R.repo, '_claude/builds/journal', journals[0]));
+// the journal parts live on the hub (builds-journal@1), not in the repo: seed from the fixture journal
+const JF = join(ROOT, 'framework/spec/fixtures-journal');
+const journals = readdirSync(JF).filter((f) => f.endsWith('.jsonl')).sort((a, b) => statSync(join(JF, a)).size - statSync(join(JF, b)).size);
+copy(join(JF, journals[0]), join(R.repo, '_claude/builds/journal', journals[0]));
 for (const f of readdirSync(join(B, 'shipped')).sort().filter((f) => f.endsWith('.json')).slice(0, 25)) copy(join(B, 'shipped', f), join(R.repo, '_claude/builds/shipped', f));
 for (const f of readdirSync(join(B, 'reports')).sort().filter((f) => statSync(join(B, 'reports', f)).isFile()).filter((f, i) => i < 8 || f.length > 80).slice(0, 12)) copy(join(B, 'reports', f), join(R.repo, '_claude/builds/reports', f));
 const seeds = join(ROOT, 'apps/console-web/plugins/plan-studio/data/plans');

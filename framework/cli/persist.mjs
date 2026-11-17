@@ -75,6 +75,29 @@ export function persistRoot() {
   return existsSync(old) ? old : null;
 }
 
+// ------------------------------------------------------------------ journal home (builds-journal@1)
+/** The repo folder the journal parts lived in before they moved to the hub (and the spool when the hub is out of reach). */
+export const JOURNAL_REPO_REL = '_claude/builds/journal';
+/**
+ * Where the builds journal lives (framework/spec/BUILDS.md → Journal home), tests (AXF_BUILDS_STORE) aside:
+ *   AXF_BUILDS_JOURNAL=<dir>  that folder (explicit); `off` = the spool
+ *   persistRoot() non-null    <data root>/builds/journal (hub: /projects/amberx-axf/_data/builds/journal)
+ *   otherwise                 <repo>/_claude/builds/journal (spool, git-ignored)
+ * → { dir, mode: 'explicit' | 'hub' | 'spool' }
+ */
+export function journalHome() {
+  const x = process.env.AXF_BUILDS_JOURNAL;
+  if (x && x !== 'off') return { dir: resolve(x), mode: 'explicit' };
+  const root = x === 'off' ? null : persistRoot();
+  if (root) return { dir: join(root, 'builds', 'journal'), mode: 'hub' };
+  return { dir: join(REPO_ROOT, JOURNAL_REPO_REL), mode: 'spool' };
+}
+/** Folders a journal read looks in: the home, then the repo folder (old parts not yet moved, and the spool). */
+export function journalReadDirs() {
+  const h = journalHome(); const repo = join(REPO_ROOT, JOURNAL_REPO_REL);
+  return h.dir === repo ? [h.dir] : [h.dir, repo];
+}
+
 /**
  * Absolute path to read/write one shared file at its plain location, ignoring build profiles (the profile registry
  * itself and data no profile owns). On the hub, a missing file is seeded from the repo copy.
