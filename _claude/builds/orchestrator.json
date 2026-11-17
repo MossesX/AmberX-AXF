@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:57:31.087Z",
+ "updatedAt": "2026-11-17T00:57:50.294Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -159687,8 +159687,8 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T00:57:28.589Z",
-   "builtAt": "2026-11-17T00:57:28.590Z",
+   "updatedAt": "2026-11-17T00:57:48.057Z",
+   "builtAt": "2026-11-17T00:57:48.057Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -159709,6 +159709,10 @@
     {
      "text": "Brief only: brief is 29077 characters (~7270 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-16T23:57:09.533Z"
+    },
+    {
+     "text": "Headless run axf-every-plugin-screen-gets-a-settings-gear--rhonda: brief only · start 19.1K tokens ($0.07) · cost $14.48 · 275 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:57:48.057Z"
     }
    ],
    "approvals": [],
