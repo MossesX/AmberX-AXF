@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:47:51.107Z",
+ "updatedAt": "2026-11-17T14:48:00.166Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171228,16 +171228,22 @@
    "title": "Settings opened from banners, nav menu and toolbars must open in the floating window",
    "category": "",
    "detail": "#628 (all-settings-interfaces-open-floating) landed, but settings opened from chrome (right-click/long-press Settings… on any banner, nav menu, toolbar, tab group, menu bar; the axf.chrome.settings dialogs and any plugin settings gear reached from them) still open in the main content area. Route every settings entry point through the same floating settings window #628 uses. First check the live console runs a build that includes #628; if not, redeploy. Test each entry point (banner, nav, toolbar, tab group, plugin gear) on desktop and phone. Same through REST, MCP, CLI, voice.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T14:47:48.703Z",
+   "updatedAt": "2026-11-17T14:47:52.260Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T14:47:52.260Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

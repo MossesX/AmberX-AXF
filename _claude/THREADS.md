@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:14 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
 - 2026-11-17 00:15 UTC · `server-rule-done-means-merged-working` → running, note (all) · pipeline
 - 2026-11-17 00:15 UTC · `server-rule-done-means-merged-working` branch claude/server-rule-done-means-merged-working (all) · pipeline
 - 2026-11-17 00:15 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 13:33 UTC · `stop-auto-lander-committing-tracking` note (all) · pipeline
 - 2026-11-17 13:40 UTC · `orchestrator-stale-row-watchdog-vps` → pending, note (all) · reconciler
 - 2026-11-17 14:47 UTC · `settings-opened-banners-nav-menu` added (0 steps) (all) · console
+- 2026-11-17 14:47 UTC · `settings-opened-banners-nav-menu` → queued, note (all) · console
 
 ## Token passes (log)
 
