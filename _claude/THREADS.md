@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:26 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · builds-live
-- 2026-11-17 22:26 UTC · `separate-settings-per-plugin-reset` → landing (all) · builds-live
-- 2026-11-17 22:26 UTC · `rebuild-every-toolbar-page-specific` note (all) · builds-live
 - 2026-11-17 22:26 UTC · `terminal-main-tab-streaming-console-s` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `land-pr-730-reset-all-button-far-right` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · builds-live
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:43 UTC · `vps-sets-every-build-status-manifest` → queued, note (all) · console
 - 2026-11-17 22:44 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
 - 2026-11-17 22:45 UTC · `vps-sets-every-build-status-manifest` note (all) · orchestrator
+- 2026-11-17 22:45 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
+- 2026-11-17 22:45 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-17 22:45 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
 
 ## Token passes (log)
 
