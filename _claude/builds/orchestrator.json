@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:17:34.785Z",
+ "updatedAt": "2026-11-17T19:18:34.618Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181549,6 +181549,37 @@
      "createdAt": "2026-11-17T19:11:27.800Z"
     }
    ]
+  },
+  {
+   "id": "rebuild-every-context-menu-toolbar-nav",
+   "title": "Rebuild every context menu, toolbar, nav menu and app menu: compact console default + fully mapped per-plugin (Fable)",
+   "category": "",
+   "detail": "CONTEXT MENU. 1) New default console context menu asset, set as the console default on axHub, with ONLY, in order: Console settings; Change skin; divider; Plugins (submenu); [dynamic section placeholder]; divider; Assets UI (Brett said 'Ash's UI'); Open terminal. Remove everything else. 2) Plugins submenu lists every plugin, green check = enabled, X = disabled. Clicking one opens a dialog: Enable/Disable (by status), Open (choose main app area or pop-up window), Open its settings. 3) Dynamic section: each plugin fills it with a fully mapped, compact, useful, integrated context menu for the UI showing and where you clicked (no junk like copy/paste). Every plugin's dynamic section includes Containers > View / Hidden, listing all containers to toggle (fold in part C of grids-layout-control-voice-controlled). 4) The main menu and every submenu have a max length and scroll past it, with a setting for the max. ALSO: rebuild every plugin's toolbar, navigation menu and application menu the same way, fully mapped to that plugin/page (coordinate with rebuild-every-toolbar-page-specific; no duplicate work). Every menu is a hot-swappable asset with full API (deep link, REST, MCP, CLI, voice). Build on Fable.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T19:18:29.714Z",
+   "updatedAt": "2026-11-17T19:18:29.714Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Console context menu: console settings, change skin, divider, plugins, placeholder for dynamic, divider, Ash's UI, open terminal; remove everything else; make it the default asset. Plugins list with green checks or X; click opens a dialog to enable/disable, open in main area or pop-up, open its settings. Every plugin gets a fully mapped, integrated, compact context menu in the dynamic area, no garbage like copy and paste, with Containers view/hidden toggles. Scrollable menus and submenus with a max length setting. Rebuild all the toolbars for every plugin, all the navigation menus, all the application menus, and context menus. Use Fable.",
+    "at": "2026-11-17T19:18:29.714Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

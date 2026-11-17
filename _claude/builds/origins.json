@@ -7794,6 +7794,18 @@
    "from": "",
    "addenda": []
   },
+  "rebuild-every-context-menu-toolbar-nav": {
+   "said": "Console context menu: console settings, change skin, divider, plugins, placeholder for dynamic, divider, Ash's UI, open terminal; remove everything else; make it the default asset. Plugins list with green checks or X; click opens a dialog to enable/disable, open in main area or pop-up, open its settings. Every plugin gets a fully mapped, integrated, compact context menu in the dynamic area, no garbage like copy and paste, with Containers view/hidden toggles. Scrollable menus and submenus with a max length setting. Rebuild all the toolbars for every plugin, all the navigation menus, all the application menus, and context menus. Use Fable.",
+   "at": "2026-11-17T19:18:29.714Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "rebuild-every-toolbar-page-specific": {
    "said": "Everywhere there's a toolbar, rebuild the asset for that page/plugin with useful, integrated buttons made for it. Use Fable.",
    "at": "2026-11-17T18:56:41.307Z",
