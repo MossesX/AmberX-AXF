@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "check-settings-interfaces (plugin-settings@1)",
+  "id": "plugin-ai-amberx-axf-console-wake-listener",
+  "name": "Wake listener: its own settings",
+  "description": "Wake listener's own settings interface (plugin-settings@1): only its tabs and keys, the level toolbar on, opened in its own window, never the console's Settings. Generated from its registered settings; edit it like any settings asset.",
+  "tags": [
+    "plugin-settings",
+    "wake-listener"
+  ],
+  "data": {
+    "scope": "plugin",
+    "owner": "ai.amberx.axf.console.wake-listener",
+    "layout": "list",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "wake-listener"
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "wake-listener": "basic",
+      "axf.voice.useClaude": "basic",
+      "axf.voice.claudeTimeoutSec": "basic"
+    },
+    "visible": {}
+  }
+}
