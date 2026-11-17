@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:54:11.788Z",
+ "updatedAt": "2026-11-17T14:54:20.439Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171975,7 +171975,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T14:54:09.749Z",
+   "updatedAt": "2026-11-17T14:54:18.822Z",
    "builtAt": "",
    "notes": [
     {
@@ -171985,6 +171985,10 @@
     {
      "text": "Split by Claude into 19 steps (6 Fable).",
      "at": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 3: claude-headless: refused: edit-ui-mode-inline-edit-anything-active: phase 1 is pinned to Opus 5.5. If it needs Fable 5.1, set its steps to Fable 5.1 in the Build orchestrator first (no approval needed right now: Fable upgrades need my approval is off), then launch.",
+     "at": "2026-11-17T14:54:18.822Z"
     }
    ],
    "approvals": [],
@@ -172002,6 +172006,25 @@
     "addenda": []
    },
    "steps": [
+    {
+     "id": "s20",
+     "text": "Edit UI gets its own settings interface (framework settings asset, sub-tab of Settings > Plugins, opens in the floating settings window): on/off, which key activates it (Ctrl default, Alt/Shift/long-press on phone), what's editable (text, data, assets, hide/unhide, each on/off), outline style from tokens, confirm-before-save on/off, undo history length, per-app scope. Reachable via REST, MCP, CLI, voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktcbt301il9l",
+     "createdAt": "2026-11-17T14:54:12.174Z"
+    },
     {
      "id": "s1",
      "text": "Design the edit-ui@1 contract: framework/spec/EDIT-UI.md defines the Edit UI toggle (setting key axf.editUi.enabled), the Ctrl-held / long-press gate, edit targets (text label, grid cell, column header, asset property: size, colour, icon, order, hide), the owner each edit saves through (asset system vs data API), the undo record shape, and how hide/unhide shares the hide-any-asset contract from rebuild-fresh-main-hide-any-asset",
