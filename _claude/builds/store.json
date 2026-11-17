@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8300,
- "updatedAt": "2026-11-17T22:57:40.135Z",
+ "rev": 8301,
+ "updatedAt": "2026-11-17T22:57:49.062Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -320825,6 +320825,402 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwlakrea01ki5s",
+     "title": "",
+     "text": "[Fable] Design the field address contract: add field:<dialog|screen>/<name> and dialog submit/cancel to console-control (get/set value semantics per control kind: text, textarea, select, switch, checkbox, number, radio; value coercion; error codes for unknown field or bad value; action-args fill-then-save rule for new:<title>). Update CONSOLE-CONTROL.md and the control address schema.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwlakrea020y7i",
+     "title": "",
+     "text": "[Fable] Engine: add field address parsing, value coercion and validation to the console-control core engine (pure, no DOM), plus golden fixtures for every control kind and error case; record the Android twin as a deferred gap in PORTING.md.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwlakrea03xthx",
+     "title": "",
+     "text": "[Fable] Framework controls register field targets by themselves: TextField, TextArea, SelectField, Switch, Checkbox, Segmented and NumberField take a name and emit data-axf-target=field:<scope>/<name>, with the scope taken from the enclosing Dialog/View context, so a plugin never wires it by hand.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwlakrea04arhg",
+     "title": "",
+     "text": "[Fable] Runtime field driver: set/get on a field target writes through React's value setter and fires the input/change events (controlled inputs update their state), reads the current value, and dialog submit/cancel presses the dialog's primary or cancel action. Unit test with jsdom.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwlakrea05pkum",
+     "title": "",
+     "text": "[Opus] Console server: REST /api/console-control gets field.get, field.set (one or many fields in one call) and dialog.submit/cancel, routed to the open browser session with the same relay as press; refuses personOnly and owner-only settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwlakrea06v4nj",
+     "title": "",
+     "text": "[Opus] MCP tools console_control_field_get, console_control_field_set and console_control_dialog_submit in mcp_server.py, matching the REST shapes; add them to the console tools pin.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwlakrea07nu2w",
+     "title": "",
+     "text": "[Opus] CLI: axf console field get|set <address> [value] and axf console submit <dialog>, with --json for several fields at once.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwlakrea08rz3f",
+     "title": "",
+     "text": "[Opus] Voice (AmberX): intents 'set <field> to <value>', 'type <text> into <field>', 'tick/untick <checkbox>', 'save' resolve to field addresses via the Ctrl+K search index.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwlakrea09ju3e",
+     "title": "",
+     "text": "[Opus] Action args fill forms: a console action that opens a dialog with args (new:<title>, rename:<text>) fills the named fields from the args and saves. Add the generic args-to-fields map to the action registry.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwlakrea0apwhn",
+     "title": "",
+     "text": "[Opus] Plan Studio 2.0: the Plan item dialog's Title, Note, Kind, Priority, Model and checkbox fields get names. plan-studio-2.new and new-inside fill the title and note from args and save; rename takes text; note, priority and model are settable on an existing item.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwlakrea0b2q08",
+     "title": "",
+     "text": "[Opus] Plan Studio 2.0 API parity: plugin commands new, new-inside, rename, note, priority, model and tick take values over REST, MCP (plugin-commands), CLI and voice, each with a deep link that opens the item; README section.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwlakrea0caliq",
+     "title": "",
+     "text": "[Opus] CI check check-console-control-fields.mjs: statically finds every input, textarea, select, switch and checkbox (raw or framework control) in the console and plugins without a settable field address; ratchet baseline that only goes down. Wire it into CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwlakrea0dkafd",
+     "title": "",
+     "text": "[Opus] Sweep 1: name the form controls in Settings and its plugin sub-tabs (setting: addresses get field aliases) and lower the baseline.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwlakrea0eitk6",
+     "title": "",
+     "text": "[Opus] Sweep 2: builds plugins (build-orchestrator, pipeline, gate, plan-studio, ui-review) dialogs and forms get named fields; lower the baseline.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwlakrea0fzfq8",
+     "title": "",
+     "text": "[Opus] Sweep 3: agent-swarm, claude-settings, claude-session, notify-control, codebase-changes, theme-manager and the rest of the plugins; lower the baseline toward zero, recording any control that truly cannot be addressed with a reason.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.346Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwlakreb0gmd0j",
+     "title": "",
+     "text": "[Opus] Sweep 4: console core views (Terminal, Breakroom, Home, dialogs in framework/react such as chrome settings and asset pickers); re-bake src/axf; baseline at its final count.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.347Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwlakreb0hs5vs",
+     "title": "",
+     "text": "[Opus] End-to-end test: with Playwright against a preview console, create a nested Plan Studio 2.0 plan (parent plus two children) with titles, notes, priority and ticked checkboxes entirely through REST, then MCP, then the CLI. Verify on screen via field.get and a screenshot to UI Review Screenshots (group named after the build).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.347Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwlakreb0iwv8u",
+     "title": "",
+     "text": "[Opus] Tests, report and PR: run check-console-control, check-console-control-fields, fixtures, the server tests and the e2e. Write _claude/builds/reports/api-fully-drives-every-field-type-forms.md (how each feature is reached via deep link, state, actions, REST, MCP, CLI and voice). Update the docs/console-control.md, add the THREADS row, push the branch and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T22:56:38.812Z",
+     "updatedAt": "2026-11-17T22:56:39.347Z"
+    },
+    {
+     "id": "s19-18",
      "uid": "st-mwlakx9q01q0bq",
      "title": "",
      "text": "Design the field address contract: add field:<dialog|screen>/<name> and dialog submit/cancel to console-control (get/set value semantics per control kind: text, textarea, select, switch, checkbox, number, radio; value coercion; error codes for unknown field or bad value; action-args fill-then-save rule for new:<title>). Update CONSOLE-CONTROL.md and the control address schema.",
@@ -320846,7 +321242,7 @@
      "updatedAt": "2026-11-17T22:56:46.958Z"
     },
     {
-     "id": "s2",
+     "id": "s20-19",
      "uid": "st-mwlakx9q02bplb",
      "title": "",
      "text": "Engine: add field address parsing, value coercion and validation to the console-control core engine (pure, no DOM), plus golden fixtures for every control kind and error case; record the Android twin as a deferred gap in PORTING.md.",
@@ -320868,7 +321264,7 @@
      "updatedAt": "2026-11-17T22:56:46.958Z"
     },
     {
-     "id": "s3",
+     "id": "s21-20",
      "uid": "st-mwlakx9q0384zv",
      "title": "",
      "text": "Framework controls register field targets by themselves: TextField, TextArea, SelectField, Switch, Checkbox, Segmented and NumberField take a name and emit data-axf-target=field:<scope>/<name>, with the scope taken from the enclosing Dialog/View context, so a plugin never wires it by hand.",
@@ -320890,7 +321286,7 @@
      "updatedAt": "2026-11-17T22:56:46.958Z"
     },
     {
-     "id": "s4",
+     "id": "s22-21",
      "uid": "st-mwlakx9q04uvt4",
      "title": "",
      "text": "Runtime field driver: set/get on a field target writes through React's value setter and fires the input/change events (controlled inputs update their state), reads the current value, and dialog submit/cancel presses the dialog's primary or cancel action. Unit test with jsdom.",
@@ -320912,7 +321308,7 @@
      "updatedAt": "2026-11-17T22:56:46.958Z"
     },
     {
-     "id": "s5",
+     "id": "s23-22",
      "uid": "st-mwlakx9q05y159",
      "title": "",
      "text": "Console server: REST /api/console-control gets field.get, field.set (one or many fields in one call) and dialog.submit/cancel, routed to the open browser session with the same relay as press; refuses personOnly and owner-only settings.",
@@ -320934,7 +321330,7 @@
      "updatedAt": "2026-11-17T22:56:46.958Z"
     },
     {
-     "id": "s6",
+     "id": "s24-23",
      "uid": "st-mwlakx9q06ob8a",
      "title": "",
      "text": "MCP tools console_control_field_get, console_control_field_set and console_control_dialog_submit in mcp_server.py, matching the REST shapes; add them to the console tools pin.",
@@ -320956,7 +321352,7 @@
      "updatedAt": "2026-11-17T22:56:46.958Z"
     },
     {
-     "id": "s7",
+     "id": "s25-24",
      "uid": "st-mwlakx9q074o3x",
      "title": "",
      "text": "CLI: axf console field get|set <address> [value] and axf console submit <dialog>, with --json for several fields at once.",
@@ -320978,7 +321374,7 @@
      "updatedAt": "2026-11-17T22:56:46.958Z"
     },
     {
-     "id": "s8",
+     "id": "s26-25",
      "uid": "st-mwlakx9r08trsb",
      "title": "",
      "text": "Voice (AmberX): intents 'set <field> to <value>', 'type <text> into <field>', 'tick/untick <checkbox>', 'save' resolve to field addresses via the Ctrl+K search index.",
@@ -321000,7 +321396,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s9",
+     "id": "s27-26",
      "uid": "st-mwlakx9r09ucee",
      "title": "",
      "text": "Action args fill forms: a console action that opens a dialog with args (new:<title>, rename:<text>) fills the named fields from the args and saves. Add the generic args-to-fields map to the action registry.",
@@ -321022,7 +321418,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s10",
+     "id": "s28-27",
      "uid": "st-mwlakx9r0ahayi",
      "title": "",
      "text": "Plan Studio 2.0: the Plan item dialog's Title, Note, Kind, Priority, Model and checkbox fields get names. plan-studio-2.new and new-inside fill the title and note from args and save; rename takes text; note, priority and model are settable on an existing item.",
@@ -321044,7 +321440,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s11",
+     "id": "s29-28",
      "uid": "st-mwlakx9r0btz8q",
      "title": "",
      "text": "Plan Studio 2.0 API parity: plugin commands new, new-inside, rename, note, priority, model and tick take values over REST, MCP (plugin-commands), CLI and voice, each with a deep link that opens the item; README section.",
@@ -321066,7 +321462,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s12",
+     "id": "s30-29",
      "uid": "st-mwlakx9r0ca8ky",
      "title": "",
      "text": "CI check check-console-control-fields.mjs: statically finds every input, textarea, select, switch and checkbox (raw or framework control) in the console and plugins without a settable field address; ratchet baseline that only goes down. Wire it into CI.",
@@ -321088,7 +321484,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s13",
+     "id": "s31-30",
      "uid": "st-mwlakx9r0dgiu5",
      "title": "",
      "text": "Sweep 1: name the form controls in Settings and its plugin sub-tabs (setting: addresses get field aliases) and lower the baseline.",
@@ -321110,7 +321506,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s14",
+     "id": "s32-31",
      "uid": "st-mwlakx9r0etjn2",
      "title": "",
      "text": "Sweep 2: builds plugins (build-orchestrator, pipeline, gate, plan-studio, ui-review) dialogs and forms get named fields; lower the baseline.",
@@ -321132,7 +321528,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s15",
+     "id": "s33-32",
      "uid": "st-mwlakx9r0fywe2",
      "title": "",
      "text": "Sweep 3: agent-swarm, claude-settings, claude-session, notify-control, codebase-changes, theme-manager and the rest of the plugins; lower the baseline toward zero, recording any control that truly cannot be addressed with a reason.",
@@ -321154,7 +321550,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s16",
+     "id": "s34-33",
      "uid": "st-mwlakx9r0g761t",
      "title": "",
      "text": "Sweep 4: console core views (Terminal, Breakroom, Home, dialogs in framework/react such as chrome settings and asset pickers); re-bake src/axf; baseline at its final count.",
@@ -321176,7 +321572,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s17",
+     "id": "s35-34",
      "uid": "st-mwlakx9r0hsvcb",
      "title": "",
      "text": "End-to-end test: with Playwright against a preview console, create a nested Plan Studio 2.0 plan (parent plus two children) with titles, notes, priority and ticked checkboxes entirely through REST, then MCP, then the CLI. Verify on screen via field.get and a screenshot to UI Review Screenshots (group named after the build).",
@@ -321198,7 +321594,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s18",
+     "id": "s36-35",
      "uid": "st-mwlakx9r0ivrzx",
      "title": "",
      "text": "Tests, report and PR: run check-console-control, check-console-control-fields, fixtures, the server tests and the e2e. Write _claude/builds/reports/api-fully-drives-every-field-type-forms.md (how each feature is reached via deep link, state, actions, REST, MCP, CLI and voice). Update the docs/console-control.md, add the THREADS row, push the branch and open the PR.",
@@ -321220,7 +321616,7 @@
      "updatedAt": "2026-11-17T22:56:46.959Z"
     },
     {
-     "id": "s19-18",
+     "id": "s37-36",
      "uid": "st-mwlal3g301n748",
      "title": "",
      "text": "Design the field address contract: add field:<dialog|screen>/<name> and dialog submit/cancel to console-control (get/set value semantics per control kind: text, textarea, select, switch, checkbox, number, radio; value coercion; error codes for unknown field or bad value; action-args fill-then-save rule for new:<title>). Update CONSOLE-CONTROL.md and the control address schema.",
@@ -321242,7 +321638,7 @@
      "updatedAt": "2026-11-17T22:56:54.963Z"
     },
     {
-     "id": "s20-19",
+     "id": "s38-37",
      "uid": "st-mwlal3g402da7y",
      "title": "",
      "text": "Engine: add field address parsing, value coercion and validation to the console-control core engine (pure, no DOM), plus golden fixtures for every control kind and error case; record the Android twin as a deferred gap in PORTING.md.",
@@ -321264,7 +321660,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s21-20",
+     "id": "s39-38",
      "uid": "st-mwlal3g403ok8q",
      "title": "",
      "text": "Framework controls register field targets by themselves: TextField, TextArea, SelectField, Switch, Checkbox, Segmented and NumberField take a name and emit data-axf-target=field:<scope>/<name>, with the scope taken from the enclosing Dialog/View context, so a plugin never wires it by hand.",
@@ -321286,7 +321682,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s22-21",
+     "id": "s40-39",
      "uid": "st-mwlal3g404oqa3",
      "title": "",
      "text": "Runtime field driver: set/get on a field target writes through React's value setter and fires the input/change events (controlled inputs update their state), reads the current value, and dialog submit/cancel presses the dialog's primary or cancel action. Unit test with jsdom.",
@@ -321308,7 +321704,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s23-22",
+     "id": "s41-40",
      "uid": "st-mwlal3g405zcnq",
      "title": "",
      "text": "Console server: REST /api/console-control gets field.get, field.set (one or many fields in one call) and dialog.submit/cancel, routed to the open browser session with the same relay as press; refuses personOnly and owner-only settings.",
@@ -321330,7 +321726,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s24-23",
+     "id": "s42-41",
      "uid": "st-mwlal3g406nr1o",
      "title": "",
      "text": "MCP tools console_control_field_get, console_control_field_set and console_control_dialog_submit in mcp_server.py, matching the REST shapes; add them to the console tools pin.",
@@ -321352,7 +321748,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s25-24",
+     "id": "s43-42",
      "uid": "st-mwlal3g407d2xh",
      "title": "",
      "text": "CLI: axf console field get|set <address> [value] and axf console submit <dialog>, with --json for several fields at once.",
@@ -321374,7 +321770,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s26-25",
+     "id": "s44-43",
      "uid": "st-mwlal3g408lgkq",
      "title": "",
      "text": "Voice (AmberX): intents 'set <field> to <value>', 'type <text> into <field>', 'tick/untick <checkbox>', 'save' resolve to field addresses via the Ctrl+K search index.",
@@ -321396,7 +321792,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s27-26",
+     "id": "s45-44",
      "uid": "st-mwlal3g409yc2q",
      "title": "",
      "text": "Action args fill forms: a console action that opens a dialog with args (new:<title>, rename:<text>) fills the named fields from the args and saves. Add the generic args-to-fields map to the action registry.",
@@ -321418,7 +321814,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s28-27",
+     "id": "s46-45",
      "uid": "st-mwlal3g40ahcgu",
      "title": "",
      "text": "Plan Studio 2.0: the Plan item dialog's Title, Note, Kind, Priority, Model and checkbox fields get names. plan-studio-2.new and new-inside fill the title and note from args and save; rename takes text; note, priority and model are settable on an existing item.",
@@ -321440,7 +321836,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s29-28",
+     "id": "s47-46",
      "uid": "st-mwlal3g40b7455",
      "title": "",
      "text": "Plan Studio 2.0 API parity: plugin commands new, new-inside, rename, note, priority, model and tick take values over REST, MCP (plugin-commands), CLI and voice, each with a deep link that opens the item; README section.",
@@ -321462,7 +321858,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s30-29",
+     "id": "s48-47",
      "uid": "st-mwlal3g40c66w9",
      "title": "",
      "text": "CI check check-console-control-fields.mjs: statically finds every input, textarea, select, switch and checkbox (raw or framework control) in the console and plugins without a settable field address; ratchet baseline that only goes down. Wire it into CI.",
@@ -321484,7 +321880,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s31-30",
+     "id": "s49-48",
      "uid": "st-mwlal3g40d1xdu",
      "title": "",
      "text": "Sweep 1: name the form controls in Settings and its plugin sub-tabs (setting: addresses get field aliases) and lower the baseline.",
@@ -321506,7 +321902,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s32-31",
+     "id": "s50-49",
      "uid": "st-mwlal3g40edz09",
      "title": "",
      "text": "Sweep 2: builds plugins (build-orchestrator, pipeline, gate, plan-studio, ui-review) dialogs and forms get named fields; lower the baseline.",
@@ -321528,7 +321924,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s33-32",
+     "id": "s51-50",
      "uid": "st-mwlal3g40f2r8b",
      "title": "",
      "text": "Sweep 3: agent-swarm, claude-settings, claude-session, notify-control, codebase-changes, theme-manager and the rest of the plugins; lower the baseline toward zero, recording any control that truly cannot be addressed with a reason.",
@@ -321550,7 +321946,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s34-33",
+     "id": "s52-51",
      "uid": "st-mwlal3g40gyo7h",
      "title": "",
      "text": "Sweep 4: console core views (Terminal, Breakroom, Home, dialogs in framework/react such as chrome settings and asset pickers); re-bake src/axf; baseline at its final count.",
@@ -321572,7 +321968,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s35-34",
+     "id": "s53-52",
      "uid": "st-mwlal3g40hblme",
      "title": "",
      "text": "End-to-end test: with Playwright against a preview console, create a nested Plan Studio 2.0 plan (parent plus two children) with titles, notes, priority and ticked checkboxes entirely through REST, then MCP, then the CLI. Verify on screen via field.get and a screenshot to UI Review Screenshots (group named after the build).",
@@ -321594,7 +321990,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s36-35",
+     "id": "s54-53",
      "uid": "st-mwlal3g40ingj8",
      "title": "",
      "text": "Tests, report and PR: run check-console-control, check-console-control-fields, fixtures, the server tests and the e2e. Write _claude/builds/reports/api-fully-drives-every-field-type-forms.md (how each feature is reached via deep link, state, actions, REST, MCP, CLI and voice). Update the docs/console-control.md, add the THREADS row, push the branch and open the PR.",
@@ -321616,7 +322012,7 @@
      "updatedAt": "2026-11-17T22:56:54.964Z"
     },
     {
-     "id": "s37-36",
+     "id": "s55-54",
      "uid": "st-mwlajwn801xs0z",
      "title": "",
      "text": "Design the field address contract: add field:<dialog|screen>/<name> and dialog submit/cancel to console-control (get/set value semantics per control kind: text, textarea, select, switch, checkbox, number, radio; value coercion; error codes for unknown field or bad value; action-args fill-then-save rule for new:<title>). Update CONSOLE-CONTROL.md and the control address schema.",
@@ -321641,7 +322037,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s38-37",
+     "id": "s56-55",
      "uid": "st-mwlajwn802p0xm",
      "title": "",
      "text": "Engine: add field address parsing, value coercion and validation to the console-control core engine (pure, no DOM), plus golden fixtures for every control kind and error case; record the Android twin as a deferred gap in PORTING.md.",
@@ -321667,7 +322063,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s39-38",
+     "id": "s57-56",
      "uid": "st-mwlajwn8031xti",
      "title": "",
      "text": "Framework controls register field targets by themselves: TextField, TextArea, SelectField, Switch, Checkbox, Segmented and NumberField take a name and emit data-axf-target=field:<scope>/<name>, with the scope taken from the enclosing Dialog/View context, so a plugin never wires it by hand.",
@@ -321695,7 +322091,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s40-39",
+     "id": "s58-57",
      "uid": "st-mwlajwn804dbvw",
      "title": "",
      "text": "Runtime field driver: set/get on a field target writes through React's value setter and fires the input/change events (controlled inputs update their state), reads the current value, and dialog submit/cancel presses the dialog's primary or cancel action. Unit test with jsdom.",
@@ -321721,7 +322117,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s41-40",
+     "id": "s59-58",
      "uid": "st-mwlajwn805s5uj",
      "title": "",
      "text": "Console server: REST /api/console-control gets field.get, field.set (one or many fields in one call) and dialog.submit/cancel, routed to the open browser session with the same relay as press; refuses personOnly and owner-only settings.",
@@ -321746,7 +322142,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s42-41",
+     "id": "s60-59",
      "uid": "st-mwlajwn806u3dl",
      "title": "",
      "text": "MCP tools console_control_field_get, console_control_field_set and console_control_dialog_submit in mcp_server.py, matching the REST shapes; add them to the console tools pin.",
@@ -321771,7 +322167,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s43-42",
+     "id": "s61-60",
      "uid": "st-mwlajwn807uqww",
      "title": "",
      "text": "CLI: axf console field get|set <address> [value] and axf console submit <dialog>, with --json for several fields at once.",
@@ -321796,7 +322192,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s44-43",
+     "id": "s62-61",
      "uid": "st-mwlajwn808vbl2",
      "title": "",
      "text": "Voice (AmberX): intents 'set <field> to <value>', 'type <text> into <field>', 'tick/untick <checkbox>', 'save' resolve to field addresses via the Ctrl+K search index.",
@@ -321821,7 +322217,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s45-44",
+     "id": "s63-62",
      "uid": "st-mwlajwn809kq7z",
      "title": "",
      "text": "Action args fill forms: a console action that opens a dialog with args (new:<title>, rename:<text>) fills the named fields from the args and saves. Add the generic args-to-fields map to the action registry.",
@@ -321846,7 +322242,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s46-45",
+     "id": "s64-63",
      "uid": "st-mwlajwn90a72ta",
      "title": "",
      "text": "Plan Studio 2.0: the Plan item dialog's Title, Note, Kind, Priority, Model and checkbox fields get names. plan-studio-2.new and new-inside fill the title and note from args and save; rename takes text; note, priority and model are settable on an existing item.",
@@ -321871,7 +322267,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s47-46",
+     "id": "s65-64",
      "uid": "st-mwlajwn90bv8jf",
      "title": "",
      "text": "Plan Studio 2.0 API parity: plugin commands new, new-inside, rename, note, priority, model and tick take values over REST, MCP (plugin-commands), CLI and voice, each with a deep link that opens the item; README section.",
@@ -321896,7 +322292,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s48-47",
+     "id": "s66-65",
      "uid": "st-mwlajwn90c3i9e",
      "title": "",
      "text": "CI check check-console-control-fields.mjs: statically finds every input, textarea, select, switch and checkbox (raw or framework control) in the console and plugins without a settable field address; ratchet baseline that only goes down. Wire it into CI.",
@@ -321922,7 +322318,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s49-48",
+     "id": "s67-66",
      "uid": "st-mwlajwn90dlq6c",
      "title": "",
      "text": "Sweep 1: name the form controls in Settings and its plugin sub-tabs (setting: addresses get field aliases) and lower the baseline.",
@@ -321948,7 +322344,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s50-49",
+     "id": "s68-67",
      "uid": "st-mwlajwn90en98i",
      "title": "",
      "text": "Sweep 2: builds plugins (build-orchestrator, pipeline, gate, plan-studio, ui-review) dialogs and forms get named fields; lower the baseline.",
@@ -321976,7 +322372,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s51-50",
+     "id": "s69-68",
      "uid": "st-mwlajwn90fp4v8",
      "title": "",
      "text": "Sweep 3: agent-swarm, claude-settings, claude-session, notify-control, codebase-changes, theme-manager and the rest of the plugins; lower the baseline toward zero, recording any control that truly cannot be addressed with a reason.",
@@ -322001,7 +322397,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s52-51",
+     "id": "s70-69",
      "uid": "st-mwlajwn90gy0o6",
      "title": "",
      "text": "Sweep 4: console core views (Terminal, Breakroom, Home, dialogs in framework/react such as chrome settings and asset pickers); re-bake src/axf; baseline at its final count.",
@@ -322028,7 +322424,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s53-52",
+     "id": "s71-70",
      "uid": "st-mwlajwn90h85w4",
      "title": "",
      "text": "End-to-end test: with Playwright against a preview console, create a nested Plan Studio 2.0 plan (parent plus two children) with titles, notes, priority and ticked checkboxes entirely through REST, then MCP, then the CLI. Verify on screen via field.get and a screenshot to UI Review Screenshots (group named after the build).",
@@ -322053,7 +322449,7 @@
      "updatedAt": "2026-11-17T22:55:59.492Z"
     },
     {
-     "id": "s54-53",
+     "id": "s72-71",
      "uid": "st-mwlajwn90iyl81",
      "title": "",
      "text": "Tests, report and PR: run check-console-control, check-console-control-fields, fixtures, the server tests and the e2e. Write _claude/builds/reports/api-fully-drives-every-field-type-forms.md (how each feature is reached via deep link, state, actions, REST, MCP, CLI and voice). Update the docs/console-control.md, add the THREADS row, push the branch and open the PR.",
