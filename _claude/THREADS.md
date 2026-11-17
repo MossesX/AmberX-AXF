@@ -831,7 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` PR #817 (all) · builds-live
 - 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` → running, note (all) · pipeline
 - 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
@@ -1231,6 +1230,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:07 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-17 22:07 UTC · `flagship-professional-skin-covering-2` s3 done (all) · orchestrator
 - 2026-11-17 22:08 UTC · `fix-banner-settings-interface-tab` s13 done, → landing (all) · orchestrator
+- 2026-11-17 22:08 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
 
 ## Token passes (log)
 
