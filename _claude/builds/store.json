@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8088,
- "updatedAt": "2026-11-17T21:50:35.525Z",
+ "rev": 8089,
+ "updatedAt": "2026-11-17T21:50:46.629Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268632,7 +268632,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-17T21:50:35.265Z",
      "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
      "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -269318,7 +269318,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -282318,7 +282318,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T21:50:35.265Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -282637,7 +282637,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
