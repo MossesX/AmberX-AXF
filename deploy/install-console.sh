@@ -159,6 +159,9 @@ done
 # ---- 4. container ----
 axf_stop_container "$NAME"  # clean shutdown first (alerts: no false "unclean restart")
 COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf "${DATA_ARGS[@]}" -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF "${PLUGIN_ARGS[@]}")
+# axf-data (deploy/install-data.sh): its URL + the console's service token, and the internal network after the start
+AXF_DATA_ENV="${AXF_DATA_CONF:-/root/hub/data/axf-data/conf}/env/console.env"
+[ -s "$AXF_DATA_ENV" ] && COMMON+=(--env-file "$AXF_DATA_ENV")
 if axf_coolify_proxy_running; then
   say "Coolify proxy detected — publishing https://$DOMAIN behind Traefik"
   NET="$(axf_coolify_network)"
@@ -218,6 +221,7 @@ else
   URL="http://$(curl -fsS -4 --max-time 10 https://ifconfig.me 2>/dev/null || hostname -I | awk '{print $1}'):$PORT"
 fi
 
+docker network inspect axf-data >/dev/null 2>&1 && { docker network connect axf-data "$NAME" >/dev/null 2>&1 || true; }
 [ -f "$CA_HOST" ] && NAME="$NAME" bash "$CA_HOST" attach  # axf-plugin:container-access
 
 # ---- 5. auto-update ----

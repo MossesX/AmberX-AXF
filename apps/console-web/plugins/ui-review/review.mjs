@@ -38,6 +38,7 @@ import * as core from './web/review-core.mjs';
 import * as cf from './web/conform.mjs';
 import * as gc from './web/groups-core.mjs';
 import * as ch from '../../../../framework/core/ui-choices.mjs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -45,8 +46,9 @@ const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
 export const dataDir = () => resolve(process.env.AXF_UI_REVIEW_DIR || join(ROOT, manifest.lifecycle.dataDir));
 const IMG = /\.(png|jpe?g|webp)$/i;
 
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp`; writeFileSync(t, JSON.stringify(v, null, 1)); renameSync(t, f); };
+// data-store@1: the data folder follows the ui-review namespace onto axf-data (framework/core/data-files.mjs)
+const readJson = (f, d) => dataFiles.readJsonSync(f, d);
+const writeJson = (f, v) => dataFiles.writeTextSync(f, JSON.stringify(v, null, 1));
 const itemsFile = () => join(dataDir(), 'items.json');
 /** items.json → working records (+ design-pack decisions as pack:<id> records, + the groups). */
 export function loadDoc() {
