@@ -53,7 +53,8 @@
       "framework/spec/check-build-limit.mjs",
       "framework/spec/check-build-pipeline.mjs",
       "framework/cli/builds-reconcile.mjs",
-      "framework/spec/check-projects.mjs"
+      "framework/spec/check-projects.mjs",
+      "framework/spec/DONE-MEANS-MERGED.md"
     ]
   },
   "commands": {
@@ -755,6 +756,178 @@
           ]
         },
         "output": "{ group, action, done: [id], refused: [{ id, error }], skipped: [{ id, state }] }"
+      },
+      {
+        "id": "attempts",
+        "route": "GET /attempts/{build}",
+        "title": "A build's attempts",
+        "description": "done-means-merged@1: every try at getting a build past a failure (crash, red CI, a clash, a failed push, a stall, a fall back to Pending) with its strategy, model, account and result; the open failure, the merge + CI + verify evidence, the escalation and what the retry ladder tries next. Say 'what's wrong with skins' or 'why did skins stop'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, attempts: [{ n, kind, strategy, fixStrategy, model, account, result, startedAt, endedAt, note }], failure, landed, escalation, ladder, next }"
+      },
+      {
+        "id": "retry",
+        "route": "POST /retry/{build}",
+        "title": "Retry a build",
+        "description": "Retry a fixing or escalated build: the ladder starts over for its failure (the attempts so far stay in the log), the next tick relaunches it, or at once on the strategy given (never above the step's pinned model). Say 'retry skins' or 'retry skins in a fresh session'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            },
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "retry",
+                "merge-main",
+                "fix:targeted",
+                "fix:regenerate",
+                "fix:redo-step",
+                "fresh-session",
+                "switch-model",
+                "switch-account"
+              ],
+              "description": "Optional: the rung to run now"
+            },
+            "why": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, strategy, launch? }"
+      },
+      {
+        "id": "watchdog-status",
+        "route": "GET /watchdog",
+        "title": "Stale-row watchdog status",
+        "readOnly": true,
+        "description": "The VPS stale-row watchdog: its settings (on/off, every how many minutes, dry run only, which lists it watches, notify), the last run (rows read, found, cleaned, GitHub calls), the last runs and the newest cleanup log records. Say 'what did the watchdog clean'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "log": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 500,
+              "description": "how many cleanup log records to include (default 20)"
+            }
+          }
+        },
+        "output": "{ settings, schema, last, lastOk, running, runs, log }"
+      },
+      {
+        "id": "watchdog-run",
+        "route": "POST /watchdog/run",
+        "title": "Run the stale-row watchdog now",
+        "description": "Run the watchdog now: rows on Pending, Queue, Building, the merge queue and UI Review whose PR merged are completed, rows whose PR closed or whose build died are removed; running builds are never touched. Logged, noted on the builds, one FYI to AmberX. force=true runs even when it is off.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "force": {
+              "type": "boolean",
+              "description": "run even when the watchdog is switched off"
+            }
+          }
+        },
+        "output": "watchdog-run@1 { rows, planned, cleaned, changes[] }"
+      },
+      {
+        "id": "watchdog-dry-run",
+        "route": "POST /watchdog/dry-run",
+        "title": "Dry-run the stale-row watchdog",
+        "readOnly": true,
+        "description": "What the watchdog would clean right now and why, changing nothing.",
+        "output": "watchdog-run@1 { dry: true, rows, planned, changes[] }"
+      },
+      {
+        "id": "watchdog-log",
+        "route": "GET /watchdog/log",
+        "title": "Watchdog cleanup log",
+        "readOnly": true,
+        "description": "Every row the watchdog completed or removed (stale-row-log@1), newest first, with the reason and evidence. Filter by list kind, action or build.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "queued",
+                "building",
+                "merge-queue",
+                "ui-review"
+              ]
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "complete",
+                "remove"
+              ]
+            },
+            "build": {
+              "type": "string"
+            }
+          }
+        },
+        "output": "{ records: [stale-row-log@1] }"
+      },
+      {
+        "id": "watchdog-settings",
+        "route": "PUT /watchdog/settings",
+        "title": "Change watchdog settings",
+        "description": "Change the stale-row watchdog's settings: enabled (on/off), intervalMin (1-120), dryRun, tables.builds / tables.merge-queue / tables.ui-review (which lists it watches), notify (the FYI to AmberX).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "intervalMin": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "dryRun": {
+              "type": "boolean"
+            },
+            "tables.builds": {
+              "type": "boolean"
+            },
+            "tables.merge-queue": {
+              "type": "boolean"
+            },
+            "tables.ui-review": {
+              "type": "boolean"
+            },
+            "notify": {
+              "type": "boolean"
+            }
+          }
+        },
+        "output": "{ ok, settings }"
       }
     ]
   },

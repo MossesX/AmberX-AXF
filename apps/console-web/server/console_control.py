@@ -22,16 +22,48 @@ _inventory: dict[str, Any] | None = None
 _inventory_mtime = 0.0
 
 
+def _generate_inventory() -> bool:
+    """The inventory is generated, never committed: build it from the installed plugins when the file is missing."""
+    import shutil
+    import subprocess
+    if not shutil.which("node"):
+        return False
+    try:
+        subprocess.run(["node", str(APP / "scripts" / "control-inventory.mjs")], cwd=str(APP), check=True, capture_output=True, timeout=120)
+    except (subprocess.SubprocessError, OSError):
+        return False
+    return INVENTORY_FILE.is_file()
+
+
+def publish_inventory(inv: dict[str, Any]) -> str | None:
+    """The API / control registry on axf-data: `console/control/inventory.json`, which the Postgres engine keeps as the
+    `control_targets` table (one row per target, tabs in `control_tabs`), generated from each plugin's registered targets.
+    Goes through the console's data layer, so it follows the console namespace's mode (local file, shadow, cutover)."""
+    try:
+        import data_store
+        path = data_store._roots()["projects"] / "amberx-axf" / "_data" / "control" / "inventory.json"  # noqa: SLF001
+        if data_store.key_for(path) != "console/control/inventory.json":
+            return None
+        path.parent.mkdir(parents=True, exist_ok=True)
+        data_store.write_json(path, inv)
+        return "console/control/inventory.json"
+    except Exception:  # noqa: BLE001 — the registry file is still served; publishing is best effort at startup
+        return None
+
+
 def inventory() -> dict[str, Any]:
-    """The static inventory (re-read when the file changes)."""
+    """The static inventory (re-read when the file changes; generated when missing; published to axf-data on first load)."""
     global _inventory, _inventory_mtime
     try:
         m = INVENTORY_FILE.stat().st_mtime
     except OSError:
-        return {"$axf": "console-control-inventory@1", "views": [], "nav": [], "tabGroups": [], "settings": [], "functions": [], "plugins": []}
+        if not _generate_inventory():
+            return {"$axf": "console-control-inventory@1", "views": [], "nav": [], "tabGroups": [], "settings": [], "functions": [], "plugins": []}
+        m = INVENTORY_FILE.stat().st_mtime
     if _inventory is None or m != _inventory_mtime:
         _inventory = json.loads(INVENTORY_FILE.read_text(encoding="utf-8"))
         _inventory_mtime = m
+        publish_inventory(_inventory)
     return _inventory
 
 

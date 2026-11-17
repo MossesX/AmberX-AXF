@@ -17,6 +17,7 @@
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
  *   axf repo create <name> [--private|--public] [--description "…"]
  *                               new GitHub repo with the GitHub App's user token (framework/cli/github-app.mjs)
+ *   axf data [status|backup|verify|mode <ns> <shadow|cutover|rollback|local>|drift <ns>|migrate|get <key>|list <ns>]   axf-data (framework/cli/data.mjs)
  *   axf shot <file> --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by type:id]
  *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
@@ -50,6 +51,8 @@
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
+ *   axf watchdog status | run [--dry-run] [--force] | log [--kind K] [--action A] [--build B] | settings | set <key> <value>
+ *                               the VPS stale-row watchdog (Build orchestrator): what it cleaned, run it, change its settings
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
@@ -99,6 +102,21 @@ if (cmd === 'console') {
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'console.mjs')).href);
   process.exit(await main(rest));
 }
+// `axf watchdog status|run [--dry-run] [--force]|log [--kind K] [--action A] [--build B]|set <key> <value>|settings` goes to
+// the stale-row watchdog of the plugin that provides the build orchestrator (service:orchestrator@1), never by folder name.
+if (cmd === 'watchdog') {
+  const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
+  const { join: joinPath } = await import('node:path');
+  const { pathToFileURL } = await import('node:url');
+  const plugins = joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps/console-web/plugins');
+  const dir = (exists(plugins) ? readdirSync(plugins) : []).sort().find((d) => {
+    try { return JSON.parse(readText(joinPath(plugins, d, 'plugin.json'), 'utf8')).provides?.includes('service:orchestrator@1') && exists(joinPath(plugins, d, 'watchdog.mjs')); } catch { return false; }
+  });
+  if (!dir) { console.error('no plugin provides the build orchestrator (service:orchestrator@1) with a watchdog'); process.exit(1); }
+  const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'watchdog.mjs')).href);
+  try { await main(rest.length ? rest : ['status']); } catch (e) { console.error(`watchdog: ${e.message}`); process.exit(2); }
+  process.exit(process.exitCode ?? 0);
+}
 // `axf voice …` goes to the plugin that provides the voice listener (service:axf.wake-listener@1 with a cli.mjs), never
 // by folder name: Claude mode on / off / status / test and the command history.
 if (cmd === 'voice') {
@@ -116,7 +134,7 @@ if (cmd === 'voice') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'watchdog']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
@@ -381,6 +399,12 @@ try {
       const { appDir, createRepo } = await import('./github-app.mjs');
       const r = await createRepo(appDir(), { name, private: !flags.public, description: typeof flags.description === 'string' ? flags.description : '' });
       console.log(c.ok(`✓ ${r.created ? 'created' : 'already there'}: ${r.fullName} (${r.private ? 'private' : 'public'}) ${r.htmlUrl}`));
+      break;
+    }
+    case 'data': {
+      // axf-data (data-store@1): status, backup, verify, mode, drift, migrate, get, list: framework/cli/data.mjs
+      const { main: data } = await import('./data.mjs');
+      process.exitCode = await data(process.argv.slice(3));
       break;
     }
     case 'shot': {

@@ -675,6 +675,7 @@
     "src/axf/core/shipped-manifest.mjs": "64607346406d57c5",
     "src/axf/core/sse.ts": "08f145e37866aba1",
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
+    "src/axf/core/tracking-paths.mjs": "6967ffec4ca799f7",
     "src/axf/core/types.ts": "4a30ecccf973e53d",
     "src/axf/core/ui-choices.d.mts": "07f19be9c9100edf",
     "src/axf/core/ui-choices.mjs": "1a8d42f55a893191",

@@ -468,6 +468,35 @@
      },
      {
       "$axf": "build-rule@1",
+      "id": "done-means-merged",
+      "title": "Done means merged and working; never stop on a failure",
+      "text": "Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.",
+      "doer": "session",
+      "kind": "mechanical",
+      "phase": "gate",
+      "enabled": true,
+      "check": "node framework/spec/check-done-means-merged.mjs",
+      "autofix": "",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+       {
+        "source": "brett:2026-11-17T00:08:19Z",
+        "file": "",
+        "line": 0,
+        "text": "We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?",
+        "pass": 2
+       }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:00:00Z",
+      "updatedAt": "2026-11-15T14:00:00Z",
+      "updatedBy": "migration",
+      "note": "Brett, Nov 17 2026. The VPS enforces it too: the builds store guard (landed / built / complete need the evidence), the dispatcher's failure detector and retry ladder, the auto-lander, the verify runner and the escalation (health@1 + axf.notify@1). Its settings are the retry-policy@1 defaults (framework/core/retry-ladder.mjs)."
+     },
+     {
+      "$axf": "build-rule@1",
       "id": "ui-asset-tokens",
       "title": "Every colour, size, spacing, font, radius and border comes from asset tokens",
       "text": "UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.",
@@ -720,7 +749,7 @@
      "file": "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json",
      "at": "2026-11-15T14:00:00Z",
      "pass": 2,
-     "count": 12
+     "count": 13
     }
    },
    "entry": {
@@ -729,9 +758,9 @@
     "by": "migration",
     "action": "migrate",
     "rev": 1,
-    "count": 12,
+    "count": 13,
     "reason": {
-     "title": "Migrated 12 build rules",
+     "title": "Migrated 13 build rules",
      "description": "from _claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json"
     }
    },
@@ -740,6 +769,7 @@
     "plugin-help-stub",
     "api-parity-scaffold",
     "ci-checks",
+    "done-means-merged",
     "ui-asset-tokens",
     "api-everything",
     "toolbars",
@@ -755,6 +785,7 @@
     "plugin-help-stub": "Every plugin ships help.json with its screen entry (view:<plugin>). The VPS writes a missing one from plugin.json's name and description after the build (fixer help-stub).",
     "api-parity-scaffold": "Every command a plugin declares has its REST handler, so MCP and the CLI reach it through plugin-commands, and a plugin with a page registers console actions for voice. The VPS checks it at the gate and scaffolds the missing parts (fixer api-parity).",
     "ci-checks": "Every enabled rule's check command (check-theme, check-controls, check-toolbars, …) runs on the VPS under the heavy lock before the PR lands (fixer run-ci-checks).",
+    "done-means-merged": "Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.",
     "ui-asset-tokens": "UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.",
     "api-everything": "Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.",
     "toolbars": "Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.",
@@ -775,7 +806,7 @@
      "look": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.",
      "api": "API: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.",
      "checkpoints": "",
-     "rules": "## Rules for this job\n- Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.\n- A plugin is removable: code only in its folder, data only in its lifecycle.dataDir.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text."
+     "rules": "## Rules for this job\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n- Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.\n- A plugin is removable: code only in its folder, data only in its lifecycle.dataDir.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text."
     },
     "lines": {
      "look": [
@@ -786,15 +817,17 @@
      ],
      "checkpoints": [],
      "rules": [
+      "done-means-merged",
       "toolbars",
       "plugin-lifecycle",
       "phone-readable"
      ]
     },
-    "text": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.\n## Rules for this job\n- Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.\n- A plugin is removable: code only in its folder, data only in its lifecycle.dataDir.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.",
-    "chars": 1066,
-    "tokens": 267,
+    "text": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.\n## Rules for this job\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n- Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.\n- A plugin is removable: code only in its folder, data only in its lifecycle.dataDir.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.",
+    "chars": 2092,
+    "tokens": 523,
     "picked": [
+     "done-means-merged",
      "ui-asset-tokens",
      "api-everything",
      "toolbars",
@@ -841,7 +874,7 @@
      "look": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.",
      "api": "API: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.",
      "checkpoints": "",
-     "rules": "## Rules for this job\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text."
+     "rules": "## Rules for this job\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text."
     },
     "lines": {
      "look": [
@@ -852,13 +885,15 @@
      ],
      "checkpoints": [],
      "rules": [
+      "done-means-merged",
       "phone-readable"
      ]
     },
-    "text": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.\n## Rules for this job\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.",
-    "chars": 854,
-    "tokens": 214,
+    "text": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.\n## Rules for this job\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.",
+    "chars": 1880,
+    "tokens": 470,
     "picked": [
+     "done-means-merged",
      "ui-asset-tokens",
      "api-everything",
      "phone-readable"
@@ -911,7 +946,7 @@
      "look": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.",
      "api": "API: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.",
      "checkpoints": "",
-     "rules": "## Rules for this job\n- Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text."
+     "rules": "## Rules for this job\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n- Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text."
     },
     "lines": {
      "look": [
@@ -922,14 +957,16 @@
      ],
      "checkpoints": [],
      "rules": [
+      "done-means-merged",
       "toolbars",
       "phone-readable"
      ]
     },
-    "text": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.\n## Rules for this job\n- Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.",
-    "chars": 980,
-    "tokens": 245,
+    "text": "Look: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.\n## Rules for this job\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n- Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.",
+    "chars": 2006,
+    "tokens": 502,
     "picked": [
+     "done-means-merged",
      "ui-asset-tokens",
      "api-everything",
      "toolbars",
@@ -980,7 +1017,7 @@
     "look": "Look: Every colour, size, spacing, font, radius and border comes from asset tokens; framework controls only.",
     "api": "API: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.",
     "checkpoints": "",
-    "rules": "## Rules for this job\n- A plugin is removable: code only in its folder, data only in its lifecycle.dataDir.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text."
+    "rules": "## Rules for this job\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n- A plugin is removable: code only in its folder, data only in its lifecycle.dataDir.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text."
    },
    "lines": {
     "look": [
@@ -991,14 +1028,16 @@
     ],
     "checkpoints": [],
     "rules": [
+     "done-means-merged",
      "plugin-lifecycle",
      "phone-readable"
     ]
    },
-   "text": "Look: Every colour, size, spacing, font, radius and border comes from asset tokens; framework controls only.\nAPI: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.\n## Rules for this job\n- A plugin is removable: code only in its folder, data only in its lifecycle.dataDir.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.",
-   "chars": 496,
-   "tokens": 124,
+   "text": "Look: Every colour, size, spacing, font, radius and border comes from asset tokens; framework controls only.\nAPI: Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.\n## Rules for this job\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n- A plugin is removable: code only in its folder, data only in its lifecycle.dataDir.\n- Where he works: mostly from his Android phone. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.",
+   "chars": 1522,
+   "tokens": 381,
    "picked": [
+    "done-means-merged",
     "ui-asset-tokens",
     "api-everything",
     "plugin-lifecycle",
@@ -1194,6 +1233,35 @@
       "createdAt": "2026-11-15T14:00:00Z",
       "updatedAt": "2026-11-15T14:00:00Z",
       "updatedBy": "migration"
+     },
+     {
+      "$axf": "build-rule@1",
+      "id": "done-means-merged",
+      "title": "Done means merged and working; never stop on a failure",
+      "text": "Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.",
+      "doer": "session",
+      "kind": "mechanical",
+      "phase": "gate",
+      "enabled": true,
+      "check": "node framework/spec/check-done-means-merged.mjs",
+      "autofix": "",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+       {
+        "source": "brett:2026-11-17T00:08:19Z",
+        "file": "",
+        "line": 0,
+        "text": "We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?",
+        "pass": 2
+       }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:00:00Z",
+      "updatedAt": "2026-11-15T14:00:00Z",
+      "updatedBy": "migration",
+      "note": "Brett, Nov 17 2026. The VPS enforces it too: the builds store guard (landed / built / complete need the evidence), the dispatcher's failure detector and retry ladder, the auto-lander, the verify runner and the escalation (health@1 + axf.notify@1). Its settings are the retry-policy@1 defaults (framework/core/retry-ladder.mjs)."
      },
      {
       "$axf": "build-rule@1",
@@ -1471,7 +1539,7 @@
      "file": "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json",
      "at": "2026-11-15T14:00:00Z",
      "pass": 2,
-     "count": 12
+     "count": 13
     }
    },
    "history": [
@@ -1481,9 +1549,9 @@
      "by": "migration",
      "action": "migrate",
      "rev": 1,
-     "count": 12,
+     "count": 13,
      "reason": {
-      "title": "Migrated 12 build rules",
+      "title": "Migrated 13 build rules",
       "description": "from _claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json"
      }
     },
@@ -1759,6 +1827,7 @@
    "plugin-help-stub": "the VPS does it",
    "api-parity-scaffold": "the VPS does it",
    "ci-checks": "the VPS does it",
+   "done-means-merged": "",
    "ui-asset-tokens": "",
    "api-everything": "",
    "toolbars": "UI only",
