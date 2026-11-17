@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8074,
- "updatedAt": "2026-11-17T21:45:42.250Z",
+ "rev": 8075,
+ "updatedAt": "2026-11-17T21:45:51.449Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207268,7 +207268,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T21:40:27.307Z",
+   "updatedAt": "2026-11-17T21:45:22.955Z",
    "builtAt": "",
    "notes": [
     {
@@ -207378,6 +207378,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: The build is complete (not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T21:40:27.307Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: The build is complete (not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T21:45:22.955Z"
     }
    ],
    "approvals": [
@@ -207612,7 +207616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -276044,7 +276048,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "landed",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -276053,8 +276057,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:40:37.753Z",
-   "builtAt": "2026-11-17T21:40:37.753Z",
+   "updatedAt": "2026-11-17T21:45:22.955Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -276231,6 +276235,14 @@
     {
      "text": "Refused pending → landed (asked by watchdog): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T21:40:27.310Z"
+    },
+    {
+     "text": "Refused pending → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T21:42:21.584Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: The build is complete (build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T21:45:22.955Z"
     }
    ],
    "approvals": [
@@ -277018,7 +277030,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
