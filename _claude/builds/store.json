@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7447,
- "updatedAt": "2026-11-17T14:49:29.835Z",
+ "rev": 7448,
+ "updatedAt": "2026-11-17T14:50:36.308Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -264038,6 +264038,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T14:48:58.684Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "rebuild-fresh-main-hide-any-asset",
+   "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
+   "category": "",
+   "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T14:50:33.375Z",
+   "updatedAt": "2026-11-17T14:50:33.375Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why can't we hide assets yet? We're supposed to be able to hide toolbars and tab groups and all that and be able to see what's hidden. ... You have to rebuild it.",
+    "at": "2026-11-17T14:50:33.375Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 940
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

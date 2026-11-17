@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:49:29.835Z",
+ "updatedAt": "2026-11-17T14:50:36.308Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171545,6 +171545,37 @@
      "createdAt": "2026-11-17T14:48:58.684Z"
     }
    ]
+  },
+  {
+   "id": "rebuild-fresh-main-hide-any-asset",
+   "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
+   "category": "",
+   "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T14:50:33.375Z",
+   "updatedAt": "2026-11-17T14:50:33.375Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why can't we hide assets yet? We're supposed to be able to hide toolbars and tab groups and all that and be able to see what's hidden. ... You have to rebuild it.",
+    "at": "2026-11-17T14:50:33.375Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

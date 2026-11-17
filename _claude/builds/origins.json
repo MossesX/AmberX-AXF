@@ -7602,6 +7602,18 @@
    "from": "",
    "addenda": []
   },
+  "rebuild-fresh-main-hide-any-asset": {
+   "said": "Why can't we hide assets yet? We're supposed to be able to hide toolbars and tab groups and all that and be able to see what's hidden. ... You have to rebuild it.",
+   "at": "2026-11-17T14:50:33.375Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "rebuild-gizmo-from-scratch-full-claude-style-cha": {
    "said": "You might as well just build it over again and make it sick. Make it better. It's gotta be a full-blown Claude interface where I can either talk to Claude or talk to my Ollama. The Gizmo plugin is trash, the chat is trash, it used to be way better.",
    "at": "2026-11-10T21:38:57.321Z",

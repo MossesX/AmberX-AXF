@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:16 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
 - 2026-11-17 00:16 UTC · `stop-auto-lander-committing-tracking` s1 done, → running (all) · orchestrator
 - 2026-11-17 00:16 UTC · `own-look-per-grid-and-tab-group` s11 done (all) · orchestrator
 - 2026-11-17 00:17 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 14:49 UTC · `settings-opened-banners-nav-menu` → running, note (all) · pipeline
 - 2026-11-17 14:49 UTC · `settings-opened-banners-nav-menu` branch claude/settings-opened-banners-nav-menu (all) · pipeline
 - 2026-11-17 14:49 UTC · `settings-opened-banners-nav-menu` note (all) · orchestrator
+- 2026-11-17 14:50 UTC · `rebuild-fresh-main-hide-any-asset` added (0 steps) (all) · console
 
 ## Token passes (log)
 
