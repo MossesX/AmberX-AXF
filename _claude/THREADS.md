@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `all-banners-hide-when-empty` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:49 UTC · `move-server-side-console-parts-onto-vps` s11 done (all) · orchestrator
 - 2026-11-17 23:49 UTC · `move-server-side-console-parts-onto-vps` s11 done (all) · foreign-write
 - 2026-11-17 23:50 UTC · `move-server-side-console-parts-onto-vps` s12 done (all) · orchestrator
+- 2026-11-17 23:50 UTC · `move-server-side-console-parts-onto-vps` s12 done (all) · foreign-write
 
 ## Token passes (log)
 
