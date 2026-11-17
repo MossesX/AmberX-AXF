@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8009,
- "updatedAt": "2026-11-17T21:29:21.906Z",
+ "rev": 8010,
+ "updatedAt": "2026-11-17T21:29:28.728Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -281990,7 +281990,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:28:41.109Z",
+   "updatedAt": "2026-11-17T21:29:14.170Z",
    "builtAt": "",
    "notes": [
     {
@@ -282012,6 +282012,10 @@
     {
      "text": "Also fix (Brett): switching skins doesn't change the banner widgets. Find why (hard-coded styles, missing tokens, or per-widget overrides pinning them) and make every banner widget follow the active skin's tokens live, unless Brett set an override on that widget.",
      "at": "2026-11-17T21:28:41.109Z"
+    },
+    {
+     "text": "Brett: every skin must ship its own banner widget designs (shape, colours, icon style, size) as part of the skin package, so switching skin swaps the widgets too. Add a widget slot to skin@1 and give every existing skin a widget set; new skins must include one (add a check).",
+     "at": "2026-11-17T21:29:14.170Z"
     }
    ],
    "approvals": [],
@@ -282378,7 +282382,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
