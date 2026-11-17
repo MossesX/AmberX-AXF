@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:39 UTC · `to-do-manager-fully-voice-mcp-controlled` s3 done, → complete (all) · orchestrator
 - 2026-11-16 20:39 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-16 20:39 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-16 20:39 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · orchestrator
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:15 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
 - 2026-11-17 00:15 UTC · `shrink-git-history-drop-old-builds` added (0 steps) (all) · stop-auto-lander-committing-tracking s1
 - 2026-11-17 00:16 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
+- 2026-11-17 00:16 UTC · `stop-auto-lander-committing-tracking` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 

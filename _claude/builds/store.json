@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7144,
- "updatedAt": "2026-11-17T00:16:26.285Z",
+ "rev": 7145,
+ "updatedAt": "2026-11-17T00:16:43.982Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259041,7 +259041,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:08:00.727Z",
+   "updatedAt": "2026-11-17T00:16:25.472Z",
    "builtAt": "",
    "notes": [
     {
@@ -259078,13 +259078,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T00:04:36.246Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-stop-auto-lander-committing-tracking--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T00:07:51.523Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -259097,7 +259097,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T00:07:51.523Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -259106,7 +259106,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T00:07:51.523Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -259131,12 +259131,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:16:25.472Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T00:07:26.389Z",
-     "updatedAt": "2026-11-17T00:07:26.389Z"
+     "updatedAt": "2026-11-17T00:16:26.358Z"
     },
     {
      "id": "s2",
@@ -260978,8 +260978,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P3",
    "createdAt": "2026-11-17T00:15:35.778Z",
-   "updatedAt": "2026-11-17T00:15:35.778Z",
+   "updatedAt": "2026-11-17T00:15:39.775Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -261005,7 +261006,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
