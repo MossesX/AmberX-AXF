@@ -30,6 +30,9 @@ export const currentRestore = (): RestoreRun | null => current;
 
 type Step = { address: string; apply: () => boolean };
 
+/** A saved tab row that hasn't shown up this long after the screen last changed is let go (its panel isn't open now). */
+export const RESTORE_IDLE_MS = 1500;
+
 /** Steps for one place: tab rows (this step), extended by placeScroll.ts for selection and scroll. */
 const extraSteps: Array<(rt: AxfRuntime, place: ConsolePlace) => Step[]> = [];
 export function addRestoreSteps(fn: (rt: AxfRuntime, place: ConsolePlace) => Step[]): void { extraSteps.push(fn); }
@@ -78,10 +81,14 @@ export function restorePlace(rt: AxfRuntime, place: ConsolePlace, opts: { naviga
     if (ended) return;
     if (rt.getState().view !== id) { end('left'); return; }
     for (const [a, s] of Array.from(left)) if (s.apply()) left.delete(a);
-    if (!left.size) end('done');
+    if (!left.size) { end('done'); return; }
+    const reg = controlRegistry(rt);
+    const onlyAbsentRows = Array.from(left.keys()).every((a) => /(^|\/)(tab|subtab):[^/=]+$/.test(a) && !reg.entry(a));
+    if (onlyAbsentRows && Date.now() - lastChange > RESTORE_IDLE_MS) end('done');
   };
   let queued = false;
-  const soon = () => { if (queued) return; queued = true; setTimeout(() => { queued = false; tick(); }, 0); };
+  let lastChange = Date.now();
+  const soon = () => { lastChange = Date.now(); if (queued) return; queued = true; setTimeout(() => { queued = false; tick(); }, 0); };
   offs.push(controlRegistry(rt).subscribe(soon));
   offs.push(rt.subscribe(soon));
   const iv = setInterval(tick, 150); // content that grows without a registry change (data loading for scroll)

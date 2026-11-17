@@ -5,6 +5,7 @@
 import type { AxfRuntime } from '../axf/core';
 import { installPlaceSaving } from './placeState';
 import { restoreOnLoad } from './placeRestore';
+import { installScrollAndSelectionSteps } from './placeScroll';
 
 export * from './placeState';
 export * from './placeRestore';
@@ -14,6 +15,7 @@ let installed = false;
 export function installPlace(rt: AxfRuntime): void {
   if (installed || typeof window === 'undefined') return;
   installed = true;
+  installScrollAndSelectionSteps();
   installPlaceSaving(rt);
   restoreOnLoad(rt);
 }
