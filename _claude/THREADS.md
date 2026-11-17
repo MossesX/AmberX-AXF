@@ -815,10 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:46 UTC · `fable-rebuild-to-do-manager-unlimited` s4 done (all) · orchestrator
-- 2026-11-16 20:49 UTC · `fable-rebuild-to-do-manager-unlimited` s5 done (all) · orchestrator
-- 2026-11-16 20:49 UTC · `settings-interface-gear-every-plugin` s28 done, → built (all) · orchestrator
-- 2026-11-16 20:50 UTC · `settings-interface-gear-every-plugin` note (all) · orchestrator
 - 2026-11-16 20:50 UTC · `assets-menu-hide-any-asset-hidden-list` → pending, note (all) · reconciler
 - 2026-11-16 20:52 UTC · `fable-rebuild-to-do-manager-unlimited` s6 done (all) · orchestrator
 - 2026-11-16 20:56 UTC · `fable-rebuild-to-do-manager-unlimited` s7 done (all) · orchestrator
@@ -1215,6 +1211,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:20 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
 - 2026-11-17 00:21 UTC · `skin-animations-animated-colour-swatches` → running, note (all) · pipeline
 - 2026-11-17 00:20 UTC · `every-plugin-screen-gets-a-settings-gear` s6 done (all) · orchestrator
+- 2026-11-17 00:21 UTC · `skin-animations-animated-colour-swatches` note (all) · orchestrator
+- 2026-11-17 00:21 UTC · `skin-animations-animated-colour-swatches` branch claude/skin-animations-animated-colour-swatches (all) · pipeline
+- 2026-11-17 00:21 UTC · `skin-animations-animated-colour-swatches` note (all) · orchestrator
+- 2026-11-17 00:22 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
 
 ## Token passes (log)
 

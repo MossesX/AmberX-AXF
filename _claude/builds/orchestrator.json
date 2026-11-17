@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:22:09.261Z",
+ "updatedAt": "2026-11-17T00:22:27.480Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133582,11 +133582,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/skin-animations-animated-colour-swatches",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-17T00:21:32.522Z",
+   "updatedAt": "2026-11-17T00:21:48.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -133600,6 +133600,14 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-skin-animations-animated-colour-swatches--rhonda.",
      "at": "2026-11-17T00:21:32.522Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-skin-animations-animated-colour-swatches--rhonda, shared account login)",
+     "at": "2026-11-17T00:21:40.185Z"
+    },
+    {
+     "text": "Brief only: brief is 25807 characters (~6452 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T00:21:48.809Z"
     }
    ],
    "approvals": [],
@@ -163786,7 +163794,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:20:33.045Z",
+   "updatedAt": "2026-11-17T00:22:07.054Z",
    "builtAt": "",
    "notes": [
     {
@@ -163848,6 +163856,10 @@
     {
      "text": "Self-check: own-look-per-grid-and-tab-group had no session on record but axf-own-look-per-grid-and-tab-group--lenny is alive: kept running and tracking it.",
      "at": "2026-11-17T00:20:14.178Z"
+    },
+    {
+     "text": "Self-check: own-look-per-grid-and-tab-group had no session on record but axf-own-look-per-grid-and-tab-group--lenny is alive: kept running and tracking it.",
+     "at": "2026-11-17T00:22:07.054Z"
     }
    ],
    "approvals": [
