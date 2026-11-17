@@ -6,11 +6,11 @@
     "nav": 16,
     "tabGroups": 27,
     "tabs": 78,
-    "settingsTabs": 71,
+    "settingsTabs": 72,
     "settings": 89,
     "functions": 275,
     "buttons": 62,
-    "plugins": 71
+    "plugins": 72
   },
   "views": [
     {
@@ -1974,6 +1974,13 @@
       "label": "Crew",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.crew-live"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=data-store",
+      "id": "data-store",
+      "label": "Data store",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.data-store"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=fable-rebuilds",
@@ -9507,6 +9514,28 @@
         "service:axf.headless@1",
         "service:axf.swarm-roster@1"
       ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.data-store",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.data-store",
+      "label": "Data store",
+      "folder": "data-store",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "data-store",
+        "Data store",
+        "axf-data holds all console data"
+      ],
+      "aliases": [
+        "data-store",
+        "data store"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=data-store",
+      "provides": [],
+      "requires": [],
+      "optional": []
     },
     {
       "address": "plugin:ai.amberx.axf.console.demonstration-designer",

@@ -27,11 +27,15 @@
  *   node framework/cli/persist.mjs            where each shared file is read from
  *   node framework/cli/persist.mjs push       copy repo → hub for files the hub doesn't have yet (--force: overwrite)
  *   node framework/cli/persist.mjs pull       copy hub → repo, to commit a snapshot
+ *
+ * readData / writeData / updateData (+ Sync) go through framework/core/data-files.mjs, so a shared file follows its
+ * namespace onto axf-data (data-store@1) when the mode says so; local mode is unchanged.
  */
 import { cpSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BASE_PROFILE, MERGED_PROFILE, RETIRED_PROFILES, resolveProfile } from '../plan/builds-store-core.mjs';
+import * as files from '../core/data-files.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '..', '..');
@@ -242,6 +246,20 @@ function copy(from, to, force) {
   cpSync(from, to, { recursive: true, force });
   return 'copied';
 }
+
+// ── data-store@1 (axf-data): shared data read and written through framework/core/data-files.mjs ─────────────────────
+// Local mode (the default) is exactly readFileSync / writeFileSync on dataPath(rel); in shadow the write is mirrored to
+// axf-data, in cutover it goes there only (async calls). Callers that must keep working with the console down use these.
+/** The shared file's JSON (fallback when missing or damaged). */
+export const readData = (rel, fallback = null) => files.readJson(dataPath(rel), fallback);
+/** Write the shared file (indent 1, trailing newline: the format these files have in the repo). */
+export const writeData = (rel, doc) => files.writeJson(dataPath(rel), doc, 1);
+/** Read → fn → write, with axf-data's rev check in cutover. */
+export const updateData = (rel, fn, fallback = null) => files.updateJson(dataPath(rel), fn, fallback);
+export const readDataSync = (rel, fallback = null) => files.readJsonSync(dataPath(rel), fallback);
+export const writeDataSync = (rel, doc) => files.writeJsonSync(dataPath(rel), doc, 1);
+/** The data-store@1 key a shared file maps to (null = it stays a local file). */
+export const dataKey = (rel) => files.keyFor(dataPath(rel));
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const cmd = process.argv[2] ?? 'status';

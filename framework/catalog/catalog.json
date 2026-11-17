@@ -2614,6 +2614,49 @@
               "suggests": []
             },
             {
+              "id": "cx.datastore",
+              "title": "axf-data: one container holds all console data, so notes, builds and settings stay available and builds keep running when the console is down",
+              "note": "Brett, Nov 15 2026: \"the console goes down, all the data is still available, all the notes are available, and the builds keep running.\"",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.datastore.contract",
+                  "title": "data-store@1 contract + reference client: namespaces, rev/etag writes, append-only journals, watch, manifests; memory, file and HTTP backends (framework/core/data-store.mjs)"
+                },
+                {
+                  "id": "cx.datastore.service",
+                  "title": "axf-data service: FastAPI on SQLite + content-addressed blobs, token auth, per-key history + restore, SSE watch, MCP tools (services/axf-data)"
+                },
+                {
+                  "id": "cx.datastore.deploy",
+                  "title": "Private deploy: internal network, named volume, no port or domain, service tokens, Coolify compose (deploy/install-data.sh)"
+                },
+                {
+                  "id": "cx.datastore.backups",
+                  "title": "Daily verified backups of axf-data (14 days + weekly), restore, systems check item with Auto fix"
+                },
+                {
+                  "id": "cx.datastore.clients",
+                  "title": "Data layer on every writer: console server (data_store.py), Node (data-files.mjs), builds store, settings, planner, UI Review, notes, changes log, SQLite ledgers"
+                },
+                {
+                  "id": "cx.datastore.migrate",
+                  "title": "Migration: dry-run plan, backup first, copy, count + hash manifests, refuses on mismatch (data-migrate.mjs)"
+                },
+                {
+                  "id": "cx.datastore.modes",
+                  "title": "Staged move per namespace: local \u2192 shadow (drift log) \u2192 cutover \u2192 rollback, guarded (data-mode.mjs)"
+                },
+                {
+                  "id": "cx.datastore.ui",
+                  "title": "Settings \u2192 Plugins \u2192 Data store with REST, MCP commands, axf data CLI, voice and deep link"
+                },
+                {
+                  "id": "cx.datastore.hub",
+                  "title": "axHub route to axf-data (route only, token kept in axHub) and the console-down drill"
+                }
+              ],
               "id": "cx.gate",
               "title": "Gate & rules plugin: the rules a PR must pass, the auto-lander with one Merge queue on/off switch (off = one at a time), and the history of both; REST, MCP, CLI and voice",
               "note": "apps/console-web/plugins/gate (gate-rules@1, framework/spec/GATE.md; build-rules@1, framework/spec/BUILD-RULES.md): Rules / Build rules / Auto-lander / History tabs, the VPS build rules runner and fixers (home card, help stub, Shipped features manifest, API parity, THREADS + tracker, CI checks, PR open + link), gate-store.mjs + lander.mjs adapters (axf-molly replaces only those), gate.mjs one implementation; Kotlin twin deferred",
