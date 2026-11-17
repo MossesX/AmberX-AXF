@@ -125,8 +125,8 @@ it over every app twice is safe.
 
 **Chrome in the skin: `chrome`** (skin@1, `SkinChrome`, `normalizeSkinChrome` / `skinChromeErrors` /
 `skinChromeSettings` in `skin-rules.mjs`, the build engine validates the same lines): `chrome: { <kind>: { interface?,
-instances? } }` for the chrome-settings@1 kinds (tab-group, toolbar, banner, nav-menu, app-menu, context-menu).
-`interface` = the settings interface the kind's dialog renders through (`axf.chrome.settings.<kind>`); `instances` =
+instances? } }` for the chrome-settings@1 kinds (tab-group, banner, nav-menu, app-menu, context-menu; a `toolbar`
+entry is read and ignored, see *none* under coverage). `interface` = the settings interface the kind's dialog renders through (`axf.chrome.settings.<kind>`); `instances` =
 field overrides per instance over the active asset (`axf.chrome.<kind>.<instance>`, only that kind's `CHROME_FIELDS`,
 cleaned as the dialog saves them). It lands in the composed look's settings after `extras.settings`. Where a chrome
 piece is (toolbar bottom, nav left) stays a layout token (`axf.tokens.layout` in `extras.settings`), as today.
@@ -170,10 +170,17 @@ type by hand, so a new type is covered (or fails CI) the moment it is registered
 | `parts` | the skin styles the type's drawn elements (`parts[type]`: customize tokens under the type's style target; composite: box / text / icon / items) | widgets and attachables (label, badge, clock, counter …); slot types with a target take parts too |
 | `reference` | the skin names it through a field (`iconPack`) or an asset it picks (`via: branding` for logo marks) | declared on the registry entry |
 | `bundle` | a whole look the skin stands in for | design package, style package, interface, skin (declared) |
-| `none` | no look (declared with a `why`) | access policy, help, job type, card |
+| `none` | no look, or a look a skin must leave alone (declared with a `why`); absolute: no slot, no parts, no chrome | access policy, help, job type, card, toolbar |
+
+Toolbars are `none` since Nov 17 2026 (Brett: every toolbar blank with one settings gear, edited per toolbar through
+toolbar-override@1): a skin never picks a toolbar asset, styles its parts or sets its chrome, so `resolveLookSkin`,
+`composeLook` and every `SkinScope` leave toolbar tokens alone. A type declared `none` that is slot-shaped must also be
+in `SKIN_NEVER` (`skin-rules.mjs`, mirrored in `cli/build-engine.mjs`); CI keeps the two in step. An older skin or
+design package that still names `assets.toolbar` or `chrome.toolbar` keeps validating: the entry is read and dropped
+(`SKIN_IGNORED`), never an error and never applied. Hiding a toolbar (`extras.hidden.toolbar`) is not styling and stays.
 
 `node framework/spec/check-skin-coverage.mjs` fails on any type with none of these (a widget without a style target, an
-excluded type with no declaration, a bad declaration). `node framework/cli/skins.mjs coverage` and `covers <skin>`
+excluded type with no declaration, a bad declaration, a `none` type the never-list or `partsTypes` would still reach). `node framework/cli/skins.mjs coverage` and `covers <skin>`
 print the table; Settings → Appearance → *What a skin covers* shows it.
 
 **Scopes** (the icon-map model): the chain for a place is `plugin:<id>` → `ui:<view>` → `app` → `global`, and the first

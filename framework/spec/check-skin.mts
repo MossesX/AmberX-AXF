@@ -9,7 +9,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, overriddenSlots, restoreLookBackup, setLookSlot, setSkinColorTheme, skinChromeErrors, skinChromeSettings, skinColorOf, skinColorTheme, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_SCOPE_DEFAULT, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
+import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, overriddenSlots, restoreLookBackup, setLookSlot, setSkinColorTheme, skinChromeErrors, skinChromeSettings, skinColorOf, skinColorTheme, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_SCOPE_DEFAULT, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinNoneTypes, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime, HUB_SKIN_ONLY_KEY, type AppearanceSource } from '../core/runtime';
 import { isAppearanceSetting } from '../core/engines/designpackage';
@@ -361,9 +361,9 @@ console.log(`check-skin: ${n} checks passed`);
 /* ---- skin-coverage@1 (build skins-asset-types): every registered type is covered, scopes, parts, icon pack ---- */
 {
   const cv = fx.coverage;
-  const types = { button: { label: 'Button', group: 'Controls' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, badge: { label: 'Badge', group: 'Chrome', attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } } };
+  const types = { button: { label: 'Button', group: 'Controls' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, badge: { label: 'Badge', group: 'Chrome', attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } }, toolbar: { label: 'Toolbar', group: 'Navigation', skin: { by: 'none', why: 'blank, one settings gear, edited per toolbar' } } };
   const targets = { button: { root: '.fx-btn' }, label: { root: '.fx-widget-label' }, toolbar: { root: '.fx-toolbar', item: '.fx-toolbar .fx-btn' } };
-  const never = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+  const never = ['uac-policy', 'help', 'skin', 'design-package', 'interface', 'toolbar'];
   const table = coverageTable(types as never, targets, never);
   eq(table, cv.table, 'coverage table = fixture');
   eq(uncoveredTypes(types as never, targets, never).map((r) => r.type), ['badge', 'help', 'mystery', 'hush'], 'uncovered: an attachable without a target, an excluded type with no declaration, bad declarations');
@@ -371,11 +371,25 @@ console.log(`check-skin: ${n} checks passed`);
   eq(table.find((r) => r.type === 'button')!.also, ['parts'], 'a slot with a style target also takes parts');
   eq(table.find((r) => r.type === 'label')!.by, 'parts', 'a widget is covered by parts');
   eq(table.find((r) => r.type === 'icon-pack')!.by, 'reference', 'a declared reference');
+  // toolbars (Brett, Nov 17 2026): declared none, so a skin reaches nothing of them, the style target included
+  eq(table.find((r) => r.type === 'toolbar')!.by, 'none', 'a type declared none is none');
+  eq(table.find((r) => r.type === 'toolbar')!.also, [], 'a type declared none never also takes parts, even with a style target');
+  eq(skinNoneTypes(types as never), ['uac-policy', 'hush', 'toolbar'], 'the types declared none, registry order');
+  eq(cv.noneTypes, ['uac-policy', 'hush', 'toolbar'], 'none types = fixture');
   eq(coverageSummary(table), cv.summary, 'summary');
-  eq(partsTypes(types as never, targets), ['button', 'label'], 'parts types = registered types with a target');
+  eq(partsTypes(types as never, targets), ['button', 'label'], 'parts types = registered types with a target, never a type declared none');
   eq(partElements(targets.toolbar), ['box', 'text', 'icon', 'items'], 'composite elements with items');
   eq(partElements(targets.button), ['box', 'text', 'icon'], 'composite elements without items');
-  eq(partsErrors({ nope: {}, badge: { x: 1 }, label: 7 }, types as never, targets), cv.partsErrors.bad, 'parts errors');
+  eq(partsErrors({ nope: {}, badge: { x: 1 }, label: 7, toolbar: { radius: 'pill' } }, types as never, targets), cv.partsErrors.bad, 'parts errors');
+  ok(cv.partsErrors.bad.some((e: string) => e.startsWith('data.parts.toolbar:') && e.includes('skin by: none')), 'parts on a type declared none are refused');
+  eq(skinNoneTypes(JSON.parse(readFileSync(join(root, 'schemas/asset-types.json'), 'utf8')).types).includes('toolbar'), true, 'the real registry declares toolbar out of a skin\'s reach');
+  ok(SKIN_NEVER.includes('toolbar'), 'the never-list agrees: a skin never picks a toolbar');
+  eq(normalizeSkin({ ...skin, assets: { ...skin.assets, toolbar: 'standard-icons' }, parts: { toolbar: { radius: 'pill' }, button: { radius: 'pill' } }, chrome: { toolbar: { interface: 'chrome-toolbar' } } }).assets.toolbar, undefined, 'a skin\'s toolbar pick is dropped');
+  eq(normalizeSkin({ ...skin, parts: { toolbar: { radius: 'pill' }, button: { radius: 'pill' } } }).parts, { button: { radius: 'pill' } }, 'a skin\'s toolbar parts are dropped');
+  eq(normalizeSkin({ ...skin, chrome: { toolbar: { interface: 'chrome-toolbar' } } }).chrome, undefined, 'a skin\'s toolbar chrome is dropped');
+  eq(skinErrors({ ...skin, assets: { ...skin.assets, toolbar: 'x' }, chrome: { toolbar: { interface: 'Bad Id' } } }), [], 'an older skin naming a toolbar (pick or chrome) still validates: read and ignored, never an error');
+  eq(skinSlots(normalizeSkin({ ...skin, assets: { ...skin.assets, toolbar: 'x' } })).toolbar, undefined, 'and no composed look carries the toolbar slot');
+  eq(skinSlots(skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', extras: { slots: { button: 'x', toolbar: 'y' } } })).toolbar, undefined, 'a design package read as a skin drops its toolbar slot too');
   eq(declarationErrors('mystery', types.mystery), ['mystery: skin.by must be one of slot, parts, reference, bundle, none'], 'a kind outside the list');
   eq(declarationErrors('hush', types.hush), ['hush: skin.by "none" needs a why'], 'none needs a why');
 
@@ -498,14 +512,15 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq(hd.pointer.legacyColour, { id: 'console', overrides: { dialog: 'd' }, colorTheme: 'harbor' }, 'an old color-theme override on the pointer is read as its colour theme');
   // the skin's chrome block
   eq(consoleSkin.chrome, hd.chrome.normalized, 'chrome = fixture');
-  eq(consoleSkin.chrome, { toolbar: { interface: 'chrome-toolbar' }, 'tab-group': { instances: { builds: { style: 'pills', position: 'left' } } } }, 'chrome kinds and fields kept; an unknown kind, a bad instance id and a bogus field dropped');
+  eq(consoleSkin.chrome, { 'tab-group': { instances: { builds: { style: 'pills', position: 'left' } } } }, 'chrome kinds and fields kept; an unknown kind, a bad instance id, a bogus field and the toolbar kind (a skin never sets it) dropped');
+  eq(consoleSkin.assets.toolbar, undefined, 'the toolbar pick is dropped: skins leave toolbars alone');
   eq(skinChromeErrors(chromeBad), hd.chrome.errors, 'chrome errors = fixture');
-  eq(hd.chrome.errors.length, 5, 'bad interface, bogus field, bad instance id, instances not an object, unknown kind');
+  eq(hd.chrome.errors.length, 2, 'instances not an object, unknown kind (toolbar chrome is read and ignored, never an error)');
   eq(skinErrors({ ...skin, chrome: chromeBad }), hd.chrome.skinErrors, 'skinErrors carries the chrome errors');
   eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors({ ...skin, chrome: chromeBad }), skinErrors({ ...skin, chrome: chromeBad }), 'build engine agrees on the chrome block');
   eq(skinErrors({ ...skin, chrome: consoleSkin.chrome }), [], 'a clean chrome block passes');
   eq(skinChromeSettings(consoleSkin.chrome), hd.chrome.settings, 'chrome settings = fixture');
-  eq(hd.chrome.settings, { 'axf.chrome.settings.toolbar': 'chrome-toolbar', 'axf.chrome.tab-group.builds': { style: 'pills', position: 'left' } }, 'the chrome block lands on the chrome-settings@1 keys');
+  eq(hd.chrome.settings, { 'axf.chrome.tab-group.builds': { style: 'pills', position: 'left' } }, 'the chrome block lands on the chrome-settings@1 keys; the toolbar kind never does');
   // resolution
   const resolve = {
     noOverride: resolveLookSkin(look0, null, place, hubDefault), noDefault: resolveLookSkin(look0, null, place, null), ownSkinOn: resolveLookSkin(ownOn, null, place, hubDefault), pluginOff: resolveLookSkin(pluginOff, null, place, hubDefault),
@@ -531,9 +546,9 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   };
   eq(composed, hd.composed, 'composition = fixture');
   const c0 = hd.composed.noOverride;
-  eq(c0.doc.slots, { layout: 'classic-ide', 'color-theme': 'arctic-daylight', 'style-theme': 'soft-studio', button: 'rounded-solid', 'nav-menu': 'amber-signature', toolbar: 'standard-icons', dialog: 'hub-dialog', 'design-package': 'hub-default' }, 'no override: the hub default skin, the pointer\'s override, the snapshot only where the skin names nothing');
+  eq(c0.doc.slots, { layout: 'classic-ide', 'color-theme': 'arctic-daylight', 'style-theme': 'soft-studio', button: 'rounded-solid', 'nav-menu': 'amber-signature', dialog: 'hub-dialog', 'design-package': 'hub-default' }, 'no override: the hub default skin, the pointer\'s override, the snapshot only where the skin names nothing');
   eq([c0.doc.hidden, c0.doc.spacing], [{ toolbar: false }, 'tight'], 'the skin\'s extras over the snapshot');
-  eq([c0.doc.settings!['axf.chrome.settings.toolbar'], c0.doc.settings!['axf.chrome.tab-group.builds'], c0.doc.settings!['axf.tokens.button']], ['chrome-toolbar', { style: 'pills', position: 'left' }, 'x'], 'the chrome block and the shared tokens are in the settings');
+  eq([c0.doc.settings!['axf.chrome.settings.toolbar'], c0.doc.settings!['axf.chrome.tab-group.builds'], c0.doc.settings!['axf.tokens.button']], [undefined, { style: 'pills', position: 'left' }, 'x'], 'the chrome block (never its toolbar kind) and the shared tokens are in the settings');
   eq(c0.skin, hd.resolve.noOverride, 'who decided');
   const c1 = hd.composed.partialOverride;
   eq([c1.doc.slots!.button, c1.doc.hidden!.toolbar], ['terminal', true], 'partial override: the edited slot and the edited chrome flag');

@@ -213,7 +213,7 @@
           "inherit": false,
           "id": "windows",
           "overrides": {
-            "toolbar": "labeled-actions"
+            "dialog": "glass-air"
           }
         },
         "scopes": {},
@@ -254,7 +254,7 @@
           "inherit": false,
           "id": "windows",
           "overrides": {
-            "toolbar": "labeled-actions",
+            "dialog": "glass-air",
             "behavior-theme": "brisk"
           }
         },
@@ -320,7 +320,7 @@
           "inherit": false,
           "id": "windows",
           "overrides": {
-            "toolbar": "labeled-actions",
+            "dialog": "glass-air",
             "behavior-theme": "brisk"
           }
         },
@@ -428,7 +428,9 @@
           }
         },
         "own": {
-          "slots": {},
+          "slots": {
+            "toolbar": "standard-icons"
+          },
           "spacing": "tight",
           "hidden": {
             "toolbar": true
@@ -503,7 +505,9 @@
           }
         },
         "own": {
-          "slots": {},
+          "slots": {
+            "toolbar": "standard-icons"
+          },
           "spacing": "tight",
           "hidden": {
             "toolbar": true

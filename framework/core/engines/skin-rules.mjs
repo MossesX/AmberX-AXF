@@ -29,8 +29,18 @@ export const LOOK_BACKUPS_MAX = 5;
 export const APP_LOOK_PROJECT = 'shared';
 export const APP_LOOK_MAX_BYTES = 64 * 1024;
 export const appLookPath = (appId) => `settings/looks/${appId}.json`;
-/** Slots a skin never sets. */
-export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+/**
+ * Slots a skin never sets. Each is declared `skin: { by: … }` on its asset-types.json entry (CI: spec/check-skin-coverage.mjs
+ * keeps the two in step). `toolbar` since Nov 17 2026 (Brett: every toolbar blank with one settings gear, edited per
+ * toolbar): a skin never picks a toolbar, styles its parts or sets its chrome, so toolbar tokens are left alone.
+ */
+export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface', 'card', 'job-type', 'toolbar'];
+/**
+ * Never-slots a skin saved before the rule may still name (`assets.toolbar`, `chrome.toolbar` in shipped and hub-stored
+ * skins and design packages): read and dropped, never an error and never applied, so old skins keep validating and
+ * loading while toolbars stay out of reach.
+ */
+export const SKIN_IGNORED = ['toolbar'];
 /** The section of a skin that is switched on its own: the colour theme slot. Kept as `colorTheme`, never in `overrides`. */
 export const SKIN_COLOR_SLOT = 'color-theme';
 /** The three per-level choices. */
@@ -55,9 +65,14 @@ export const RETIRED_PACKAGE_TYPES = ['design-package', 'appearance-package'];
 export const SKIN_SCALE_TYPES = ['typography', 'density', 'sizing'];
 export const isSkinSectionType = (type) => Object.values(SKIN_SECTIONS).includes(type);
 export const sectionOfType = (type) => Object.keys(SKIN_SECTIONS).find((s) => SKIN_SECTIONS[s] === type) ?? '';
-/** Every slot a skin sets: its `assets` plus the four section presets (a named section wins over an `assets` entry of that type). */
+/**
+ * Every slot a skin sets: its `assets` plus the four section presets (a named section wins over an `assets` entry of that
+ * type). A never-slot (SKIN_NEVER, e.g. a toolbar named by an old skin or a design package read as a skin) is dropped
+ * here, so no composed look or resolved skin ever carries one.
+ */
 export function skinSlotMap(skin) {
-  const out = { ...(skin?.assets ?? {}) };
+  const out = {};
+  for (const [k, v] of Object.entries(skin?.assets ?? {})) if (!SKIN_NEVER.includes(k)) out[k] = v;
   for (const s of ['layout', 'colors', 'style', 'behavior']) { const v = skin?.[SKIN_SECTION_FIELDS[s]]; if (typeof v === 'string' && v) out[SKIN_SECTIONS[s]] = v; }
   return out;
 }
@@ -105,7 +120,8 @@ export function normalizeSkinChrome(raw) {
   const out = {};
   if (!isObj(raw)) return out;
   for (const [type, v] of Object.entries(raw)) {
-    if (!CHROME_TYPES.includes(type) || !isObj(v)) continue;
+    // a kind a skin never reaches (SKIN_NEVER, e.g. toolbar) is read and dropped, never an error: old skins keep loading
+    if (!CHROME_TYPES.includes(type) || SKIN_NEVER.includes(type) || !isObj(v)) continue;
     const kind = {};
     if (typeof v.interface === 'string' && ID.test(v.interface)) kind.interface = v.interface;
     if (isObj(v.instances)) {
@@ -129,6 +145,7 @@ export function skinChromeErrors(raw) {
   const out = [];
   for (const [type, v] of Object.entries(raw)) {
     if (!CHROME_TYPES.includes(type)) { out.push(`data.chrome.${type}: not a chrome kind (${CHROME_TYPES.join(', ')})`); continue; }
+    if (SKIN_NEVER.includes(type)) continue; // read and ignored (SKIN_IGNORED): a skin never sets this kind's chrome
     if (!isObj(v)) { out.push(`data.chrome.${type} must be an object`); continue; }
     if ('interface' in v && (typeof v.interface !== 'string' || !ID.test(v.interface))) out.push(`data.chrome.${type}.interface must be a settings asset id`);
     if ('instances' in v) {

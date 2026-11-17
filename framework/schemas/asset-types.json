@@ -243,6 +243,10 @@
       "label": "Toolbar",
       "group": "Navigation",
       "icon": "sliders",
+      "skin": {
+        "by": "none",
+        "why": "Toolbars are blank with one settings gear and are edited per toolbar only (toolbar-override@1, Brett, Nov 17 2026): a skin never picks a toolbar asset, styles its parts or sets its chrome, so every toolbar keeps its shared defaults under any skin."
+      },
       "skinConfig": {
         "limits": {
           "groups": {

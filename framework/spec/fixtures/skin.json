@@ -506,6 +506,22 @@
         "via": "",
         "why": "hush: skin.by \"none\" needs a why",
         "by": "uncovered"
+      },
+      {
+        "type": "toolbar",
+        "label": "Toolbar",
+        "group": "Navigation",
+        "also": [],
+        "elements": [
+          "box",
+          "text",
+          "icon",
+          "items"
+        ],
+        "declared": true,
+        "via": "",
+        "why": "blank, one settings gear, edited per toolbar",
+        "by": "none"
       }
     ],
     "uncovered": [
@@ -515,17 +531,22 @@
       "hush"
     ],
     "summary": {
-      "total": 9,
+      "total": 10,
       "uncovered": 4,
       "slot": 1,
       "parts": 1,
       "reference": 1,
       "bundle": 1,
-      "none": 1
+      "none": 2
     },
     "partsTypes": [
       "button",
       "label"
+    ],
+    "noneTypes": [
+      "uac-policy",
+      "hush",
+      "toolbar"
     ],
     "elements": {
       "plain": [
@@ -546,7 +567,8 @@
       "bad": [
         "data.parts.nope: not a registered asset type",
         "data.parts.badge: this type has no style target, so a skin can't style its parts",
-        "data.parts.label must be an object (token → value)"
+        "data.parts.label must be an object (token → value)",
+        "data.parts.toolbar: this type is out of a skin's reach (skin by: none), so a skin can't style its parts"
       ],
       "notObject": [
         "data.parts must be an object (asset type → style parts)"
@@ -984,9 +1006,11 @@
     "covers": [
       {
         "type": "toolbar",
-        "by": "slot",
+        "by": "none",
         "covered": false,
-        "how": []
+        "how": [
+          "no look"
+        ]
       },
       {
         "type": "button",
@@ -2111,9 +2135,6 @@
     },
     "chrome": {
       "normalized": {
-        "toolbar": {
-          "interface": "chrome-toolbar"
-        },
         "tab-group": {
           "instances": {
             "builds": {
@@ -2124,21 +2145,14 @@
         }
       },
       "errors": [
-        "data.chrome.toolbar.interface must be a settings asset id",
-        "data.chrome.toolbar.instances.main: no valid toolbar field (chrome-settings@1)",
-        "data.chrome.toolbar.instances: \"Bad Id!\" is not an instance id",
         "data.chrome.tab-group.instances must be an object (instance → fields)",
         "data.chrome.nope: not a chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)"
       ],
       "skinErrors": [
-        "data.chrome.toolbar.interface must be a settings asset id",
-        "data.chrome.toolbar.instances.main: no valid toolbar field (chrome-settings@1)",
-        "data.chrome.toolbar.instances: \"Bad Id!\" is not an instance id",
         "data.chrome.tab-group.instances must be an object (instance → fields)",
         "data.chrome.nope: not a chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)"
       ],
       "settings": {
-        "axf.chrome.settings.toolbar": "chrome-toolbar",
         "axf.chrome.tab-group.builds": {
           "style": "pills",
           "position": "left"
@@ -2221,7 +2235,6 @@
             "button": "rounded-solid",
             "design-package": "hub-default",
             "nav-menu": "amber-signature",
-            "toolbar": "standard-icons",
             "dialog": "hub-dialog"
           },
           "hidden": {
@@ -2235,7 +2248,6 @@
                 "toolbarPosition": "bottom"
               }
             },
-            "axf.chrome.settings.toolbar": "chrome-toolbar",
             "axf.chrome.tab-group.builds": {
               "style": "pills",
               "position": "left"
@@ -2267,7 +2279,6 @@
             "button": "terminal",
             "design-package": "hub-default",
             "nav-menu": "amber-signature",
-            "toolbar": "standard-icons",
             "dialog": "hub-dialog"
           },
           "hidden": {
@@ -2281,7 +2292,6 @@
                 "toolbarPosition": "bottom"
               }
             },
-            "axf.chrome.settings.toolbar": "chrome-toolbar",
             "axf.chrome.tab-group.builds": {
               "style": "pills",
               "position": "left"
@@ -2313,7 +2323,6 @@
             "button": "plugin-button",
             "design-package": "hub-default",
             "nav-menu": "amber-signature",
-            "toolbar": "standard-icons",
             "dialog": "hub-dialog"
           },
           "hidden": {
@@ -2327,7 +2336,6 @@
                 "toolbarPosition": "bottom"
               }
             },
-            "axf.chrome.settings.toolbar": "chrome-toolbar",
             "axf.chrome.tab-group.builds": {
               "style": "pills",
               "position": "left"
@@ -2478,7 +2486,6 @@
             "button": "rounded-solid",
             "design-package": "hub-default",
             "nav-menu": "amber-signature",
-            "toolbar": "standard-icons",
             "dialog": "hub-dialog"
           },
           "hidden": {
@@ -2492,7 +2499,6 @@
                 "toolbarPosition": "bottom"
               }
             },
-            "axf.chrome.settings.toolbar": "chrome-toolbar",
             "axf.chrome.tab-group.builds": {
               "style": "pills",
               "position": "left"
@@ -2764,7 +2770,6 @@
         "button": "rounded-solid",
         "design-package": "hub-default",
         "nav-menu": "amber-signature",
-        "toolbar": "standard-icons",
         "dialog": "my-dialog"
       },
       "undone": {
