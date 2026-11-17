@@ -182,6 +182,10 @@ export function registerRowHook(h: RowHook): () => void {
   hooks.set(h.id, h); emit();
   return () => { if (hooks.get(h.id) === h) { hooks.delete(h.id); emit(); } };
 }
+/** Is a row hook registered under this id? (skin-slots@1: a skin's `hooks.grid-row` refs resolve against grid-hook@1.) */
+export function hasRowHook(id: string): boolean { return hooks.has(id); }
+/** Every registered row hook id (for the skin map and the hook resolver). */
+export function rowHookIds(): string[] { return [...hooks.keys()]; }
 export function clearOwnerRowHooks(owner: string) { let hit = false; for (const [id, h] of hooks) if (h.owner === owner) { hooks.delete(id); hit = true; } if (hit) emit(); }
 /** Hooks serving a row (ordered); `buttons: true` keeps only the ones that draw a button. */
 export function rowHooks(ref: RowRef | null | undefined, opts: { buttons?: boolean } = {}): RowHook[] {

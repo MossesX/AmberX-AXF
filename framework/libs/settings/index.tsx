@@ -22,7 +22,8 @@ import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
-import { registerSkinMapActions } from './SkinMap';
+import { registerSkinMapActions, SKIN_MAP_CSS, SKIN_MAP_TAB, SkinMapView } from './SkinMap';
+export { SKIN_MAP_TAB, SKIN_MAP_TARGET, SkinMapView, skinMapRowTarget } from './SkinMap';
 export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
@@ -1073,7 +1074,7 @@ function injectStyles(): void {
   if (!doc || doc.getElementById('axf-settings-css')) return;
   const el = doc.createElement('style');
   el.id = 'axf-settings-css';
-  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS + SKIN_CONFIG_CSS;
+  el.textContent = CSS + LEVELS_CSS + SKIN_WHERE_CSS + SKIN_CONFIG_CSS + SKIN_MAP_CSS;
   doc.head.appendChild(el);
 }
 
@@ -1188,6 +1189,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
     { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
+    { id: 'axf.appearance.skin-map', tab: SKIN_MAP_TAB, title: 'Skin map', icon: 'layers', order: 10, render: () => <SkinMapView /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

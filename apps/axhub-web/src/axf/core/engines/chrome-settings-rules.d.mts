@@ -68,8 +68,10 @@ export const CHROME_TAP_FIELD: 'tapConfirm';
 export const CHROME_TAP_OPTIONS: readonly ['inherit', 'on', 'off'];
 export const CHROME_SETTINGS_TABS: ChromeSettingsTab[];
 export function normalizeInstanceOverride(type: string, raw: unknown): Record<string, string | number | boolean>;
-export function chromeInstanceData<T extends object>(type: string, base: T | null | undefined, override: unknown): T;
-export function chromeFieldValue(type: string, base: unknown, override: unknown, key: string): unknown;
+export const CHROME_KIND_DEFAULTS_INSTANCE: '*';
+export function CHROME_KIND_DEFAULTS_KEY(type: string): string;
+export function chromeInstanceData<T extends object>(type: string, base: T | null | undefined, override: unknown, kindDefaults?: unknown): T;
+export function chromeFieldValue(type: string, base: unknown, override: unknown, key: string, kindDefaults?: unknown): unknown;
 export interface ChromeOverride { type: ChromeType; instance: string; fields: Record<string, string | number | boolean> }
 export function chromeOverrideList(saved: unknown): ChromeOverride[];
 export const CONTROLLED_COLOR_KEY: string;

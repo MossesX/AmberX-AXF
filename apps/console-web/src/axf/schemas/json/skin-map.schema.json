@@ -1,0 +1,309 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/skin-map.schema.json",
+  "title": "AmberX AXF skin map (skin-map@1)",
+  "description": "A generated, read-only document: which asset / dataset / layout each skin@1 slot controls, which tokens and settings keys it writes, which components and selectors read them, and where every dataset and layout lives (hub path, repo path, data-store namespace).",
+  "type": "object",
+  "required": [
+    "$axf",
+    "generated",
+    "readOnly",
+    "sources",
+    "summary",
+    "slots",
+    "datasets",
+    "layouts"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "skin-map@1"
+    },
+    "generated": {
+      "const": true
+    },
+    "readOnly": {
+      "const": true
+    },
+    "note": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "sources": {
+      "type": "object"
+    },
+    "kinds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "coverageKinds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "slots": {
+          "type": "integer"
+        },
+        "datasets": {
+          "type": "integer"
+        },
+        "layouts": {
+          "type": "integer"
+        },
+        "tokens": {
+          "type": "integer"
+        },
+        "settings": {
+          "type": "integer"
+        }
+      }
+    },
+    "slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slot",
+          "kind",
+          "controls",
+          "tokens",
+          "settings",
+          "components"
+        ],
+        "properties": {
+          "slot": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "section",
+              "slot",
+              "parts",
+              "reference",
+              "bundle",
+              "extras",
+              "chrome",
+              "motion",
+              "behavior",
+              "hooks",
+              "grid",
+              "dialog",
+              "settings"
+            ]
+          },
+          "type": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "by": {
+            "enum": [
+              "slot",
+              "parts",
+              "reference",
+              "bundle",
+              "none",
+              "uncovered"
+            ]
+          },
+          "via": {
+            "type": "string"
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "controls": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "asset",
+                "dataset",
+                "layout",
+                "tokens",
+                "settings"
+              ]
+            }
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "settings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "selectors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "layout": {
+            "type": "boolean"
+          },
+          "why": {
+            "type": "string"
+          },
+          "lives": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "contract",
+          "what",
+          "hub",
+          "repo",
+          "dataStore"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "app": {
+            "type": "string"
+          },
+          "contract": {
+            "type": "string"
+          },
+          "what": {
+            "type": "string"
+          },
+          "hub": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "mount": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dataStore": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "repo": {
+            "type": "string"
+          },
+          "baked": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "writtenBy": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "readBy": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "layouts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "ids",
+          "repo"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "repo": {
+            "type": "string"
+          },
+          "baked": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pick": {
+            "type": "object"
+          },
+          "overrides": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

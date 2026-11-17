@@ -18,6 +18,7 @@
  */
 import type { AppearancePackageData, DesignPackageData, DesignPackageExtras } from '../types';
 import { spacingOf } from './spacing';
+import { SKIN_SLOT_SETTING_PREFIXES } from './skin-slots.mjs';
 
 export const DESIGN_PACKAGE_TYPE = 'design-package';
 /** @deprecated the retired type's name; `fromAppearancePackage` converts its data. */
@@ -47,8 +48,17 @@ const PREFIXES: string[] = [
   'axf.look',             // Settings → Appearance → Sliders (one key, `axf.look`; Restore used to leave it behind)
   'axf.tokens.',          // control@1 token overrides (engines/control-tokens.mjs; the Token control plugin's API, MCP and CLI)
   'axf.icons.',           // icon packs per scope (engines/skin.ts SKIN_ICON_PACK_KEY; the icon-map engine reads the same keys)
+  // skin-slots@1 (build flagship-professional-skin-covering-2, Nov 17 2026): motion, behaviour defaults, hooks, grid,
+  // dialog chrome and the chrome-settings@1 keys (`axf.chrome.`: the skin's chrome block, kind-wide defaults, picks)
+  ...SKIN_SLOT_SETTING_PREFIXES,
 ];
 export const APPEARANCE_SETTING_PREFIXES: readonly string[] = PREFIXES;
+/**
+ * Prefixes that became look settings on Nov 17 2026 (skin-slots@1). A value an app saved locally before then is not
+ * in its look document yet: the runtime adopts it into the document on the first apply instead of clearing it.
+ */
+export const ADOPTED_SETTING_PREFIXES: readonly string[] = SKIN_SLOT_SETTING_PREFIXES;
+export const isAdoptedSetting = (key: string): boolean => ADOPTED_SETTING_PREFIXES.some((p) => key.startsWith(p));
 
 /**
  * Look settings retired on Nov 1 2026 (Brett: "Remove all appearance and theme editing abilities from the settings

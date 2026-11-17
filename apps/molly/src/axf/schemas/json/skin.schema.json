@@ -417,6 +417,1042 @@
             }
           },
           "additionalProperties": false
+        },
+        "motion": {
+          "type": "object",
+          "description": "skin-slots@1 motion: durations, easings, enter / exit per chrome kind, reduced motion → --fx-motion-* tokens.",
+          "properties": {
+            "speed": {
+              "type": "object",
+              "properties": {
+                "fast": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 2000
+                },
+                "normal": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 2000
+                },
+                "slow": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 2000
+                }
+              },
+              "additionalProperties": false
+            },
+            "easing": {
+              "type": "object",
+              "properties": {
+                "standard": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "standard",
+                        "emphasized",
+                        "linear",
+                        "spring",
+                        "bounce"
+                      ]
+                    },
+                    {
+                      "enum": [
+                        "linear",
+                        "ease",
+                        "ease-in",
+                        "ease-out",
+                        "ease-in-out"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^cubic-bezier\\("
+                    }
+                  ]
+                },
+                "emphasized": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "standard",
+                        "emphasized",
+                        "linear",
+                        "spring",
+                        "bounce"
+                      ]
+                    },
+                    {
+                      "enum": [
+                        "linear",
+                        "ease",
+                        "ease-in",
+                        "ease-out",
+                        "ease-in-out"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^cubic-bezier\\("
+                    }
+                  ]
+                },
+                "exit": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "standard",
+                        "emphasized",
+                        "linear",
+                        "spring",
+                        "bounce"
+                      ]
+                    },
+                    {
+                      "enum": [
+                        "linear",
+                        "ease",
+                        "ease-in",
+                        "ease-out",
+                        "ease-in-out"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^cubic-bezier\\("
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "reduced": {
+              "enum": [
+                "system",
+                "always",
+                "never"
+              ]
+            },
+            "chrome": {
+              "type": "object",
+              "properties": {
+                "tab-group": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "toolbar": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "banner": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "nav-menu": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "app-menu": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "context-menu": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "dialog": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "popup": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "grid": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "page": {
+                  "type": "object",
+                  "properties": {
+                    "enter": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "exit": {
+                      "enum": [
+                        "none",
+                        "fade",
+                        "rise",
+                        "scale",
+                        "slide"
+                      ]
+                    },
+                    "duration": {
+                      "enum": [
+                        "fast",
+                        "normal",
+                        "slow"
+                      ]
+                    },
+                    "stagger": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 200
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "behavior": {
+          "type": "object",
+          "description": "skin-slots@1 behaviour: settings-layer defaults (tap-to-confirm, hover / press / focus feedback, overflow, sticky, collapse).",
+          "properties": {
+            "tapConfirm": {
+              "type": "object",
+              "properties": {
+                "armMs": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 10000
+                },
+                "tab-group": {
+                  "enum": [
+                    "on",
+                    "off"
+                  ]
+                },
+                "toolbar": {
+                  "enum": [
+                    "on",
+                    "off"
+                  ]
+                },
+                "banner": {
+                  "enum": [
+                    "on",
+                    "off"
+                  ]
+                },
+                "nav-menu": {
+                  "enum": [
+                    "on",
+                    "off"
+                  ]
+                },
+                "app-menu": {
+                  "enum": [
+                    "on",
+                    "off"
+                  ]
+                },
+                "context-menu": {
+                  "enum": [
+                    "on",
+                    "off"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "hover": {
+              "enum": [
+                "theme",
+                "none",
+                "tint",
+                "lift",
+                "glow",
+                "underline"
+              ]
+            },
+            "press": {
+              "enum": [
+                "theme",
+                "none",
+                "shrink",
+                "darken",
+                "ripple"
+              ]
+            },
+            "focusRing": {
+              "enum": [
+                "auto",
+                "always",
+                "never"
+              ]
+            },
+            "overflow": {
+              "type": "object",
+              "properties": {
+                "tab-group": {
+                  "enum": [
+                    "scroll",
+                    "wrap",
+                    "more",
+                    "dropdown"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "sticky": {
+              "type": "object",
+              "properties": {
+                "tab-group": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "collapse": {
+              "type": "object",
+              "properties": {
+                "tab-group": {
+                  "type": "boolean"
+                },
+                "toolbar": {
+                  "type": "boolean"
+                },
+                "nav-menu": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "hooks": {
+          "type": "object",
+          "description": "skin-slots@1 hooks: hook@1 refs and lib-dnd drop zones per chrome kind and grid row (ids only; axf.hooks.<kind>).",
+          "properties": {
+            "tab-group": {
+              "type": "object",
+              "properties": {
+                "hooks": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                          },
+                          "args": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean"
+                              ]
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "toolbar": {
+              "type": "object",
+              "properties": {
+                "hooks": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                          },
+                          "args": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean"
+                              ]
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "banner": {
+              "type": "object",
+              "properties": {
+                "hooks": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                          },
+                          "args": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean"
+                              ]
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "nav-menu": {
+              "type": "object",
+              "properties": {
+                "hooks": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                          },
+                          "args": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean"
+                              ]
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "app-menu": {
+              "type": "object",
+              "properties": {
+                "hooks": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                          },
+                          "args": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean"
+                              ]
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "context-menu": {
+              "type": "object",
+              "properties": {
+                "hooks": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                          },
+                          "args": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean"
+                              ]
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "grid-row": {
+              "type": "object",
+              "properties": {
+                "hooks": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                          },
+                          "args": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean"
+                              ]
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._:/-]{0,119}$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "grid": {
+          "type": "object",
+          "description": "skin-slots@1 grid: every grid and table at once → component-tokens@1 grid family (axf.tokens.style) + axf.grid.",
+          "properties": {
+            "density": {
+              "enum": [
+                "compact",
+                "regular",
+                "roomy"
+              ]
+            },
+            "rows": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 6
+            },
+            "header": {
+              "enum": [
+                "plain",
+                "bold",
+                "boxed",
+                "hidden"
+              ]
+            },
+            "zebra": {
+              "type": "boolean"
+            },
+            "lines": {
+              "enum": [
+                "none",
+                "rows",
+                "cells"
+              ]
+            },
+            "sticky": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "dialog": {
+          "type": "object",
+          "description": "skin-slots@1 dialog chrome: field overrides over the active dialog asset (axf.chrome.dialog).",
+          "properties": {
+            "variant": {
+              "enum": [
+                "modal",
+                "drawer",
+                "sheet"
+              ]
+            },
+            "backdrop": {
+              "enum": [
+                "dim",
+                "blur",
+                "none"
+              ]
+            },
+            "animation": {
+              "enum": [
+                "scale",
+                "slide",
+                "fade"
+              ]
+            },
+            "header": {
+              "enum": [
+                "plain",
+                "accent-bar",
+                "filled"
+              ]
+            },
+            "closeOnBackdrop": {
+              "type": "boolean"
+            },
+            "width": {
+              "type": "number",
+              "minimum": 240,
+              "maximum": 1600
+            }
+          },
+          "additionalProperties": false
+        },
+        "settings": {
+          "type": "object",
+          "description": "skin-slots@1 settings chrome: the settings page asset and the settings interface per chrome-settings@1 kind (axf.chrome.settings.<kind>).",
+          "properties": {
+            "page": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "tab-group": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "toolbar": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "banner": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "nav-menu": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "app-menu": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "context-menu": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            }
+          },
+          "additionalProperties": false
         }
       }
     }

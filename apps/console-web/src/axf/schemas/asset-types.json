@@ -1396,7 +1396,7 @@
       "label": "Skin",
       "group": "System",
       "icon": "palette",
-      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings \u2192 Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin \u2192 ui \u2192 app \u2192 global \u2192 default, the child overrides the parent). The `default` level is the hub default skin (`defaultSkin` on the shared appearance@1 document, Nov 14 2026): every app stands on it without opting in, and an app's own picks are the edits drawn over it. How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
+      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings \u2192 Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin \u2192 ui \u2192 app \u2192 global \u2192 default, the child overrides the parent). The `default` level is the hub default skin (`defaultSkin` on the shared appearance@1 document, Nov 14 2026): every app stands on it without opting in, and an app's own picks are the edits drawn over it. How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach. Build flagship-professional-skin-covering-2 (Fable, Nov 17 2026) added five optional, additive slots so a skin also says how things move and behave, which hooks and drop zones each chrome kind carries, how grids are laid out and which dialog and settings chrome is in force (core/engines/skin-slots.mjs): motion, behavior, hooks, grid, dialog, settings. A skin without them is byte-identical after normalising and draws exactly as before; a generated skin-map@1 (core/engines/skin-map.mjs) says which asset, dataset, layout, token and component each slot controls and where each dataset and layout lives.",
       "required": [
         "layoutTheme",
         "colorTheme",
@@ -1404,11 +1404,18 @@
         "assets"
       ],
       "optional_fields": {
+        "extends": "skin@1 extends (Nov 17 2026): id of the skin this one extends; every field it does not set comes from that one (the child wins, objects merge key by key, depth ≤ 4; core/engines/skin-rules.mjs foldSkinExtends). A variant keeps its three theme ids and sets only what differs.",
         "preview": "{ caption, image }: what the picker shows",
         "extras": "{ spacing: tight | compact | regular, hidden: asset type \u2192 true / false, settings: appearance settings key \u2192 value }",
         "iconPack": "icon-pack asset id \u2014 the icon pack the skin draws with (sets axf.icons.pack.<scope>); absent = the branding's",
         "parts": "{ <asset type>: { <customize token>: value } } \u2014 style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin",
-        "chrome": "{ <chrome kind>: { interface?: settings asset id, instances?: { <instance>: { <field>: value } } } } \u2014 chrome settings per chrome-settings@1 kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu): the settings interface its dialog renders through (axf.chrome.settings.<kind>) and field overrides per instance (axf.chrome.<kind>.<instance>, the kind's CHROME_FIELDS only); lands in the composed look's settings after extras.settings"
+        "chrome": "{ <chrome kind>: { interface?: settings asset id, instances?: { <instance>: { <field>: value } } } } \u2014 chrome settings per chrome-settings@1 kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu): the settings interface its dialog renders through (axf.chrome.settings.<kind>) and field overrides per instance (axf.chrome.<kind>.<instance>, the kind's CHROME_FIELDS only); lands in the composed look's settings after extras.settings",
+        "motion": "{ speed?: { fast, normal, slow } ms (0..2000), easing?: { standard, emphasized, exit } (standard | emphasized | linear | spring | bounce, or a cubic-bezier(...)), reduced?: system | always | never, chrome?: { <kind>: { enter?: none | fade | rise | scale | slide, exit?: same, duration?: fast | normal | slow, stagger?: 0..200 ms } } } \u2014 how things move under this skin; kinds = tab-group, toolbar, banner, nav-menu, app-menu, context-menu, dialog, popup, grid, page. Compiles to --fx-motion-fast / -normal / -slow, --fx-motion-ease-standard / -emphasized / -exit, --fx-motion-<kind>-enter / -exit / -dur / -stagger and data-fx-motion-reduced; unset = today's defaults",
+        "behavior": "{ tapConfirm?: { armMs?: 1000..10000, <tap kind>?: on | off } (kinds: toolbar, tab-group, nav-menu, app-menu, context-menu, banner), hover?: theme | none | tint | lift | glow | underline, press?: theme | none | shrink | darken | ripple, focusRing?: auto | always | never, overflow?: { tab-group?: scroll | wrap | more | dropdown }, sticky?: { tab-group?: boolean }, collapse?: { tab-group?: boolean, toolbar?: boolean, nav-menu?: boolean } } \u2014 behaviour defaults on the settings layer: axf.toolbars.armMs, axf.toolbars.tapConfirm / axf.tapConfirm.<kind>, axf.behavior (interaction overrides over the behaviour theme), axf.chrome.<kind>.* (kind-wide field defaults under every instance override), axf.nav.collapsed",
+        "hooks": "{ <kind>: { hooks?: [ hook id | { id, args? } ], drop?: [ drop zone ids ] } } \u2014 hook@1 refs and lib-dnd drop zones per chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu) and grid-row (grid-hook@1); lands in axf.hooks.<kind>; resolveSkinHooks says which refs the host knows. A skin never carries code, only ids",
+        "grid": "{ density?: compact | regular | roomy, rows?: 1..6 (rows of text per item), header?: plain | bold | boxed | hidden, zebra?: boolean, lines?: none | rows | cells, sticky?: boolean } \u2014 every grid and table at once; compiles to the component-tokens@1 grid family through axf.tokens.style['*'] (grid.rowHeight, grid.cellPadY / X, grid.headerWeight, grid.headerBg, grid.tableHeaderBg, grid.rowAltBg, grid.lineColor, grid.stickyShadow) and to axf.grid for the DataGrid attributes",
+        "dialog": "{ variant?: modal | drawer | sheet, backdrop?: dim | blur | none, animation?: scale | slide | fade, header?: plain | accent-bar | filled, closeOnBackdrop?: boolean, width?: number } \u2014 dialog chrome: field overrides over the active dialog asset (axf.chrome.dialog, compiled by dialogStyle)",
+        "settings": "{ page?: settings asset id, <chrome kind>?: settings asset id } \u2014 the settings page asset (slot settings) and the settings interface per chrome-settings@1 kind (axf.chrome.settings.<kind>); chrome.<kind>.interface wins when both name one"
       },
       "roll": {
         "slot": false,
@@ -2039,7 +2046,12 @@
       "groupLabel": "The look as a whole",
       "options": {
         "spacing": "Spacing (tight, compact or regular)",
-        "settings": "Look settings and token overrides (axf.tokens.*) the skin carries"
+        "settings": "Settings chrome (the settings page asset and the settings interface per chrome kind)",
+        "motion": "Motion (durations, easings, enter / exit per chrome kind, reduced motion)",
+        "behavior": "Behaviour defaults (tap-to-confirm, hover / press / focus feedback, overflow, sticky / collapse)",
+        "hooks": "Hooks and drop zones per chrome kind (ids only)",
+        "grid": "Grid layout (density, rows per item, header style, zebra, lines, sticky)",
+        "dialog": "Dialog chrome (frame, backdrop, animation, header, close, width)"
       }
     }
   },

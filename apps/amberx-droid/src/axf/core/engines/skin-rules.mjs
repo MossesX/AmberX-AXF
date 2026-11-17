@@ -63,6 +63,38 @@ export function skinSlotMap(skin) {
 }
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
+
+/**
+ * skin@1 `extends` (build flagship-professional-skin-covering-2, Nov 17 2026): a skin may name the skin it extends;
+ * every field it does not set comes from that one. The child wins; plain objects (assets, parts, extras, chrome and
+ * the skin-slots@1 slots) merge key by key, arrays and scalars replace. `lookup(id)` gives a skin's raw data (null =
+ * unknown: the chain stops there). Depth ≤ SKIN_EXTENDS_DEPTH; a cycle stops at the first repeat. The result carries
+ * no `extends`, so every reader (runtime, validators, CLI, skin map) sees one whole skin.
+ */
+export const SKIN_EXTENDS_DEPTH = 4;
+export function foldSkinExtends(data, lookup, seen = []) {
+  if (!isObjLocal(data)) return data;
+  const parentId = typeof data.extends === 'string' ? data.extends : '';
+  const { extends: _x, ...own } = data;
+  if (!parentId || seen.length >= SKIN_EXTENDS_DEPTH || seen.includes(parentId)) return own;
+  const parentRaw = typeof lookup === 'function' ? lookup(parentId) : null;
+  if (!isObjLocal(parentRaw)) return own;
+  return mergeSkin(foldSkinExtends(parentRaw, lookup, [...seen, parentId]), own);
+}
+/** Validation lines for `extends`: an id, never the skin itself. */
+export function skinExtendsErrors(raw, selfId = '') {
+  if (!isObjLocal(raw) || !('extends' in raw)) return [];
+  if (typeof raw.extends !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(raw.extends)) return ['data.extends must be a skin asset id'];
+  if (selfId && raw.extends === selfId) return ['data.extends must name another skin'];
+  return [];
+}
+const isObjLocal = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
+function mergeSkin(a, b) {
+  const out = { ...a };
+  for (const [k, v] of Object.entries(b)) out[k] = isObjLocal(v) && isObjLocal(a[k]) ? mergeSkin(a[k], v) : v;
+  return out;
+}
+
 const ID = /^[a-z0-9][a-z0-9-]*$/;
 const SPACINGS = ['tight', 'compact', 'regular'];
 

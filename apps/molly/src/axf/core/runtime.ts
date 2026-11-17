@@ -32,9 +32,9 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
-import { backToSkin, composeLookAt, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
-import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
-import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, type AnimationState } from './engines/behavior';
+import { backToSkin, composeLookAt, foldSkinExtends, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
+import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAdoptedSetting, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
+import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, withBehaviorOverrides, type AnimationState } from './engines/behavior';
 import { sweepOrigin } from './engines/swatches';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
@@ -42,7 +42,9 @@ import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, res
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
-import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+import { CHROME_INSTANCE_KEY, CHROME_KIND_DEFAULTS_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+// skin-slots@1 (build flagship-professional-skin-covering-2): motion tokens, behaviour and dialog overrides, the nav collapsed default
+import { BEHAVIOR_OVERRIDES_KEY, DIALOG_KEY, HOOKS_KEY, HOOK_KINDS, MOTION_KEY, NAV_COLLAPSED_SETTING, normalizeSkinDialog, resolveSkinHooks, skinMotionStyle, skinSlotStyleKeys, type HookRegistry, type ResolvedSkinHooks } from './engines/skin-slots.mjs';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -62,6 +64,7 @@ import {
   type NavItem,
   type Toast,
   type AssetDataMap,
+  type DialogData,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
 
@@ -391,7 +394,7 @@ export class AxfRuntime {
 
   /** A string that changes whenever a settings value compileStyles reads changes: the control@1 token overrides and the nav's collapsed / width state (a render dependency for the provider). */
   styleSettingsKey(): string {
-    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY, ...CHROME_TYPES.map((t) => CHROME_INSTANCE_KEY(t, 'app'))];
+    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY, ...CHROME_TYPES.map((t) => CHROME_INSTANCE_KEY(t, 'app')), ...skinSlotStyleKeys()];
     return JSON.stringify(keys.map((k) => this.settings.get(k) ?? null));
   }
 
@@ -600,6 +603,9 @@ export class AxfRuntime {
     const doc = composed?.doc ?? shared;
     this.lastEffective = doc;
     let retired: string[] = [];
+    // skin-slots@1: settings that became look settings on Nov 17 2026 and were saved locally before then are adopted
+    // into the look document once (pushed after the apply) instead of being cleared as "not in the document"
+    const adopt: Record<string, SettingValue> = {};
     const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
     this.applyingAppearance = true;
     try {
@@ -645,7 +651,11 @@ export class AxfRuntime {
         for (const [k, v] of Object.entries(shared)) {
           if (isAppearanceSetting(k) && JSON.stringify(saved[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
         }
-        for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !Object.hasOwn(shared, k)) this.settings.clear(k);
+        for (const k of Object.keys(saved)) {
+          if (!isAppearanceSetting(k) || Object.hasOwn(shared, k)) continue;
+          if (look && isAdoptedSetting(k) && saved[k] !== null && saved[k] !== undefined) adopt[k] = saved[k] as SettingValue;
+          else this.settings.clear(k);
+        }
         retired = Object.keys(doc.settings).filter(isRetiredLookSetting);
       }
       // Older sources without an app-look document (the shared document alone is the look): a loaded design package
@@ -672,6 +682,8 @@ export class AxfRuntime {
     }
     // A document still carrying retired look settings is cleaned once (the next one won't list them).
     if (retired.length && !look) this.pushAppearance({ settings: Object.fromEntries(retired.map((k) => [k, null])) });
+    // Settings adopted into the look (skin-slots@1): sent once; the next document lists them as the app's own.
+    if (Object.keys(adopt).length) this.pushAppearance({ settings: adopt });
     // The hub doesn't hold look settings yet: this app's become the shared ones (sent once; the next document lists them).
     if (doc && !doc.settings && !look) {
       const mine = this.lookSettings();
@@ -885,14 +897,20 @@ export class AxfRuntime {
 
   private skinData(id: string): SkinData | null {
     const s = this.registry.get(SKIN_TYPE as AssetType, id);
-    if (s) return normalizeSkin(s.data);
+    if (s) return normalizeSkin(this.foldedSkin(s.data));
     const p = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
     return p ? skinFromDesignPackage(p.data) : null;
   }
 
-  /** Every skin this app can use: the skins, then the design packages. */
+  /** A skin's raw data with its `extends` chain folded in (skin@1 extends, skin-rules.mjs foldSkinExtends). */
+  private foldedSkin(data: unknown): unknown {
+    return foldSkinExtends(data as Record<string, unknown>, (id) => this.registry.get(SKIN_TYPE as AssetType, id)?.data ?? null);
+  }
+
+  /** Every skin this app can use: the skins (their `extends` folded in), then the design packages. */
   skinList(): SkinEntry[] {
-    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never);
+    const skins = (this.registry.list(SKIN_TYPE as AssetType) as { id: string; name: string; description?: string; data: unknown }[]).map((a) => ({ ...a, data: this.foldedSkin(a.data) }));
+    return skinEntries(skins as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never);
   }
 
   /** This app's look document (null while it can't be read). */
@@ -1069,6 +1087,39 @@ export class AxfRuntime {
     return s ? skinCovers(s) : [];
   }
 
+  /* ---------------- skin-slots@1 hooks: the skin's hook refs per chrome kind, resolved against what the app knows ---------------- */
+
+  private readonly hookRegistries: HookRegistry[] = [];
+
+  /**
+   * A library or plugin tells the runtime which hook ids and drop zones it knows (lib-datagrid: grid-hook@1 row hooks;
+   * lib-dnd: its zones; a hook@1 registry when it lands). Registered actions always count as hooks.
+   */
+  registerHookRegistry(reg: HookRegistry): () => void {
+    this.hookRegistries.push(reg);
+    return () => { const i = this.hookRegistries.indexOf(reg); if (i >= 0) this.hookRegistries.splice(i, 1); };
+  }
+
+  /** Everything the app knows about hook ids and zones, as one registry (actions first, then what libraries registered). */
+  hookRegistry(): HookRegistry {
+    return {
+      hook: (id) => !!this.actions.get(id) || this.hookRegistries.some((r) => r.hook?.(id) === true),
+      zone: (id) => this.hookRegistries.some((r) => r.zone?.(id) === true),
+    };
+  }
+
+  /**
+   * The skin's hooks for one chrome kind (or every kind with no argument), read from the look in force (`axf.hooks.<kind>`,
+   * so a scoped view answers for its own skin) and resolved through the hook registry: each ref with `known`, and
+   * `unknown` = the refs the host should report. A kind the skin says nothing about gives empty lists.
+   */
+  skinHooks(kind?: string): ResolvedSkinHooks {
+    const kinds = kind ? [kind] : [...HOOK_KINDS];
+    const raw: Record<string, unknown> = {};
+    for (const k of kinds) { const v = this.settings.get(HOOKS_KEY(k)); if (v && typeof v === 'object') raw[k] = v; }
+    return resolveSkinHooks(raw, this.hookRegistry());
+  }
+
   /**
    * A scoped view drawn under the skin in force at a UI or plugin (`key` = `ui:<id>` | `plugin:<id>`): null when that
    * level resolves to the same skin and overrides as the app itself (nothing to scope) or the key is not a sub scope.
@@ -1146,7 +1197,15 @@ export class AxfRuntime {
     const data = base === undefined ? (this.assetOrNull(type as AssetType)?.data as AssetDataMap[T] | undefined) ?? null : base;
     if (!data) return null;
     const o = this.settings.get(CHROME_INSTANCE_KEY(type, instance));
-    return o && typeof o === 'object' ? chromeInstanceData(type, data, o) : data;
+    const k = this.settings.get(CHROME_KIND_DEFAULTS_KEY(type)); // skin-slots@1: the skin's kind-wide defaults under the instance's own
+    return (o && typeof o === 'object') || (k && typeof k === 'object') ? chromeInstanceData(type, data, o, k) : data;
+  }
+
+  /** The nav's collapsed state: the user's own fold on this device when set, else the skin's default (skin-slots@1). */
+  navCollapsed(): boolean {
+    const own = this.settings.get(NAV_COLLAPSED_KEY);
+    if (typeof own === 'boolean') return own;
+    return this.settings.get(NAV_COLLAPSED_SETTING) === true;
   }
 
   navStyleData(): NavStyleData | null {
@@ -2823,7 +2882,8 @@ export class AxfRuntime {
       buttonStyle(this.asset('button').data),
       sliderStyle(this.asset('slider').data),
       containerStyle(this.asset('container').data),
-      dialogStyle(this.asset('dialog').data),
+      // skin-slots@1: the skin's dialog chrome (axf.chrome.dialog) is field overrides over the active dialog asset
+      dialogStyle({ ...this.asset('dialog').data, ...(normalizeSkinDialog(this.settings.get(DIALOG_KEY)) as Partial<DialogData>) }),
       popupStyle(this.asset('popup').data),
       // chrome-settings@1: each kind's `app` instance overrides (the settings dialog) compile in over its asset
       contextMenuStyle(this.chromeData('context-menu')!),
@@ -2854,11 +2914,14 @@ export class AxfRuntime {
     const reducedMotion = this.prefersReducedMotion();
     const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
     // Settings → Appearance → Animations: this app's own animation picks over the skin's (engines/behavior.ts)
-    parts.push(behaviorStyle(withAnimationPrefs(behavior, this.settings.get(ANIMATION_PREFS_KEY)), reducedMotion));
+    // skin-slots@1: the skin's hover / press / focus feedback (axf.behavior) over the theme, then this app's animation picks
+    parts.push(behaviorStyle(withAnimationPrefs(withBehaviorOverrides(behavior, this.settings.get(BEHAVIOR_OVERRIDES_KEY)), this.settings.get(ANIMATION_PREFS_KEY)), reducedMotion));
+    // skin-slots@1: the skin's motion slot (axf.motion) → --fx-motion-* tokens; a scoped view reads its own slot
+    parts.push(skinMotionStyle(this.settings.get(MOTION_KEY), reducedMotion));
     // nav-style@1 last (core/engines/navstyle.ts): only for a nav that opts in (nav-menu `navStyle: true`); it may set
     // the nav width (resized or collapsed to icons), so it wins over the layout's
     const navStyle = this.navStyleData();
-    if (navStyle) parts.push(navStyleOutput(navStyle, { reducedMotion, collapsed: this.settings.get(NAV_COLLAPSED_KEY) === true, width: Number(this.settings.get(NAV_WIDTH_KEY)) || null }));
+    if (navStyle) parts.push(navStyleOutput(navStyle, { reducedMotion, collapsed: this.navCollapsed(), width: Number(this.settings.get(NAV_WIDTH_KEY)) || null }));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };

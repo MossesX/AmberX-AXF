@@ -36,11 +36,19 @@ import type { DesignPackageData } from '../types';
 import { spacingOf } from './spacing';
 import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues } from './customize';
 import spec from '../../schemas/asset-types.json';
+import { skinExtendsErrors as skinExtendsErrorsOf } from './skin-rules.mjs';
 import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, normalizeSkinChrome, resolveLookSkin, setSkinColorTheme, skinChromeErrors, skinChromeSettings, type AppLookDocument, type GlobalSkin, type LookPart, type SkinChrome, skinSlotMap } from './skin-rules.mjs';
 import { SKIN_SCOPE_DEFAULT, coverageSummary, coverageTable, isSubScopeKey, partsErrors, partsTypes, skinScopeChain, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
 import { normalizeHubSkin } from './appearance';
+import { STYLE_TOKENS_KEY, normalizeSkinSlots, skinSettingsChrome, skinSlotSettings, skinSlotsErrors, type SkinBehavior, type SkinDialog, type SkinGrid, type SkinHooks, type SkinMotion, type SkinSettingsChrome } from './skin-slots.mjs';
+// skin-slots@1 (build flagship-professional-skin-covering-2, Nov 17 2026): motion, behaviour, hooks, grid, dialog and settings chrome on skin@1
+export { MOTION_KEY, SKIN_SLOT_SETTING_PREFIXES, skinMotionSettings, skinSlotStyleKeys, BEHAVIOR_ARM_KEY, BEHAVIOR_ARM_RANGE, BEHAVIOR_COLLAPSE_KINDS, BEHAVIOR_FEEDBACK_ENUMS, BEHAVIOR_OVERFLOW_KINDS, BEHAVIOR_OVERRIDES_KEY, BEHAVIOR_STICKY_KINDS, BEHAVIOR_TAP_KINDS, DIALOG_ENUMS, DIALOG_FIELDS, DIALOG_KEY, DIALOG_WIDTH_RANGE, GRID_DENSITIES, GRID_FIELDS, GRID_HEADERS, GRID_KEY, GRID_LINES, GRID_ROWS_RANGE, HOOKS_KEY, HOOK_KINDS, HOOK_REF_CONTRACT, MOTION_EASING_NAMES, MOTION_EASING_ROLES, MOTION_ENTERS, MOTION_KINDS, MOTION_REDUCED, MOTION_REDUCED_ATTR, MOTION_SPEEDS, MOTION_SPEED_DEFAULTS, MOTION_SPEED_RANGE, MOTION_STAGGER_RANGE, NAV_COLLAPSED_SETTING, SETTINGS_CHROME_KEYS, SETTINGS_PAGE_SLOT, SKIN_SLOTS_CONTRACT, SKIN_SLOT_KEYS, STYLE_TOKENS_KEY, behaviorTapKindKey, easingCss, isEasing, isHookId, motionEaseVar, motionKindAttr, motionKindVar, motionSpeedVar, normalizeHookRef, normalizeSkinBehavior, normalizeSkinDialog, normalizeSkinGrid, normalizeSkinHooks, normalizeSkinMotion, normalizeSkinSettingsChrome, normalizeSkinSlots, resolveSkinHooks, skinBehaviorErrors, skinBehaviorSettings, skinDialogErrors, skinDialogSettings, skinGridErrors, skinGridSettings, skinGridTokens, skinHookSettings, skinHooksErrors, skinMotionErrors, skinMotionStyle, skinSettingsChrome, skinSettingsChromeErrors, skinSlotSettings, skinSlotsErrors, skinSlotsJsonSchemas } from './skin-slots.mjs';
+// skin-map@1: the generated, read-only map of what every slot controls and where every dataset and layout lives
+export { SKIN_MAP_CONTRACT, SKIN_MAP_CONTROLS, SKIN_MAP_FRAME, SKIN_MAP_ROW_KINDS, cssReaders, dataStoreKey, hubPlace, skinMap, skinMapErrors, skinMapFind, skinMapJsonSchema, tokenElements, tokenReaders, tokensBySource } from './skin-map.mjs';
+export type { SkinMapDataset, SkinMapDocument, SkinMapInputs, SkinMapLayout, SkinMapRow } from './skin-map.mjs';
+export type { GridDensity, GridHeader, GridLines, HookRef, HookRegistry, MotionEasingRole, MotionEnter, MotionReduced, MotionSpeed, ResolvedSkinHooks, SkinBehavior, SkinDialog, SkinGrid, SkinHookKind, SkinHooks, SkinMotion, SkinMotionKind, SkinSettingsChrome, SkinSlotKey, SkinSlots } from './skin-slots.mjs';
 
-export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, adoptHubDefault, appLookPath, backToSkin, backupLook, hubOnlyLook, lookBackup, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, adoptHubDefault, appLookPath, backToSkin, backupLook, hubOnlyLook, lookBackup, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_EXTENDS_DEPTH, SKIN_SCALE_TYPES, foldSkinExtends, skinExtendsErrors, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookBackup, LookPart, LegacyLook, LookMigrated, LookUndo, SkinChrome, SkinChromeKind, SkinSection } from './skin-rules.mjs';
 // skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope (hub, app:<id>, ui:<view>, plugin:<id>), one undo record in the look document
 export { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopeState, switchScopes } from './skin-switch.mjs';
@@ -82,6 +90,18 @@ export interface SkinData {
    * Lands in the composed look's settings after `extras.settings`.
    */
   chrome?: SkinChrome;
+  /**
+   * skin-slots@1 (build flagship-professional-skin-covering-2): how things move and behave, which hooks and drop zones
+   * each chrome kind carries, how grids are laid out, and which dialog and settings chrome is in force. All optional
+   * and additive (`skin-slots.mjs`): motion compiles to --fx-motion-* tokens (a compileStyles part), the rest to
+   * settings-layer defaults under the app's own picks; unset = today's defaults.
+   */
+  motion?: SkinMotion;
+  behavior?: SkinBehavior;
+  hooks?: SkinHooks;
+  grid?: SkinGrid;
+  dialog?: SkinDialog;
+  settings?: SkinSettingsChrome;
 }
 /** Where an app's app-look document is kept: the hub, or a setting without one. `failed` = unreadable: nothing is written. */
 export interface AppLookStore {
@@ -153,6 +173,7 @@ export function normalizeSkin(raw: unknown): SkinData {
   }
   const chrome = normalizeSkinChrome(d.chrome);
   if (Object.keys(chrome).length) out.chrome = chrome;
+  Object.assign(out, normalizeSkinSlots(d)); // skin-slots@1: a slot left with nothing is absent, so an old skin is byte-identical
   return out;
 }
 
@@ -180,6 +201,8 @@ export function skinErrors(raw: unknown): string[] {
     }
   }
   errors.push(...skinChromeErrors(raw.chrome));
+  errors.push(...skinSlotsErrors(raw));
+  errors.push(...skinExtendsErrorsOf(raw));
   return errors;
 }
 
@@ -297,11 +320,15 @@ function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, s
   const settings: Record<string, unknown> = { ...look.default.settings, ...(floor ? {} : look.own.settings) };
   for (const [k, v] of Object.entries(shared?.settings ?? {})) if (SHARED_SETTING_PREFIXES.some((p) => k.startsWith(p))) settings[k] = v;
   if (skin) {
-    Object.assign(slots, skinSlots(skin), overrides);
+    // skin-slots@1: the settings page the skin names is a slot like any other; the chain's overrides still win
+    Object.assign(slots, skinSlots(skin), skinSettingsChrome(skin.settings).slots, overrides);
     if (colorTheme) slots[SKIN_COLOR_SLOT] = colorTheme; // switched inside the skin: same skin, other colours
     if (skin.extras?.spacing) spacing = skin.extras.spacing;
     Object.assign(hidden, skin.extras?.hidden);
-    Object.assign(settings, skin.extras?.settings, skinChromeSettings(skin.chrome));
+    Object.assign(settings, skin.extras?.settings);
+    // skin-slots@1: motion, behaviour, hooks, grid, dialog and settings-interface picks land after extras.settings (the
+    // grid adds its paths to whatever axf.tokens.style already holds); the chrome block comes last so chrome.<kind>.interface wins
+    Object.assign(settings, skinSlotSettings(skin, settings[STYLE_TOKENS_KEY]), skinChromeSettings(skin.chrome));
     if (skin.iconPack) settings[SKIN_ICON_PACK_KEY(scopeKey)] = skin.iconPack;
     if (floor) {
       // the app's edits over the floor, then what its screens and plugins add

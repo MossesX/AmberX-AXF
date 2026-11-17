@@ -16,6 +16,8 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '../../core/runtime';
+import { Button, Chip, Note, TabGroup, TextField, useRuntime } from '../../react';
+import { DataGrid } from '../datagrid';
 import { skinMapFor, skinMapRowValue } from '../../core/engines/skin-map.mjs';
 
 /** The Appearance sub-tab id (settings.open:skin-map). */
@@ -95,3 +97,122 @@ export function registerSkinMapActions(rt: AxfRuntime) {
     });
   }, { label: 'Open the skin map on one slot and say what the skin sets there', params: true });
 }
+
+/* ---------------- the view ---------------- */
+
+/** Surfaces the rows are grouped by (an open list: a row whose type no surface names lands in Other). */
+export const SKIN_MAP_SURFACES: { id: string; label: string; icon: string; types?: string[]; kinds?: string[]; slots?: string[] }[] = [
+  { id: 'look', label: 'Colours, type and style', icon: 'palette', types: ['color-theme', 'style-theme', 'typography', 'density', 'sizing'], slots: ['extras.spacing', 'extras.settings'] },
+  { id: 'layout', label: 'Layouts', icon: 'layout', types: ['layout', 'dock-layout', 'xlayout', 'nav-style'] },
+  { id: 'chrome', label: 'Menus and chrome', icon: 'menu', types: ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'tab-group', 'banner', 'settings'], kinds: ['chrome', 'settings'], slots: ['extras.hidden'] },
+  { id: 'controls', label: 'Controls and widgets', icon: 'grid', types: ['dialog', 'popup', 'container', 'button', 'slider', 'gauge', 'meter', 'clock', 'search-bar', 'action-button', 'logo', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge'], kinds: ['dialog'] },
+  { id: 'behaviour', label: 'Motion, behaviour and hooks', icon: 'zap', types: ['behavior-theme'], kinds: ['motion', 'behavior', 'hooks'] },
+  { id: 'data', label: 'Grids and data', icon: 'list', kinds: ['grid'] },
+  { id: 'brand', label: 'Brand and icons', icon: 'sparkles', types: ['branding', 'logo-mark', 'animated-logo', 'icon-pack', 'agent-card'] },
+  { id: 'content', label: 'Help and learning', icon: 'help', types: ['demonstration', 'book', 'clip', 'docs', 'help', 'card', 'job-type'] },
+];
+const OTHER = { id: 'other', label: 'Other', icon: 'box' };
+export function skinMapSurface(r: MapRow): string {
+  for (const s of SKIN_MAP_SURFACES) {
+    if (s.slots?.includes(r.slot)) return s.id;
+    if (r.kind !== 'parts' && s.kinds?.includes(r.kind)) return s.id;
+    if (r.type && s.types?.includes(r.type)) return s.id;
+  }
+  return OTHER.id;
+}
+
+const shownValue = (v: unknown): string => (v === null || v === undefined ? '' : typeof v === 'string' ? v : Array.isArray(v) ? v.join(', ') : Object.entries(v as Record<string, unknown>).map(([k, x]) => `${k}: ${typeof x === 'object' ? '…' : String(x)}`).join(' · '));
+const livesText = (l: MapRow['lives']): string => {
+  if (!l) return '';
+  const pick = (l.pick as { field?: string } | undefined)?.field;
+  return [typeof l.repo === 'string' ? l.repo : '', typeof l.hub === 'string' ? l.hub : '', typeof l.field === 'string' ? `${l.document ?? ''} ${l.field}` : '', pick ? `pick: app-look@1 ${pick}` : ''].filter(Boolean).join(' · ');
+};
+
+/** Open what a row stands for: the asset the skin names there, else the skin itself. */
+export function openSkinMapRow(rt: AxfRuntime, r: MapRow, skinId: string) {
+  const v = r.value;
+  const type = r.kind === 'reference' && r.via && r.via !== 'iconPack' ? r.via : r.slot === 'iconPack' ? 'icon-pack' : r.type;
+  if (typeof v === 'string' && type && r.kind !== 'extras') { rt.dispatch(`asset.json:${type}:${v}`); return; }
+  if (skinId) rt.dispatch(`asset.json:skin:${skinId}`);
+}
+
+export function SkinMapView() {
+  const rt = useRuntime();
+  const [surface, setSurface] = useState('all');
+  const [query, setQuery] = useState('');
+  const [expanded, setExpanded] = useState<string[]>([]);
+  const focused = useSkinMapFocus();
+  const map = useSkinMap(rt);
+  useEffect(() => { if (focused) { setSurface('all'); setExpanded((e) => (e.includes(focused) ? e : [...e, focused])); } }, [focused]);
+  if (!map) return <Note>Loading the skin map…</Note>;
+  const skinId = map.skin?.id ?? '';
+  const q = query.trim().toLowerCase();
+  const hit = (r: MapRow) => !q || [r.slot, r.label, r.type ?? '', ...r.tokens, ...r.settings, ...r.components].some((x) => x.toLowerCase().includes(q));
+  const rows = map.slots.filter(hit);
+  const bySurface = new Map<string, MapRow[]>();
+  for (const r of rows) { const s = skinMapSurface(r); bySurface.set(s, [...(bySurface.get(s) ?? []), r]); }
+  const surfaces = [...SKIN_MAP_SURFACES, OTHER].filter((s) => bySurface.has(s.id));
+  const tabs = [
+    { value: 'all', label: 'All slots', icon: 'layers', badge: rows.length },
+    ...surfaces.map((s) => ({ value: s.id, label: s.label, icon: s.icon, badge: bySurface.get(s.id)!.length })),
+    { value: 'datasets', label: 'Datasets', icon: 'database', badge: map.datasets.length },
+    { value: 'layouts', label: 'Layout types', icon: 'layout', badge: map.layouts.length },
+  ];
+  const groups = (surface === 'all' ? surfaces : surfaces.filter((s) => s.id === surface)).map((s) => ({ id: s.id, title: s.label, icon: s.icon, rows: bySurface.get(s.id)!, groups: [], counts: `${bySurface.get(s.id)!.filter((r) => r.filled).length} / ${bySurface.get(s.id)!.length} set` }));
+  const columns = [
+    { id: 'slot', label: 'Slot', width: 'minmax(calc(var(--fx-space) * 22), 2fr)', fixed: true, sortable: true, sortValue: (r: MapRow) => r.slot, render: (r: MapRow) => <span className="axf-skinmap__slot"><strong>{r.label}</strong><span className="fx-mono fx-muted">{r.slot}</span></span> },
+    { id: 'value', label: skinId ? `Set by ${skinId}` : 'Set by the skin', width: 'minmax(calc(var(--fx-space) * 18), 2fr)', render: (r: MapRow) => (r.filled ? <span className="axf-skinmap__value">{shownValue(r.value)}</span> : <span className="fx-muted">level below</span>) },
+    { id: 'controls', label: 'Controls', width: 'minmax(calc(var(--fx-space) * 12), 1fr)', render: (r: MapRow) => <span className="fx-row fx-row--wrap fx-row--tight">{r.controls.map((c) => <Chip key={c}>{c}</Chip>)}</span> },
+    { id: 'tokens', label: 'Tokens', width: 'calc(var(--fx-space) * 9)', align: 'end' as const, sortable: true, sortValue: (r: MapRow) => r.tokens.length, render: (r: MapRow) => <span className="fx-mono">{r.tokens.length}</span> },
+    { id: 'readers', label: 'Read by', width: 'minmax(calc(var(--fx-space) * 18), 2fr)', render: (r: MapRow) => <span className="fx-muted axf-skinmap__clip">{r.components.slice(0, 3).join(', ')}</span> },
+    { id: 'lives', label: 'Lives in', width: 'minmax(calc(var(--fx-space) * 22), 3fr)', render: (r: MapRow) => <span className="fx-mono fx-muted axf-skinmap__clip">{livesText(r.lives)}</span> },
+  ];
+  const detail = (r: MapRow) => (
+    <div className="axf-skinmap__detail">
+      {r.tokens.length > 0 && <div><div className="fx-eyebrow">Tokens it writes</div><div className="fx-mono axf-skinmap__list">{r.tokens.join('  ')}</div></div>}
+      {r.settings.length > 0 && <div><div className="fx-eyebrow">Settings keys</div><div className="fx-mono axf-skinmap__list">{r.settings.join('  ')}</div></div>}
+      {(r.attributes?.length ?? 0) > 0 && <div><div className="fx-eyebrow">Attributes</div><div className="fx-mono axf-skinmap__list">{r.attributes!.join('  ')}</div></div>}
+      <div><div className="fx-eyebrow">Read by</div><div className="axf-skinmap__list">{r.components.join(', ') || 'nothing drawn'}</div></div>
+      {r.lives && <div><div className="fx-eyebrow">Where it lives</div><pre className="fx-code axf-skinmap__lives">{JSON.stringify(r.lives, null, 2)}</pre></div>}
+      {r.filled && <div><div className="fx-eyebrow">What the skin sets</div><pre className="fx-code axf-skinmap__lives">{JSON.stringify(r.value, null, 2)}</pre></div>}
+      <div className="fx-row"><Button size="sm" icon="external" onClick={() => openSkinMapRow(rt, r, skinId)}>Open {typeof r.value === 'string' && r.kind !== 'extras' ? r.value : skinId || 'asset'}</Button></div>
+    </div>
+  );
+  const table = (head: string[], body: string[][]) => (
+    <div className="axf-skinmap__table" role="table">
+      <div role="row" className="axf-skinmap__tr axf-skinmap__th">{head.map((h) => <span role="columnheader" key={h}>{h}</span>)}</div>
+      {body.map((cells, i) => <div role="row" key={i} className="axf-skinmap__tr" data-axf-target={skinMapRowTarget(cells[0] ?? '')}>{cells.map((c, j) => <span role="cell" key={j} className={j ? 'fx-mono fx-muted axf-skinmap__clip' : ''}>{c}</span>)}</div>)}
+    </div>
+  );
+  return (
+    <div className="axf-skinmap" data-axf-target={SKIN_MAP_TARGET}>
+      <div className="axf-skinmap__bar">
+        <span className="axf-skinmap__sum">{skinId ? <>Skin <strong>{skinId}</strong>: {map.skin!.filled} of {map.skin!.rows} slots set</> : <>No skin in force: every slot shows what it controls</>} · {map.summary.tokens} tokens · {map.summary.settings} settings keys</span>
+        <TextField label="Find" className="axf-skinmap__find" name="skin-map-find" value={query} onChange={setQuery} placeholder="Find a slot, token, key or component" />
+      </div>
+      <TabGroup id="settings.skin-map.surfaces" label="Skin map surfaces" size="sm" value={surface} onChange={setSurface} tabs={tabs} />
+      {surface === 'datasets' ? table(['Dataset', 'Contract', 'Hub', 'Data store', 'Repo'], map.datasets.map((d) => [String(d.id), String(d.contract ?? ''), String(d.hub ?? '-'), String(d.dataStore ?? '-'), String(d.repo ?? '')]))
+        : surface === 'layouts' ? table(['Layout type', 'Assets', 'Pick', 'Engine', 'Repo'], map.layouts.map((l) => [String(l.type), String((l.ids as string[] | undefined)?.length ?? 0), String((l.pick as { field?: string } | undefined)?.field ?? ''), String(l.engine ?? ''), String(l.repo ?? '')]))
+        : <DataGrid<MapRow> id="skin-map" label="Skin map" groups={groups} columns={columns} rowId={(r) => r.slot} rowLabel={(r) => r.label} hidden={[]}
+            expanded={expanded} onToggleExpand={(id) => setExpanded((e) => (e.includes(id) ? e.filter((x) => x !== id) : [...e, id]))} renderDetail={detail}
+            selected={focused || null} rowTone={(r) => (r.filled ? 'success' : 'muted')} onRowClick={(r) => openSkinMapRow(rt, r, skinId)}
+            empty={<Note>No slot matches "{query}".</Note>} />}
+    </div>
+  );
+}
+
+export const SKIN_MAP_CSS = `
+.axf-skinmap{display:flex;flex-direction:column;gap:var(--fx-dens-gap-md);min-width:0}
+.axf-skinmap__bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--fx-dens-gap-md)}
+.axf-skinmap__find{flex:0 1 calc(var(--fx-font-size) * 22);min-width:0}
+.axf-skinmap__sum{font-size:var(--fx-type-scale-sm);color:var(--fx-muted)}
+.axf-skinmap__slot{display:flex;flex-direction:column;min-width:0}
+.axf-skinmap__slot .fx-mono{font-size:var(--fx-type-scale-xs)}
+.axf-skinmap__value,.axf-skinmap__clip{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fx-type-scale-sm)}
+.axf-skinmap__detail{display:flex;flex-direction:column;gap:var(--fx-dens-gap-sm);padding:var(--fx-dens-pad-row) var(--fx-dens-pad-cell)}
+.axf-skinmap__list{font-size:var(--fx-type-scale-xs);overflow-wrap:anywhere}
+.axf-skinmap__lives{margin:0;font-size:var(--fx-type-scale-xs);max-height:calc(var(--fx-font-size) * 16);overflow:auto}
+.axf-skinmap__table{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);overflow:hidden}
+.axf-skinmap__tr{display:grid;grid-template-columns:minmax(calc(var(--fx-space) * 18),1.4fr) repeat(4,minmax(0,1fr));gap:var(--fx-dens-gap-md);padding:var(--fx-dens-pad-row) var(--fx-dens-pad-cell);border-top:var(--fx-border-w) solid var(--fx-border);font-size:var(--fx-type-scale-sm);min-width:0}
+.axf-skinmap__th{border-top:0;background:var(--fx-surface2);font-weight:600}
+`;

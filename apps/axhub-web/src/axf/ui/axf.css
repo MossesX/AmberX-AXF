@@ -14,6 +14,16 @@
   --fx-space: 8px; --fx-border-w: 1px; --fx-motion: 160ms; --fx-blur: 12px; --fx-row-h: 34px; /* theme-ok */
   --fx-opacity-disabled: 0.38; --fx-opacity-muted: 0.62; --fx-opacity-hover: 0.08; /* theme-ok */
   --fx-opacity-tint: 0.14; --fx-opacity-scrim: 0.5; --fx-opacity-glass: 0.72; /* theme-ok */
+  /* skin-slots@1 motion (core/engines/skin-slots.mjs skinMotionStyle): the named speeds, the easing roles and one
+     duration per chrome kind. A skin's motion slot overrides them; unset they follow --fx-motion / --fx-ease exactly
+     as before (the context menu's 120 ms pop is --fx-motion * 0.75 at the default 160 ms). */
+  --fx-motion-fast: 90ms; --fx-motion-normal: var(--fx-motion); --fx-motion-slow: 260ms; /* theme-ok */
+  --fx-motion-ease-standard: var(--fx-ease); --fx-motion-ease-emphasized: cubic-bezier(0.3, 0, 0, 1.2); --fx-motion-ease-exit: var(--fx-ease); /* theme-ok */
+  --fx-motion-tab-group-dur: var(--fx-motion); --fx-motion-toolbar-dur: var(--fx-motion); --fx-motion-banner-dur: var(--fx-motion); /* theme-ok */
+  --fx-motion-nav-menu-dur: var(--fx-motion); --fx-motion-app-menu-dur: var(--fx-motion); --fx-motion-context-menu-dur: calc(var(--fx-motion) * 0.75); /* theme-ok */
+  --fx-motion-dialog-dur: var(--fx-motion); --fx-motion-popup-dur: var(--fx-motion); --fx-motion-grid-dur: var(--fx-motion); --fx-motion-page-dur: var(--fx-motion); /* theme-ok */
+  --fx-motion-tab-group-stagger: 0ms; --fx-motion-toolbar-stagger: 0ms; --fx-motion-banner-stagger: 0ms; --fx-motion-nav-menu-stagger: 0ms; /* theme-ok */
+  --fx-motion-app-menu-stagger: 0ms; --fx-motion-context-menu-stagger: 0ms; --fx-motion-dialog-stagger: 0ms; --fx-motion-popup-stagger: 0ms; --fx-motion-grid-stagger: 0ms; --fx-motion-page-stagger: 0ms; /* theme-ok */
   /* surface transparency (engines/theme.ts SURFACE_KINDS): 1 = opaque; below 1 the backdrop becomes blur(var(--fx-blur)) */
   --fx-opacity-dialog: 1; --fx-opacity-settings: 1; --fx-opacity-panel: 1; /* theme-ok */
   --fx-opacity-menu: 1; --fx-opacity-toolbar: 1; --fx-opacity-banner: 1; /* theme-ok */
@@ -23,6 +33,11 @@
   --fx-brand-1: var(--fx-accent); --fx-brand-2: var(--fx-info); --fx-brand-3: var(--fx-text); /* theme-ok */
   /* derived like the Android ThemeEngine (black at opacityScrim); a colour theme that authors "scrim" overrides it */
   --fx-scrim: color-mix(in srgb, #000 calc(var(--fx-opacity-scrim) * 100%), transparent); /* theme-ok */
+  /* Safe area (console-android-app, Brett Nov 13 2026: "AmberX's banner was behind the camera, the clock and the
+     notification panel"): the browser's own insets, which the Android console shell (apps/console-droid) overrides
+     on <html> with the real status bar / cutout / navigation bar / keyboard sizes, so nothing is drawn under them. */
+  --fx-safe-top: env(safe-area-inset-top); --fx-safe-right: env(safe-area-inset-right); /* theme-ok: platform insets */
+  --fx-safe-bottom: env(safe-area-inset-bottom); --fx-safe-left: env(safe-area-inset-left); /* theme-ok: platform insets */
   /* component-tokens@1 begin (generated: node framework/cli/component-tokens.mjs write; the CI check keeps it equal to core/engines/component-tokens.mjs) */
   /* Grid (--fx-grid-*): Every grid and table: the framework table (.fx-table) and lib-datagrid (.axf-grid). */
   --fx-grid-header-bg: var(--fx-surface2);
@@ -148,6 +163,9 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
+/* every top bar, banner, toolbar and side rail sits inside the safe area; the phone's bottom nav pads the bottom itself */
+.fx-frame { padding: var(--fx-safe-top) var(--fx-safe-right) 0 var(--fx-safe-left); }
+html:not([data-fx-narrow]) .fx-frame { padding-bottom: var(--fx-safe-bottom); }
 .fx-frame > .fx-shell { flex: 1 1 auto; height: auto; min-height: 0; }
 /* The application menu sits above the live banners (Oct 22 2026); its drop-downs open over them. */
 .fx-frame > .fx-frame__menubar { flex: none; position: relative; z-index: 44; }
@@ -579,13 +597,13 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu-probe {
   position: fixed; left: 0; top: 0; visibility: hidden; pointer-events: none; height: 0;
   width: var(--fx-layout-phone-edge); box-sizing: content-box;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: var(--fx-safe-top) var(--fx-safe-right) var(--fx-safe-bottom) var(--fx-safe-left);
 }
 .fx-menu__item:focus-visible { outline: 2px solid var(--fx-focus); outline-offset: -2px; }
 @media (prefers-reduced-motion: reduce) { .fx-menu__spinner { animation: none; border-top-color: var(--fx-border); } }
 
 /* context-menu asset variants */
-.fx-ctx { position: fixed; min-width: 220px; padding: var(--fx-dens-gap-md); z-index: 80; animation: fx-pop 120ms ease both; }
+.fx-ctx { position: fixed; min-width: 220px; padding: var(--fx-dens-gap-md); z-index: 80; animation: fx-pop var(--fx-motion-context-menu-dur) var(--fx-motion-ease-emphasized) both; }
 @keyframes fx-pop { from { opacity: 0; transform: scale(.97); } }
 [data-fx-ctx='compact'] .fx-ctx .fx-menu__item { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); }
 [data-fx-ctx='roomy'] .fx-ctx { padding: var(--fx-dens-gap-lg); min-width: 250px; }
@@ -782,7 +800,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-nav[data-orient='horizontal'].fx-nav--list .fx-nav__item.is-active { box-shadow: inset 0 -2px 0 var(--fx-accent); border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0; }
 .fx-nav[data-orient='horizontal'].fx-nav--rail .fx-nav__item { flex-direction: row; font-size: var(--fx-type-scale-md); width: auto; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl); }
 
-:where([data-fx-narrow]) .fx-nav, :where([data-fx-narrow]) .fx-nav[data-orient] { flex-direction: row; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) calc(var(--fx-dens-gap-md) + env(safe-area-inset-bottom)); gap: 0; overflow-x: auto; height: auto; }
+:where([data-fx-narrow]) .fx-nav, :where([data-fx-narrow]) .fx-nav[data-orient] { flex-direction: row; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) calc(var(--fx-dens-gap-md) + var(--fx-safe-bottom)); gap: 0; overflow-x: auto; height: auto; }
 :where([data-fx-narrow]) .fx-nav__header, :where([data-fx-narrow]) .fx-nav__label { display: none; }
 :where([data-fx-narrow]) .fx-nav__section { flex-direction: row; flex: 1 0 auto; gap: 0; }
 :where([data-fx-narrow]) .fx-nav .fx-nav__item, :where([data-fx-narrow]) .fx-nav--rail .fx-nav__item { flex: 1 0 var(--fx-layout-phone-nav-item-min); flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-md); font-size: var(--fx-type-scale-2xs); border-radius: var(--fx-radius-md); justify-content: center; }
@@ -1053,14 +1071,14 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 [data-fx-dialog='drawer'] .fx-backdrop { justify-content: flex-end; align-items: stretch; padding: 0; }
 [data-fx-dialog='drawer'] .fx-dialog { height: 100dvh; max-height: none; border-radius: var(--fx-radius-lg) 0 0 var(--fx-radius-lg); border-right: 0; }
 [data-fx-dialog='sheet'] .fx-backdrop { align-items: flex-end; padding: 0; }
-[data-fx-dialog='sheet'] .fx-dialog { width: min(var(--fx-dialog-w), 100%); border-radius: var(--fx-radius-lg) var(--fx-radius-lg) 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom); }
+[data-fx-dialog='sheet'] .fx-dialog { width: min(var(--fx-dialog-w), 100%); border-radius: var(--fx-radius-lg) var(--fx-radius-lg) 0 0; border-bottom: 0; padding-bottom: var(--fx-safe-bottom); }
 
-[data-fx-dialog-anim='scale'] .fx-dialog { animation: fx-scale calc(var(--fx-motion) * 1.4) cubic-bezier(.2, .9, .3, 1.2) both; }
-[data-fx-dialog-anim='fade'] .fx-dialog { animation: fx-fade calc(var(--fx-motion) * 1.6) ease both; }
-[data-fx-dialog-anim='slide'][data-fx-dialog='modal'] .fx-dialog { animation: fx-slide-up calc(var(--fx-motion) * 1.6) ease both; }
+[data-fx-dialog-anim='scale'] .fx-dialog { animation: fx-scale calc(var(--fx-motion-dialog-dur) * 1.4) cubic-bezier(.2, .9, .3, 1.2) both; }
+[data-fx-dialog-anim='fade'] .fx-dialog { animation: fx-fade calc(var(--fx-motion-dialog-dur) * 1.6) ease both; }
+[data-fx-dialog-anim='slide'][data-fx-dialog='modal'] .fx-dialog { animation: fx-slide-up calc(var(--fx-motion-dialog-dur) * 1.6) ease both; }
 [data-fx-dialog-anim='slide'][data-fx-dialog='sheet'] .fx-dialog,
-[data-fx-dialog='sheet'] .fx-dialog { animation: fx-slide-up calc(var(--fx-motion) * 1.8) cubic-bezier(.2, .8, .2, 1) both; }
-[data-fx-dialog='drawer'] .fx-dialog { animation: fx-slide-left calc(var(--fx-motion) * 1.8) cubic-bezier(.2, .8, .2, 1) both; }
+[data-fx-dialog='sheet'] .fx-dialog { animation: fx-slide-up calc(var(--fx-motion-dialog-dur) * 1.8) cubic-bezier(.2, .8, .2, 1) both; }
+[data-fx-dialog='drawer'] .fx-dialog { animation: fx-slide-left calc(var(--fx-motion-dialog-dur) * 1.8) cubic-bezier(.2, .8, .2, 1) both; }
 @keyframes fx-scale { from { opacity: 0; transform: scale(.94); } }
 @keyframes fx-slide-up { from { transform: translateY(40px); opacity: 0; } }
 @keyframes fx-slide-left { from { transform: translateX(60px); opacity: 0; } }
@@ -1072,13 +1090,13 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 [data-fx-toast-pos='bottom-right'] .fx-toasts { bottom: 16px; right: 16px; flex-direction: column-reverse; }
 [data-fx-toast-pos='bottom-center'] .fx-toasts { bottom: 20px; left: 50%; transform: translateX(-50%); flex-direction: column-reverse; }
 [data-fx-toast-pos='top-center'] .fx-toasts { top: 16px; left: 50%; transform: translateX(-50%); }
-:where([data-fx-narrow]) [data-fx-toast-pos] .fx-toasts { bottom: auto; top: calc(var(--fx-layout-phone-edge) * 1.5); left: 50%; right: auto; transform: translateX(-50%); flex-direction: column; }
+:where([data-fx-narrow]) [data-fx-toast-pos] .fx-toasts { bottom: auto; top: calc(var(--fx-safe-top) + var(--fx-layout-phone-edge) * 1.5); left: 50%; right: auto; transform: translateX(-50%); flex-direction: column; }
 
 .fx-toast {
   --t: var(--fx-info);
   pointer-events: auto; display: flex; align-items: flex-start; gap: var(--fx-dens-gap-2xl);
   padding: var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl) var(--fx-dens-gap-2xl); border-radius: var(--fx-radius-md); box-shadow: var(--fx-shadow-lg);
-  animation: fx-toast-in calc(var(--fx-motion) * 1.6) cubic-bezier(.2, .9, .3, 1.15) both; font-size: var(--fx-type-scale-md);
+  animation: fx-toast-in calc(var(--fx-motion-popup-dur) * 1.6) cubic-bezier(.2, .9, .3, 1.15) both; font-size: var(--fx-type-scale-md);
 }
 @keyframes fx-toast-in { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
 .fx-toast--success { --t: var(--fx-success); }
@@ -1617,6 +1635,73 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 [data-fx-entrance='fade'] .fx-main > * { animation: fx-fade calc(var(--fx-motion) * 1.6) var(--fx-ease) both; }
 [data-fx-entrance='rise'] .fx-main > * { animation: fx-in calc(var(--fx-motion) * 1.8) var(--fx-ease) both; }
 [data-fx-entrance='scale'] .fx-main > * { animation: fx-scale calc(var(--fx-motion) * 1.6) var(--fx-ease) both; }
+
+/* skin-slots@1 motion (core/engines/skin-slots.mjs): how each chrome kind comes in, from the skin's motion slot. The
+   root carries data-fx-motion-<kind>-enter = none | fade | rise | scale | slide and the kind's --fx-motion-<kind>-dur /
+   -stagger tokens; nothing here fires without the attribute, so a skin without the slot draws exactly as before.
+   Exit values ride the --fx-motion-<kind>-exit tokens for hosts that animate removal (the window manager, toasts). */
+@keyframes fx-rise { from { opacity: 0; transform: translateY(calc(var(--fx-space) * 0.75)); } }
+@keyframes fx-slide-in { from { opacity: 0; transform: translateX(calc(var(--fx-space) * -1.5)); } }
+[data-fx-motion-context-menu-enter='none'] .fx-ctx { animation: none; }
+[data-fx-motion-context-menu-enter='fade'] .fx-ctx { animation-name: fx-fade; }
+[data-fx-motion-context-menu-enter='rise'] .fx-ctx { animation-name: fx-rise; }
+[data-fx-motion-context-menu-enter='scale'] .fx-ctx { animation-name: fx-scale; }
+[data-fx-motion-context-menu-enter='slide'] .fx-ctx { animation-name: fx-slide-in; }
+[data-fx-motion-app-menu-enter='none'] .fx-dropdown { animation: none; }
+[data-fx-motion-app-menu-enter='fade'] .fx-dropdown { animation: fx-fade var(--fx-motion-app-menu-dur) var(--fx-motion-ease-emphasized) both; }
+[data-fx-motion-app-menu-enter='rise'] .fx-dropdown { animation: fx-rise var(--fx-motion-app-menu-dur) var(--fx-motion-ease-emphasized) both; }
+[data-fx-motion-app-menu-enter='scale'] .fx-dropdown { animation: fx-scale var(--fx-motion-app-menu-dur) var(--fx-motion-ease-emphasized) both; }
+[data-fx-motion-app-menu-enter='slide'] .fx-dropdown { animation: fx-slide-in var(--fx-motion-app-menu-dur) var(--fx-motion-ease-emphasized) both; }
+[data-fx-motion-dialog-enter='none'] .fx-dialog { animation: none; }
+[data-fx-motion-dialog-enter='fade'] .fx-dialog { animation: fx-fade calc(var(--fx-motion-dialog-dur) * 1.6) var(--fx-motion-ease-emphasized) both; }
+[data-fx-motion-dialog-enter='rise'] .fx-dialog { animation: fx-rise calc(var(--fx-motion-dialog-dur) * 1.6) var(--fx-motion-ease-emphasized) both; }
+[data-fx-motion-dialog-enter='scale'] .fx-dialog { animation: fx-scale calc(var(--fx-motion-dialog-dur) * 1.4) var(--fx-motion-ease-emphasized) both; }
+[data-fx-motion-dialog-enter='slide'] .fx-dialog { animation: fx-slide-up calc(var(--fx-motion-dialog-dur) * 1.6) var(--fx-motion-ease-emphasized) both; }
+[data-fx-motion-popup-enter='none'] .fx-toast { animation: none; }
+[data-fx-motion-popup-enter='fade'] .fx-toast { animation-name: fx-fade; }
+[data-fx-motion-popup-enter='rise'] .fx-toast { animation-name: fx-rise; }
+[data-fx-motion-popup-enter='scale'] .fx-toast { animation-name: fx-scale; }
+[data-fx-motion-popup-enter='slide'] .fx-toast { animation-name: fx-slide-in; }
+[data-fx-motion-toolbar-enter='fade'] .fx-toolbar { animation: fx-fade var(--fx-motion-toolbar-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-toolbar-enter='rise'] .fx-toolbar { animation: fx-rise var(--fx-motion-toolbar-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-toolbar-enter='scale'] .fx-toolbar { animation: fx-scale var(--fx-motion-toolbar-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-toolbar-enter='slide'] .fx-toolbar { animation: fx-slide-in var(--fx-motion-toolbar-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-tab-group-enter='fade'] .fx-tabs > * { animation: fx-fade var(--fx-motion-tab-group-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-tab-group-enter='rise'] .fx-tabs > * { animation: fx-rise var(--fx-motion-tab-group-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-tab-group-enter='scale'] .fx-tabs > * { animation: fx-scale var(--fx-motion-tab-group-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-tab-group-enter='slide'] .fx-tabs > * { animation: fx-slide-in var(--fx-motion-tab-group-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-banner-enter='fade'] .fx-banner { animation: fx-fade var(--fx-motion-banner-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-banner-enter='rise'] .fx-banner { animation: fx-rise var(--fx-motion-banner-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-banner-enter='scale'] .fx-banner { animation: fx-scale var(--fx-motion-banner-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-banner-enter='slide'] .fx-banner { animation: fx-slide-in var(--fx-motion-banner-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-nav-menu-enter='fade'] .fx-nav > * { animation: fx-fade var(--fx-motion-nav-menu-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-nav-menu-enter='rise'] .fx-nav > * { animation: fx-rise var(--fx-motion-nav-menu-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-nav-menu-enter='scale'] .fx-nav > * { animation: fx-scale var(--fx-motion-nav-menu-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-nav-menu-enter='slide'] .fx-nav > * { animation: fx-slide-in var(--fx-motion-nav-menu-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-grid-enter='fade'] .fx-table tr, [data-fx-motion-grid-enter='fade'] .axf-grid-row { animation: fx-fade var(--fx-motion-grid-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-grid-enter='rise'] .fx-table tr, [data-fx-motion-grid-enter='rise'] .axf-grid-row { animation: fx-rise var(--fx-motion-grid-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-grid-enter='scale'] .fx-table tr, [data-fx-motion-grid-enter='scale'] .axf-grid-row { animation: fx-scale var(--fx-motion-grid-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-grid-enter='slide'] .fx-table tr, [data-fx-motion-grid-enter='slide'] .axf-grid-row { animation: fx-slide-in var(--fx-motion-grid-dur) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-page-enter='none'] .fx-main > * { animation: none; }
+[data-fx-motion-page-enter='fade'] .fx-main > * { animation: fx-fade calc(var(--fx-motion-page-dur) * 1.6) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-page-enter='rise'] .fx-main > * { animation: fx-rise calc(var(--fx-motion-page-dur) * 1.8) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-page-enter='scale'] .fx-main > * { animation: fx-scale calc(var(--fx-motion-page-dur) * 1.6) var(--fx-motion-ease-standard) both; }
+[data-fx-motion-page-enter='slide'] .fx-main > * { animation: fx-slide-in calc(var(--fx-motion-page-dur) * 1.6) var(--fx-motion-ease-standard) both; }
+/* a staggered entrance: each sibling waits one stagger step more than the last (up to six; the rest come in together) */
+:root { --fx-motion-stagger-step: 0ms; } /* theme-ok: the step each sibling waits, set per kind below */
+[data-fx-motion-tab-group-enter] .fx-tabs > * { --fx-motion-stagger-step: var(--fx-motion-tab-group-stagger); }
+[data-fx-motion-nav-menu-enter] .fx-nav > * { --fx-motion-stagger-step: var(--fx-motion-nav-menu-stagger); }
+[data-fx-motion-grid-enter] .axf-grid-row { --fx-motion-stagger-step: var(--fx-motion-grid-stagger); }
+[data-fx-motion-tab-group-enter] .fx-tabs > :nth-child(2), [data-fx-motion-nav-menu-enter] .fx-nav > :nth-child(2), [data-fx-motion-grid-enter] .axf-grid-row:nth-child(2) { animation-delay: var(--fx-motion-stagger-step); }
+[data-fx-motion-tab-group-enter] .fx-tabs > :nth-child(3), [data-fx-motion-nav-menu-enter] .fx-nav > :nth-child(3), [data-fx-motion-grid-enter] .axf-grid-row:nth-child(3) { animation-delay: calc(var(--fx-motion-stagger-step) * 2); }
+[data-fx-motion-tab-group-enter] .fx-tabs > :nth-child(4), [data-fx-motion-nav-menu-enter] .fx-nav > :nth-child(4), [data-fx-motion-grid-enter] .axf-grid-row:nth-child(4) { animation-delay: calc(var(--fx-motion-stagger-step) * 3); }
+[data-fx-motion-tab-group-enter] .fx-tabs > :nth-child(5), [data-fx-motion-nav-menu-enter] .fx-nav > :nth-child(5), [data-fx-motion-grid-enter] .axf-grid-row:nth-child(5) { animation-delay: calc(var(--fx-motion-stagger-step) * 4); }
+[data-fx-motion-tab-group-enter] .fx-tabs > :nth-child(n+6), [data-fx-motion-nav-menu-enter] .fx-nav > :nth-child(n+6), [data-fx-motion-grid-enter] .axf-grid-row:nth-child(n+6) { animation-delay: calc(var(--fx-motion-stagger-step) * 5); }
+/* the skin says reduced (always, or system with the device asking): nothing animates, whatever the behaviour theme says */
+[data-fx-motion-reduced='1'] *, [data-fx-motion-reduced='1'] *::before, [data-fx-motion-reduced='1'] *::after {
+  animation-duration: 0s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
+  transition-duration: 0s !important; transition-delay: 0s !important; scroll-behavior: auto !important;
+}
 
 /* hover */
 [data-fx-hover='none'] .fx-btn:hover:not(:disabled) { filter: none; }

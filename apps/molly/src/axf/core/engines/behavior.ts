@@ -124,6 +124,24 @@ export function normalizeBehavior(raw: unknown): BehaviorThemeData {
   return out;
 }
 
+/**
+ * skin-slots@1 (build flagship-professional-skin-covering-2): a skin's behaviour slot puts `{ interaction: { hover,
+ * press, focusRing } }` on the settings layer (`axf.behavior`); this writes those over the behaviour theme in force.
+ * Only the interaction fields a skin may set are read; anything else is ignored. Null / no overrides = the theme as is.
+ */
+export function withBehaviorOverrides(raw: unknown, overrides: unknown): BehaviorThemeData {
+  const b = normalizeBehavior(raw);
+  const o = isObj(overrides) && isObj(overrides.interaction) ? (overrides.interaction as Record<string, unknown>) : null;
+  if (!o) return b;
+  const next = { ...b, interaction: { ...b.interaction } } as BehaviorThemeData;
+  const inter = next.interaction as unknown as Record<string, unknown>;
+  for (const f of ['hover', 'press', 'focusRing'] as const) {
+    const allowed = BEHAVIOR_ENUMS[`interaction.${f}`] as readonly string[];
+    if (typeof o[f] === 'string' && allowed.includes(o[f] as string)) inter[f] = o[f];
+  }
+  return next;
+}
+
 /** What validators report for a behaviour theme's data. Missing fields are fine (defaults); wrong ones are not. */
 export function behaviorErrors(raw: unknown): string[] {
   if (!isObj(raw)) return ['data must be an object'];
