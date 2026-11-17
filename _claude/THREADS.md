@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:10 UTC · `console-app-part-2-native-floating-2` note (all) · watchdog
 - 2026-11-17 19:10 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
 - 2026-11-17 19:11 UTC · `notify-phone-when-queue-starts-building` note (all) · orchestrator
 - 2026-11-17 19:11 UTC · `plan-blueprints` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:38 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · console
 - 2026-11-17 20:38 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 - 2026-11-17 20:38 UTC · `guided-live-demo-test-watch-orchestrator` s14 done (all) · orchestrator
+- 2026-11-17 20:39 UTC · `guided-live-demo-test-watch-orchestrator` s15 done (all) · orchestrator
 
 ## Token passes (log)
 
