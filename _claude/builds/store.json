@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7146,
- "updatedAt": "2026-11-17T00:17:07.483Z",
+ "rev": 7147,
+ "updatedAt": "2026-11-17T00:17:45.440Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259041,7 +259041,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:16:25.472Z",
+   "updatedAt": "2026-11-17T00:17:14.294Z",
    "builtAt": "",
    "notes": [
     {
@@ -259059,6 +259059,10 @@
     {
      "text": "Claude account: hulu0241 (axf-stop-auto-lander-committing-tracking--gina, shared account login)",
      "at": "2026-11-17T00:08:00.727Z"
+    },
+    {
+     "text": "Headless run axf-stop-auto-lander-committing-tracking--gina: brief only · start 13.9K tokens ($0.08) · cost $3.36 · 31 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:17:14.294Z"
     }
    ],
    "approvals": [],
@@ -259078,13 +259082,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T00:04:36.246Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-stop-auto-lander-committing-tracking--gina",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T00:07:51.523Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -259097,7 +259101,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T00:07:51.523Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -259106,7 +259110,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T00:07:51.523Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -259481,7 +259485,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
