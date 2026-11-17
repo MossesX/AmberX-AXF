@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 22:48 UTC · `own-look-per-grid-and-tab-group` note (all) · orchestrator
 - 2026-11-16 22:48 UTC · `own-look-per-grid-and-tab-group` note (all) · builds-live
 - 2026-11-16 22:48 UTC · `icon-pack-studio-fable` added (0 steps) (all) · cli
 - 2026-11-16 22:49 UTC · `banner-widget-shapes-more-than-circle` → archived, note (all) · cli
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:29 UTC · `own-look-per-grid-and-tab-group` s15 done (all) · orchestrator
 - 2026-11-17 00:30 UTC · `stop-auto-lander-committing-tracking` s7 done (all) · orchestrator
 - 2026-11-17 00:32 UTC · `own-look-per-grid-and-tab-group` s16 done, → built (all) · orchestrator
+- 2026-11-17 00:33 UTC · `stop-auto-lander-committing-tracking` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
