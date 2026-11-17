@@ -87,7 +87,7 @@ function main(argv) {
   const arg = (k) => { const i = argv.indexOf(k); return i > 0 ? argv[i + 1] : ''; };
   const { manifests, errors } = loadManifests(ROOT);
   if (errors.length) { console.error(`manifests:\n  ${errors.join('\n  ')}`); process.exit(1); }
-  const only = arg('--only') ? new Set(['host-api', ...arg('--only').split(',').map((s) => s.trim()).filter(Boolean)]) : null;
+  const only = argv.includes('--only') ? new Set(['host-api', ...String(arg('--only') || '').split(',').map((s) => s.trim()).filter(Boolean)]) : null;
   if (only) for (const id of only) if (!manifests.some((m) => m.id === id)) { console.error(`unknown service ${id}`); process.exit(1); }
   let text;
   try { text = render(sudoersFor(manifests.filter((m) => !only || only.has(m.id)))); } catch (e) { console.error(e.message); process.exit(1); }

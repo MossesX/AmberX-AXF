@@ -164,6 +164,14 @@ COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf -v "$HL_DIR":/
 # axf-data (deploy/install-data.sh): its URL + the console's service token, and the internal network after the start
 AXF_DATA_ENV="${AXF_DATA_CONF:-/root/hub/data/axf-data/conf}/env/console.env"
 [ -s "$AXF_DATA_ENV" ] && COMMON+=(--env-file "$AXF_DATA_ENV")
+# host services (deploy/install-host-services.sh, HOST-SERVICES.md): the socket folder, the axf-host group (the socket's
+# file mode is the auth) and AXF_HOST_API / the loopback fallback + token; nothing changes until that installer ran.
+AXF_HOST_ENV="${AXF_HOST_CONSOLE_ENV:-/etc/axf-host/console.env}"
+if [ -s "$AXF_HOST_ENV" ]; then
+  HOST_GID="$(sed -n 's/^AXF_HOST_GID=//p' "$AXF_HOST_ENV" | head -1)"
+  COMMON+=(-v /run/axf-host:/run/axf-host --env-file "$AXF_HOST_ENV" --add-host host.docker.internal:host-gateway)
+  [ -n "$HOST_GID" ] && COMMON+=(--group-add "$HOST_GID")
+fi
 if axf_coolify_proxy_running; then
   say "Coolify proxy detected — publishing https://$DOMAIN behind Traefik"
   NET="$(axf_coolify_network)"

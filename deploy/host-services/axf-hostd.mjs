@@ -565,6 +565,22 @@ async function main(argv) {
     console.log(JSON.stringify({ ok: !errors.length, services: out, errors }, null, 2));
     process.exit(errors.length ? 1 : 0);
   }
+  if (args[0] === '--plan') {
+    // The installer's view: one tab-separated line per service: id, unit, NoNewPrivileges (yes = no sudo lines),
+    // render (yes = the unit comes from axf-host@.service; no = the manifest adopts a unit that has its own file), kind.
+    const { manifests, errors } = loadManifests();
+    if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
+    const only = args[1] ? new Set(['host-api', ...args[1].split(',').filter(Boolean)]) : null;
+    if (only) for (const x of only) if (!manifests.some((m) => m.id === x)) { console.error(`unknown service ${x}`); process.exit(1); }
+    const order = H.cutoverOrder(manifests).map((r) => r.id);
+    for (const id of order) {
+      const m = manifests.find((x) => x.id === id);
+      if (only && !only.has(m.id)) continue;
+      const render = m.kind === 'daemon' && m.unit === `axf-${m.id}.service` && (m.id === H.DEFAULTS.hostApiId || m.runner.startsWith('deploy/host-services/workers/'));
+      console.log([m.id, m.unit, m.sudo.length ? 'no' : 'yes', render ? 'yes' : 'no', m.kind].join('\t'));
+    }
+    return;
+  }
   const id = args[0];
   if (!id || !new RegExp(H.ID_PATTERN).test(id)) { console.error('usage: axf-hostd.mjs <id> [--once | action <action> [--args json] [--confirm]] | --check'); process.exit(2); }
   if (args[1] === '--once' || args[1] === 'action') {
