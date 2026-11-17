@@ -1,0 +1,133 @@
+"""Claude link — REST routes, under /api/plugins/console-terminal/claude-link (console token; 404 when the plugin is off).
+
+  GET  claude-link?since=&kind=a,b&q=&limit=&all=   snapshot, oldest first (after the view marker unless all=1)
+  GET  claude-link/stream?kind=&q=&since=&once=     SSE: `event: hello` (state), then `event: link` per event, id = event id;
+                                                     a `: ping` comment every 15 s; resumes after Last-Event-ID (or since);
+                                                     once=1 sends the backlog and ends (curl, tests)
+  GET  claude-link/state                            connected, last event, counts per kind
+  POST claude-link/clear                            moves the view marker; the log is kept
+  POST claude-link/ingest {event | events: [...]}   events from outside the console (framework/cli/claude-link-emit.mjs)
+  GET/PUT claude-link/view {paused, kinds, q}       the tab's live view state (pause, filters), shared by UI, API and voice
+"""
+from __future__ import annotations
+
+import asyncio
+import json
+from typing import Any, AsyncIterator, Callable
+
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import StreamingResponse
+
+from . import claude_link
+
+HEARTBEAT_S = 15.0
+
+
+def kinds_of(kind: str | list[str] | None) -> list[str]:
+    raw = kind if isinstance(kind, list) else str(kind or "").split(",")
+    ks = [k.strip() for k in raw if str(k).strip()]
+    bad = [k for k in ks if k not in claude_link.KINDS]
+    if bad:
+        raise HTTPException(400, f"kind is one of {', '.join(claude_link.KINDS)}")
+    return ks
+
+
+def build(bus: Callable[[], claude_link.Bus], view: dict[str, Any] | None = None) -> APIRouter:
+    """The routes over a bus (a getter, so tests and a resize can swap it)."""
+    r = APIRouter()
+    v: dict[str, Any] = view if view is not None else {"paused": False, "kinds": [], "q": ""}
+
+    @r.get("/claude-link")
+    def snapshot(since: int = 0, kind: str = "", q: str = "", limit: int = 200, all: bool = False) -> dict[str, Any]:
+        return bus().snapshot(since=max(0, since), kinds=kinds_of(kind), q=q[:200], limit=max(1, min(limit, claude_link.MAX_SIZE)), all=all)
+
+    @r.get("/claude-link/state")
+    def state() -> dict[str, Any]:
+        return {**bus().state(), "view": dict(v)}
+
+    @r.post("/claude-link/clear")
+    def clear() -> dict[str, Any]:
+        return {"ok": True, **bus().clear()}
+
+    @r.get("/claude-link/view")
+    def get_view() -> dict[str, Any]:
+        return dict(v)
+
+    @r.put("/claude-link/view")
+    def put_view(body: dict[str, Any]) -> dict[str, Any]:
+        if "paused" in body:
+            v["paused"] = bool(body["paused"])
+        if "kinds" in body:
+            v["kinds"] = kinds_of(body.get("kinds") or [])
+        if "q" in body:
+            v["q"] = str(body.get("q") or "")[:200]
+        v["rev"] = int(v.get("rev") or 0) + 1
+        return dict(v)
+
+    @r.post("/claude-link/ingest")
+    def ingest(body: dict[str, Any]) -> dict[str, Any]:
+        evs = body.get("events") if isinstance(body.get("events"), list) else [body.get("event", body)]
+        if not evs or len(evs) > 200:
+            raise HTTPException(400, "send 1 to 200 events")
+        ids, errors = [], []
+        for i, e in enumerate(evs):
+            try:
+                ids.append(bus().append({**(e if isinstance(e, dict) else {}), "source": (e or {}).get("source") or "ingest"})["id"])
+            except (ValueError, TypeError) as err:
+                errors.append({"at": i, "error": str(err)})
+        if errors and not ids:
+            raise HTTPException(400, errors[0]["error"])
+        return {"ok": True, "ids": ids, "errors": errors}
+
+    @r.get("/claude-link/stream")
+    async def stream(request: Request, kind: str = "", q: str = "", since: int = 0, once: bool = False) -> StreamingResponse:
+        ks, q = kinds_of(kind), q[:200]
+        try:
+            last = int(request.headers.get("last-event-id") or since or 0)
+        except ValueError:
+            last = 0
+        return StreamingResponse(sse(bus(), last, ks, q, once, request.is_disconnected), media_type="text/event-stream",
+                                 headers={"cache-control": "no-store", "x-accel-buffering": "no"})
+
+    return r
+
+
+def frame(e: dict[str, Any]) -> str:
+    return f"id: {e['id']}\nevent: link\ndata: {json.dumps(e, default=str, ensure_ascii=False)}\n\n"
+
+
+async def sse(b: claude_link.Bus, last: int, kinds: list[str], q: str, once: bool = False,
+              gone: Callable[[], Any] | None = None, heartbeat: float = HEARTBEAT_S) -> AsyncIterator[str]:
+    """hello, the backlog after `last`, then live events; a ping comment when quiet."""
+    loop = asyncio.get_running_loop()
+    queue: asyncio.Queue = asyncio.Queue(maxsize=5000)
+
+    def push(e: dict[str, Any]) -> None:
+        try:
+            loop.call_soon_threadsafe(queue.put_nowait, e)
+        except (RuntimeError, asyncio.QueueFull):
+            pass
+
+    stop = b.subscribe(push)
+    try:
+        yield "retry: 3000\n" + f"event: hello\ndata: {json.dumps(b.state(), default=str)}\n\n"
+        backlog = b.snapshot(since=last, kinds=kinds, q=q, limit=claude_link.MAX_SIZE, all=last > 0)["items"]
+        for e in backlog:
+            last = e["id"]
+            yield frame(e)
+        if once:
+            return
+        while True:
+            try:
+                e = await asyncio.wait_for(queue.get(), timeout=heartbeat)
+            except asyncio.TimeoutError:
+                if gone is not None and await gone():
+                    return
+                yield ": ping\n\n"
+                continue
+            if e["id"] <= last or not claude_link.matches(e, kinds, q):
+                continue
+            last = e["id"]
+            yield frame(e)
+    finally:
+        stop()

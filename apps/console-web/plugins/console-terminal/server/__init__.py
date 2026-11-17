@@ -39,7 +39,7 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import claude_link, health, nav, sessions, store
+from . import claude_link, health, nav, routes, sessions, store
 
 router = APIRouter()
 health.ensure()
@@ -48,6 +48,7 @@ plugin_services.provide("axf.session-feed@1", nav.SessionFeed(), "console-termin
 BUS = claude_link.make_bus(store.data_dir, int(store.settings().get("claudeLinkBuffer") or claude_link.DEFAULT_SIZE))
 LINK = claude_link.ClaudeLinkService(BUS)
 plugin_services.provide("axf.claude-link@1", LINK, "console-terminal")
+router.include_router(routes.build(lambda: BUS))
 
 
 def _err(e: Exception) -> HTTPException:
@@ -291,9 +292,12 @@ def get_settings() -> dict[str, Any]:
 @router.put("/settings")
 def put_settings(body: dict[str, Any]) -> dict[str, Any]:
     try:
-        return {**store.save_settings(body), "publicKey": store.public_key()}
+        out = {**store.save_settings(body), "publicKey": store.public_key()}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
+    if "claudeLinkBuffer" in body:
+        BUS.resize(int(out["claudeLinkBuffer"]))
+    return out
 
 
 @router.post("/ssh/keygen")

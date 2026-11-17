@@ -161,6 +161,98 @@ class Redaction(unittest.TestCase):
         self.assertLessEqual(len(e["detail"]["text"]), cl.DETAIL_MAX)
 
 
+class Routes(unittest.TestCase):
+    def setUp(self) -> None:
+        from fastapi import FastAPI
+        from fastapi.testclient import TestClient
+        import importlib.util
+        import types
+        pkg = types.ModuleType("axf_claude_link_pkg")
+        pkg.__path__ = [str(HERE)]
+        sys.modules["axf_claude_link_pkg"] = pkg
+        sys.modules["axf_claude_link_pkg.claude_link"] = cl
+        spec = importlib.util.spec_from_file_location("axf_claude_link_pkg.routes", HERE / "routes.py")
+        routes = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = routes
+        spec.loader.exec_module(routes)
+        self.routes = routes
+        self.bus, _ = bus()
+        app = FastAPI()
+        app.include_router(routes.build(lambda: self.bus), prefix="/api/plugins/console-terminal")
+        self.c = TestClient(app)
+        self.base = "/api/plugins/console-terminal/claude-link"
+
+    def test_snapshot_filters(self) -> None:
+        for k in ("launch", "mcp", "mcp", "error"):
+            self.bus.append({"kind": k, "summary": f"{k} thing"})
+        r = self.c.get(self.base, params={"kind": "mcp,error"}).json()
+        self.assertEqual([e["kind"] for e in r["items"]], ["mcp", "mcp", "error"])
+        self.assertEqual(len(self.c.get(self.base, params={"since": 3}).json()["items"]), 1)
+        self.assertEqual(len(self.c.get(self.base, params={"q": "launch"}).json()["items"]), 1)
+        self.assertEqual(len(self.c.get(self.base, params={"limit": 2}).json()["items"]), 2)
+        self.assertEqual(self.c.get(self.base, params={"kind": "bogus"}).status_code, 400)
+
+    def test_state_and_clear(self) -> None:
+        self.bus.append({"kind": "connect", "summary": "up"})
+        self.bus.append({"kind": "mcp"})
+        st = self.c.get(self.base + "/state").json()
+        self.assertTrue(st["connected"])
+        self.assertEqual(st["counts"]["mcp"], 1)
+        self.assertEqual(st["last"]["id"], 2)
+        self.assertEqual(self.c.post(self.base + "/clear").json()["clearedAt"], 2)
+        self.assertEqual(self.c.get(self.base).json()["items"], [])
+        self.assertEqual(len(self.c.get(self.base, params={"all": 1}).json()["items"]), 2)
+
+    def test_view(self) -> None:
+        self.assertFalse(self.c.get(self.base + "/view").json()["paused"])
+        v = self.c.put(self.base + "/view", json={"paused": True, "kinds": ["mcp"], "q": "vps"}).json()
+        self.assertEqual((v["paused"], v["kinds"], v["q"]), (True, ["mcp"], "vps"))
+        self.assertEqual(self.c.put(self.base + "/view", json={"kinds": ["nope"]}).status_code, 400)
+        self.assertTrue(self.c.get(self.base + "/state").json()["view"]["paused"])
+
+    def test_stream_backlog_and_resume(self) -> None:
+        for k in ("launch", "mcp", "exit"):
+            self.bus.append({"kind": k})
+        body = self.c.get(self.base + "/stream", params={"once": 1}).text
+        self.assertIn("event: hello", body)
+        self.assertEqual(body.count("event: link"), 3)
+        self.assertIn("id: 3\n", body)
+        resumed = self.c.get(self.base + "/stream", params={"once": 1}, headers={"Last-Event-ID": "2"}).text
+        self.assertEqual(resumed.count("event: link"), 1)
+        filtered = self.c.get(self.base + "/stream", params={"once": 1, "kind": "mcp"}).text
+        self.assertEqual(filtered.count("event: link"), 1)
+
+    def test_stream_live_and_heartbeat(self) -> None:
+        import asyncio
+
+        async def run() -> list[str]:
+            out: list[str] = []
+            gen = self.routes.sse(self.bus, 0, [], "", heartbeat=0.05)
+            out.append(await gen.__anext__())  # hello
+            out.append(await gen.__anext__())  # quiet: a ping
+            self.bus.append({"kind": "axhub", "summary": "live one"})
+            out.append(await gen.__anext__())
+            await gen.aclose()
+            return out
+
+        out = asyncio.run(run())
+        self.assertIn("event: hello", out[0])
+        self.assertEqual(out[1], ": ping\n\n")
+        self.assertIn("live one", out[2])
+        self.assertEqual(self.bus.state()["subscribers"], 0)  # closing the stream unsubscribes
+
+    def test_ingest(self) -> None:
+        r = self.c.post(self.base + "/ingest", json={"event": {"kind": "launch", "source": "headless", "summary": "go", "detail": {"token": "x" * 20}}}).json()
+        self.assertEqual(r["ids"], [1])
+        many = self.c.post(self.base + "/ingest", json={"events": [{"kind": "exit"}, {"kind": "bad"}]}).json()
+        self.assertEqual(len(many["ids"]), 1)
+        self.assertEqual(len(many["errors"]), 1)
+        self.assertEqual(self.c.post(self.base + "/ingest", json={"event": {"kind": "bad"}}).status_code, 400)
+        e = self.bus.snapshot()["items"][0]
+        self.assertEqual(e["detail"]["token"], cl.REDACTED)
+        self.assertEqual(self.bus.snapshot()["items"][1]["source"], "ingest")
+
+
 if __name__ == "__main__":
     os.environ.pop("AXF_CLAUDE_LINK_SPOOL", None)
     unittest.main(verbosity=1)
