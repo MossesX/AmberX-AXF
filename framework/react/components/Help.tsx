@@ -16,6 +16,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProp
 import { placeTip } from '../placeTip';
 import { HELP_CONTROL_SELECTOR, HELP_SHORTCUTS, type HelpDescriptor, type HelpEntry, type HelpIntro } from '../../core/engines/help';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { openView } from '../settingsFloating';
 import { Icon } from './Icon';
 import { Button, IconButton } from './Controls';
 import { Checkbox } from './Forms';
@@ -314,7 +315,7 @@ export function HelpPanel() {
               const rel = index.byTarget.get(r);
               const view = r.startsWith('view:') ? r.slice(5) : null;
               return (
-                <Button key={r} size="sm" tone="quiet" icon={view ? 'external' : 'help'} onClick={() => (view ? (rt.navigate(view), rt.explainHelp(null)) : rt.explainHelp(r))}>
+                <Button key={r} size="sm" tone="quiet" icon={view ? 'external' : 'help'} onClick={() => (view ? (openView(rt, view), rt.explainHelp(null)) : rt.explainHelp(r))}>
                   {rel?.title ?? r}
                 </Button>
               );

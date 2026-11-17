@@ -37,6 +37,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
+import { CHROME_SETTINGS_DIALOG_ID } from '../../core/engines/settingsopen';
 import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentToken, componentTokenError, instanceHasPrevious, instanceTokenValues, isComponentTokenFamily, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken, type ComponentTokenFamily } from '../../core/engines/component-tokens.mjs';
@@ -49,7 +50,7 @@ import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
 
-export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
+export const CHROME_SETTINGS_DIALOG = CHROME_SETTINGS_DIALOG_ID;
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
 /** The instance id of a kind the app shows once (toolbar, banner, nav, menu bar) when the element names none. */
 export const CHROME_APP_INSTANCE = 'app';

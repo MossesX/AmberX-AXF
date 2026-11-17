@@ -2293,7 +2293,7 @@
     "status": "built",
     "wave": 1,
     "module": "lib-settings",
-    "notes": "Every settings interface always opens as a floating glass popup (core/engines/settingsopen.ts; Brett Nov 13 + Nov 16 2026). app.settings / settings.open[:tab] → dialog; the page / pane / floating choice (axf.settings.opensAs, settings.opensas, settings.page, Open as page) is removed and saved values are dropped on load; CI framework/spec/check-settings-open.mts fails code that navigates to the Settings page or brings any such option back. Kotlin twin deferred."
+    "notes": "Every settings interface always opens as a floating glass popup (core/engines/settingsopen.ts; Brett Nov 13 + Nov 16 2026). app.settings / settings.open[:tab] → dialog; the page / pane / floating choice (axf.settings.opensAs, settings.opensas, settings.page, Open as page) is removed and saved values are dropped on load; CI framework/spec/check-settings-open.mts fails code that navigates to the Settings page or brings any such option back. Build settings-opened-banners-nav-menu (Nov 17 2026): one door for every opener, openSettingsFloating (framework/react/settingsFloating.ts; targets all / tab / chrome / banner in the engine), openView for nav menu, nav tree, nav:settings, search, Help and waiting rows, focus instead of a second dialog, action settings.floating; spec framework/spec/SETTINGS-FLOATING.md. Kotlin twin deferred."
   },
   "ui.opacity.surfaces": {
     "status": "built",

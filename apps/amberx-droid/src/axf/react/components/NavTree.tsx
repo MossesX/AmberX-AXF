@@ -3,6 +3,7 @@ import type { NavItem } from '../../core';
 import { NAV_OPEN_KEY, NAV_COLLAPSED_KEY, NAV_WIDTH_KEY } from '../../core/runtime';
 import { navAccent, navArrange, navContains, navFollow, navPathTo, navToggle, parseNavOpen, type NavStyleData } from '../../core/engines/navstyle';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { openView } from '../settingsFloating';
 import type { ViewMap } from '../AppShell';
 import { Icon } from './Icon';
 import { controlSlug } from '../controlTargets';
@@ -88,11 +89,11 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
     if (it.items?.length) {
       const isOpen = openRef.current.includes(it.id);
       // a group with a page: the first tap opens both; tapping it again on its own page closes the sub menu
-      if (it.view && views[it.view] && view !== it.view) { rt.navigate(it.view); if (!isOpen) toggle(it.id, true); return; }
+      if (it.view && views[it.view] && view !== it.view) { openView(rt, it.view); if (!isOpen) toggle(it.id, true); return; }
       toggle(it.id);
       return;
     }
-    if (it.view) rt.navigate(it.view);
+    if (it.view) openView(rt, it.view);
   };
 
   const renderItems = (items: readonly NavItem[], depth: number, sheet = false): JSX.Element[] => items.map((it, i) => {

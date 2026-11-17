@@ -47,10 +47,48 @@ ok(isSettingsDialog('x.dialog', 'Plugin settings'), 'a title ending in settings 
 for (const id of ['asset-json', 'terminal', 'axf.settingsless', 'skin.picker']) ok(!isSettingsDialog(id) && dialogSurface(id, {}) === undefined, `${id} is not a settings dialog`);
 ok(dialogSurface('asset-json', { surface: 'glass' }) === 'glass', "a dialog's own surface pick wins");
 
+/* 1b. one door for every opener (settings-floating@1, build settings-opened-banners-nav-menu; spec SETTINGS-FLOATING.md) */
+const { parseSettingsFloatingTarget: parseT, settingsFloatingDialog: dialogOf, sameSettingsDialog: same, viewOpensSettings, CHROME_SETTINGS_DIALOG_ID, BANNER_SETTINGS_DIALOG_ID, SETTINGS_VIEW, SETTINGS_LAST_TAB_KEY, SETTINGS_TAB_EVENT } = engine;
+ok(SETTINGS_VIEW === 'settings' && SETTINGS_LAST_TAB_KEY === 'axf.settings.lastTab' && SETTINGS_TAB_EVENT === 'axf:settings-tab', 'the Settings view id, last-tab key and tab event are the engine\'s');
+ok(CHROME_SETTINGS_DIALOG_ID === 'axf.chrome.settings' && BANNER_SETTINGS_DIALOG_ID === 'axf.banners.settings', 'chrome and banner settings dialog ids are the engine\'s');
+ok(JSON.stringify(parseT([])) === '{"kind":"all"}' && JSON.stringify(parseT(['all'])) === '{"kind":"all"}', 'settings.floating with nothing / all → the whole interface');
+ok(JSON.stringify(parseT(['tab', 'appearance'])) === '{"kind":"tab","tab":"appearance"}' && JSON.stringify(parseT(['appearance'])) === '{"kind":"tab","tab":"appearance"}', 'tab:<id> and a bare tab id → that tab');
+ok(JSON.stringify(parseT(['chrome', 'toolbar'])) === '{"kind":"chrome","type":"toolbar"}' && JSON.stringify(parseT(['chrome', 'tab-group', 'settings.tabs'])) === '{"kind":"chrome","type":"tab-group","instance":"settings.tabs"}', 'chrome:<type>[:<instance>] → that chrome instance');
+ok(JSON.stringify(parseT(['banner'])) === '{"kind":"banner"}' && JSON.stringify(parseT(['banner', 'systems-check'])) === '{"kind":"banner","id":"systems-check"}', 'banner[:<id>] → the banner settings');
+ok(parseT(['tab']) === null && parseT(['chrome']) === null && parseT(['not a tab']) === null, 'a target without its id, or words, is no target');
+ok(dialogOf({ kind: 'all' }).dialog === SETTINGS_ALL_DIALOG && dialogOf({ kind: 'tab', tab: 'x' }).dialog === SETTINGS_TAB_DIALOG && dialogOf({ kind: 'tab', tab: 'x' }).props.tab === 'x', 'all / tab targets open the PR 628 dialogs');
+ok(dialogOf({ kind: 'chrome', type: 'banner', instance: 'app' }).dialog === CHROME_SETTINGS_DIALOG_ID && dialogOf({ kind: 'chrome', type: 'banner', instance: 'app' }).props.instance === 'app', 'a chrome target opens the chrome settings dialog with its instance');
+ok(dialogOf({ kind: 'banner', id: 'keys' }).dialog === BANNER_SETTINGS_DIALOG_ID && dialogOf({ kind: 'banner' }).props.id === undefined, 'a banner target opens the banner settings dialog');
+ok(same({ id: SETTINGS_TAB_DIALOG, props: { tab: 'x' } }, { kind: 'tab', tab: 'x' }) && !same({ id: SETTINGS_TAB_DIALOG, props: { tab: 'y' } }, { kind: 'tab', tab: 'x' }), 'the same tab dialog is recognised; another tab is not');
+ok(same({ id: CHROME_SETTINGS_DIALOG_ID, props: { type: 'toolbar', instance: 'app' } }, { kind: 'chrome', type: 'toolbar', instance: 'app' }) && !same({ id: CHROME_SETTINGS_DIALOG_ID, props: { type: 'toolbar', instance: 'app' } }, { kind: 'chrome', type: 'nav-menu', instance: 'app' }), 'the same chrome dialog is recognised; another kind is not');
+ok(!same(null, { kind: 'all' }) && same({ id: SETTINGS_ALL_DIALOG }, { kind: 'all' }), 'no dialog → open; the whole interface up → focus');
+ok(viewOpensSettings('settings') && !viewOpensSettings('home'), 'a navigation to the settings view is an opening');
+// the react door and every view-navigating caller go through it
+const door = readFileSync(join(ROOT, 'framework/react/settingsFloating.ts'), 'utf8');
+ok(/export function openSettingsFloating\(rt: AxfRuntime, target: SettingsFloatingTarget\)/.test(door), 'openSettingsFloating(rt, target) exists');
+ok(/export function openView\(rt: AxfRuntime, view: string\)/.test(door) && /viewOpensSettings\(view\)\) return openSettingsFloating\(rt, \{ kind: 'all' \}\)/.test(door), 'openView sends the settings view to the floating window');
+ok(/sameSettingsDialog\(state\.dialog, target\)\) \{ focusOpenDialog\(\)/.test(door), 'the same dialog already up is focused, never opened twice');
+ok(/state\.dialog\?\.id === SETTINGS_ALL_DIALOG\) \{ switchTabInPlace\(rt, tab\)/.test(door), 'a tab asked while the whole interface is up switches inside it');
+ok(/rt\.hostTakes\('settings'\)\) \{ rt\.dispatch\(tab \? `settings\.open:\$\{tab\}` : 'app\.settings'\)/.test(door), 'a host that takes settings gets the opening');
+ok(/register\(SETTINGS_FLOATING_ACTION, \(args\) => \{\s*const t = parseSettingsFloatingTarget\(args\)/.test(door), 'the settings.floating action parses its target through the engine');
+const reactIndex = readFileSync(join(ROOT, 'framework/react/index.ts'), 'utf8');
+ok(/export \{ openSettingsFloating, openView, installSettingsFloating, SETTINGS_FLOATING_ACTION/.test(reactIndex), 'framework/react exports the door');
+ok(/installSettingsFloating\(rt\);/.test(readFileSync(join(ROOT, 'framework/react/AppShell.tsx'), 'utf8')), 'AppShell installs the settings.floating action');
+for (const [file, what] of [['framework/react/components/Chrome.tsx', 'the nav menu item'], ['framework/react/components/NavTree.tsx', 'the nav tree item'], ['framework/react/components/Search.tsx', 'a search hit on a view'], ['framework/react/components/Help.tsx', 'a Help related view link'], ['framework/react/components/PriorityTag.tsx', 'a waiting row route'], ['framework/react/components/BannerStrip.tsx', 'the banner strip follower']] as const) {
+  const src = readFileSync(join(ROOT, file), 'utf8');
+  ok(/import \{ openView \} from '\.\.\/settingsFloating';/.test(src), `${what} imports openView`);
+  ok(!/rt\.navigate\((?:it\.view|view\[0\]|f\.view!|view|r\.route|m\.view)\)/.test(src), `${what} no longer navigates to a view that may be Settings`);
+}
+ok(/viewOpensSettings\(view\) && this\.actions\.get\('app\.settings'\)\) this\.dispatch\('app\.settings'\)/.test(readFileSync(join(ROOT, 'framework/core/runtime.ts'), 'utf8')), 'the core nav action sends nav:settings to app.settings');
+ok(/^export const CHROME_SETTINGS_DIALOG = CHROME_SETTINGS_DIALOG_ID;/m.test(readFileSync(join(ROOT, 'framework/react/components/ChromeContext.tsx'), 'utf8')) && /^export const BANNER_SETTINGS_DIALOG = BANNER_SETTINGS_DIALOG_ID;/m.test(readFileSync(join(ROOT, 'framework/react/components/BannerSettings.tsx'), 'utf8')), 'the chrome and banner dialogs use the engine\'s ids');
+for (const app of ['console-web', 'axhub-web', 'amberx-droid', 'molly']) ok(readFileSync(join(ROOT, `apps/${app}/src/axf/react/settingsFloating.ts`), 'utf8') === door, `${app} ships the same door`);
+
 /* 2. library */
 const lib = readFileSync(join(ROOT, 'framework/libs/settings/index.tsx'), 'utf8');
 ok(/register\('app\.settings', \(\) => openSettings\(/.test(lib), 'app.settings goes through openSettings');
 ok(/register\('settings\.open', \(\[tab\]\) => openSettings\(/.test(lib), 'settings.open goes through openSettings');
+ok(/const openSettings = \(tab: string \| undefined\) => \{ openSettingsFloating\(rt, tab \? \{ kind: 'tab', tab \} : \{ kind: 'all' \}\); \};/.test(lib), 'the settings library opens through the one door');
+ok(!/rt\.navigate\(VIEW\)/.test(lib), 'the settings library no longer navigates to its page itself');
 ok(/RETIRED_SETTINGS_OPEN_KEYS\) if \(k in rt\.settings\.savedValues\(\)\) rt\.settings\.clear\(k\)/.test(lib), 'saved values of the retired option are dropped on load');
 ok(/\[TAB_DIALOG\]: \{[^\n]*surface: 'glass'[^\n]*size: 'wide'/.test(lib), 'tab dialog is glass + wide');
 ok(/\[ALL_DIALOG\]: \{[^\n]*surface: 'glass'[^\n]*size: 'wide'/.test(lib), 'all dialog is glass + wide');

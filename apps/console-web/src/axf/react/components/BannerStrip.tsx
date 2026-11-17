@@ -11,6 +11,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { AxfRuntime } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { openView } from '../settingsFloating';
 import { BANNER_STRIP_CHANNEL, BANNER_STRIP_MESSAGE, parseBannerStripChannel, parseBannerStripMessage, type BannerStripChannelMessage, type BannerStripMessage } from '../bannerStrip';
 import { BannerWidgetBody } from './Banner';
 import { bannerLabel, bannerPrefs, setBannerPrefs, useBannerPrefsTick, useKnownBanners } from './BannerSettings';
@@ -172,7 +173,7 @@ export function useBannerStripFollower(): void {
     ch.onmessage = (e) => {
       const m = parseBannerStripChannel(e.data);
       if (m?.type !== 'navigate') return;
-      if (m.tab) rt.dispatch(`settings.open:${m.tab}`); else rt.navigate(m.view);
+      if (m.tab) rt.dispatch(`settings.open:${m.tab}`); else openView(rt, m.view);
       ch.postMessage({ type: 'ack', n: m.n } satisfies BannerStripChannelMessage);
     };
     ch.postMessage({ type: 'hello' } satisfies BannerStripChannelMessage);

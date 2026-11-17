@@ -26,11 +26,12 @@ export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CO
 import { SkinScope } from '../../react/components/SkinScope';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
-import { RETIRED_SETTINGS_OPEN_KEYS, SETTINGS_ALL_DIALOG, SETTINGS_TAB_DIALOG, settingsOpenRoute } from '../../core/engines/settingsopen';
+import { RETIRED_SETTINGS_OPEN_KEYS, SETTINGS_ALL_DIALOG, SETTINGS_LAST_TAB_KEY, SETTINGS_TAB_DIALOG, SETTINGS_TAB_EVENT, SETTINGS_VIEW } from '../../core/engines/settingsopen';
+import { openSettingsFloating } from '../../react/settingsFloating';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
-const VIEW = 'settings';
-const TAB_KEY = 'axf.settings.lastTab';
+const VIEW = SETTINGS_VIEW;
+const TAB_KEY = SETTINGS_LAST_TAB_KEY;
 /** One settings tab, and the whole interface, in a floating dialog (the default: core/engines/settingsopen.ts). */
 const TAB_DIALOG = SETTINGS_TAB_DIALOG;
 const ALL_DIALOG = SETTINGS_ALL_DIALOG;
@@ -476,8 +477,8 @@ export function SettingsView() {
   const [query, setQuery] = useState('');
   useEffect(() => {
     const onOpen = (e: Event) => { const id = (e as CustomEvent<string>).detail; if (id) { setQuery(''); setSel(resolve(id)); } };
-    globalThis.addEventListener?.('axf:settings-tab', onOpen);
-    return () => globalThis.removeEventListener?.('axf:settings-tab', onOpen);
+    globalThis.addEventListener?.(SETTINGS_TAB_EVENT, onOpen);
+    return () => globalThis.removeEventListener?.(SETTINGS_TAB_EVENT, onOpen);
   }, []);
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   // List layout: no tab picked = the list of tabs (drill-down, with Back); the other layouts always show a tab.
@@ -1096,15 +1097,9 @@ export const library: AxfWebLibrary = {
     // interfaces, whether they're built already or not built, to default to open in a dialogue"; Nov 16 2026: always,
     // the choice is gone). The route comes from core/engines/settingsopen.ts.
     for (const k of RETIRED_SETTINGS_OPEN_KEYS) if (k in rt.settings.savedValues()) rt.settings.clear(k);
-    const openSettings = (tab: string | undefined) => {
-      const r = settingsOpenRoute({ tab, view: rt.getState().view, hostTakes: rt.hostTakes('settings') });
-      if (r.via === 'dialog') { rt.openDialog(r.dialog, r.tab ? { tab: r.tab } : {}); return; }
-      rt.navigate(VIEW);
-      if (r.tab) {
-        rt.settings.set(TAB_KEY, r.tab);
-        globalThis.dispatchEvent?.(new CustomEvent('axf:settings-tab', { detail: r.tab }));
-      }
-    };
+    // One door for every opener (build settings-opened-banners-nav-menu): react/settingsFloating.ts opens the dialog,
+    // focuses it when it is already up, and only switches a tab in place when the Settings view is the screen on show.
+    const openSettings = (tab: string | undefined) => { openSettingsFloating(rt, tab ? { kind: 'tab', tab } : { kind: 'all' }); };
     rt.actions.register('app.settings', () => openSettings(undefined), { label: 'Settings' });
     // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
     rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });

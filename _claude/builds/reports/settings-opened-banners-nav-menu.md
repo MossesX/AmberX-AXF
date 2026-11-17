@@ -38,7 +38,22 @@ So the main-area openings Brett sees are #1–#4 directly, and #5 as their conse
 (and anything else that navigates to the `settings` view) puts the Settings page in the main area, and from then on
 every banner gear, toolbar button and menu entry that runs `settings.open:<tab>` stays on that page.
 
-### What s2 and s3 do with it
+## s2: one door, `openSettingsFloating(rt, target)`
+
+| Piece | Where |
+|---|---|
+| Target model (pure): `SettingsFloatingTarget` = all / tab / chrome(type, instance) / banner(id); `parseSettingsFloatingTarget` (`all`, `tab:<id>`, bare tab id, `chrome:<type>[:<instance>]`, `banner[:<id>]`), `settingsFloatingDialog` (which dialog + props), `sameSettingsDialog` (same dialog already up), `viewOpensSettings`; the Settings view id, last-tab key, tab event and the chrome / banner dialog ids now live here | `framework/core/engines/settingsopen.ts` |
+| The door: host takes settings → dispatch to the host; Settings view actually on screen → switch the tab in place; whole interface up + a tab → switch inside it and focus; same dialog up → focus; else `rt.openDialog`. `openView(rt, view)`: every view is a page except `settings`. `installSettingsFloating`: action `settings.floating[:<target>]` | `framework/react/settingsFloating.ts`, exported from `framework/react/index.ts`, installed by `AppShell` |
+| Callers routed: settings library `openSettings` (so `app.settings` / `settings.open:<tab>` use the door), nav menu (`Chrome.tsx`, also its search box), nav tree, search palette view hits, Help related links, waiting rows (`PriorityTag`), banner strip follower, the core `nav:<view>` action (`nav:settings` → `app.settings`) | `framework/libs/settings/index.tsx`, `framework/react/components/{Chrome,NavTree,Search,Help,PriorityTag,BannerStrip}.tsx`, `framework/core/runtime.ts` |
+| `CHROME_SETTINGS_DIALOG` / `BANNER_SETTINGS_DIALOG` read the engine's ids (no import cycle between the door and the dialogs) | `ChromeContext.tsx`, `BannerSettings.tsx` |
+| Contract note + Android gap | `framework/spec/SETTINGS-FLOATING.md`, `framework/spec/PORTING.md` |
+| Help entry `action:settings.floating`, status note on `cx.settings.opendialog` | `framework/assets/help/framework.json` (+ every app's baked copy, walkthrough-studio), `framework/catalog/status.json` |
+| Baked copies (console, axHub web, AmberX web, Molly): the touched files copied where the app's copy matched the framework; the console's `core/runtime.ts` and `libs/settings/index.tsx` (already drifted) got the same diff applied | `apps/*/src/axf/…` |
+| CI: `check-settings-open.mts` grew from 42 to 84 checks (target parsing, dialog maths, focus rule, every caller imports `openView` and no longer navigates to a variable view, the core nav action, the library through the door, every app ships the same door) | `framework/spec/check-settings-open.mts` |
+
+Checks run: check-settings-open 84, check-theme, check-controls, check-console-control (CLI + spec 290), check-chrome-settings 304, check-embed 429, check-help 274, check-console-commands 101, validate --framework; console-web `tsc --noEmit` clean. `check-help-mode.mts` needs `jsdom`, which this worktree does not have (not related to this change).
+
+### What s3 does with it
 
 - s2: one entry point `openSettingsFloating(rt, target)` in `framework/react/settingsFloating.ts` (exported from
   `framework/react`): target = the whole interface, a settings tab, a chrome kind + instance, or a banner. It resolves

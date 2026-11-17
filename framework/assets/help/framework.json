@@ -187,6 +187,16 @@
         "text": "Opens the settings tab this item names in a floating dialog over the screen you're on."
       },
       {
+        "target": "action:settings.floating",
+        "title": "Settings (floating window)",
+        "text": "Opens settings in the floating window: all of it, one tab, a toolbar / banner / nav / tab group / menu bar's own settings, or the banner settings. Says settings.floating:all, settings.floating:tab:<id>, settings.floating:chrome:<type>:<instance> or settings.floating:banner:<id>.",
+        "related": [
+          "action:app.settings",
+          "action:settings.open"
+        ],
+        "more": "Every way of opening settings (the nav menu's Settings item, toolbar and banner gears, right-click Settings…, voice, the console API) goes through this one door, so none of them lands in the main area; when that window is already open it is focused instead of opened twice."
+      },
+      {
         "target": "action:help.docs",
         "title": "Documentation",
         "text": "Opens the docs for this app."

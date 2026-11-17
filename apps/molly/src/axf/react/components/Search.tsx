@@ -8,6 +8,7 @@ import { createPortal } from 'react-dom';
 import { usePortalRoot } from './InterfaceScope';
 import { SEARCH_KIND_LABELS, type AxfRuntime, type SearchEntry, type SearchHit, type ToolbarSearch } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { openView } from '../settingsFloating';
 import type { ViewMap } from '../AppShell';
 import type { DialogMap } from './Overlays';
 import { Icon } from './Icon';
@@ -121,7 +122,7 @@ function focusEntry(rt: AxfRuntime, entry: SearchEntry, views: ViewMap): boolean
   const f = entry.focus as { kind: string } & Record<string, string>;
   switch (f.kind) {
     case 'view':
-      rt.navigate(f.view!);
+      openView(rt, f.view!);
       flashWhenReady(() => document.querySelector('.fx-main h1, .fx-main h2'), 1200);
       return true;
     case 'action':
@@ -144,7 +145,7 @@ function focusEntry(rt: AxfRuntime, entry: SearchEntry, views: ViewMap): boolean
       rt.windows.restore(f.id!);
       return true;
     case 'text':
-      if (rt.getState().view !== f.view) rt.navigate(f.view!);
+      if (rt.getState().view !== f.view) openView(rt, f.view!);
       flashWhenReady(() => findText(f.tag!, f.text!));
       return true;
     case 'control':

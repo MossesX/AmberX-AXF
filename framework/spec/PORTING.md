@@ -317,6 +317,13 @@ resumes, replays the same rule: no auto-open on start, opt-in only, nothing olde
 always opens in a floating glass dialog (`app.settings`, `settings.open[:tab]`); there is no page / pane / floating
 choice (removed Nov 16 2026). Web only; the Kotlin twin (`lib-settings` always opening its screen in a dialog, with no
 placement option) is a deferred gap, no new Android work. Check: `framework/spec/check-settings-open.mts`.
+
+Build `settings-opened-banners-nav-menu` (Nov 17 2026) adds the one door every opener uses, `openSettingsFloating`
+(`framework/react/settingsFloating.ts`, targets and dialog maths in `core/engines/settingsopen.ts`: whole interface,
+one tab, a chrome instance, the banner settings; focus the open dialog instead of a second one; `openView` and the
+core `nav:settings` action send the Settings view there instead of the main area). Spec `framework/spec/SETTINGS-FLOATING.md`.
+Kotlin twin deferred with the gap above: `lib-settings` and the Compose nav / toolbar / banner hosts keep opening the
+Settings screen as a destination until the dialog opening is ported; nothing new on Android in this build.
 ## Deferred: the console app's on-device wake listener (Nov 13 2026)
 Build `console-app-wake-word-voice-listener` (Fable). The wake listener is the console plugin `apps/console-web/plugins/wake-listener`
 (wake-listener@1: wake phrases, switch, state machine, command catalog and spoken wizard in `core.mjs` / `catalog.mjs`; the page

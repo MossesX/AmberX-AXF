@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type K
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
 import { toolbarStyle } from '../../core/engines/components';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
+import { openView } from '../settingsFloating';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
@@ -120,7 +121,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
     if (!needle) return;
     const view = Object.entries(views).find(([id, v]) => id === needle || v.title.toLowerCase().includes(needle));
     if (view) {
-      rt.navigate(view[0]);
+      openView(rt, view[0]);
       setQ('');
       return;
     }
@@ -324,7 +325,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                   data-axf-view-link={it.view}
                   data-fx-ctx-target="nav-item"
                   data-fx-ctx-payload={it.view}
-                  onClick={() => rt.navigate(it.view)}
+                  onClick={() => openView(rt, it.view)}
                 >
                   <Icon name={locked ? 'lock' : it.icon} size={17} />
                   <span className="fx-nav__text">{it.label}</span>

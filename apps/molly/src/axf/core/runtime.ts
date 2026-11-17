@@ -22,6 +22,7 @@ import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, ty
 const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
+import { viewOpensSettings } from './engines/settingsopen';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
@@ -3150,7 +3151,8 @@ export class AxfRuntime {
       if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.swap(type as AssetType, target);
       else this.toast(`Unknown asset type "${type}".`, 'warning');
     }, { label: 'Swap asset', params: true });
-    a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate', params: true });
+    // nav:settings is the floating window, not the page (build settings-opened-banners-nav-menu): app.settings routes it
+    a.register('nav', ([view]) => { if (!view) return; if (viewOpensSettings(view) && this.actions.get('app.settings')) this.dispatch('app.settings'); else this.navigate(view); }, { label: 'Navigate', params: true });
     // Help mode (engines/help.ts): help.mode[:on|off|toggle] · help.intros.reset · help.intro (replay this screen's intro) · help.explain:<help id>
     a.register(HELP_ACTIONS.mode, ([v]) => this.setHelpMode(v === 'on' ? true : v === 'off' ? false : null), { label: 'Help mode (tooltips everywhere)', params: true });
     a.register(HELP_ACTIONS.resetIntros, () => { this.resetHelpIntros(); this.toast('Screen intros will show again, once per screen.', 'success', 'Help mode'); }, { label: 'Show the screen intros again' });

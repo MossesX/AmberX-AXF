@@ -15,6 +15,7 @@ import { Button } from './Controls';
 import { flashWhenReady } from './Search';
 import type { DialogMap } from './Overlays';
 import { useRuntime } from '../AxfProvider';
+import { openView } from '../settingsFloating';
 import { PRIORITIES, PRIORITY_LABEL, type Priority, type PriorityInfo, type WaitingRow } from '../../core/build-priority.mjs';
 
 export interface PriorityHost {
@@ -107,7 +108,7 @@ function PriorityPanel({ build, close }: { build: string; close: () => void }) {
   const go = (r: WaitingRow) => {
     if (r.url) { window.open(r.url, '_blank', 'noopener'); return; }
     close();
-    if (r.route) rt.navigate(r.route);
+    if (r.route) openView(rt, r.route);
     if (r.highlight) flashWhenReady(() => findText(r.highlight), 4000);
   };
   if (error) return <p className="fx-small" role="alert"><Icon name="alert" size={14} /> {error}</p>;

@@ -46,6 +46,7 @@ import { TabGroup } from './TabGroup';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { BANNER_SETTINGS_DIALOG_ID } from '../../core/engines/settingsopen';
 
 export type BannerTone = 'own' | 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 export type BannerDensity = 'compact' | 'regular' | 'roomy';
@@ -75,7 +76,7 @@ export const BANNER_PREFS_KEY = 'axf.banners.prefs';
 /** Apply to all: look@1 values every banner gets (only changed tokens), and the level the section shows. */
 export const BANNER_LOOK_KEY = 'axf.banners.look';
 export const BANNER_LOOK_LEVEL_KEY = 'axf.banners.lookLevel';
-export const BANNER_SETTINGS_DIALOG = 'axf.banners.settings';
+export const BANNER_SETTINGS_DIALOG = BANNER_SETTINGS_DIALOG_ID;
 export const BANNER_CTX_TARGET = 'axf-banner';
 /** Banners are compact by default (Nov 1 2026, Brett: "How come the refactor didn't compress banners"): compact
  *  density, launched folded to one line, at most 6 rows when open (the list scrolls past that). A banner's own choice
