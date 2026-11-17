@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:14 UTC · `icon-packs-with-drag-drop-pack-designer` s1 done (all) · foreign-write
 - 2026-11-14 23:08 UTC · `always-fill-every-slot-when-slots-are` s25 done, → built (all) · orchestrator
 - 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` → running, note (all) · pipeline
 - 2026-11-16 23:14 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 01:01 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
 - 2026-11-17 02:22 UTC · `get-main-green-unblock-lander-land-axf` s14 done (all) · orchestrator
 - 2026-11-17 03:21 UTC · `get-main-green-unblock-lander-land-axf` s16 done (all) · orchestrator
+- 2026-11-17 03:30 UTC · `server-auto-lander-fixes-lands` → queued (all) · mcp
 
 ## Token passes (log)
 

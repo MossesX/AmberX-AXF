@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7250,
- "updatedAt": "2026-11-17T03:21:55.391Z",
+ "rev": 7251,
+ "updatedAt": "2026-11-17T03:30:32.343Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -257949,7 +257949,7 @@
    "title": "Server auto-lander fixes and lands everything on its own",
    "category": "",
    "detail": "Server-side rule enforced as a gate, runs as a VPS service (systemd), no console needed. Lands finished builds one at a time through the orchestrator. When a build clashes: merge main into it and resolve automatically (regenerate generated files), retry. When CI is red: automatically start a fix session for that build through the orchestrator on an available account, push the fix, re-run CI, retry until green, then land. Nothing ever sits blocked: every blocked build gets an automatic fix attempt, logged per attempt. Only after repeated failed attempts does it go to a banner item with what broke and a Fix button, plus a phone push. Merge with fix-red-ci-blocked-builds-they-land and get-main-green-unblock-lander-land-axf where they overlap. Status visible in Gate > Auto-lander; same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -257957,7 +257957,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T00:13:09.422Z",
+   "updatedAt": "2026-11-17T03:30:29.451Z",
    "builtAt": "",
    "notes": [
     {
@@ -258627,7 +258627,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
