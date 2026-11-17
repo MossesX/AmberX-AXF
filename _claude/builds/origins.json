@@ -4716,6 +4716,18 @@
    "from": "",
    "addenda": []
   },
+  "land-pr-730-reset-all-button-far-right": {
+   "said": "reset all on the right",
+   "at": "2026-11-17T21:26:38.676Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "land-project-create-mcp-resolve-clash": {
    "said": "land create projects by API",
    "at": "2026-11-13T19:01:01.567Z",
