@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:27 UTC · `flagship-professional-skin-covering-2` s6 done, note (all) · foreign-write
 - 2026-11-17 22:27 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:27 UTC · `icon-picker-every-banner-settings-widget` s8 done (all) · orchestrator
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-17 22:47 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-17 22:47 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
+- 2026-11-17 22:46 UTC · `icon-picker-every-banner-settings-widget` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
