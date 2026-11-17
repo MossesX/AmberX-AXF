@@ -5,8 +5,8 @@ Brett (Nov 16 2026 19:19): "You need to fix that grid, make it one row. I need t
 ## What changed
 
 **Gate & rules → Auto-lander tab, "Waiting to merge" grid** (`grid:gate.waiting`, lander-grid@1)
-- One row per build (deduped by build id), exactly three columns: **PR**, **Build**, **Behind main** (commits). Each header sorts on tap; default is most behind first.
-- Second line under the name only when the two-row layout is on: what it does · why it is blocked. One line, ellipsised.
+- One row per build (deduped by build id). Brett's Nov 16 correction: every original column stays (**#**, **PR** + title, **Build**, **Held by**, **Why**, **Land next**) and one is added: **Commits behind main**. Every header sorts on tap (server sort keys `position|pr|title|build|rule|state|reason|behind|since`); default is most behind first. The Last runs grid's columns sort too.
+- At most two lines a row: the second line (two-row layout only) is the build / branch under the PR, and the gate's first reason under Why. Each line ellipsised.
 - Everything not merged: every land.json entry (ready, waiting, settling, blocked) plus merge-queue entries. Archived, deleted and complete builds never show.
 - Stale records (no PR and no branch on GitHub) are hidden by default: **Show stale** switch, **Clean stale** button (drops them from land.json).
 - Filter field: `behind > 500`, `behind<10`, `pr:712`, `held`, `stale`, or words (build / title / why / branch).
@@ -22,7 +22,7 @@ Live data at build time: 40 builds waiting, 158 stale records hidden, worst is #
 
 | What | REST (`/api/plugins/gate`) | MCP | CLI | Voice / console action |
 |---|---|---|---|---|
-| Grid | `GET lander/grid?filter&sort&dir&stale` | `lander_grid` | `axf gate lander grid [--filter …] [--sort pr\|build\|behind] [--dir] [--stale]` | `lander.grid[:filter]` |
+| Grid | `GET lander/grid?filter&sort&dir&stale` | `lander_grid` | `axf gate lander grid [--filter …] [--sort position\|pr\|title\|build\|rule\|state\|reason\|behind\|since] [--dir] [--stale]` | `lander.grid[:filter]` |
 | Open | row `url` | row `url` | grid output | `lander.row.open:<build\|pr>` |
 | Merge main + fix | `POST lander/merge-main {build}` | `lander_merge_main` | `axf gate lander merge-main <build\|pr>` | `lander.row.merge-main:<build>` |
 | Hold / Release | `POST lander/hold {build, on?, why?}` | `lander_hold` | `axf gate lander hold\|release <build>` | `lander.row.hold:<build>[:off]` |
@@ -32,7 +32,7 @@ Live data at build time: 40 builds waiting, 158 stale records hidden, worst is #
 Deep link: `gate.open:auto-lander` / `view:gate` → Auto-lander tab. Every action is logged in the gate History (kind lander).
 
 ## Tests
-- `apps/console-web/plugins/gate/test.mjs`: 24 checks (new: grid rows/sort/filter/stale/archived, hold/release/merge-main/archive with confirm, CLI = API parity for the grid).
+- `apps/console-web/plugins/gate/test.mjs`: 24 checks (s5: every sort key, every original column on the row; earlier: grid rows/sort/filter/stale/archived, hold/release/merge-main/archive with confirm, CLI = API parity for the grid).
 - build-orchestrator `test.mjs` 35, `pipeline.test.mjs` 52, push-banner `land.test.mjs` 110, `merge-queue.test.mjs` 18: green.
 - `tsc --noEmit` (console-web), `check-theme`, `check-controls`, `check-toolbars`, `check-chrome-assets`: green. Control inventory regenerated.
 - `check-console-control` reports one tab group without an address in `plugins/claude-settings/web/index.tsx:234`: already there before this build, not touched here.

@@ -162,7 +162,7 @@
         "title": "Auto-lander: grid (one row per build, behind main)",
         "readOnly": true,
         "tool": "lander_grid",
-        "description": "Everything waiting to be merged, one row per build: PR, build, commits behind main, what it does and why it is blocked (lander-grid@1). filter (\"behind>500\", \"pr:712\", \"held\", \"stale\", words), sort pr|build|behind, dir, stale (include records with no PR and no branch)."
+        "description": "Everything waiting to be merged, one row per build: #, PR and title, build, held by, why, commits behind main (lander-grid@1). filter (\"behind>500\", \"pr:712\", \"held\", \"stale\", words), sort position|pr|title|build|rule|state|reason|behind|since, dir, stale (include records with no PR and no branch)."
       },
       {
         "id": "lander-merge-main",

@@ -227,7 +227,7 @@ const USAGE = [
   'axf gate history [--kind rule|lander] [--since <date>] [--pr <n>] [--rule <id>] [--action <a>] [--limit <n>]',
   'axf gate lander status | waiting [--rule r] [--state s] | runs [--limit n] [--result r]',
   'axf gate lander mode [on|off] | land-now <pr> [--confirm <token>] | pause [--why "…"] | resume',
-  'axf gate lander grid [--filter "behind>500"] [--sort pr|build|behind] [--dir asc|desc] [--stale]',
+  'axf gate lander grid [--filter "behind>500"] [--sort position|pr|title|build|rule|state|reason|behind|since] [--dir asc|desc] [--stale]',
   'axf gate lander merge-main <build|pr> | hold <build|pr> [--why "…"] | release <build|pr> | archive <build|pr>[,…] [--confirm <token>] | clean',
   'axf gate settings [get] | settings set <key> <value>',
   'axf gate build-rules list [--doer vps|session] [--kind k] [--phase p] [--enabled true|false] [--q text]',

@@ -27,6 +27,9 @@ const pr = (v) => { const n = Number(String(v ?? '').replace(/^#/, '')); return 
 /** UI hold word from a land.json reason kind. */
 const uiOf = (kind) => (kind === 'ui' ? 'waiting' : '');
 
+/** Sort keys of the Auto-lander grid (lander-grid@1): one per column. */
+export const GRID_SORT = ['position', 'pr', 'title', 'build', 'rule', 'state', 'reason', 'behind', 'since'];
+
 export function createLander(store, { record = (e) => historyRecord(store, e) } = {}) {
   const log = (action, { by = 'console', reason = '', pr: n, before, after } = {}) => record({ $axf: 'gate-history@1', at: store.iso(), by: String(by || 'console').slice(0, 80), kind: 'lander', action, ...(n ? { pr: n } : {}), ...(before !== undefined ? { before } : {}), ...(after !== undefined ? { after } : {}), reason });
 
@@ -104,12 +107,13 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
 
     /**
      * The Auto-lander grid (lander-grid@1, Brett Nov 16 2026: "make it one row. I need to see everything waiting to be
-     * merged and how far behind main"): ONE row per build, three columns (PR, build, commits behind main) plus the
-     * second line (what it does, why it is blocked). Everything the lander knows that is not merged: land.json's
+     * merged and how far behind main"; Nov 16 correction: keep every original column, add "Commits behind main"):
+     * ONE row per build with the original waiting columns (#, PR + title, build, held by, why, land next) plus the
+     * commits-behind-main count, every one sortable; the second line (two-row layout) is the build / branch. Everything the lander knows that is not merged: land.json's
      * finished builds (any state) and, in merge-queue mode, the queue. Archived / deleted builds never show; stale
      * records (no PR and no branch on the remote) are hidden unless `stale` is set.
      *   filter  "behind>500", "behind<10", "pr:712", "held", "blocked", "stale", or words matched on build / title / why
-     *   sort    pr | build | behind (default behind, most first); dir asc | desc
+     *   sort    position | pr | title | build | rule | state | reason | behind | since (default behind, most first); dir asc | desc
      */
     grid({ filter = '', sort = 'behind', dir = '', stale = false } = {}) {
       const st = lander.state(); const builds = store.builds(); const ctl = store.landControl();
@@ -118,15 +122,15 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
       const verdict = new Map(st.waiting.map((w) => [w.pr, w]));
       for (const x of store.land().items || []) {
         const w = x.pr ? verdict.get(x.pr) : null;
-        add({ build: x.id, pr: pr(x.pr) || null, title: x.title || '', branch: x.branch || '', url: x.url || '', state: x.state === 'blocked' ? 'held' : x.state || 'waiting', rule: w?.rule || '', why: String(w?.reason || x.reason?.text || '').replace(`${x.id}: `, ''), since: x.since || '', aliases: x.alsoBuilds || [] });
+        add({ build: x.id, pr: pr(x.pr) || null, title: x.title || '', branch: x.branch || '', url: x.url || '', state: x.state === 'blocked' ? 'held' : x.state || 'waiting', rule: w?.rule || '', why: String(w?.reason || x.reason?.text || '').replace(`${x.id}: `, ''), since: x.since || '', position: w?.position ?? null, gate: w?.gate ?? null, aliases: x.alsoBuilds || [] });
       }
-      for (const w of st.waiting) if (w.build && !byBuild.has(w.build)) add({ build: w.build, pr: w.pr, title: w.title || '', branch: w.branch || '', url: w.url || '', state: w.state, rule: w.rule || '', why: w.reason || '', since: w.since || '', aliases: [] });
+      for (const w of st.waiting) if (w.build && !byBuild.has(w.build)) add({ build: w.build, pr: w.pr, title: w.title || '', branch: w.branch || '', url: w.url || '', state: w.state, rule: w.rule || '', why: w.reason || '', since: w.since || '', position: w.position ?? null, gate: w.gate ?? null, aliases: [] });
       const rows0 = [...byBuild.values()].filter((r) => { const b = builds[r.build]; return !b || (!b.deleted && b.status !== 'archived' && b.status !== 'complete'); });
       const { main, heads, behind } = store.behindMain(rows0.map((r) => r.branch));
       let rows = rows0.map((r) => {
         const onRemote = !!heads[r.branch];
         const held = !!ctl.holds?.[r.build];
-        return { ...r, url: r.url || (r.pr ? `https://github.com/${process.env.AXF_LAND_REPO_SLUG || 'MossesX/AmberX-AXF'}/pull/${r.pr}` : ''), what: r.title || builds[r.build]?.title || '', behind: behind[r.branch] ?? null, onRemote, held, stale: !r.pr && !onRemote };
+        return { ...r, url: r.url || (r.pr ? `https://github.com/${process.env.AXF_LAND_REPO_SLUG || 'MossesX/AmberX-AXF'}/pull/${r.pr}` : ''), what: r.title || builds[r.build]?.title || '', reason: r.why, behind: behind[r.branch] ?? null, onRemote, held, stale: !r.pr && !onRemote };
       });
       const staleCount = rows.filter((r) => r.stale).length;
       const f = String(filter || '').trim().toLowerCase().replace(/behind\s*([<>]=?|=)\s*(\d+)/g, 'behind$1$2').replace(/pr\s*:\s*#?(\d+)/g, 'pr:$1');
@@ -140,10 +144,10 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
         if (term === 'held' || term === 'blocked') { rows = rows.filter((r) => r.state === 'held' || r.held); continue; }
         rows = rows.filter((r) => `${r.build} ${r.title} ${r.why} ${r.branch}`.toLowerCase().includes(term));
       }
-      const key = ['pr', 'build', 'behind'].includes(sort) ? sort : 'behind';
+      const key = GRID_SORT.includes(sort) ? sort : 'behind';
       const desc = dir ? dir === 'desc' : key === 'behind';
-      const val = (r) => (key === 'build' ? r.build : r[key] ?? -1);
-      rows.sort((a, b) => { const x = val(a); const y = val(b); const c = typeof x === 'string' ? x.localeCompare(y) : x - y; return desc ? -c : c; });
+      const val = (r) => { const v = r[key === 'reason' ? 'why' : key]; return typeof v === 'string' ? v : v ?? -1; };
+      rows.sort((a, b) => { const x = val(a); const y = val(b); const c = typeof x === 'string' || typeof y === 'string' ? String(x).localeCompare(String(y)) : x - y; return desc ? -c : c; });
       return { $axf: 'lander-grid@1', at: st.at, main, sort: key, dir: desc ? 'desc' : 'asc', filter: f, total: rows0.length - staleCount, stale: staleCount, items: rows };
     },
 

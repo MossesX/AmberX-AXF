@@ -213,13 +213,15 @@ try {
     assert.deepEqual(api('lander_grid', { filter: 'behind > 500' }).items.map((r) => r.build), ['red']);
     assert.deepEqual(api('lander_grid', { filter: 'pr:710' }).items.map((r) => r.build), ['notes']);
     const byPr = api('lander_grid', { sort: 'pr', dir: 'asc' }).items.map((r) => r.pr); assert.deepEqual(byPr, [...byPr].sort((a, b) => a - b));
+    for (const k of ['position', 'title', 'build', 'rule', 'state', 'reason', 'behind', 'since']) assert.equal(api('lander_grid', { sort: k, dir: 'asc' }).sort, k, `sorts on ${k}`);
+    assert.ok(g.items.every((r) => 'position' in r && 'reason' in r && 'rule' in r && 'title' in r), 'every original column is on the row');
     assert.ok(api('lander_grid', { stale: true }).items.some((r) => r.build === 'old'));
     assert.deepEqual(api('lander_clean').dropped, ['old']);
     assert.ok(!api('lander_grid', { stale: true }).items.some((r) => r.build === 'old'));
   });
   t('row actions: hold / release / merge main through the lander, archive asks first and drops the row', () => {
     seed();
-    assert.equal(api('lander_hold', { build: '#711', why: 'later' }).held, true);
+    assert.equal(api('lander_hold', { build: '711', why: 'later' }).held, true);
     assert.equal(api('lander_hold', { build: 'red', on: false }).held, false);
     assert.equal(api('lander_merge_main', { build: 'notes' }).build, 'notes');
     const ask = api('lander_archive', { builds: ['red', '710'] });

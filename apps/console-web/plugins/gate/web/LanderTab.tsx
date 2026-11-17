@@ -1,8 +1,8 @@
 /**
  * Auto-lander tab: the one Merge queue on/off switch (`setting:gate.lander.mergeQueue`), the status card (running /
  * paused / idle / off, since when, the PR landing now, the line), the grid of everything waiting to be merged
- * (`grid:gate.waiting`, lander-grid@1: ONE row per build, exactly three columns PR · build · commits behind main, each
- * sortable; the second line under the name only for what it does and why it is blocked), the last runs
+ * (`grid:gate.waiting`, lander-grid@1: ONE row per build, every original column (# · PR + title · build · held by ·
+ * why · land next) plus "Commits behind main", each sortable; at most two lines a row), the last runs
  * (`grid:gate.runs`) and two toolbars (role="toolbar"): gate.lander (Merge queue, Land now, Pause / Resume) and
  * gate.lander.grid (filter e.g. "behind > 500", Select + bulk Archive, Show stale, Clean stale). Each row's menu
  * (`button:gate-row-menu-<build>`) holds Open, Merge main + fix, Hold / Release and Archive: the console actions
@@ -68,24 +68,32 @@ export function LanderTab({ refreshSec }: { refreshSec: number }) {
   ], [s?.mergeQueue]); // eslint-disable-line react-hooks/exhaustive-deps
   useControlTargets(targets, String(s?.mergeQueue));
 
+  const menuButton = (w: GridRow) => !selecting && <IconButton id={`gate-row-menu-${w.build}`} icon="more" label={`Actions for ${w.build}`} aria-expanded={menuFor === w.build} onClick={(e) => { e.stopPropagation(); setMenuFor((cur) => (cur === w.build ? null : w.build)); }} />;
+  // Every original waiting column stays (Brett, Nov 16 2026: keep them all), plus "Commits behind main"; all sortable.
   const waitCols: GridColumn<GridRow>[] = [
-    { id: 'pr', label: 'PR', width: 'calc(var(--fx-space) * 14)', sortable: true, sortValue: (w) => w.pr ?? 0, render: (w) => <span>{w.pr ? `#${w.pr}` : '—'}</span> },
-    { id: 'build', label: 'Build', width: 'minmax(0, 1fr)', fixed: true, sortable: true, sortValue: (w) => w.build, render: (w) => (
+    { id: 'position', label: '#', width: 'calc(var(--fx-space) * 10)', sortable: true, sortValue: (w) => w.position ?? Number.MAX_SAFE_INTEGER, render: (w) => <span>{w.position ?? '—'}</span> },
+    { id: 'pr', label: 'PR', width: 'calc(var(--fx-space) * 88)', fixed: true, sortable: true, sortValue: (w) => w.pr ?? 0, render: (w) => (
       <span className="axp-gate__cell axp-gate__cell--row">
         <span className="axp-gate__cell">
-          <strong>{w.build}</strong>
-          {rows === 2 && (w.what || w.why) && <span className="axp-gate__sub axp-gate__line">{[w.what, w.why].filter(Boolean).join(' · ')}</span>}
+          <strong className="axp-gate__line">{w.pr ? `#${w.pr} ` : ''}{w.title || w.what || w.build}</strong>
+          {rows === 2 && <span className="axp-gate__sub axp-gate__line">{w.build || w.branch}</span>}
         </span>
-        {!selecting && <IconButton id={`gate-row-menu-${w.build}`} icon="more" label={`Actions for ${w.build}`} aria-expanded={menuFor === w.build} onClick={(e) => { e.stopPropagation(); setMenuFor((cur) => (cur === w.build ? null : w.build)); }} />}
+        {menuButton(w)}
       </span>
     ) },
-    { id: 'behind', label: 'Behind main', width: 'calc(var(--fx-space) * 22)', align: 'end', sortable: true, sortValue: (w) => w.behind ?? -1, render: (w) => <span title={w.onRemote ? `${w.branch} vs main` : `${w.branch} is not on GitHub`}>{w.behind ?? '?'}</span> },
+    { id: 'build', label: 'Build', width: 'calc(var(--fx-space) * 48)', sortable: true, sortValue: (w) => w.build, render: (w) => <span className="axp-gate__sub axp-gate__line">{w.build}</span> },
+    { id: 'rule', label: 'Held by', width: 'calc(var(--fx-space) * 28)', sortable: true, sortValue: (w) => w.rule || (w.held ? 'hold' : w.state), render: (w) => (w.rule ? <Chip tone="warning">{w.rule}</Chip> : w.held ? <Chip tone="warning">hold</Chip> : <span className="axp-gate__sub">{w.state}</span>) },
+    { id: 'reason', label: 'Why', width: 'calc(var(--fx-space) * 100)', sortable: true, sortValue: (w) => w.reason || '', render: (w) => (
+      <span className="axp-gate__cell"><span className="axp-gate__line">{w.reason}</span>{rows === 2 && w.gate && !w.gate.pass && w.gate.reasons[0] && w.gate.reasons[0] !== w.reason && <span className="axp-gate__sub axp-gate__line">{w.gate.reasons[0]}</span>}</span>
+    ) },
+    { id: 'behind', label: 'Commits behind main', width: 'calc(var(--fx-space) * 30)', align: 'end', sortable: true, sortValue: (w) => w.behind ?? -1, render: (w) => <span title={w.onRemote ? `${w.branch} vs main` : `${w.branch} is not on GitHub`}>{w.behind ?? '?'}</span> },
+    { id: 'act', label: 'Land', width: 'calc(var(--fx-space) * 28)', sortable: true, sortValue: (w) => (w.gate?.pass ? 1 : 0), render: (w) => (w.pr ? <Button size="sm" id={`gate-land-now-${w.pr}`} busy={busy === `land-${w.pr}`} confirm={`Land #${w.pr} next? It still has to pass every rule.`} onClick={(e) => { e.stopPropagation(); void landNow(w.pr as number); }}>Land next</Button> : <span className="axp-gate__sub">no PR</span>) },
   ];
   const runCols: GridColumn<Run>[] = [
     { id: 'startedAt', label: 'When', width: 'calc(var(--fx-space) * 36)', fixed: true, sortable: true, sortValue: (r) => r.startedAt, render: (r) => <span>{when(r.startedAt)}</span> },
-    { id: 'result', label: 'Result', width: 'calc(var(--fx-space) * 24)', render: (r) => <Chip tone={r.result === 'landed' ? 'success' : r.result === 'error' ? 'danger' : undefined}>{r.result}</Chip> },
-    { id: 'pr', label: 'PR', width: 'calc(var(--fx-space) * 112)', render: (r) => <span className="axp-gate__cell">{r.landing ? <strong>#{r.landing.pr} {r.landing.title || r.landing.build}</strong> : <span className="axp-gate__sub">nothing landed</span>}{rows === 2 && r.reasonText && <span className="axp-gate__sub">{r.reasonText}</span>}</span> },
-    { id: 'mode', label: 'Mode', width: 'calc(var(--fx-space) * 32)', render: (r) => <span className="axp-gate__sub">{r.mode === 'serial' ? 'one at a time' : 'merge queue'}</span> },
+    { id: 'result', label: 'Result', width: 'calc(var(--fx-space) * 24)', sortable: true, sortValue: (r) => r.result, render: (r) => <Chip tone={r.result === 'landed' ? 'success' : r.result === 'error' ? 'danger' : undefined}>{r.result}</Chip> },
+    { id: 'pr', label: 'PR', width: 'calc(var(--fx-space) * 112)', sortable: true, sortValue: (r) => r.landing?.pr ?? 0, render: (r) => <span className="axp-gate__cell">{r.landing ? <strong>#{r.landing.pr} {r.landing.title || r.landing.build}</strong> : <span className="axp-gate__sub">nothing landed</span>}{rows === 2 && r.reasonText && <span className="axp-gate__sub">{r.reasonText}</span>}</span> },
+    { id: 'mode', label: 'Mode', width: 'calc(var(--fx-space) * 32)', sortable: true, sortValue: (r) => r.mode, render: (r) => <span className="axp-gate__sub">{r.mode === 'serial' ? 'one at a time' : 'merge queue'}</span> },
   ];
 
   return (
