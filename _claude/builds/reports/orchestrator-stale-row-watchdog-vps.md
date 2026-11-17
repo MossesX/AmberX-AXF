@@ -81,5 +81,5 @@ orchestrator test.mjs / pipeline.test.mjs / test.py, ui-review test.py, console 
 - UI Review: the 3-option submit did not happen. A local console capture (rebuild-shots, hub off) could not reach
   the card (the scratch console's search found nothing, then its API dropped). The card needs real screenshots from
   the deployed console after landing (`ui-predict.mjs real orchestrator-stale-row-watchdog-vps`).
-- `framework/spec/check-done-means-merged.mjs` is not on this branch yet (main has it); it runs after the merge.
+- `framework/spec/check-done-means-merged.mjs` (named in the brief) exists neither on this branch nor on main: not run.
 - Kotlin twin of stale-row@1: deferred (PORTING.md, phase 1).
