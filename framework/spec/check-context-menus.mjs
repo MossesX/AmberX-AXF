@@ -45,12 +45,12 @@ t('levels', () => {
 /* 2. zones */
 const scanned = [
   { id: 'asset-card', file: 'framework/react/components/DataCard.tsx', weight: 'common', files: ['framework/react/components/DataCard.tsx'] },
-  { id: 'axf-todo-entry', file: 'apps/console-web/plugins/todo-manager/web/Todo.tsx', weight: 'rare' },
+  { id: 'axf-todo-entry', file: 'apps/console-web/plugins/todo-manager/web/Todo.tsx', weight: 'rare' },  // axf-not-plugin:todo-manager (sample path for the zone scan)
   { id: 'banner', file: 'apps/console-web/src/x.tsx', weight: 'core' },
 ];
 const reported = [{ id: 'asset-card', pages: ['theme-manager'], elements: ['Skin card'] }, { id: 'live-only', label: 'Live only' }];
 t('zones', () => {
-  assert.deepEqual(R.ownerOfPath('apps/console-web/plugins/todo-manager/web/Todo.tsx'), { kind: 'plugin', id: 'todo-manager', app: 'console-web' });
+  assert.deepEqual(R.ownerOfPath('apps/console-web/plugins/todo-manager/web/Todo.tsx'), { kind: 'plugin', id: 'todo-manager', app: 'console-web' });  // axf-not-plugin:todo-manager
   assert.deepEqual(R.ownerOfPath('framework/react/components/DataCard.tsx'), { kind: 'framework', id: 'framework', app: '' });
   assert.deepEqual(R.ownerOfPath('apps/console-web/src/App.tsx'), { kind: 'console', id: 'console-web', app: 'console-web' });
   assert.deepEqual(R.ownerOfPath('apps/amberx-droid/src/x.kt'), { kind: 'app', id: 'amberx-droid', app: 'amberx-droid' });

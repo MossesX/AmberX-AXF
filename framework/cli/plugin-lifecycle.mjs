@@ -138,10 +138,22 @@ export function namesHostPlugin(line, folder, id = '') {
 }
 
 /** Every line outside the plugin's folder that names it. Marker lines in listed mention files are "managed", the rest "stale". */
+/** `n` in `line` as a whole name: not followed by a letter, digit, `_` or `-`. */
+export function wordIn(line, n) {
+  for (let i = line.indexOf(n); i >= 0; i = line.indexOf(n, i + 1)) if (!/[\w-]/.test(line[i + n.length] ?? '')) return true;
+  return false;
+}
+
+function mentionPaths(file) {
+  try { return new Set(JSON.parse(readFileSync(file, 'utf8'))?.lifecycle?.mentions ?? []); } catch { return null; }
+}
+
 export function scanReferences(p) {
   const id = p.manifest?.id;
   const needles = [`plugins/${p.folder}/`, `plugins/${p.folder}'`, `plugins/${p.folder}"`, `axf-plugin:${p.folder}`];
   if (id) needles.push(id);
+  // the id and the marker are names, not paths: `plan-studio` must not match inside `plan-studio-2`
+  const named = (line, n) => n.endsWith('/') || n.endsWith("'") || n.endsWith('"') ? line.includes(n) : wordIn(line, n);
   const quoted = [`'${p.folder}'`, `"${p.folder}"`]; // only meaningful inside other plugins' code
   const mentions = new Set((p.lifecycle.mentions ?? []).map((m) => resolve(ROOT, m)));
   const hits = [];
@@ -166,14 +178,19 @@ export function scanReferences(p) {
     // to share the name: only a path that reaches the console's plugins folder counts there.
     const inOtherApp = file.startsWith(APPS_DIR + '/') && !file.startsWith(CONSOLE_APP_DIR + '/');
     const lines = readFileSync(file, 'utf8').split('\n');
-    lines.forEach((line, i) => {
-      let hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
+    // another plugin's lifecycle.mentions lists files it writes marker lines into; such a path is that plugin's
+    // bookkeeping, not a reference to the plugin whose folder the file sits in
+    const ownMentions = file.startsWith(PLUGINS_DIR + '/') && file.endsWith('/plugin.json') ? mentionPaths(file) : null;
+    lines.forEach((raw, i) => {
+      let line = raw;
+      if (ownMentions) for (const m of ownMentions) line = line.split(JSON.stringify(m)).join('""');
+      let hit = needles.some((n) => named(line, n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
       // a line that uses the folder name as a plain word of its own vocabulary says so: `axf-not-plugin:<folder>`
       if (hit && line.includes(`axf-not-plugin:${p.folder}`)) hit = false;
       if (hit && inOtherApp && !namesHostPlugin(line, p.folder, id)) hit = false;
       if (!hit) return;
       const managed = line.includes(`axf-plugin:${p.folder}`) && mentions.has(file);
-      hits.push({ file: relative(ROOT, file), line: i + 1, text: line.trim().slice(0, 200), managed });
+      hits.push({ file: relative(ROOT, file), line: i + 1, text: raw.trim().slice(0, 200), managed });
     });
   }
   return hits;

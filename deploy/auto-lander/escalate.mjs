@@ -6,7 +6,7 @@
  *
  *   1. the escalation is recorded in <data>/auto-lander/escalations.json (what broke, which kind, how many attempts,
  *      since when, the last attempt's log). The gate plugin's systems-check item (`gate-auto-lander`, health@1,
- *      apps/console-web/plugins/gate/server/auto_lander_health.py) reads it through `auto-lander.mjs status` and shows
+ *      apps/console-web/plugins/gate/server/auto_lander_health.py) reads it through `auto-lander.mjs status` and shows  // axf-plugin:gate
  *      a red banner item with "Reset and fix now" (`auto-lander.mjs fix <build>`: attempts reset, a fix session starts).
  *   2. one phone push: a console alert through the alert hub, which asks axf.notify@1 before it sends. Type
  *      `gate.auto-lander-escalated` in the gate plugin's notify.json (key gate:auto-lander-escalated:<build>). The
@@ -29,7 +29,7 @@ const write = (j) => { mkdirSync(dirname(file()), { recursive: true }); const t 
 let consoleApi = null;
 async function api() {
   if (consoleApi) return consoleApi;
-  const land = await import('../../apps/console-web/plugins/push-banner/land/land.mjs');
+  const land = await import('../../apps/console-web/plugins/push-banner/land/land.mjs');  // axf-plugin:push-banner
   consoleApi = land.makeConsole(land.settings());
   return consoleApi;
 }

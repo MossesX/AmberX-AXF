@@ -37,6 +37,15 @@
       "AXF_GATE_LANDER_CLI"
     ],
     "mentions": [
+      "_claude/memory/decisions.md",
+      "_claude/memory/docs/auto-lander.md",
+      "apps/console-web/scripts/auto-lander-shots.mjs",
+      "deploy/auto-lander/auto-lander.mjs",
+      "deploy/auto-lander/escalate.mjs",
+      "deploy/auto-lander/test/loop.test.mjs",
+      "deploy/install-console.sh",
+      "framework/spec/AUTO-LANDER.md",
+      "framework/spec/DONE-MEANS-MERGED.md",
       "apps/console-web/plugins/README.md",
       "framework/spec/GATE.md",
       "CLAUDE.md",

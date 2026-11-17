@@ -98,5 +98,5 @@ node -e "const r=require('$T/run2.json');if(r.fixes.length)process.exit(1)" || f
 ok "a second pass does nothing"
 
 echo "  … notify-control registry test"
-HOME="$REAL_HOME" PATH="$REAL_PATH" python3 "$ROOT/apps/console-web/plugins/notify-control/test.py" | tail -1
+HOME="$REAL_HOME" PATH="$REAL_PATH" python3 "$ROOT/apps/console-web/plugins/notify-control/test.py" | tail -1  # axf-plugin:notify-control
 echo "watchdog e2e: passed"
