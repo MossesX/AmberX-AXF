@@ -6,7 +6,7 @@
  * the mergequeue-list command). Theme tokens and framework controls only.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { AgentAvatar, Button, Icon, PriorityTag, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Icon, PageToolbar, PriorityTag, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { api, FOLDER } from './store';
 
@@ -21,7 +21,9 @@ interface TrackingMark { at: string; files?: string[]; generators?: string[]; co
 export interface TrackingState { show: boolean; items: { build: string; pr: number | null; tracking: { reset?: TrackingMark; takeMain?: TrackingMark; regenerate?: TrackingMark } }[] }
 
 const POLL_MS = 60_000;
-let qstate: { data: QueueState | null; tracking: TrackingState | null; error: string; busy: number; note: string } = { data: null, tracking: null, error: '', busy: 0, note: '' };
+let qstate: { data: QueueState | null; tracking: TrackingState | null; error: string; busy: number; note: string; selected: number } = { data: null, tracking: null, error: '', busy: 0, note: '', selected: 0 };
+/** The PR the merge queue toolbar acts on (a tap on a row selects it; again clears). */
+const selectPr = (pr: number) => set({ selected: qstate.selected === pr ? 0 : pr });
 const subs = new Set<() => void>();
 const set = (p: Partial<typeof qstate>) => { qstate = { ...qstate, ...p }; subs.forEach((f) => f()); };
 export const useQueue = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => qstate);
@@ -63,7 +65,7 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
   const [sure, setSure] = useState(false);
   const busy = q.busy === it.pr;
   return (
-    <li className={`axp-push-banner__item axp-mq__row is-${it.state}`} data-axf-row={it.build || `pr-${it.pr}`} draggable onDragStart={(e) => { e.dataTransfer.setData('text/x-axf-queue-pr', String(it.pr)); e.dataTransfer.effectAllowed = 'move'; }}
+    <li className={`axp-push-banner__item axp-mq__row is-${it.state}${q.selected === it.pr ? ' is-selected' : ''}`} aria-selected={q.selected === it.pr} onClick={(e) => { if (!(e.target as HTMLElement).closest('a, button')) selectPr(it.pr); }} data-axf-row={it.build || `pr-${it.pr}`} draggable onDragStart={(e) => { e.dataTransfer.setData('text/x-axf-queue-pr', String(it.pr)); e.dataTransfer.effectAllowed = 'move'; }}
       onDragOver={(e) => { if (e.dataTransfer.types.includes('text/x-axf-queue-pr')) e.preventDefault(); }}
       onDrop={(e) => { const pr = Number(e.dataTransfer.getData('text/x-axf-queue-pr')); if (pr && pr !== it.pr) onDrop(pr, i); }}>
       <span className="axp-mq__pos" aria-label={`Place ${i + 1}`}>{i + 1}</span>
@@ -101,12 +103,30 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
   const q = useQueue();
   useEffect(() => { startQueue(); }, []);
   const d = q.data;
+  // the merge queue toolbar (page-toolbar@1, assets/toolbar/push-banner-merge-queue.json): the selected PR's queue commands
+  const items = d?.items ?? [];
+  const index = items.findIndex((x) => x.pr === q.selected);
+  const pick = index >= 0 ? items[index] : d?.waiting.find((x) => x.pr === q.selected);
+  const red = pick?.why ? pick.why.replace(/^kicked out: /, '') : '';
+  usePublishPageState('push-banner', {
+    queued: items.length, kicked: d?.waiting.filter((w) => w.state === 'kicked').length ?? 0,
+    selection: pick ? {
+      pr: pick.pr, build: pick.build ?? '', index: Math.max(index, 0), inQueue: index >= 0, canAdd: index < 0,
+      up: Math.max(0, index - 1), down: index + 1, canDown: index >= 0 && index < items.length - 1,
+      runUrl: pick.runUrl ?? (pick.url ? `${pick.url}/checks` : ''), why: red,
+    } : null,
+  });
+  useToolbarHandlers('push-banner', {
+    'push-banner.open-ci': () => { const u = pick?.runUrl ?? (pick?.url ? `${pick.url}/checks` : ''); if (u) window.open(u, '_blank', 'noopener'); return u || null; },
+    'push-banner.red-reason': () => { if (pick && red) rt.toast(red, 'warning', `#${pick.pr} ${pick.title}`); return pick ? { pr: pick.pr, why: red } : null; },
+  });
   if (!d) return <p className="fx-small fx-muted">{q.error || 'Reading the merge queue…'}</p>;
   if (!d.on) return <p className="fx-small fx-muted">The merge queue is off: PRs merge one by one, each re-tested after main moves. Switch it on in Settings → Plugins → Push banner.</p>;
   const out = d.waiting.filter((w) => w.state !== 'kicked');
   const kickedOpen = d.waiting.filter((w) => w.state === 'kicked');
   return (
     <div className="axp-mq fx-stack">
+      <PageToolbar view="push-banner" slot="merge-queue" />
       <p className="fx-small fx-muted">{d.mode === 'stack'
         ? `Each PR is tested once, on top of main and every PR ahead of it (${d.depth} at a time); when its run is green it merges with no retest. A red one is kicked out with the reason and the ones behind it are retested without it.`
         : `Every finished build lands through here. Up to ${d.batchSize ?? 8} ready PRs are combined into one build, CI runs once on it, and a green batch lands on main as that one commit. A red batch is split in half until the PR that broke it is found and kicked out.`}{d.avgMin ? ` A run takes ~${d.avgMin} min.` : ''}{d.at ? ` Checked ${new Date(d.at).toLocaleTimeString()}.` : ''}</p>
@@ -128,7 +148,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
         <section className="axp-push-banner__group is-warning" aria-label="Kicked out">
           <h4 className="axp-push-banner__group-title">Kicked out <span>{kickedOpen.length}</span></h4>
           <ul className="axp-push-banner__list">{kickedOpen.map((w) => (
-            <li key={w.pr} className="axp-push-banner__item is-ci-failure">
+            <li key={w.pr} className={`axp-push-banner__item is-ci-failure${q.selected === w.pr ? ' is-selected' : ''}`} aria-selected={q.selected === w.pr} onClick={(e) => { if (!(e.target as HTMLElement).closest('a, button')) selectPr(w.pr); }}>
               <span className="axp-push-banner__entry">
                 <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a></span>
                 <span className="axp-push-banner__sub axp-mq__why">{(w.why || '').replace(/^kicked out: /, '')}</span>
@@ -142,7 +162,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
         <section className="axp-push-banner__group" aria-label="Not in the queue yet">
           <h4 className="axp-push-banner__group-title">Not in the queue yet <span>{out.length}</span></h4>
           <ul className="axp-push-banner__list">{out.map((w) => (
-            <li key={w.pr} className="axp-push-banner__item">
+            <li key={w.pr} className={`axp-push-banner__item${q.selected === w.pr ? ' is-selected' : ''}`} aria-selected={q.selected === w.pr} onClick={(e) => { if (!(e.target as HTMLElement).closest('a, button')) selectPr(w.pr); }}>
               <span className="axp-push-banner__entry">
                 <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a></span>
                 <span className="axp-push-banner__sub axp-mq__why">{(w.why || '').replace(/^kicked out: /, '')}</span>
