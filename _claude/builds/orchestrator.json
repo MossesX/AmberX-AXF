@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:21:24.368Z",
+ "updatedAt": "2026-11-17T21:21:55.154Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186115,12 +186115,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:20:56.847Z",
+   "updatedAt": "2026-11-17T21:21:51.104Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T21:20:56.847Z"
+    },
+    {
+     "text": "Split by Claude into 12 steps (2 Fable).",
+     "at": "2026-11-17T21:21:51.104Z"
     }
    ],
    "approvals": [],
@@ -186137,7 +186141,276 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the widget icon override contract: a settings key per banner widget and per settings widget (axf.widget.<id>.icon, plus a display mode of icon / icon+text / text), a rule for how it resolves against icon-map and icon packs, and the rule that a widget showing long text falls back to an icon with the text as a tooltip. Write it in framework/spec/WIDGET-ICONS.md with a fixture.",
+     "model": "Fable",
+     "why": "Changes how banner and settings widgets render across the console (a widget contract plus a fixture)",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/WIDGET-ICONS.md",
+      "framework/spec/fixtures/widget-icons.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubk01w860",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add the resolver engine resolveWidgetIcon(widget, settings, iconMap) → {icon, label, tooltip, mode}, plus a long-text detector (character threshold read from a token), with unit checks against the fixture.",
+     "model": "Fable",
+     "why": "New engine shared by the banner host and the settings host; it must match the fixture contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/widget-icons.ts",
+      "framework/spec/check-widget-icons.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl02wc67",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s3",
+     "text": "Inventory every banner widget and settings widget in the console, record which have no icon and which render long text strings, and write the default icon for each into a defaults map.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/banner/",
+      "apps/console-web/plugins/*/plugin.json",
+      "framework/assets/icon-map/widget-defaults.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl03howi",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s4",
+     "text": "Make a reusable IconPicker dialog on the framework controls: search, the icon pack's grid, a preview, Reset to default. It uses tokens only and registers as a control target.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/IconPicker.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl041zog",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s5",
+     "text": "Wire the banner widget host to resolveWidgetIcon: show the icon, put the text in a tooltip (title + aria-label) and keep the long text off the chip.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/Banner*.tsx",
+      "apps/console-web/src/banner/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl05tdcz",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s6",
+     "text": "Add 'Choose icon…' and 'Show as icon / icon+text / text' to the banner widget's right-click menu (ChromeContext) and to its widget settings dialog. Both open IconPicker and save axf.widget.<id>.icon.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "framework/assets/settings/chrome-banner.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl06ref4",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s7",
+     "text": "Wire the settings widgets (Settings tabs, plugin sub-tab widgets, setting rows that act as widgets) to resolveWidgetIcon, and add Choose icon to their right-click menu and their settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/libs/settings/",
+      "apps/console-web/src/views/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl07moc4",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s8",
+     "text": "API part: REST routes GET/PUT /api/widget-icons (list widgets with their resolved icon and mode, set, reset) and a deep link view:settings/…/dialog:icon-picker?widget=<id> for console_show/console_open.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/routes/widget_icons.py",
+      "apps/console-web/src/consoleControl/targets.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl08bwhj",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s9",
+     "text": "API part: MCP tools widget_icons_list/get/set/reset, a CLI axf widget-icon list|get|set|reset, voice actions widget.icon.set/reset in the console actions, and control@1 targets appended at the end.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py",
+      "framework/cli/widget-icon.mjs",
+      "apps/console-web/src/actions/",
+      "framework/schemas/control-targets.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl098bzd",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s10",
+     "text": "Update the help, the glossary descriptions and the plugin docs for the icon picker and the widget icon settings, then run check-console-control, check-theme, check-controls, check-toolbars and check-chrome-assets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/help/",
+      "apps/console-web/plugins/glossary-index/",
+      "framework/cli/check-*.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl0afwg6",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s11",
+     "text": "UI Review: shoot the banner and settings before and after on desktop and phone, and submit at least 3 picker layouts (grid, list, compact popover) as assets with --choices.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "apps/console-web/plugins/banner/assets/dialog/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl0bya65",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    },
+    {
+     "id": "s12",
+     "text": "Run the tests and fixtures (check-widget-icons, the server route tests, the CLI and MCP parity check), write the report _claude/builds/reports/icon-picker-every-banner-settings-widget.md with how each feature is reached (REST, MCP, CLI, voice, deep link), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/icon-picker-every-banner-settings-widget.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl76ubl0cmdsf",
+     "createdAt": "2026-11-17T21:21:51.104Z"
+    }
+   ]
   }
  ]
 }
