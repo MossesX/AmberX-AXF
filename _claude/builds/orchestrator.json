@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:56:46.637Z",
+ "updatedAt": "2026-11-17T18:57:56.063Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -179260,9 +179260,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T18:56:38.434Z",
+   "updatedAt": "2026-11-17T18:57:54.015Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 18 steps (3 Fable).",
+     "at": "2026-11-17T18:57:54.015Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -179277,7 +179282,413 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the plugin-settings contract: each plugin owns one settings interface (settings@1 asset `settings/plugin-<id>`, scope = plugin only). Add the scope/owner fields to the settings type in asset-types.json, write framework/spec/PLUGIN-SETTINGS.md (resolution order: plugin's own asset → generated default from its SettingsTab keys; console keeps `settings/console`; interfaces are never shared), regenerate JSON Schemas",
+     "model": "Fable",
+     "why": "Schema + cross-app contract that changes how settings GUIs open in every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/",
+      "framework/spec/PLUGIN-SETTINGS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwf01vv9a",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s2",
+     "text": "Reference resolver engine `framework/core/engines/plugin-settings.ts`: resolveSettingsInterface(owner) returns the plugin's own interface, or the console's for console pages, never the console's for a plugin. Add a fixture in framework/spec/fixtures/plugin-settings.json, run gen-fixtures, and record the Kotlin twin as a deferred gap in PORTING.md",
+     "model": "Fable",
+     "why": "Engine internals plus the cross-port conformance fixture",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/plugin-settings.ts",
+      "framework/spec/fixtures/plugin-settings.json",
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwf023858",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s3",
+     "text": "Design the reset-confirm contract: the reset-plan engine `framework/core/engines/settings-reset.ts` takes a scope (console or plugin id) plus includeAssets and returns the setting keys to clear and the changed assets/skins (same rows the settings panel's changed-assets table uses). Add the fixture and the spec section",
+     "model": "Fable",
+     "why": "Cross-app GUI behaviour: one reset contract for every settings interface on every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/settings-reset.ts",
+      "framework/spec/fixtures/settings-reset.json",
+      "framework/spec/PLUGIN-SETTINGS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwf03g35x",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s4",
+     "text": "Framework React: a `PluginSettingsWindow` component that renders one plugin's settings interface on its own (level toolbar included, only that plugin's keys) in place of opening console Settings at the Plugins tab. Export it from framework/react",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/PluginSettingsWindow.tsx",
+      "framework/react/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwf04zc8r",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s5",
+     "text": "Framework React: `ResetConfirmDialog` built from framework Dialog, Switch and DataGrid: 'Include assets' switch (default off), a scrollable changed-assets table that reuses the settings panel's table component, Reset/Cancel. Every value from tokens, toolbar role and aria-label set, Reset marked destructive",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ResetConfirmDialog.tsx",
+      "framework/ui/axf.css",
+      "framework/libs/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwf05opx5",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s6",
+     "text": "Connect ResetConfirmDialog to every Reset button in framework/libs/settings (AppearancePanel, the generic settings interface, level editor) through the settings-reset engine. Off clears settings only. On also resets assets/skins through the existing skin Restore to default path. Keep the one-step undo",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/libs/settings/",
+      "framework/react/components/ResetConfirmDialog.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwf06hnfj",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s7",
+     "text": "Console: route every 'Plugin settings' entry point (Plugin Manager, right-click Settings…, plugin home cards, banner chips) to PluginSettingsWindow for that plugin. Remove the jump to Settings → Plugins → <tab>. The console's own Settings stays console-only",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/",
+      "apps/console-web/plugins/plugin-manager/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwf07nwa3",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s8",
+     "text": "Console Settings → Plugins tab: replace the embedded per-plugin sub-tabs with a list that opens each plugin's own interface (keeps the parent='plugins' rule for discovery but no shared rendering). Fix the console code that enforces parent='plugins' to match",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/settings/",
+      "apps/console-web/plugins/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg08n5t7",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s9",
+     "text": "API part 1, deep links and state: register control@1 / console-control targets `settings:plugin/<id>` and `dialog:settings-reset?scope=<id>`, so console_show / console_open open them. Add the REST GET /api/settings/interfaces/<owner>, which reads the resolved interface, its current values and its changed assets. Append the targets (append-only)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/control/",
+      "apps/console-web/server/",
+      "apps/console-web/src/consoleControl/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg09qnp0",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s10",
+     "text": "API part 2, actions: REST POST /api/settings/reset {scope, includeAssets, dryRun} (dryRun returns the changed-assets table), MCP tools settings_interface_get / settings_reset, CLI `axf settings open|get|reset <owner> [--include-assets] [--dry-run]`, and the voice actions settings.open / settings.reset. Destructive actions need confirm",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py",
+      "apps/console-web/server/",
+      "framework/cli/axf.mjs",
+      "framework/cli/settings.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0axzzc",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s11",
+     "text": "Sweep part 1: write `framework/cli/check-settings-interfaces.mjs`. It lists every plugin.json and console page and flags any that have no own settings interface or that open the console's settings. Print the current findings to a list",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/check-settings-interfaces.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0bl147",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s12",
+     "text": "Sweep part 2: generate the missing `settings/plugin-<id>` default assets for plugins A–M (from their SettingsTab keys) and point their settingsInterface at them",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/*/assets/settings/",
+      "apps/console-web/plugins/*/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0cstjn",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s13",
+     "text": "Sweep part 3: the same for plugins N–Z",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/*/assets/settings/",
+      "apps/console-web/plugins/*/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0di13s",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s14",
+     "text": "Sweep part 4: console pages/views (Builds, Terminal, Breakroom, UI Review, etc.) and other framework apps in shared-assets.json each open their correct default interface (the page's plugin, otherwise the console's). Fix the mismatches the checker found",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/views/",
+      "framework/schemas/shared-assets.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0eckiw",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s15",
+     "text": "Add check-settings-interfaces.mjs to CI with a ratchet baseline at zero, and add help/glossary descriptions for the new components, CLI and MCP tools",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      ".github/workflows/android.yml",
+      "framework/spec/",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0fd8al",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s16",
+     "text": "Tests: engine tests for plugin-settings and settings-reset (tsx), a server test for the reset/dryRun routes, and a console test that a plugin's Settings opens its own window, not console Settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-plugin-settings.mts",
+      "apps/console-web/server/tests/",
+      "apps/console-web/scripts/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0gff5f",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s17",
+     "text": "UI Review: take desktop + phone shots of a plugin's own settings window and the reset dialog (switch off/on, scrolled table), and submit at least 3 options as settings/dialog assets with review.mjs submit --choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "apps/console-web/plugins/*/assets/dialog/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0h8u3h",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    },
+    {
+     "id": "s18",
+     "text": "Run validate, tracker --check, check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control and the new checks. Write the report _claude/builds/reports/separate-settings-per-plugin-reset.md, covering how each feature is reached by REST, MCP, CLI and voice. Add a THREADS row and open the PR, linked with builds-live",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/separate-settings-per-plugin-reset.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl21pwg0irfkh",
+     "createdAt": "2026-11-17T18:57:54.015Z"
+    }
+   ]
   },
   {
    "id": "rebuild-every-toolbar-page-specific",
