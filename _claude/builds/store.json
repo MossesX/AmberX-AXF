@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8145,
- "updatedAt": "2026-11-17T22:09:33.599Z",
+ "rev": 8146,
+ "updatedAt": "2026-11-17T22:09:43.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282314,7 +282314,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:09:29.789Z",
+   "updatedAt": "2026-11-17T22:09:32.322Z",
    "builtAt": "",
    "notes": [
     {
@@ -282372,6 +282372,10 @@
     {
      "text": "Claude account: hulu0241 (axf-icon-picker-every-banner-settings-widget--joey, shared account login)",
      "at": "2026-11-17T22:09:29.789Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-icon-picker-every-banner-settings-widget--joey.",
+     "at": "2026-11-17T22:09:32.322Z"
     }
    ],
    "approvals": [],
@@ -282391,13 +282395,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T21:20:55.826Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-icon-picker-every-banner-settings-widget--joey",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-17T22:09:20.596Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": {
      "at": "2026-11-17T21:50:26.660Z",
@@ -282417,9 +282421,9 @@
      "note": "Split by Claude into 12 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 10 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T22:09:20.596Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -282428,7 +282432,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T22:09:20.596Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -282747,7 +282751,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
