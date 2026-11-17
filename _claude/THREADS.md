@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:56 UTC · `orchestrator-on-hold-status-and-tab` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `axhub-veto-countdown-setting-read-only` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `settings-interface-gear-every-plugin` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · watchdog
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:40 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
 - 2026-11-17 21:40 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 21:40 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 21:41 UTC · `rebuild-fresh-main-phone-connect-small` s17 done (all) · orchestrator
 
 ## Token passes (log)
 

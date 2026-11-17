@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8056,
- "updatedAt": "2026-11-17T21:40:30.641Z",
+ "rev": 8057,
+ "updatedAt": "2026-11-17T21:41:20.403Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268258,7 +268258,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:39:31.199Z",
+   "updatedAt": "2026-11-17T21:41:16.935Z",
    "builtAt": "",
    "notes": [
     {
@@ -268481,7 +268481,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -268947,12 +268947,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:41:16.935Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T16:54:55.110Z"
+     "updatedAt": "2026-11-17T21:41:17.389Z"
     },
     {
      "id": "s18",
