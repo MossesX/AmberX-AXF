@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7155,
- "updatedAt": "2026-11-17T00:21:16.527Z",
+ "rev": 7156,
+ "updatedAt": "2026-11-17T00:21:32.561Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -239649,7 +239649,7 @@
    "pr": "#713",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-17T00:19:56.628Z",
+   "updatedAt": "2026-11-17T00:20:50.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -239703,6 +239703,10 @@
     {
      "text": "Brief only: brief is 24441 characters (~6111 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T00:14:41.773Z"
+    },
+    {
+     "text": "Headless run axf-axf-data-postgres-real-tables-own--sully: brief only · start 17.2K tokens ($0.06) · cost $0.54 · 20 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:20:50.809Z"
     }
    ],
    "approvals": [
@@ -239837,7 +239841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

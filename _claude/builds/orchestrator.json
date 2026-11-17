@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:21:16.527Z",
+ "updatedAt": "2026-11-17T00:21:32.561Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -155646,7 +155646,7 @@
    "pr": "#713",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-17T00:19:56.628Z",
+   "updatedAt": "2026-11-17T00:20:50.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -155700,6 +155700,10 @@
     {
      "text": "Brief only: brief is 24441 characters (~6111 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T00:14:41.773Z"
+    },
+    {
+     "text": "Headless run axf-axf-data-postgres-real-tables-own--sully: brief only · start 17.2K tokens ($0.06) · cost $0.54 · 20 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:20:50.809Z"
     }
    ],
    "approvals": [
