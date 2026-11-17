@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:47:31.657Z",
+ "updatedAt": "2026-11-17T21:47:46.318Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -187869,7 +187869,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:46:42.048Z",
+   "updatedAt": "2026-11-17T21:47:42.266Z",
    "builtAt": "",
    "notes": [
     {
@@ -187891,6 +187891,10 @@
     {
      "text": "Brett: the skin redoes the whole app layout too: where dropdown menus open, tab bar placement, everything (except toolbars). Very important: everything must be fully token-driven, no hardcoded look or position values anywhere.",
      "at": "2026-11-17T21:46:42.048Z"
+    },
+    {
+     "text": "Brett: this skin rebuilds the whole app look: where drop-down menus open, menu placement, tab bar placement, layouts, everything (toolbar contents still excluded). EVERYTHING must be token-driven: no hard-coded look, position or behaviour values anywhere; every placement, size, colour and motion comes from skin/asset tokens. Very important.",
+     "at": "2026-11-17T21:47:42.266Z"
     }
    ],
    "approvals": [],

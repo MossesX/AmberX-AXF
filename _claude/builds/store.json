@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8082,
- "updatedAt": "2026-11-17T21:47:31.657Z",
+ "rev": 8083,
+ "updatedAt": "2026-11-17T21:47:46.318Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -284234,7 +284234,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:46:42.048Z",
+   "updatedAt": "2026-11-17T21:47:42.266Z",
    "builtAt": "",
    "notes": [
     {
@@ -284256,6 +284256,10 @@
     {
      "text": "Brett: the skin redoes the whole app layout too: where dropdown menus open, tab bar placement, everything (except toolbars). Very important: everything must be fully token-driven, no hardcoded look or position values anywhere.",
      "at": "2026-11-17T21:46:42.048Z"
+    },
+    {
+     "text": "Brett: this skin rebuilds the whole app look: where drop-down menus open, menu placement, tab bar placement, layouts, everything (toolbar contents still excluded). EVERYTHING must be token-driven: no hard-coded look, position or behaviour values anywhere; every placement, size, colour and motion comes from skin/asset tokens. Very important.",
+     "at": "2026-11-17T21:47:42.266Z"
     }
    ],
    "approvals": [],
@@ -285031,7 +285035,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
