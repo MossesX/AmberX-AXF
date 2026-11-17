@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:50 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:50 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 21:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 21:50 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
 - 2026-11-17 21:50 UTC · `icon-picker-every-banner-settings-widget` → queued, note (all) · pipeline
 - 2026-11-17 21:50 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:41 UTC · `blueprint-notes-tasks` → fixing, note (all) · pipeline
 - 2026-11-17 22:42 UTC · `move-server-side-console-parts-onto-vps` → queued, note (all) · watchdog
 - 2026-11-17 22:42 UTC · `move-everything-axhub-web-console` note (all) · orchestrator
+- 2026-11-17 22:42 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 22:42 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-17 22:42 UTC · `vps-sets-every-build-status-manifest` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 

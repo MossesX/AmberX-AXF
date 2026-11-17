@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:42:35.585Z",
+ "updatedAt": "2026-11-17T22:42:48.183Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77980,7 +77980,6 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -94681,7 +94680,6 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -133490,7 +133488,6 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -142145,7 +142142,6 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -197703,11 +197699,391 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "uid": "st-mwla2mz201zprf",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s2",
+     "text": "Write the resolver core framework/core/settings-source.mjs: load the registry, ownerOf(key), readSetting(key) / writeSetting(key, value) routed through data-files.mjs to the owning store only, refuse writes to a non-owner path; plus a fixture framework/spec/fixtures/settings-sources.json with golden owner lookups (exact keys, prefixes, unknown keys)",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz2024xaj",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s3",
+     "text": "Design the migration helper framework/cli/settings-migrate.mjs: for a duplicated key, read every store that holds it, pick the owner's value (newest-wins when the owner is unset, recorded), write it to the owner, strip the key from the other stores, journal before/after in _claude/builds/reports/one-true-source-for-every-setting/migrations.json; --dry-run lists what would move",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz2031gt0",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s4",
+     "text": "Audit pass 1, console server + plugins: scan apps/console-web/server and apps/console-web/plugins/*/ for settings files and keys (settings.json, *.json under dataDir, SettingsRegistry keys, data_store writes); write the raw inventory to _claude/builds/reports/one-true-source-for-every-setting/audit-console.json (key, store, file, writer, editor UI)",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz2048cly",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s5",
+     "text": "Audit pass 2, orchestrator + pipeline + agent stores: build-orchestrator (pipeline accounts.json, orchestrator settings), claude-accounts (workers.json), agent-slots, claude-settings, gate/lander settings, push-banner settings; add to the inventory as audit-builds.json",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz205gvwm",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s6",
+     "text": "Audit pass 3, framework + axHub side: framework/core settings (SettingsRegistry keys, appearance@1 / app-look@1 / skins, tapconfirm, chrome settings), framework/libs/settings, lib-hub, axhub-adapter-axf plugin and hub settings documents under /projects/_shared/_data; add audit-framework.json",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz306ejfw",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s7",
+     "text": "Collate the three inventories into the duplicate list: every key held or editable in more than one store or with more than one editing UI/API; for each pick the true owner with a one-line reason; write duplicates.md and fill framework/schemas/settings-sources.json with every audited key and its owner",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz3070kcx",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s8",
+     "text": "Fix duplicate 1, Claude account on/off: make claude-accounts workers.json the one owner of account enabled/worker state; build-orchestrator pipeline reads it through settings-source.mjs (no accounts.json copy of on/off); run settings-migrate for those keys so Moses X's real state is kept",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz308cwm7",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s9",
+     "text": "Remove the duplicate account on/off control and API from the orchestrator (pipeline accounts UI toggle, its REST route and MCP command) and point them at the claude-accounts ones (deep link view:builds/tab:claude-accounts, same REST/MCP/CLI/voice action); update plugin-commands routes and console-control targets",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz309msbj",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s10",
+     "text": "Fix the next duplicates from duplicates.md in the build stores (e.g. agent caps, lander/auto-merge switches, model defaults between claude-settings and orchestrator): one owner each, readers through settings-source.mjs, migrate values, delete the copies",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30a136x",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s11",
+     "text": "Remove the duplicate controls/APIs for the build-store duplicates just fixed: the non-owner settings fields become a read-only line with a 'Change in <owner>' link (console_show deep link); drop their write routes and MCP/CLI/voice aliases, keeping one action per setting",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30b8f1u",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s12",
+     "text": "Fix the console server + plugin duplicates from duplicates.md (settings kept both in a plugin dataDir and the console settings registry or local storage): one owner, migrate, readers resolve through server/data_store.py owner lookup",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30cox6o",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s13",
+     "text": "Python twin of the resolver: server/settings_source.py reads framework/schemas/settings-sources.json and refuses a write to a non-owner path; wire data_store.py writes through it; unit test in server tests",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30drdf1",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s14",
+     "text": "Fix the framework/axHub duplicates from duplicates.md (e.g. look values held in both appearance@1 and app-look@1 or local SettingsRegistry copies, hub vs repo settings snapshots): one owner, migrate, remove local copies; record any Kotlin twin as a deferred gap in framework/spec/PORTING.md",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30ekltb",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s15",
+     "text": "Run settings-migrate.mjs for every remaining duplicate on the real hub data (dry-run first, then apply), commit the migration journal, verify each owner holds the expected value and the old stores no longer carry the key",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30fyz5m",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s16",
+     "text": "API for the registry: REST GET /api/settings-sources (list, owner of key, duplicates found by a live scan), MCP console tools settings_source_owner / settings_source_check, CLI `axf settings-source owner|list|check`, voice action settings.source, deep link view:settings/tab:settings.tabs=sources",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30gxky8",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s17",
+     "text": "Small read-only Settings → Sources view listing each setting key, its one owner and a jump to the owner's control (framework DataGrid + TabGroup, tokens only, data-axf-target registered); submit 3 UI Review options per the ui-choices rule",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30hb8h8",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s18",
+     "text": "CI check framework/cli/check-settings-sources.mjs: static scan of every store writer (data-files writeData, data_store.py writes, SettingsRegistry.set, json writes under plugin dataDirs) and every settings asset; fails when a key is defined or written in two stores, when a written key has no registry owner, or when a non-owner writes it; add a fixture test and wire into .github/workflows",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30ie84u",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s19",
+     "text": "Write the rule into the shared build rules store: build-rules@1 rule 'one-setting-source' (every setting has exactly one true source in settings-sources.json; new settings register an owner; no copies; CI check name) via `axf gate build-rules`, plus a line in _claude/shared/rules/RULES.md and memory/decisions.md with Brett's verbatim words",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30jtfey",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s20",
+     "text": "Tests, report, THREADS row and PR: run check-settings-sources, settings-source fixture test, plugin and server tests, check-console-control, check-theme, tracker --check; write _claude/builds/reports/one-true-source-for-every-setting.md listing every duplicate found, owner picked, values migrated, controls/APIs removed, and how each new feature is reached (REST, MCP, CLI, voice, deep link); add THREADS row; open the PR",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla2mz30k0qn0",
+     "createdAt": "2026-11-17T22:42:33.443Z"
+    },
+    {
+     "id": "s21-20",
+     "text": "Design the settings-source@1 contract: a registry file framework/schemas/settings-sources.json mapping every setting key (or key prefix) to exactly one owning store (data-store namespace + path + owner plugin/module), with readers/writers lists and a 'mirrors' field that must be empty; write the spec framework/spec/SETTINGS-SOURCES.md (one owner per key, readers resolve through the owner, no copies, how a migration moves a key from one store to another)",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
      "uid": "st-mwla1ull01o2bf",
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s2",
+     "id": "s22-21",
      "text": "Write the resolver core framework/core/settings-source.mjs: load the registry, ownerOf(key), readSetting(key) / writeSetting(key, value) routed through data-files.mjs to the owning store only, refuse writes to a non-owner path; plus a fixture framework/spec/fixtures/settings-sources.json with golden owner lookups (exact keys, prefixes, unknown keys)",
      "model": "Fable",
      "why": "",
@@ -197726,7 +198102,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s3",
+     "id": "s23-22",
      "text": "Design the migration helper framework/cli/settings-migrate.mjs: for a duplicated key, read every store that holds it, pick the owner's value (newest-wins when the owner is unset, recorded), write it to the owner, strip the key from the other stores, journal before/after in _claude/builds/reports/one-true-source-for-every-setting/migrations.json; --dry-run lists what would move",
      "model": "Fable",
      "why": "",
@@ -197745,7 +198121,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s4",
+     "id": "s24-23",
      "text": "Audit pass 1, console server + plugins: scan apps/console-web/server and apps/console-web/plugins/*/ for settings files and keys (settings.json, *.json under dataDir, SettingsRegistry keys, data_store writes); write the raw inventory to _claude/builds/reports/one-true-source-for-every-setting/audit-console.json (key, store, file, writer, editor UI)",
      "model": "Fable",
      "why": "",
@@ -197764,7 +198140,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s5",
+     "id": "s25-24",
      "text": "Audit pass 2, orchestrator + pipeline + agent stores: build-orchestrator (pipeline accounts.json, orchestrator settings), claude-accounts (workers.json), agent-slots, claude-settings, gate/lander settings, push-banner settings; add to the inventory as audit-builds.json",
      "model": "Fable",
      "why": "",
@@ -197783,7 +198159,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s6",
+     "id": "s26-25",
      "text": "Audit pass 3, framework + axHub side: framework/core settings (SettingsRegistry keys, appearance@1 / app-look@1 / skins, tapconfirm, chrome settings), framework/libs/settings, lib-hub, axhub-adapter-axf plugin and hub settings documents under /projects/_shared/_data; add audit-framework.json",
      "model": "Fable",
      "why": "",
@@ -197802,7 +198178,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s7",
+     "id": "s27-26",
      "text": "Collate the three inventories into the duplicate list: every key held or editable in more than one store or with more than one editing UI/API; for each pick the true owner with a one-line reason; write duplicates.md and fill framework/schemas/settings-sources.json with every audited key and its owner",
      "model": "Fable",
      "why": "",
@@ -197821,7 +198197,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s8",
+     "id": "s28-27",
      "text": "Fix duplicate 1, Claude account on/off: make claude-accounts workers.json the one owner of account enabled/worker state; build-orchestrator pipeline reads it through settings-source.mjs (no accounts.json copy of on/off); run settings-migrate for those keys so Moses X's real state is kept",
      "model": "Fable",
      "why": "",
@@ -197840,7 +198216,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s9",
+     "id": "s29-28",
      "text": "Remove the duplicate account on/off control and API from the orchestrator (pipeline accounts UI toggle, its REST route and MCP command) and point them at the claude-accounts ones (deep link view:builds/tab:claude-accounts, same REST/MCP/CLI/voice action); update plugin-commands routes and console-control targets",
      "model": "Fable",
      "why": "",
@@ -197859,7 +198235,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s10",
+     "id": "s30-29",
      "text": "Fix the next duplicates from duplicates.md in the build stores (e.g. agent caps, lander/auto-merge switches, model defaults between claude-settings and orchestrator): one owner each, readers through settings-source.mjs, migrate values, delete the copies",
      "model": "Fable",
      "why": "",
@@ -197878,7 +198254,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s11",
+     "id": "s31-30",
      "text": "Remove the duplicate controls/APIs for the build-store duplicates just fixed: the non-owner settings fields become a read-only line with a 'Change in <owner>' link (console_show deep link); drop their write routes and MCP/CLI/voice aliases, keeping one action per setting",
      "model": "Fable",
      "why": "",
@@ -197897,7 +198273,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s12",
+     "id": "s32-31",
      "text": "Fix the console server + plugin duplicates from duplicates.md (settings kept both in a plugin dataDir and the console settings registry or local storage): one owner, migrate, readers resolve through server/data_store.py owner lookup",
      "model": "Fable",
      "why": "",
@@ -197916,7 +198292,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s13",
+     "id": "s33-32",
      "text": "Python twin of the resolver: server/settings_source.py reads framework/schemas/settings-sources.json and refuses a write to a non-owner path; wire data_store.py writes through it; unit test in server tests",
      "model": "Fable",
      "why": "",
@@ -197935,7 +198311,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s14",
+     "id": "s34-33",
      "text": "Fix the framework/axHub duplicates from duplicates.md (e.g. look values held in both appearance@1 and app-look@1 or local SettingsRegistry copies, hub vs repo settings snapshots): one owner, migrate, remove local copies; record any Kotlin twin as a deferred gap in framework/spec/PORTING.md",
      "model": "Fable",
      "why": "",
@@ -197954,7 +198330,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s15",
+     "id": "s35-34",
      "text": "Run settings-migrate.mjs for every remaining duplicate on the real hub data (dry-run first, then apply), commit the migration journal, verify each owner holds the expected value and the old stores no longer carry the key",
      "model": "Fable",
      "why": "",
@@ -197973,7 +198349,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s16",
+     "id": "s36-35",
      "text": "API for the registry: REST GET /api/settings-sources (list, owner of key, duplicates found by a live scan), MCP console tools settings_source_owner / settings_source_check, CLI `axf settings-source owner|list|check`, voice action settings.source, deep link view:settings/tab:settings.tabs=sources",
      "model": "Fable",
      "why": "",
@@ -197992,7 +198368,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s17",
+     "id": "s37-36",
      "text": "Small read-only Settings → Sources view listing each setting key, its one owner and a jump to the owner's control (framework DataGrid + TabGroup, tokens only, data-axf-target registered); submit 3 UI Review options per the ui-choices rule",
      "model": "Fable",
      "why": "",
@@ -198011,7 +198387,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s18",
+     "id": "s38-37",
      "text": "CI check framework/cli/check-settings-sources.mjs: static scan of every store writer (data-files writeData, data_store.py writes, SettingsRegistry.set, json writes under plugin dataDirs) and every settings asset; fails when a key is defined or written in two stores, when a written key has no registry owner, or when a non-owner writes it; add a fixture test and wire into .github/workflows",
      "model": "Fable",
      "why": "",
@@ -198030,7 +198406,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s19",
+     "id": "s39-38",
      "text": "Write the rule into the shared build rules store: build-rules@1 rule 'one-setting-source' (every setting has exactly one true source in settings-sources.json; new settings register an owner; no copies; CI check name) via `axf gate build-rules`, plus a line in _claude/shared/rules/RULES.md and memory/decisions.md with Brett's verbatim words",
      "model": "Fable",
      "why": "",
@@ -198049,7 +198425,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s20",
+     "id": "s40-39",
      "text": "Tests, report, THREADS row and PR: run check-settings-sources, settings-source fixture test, plugin and server tests, check-console-control, check-theme, tracker --check; write _claude/builds/reports/one-true-source-for-every-setting.md listing every duplicate found, owner picked, values migrated, controls/APIs removed, and how each new feature is reached (REST, MCP, CLI, voice, deep link); add THREADS row; open the PR",
      "model": "Fable",
      "why": "",
@@ -198068,7 +198444,7 @@
      "createdAt": "2026-11-17T22:41:56.668Z"
     },
     {
-     "id": "s21-20",
+     "id": "s41-40",
      "text": "Design the settings-source@1 contract: a registry file framework/schemas/settings-sources.json mapping every setting key (or key prefix) to exactly one owning store (data-store namespace + path + owner plugin/module), with readers/writers lists and a 'mirrors' field that must be empty; write the spec framework/spec/SETTINGS-SOURCES.md (one owner per key, readers resolve through the owner, no copies, how a migration moves a key from one store to another)",
      "model": "Fable",
      "why": "New cross-app schema/contract that every store and port must follow",
@@ -198090,7 +198466,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s22-21",
+     "id": "s42-41",
      "text": "Write the resolver core framework/core/settings-source.mjs: load the registry, ownerOf(key), readSetting(key) / writeSetting(key, value) routed through data-files.mjs to the owning store only, refuse writes to a non-owner path; plus a fixture framework/spec/fixtures/settings-sources.json with golden owner lookups (exact keys, prefixes, unknown keys)",
      "model": "Fable",
      "why": "Engine internals of the single-source resolver every writer will call",
@@ -198112,7 +198488,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s23-22",
+     "id": "s43-42",
      "text": "Design the migration helper framework/cli/settings-migrate.mjs: for a duplicated key, read every store that holds it, pick the owner's value (newest-wins when the owner is unset, recorded), write it to the owner, strip the key from the other stores, journal before/after in _claude/builds/reports/one-true-source-for-every-setting/migrations.json; --dry-run lists what would move",
      "model": "Fable",
      "why": "Migration design across data-store namespaces, must lose nothing",
@@ -198133,7 +198509,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s24-23",
+     "id": "s44-43",
      "text": "Audit pass 1, console server + plugins: scan apps/console-web/server and apps/console-web/plugins/*/ for settings files and keys (settings.json, *.json under dataDir, SettingsRegistry keys, data_store writes); write the raw inventory to _claude/builds/reports/one-true-source-for-every-setting/audit-console.json (key, store, file, writer, editor UI)",
      "model": "Opus",
      "why": "",
@@ -198156,7 +198532,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s25-24",
+     "id": "s45-44",
      "text": "Audit pass 2, orchestrator + pipeline + agent stores: build-orchestrator (pipeline accounts.json, orchestrator settings), claude-accounts (workers.json), agent-slots, claude-settings, gate/lander settings, push-banner settings; add to the inventory as audit-builds.json",
      "model": "Opus",
      "why": "",
@@ -198183,7 +198559,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s26-25",
+     "id": "s46-45",
      "text": "Audit pass 3, framework + axHub side: framework/core settings (SettingsRegistry keys, appearance@1 / app-look@1 / skins, tapconfirm, chrome settings), framework/libs/settings, lib-hub, axhub-adapter-axf plugin and hub settings documents under /projects/_shared/_data; add audit-framework.json",
      "model": "Opus",
      "why": "",
@@ -198207,7 +198583,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s27-26",
+     "id": "s47-46",
      "text": "Collate the three inventories into the duplicate list: every key held or editable in more than one store or with more than one editing UI/API; for each pick the true owner with a one-line reason; write duplicates.md and fill framework/schemas/settings-sources.json with every audited key and its owner",
      "model": "Opus",
      "why": "",
@@ -198229,7 +198605,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s28-27",
+     "id": "s48-47",
      "text": "Fix duplicate 1, Claude account on/off: make claude-accounts workers.json the one owner of account enabled/worker state; build-orchestrator pipeline reads it through settings-source.mjs (no accounts.json copy of on/off); run settings-migrate for those keys so Moses X's real state is kept",
      "model": "Opus",
      "why": "",
@@ -198252,7 +198628,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s29-28",
+     "id": "s49-48",
      "text": "Remove the duplicate account on/off control and API from the orchestrator (pipeline accounts UI toggle, its REST route and MCP command) and point them at the claude-accounts ones (deep link view:builds/tab:claude-accounts, same REST/MCP/CLI/voice action); update plugin-commands routes and console-control targets",
      "model": "Opus",
      "why": "",
@@ -198275,7 +198651,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s30-29",
+     "id": "s50-49",
      "text": "Fix the next duplicates from duplicates.md in the build stores (e.g. agent caps, lander/auto-merge switches, model defaults between claude-settings and orchestrator): one owner each, readers through settings-source.mjs, migrate values, delete the copies",
      "model": "Opus",
      "why": "",
@@ -198300,7 +198676,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s31-30",
+     "id": "s51-50",
      "text": "Remove the duplicate controls/APIs for the build-store duplicates just fixed: the non-owner settings fields become a read-only line with a 'Change in <owner>' link (console_show deep link); drop their write routes and MCP/CLI/voice aliases, keeping one action per setting",
      "model": "Opus",
      "why": "",
@@ -198322,7 +198698,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s32-31",
+     "id": "s52-51",
      "text": "Fix the console server + plugin duplicates from duplicates.md (settings kept both in a plugin dataDir and the console settings registry or local storage): one owner, migrate, readers resolve through server/data_store.py owner lookup",
      "model": "Opus",
      "why": "",
@@ -198345,7 +198721,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s33-32",
+     "id": "s53-52",
      "text": "Python twin of the resolver: server/settings_source.py reads framework/schemas/settings-sources.json and refuses a write to a non-owner path; wire data_store.py writes through it; unit test in server tests",
      "model": "Opus",
      "why": "",
@@ -198368,7 +198744,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s34-33",
+     "id": "s54-53",
      "text": "Fix the framework/axHub duplicates from duplicates.md (e.g. look values held in both appearance@1 and app-look@1 or local SettingsRegistry copies, hub vs repo settings snapshots): one owner, migrate, remove local copies; record any Kotlin twin as a deferred gap in framework/spec/PORTING.md",
      "model": "Opus",
      "why": "",
@@ -198391,7 +198767,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s35-34",
+     "id": "s55-54",
      "text": "Run settings-migrate.mjs for every remaining duplicate on the real hub data (dry-run first, then apply), commit the migration journal, verify each owner holds the expected value and the old stores no longer carry the key",
      "model": "Opus",
      "why": "",
@@ -198413,7 +198789,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s36-35",
+     "id": "s56-55",
      "text": "API for the registry: REST GET /api/settings-sources (list, owner of key, duplicates found by a live scan), MCP console tools settings_source_owner / settings_source_check, CLI `axf settings-source owner|list|check`, voice action settings.source, deep link view:settings/tab:settings.tabs=sources",
      "model": "Opus",
      "why": "",
@@ -198436,7 +198812,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s37-36",
+     "id": "s57-56",
      "text": "Small read-only Settings → Sources view listing each setting key, its one owner and a jump to the owner's control (framework DataGrid + TabGroup, tokens only, data-axf-target registered); submit 3 UI Review options per the ui-choices rule",
      "model": "Opus",
      "why": "",
@@ -198458,7 +198834,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s38-37",
+     "id": "s58-57",
      "text": "CI check framework/cli/check-settings-sources.mjs: static scan of every store writer (data-files writeData, data_store.py writes, SettingsRegistry.set, json writes under plugin dataDirs) and every settings asset; fails when a key is defined or written in two stores, when a written key has no registry owner, or when a non-owner writes it; add a fixture test and wire into .github/workflows",
      "model": "Opus",
      "why": "",
@@ -198481,7 +198857,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s39-38",
+     "id": "s59-58",
      "text": "Write the rule into the shared build rules store: build-rules@1 rule 'one-setting-source' (every setting has exactly one true source in settings-sources.json; new settings register an owner; no copies; CI check name) via `axf gate build-rules`, plus a line in _claude/shared/rules/RULES.md and memory/decisions.md with Brett's verbatim words",
      "model": "Opus",
      "why": "",
@@ -198504,7 +198880,7 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     },
     {
-     "id": "s40-39",
+     "id": "s60-59",
      "text": "Tests, report, THREADS row and PR: run check-settings-sources, settings-source fixture test, plugin and server tests, check-console-control, check-theme, tracker --check; write _claude/builds/reports/one-true-source-for-every-setting.md listing every duplicate found, owner picked, values migrated, controls/APIs removed, and how each new feature is reached (REST, MCP, CLI, voice, deep link); add THREADS row; open the PR",
      "model": "Opus",
      "why": "",
@@ -198526,6 +198902,37 @@
      "createdAt": "2026-11-17T22:41:47.097Z"
     }
    ]
+  },
+  {
+   "id": "vps-sets-every-build-status-manifest",
+   "title": "VPS sets every build status in the manifest; orchestrator files tabs from it",
+   "category": "",
+   "detail": "Rule from Brett: the VPS is the only thing that sets a build's status. Status lives in the build manifest the VPS owns. As soon as a build starts on the VPS, its manifest status becomes building. When the VPS hands a build back to the orchestrator (stopped, killed, crashed, paused, kicked out) and its status is building or on hold, the orchestrator files it straight into the Hold tab: never Pending, never auto-relaunched. The orchestrator never computes status itself; it only reads the manifest status and puts the build in the matching tab. Hold must work on running builds too (stop the session on the VPS, keep the branch and ticked steps, file to Hold). Today hold only works on queued builds, and a paused build (flagship-professional-skin-covering-2) got relaunched on its own. Add tests: started build returned => Hold; held build never relaunched by the dispatcher. Part of the everything-on-the-VPS rule; coordinate with move-server-side-console-parts-onto-vps.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "vps-sets-every-build-status-manifest",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T22:42:26.247Z",
+   "updatedAt": "2026-11-17T22:42:26.247Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "All the status updates are going to be filed by the VPS. Attached to the manifest, and when it's sent back to the orchestrator, he knows what tab to put it in. If it gets kicked out of the VPS and sent back to the orchestrator as building at any time, whether it's building or on hold, it's going to go into hold.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

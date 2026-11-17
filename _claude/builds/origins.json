@@ -10449,6 +10449,18 @@
    "from": "",
    "addenda": []
   },
+  "vps-sets-every-build-status-manifest": {
+   "said": "All the status updates are going to be filed by the VPS. Attached to the manifest, and when it's sent back to the orchestrator, he knows what tab to put it in. If it gets kicked out of the VPS and sent back to the orchestrator as building at any time, whether it's building or on hold, it's going to go into hold.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "walkthrough-chapters": {
    "said": "break each chapter into its own video so one chapter can be re-recorded alone; a view listing every chapter with length and the version of its video segment.",
    "at": "2026-11-02",
