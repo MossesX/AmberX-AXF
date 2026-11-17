@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:22 UTC · `server-auto-lander-fixes-lands` added (0 steps) (all) · console
 - 2026-11-16 23:23 UTC · `server-auto-lander-fixes-lands` → queued, note (all) · console
 - 2026-11-16 23:23 UTC · `server-auto-lander-fixes-lands` note (all) · mcp
 - 2026-11-16 23:23 UTC · `server-auto-lander-fixes-lands` added (0 steps) (all) · builds-live
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:40 UTC · `server-auto-lander-fixes-lands` s9 done (all) · orchestrator
 - 2026-11-17 03:42 UTC · `server-auto-lander-fixes-lands` s10 done (all) · orchestrator
 - 2026-11-17 03:42 UTC · `orchestrator-runs-long-builds-across` s7 done (all) · orchestrator
+- 2026-11-17 03:43 UTC · `server-rule-done-means-merged-working` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
