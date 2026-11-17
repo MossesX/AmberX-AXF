@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:07:16.529Z",
+ "updatedAt": "2026-11-17T19:07:41.938Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -130673,7 +130673,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T19:07:07.625Z",
+   "updatedAt": "2026-11-17T19:07:14.340Z",
    "builtAt": "",
    "notes": [
     {
@@ -130751,6 +130751,10 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-settings-collapsible-split--joey.",
      "at": "2026-11-17T19:07:07.625Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--joey, shared account login)",
+     "at": "2026-11-17T19:07:14.340Z"
     }
    ],
    "approvals": [
@@ -160460,7 +160464,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -160468,8 +160472,8 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T15:09:19.867Z",
-   "builtAt": "2026-11-17T00:57:48.057Z",
+   "updatedAt": "2026-11-17T19:07:24.887Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -160506,6 +160510,14 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:19.867Z"
+    },
+    {
+     "text": "Auto-lander: fix attempt 1 (s21) added. CI is red on 7cb2122c7 (claude/every-plugin-screen-gets-a-settings-gear):",
+     "at": "2026-11-17T19:07:22.660Z"
+    },
+    {
+     "text": "Queued by auto-lander for fix attempt 1.",
+     "at": "2026-11-17T19:07:24.887Z"
     }
    ],
    "approvals": [],
@@ -160965,6 +160977,25 @@
      "note": "",
      "uid": "st-mwjllivx0kp8oj",
      "createdAt": "2026-11-16T18:29:38.397Z"
+    },
+    {
+     "id": "s21",
+     "text": "Auto-lander fix, attempt 1: make CI green on claude/every-plugin-screen-gets-a-settings-gear so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 7cb2122c7 (claude/every-plugin-screen-gets-a-settings-gear):\n- Light PR checks (full run happens once, in the merge queue) › Run node framework/cli/ci-scope.mjs light --run\nBrett said (verbatim): \"Every one has a gear icon to open its settings, right? Yeah, check and fix.\"",
+     "model": "Opus",
+     "why": "auto-lander red-ci",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl2du5306wa84",
+     "createdAt": "2026-11-17T19:07:18.889Z"
     }
    ]
   },
@@ -164487,15 +164518,16 @@
    "title": "Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control",
    "category": "",
    "detail": "Full professional rebuild of the Plan Studio plugin (plan-studio) on Fable. First CLEAR IT OUT: remove every existing plan and stop all syncing into Plan Studio (no rules, builds, pending list or anything else synced into it); it starts empty. Then rebuild to the same standard as the To-do/Note manager rebuild: unlimited nesting of plans, sections, steps, notes and lists inside each other; drag to move/reorder at any level; full context menu on every item (new inside, rename, edit, duplicate, move, delete with undo, export, send to build orchestrator); everything voice and MCP controlled (plugin-commands MCP tools, console-control addresses, CLI, AmberX voice). Integrated with everything else (to-do manager, build orchestrator, notes, Shipped features) by explicit links only, never auto-sync. Professional, powerful UI on framework controls and tokens, desktop and phone. Rebuild differences report. Tests, land through the orchestrator.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fable-rebuild-plan-studio-cleared-out",
    "pr": "#761",
+   "mergedAt": "2026-11-17T18:57:50Z",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-17T15:09:37.994Z",
+   "updatedAt": "2026-11-17T19:07:15.016Z",
    "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
@@ -164597,6 +164629,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:37.994Z"
+    },
+    {
+     "text": "Reconciler: PR #761 merged",
+     "at": "2026-11-17T19:07:15.016Z"
     }
    ],
    "approvals": [
@@ -167488,15 +167524,16 @@
    "title": "Server auto-lander fixes and lands everything on its own",
    "category": "",
    "detail": "Server-side rule enforced as a gate, runs as a VPS service (systemd), no console needed. Lands finished builds one at a time through the orchestrator. When a build clashes: merge main into it and resolve automatically (regenerate generated files), retry. When CI is red: automatically start a fix session for that build through the orchestrator on an available account, push the fix, re-run CI, retry until green, then land. Nothing ever sits blocked: every blocked build gets an automatic fix attempt, logged per attempt. Only after repeated failed attempts does it go to a banner item with what broke and a Fix button, plus a phone push. Merge with fix-red-ci-blocked-builds-they-land and get-main-green-unblock-lander-land-axf where they overlap. Status visible in Gate > Auto-lander; same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-auto-lander-fixes-lands",
    "pr": "#774",
+   "mergedAt": "2026-11-17T18:58:09Z",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
+   "updatedAt": "2026-11-17T19:07:15.016Z",
    "builtAt": "2026-11-17T04:40:41.012Z",
    "notes": [
     {
@@ -167558,6 +167595,10 @@
     {
      "text": "Watchdog: UI Review item r-20261117-0pcgp01 → Complete: Its PR merged on main (PR #774 merged 2026-11-17T18:58:09Z (92343032cbd7); on main by squash 92343032cbd7; build server-auto-lander-fixes-lands: built)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Reconciler: PR #811 names s24, s25 done; PR #774 merged",
+     "at": "2026-11-17T19:07:15.016Z"
     }
    ],
    "approvals": [
@@ -169981,9 +170022,10 @@
    "pendingId": "",
    "branch": "claude/server-rule-done-means-merged-working",
    "pr": "#771",
+   "mergedAt": "2026-11-17T19:06:28Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T15:30:22.248Z",
+   "updatedAt": "2026-11-17T19:07:15.016Z",
    "builtAt": "",
    "notes": [
     {
@@ -170033,6 +170075,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:30:22.248Z"
+    },
+    {
+     "text": "Reconciler: PR #771 merged",
+     "at": "2026-11-17T19:07:15.016Z"
     }
    ],
    "approvals": [
