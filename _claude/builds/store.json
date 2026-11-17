@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8340,
- "updatedAt": "2026-11-17T23:08:09.681Z",
+ "rev": 8341,
+ "updatedAt": "2026-11-17T23:08:21.302Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151891,7 +151891,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151900,8 +151900,8 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T23:01:14.071Z",
-   "builtAt": "2026-11-17T23:01:14.071Z",
+   "updatedAt": "2026-11-17T23:08:04.661Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -152018,6 +152018,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T23:00:14.115Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T23:08:04.661Z"
     }
    ],
    "approvals": [
@@ -152081,6 +152085,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T23:08:04.661Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "4b5465ae5fc029e2e144e6a1025ac4bab256c3d4",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -152364,7 +152376,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 128,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208209,7 +208221,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208217,8 +208229,8 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T23:01:14.071Z",
-   "builtAt": "2026-11-17T23:01:14.071Z",
+   "updatedAt": "2026-11-17T23:08:04.661Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -208323,6 +208335,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T23:00:14.115Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T23:08:04.661Z"
     }
    ],
    "approvals": [
@@ -208383,6 +208399,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T23:08:04.661Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "59fab543d47e6678db17e83d0daaf8a77e594a95",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -208617,7 +208641,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224809,15 +224833,15 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-17T22:48:13.486Z",
-   "builtAt": "2026-11-17T22:48:13.486Z",
+   "updatedAt": "2026-11-17T23:08:04.661Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--lenny.",
@@ -224906,6 +224930,10 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T22:28:15.534Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T23:08:04.661Z"
     }
    ],
    "approvals": [],
@@ -224960,6 +224988,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T23:08:04.661Z",
+    "why": "pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).",
+    "head": "cdd9c788c14026ffce32b1e5780a11ca539e4a73",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -225103,7 +225139,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -294884,10 +294920,10 @@
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T22:45:35.083Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-17T23:08:17.109Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T21:58:22.524Z",
@@ -294906,7 +294942,7 @@
      "action": "retry",
      "attempt": 1,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-17T23:08:08.714Z",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3)."
     }
@@ -295634,7 +295670,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
