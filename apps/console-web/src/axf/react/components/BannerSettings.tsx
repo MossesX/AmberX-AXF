@@ -46,6 +46,7 @@ import { TabGroup } from './TabGroup';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { useHidden } from '../hidden';
 
 export type BannerTone = 'own' | 'accent' | 'info' | 'success' | 'warning' | 'danger' | 'neutral';
 export type BannerDensity = 'compact' | 'regular' | 'roomy';
@@ -353,6 +354,8 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
   useBannerPrefsTick();
   const p = bannerPrefs(rt, id);
   const hide = useBannerHideTick();
+  // hidden-assets@1: hidden as a piece (right-click → Hide banner, the Hidden list) → nothing drawn, no note left behind
+  const hiddenPiece = useHidden('banner', id);
   const hiddenNow = bannerHidden(hide, id, Date.now());
   const ref = useRef<HTMLDivElement>(null);
   const [asleep, setAsleep] = useState(false);
@@ -389,6 +392,7 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
     return () => { clearTimeout(timer); obs.disconnect(); };
   }, [p.autoHide]);
   const until = hiddenNow ? hide.banners[id]?.until : undefined;
+  if (hiddenPiece) return null;
   const frame = (
     <div
       ref={ref}

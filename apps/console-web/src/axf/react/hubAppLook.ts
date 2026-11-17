@@ -38,6 +38,12 @@ export class HubAppLookStore implements AppLookStore {
     this.watch();
   }
 
+  /** Re-read now (fresh on focus: `rt.refreshFromSaved`); a save in flight wins, so nothing just written is lost. */
+  refresh(): void {
+    if (this.saving || this.wanted) return;
+    void this.read().then((changed) => { if (changed) for (const fn of this.listeners) fn(); });
+  }
+
   /** Returns true when the document changed. */
   private async read(): Promise<boolean> {
     let r: Response;

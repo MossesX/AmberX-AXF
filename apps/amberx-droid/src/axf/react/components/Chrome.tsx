@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type K
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
 import { toolbarStyle } from '../../core/engines/components';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
+import { useHidden } from '../hidden';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
@@ -226,7 +227,8 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
   const rt = useRuntime();
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
-  if (!tb) return null;
+  const hidden = useHidden('toolbar', id);
+  if (!tb || hidden) return null;
   // chrome-settings@1: a page toolbar is its own instance (its asset id): its overrides apply to it alone, through the
   // same style engine as the app toolbar, scoped by a layout-free wrapper carrying the attributes and vars
   const data = (rt.chromeData('toolbar', tb.id, tb.data) ?? tb.data) as ToolbarData;
