@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:44:30.332Z",
+ "updatedAt": "2026-11-17T19:44:49.128Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -183580,12 +183580,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-17T19:35:19.387Z",
+   "updatedAt": "2026-11-17T19:44:46.822Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T19:35:19.387Z"
+    },
+    {
+     "text": "Split by Claude into 14 steps (0 Fable).",
+     "at": "2026-11-17T19:44:46.822Z"
     }
    ],
    "approvals": [],
@@ -183602,7 +183606,322 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read the Terminal plugin (apps/console-web/plugins/console-terminal: plugin.json, web/, server/, README) and the existing places that touch Claude: deploy/claude-headless.sh, deploy/claude-workers.mjs, framework/cli/agent-slots.mjs, the console server's axHub/MCP call paths (apps/console-web/server). Write a short design note listing each event source and the event fields (ts, kind: launch|exit|account|mcp|axhub|connect|disconnect|error, source, session, account, model, summary, detail, level) in apps/console-web/plugins/console-terminal/docs/claude-link.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/docs/claude-link.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0fuvqp",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s2",
+     "text": "Server event bus: add an in-memory ring buffer (default 2000 events, set from the plugin's settings) plus a JSONL tail under the plugin's dataDir, written through data_store (data-store@1, namespace plugins/console-terminal). Add an append(event) function that redacts tokens and keys. Include unit tests for the ring and the redaction",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/server/claude_link.py",
+      "apps/console-web/plugins/console-terminal/server/test_claude_link.py",
+      "framework/schemas/data-store-paths.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0guipe",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s3",
+     "text": "REST: GET /api/plugins/console-terminal/claude-link (snapshot, with since, kind, q and limit filters), GET .../claude-link/stream (SSE live feed with heartbeat and Last-Event-ID resume), POST .../claude-link/clear (clears the view marker, not the log), GET .../claude-link/state (connected, last event, counts per kind). Add route tests",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/server/routes.py",
+      "apps/console-web/plugins/console-terminal/server/test_claude_link.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0hwgrd",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s4",
+     "text": "Hook the console server's own Claude and axHub traffic into the bus: outgoing axHub /mcp calls (tool name, held/veto/result state, timing, errors), connect and disconnect, and auth failures, through a small wrapper at the existing call sites. Register it as capability axf.claude-link@1 in plugin_services so no other plugin imports it by folder",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/",
+      "apps/console-web/plugins/console-terminal/server/claude_link.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0iq4q0",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s5",
+     "text": "Hook the headless launches: deploy/claude-headless.sh and claude-workers.mjs route send launch, account-pick, limit-handoff, exit-code and stderr-error events to the bus. When the console can't be reached they POST to an ingest route (POST .../claude-link/ingest, console token) and append to the JSONL on failure. Add the ingest route and a test with a fake launch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "deploy/claude-workers.mjs",
+      "apps/console-web/plugins/console-terminal/server/routes.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0j1qvk",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s6",
+     "text": "Hook the agent-slot and MCP events: agent-slots.mjs take, queue and release, and the console's own /mcp server tool calls from Claude sessions (session, tool, ok/error), sent to the bus through the same ingest helper (framework-side helper takes the URL from env, never names the plugin folder)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/cli/agent-slots.mjs",
+      "apps/console-web/server/mcp_server.py",
+      "framework/cli/claude-link-emit.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0kxaem",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s7",
+     "text": "Web UI: a pinned main tab 'Claude link' (first in the Terminal's TabGroup, can't be closed) with a read-only live log view on framework controls and tokens only. EventSource with reconnect and a connected/disconnected chip; each row shows time, a kind chip, source, account/model and summary, and expands to show the detail",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/web/ClaudeLinkTab.tsx",
+      "apps/console-web/plugins/console-terminal/web/index.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0lvr1f",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s8",
+     "text": "UI controls on a role=toolbar Toolbars-plugin toolbar (aria-label, settings id): auto-scroll with Pause/Resume (pauses by itself when scrolled up, shows a 'N new' jump button), a kind filter (multi-select), a text filter, and Clear. Register every control with data-axf-target / control@1 addresses (view:terminal/tab:claude-link, its actions and filters)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/web/ClaudeLinkTab.tsx",
+      "apps/console-web/plugins/console-terminal/web/claudeLinkToolbar.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0m029i",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s9",
+     "text": "Settings: add a sub-tab in Settings → Plugins → Terminal for buffer size, the default kind filter, auto-scroll on/off and showing detail by default, with a level for each setting in the level toolbar. Persist them through the settings registry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/web/settings.tsx",
+      "apps/console-web/plugins/console-terminal/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0nr6gl",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s10",
+     "text": "API parity: add console actions and plugin commands for open (console_show target view:terminal/tab:claude-link), state, tail (with filters), pause/resume, filter set and clear. Expose them as MCP tools (console-terminal_claude_link_*), the CLI (axf claude-link tail|state|clear|open [--follow] [--kind] [--q]) and voice phrases for AmberX ('show the Claude link', 'what's Claude doing'). Add a deep link ?view=terminal&tab=claude-link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/commands.json",
+      "framework/cli/claude-link.mjs",
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/console-terminal/voice.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0ol198",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s11",
+     "text": "Lifecycle and registries: update install.mjs/uninstall.mjs so the dataDir and JSONL are removed, add axf-plugin:console-terminal markers on lines outside the plugin, add help and README sections, give glossary descriptions to the new commands and CLI, and add a notify.json entry for disconnect/error alerts (off by default)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/install.mjs",
+      "apps/console-web/plugins/console-terminal/uninstall.mjs",
+      "apps/console-web/plugins/console-terminal/README.md",
+      "apps/console-web/plugins/console-terminal/notify.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0p45qi",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s12",
+     "text": "UI Review: capture desktop and phone shots of the tab (live, paused, filtered, empty) through a vite preview with mocked SSE. Ship 3 layout options as assets in plugins/console-terminal/assets/ (dense rows / cards / split detail) and submit them with review.mjs --choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/assets/",
+      "apps/console-web/plugins/console-terminal/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0qahca",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s13",
+     "text": "Tests and CI checks: python tests, the plugin-commands parity test, check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, plugin-lifecycle check --after-uninstall, the glossary catalog --check and the console typecheck/build. Fix anything red",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/console-terminal/",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0r50mo",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    },
+    {
+     "id": "s14",
+     "text": "Write the report _claude/builds/reports/terminal-main-tab-streaming-console-s.md: what was added, the event sources, and how each part is reached (deep link, REST, MCP, CLI, voice). Add the THREADS.md row, push the branch, open the PR (it says the UI Review is waiting) and link it with builds-live.mjs link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/terminal-main-tab-streaming-console-s.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl3q09y0s2zt3",
+     "createdAt": "2026-11-17T19:44:46.822Z"
+    }
+   ]
   },
   {
    "id": "auto-lander-settings-log-placeholder",
