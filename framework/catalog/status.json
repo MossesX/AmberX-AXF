@@ -2420,5 +2420,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
+  },
+  "k.widgetshape": {
+    "status": "built",
+    "wave": 1,
+    "module": "framework",
+    "notes": "Build banner-widget-shapes-plus-change-icon (Nov 17 2026, PR #821): widget-shape@1, every banner widget picks a shape (circle, square, rounded, pill, hexagon, custom SVG outline) and its icon (another icon pack glyph). Right-click / long-press a widget: Shape and Change icon; Settings > Plugins > Banners: Widget shape and icon rows; the custom shape editor and the icon picker dialogs. Shape radii are theme tokens (component-tokens@1 widget family). REST /api/console-control/banner-widgets, MCP console_control_banner_widget, console actions banner.widget.shape|icon|reset, CLI axf banner widget, voice (make the clock a hexagon). Kotlin twin deferred (PORTING.md)."
   }
 }
