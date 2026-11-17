@@ -826,8 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 04:16 UTC · `server-rule-done-means-merged-working` s16 done, → landing (all) · orchestrator
-- 2026-11-17 04:16 UTC · `server-rule-done-means-merged-working` note (all) · orchestrator
 - 2026-11-17 04:17 UTC · `builds-keep-their-slot-across-phases` note (all) · orchestrator
 - 2026-11-17 04:16 UTC · `builds-keep-their-slot-across-phases` note (all) · orchestrator
 - 2026-11-17 04:18 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s16 done (all) · orchestrator
@@ -1226,6 +1224,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:08 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-17 19:08 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-17 19:08 UTC · `every-plugin-screen-gets-a-settings-gear` → running, note (all) · pipeline
+- 2026-11-17 19:08 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
+- 2026-11-17 19:09 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
 
 ## Token passes (log)
 
