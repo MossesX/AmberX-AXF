@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:56 UTC · `own-look-per-grid-and-tab-group` note (all) · orchestrator
 - 2026-11-16 23:56 UTC · `every-plugin-screen-gets-a-settings-gear` → running, note (all) · pipeline
 - 2026-11-16 23:56 UTC · `every-plugin-screen-gets-a-settings-gear` branch claude/every-plugin-screen-gets-a-settings-gear (all) · pipeline
 - 2026-11-16 23:57 UTC · `axhub-veto-countdown-setting-read-only` note (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 12:23 UTC · `maintenance-plugin-clear-docker-cache` branch claude/maintenance-plugin-clear-docker-cache (all) · pipeline
 - 2026-11-17 12:23 UTC · `maintenance-plugin-clear-docker-cache` note (all) · orchestrator
 - 2026-11-17 12:23 UTC · `maintenance-plugin-clear-docker-cache` note (all) · orchestrator
+- 2026-11-17 12:26 UTC · `move-server-side-console-parts-onto-vps` added (0 steps) (all) · console
 
 ## Token passes (log)
 
