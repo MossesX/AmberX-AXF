@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T12:34:42.236Z",
+ "updatedAt": "2026-11-17T12:35:07.921Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162420,7 +162420,7 @@
    "title": "Auto-lander grid: one row per build, behind-main count, archive",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -162428,8 +162428,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-17T12:28:59.901Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T12:35:01.131Z",
+   "builtAt": "2026-11-17T12:35:01.131Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -162583,8 +162583,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:35:01.131Z",
      "note": "",
      "uid": "st-mwjuz27x01ia7r",
      "createdAt": "2026-11-16T22:52:06.053Z"
