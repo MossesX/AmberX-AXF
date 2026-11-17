@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8053,
- "updatedAt": "2026-11-17T21:39:27.910Z",
+ "rev": 8054,
+ "updatedAt": "2026-11-17T21:39:37.985Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282493,6 +282493,10 @@
     {
      "text": "Brett: in the one shared settings interface, every control that edits the settings interface itself (its own look/layout) is greyed out and locked by default, behind an 'Edit this interface' switch/checkbox. Flip it on to enable them; off greys them again. Controls for the toolbar/banner it was opened from stay live.",
      "at": "2026-11-17T21:38:47.165Z"
+    },
+    {
+     "text": "Brett picked the one to keep: the toolbar settings interface named 'Gizmo X AI Studio'. Make that THE default (and only) toolbar settings interface; delete the others.",
+     "at": "2026-11-17T21:39:05.285Z"
     }
    ],
    "approvals": [],
