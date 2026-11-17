@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:00:56.084Z",
+ "updatedAt": "2026-11-17T15:01:07.177Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172487,12 +172487,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T14:59:48.662Z",
+   "updatedAt": "2026-11-17T15:00:55.483Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T14:59:48.662Z"
+    },
+    {
+     "text": "Split by Claude into 15 steps (3 Fable).",
+     "at": "2026-11-17T15:00:55.483Z"
     }
    ],
    "approvals": [],
@@ -172509,7 +172513,338 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the land-order contract: add an `order` block to lander-state@1 (ordered PR numbers + build ids, `source: default|brett`, `updatedAt`, `updatedBy`, rev), with migration from the existing merge-queue/landing-line order (default = closest-to-main first, new PRs append at the bottom, merged/closed PRs drop out). Write it down in the gate-rules spec",
+     "model": "Fable",
+     "why": "Schema + migration design for a shared lander state contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/BUILD-RULES.md",
+      "framework/schemas/",
+      "framework/core/landing-line.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt801quhm",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add the pure land-order core: reconcile(order, openPRs) (keeps Brett's order, appends new ones at the bottom, drops closed ones, default sort by behind-main count), move(order, ids, to: top|up|down|bottom|index) for multi-select, next(order, readyPRs) = first in order that is not blocked. No I/O",
+     "model": "Fable",
+     "why": "Engine internals the lander and every surface share",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/land-order.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt802jjfn",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fixture + check for land-order: default order, reorder top/up/down/bottom/index with multi-select, new PR appends, closed PR drops, Brett's order survives reconcile, migration from the landing-line order. Wire it into check-landing-line.mjs and check-gate-rules.mjs (--write regenerates the fixture)",
+     "model": "Fable",
+     "why": "Conformance fixture for the new contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/fixtures/land-order.json",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/check-gate-rules.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt803ykjz",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s4",
+     "text": "Store the order on the VPS through data-store@1: read/write the land order in the gate plugin's data namespace (registry entry in data-store-paths.json), versioned with rev + updatedBy, lock on write. Before writing, check that auto-lander-grid-one-row-per-build and server-auto-lander-fixes-lands don't already own this key; if they do, merge into their shape and add a note on those builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/",
+      "framework/core/data-files.mjs",
+      "framework/schemas/data-store-paths.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt8043ty9",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s5",
+     "text": "Make the server auto-lander follow the order strictly: on each tick, reconcile the stored order with open PRs, pick only the first PR in order (no skipping ahead), merge main into it, wait for CI, land it, then move to the next. Log 'waiting on #N (position 1)' when the head is blocked",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/",
+      "apps/console-web/plugins/push-banner/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt805dnyt",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s6",
+     "text": "Test the lander follows the order: fake PR list with Brett's order, check it lands one at a time in order, merges main before each, never jumps a blocked head, and appends a new PR at the bottom",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt806fd5r",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s7",
+     "text": "REST routes on the gate plugin: GET /land-order (order with position numbers, PR, build, state), POST /land-order/move {ids[], to: top|up|down|bottom|index}, POST /land-order/reset (back to closest-to-main first). Route statically readable for plugin-commands",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/server/",
+      "apps/console-web/plugins/gate/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt807xyxa",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s8",
+     "text": "CLI + MCP: `land.mjs order list|move <#pr|build>… --to top|up|down|bottom|<n>|reset` (and `axf land order …`) calling the same core; MCP commands through plugin-commands (gate_land_order_get / _move / _reset) with descriptions",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land.mjs",
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/gate/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt808ohyc",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s9",
+     "text": "Voice: AmberX/console actions `land.next` ('land #774 next' = move to top), `land.move` (top/up/down/bottom/position N), `land.order` (read it back), each calling the REST route; register the phrases",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/actions.json",
+      "apps/console-web/src/voice/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt809zne3",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s10",
+     "text": "Auto-lander tab UI part 1: a position number (#) column in the Auto-lander grid, rows sorted by the stored order, order loaded from GET /land-order, refreshed on focus. Tokens and framework controls only",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/AutoLanderTab.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt80ac7lk",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s11",
+     "text": "Auto-lander tab UI part 2: drag-and-drop rows to reorder (mouse, touch, keyboard), multi-select drags, optimistic update then POST /land-order/move, rolls back on error",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/AutoLanderTab.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt80bywox",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s12",
+     "text": "Auto-lander tab UI part 3: each row's context menu gets Move to top / Move up / Move down / Move to bottom (works on a multi-selection) plus a toolbar Reset order (confirm). Toolbar has role=toolbar + aria-label",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/AutoLanderTab.tsx",
+      "apps/console-web/plugins/gate/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt80c04ht",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s13",
+     "text": "API for the UI: console-control addresses (view:builds/tab:gate=auto-lander, row:<pr>/action:move-top etc. via data-axf-target), console_show deep link to the tab and to a row; check-console-control.mjs passes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt80dcjg6",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s14",
+     "text": "Screenshots + UI Review: desktop + phone shots of the Auto-lander tab with the # column, a drag in progress and the row menu; submit 3 options (e.g. drag handle left / whole-row drag / handle + arrows) as assets through review.mjs submit --choices, group named after the build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/assets/",
+      "apps/console-web/plugins/ui-review/review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt80emlxz",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    },
+    {
+     "id": "s15",
+     "text": "Tests, report and PR: run check-landing-line, check-gate-rules, the gate plugin tests, check-theme, check-controls, check-toolbars, check-console-control, plugin-lifecycle check; write _claude/builds/reports/auto-lander-drag-rows-to-set-merge-order.md (how each part is reached: UI, REST, MCP, CLI, voice); add the THREADS row; open the PR, link it with builds-live.mjs link",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/auto-lander-drag-rows-to-set-merge-order.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwktkyt80fovs4",
+     "createdAt": "2026-11-17T15:00:55.483Z"
+    }
+   ]
   }
  ]
 }
