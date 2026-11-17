@@ -835,7 +835,6 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
 - 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
 - 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
 - 2026-11-17 21:42 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · watchdog
 - 2026-11-17 21:42 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 - 2026-11-17 21:42 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:39 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:39 UTC · `guided-live-demo-test-watch-orchestrator` merged, note (all) · reconciler
 - 2026-11-17 22:39 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-17 22:40 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 
 ## Token passes (log)
 
