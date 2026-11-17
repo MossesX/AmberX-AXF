@@ -831,18 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:32 UTC · `rebuild-fresh-main-hide-any-asset` s12 done (all) · orchestrator
-- 2026-11-17 21:32 UTC · `fix-banner-settings-interface-tab` s6 done (all) · orchestrator
-- 2026-11-17 21:32 UTC · `land-pr-730-reset-all-button-far-right` s2 done (all) · orchestrator
-- 2026-11-17 21:33 UTC · `fix-banner-settings-interface-tab` s7 done (all) · orchestrator
-- 2026-11-17 21:34 UTC · `land-pr-730-reset-all-button-far-right` branch claude/reset-all-button-every-asset-override, PR #803 (all) · builds-live
-- 2026-11-17 21:34 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
-- 2026-11-17 21:34 UTC · `rebuild-fresh-main-phone-connect-small` s13 done (all) · orchestrator
-- 2026-11-17 21:34 UTC · `land-pr-730-reset-all-button-far-right` → queued, branch claude/reset-all-button-every-asset-override, PR #803 (all) · foreign-write
-- 2026-11-17 21:34 UTC · `fix-banner-settings-interface-tab` s8 done (all) · orchestrator
-- 2026-11-17 21:34 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
-- 2026-11-17 21:34 UTC · `icon-picker-every-banner-settings-widget` s1 done, → running (all) · orchestrator
-- 2026-11-17 21:34 UTC · `fix-banner-settings-interface-tab` s9 done (all) · orchestrator
 - 2026-11-17 21:35 UTC · `console-app-part-2-native-floating` note (all) · watchdog
 - 2026-11-17 21:35 UTC · `console-app-part-2-native-floating` note (all) · builds-live
 - 2026-11-17 21:35 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
@@ -1231,6 +1219,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:31 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
 - 2026-11-17 22:32 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
 - 2026-11-17 22:32 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete (all) · foreign-write
+- 2026-11-17 22:28 UTC · `orchestrator-settings-collapsible-split` → complete (all) · foreign-write
+- 2026-11-17 22:28 UTC · `group-chat-audio-hear-agents-talk-while` → complete (all) · foreign-write
+- 2026-11-17 22:28 UTC · `picker-dialog-plugin-replaces-all` → complete (all) · foreign-write
+- 2026-11-17 22:28 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `icon-picker-every-banner-settings-widget` s8 done, note (all) · foreign-write
+- 2026-11-17 22:28 UTC · `banner-widget-shapes-plus-change-icon` s12 done (all) · orchestrator
+- 2026-11-17 22:30 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 22:30 UTC · `move-everything-axhub-web-console` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:30 UTC · `banner-widget-shapes-plus-change-icon` s13 done (all) · orchestrator
+- 2026-11-17 22:32 UTC · `rebuild-fresh-main-phone-connect-small` s27 done, note (all) · foreign-write
+- 2026-11-17 22:32 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
 
 ## Token passes (log)
 
