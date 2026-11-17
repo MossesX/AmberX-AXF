@@ -278,3 +278,31 @@ Not changed, but noted: a lander round takes 7–8 min, because auto-land walks 
 **Earlier on #704:**
 - After main's merge, main's per-device views in claude-settings wrote with `fs` functions this branch no longer imports. Views now save through `data-files` (eedb82421).
 - With these fixes the full light list (24 commands) and the Alerts/MCP list pass locally. The only exceptions are host ones.
+
+## data-container (#704) landed (s14 done, 02:07)
+
+**Merged by the merge queue at 02:07** (7015af4b8), on its own, after a green queue run (43998136507): sweep, Web Dev Console + Python API, AmberX and Gradle. No manual merge.
+- **Main CI on 7015af4b8:** success (Gradle ran; the rest was already run by the queue on the same code).
+- **Console redeploy:** the console's own 5-minute updater redeployed at 02:15 on 7015af4b8. `install-console.sh` now passes `conf/env/console.env` (`AXF_DATA_URL` and the console's service token) and attaches the console to the `axf-data` network.
+- **Check:** `GET /api/plugins/data-store/state` → `configured: true, reachable: true`, 47 namespaces, all `local` (nothing has moved yet; that is s17).
+
+**What it took after s13, in order:**
+
+| # | Problem | Fix |
+|---|---|---|
+| 1 | Merge conflicts with main (android.yml, glossary, catalog, status, inventory); help coverage fell to 99.5% | 4801426fa |
+| 2 | Light checks: `data_store` import path in a test; `tarfile filter='data'` missing on Python 3.11.2; a 5 s backup wait in a test | 72cfbbb1a |
+| 3 | After main's merge: claude-settings device views wrote with `fs` functions this branch no longer imports | eedb82421 |
+| 4 | menu-reach (no `web/menu.ts`); the ui-review submit-API pattern matched a seeded data path in a spec | cc26430ef |
+| 5 | The data-store mode cache keyed on mtime alone, so a write right after a cutover could still go local (Node + Python) | 892eb4fc6 |
+| 6 | plugin-lifecycle flagged the whole data-store path-map family as stale plugin references | 03c64f002 |
+| 7 | data-store notify types used a group (`system`) the notify registry doesn't have | b4a29e7ec |
+| 8 | auto-land kept committing the worktree's builds-store files into the branch. GitHub has no builds-live merge driver, so the PR showed as conflicting and no PR checks ran | 7fdd046e0 takes main's builds files; the lander fix is in f385fd615. Also: an auto-land hold also blocks the PR in the merge queue, so I held the build briefly and released it before it could land |
+
+**Lander fixes made along the way** (this build, f385fd615):
+- auto-land never commits builds-live files into a build branch;
+- `queue remove` pins the head GitHub reports, so a removal doesn't lapse at once.
+
+Also noted for later:
+- `merge=union` (THREADS.md, STATUS.md, decisions.md) and the builds-live driver don't exist on GitHub, so PRs touching those files show as conflicting whenever main moves.
+- My local "full sweep" runs early in this build covered only single-line `- run:` steps. From s14 on, every step is run from the workflow YAML (`/tmp/runjob.py`).
