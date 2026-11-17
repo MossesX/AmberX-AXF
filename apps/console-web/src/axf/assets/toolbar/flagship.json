@@ -1,0 +1,75 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "toolbar",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "The flagship toolbar: icons with labels on a raised compact bar, live pages, a live search (Ctrl K), the day and night switch and the account. Low-priority buttons fold into a More menu when the bar is narrow (two always stay), it folds to a handle, and destructive presses arm for 3 s before they run.",
+  "tags": [
+    "flagship",
+    "professional",
+    "overflow",
+    "tap-confirm"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "density": "compact",
+    "surface": "raised",
+    "divider": true,
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Search…  (Ctrl K)",
+      "maxResults": 12
+    },
+    "groups": [
+      {
+        "id": "pages",
+        "items": [
+          {
+            "id": "home",
+            "icon": "home",
+            "label": "Go home",
+            "action": "nav:home"
+          }
+        ],
+        "provider": "views",
+        "max": 6,
+        "label": "Pages"
+      },
+      {
+        "id": "app",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "theme-switch",
+        "id": "day-night",
+        "at": "end",
+        "order": 10
+      },
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "end",
+        "order": 20
+      }
+    ],
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
+    "collapsible": true
+  }
+}

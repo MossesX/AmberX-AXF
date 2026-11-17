@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "dialog",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "Flagship dialogs: a 560 px centred modal on a blurred scrim (the themed scrim opacity), a plain header with the close button, a short scale-in; tapping the backdrop closes it. Becomes a bottom sheet on a phone through the layout.",
+  "tags": [
+    "flagship",
+    "professional",
+    "modal"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 560,
+    "backdrop": "blur",
+    "animation": "scale",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

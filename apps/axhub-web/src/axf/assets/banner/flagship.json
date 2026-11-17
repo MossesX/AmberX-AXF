@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "banner",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "The flagship banner, the same line on the console, axHub web and AmberX: the branding lockup on the left, the live search in the middle (it shrinks first), the day and night switch, the online status and the clock on the right. Plugins attach their badges; every widget snaps to its neighbour and a full banner scrolls sideways with scroll snap, nothing overlaps.",
+  "tags": [
+    "flagship",
+    "banner",
+    "branded",
+    "professional"
+  ],
+  "data": {
+    "height": 34,
+    "surface": "raised",
+    "divider": true,
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center"
+      },
+      {
+        "type": "status",
+        "id": "online",
+        "at": "right",
+        "order": 30
+      },
+      {
+        "type": "theme-switch",
+        "id": "amberx-day-night",
+        "at": "right",
+        "order": 40
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 50
+      }
+    ]
+  }
+}

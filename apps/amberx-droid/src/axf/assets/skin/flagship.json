@@ -1,0 +1,399 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "skin",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "The flagship professional skin: one product look for the console, axHub web and AmberX. Covers colours (light + dark), style, type, layout, every menu and chrome kind, banners and widgets, grids, dialogs, settings, motion, behaviour and hooks.",
+  "tags": [
+    "flagship",
+    "professional",
+    "skin",
+    "compact"
+  ],
+  "data": {
+    "layoutTheme": "flagship",
+    "colorTheme": "flagship-dark",
+    "colorThemes": {
+      "light": "flagship-light",
+      "dark": "flagship-dark"
+    },
+    "styleTheme": "flagship",
+    "behaviorTheme": "standard",
+    "assets": {
+      "typography": "flagship",
+      "density": "flagship",
+      "sizing": "flagship",
+      "context-menu": "flagship",
+      "app-menu": "flagship",
+      "nav-menu": "flagship",
+      "nav-style": "flagship",
+      "tab-group": "flagship",
+      "toolbar": "flagship",
+      "banner": "flagship",
+      "dialog": "flagship",
+      "popup": "flagship",
+      "container": "flagship",
+      "settings": "flagship",
+      "button": "enterprise-crisp",
+      "slider": "enterprise-crisp",
+      "gauge": "level-bar",
+      "meter": "hairline",
+      "dock-layout": "main-side",
+      "xlayout": "molly",
+      "branding": "amberx",
+      "agent-card": "corporate-badge",
+      "demonstration": "what-is-an-asset",
+      "book": "getting-started",
+      "clip": "what-is-an-asset-clip",
+      "docs": "getting-started-docs"
+    },
+    "preview": {
+      "caption": "Blue-black and amber, compact, quiet motion: one product across console, axHub and AmberX."
+    },
+    "iconPack": "amberx-outline",
+    "extras": {
+      "spacing": "compact",
+      "hidden": {
+        "banner": false,
+        "app-menu": false,
+        "toolbar": false,
+        "nav-menu": false
+      }
+    },
+    "behavior": {
+      "tapConfirm": {
+        "armMs": 3000,
+        "toolbar": "on",
+        "tab-group": "on",
+        "nav-menu": "on",
+        "app-menu": "on",
+        "context-menu": "on",
+        "banner": "on"
+      },
+      "overflow": {
+        "tab-group": "more"
+      },
+      "sticky": {
+        "tab-group": true
+      },
+      "collapse": {
+        "toolbar": true
+      },
+      "hover": "tint",
+      "press": "shrink",
+      "focusRing": "auto"
+    },
+    "parts": {
+      "banner": {
+        "padding": "sm",
+        "gap": "sm",
+        "shadow": "sm",
+        "alignment": "spread"
+      },
+      "toolbar": {
+        "gap": "xs",
+        "itemPadding": "sm",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft"
+      },
+      "tab-group": {
+        "radius": "pill",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft"
+      },
+      "nav-menu": {
+        "itemPadding": "sm",
+        "radius": "md",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft"
+      },
+      "app-menu": {
+        "itemPadding": "sm",
+        "hover": "highlight",
+        "animation": "fade",
+        "animationSpeed": "fast",
+        "easing": "ease-out"
+      },
+      "context-menu": {
+        "radius": "md",
+        "shadow": "lg",
+        "itemPadding": "sm",
+        "hover": "highlight",
+        "animation": "scale",
+        "animationSpeed": "fast",
+        "easing": "ease-out"
+      },
+      "dialog": {
+        "radius": "lg",
+        "shadow": "lg",
+        "animation": "scale",
+        "animationSpeed": "normal",
+        "easing": "ease-out"
+      },
+      "popup": {
+        "radius": "md",
+        "shadow": "md",
+        "animation": "fade",
+        "animationSpeed": "fast",
+        "easing": "ease-out"
+      },
+      "button": {
+        "radius": "md",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft",
+        "fontWeight": "500"
+      },
+      "action-button": {
+        "radius": "md",
+        "hover": "tint",
+        "click": "press",
+        "focusRing": "soft",
+        "fontWeight": "600"
+      },
+      "search-bar": {
+        "radius": "md",
+        "background": "surface2",
+        "borderColor": "border",
+        "focusRing": "soft"
+      },
+      "clock": {
+        "fontFamily": "mono",
+        "textColor": "muted",
+        "fontWeight": "500"
+      },
+      "logo": {
+        "fontWeight": "700",
+        "letterSpacing": "tight"
+      },
+      "label": {
+        "fontWeight": "500",
+        "textColor": "muted"
+      },
+      "status": {
+        "radius": "pill",
+        "fontWeight": "500",
+        "padding": "xs"
+      },
+      "counter": {
+        "radius": "pill",
+        "fontWeight": "600",
+        "fontFamily": "mono"
+      },
+      "badge": {
+        "radius": "pill",
+        "fontWeight": "600"
+      },
+      "progress": {
+        "radius": "pill"
+      },
+      "avatar": {
+        "radius": "pill",
+        "hover": "glow"
+      },
+      "link": {
+        "textColor": "accent",
+        "hover": "underline"
+      },
+      "theme-switch": {
+        "radius": "pill",
+        "hover": "tint",
+        "click": "press"
+      },
+      "spacer": {
+        "padding": "none"
+      },
+      "divider": {
+        "borderColor": "border"
+      },
+      "slider": {
+        "radius": "pill",
+        "focusRing": "soft"
+      },
+      "container": {
+        "radius": "md",
+        "shadow": "sm",
+        "padding": "md",
+        "gap": "sm"
+      },
+      "gauge": {
+        "fontFamily": "mono",
+        "fontWeight": "600",
+        "iconColor": "accent"
+      },
+      "meter": {
+        "radius": "pill",
+        "gap": "xs"
+      }
+    },
+    "grid": {
+      "density": "compact",
+      "rows": 1,
+      "header": "bold",
+      "zebra": false,
+      "lines": "rows",
+      "sticky": true
+    },
+    "dialog": {
+      "variant": "modal",
+      "backdrop": "blur",
+      "animation": "scale",
+      "header": "plain",
+      "closeOnBackdrop": true,
+      "width": 560
+    },
+    "settings": {
+      "page": "flagship",
+      "tab-group": "chrome-tab-group",
+      "toolbar": "chrome-toolbar",
+      "banner": "chrome-banner",
+      "nav-menu": "chrome-nav-menu",
+      "app-menu": "chrome-app-menu",
+      "context-menu": "chrome-context-menu"
+    },
+    "motion": {
+      "speed": {
+        "fast": 90,
+        "normal": 150,
+        "slow": 240
+      },
+      "easing": {
+        "standard": "standard",
+        "emphasized": "cubic-bezier(0.2, 0, 0, 1.05)",
+        "exit": "cubic-bezier(0.3, 0, 1, 1)"
+      },
+      "reduced": "system",
+      "chrome": {
+        "context-menu": {
+          "enter": "scale",
+          "exit": "fade",
+          "duration": "fast",
+          "stagger": 0
+        },
+        "app-menu": {
+          "enter": "rise",
+          "exit": "fade",
+          "duration": "fast",
+          "stagger": 12
+        },
+        "nav-menu": {
+          "enter": "slide",
+          "exit": "fade",
+          "duration": "normal",
+          "stagger": 16
+        },
+        "tab-group": {
+          "enter": "fade",
+          "exit": "fade",
+          "duration": "fast"
+        },
+        "toolbar": {
+          "enter": "fade",
+          "exit": "fade",
+          "duration": "fast"
+        },
+        "banner": {
+          "enter": "fade",
+          "exit": "none",
+          "duration": "normal"
+        },
+        "dialog": {
+          "enter": "scale",
+          "exit": "fade",
+          "duration": "normal"
+        },
+        "popup": {
+          "enter": "rise",
+          "exit": "fade",
+          "duration": "normal"
+        },
+        "grid": {
+          "enter": "fade",
+          "exit": "none",
+          "duration": "fast",
+          "stagger": 8
+        },
+        "page": {
+          "enter": "rise",
+          "exit": "fade",
+          "duration": "normal"
+        }
+      }
+    },
+    "hooks": {
+      "tab-group": {
+        "hooks": [
+          "chrome.tab-group.settings",
+          "chrome.tab-group.change",
+          "chrome.tab-group.move"
+        ],
+        "drop": [
+          "axf.chrome.tab-group"
+        ]
+      },
+      "toolbar": {
+        "hooks": [
+          "chrome.toolbar.settings",
+          "chrome.toolbar.change",
+          "chrome.toolbar.move"
+        ],
+        "drop": [
+          "axf.chrome.toolbar"
+        ]
+      },
+      "banner": {
+        "hooks": [
+          "chrome.banner.settings",
+          "chrome.banner.change",
+          "chrome.banner.move"
+        ],
+        "drop": [
+          "axf.chrome.banner"
+        ]
+      },
+      "nav-menu": {
+        "hooks": [
+          "chrome.nav-menu.settings",
+          "chrome.nav-menu.change",
+          "chrome.nav-menu.move"
+        ],
+        "drop": [
+          "axf.chrome.nav-menu"
+        ]
+      },
+      "app-menu": {
+        "hooks": [
+          "chrome.app-menu.settings",
+          "chrome.app-menu.change",
+          "chrome.app-menu.move"
+        ],
+        "drop": [
+          "axf.chrome.app-menu"
+        ]
+      },
+      "context-menu": {
+        "hooks": [
+          "chrome.context-menu.settings",
+          "chrome.context-menu.change",
+          "chrome.context-menu.move"
+        ],
+        "drop": [
+          "axf.chrome.context-menu"
+        ]
+      },
+      "grid-row": {
+        "hooks": [
+          "feature-matrix"
+        ],
+        "drop": [
+          "axf.grid.row"
+        ]
+      }
+    }
+  }
+}
