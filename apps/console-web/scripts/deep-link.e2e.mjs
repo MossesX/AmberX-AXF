@@ -8,7 +8,8 @@
  *
  * Covers: plugin screens (build orchestrator, gate), a tab of a plugin screen (gate › auto-lander), a tab of a built-in
  * screen (settings › plugins), the link in the hash, a slow backend (the plugin list answers late), the link surviving a
- * reload before it landed (sessionStorage, the sign-in round trip), the parameter taken off the address bar, and an
+ * reload before it landed (sessionStorage, the sign-in round trip), a remote open and console_refresh on an open console
+ * (straight to the screen, back on it after the reload), the parameter taken off the address bar, and an
  * unknown screen answering with a warning instead of hanging.
  */
 import { spawn } from 'node:child_process';
@@ -168,6 +169,53 @@ try {
     await ctx.close();
   }
 
+  // Remote open never lands on home (s5): an open console on the orchestrator is sent Gate › Auto-lander and goes
+  // straight there (no home screen in between); a remote console_refresh then reloads onto that same screen and tab.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const page = await ctx.newPage();
+    const queue = [];
+    const acks = [];
+    await page.route('**/api/**', async (r) => {
+      const u = new URL(r.request().url());
+      const json = (body, status = 200) => r.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) }).catch(() => {});
+      if (u.pathname === '/api/me') return json(ME);
+      if (u.pathname.includes('/console-commands/stream')) {
+        // hold the stream open until a command is queued, then send it (the client reconnects for the next one)
+        const until = Date.now() + 20_000;
+        while (!queue.length && Date.now() < until) await sleep(100);
+        if (!queue.length) return r.abort().catch(() => {});
+        const m = { $axf: 'console-command@1', at: new Date().toISOString(), by: 'e2e', ...queue.shift() };
+        return r.fulfill({ status: 200, contentType: 'text/event-stream', body: `data: ${JSON.stringify(m)}\n\n` }).catch(() => {});
+      }
+      if (u.pathname.includes('/console-commands/ack')) { try { acks.push(JSON.parse(r.request().postData() ?? '{}')); } catch { /* skip */ } return json({ ok: true }); }
+      if (u.pathname.includes('/console-commands/')) return json({ ok: true });
+      if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort().catch(() => {});
+      return json({ ok: false, error: 'offline (e2e)' }, 503);
+    });
+    const acked = async (id) => { const until = Date.now() + 30_000; while (Date.now() < until && !acks.some((a) => a.id === id)) await sleep(100); return acks.find((a) => a.id === id); };
+    await page.goto(`http://127.0.0.1:${PORT}/?axf-target=${encodeURIComponent('view:build-orchestrator')}`);
+    await landed(page, 'warm');
+    await page.evaluate(() => {
+      window.__seen = [window.axfConsoleControlState().screen];
+      setInterval(() => { const s = window.axfConsoleControlState().screen; if (window.__seen[window.__seen.length - 1] !== s) window.__seen.push(s); }, 5);
+    });
+    queue.push({ id: 'e2e-open-gate', op: 'control', command: { verb: 'open', address: 'view:gate/tab:gate.tabs=auto-lander', by: 'mcp' } });
+    const a1 = await acked('e2e-open-gate');
+    ok(a1?.ok, `remote open gate › auto-lander acked ok (${a1?.message})`);
+    const s1 = await page.evaluate(() => ({ st: window.axfConsoleControlState(), seen: window.__seen }));
+    ok(s1.st.screen === 'gate' && s1.st.tabs?.['view:gate/tab:gate.tabs'] === 'auto-lander', `remote open lands on gate › auto-lander (${s1.st.screen} ${JSON.stringify(s1.st.tabs)})`);
+    ok(!s1.seen.includes('home'), `remote open goes straight there, never home (${s1.seen.join(' → ')})`);
+    queue.push({ id: 'e2e-refresh', op: 'refresh' });
+    const nav = page.waitForEvent('framenavigated', { timeout: 30_000 });
+    const a2 = await acked('e2e-refresh');
+    ok(a2?.ok, `remote refresh acked ok (${a2?.message})`);
+    await nav;
+    const r = await landed(page, 'refresh');
+    ok(r.state.screen === 'gate' && r.state.tabs?.['view:gate/tab:gate.tabs'] === 'auto-lander', `remote refresh reloads onto gate › auto-lander, not home (${r.state.screen} ${JSON.stringify(r.state.tabs)})`);
+    await ctx.close();
+  }
+
   // an unknown screen answers (not ok) instead of hanging, and leaves the console usable
   {
     const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
@@ -179,7 +227,7 @@ try {
     await ctx.close();
   }
 
-  console.log(`✓ deep-link e2e — ${checks} checks (${CASES.map((c) => c.address).join(', ')}, hash, slow backend, reload, unknown)`);
+  console.log(`✓ deep-link e2e — ${checks} checks (${CASES.map((c) => c.address).join(', ')}, hash, slow backend, reload, wake, remote open + refresh, unknown)`);
 } catch (e) {
   console.error(e instanceof Error ? e.message : e);
   process.exitCode = 1;
