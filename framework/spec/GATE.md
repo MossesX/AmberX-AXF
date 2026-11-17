@@ -60,7 +60,7 @@ Both are written to History.
 
 Status: contract since Nov 17 2026 (build `auto-lander-drag-rows-to-set-merge-order`, Fable phase; Brett: "I want to
 reorder the order that they're gonna be merged in."). Reference engine: `framework/core/land-order.mjs` (pure: records,
-`reconcile`, `move`, `next`, `migrate`); JSON Schema `schemas/json/land-order.schema.json` (also embedded in
+`reconcile`, `move`, `setOrder`, `reset`, `next`, `sortBy`, `migrate`, `ORDER_COMMANDS`); JSON Schema `schemas/json/land-order.schema.json` (also embedded in
 `lander-state.schema.json` as `order`); fixture `framework/spec/fixtures/land-order.json` (`spec/check-landing-line.mjs`
 and `spec/check-gate-rules.mjs` replay it, `--write` regenerates). The lander lands one at a time; this record says **in
 which order**. Brett drags rows in the Auto-lander tab (several at once), the lander follows the list.
@@ -90,9 +90,11 @@ order: { $axf: 'land-order@1', rev, source: default | brett, updatedAt, updatedB
 - **Reset** puts the order back to `default` (one confirm; the next reconcile re-sorts).
 - **Next** = the first item in the order that is open, waiting and not blocked / held / paused / in flight. A blocked
   row keeps its place; the lander passes over it and comes back when it is free.
-- **The waiting list follows the order**: `lander-state@1.waiting[].position` is the row's place in `order.items`
-  (1-based); `landing` and every waiting PR appear in `order.items`, and the order names no PR that is not one of them
-  (`landerStateErrors` checks both ways).
+- **The waiting list follows the order**: `landerStateFrom` reconciles the order with what is open and sorts
+  `lander-state@1.waiting` by it (`position` = 1-based place among the waiting rows; the one landing is not a waiting
+  row). `landing` and every waiting PR appear in `order.items`, and the order names no PR that is not one of them
+  (`landerStateErrors` checks both ways). On the line itself, `landing-line.mjs` `orderLine(line, order)` puts the
+  entries in the order's sequence with the in-flight entry kept at the front.
 
 ### Migration
 

@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 /**
  * landing-line@1 conformance: one line, one entry at a time, cancelled runs are never a verdict, red files a fix and
- * the line moves on, hands can pause / skip / move, and the merge queue migrates in its old order.
+ * the line moves on, hands can pause / skip / move, and the merge queue migrates in its old order. Then land-order@1:
+ * the default order, drags (top / up / down / bottom / index, several rows at once), new PRs append, closed ones drop,
+ * Brett's order survives reconcile, migration from the line and the queue, and the line follows the order.
  *   node framework/spec/check-landing-line.mjs           check
- *   node framework/spec/check-landing-line.mjs --write   regenerate fixtures/landing-line-migrate.json's expected output
+ *   node framework/spec/check-landing-line.mjs --write   regenerate fixtures/landing-line-migrate.json and fixtures/land-order.json
  */
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from '../core/landing-line.mjs';
+import * as O from '../core/land-order.mjs';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const FIX = join(ROOT, 'framework/spec/fixtures/landing-line-migrate.json');
@@ -476,6 +479,131 @@ t('commands: every hand action the line offers is declared once, with a REST pat
   const ids = L.LINE_COMMANDS.map((c) => c.id);
   assert.deepEqual(ids, ['landing-list', 'landing-add', 'landing-pause', 'landing-resume', 'landing-skip', 'landing-move', 'landing-move-up', 'landing-on']);
   for (const c of L.LINE_COMMANDS) { assert.ok(c.path.startsWith('/landing') && c.cli && c.title && c.description && ['read', 'write'].includes(c.effect), c.id); }
+});
+
+// ------------------------------------------------------------------ land order (land-order@1): the order the lander follows
+
+const ORDER_FIX = join(ROOT, 'framework/spec/fixtures/land-order.json');
+const ORDER_SCHEMA = JSON.parse(readFileSync(join(ROOT, 'framework/schemas/json/land-order.schema.json'), 'utf8'));
+const OAT = '2026-11-17T15:00:00Z';
+/** What is open on Nov 17 2026: four PRs, three with a known distance from main. */
+const OPEN = [
+  { pr: 540, build: 'skins-hot-swap', behind: 3 }, { pr: 541, build: 'help-coverage-gate', behind: 0 },
+  { pr: 543, build: 'notes-nested-lists' }, { pr: 539, build: 'push-quiet-hours', behind: 1 },
+];
+/** A while later: #541 landed, #600 opened, #543 moved closer to main. */
+const OPEN_LATER = [{ pr: 540, build: 'skins-hot-swap', behind: 3 }, { pr: 543, build: 'notes-nested-lists', behind: 2 }, { pr: 539, build: 'push-quiet-hours', behind: 1 }, { pr: 600, build: 'new-one', behind: 0 }];
+/** Brett's drags, one after the other (ids by PR number, entry id or build id; several at once). */
+const MOVES = [
+  { ids: [543, 540], to: 'top' }, { ids: 'pr-540', to: 'down' }, { ids: [541, 539], to: 'up' }, { ids: 'push-quiet-hours', to: 'index', index: 1 },
+  { ids: 539, to: 'bottom' }, { ids: [539, 541], to: 0, inFlight: 'pr-543' }, { ids: 543, to: 'top' },
+];
+/** The line's entries as the runner sees them when it asks what goes next. */
+const READY = [{ pr: 543, build: 'notes-nested-lists', state: 'waiting', hold: 'its screenshots wait for Brett in UI Review' }, { pr: 539, build: 'push-quiet-hours', state: 'fix-filed' }, { pr: 540, build: 'skins-hot-swap', state: 'waiting' }, { pr: 600, build: 'new-one', state: 'waiting' }];
+const ORDER_IN = { at: OAT, open: OPEN, openLater: OPEN_LATER, moves: MOVES, ready: READY, migrate: { line: actual.batch.line, queue: QUEUE_IN, control: CONTROL_IN } };
+const orderOut = (() => {
+  const dflt = O.reconcile(O.emptyOrder(OAT), OPEN, { at: OAT });
+  const steps = []; let o = dflt;
+  for (const m of MOVES) { o = O.move(o, m.ids, m.to, { index: m.index, inFlight: m.inFlight, at: OAT, by: 'brett' }); steps.push(o); }
+  const brett = o;
+  const reconciled = O.reconcile(brett, OPEN_LATER, { at: OAT });
+  const reset = O.reset(reconciled, { at: OAT, by: 'brett' });
+  const resorted = O.reconcile(reset, OPEN_LATER, { at: OAT });
+  const set = O.setOrder(reconciled, [600, 'notes-nested-lists'], { at: OAT, by: 'brett', inFlight: 'pr-540' });
+  const migrateLine = O.migrate({ line: actual.batch.line }, { at: OAT });
+  const migrateQueue = O.migrate({ queue: QUEUE_IN, control: CONTROL_IN }, { at: OAT });
+  const migrateQueueNoHand = O.migrate({ queue: QUEUE_IN, control: { ...CONTROL_IN, order: [] } }, { at: OAT });
+  return {
+    default: dflt, steps, reconciled, reset, resorted, set, migrateLine, migrateQueue, migrateQueueNoHand,
+    next: { reconciled: O.next(reconciled, READY), resorted: O.next(resorted, READY), inFlight: O.next(reconciled, READY, { inFlight: 'pr-540' }), nothing: O.next(reconciled, READY.map((e) => ({ ...e, hold: 'x' }))) },
+    lineFollows: L.orderLine(actual.batch.line, O.migrate({ queue: QUEUE_IN, control: { ...CONTROL_IN, order: [539, 543, 544] } }, { at: OAT }), { at: OAT }),
+  };
+})();
+if (WRITE) { writeFileSync(ORDER_FIX, `${JSON.stringify({ $axf: 'land-order@1', note: 'Generated by framework/spec/check-landing-line.mjs --write; every port replays `in` (open PRs, moves, a landing line and a merge queue) and must answer `out` (land-order@1 records, next, the line in the order).', in: ORDER_IN, out: orderOut }, null, 1)}\n`); console.log(`wrote ${ORDER_FIX}`); }
+const ofx = JSON.parse(readFileSync(ORDER_FIX, 'utf8'));
+t('land-order fixture inputs are the ones in this file', () => assert.ok(same(ofx.in, ORDER_IN), 'inputs drifted: run with --write'));
+for (const k of Object.keys(ofx.out)) t(`land-order fixture replay: ${k}`, () => assert.deepEqual(orderOut[k], ofx.out[k]));
+
+const ids = (o) => o.items.map((it) => it.id);
+const orderOk = (o, name) => { assert.deepEqual(validate(ORDER_SCHEMA, o), [], `${name} fails the schema`); assert.deepEqual(O.orderErrors(o), [], `${name} fails orderErrors`); };
+t('land order: the default order is closest to main first, unknown last, source default', () => {
+  const o = orderOut.default;
+  assert.deepEqual(ids(o), ['pr-541', 'pr-539', 'pr-540', 'pr-543']);
+  assert.equal(o.source, 'default'); assert.equal(o.rev, 1); assert.equal(o.updatedBy, '');
+  assert.deepEqual(o.items[0], { id: 'pr-541', pr: 541, build: 'help-coverage-gate', behind: 0 });
+  assert.ok(!('behind' in o.items[3]), 'an unknown distance is left out, not faked');
+  orderOk(o, 'default');
+  assert.deepEqual(O.reconcile(o, OPEN, { at: OAT }), o, 'nothing changed: the same record back, no rev bump');
+});
+t('land order: top / up / down / bottom / index move one or several rows as a block; the one in flight keeps the top', () => {
+  const s = orderOut.steps;
+  assert.deepEqual(ids(s[0]), ['pr-540', 'pr-543', 'pr-541', 'pr-539'], 'two rows to the top, in their relative order');
+  assert.equal(s[0].source, 'brett'); assert.equal(s[0].rev, 2); assert.equal(s[0].updatedBy, 'brett');
+  assert.deepEqual(ids(s[1]), ['pr-543', 'pr-540', 'pr-541', 'pr-539'], 'down one');
+  assert.deepEqual(ids(s[2]), ['pr-543', 'pr-541', 'pr-539', 'pr-540'], 'two rows up one, together');
+  assert.deepEqual(ids(s[3]), ['pr-543', 'pr-539', 'pr-541', 'pr-540'], 'by build id to index 1');
+  assert.deepEqual(ids(s[4]), ['pr-543', 'pr-541', 'pr-540', 'pr-539'], 'bottom');
+  assert.deepEqual(ids(s[5]), ['pr-543', 'pr-541', 'pr-539', 'pr-540'], 'two rows to the top while pr-543 is in flight: it stays ahead, the block keeps its relative order');
+  assert.deepEqual(s[6], s[5], 'a move that changes nothing is the same record');
+  assert.equal(s[5].rev, 7);
+  for (const [i, o] of s.entries()) orderOk(o, `step ${i}`);
+  assert.throws(() => O.move(s[0], 999, 'top'), /no row 999/);
+  assert.throws(() => O.move(s[0], 540, 'sideways'), /top, up, down, bottom, index/);
+  assert.throws(() => O.move(s[0], [], 'top'), /at least one row/);
+  assert.throws(() => O.move(s[0], 540, 'index', { index: -1 }), /0 = top/);
+  assert.deepEqual(O.move(s[0], 'pr-543', 'bottom', { inFlight: 'pr-543', at: OAT }), s[0], 'the one in flight cannot be moved');
+});
+t("land order: Brett's order survives reconcile; a new PR appends at the bottom, a landed one drops out", () => {
+  const r = orderOut.reconciled;
+  assert.deepEqual(ids(r), ['pr-543', 'pr-539', 'pr-540', 'pr-600']);
+  assert.equal(r.source, 'brett'); assert.equal(r.rev, orderOut.steps[6].rev + 1);
+  assert.equal(r.items[0].behind, 2, 'a fresh distance is taken even in a hand order');
+  orderOk(r, 'reconciled');
+  assert.equal(orderOut.reset.source, 'default'); assert.deepEqual(ids(orderOut.reset), ids(r), 'reset keeps the rows until the next reconcile');
+  assert.deepEqual(ids(orderOut.resorted), ['pr-600', 'pr-539', 'pr-543', 'pr-540'], 'after reset the default sort is back');
+  assert.deepEqual(ids(orderOut.set), ['pr-540', 'pr-600', 'pr-543', 'pr-539'], 'set the whole list: named rows first, the one in flight stays on top, the rest keep their order');
+  assert.equal(orderOut.set.source, 'brett');
+});
+t('land order: next is the first ready row in the order; null while one is in flight or nothing is ready', () => {
+  assert.equal(orderOut.next.reconciled.pr, 540, 'pr-543 is held and pr-539 has a fix filed: the lander takes pr-540');
+  assert.equal(orderOut.next.resorted.pr, 600);
+  assert.equal(orderOut.next.inFlight, null); assert.equal(orderOut.next.nothing, null);
+  assert.equal(O.next(orderOut.reconciled, [...READY, { pr: 700, state: 'checking' }]), null, 'an entry in flight among the ready list holds the slot');
+  assert.equal(O.next(orderOut.reconciled, [{ pr: 777, state: 'waiting' }]).pr, 777, 'a row the order does not know yet comes after the listed ones');
+  assert.equal(O.next(orderOut.reconciled, READY, { test: (e) => e.pr === 539 }).pr, 539, 'the ready test can be replaced');
+});
+t('land order: migration from the landing line keeps the line order; from the merge queue the hand order comes first', () => {
+  const ml = orderOut.migrateLine;
+  assert.deepEqual(ids(ml), actual.batch.line.entries.map((e) => e.id));
+  assert.deepEqual(ml.migratedFrom, { frame: 'landing-line@1', at: OAT }); assert.equal(ml.source, 'default'); assert.equal(ml.rev, 1);
+  const mq = orderOut.migrateQueue;
+  assert.deepEqual(ids(mq), ['pr-540', 'pr-541', 'pr-543', 'pr-539', 'pr-537', 'pr-535', 'pr-544', 'pr-545']);
+  assert.equal(mq.source, 'brett'); assert.equal(mq.updatedBy, 'migration'); assert.equal(mq.migratedFrom.frame, 'merge-queue@1');
+  assert.equal(orderOut.migrateQueueNoHand.source, 'default');
+  assert.deepEqual(ids(orderOut.migrateQueueNoHand), ids(mq));
+  assert.deepEqual(O.migrate({}, { at: OAT }).items, []); assert.ok(!O.migrate({}, { at: OAT }).migratedFrom);
+  orderOk(ml, 'migrateLine'); orderOk(mq, 'migrateQueue');
+  assert.deepEqual(O.migrate({ queue: QUEUE_IN, control: CONTROL_IN }, { at: OAT }), mq, 'idempotent');
+});
+t('land order: the landing line follows the order; the in-flight entry keeps the front; unknown entries stay behind', () => {
+  const l = orderOut.lineFollows;
+  assert.deepEqual(l.entries.map((e) => e.id), ['pr-539', 'pr-543', 'pr-544', 'pr-540', 'pr-541', 'pr-537', 'pr-535', 'pr-545']);
+  assert.equal(l.rev, actual.batch.line.rev + 1);
+  schemaOk(l, 'line in order');
+  assert.equal(L.orderLine(l, O.migrate({ line: l }, { at: OAT }), { at: OAT }), l, 'already in order: the same line back');
+  let f = fly(fresh(), 'pr-701', 1);
+  f = L.orderLine(f, { items: [{ id: 'pr-703', pr: 703, build: '' }, { id: 'pr-701', pr: 701, build: '' }, { id: 'pr-702', pr: 702, build: '' }] }, { at: T(4) });
+  assert.deepEqual(f.entries.map((e) => e.id), ['pr-701', 'pr-703', 'pr-702'], 'pr-701 is in flight and stays in front');
+});
+t('land order: the record is validated field by field; the commands are declared once', () => {
+  assert.deepEqual(O.orderErrors(orderOut.default), []);
+  const bad = O.orderErrors({ $axf: 'nope', rev: -1, source: 'me', updatedAt: 'yesterday', updatedBy: 1, items: [{ id: 'x' }, { id: 'x', pr: 1, behind: -1 }] });
+  assert.equal(bad.length, 8);
+  assert.deepEqual(O.normOrder({ items: [{ pr: '#7' }, { build: 'b' }, { pr: 7 }, { title: 'nothing' }] }, OAT).items.map((it) => it.id), ['pr-7', 'build-b']);
+  assert.deepEqual(O.ORDER_COMMANDS.map((c) => c.id), ['lander-order', 'lander-order-move', 'lander-order-set', 'lander-order-reset']);
+  for (const c of O.ORDER_COMMANDS) assert.ok(c.path.startsWith('/lander/order') && c.cli && c.title && c.description && ['read', 'write', 'confirm'].includes(c.effect), c.id);
+  assert.deepEqual(O.MOVES, ['top', 'up', 'down', 'bottom', 'index']); assert.deepEqual(O.SOURCES, ['default', 'brett']);
+  assert.equal(ORDER_SCHEMA.properties.$axf.const, O.ORDER_FRAME); assert.deepEqual(ORDER_SCHEMA.properties.source.enum, [...O.SOURCES]);
 });
 
 console.log(`check-landing-line: ${n} checks passed`);

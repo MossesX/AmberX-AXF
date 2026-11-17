@@ -72,7 +72,10 @@ const RUNS = [
   { $axf: 'auto-lander-run@1', startedAt: '2026-11-15T11:54:00Z', finishedAt: '2026-11-15T11:54:30Z', result: 'landing', mode: 'batch', reason: 'ci-waiting', reasonText: 'Waiting for CI on the PR being landed.', landing: { pr: 540, title: 'Skins: hot-swap tokens', build: 'skins-hot-swap', ci: 'running' }, merged: [], waiting: 2 },
 ];
 
-const IN = { CONFIG_TODAY, CONFIG_705, CONFIG_HAND, SNAPSHOTS, SOFT_SET, SPLIT_SET, QUEUE, CONTROL, RUNS, AT };
+/** The order Brett set (land-order@1): two rows pulled up, one that closed meanwhile, the rest unknown to it. */
+const ORDER_BRETT = { $axf: 'land-order@1', rev: 3, source: 'brett', updatedAt: '2026-11-15T11:59:00Z', updatedBy: 'brett', items: [{ id: 'pr-539', pr: 539, build: 'push-quiet-hours' }, { id: 'pr-544', pr: 544, build: 'ui-review-phone-shots' }, { id: 'pr-540', pr: 540, build: 'skins-hot-swap' }, { id: 'pr-999', pr: 999, build: 'closed-meanwhile' }] };
+
+const IN = { CONFIG_TODAY, CONFIG_705, CONFIG_HAND, SNAPSHOTS, SOFT_SET, SPLIT_SET, QUEUE, CONTROL, RUNS, ORDER_BRETT, AT };
 
 // ------------------------------------------------------------------ outputs
 
@@ -92,13 +95,15 @@ function run() {
       paused: G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE, control: CONTROL, runs: RUNS, pause: { why: 'Brett is landing one by hand', by: 'brett', at: '2026-11-15T11:58:00Z' }, at: AT }),
       off: G.landerStateFrom({ config: CONFIG_HAND, queue: {}, runs: [{ startedAt: AT, finishedAt: AT, result: 'skipped', reason: 'switched-off' }], at: AT }),
       empty: G.landerStateFrom({ at: AT }),
+      ordered: G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE, control: CONTROL, runs: RUNS, order: ORDER_BRETT, at: AT }),
     },
     ruleForWhy: Object.fromEntries(['', 'its screenshots wait for Brett in UI Review', 'UI Review holds it (changes)', 'it conflicts with main in code (framework/ui/axf.css)', 'conflicts in code with #540; goes in the next batch', 'its PR checks are red', 'its PR checks have not run yet', 'its batch went red: tested again in a smaller batch', 'it is a draft', 'it comes from a fork', "couldn't build its queue commit; tried again when its head or main changes", 'taken out of the queue by hand (x)', 'kicked out: #537 broke CI when tested on top of main.'].map((w) => [w || '(empty)', G.ruleForWhy(w)])),
     errors: {
       goodSet: G.ruleSetErrors(set), badRule: G.ruleErrors({ id: 'Bad Id', kind: 'x', enabled: 'yes', severity: 'hard', owner: 'me', settings: [] }),
       dupIds: G.ruleSetErrors({ $axf: G.SET_FRAME, rev: 1, at: AT, rules: [set.rules[0], set.rules[0]] }), notASet: G.ruleSetErrors({ rev: -1, at: 'yesterday' }),
       goodState: G.landerStateErrors(G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE, control: CONTROL, runs: RUNS, at: AT })),
-      badState: G.landerStateErrors({ $axf: G.STATE_FRAME, at: AT, status: 'paused', paused: false, mode: 'merge-queue', lastRuns: [{ result: 'done', reason: 'why' }], waiting: [{ pr: 0, state: 'zzz', reason: '', rule: 'Bad Rule' }], landing: {} }),
+      badState: G.landerStateErrors({ $axf: G.STATE_FRAME, at: AT, status: 'paused', paused: false, mode: 'merge-queue', lastRuns: [{ result: 'done', reason: 'why' }], waiting: [{ pr: 0, state: 'zzz', reason: '', rule: 'Bad Rule' }], landing: {}, order: { $axf: 'land-order@1', rev: 1, source: 'me', updatedAt: AT, updatedBy: '', items: [{ id: 'pr-5', pr: 5, build: '' }] } }),
+      driftedOrder: G.landerStateErrors({ ...G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE, control: CONTROL, runs: RUNS, at: AT }), order: ORDER_BRETT }),
     },
     norm: { rule: G.normRule({ id: 'x', kind: 'nope', severity: 'loud', owner: 'nobody', enabled: 'y', settings: null, source: 'config.json foo' }), run: G.normRun({ startedAt: AT, result: 'landed', mode: 'merge-queue', merged: [1, 0, -2, 'x', 5], reason: 'nope' }) },
   };
@@ -189,6 +194,22 @@ t('lander-state from the merge queue: running on #540, every other PR waits with
   assert.equal(s.status, 'running'); assert.equal(s.landing.pr, 540); assert.equal(s.mode, 'batch'); assert.equal(s.source, 'merge-queue@1');
   assert.deepEqual(s.waiting.map((w) => [w.pr, w.state, w.rule]), [[543, 'waiting', 'clash'], [539, 'waiting', ''], [544, 'held', 'ui-review'], [537, 'kicked', 'ci-green'], [545, 'held', 'merge-queue-only'], [535, 'held', '']]);
   assert.ok(s.waiting.every((w) => w.reason)); assert.deepEqual(s.landedRecently, [538, 536]); assert.equal(s.lastRuns.length, 2); assert.deepEqual(G.landerStateErrors(s), []);
+});
+t('lander-state carries the land order: migrated from the queue on the first state, the waiting rows follow it', () => {
+  const s = actual.landerState.running;
+  assert.equal(s.order.$axf, 'land-order@1'); assert.equal(s.order.source, 'default'); assert.deepEqual(s.order.migratedFrom, { frame: 'merge-queue@1', at: AT });
+  assert.deepEqual(s.order.items.map((it) => it.pr), [540, 543, 539, 544, 537, 545, 535], 'the one landing, then the queue order, then the held ones');
+  assert.deepEqual(s.waiting.map((w) => [w.position, w.pr]), [[1, 543], [2, 539], [3, 544], [4, 537], [5, 545], [6, 535]]);
+  const o = actual.landerState.ordered;
+  assert.equal(o.order.source, 'brett'); assert.equal(o.order.rev, ORDER_BRETT.rev + 1, 'reconciled once: pr-999 dropped, the unknown rows appended');
+  assert.deepEqual(o.order.items.map((it) => it.pr), [539, 544, 540, 543, 537, 545, 535]);
+  assert.deepEqual(o.waiting.map((w) => [w.position, w.pr]), [[1, 539], [2, 544], [3, 543], [4, 537], [5, 545], [6, 535]], "the waiting rows follow Brett's order; the one landing is not a waiting row");
+  assert.equal(o.landing.pr, 540);
+  assert.deepEqual(G.landerStateErrors(o), []);
+  assert.deepEqual(actual.landerState.empty.order.items, []);
+  assert.ok(actual.errors.driftedOrder.some((e) => /order misses pr-543/.test(e)) && actual.errors.driftedOrder.some((e) => /order names pr-999/.test(e)), 'an order that drifted from the waiting rows is an error both ways');
+  assert.ok(actual.errors.badState.some((e) => /order: source/.test(e)));
+  assert.equal(G.REGISTRY.order, 'land-order@1'); assert.deepEqual(G.REGISTRY.orderMoves, ['top', 'up', 'down', 'bottom', 'index']);
 });
 t('paused by hand says who and why; off says off; nothing at all is idle', () => {
   assert.equal(actual.landerState.paused.status, 'paused'); assert.equal(actual.landerState.paused.pause.by, 'brett'); assert.deepEqual(G.landerStateErrors(actual.landerState.paused), []);

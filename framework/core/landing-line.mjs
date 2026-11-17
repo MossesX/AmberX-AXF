@@ -18,6 +18,8 @@
  * (red). Everything else re-runs on the same head and is logged as a retry on the attempt, never as a failure.
  */
 
+import { sortBy as sortByOrder } from './land-order.mjs';
+
 export const LINE_FRAME = 'landing-line@1';
 export const ENTRY_FRAME = 'landing-entry@1';
 export const ATTEMPT_FRAME = 'landing-attempt@1';
@@ -360,6 +362,19 @@ export function moveEntry(line, id, to, { by = '', at = '' } = {}) {
   const floor = IN_FLIGHT.includes(e.state) ? 0 : busy + 1;
   entries.splice(Math.min(Math.max(i, floor), entries.length), 0, { ...e, moved: { at, by } });
   return { ...line, entries };
+}
+
+/**
+ * Put the line's entries in a land order's sequence (land-order@1, framework/core/land-order.mjs): the lander follows
+ * the order Brett set. Entries the order does not know stay behind the listed ones in their line order; the in-flight
+ * entry keeps the front. Returns the same line when nothing moved, else a new one with `rev` + 1. Pure.
+ */
+export function orderLine(line, order, { at = new Date().toISOString() } = {}) {
+  const entries = [...(line?.entries || [])];
+  const busy = entries.find((e) => IN_FLIGHT.includes(e.state)) || null;
+  const sorted = [...(busy ? [busy] : []), ...sortByOrder(order, entries.filter((e) => e !== busy), (e) => e.id)];
+  if (sorted.every((e, i) => e === entries[i])) return line;
+  return { ...line, entries: sorted, rev: (line?.rev || 0) + 1, at };
 }
 
 /** Move an entry one place up (ahead of the one before it), never past the in-flight one. */

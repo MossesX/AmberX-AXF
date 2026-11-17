@@ -18,7 +18,7 @@
  * store adapter becomes the one writer; `migrate` maps today's config.json keys onto this rule set so nothing is lost.
  */
 
-import { ORDER_FRAME, SOURCES as ORDER_SOURCES, MOVES as ORDER_MOVES, ITEMS_MAX as ORDER_MAX, normOrder, orderErrors, jsonSchema as orderJsonSchema } from './land-order.mjs';
+import { ORDER_FRAME, SOURCES as ORDER_SOURCES, MOVES as ORDER_MOVES, ITEMS_MAX as ORDER_MAX, normOrder, orderErrors, jsonSchema as orderJsonSchema, reconcile as reconcileOrder, sortBy as sortByOrder, migrate as migrateOrder } from './land-order.mjs';
 
 export const SCHEMA = 'gate-rules@1';
 export const RULE_FRAME = 'gate-rule@1';
@@ -480,9 +480,12 @@ export function ruleForWhy(why) {
 
 /**
  * lander-state@1 from what the lander writes today: the push banner config.json, merge-queue@1 (`queue`), its control
- * document, the run records (auto-lander-run@1, oldest first) and an optional pause { why, by, at }.
+ * document, the run records (auto-lander-run@1, oldest first), an optional pause { why, by, at } and the land order
+ * (`order`, land-order@1) the lander keeps. With no order the first one is migrated from the queue (the control
+ * document's manual order first); either way it is reconciled with what is open now (new PRs append, closed ones drop,
+ * the default source sorts closest-to-main first with the items' `behind`) and the waiting rows follow it.
  */
-export function landerStateFrom({ config = {}, queue = {}, control = {}, runs = [], pause = null, at = new Date().toISOString() } = {}) {
+export function landerStateFrom({ config = {}, queue = {}, control = {}, runs = [], pause = null, order = null, at = new Date().toISOString() } = {}) {
   const l = landerSettingsFrom(config);
   const q = obj(queue); const items = Array.isArray(q.items) ? q.items : []; const held = Array.isArray(q.waiting) ? q.waiting : [];
   const removed = obj(obj(control).removed);
@@ -490,13 +493,16 @@ export function landerStateFrom({ config = {}, queue = {}, control = {}, runs = 
   const last = runs.length ? normRun(runs[runs.length - 1]) : null;
   const paused = !!(pause && typeof pause === 'object');
   const status = !l.enabled ? 'off' : paused ? 'paused' : last?.result === 'error' ? 'error' : live ? 'running' : 'idle';
-  const waiting = [
-    ...items.filter((x) => pr(x.pr) && x !== live).map((x) => ({ pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state: removed[x.pr] ? 'skipped' : 'waiting', rule: ruleForWhy(x.why), reason: str(x.why, TEXT_MAX) || 'waits its turn in the line.', since: x.since })),
-    ...held.filter((x) => pr(x.pr)).map((x) => ({ pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state: x.state === 'kicked' ? 'kicked' : 'held', rule: ruleForWhy(x.why), reason: str(x.why, TEXT_MAX) || 'held.', since: x.since })),
-  ].map((w, i) => normWaiting({ ...w, position: i + 1 }, i));
+  const rows = [
+    ...items.filter((x) => pr(x.pr) && x !== live).map((x) => ({ pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state: removed[x.pr] ? 'skipped' : 'waiting', rule: ruleForWhy(x.why), reason: str(x.why, TEXT_MAX) || 'waits its turn in the line.', since: x.since, behind: x.behind })),
+    ...held.filter((x) => pr(x.pr)).map((x) => ({ pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state: x.state === 'kicked' ? 'kicked' : 'held', rule: ruleForWhy(x.why), reason: str(x.why, TEXT_MAX) || 'held.', since: x.since, behind: x.behind })),
+  ];
+  const open = [...(live ? [{ pr: live.pr, build: live.build, behind: live.behind }] : []), ...rows.map((w) => ({ pr: w.pr, build: w.build, behind: w.behind }))];
+  const ord = reconcileOrder(order && typeof order === 'object' ? order : migrateOrder({ queue: q, control: obj(control) }, { at }), open, { at });
+  const waiting = sortByOrder(ord, rows).map(({ behind, ...w }, i) => normWaiting({ ...w, position: i + 1 }, i));
   return normLanderState({
     at, status, enabled: l.enabled, paused, pause: paused ? pause : null, mode: l.mode, source: 'merge-queue@1',
     landing: live ? { pr: live.pr, title: live.title, build: live.build, branch: live.branch, ci: live.ci, since: live.startedAt || q.at, runUrl: live.runUrl } : null,
-    lastRuns: runs, waiting, landedRecently: (Array.isArray(q.merged) ? q.merged : []).map((m) => m?.pr).filter(pr).slice(-20), ...(last?.error ? { error: last.error } : {}),
+    lastRuns: runs, waiting, landedRecently: (Array.isArray(q.merged) ? q.merged : []).map((m) => m?.pr).filter(pr).slice(-20), order: ord, ...(last?.error ? { error: last.error } : {}),
   }, at);
 }

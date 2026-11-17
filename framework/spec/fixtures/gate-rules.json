@@ -565,6 +565,35 @@
     "waiting": 2
    }
   ],
+  "ORDER_BRETT": {
+   "$axf": "land-order@1",
+   "rev": 3,
+   "source": "brett",
+   "updatedAt": "2026-11-15T11:59:00Z",
+   "updatedBy": "brett",
+   "items": [
+    {
+     "id": "pr-539",
+     "pr": 539,
+     "build": "push-quiet-hours"
+    },
+    {
+     "id": "pr-544",
+     "pr": 544,
+     "build": "ui-review-phone-shots"
+    },
+    {
+     "id": "pr-540",
+     "pr": 540,
+     "build": "skins-hot-swap"
+    },
+    {
+     "id": "pr-999",
+     "pr": 999,
+     "build": "closed-meanwhile"
+    }
+   ]
+  },
   "AT": "2026-11-15T12:00:00Z"
  },
  "out": {
@@ -3407,7 +3436,55 @@
     "landedRecently": [
      538,
      536
-    ]
+    ],
+    "order": {
+     "$axf": "land-order@1",
+     "rev": 1,
+     "source": "default",
+     "updatedAt": "2026-11-15T12:00:00Z",
+     "updatedBy": "",
+     "items": [
+      {
+       "id": "pr-540",
+       "pr": 540,
+       "build": "skins-hot-swap"
+      },
+      {
+       "id": "pr-543",
+       "pr": 543,
+       "build": "notes-nested-lists"
+      },
+      {
+       "id": "pr-539",
+       "pr": 539,
+       "build": "push-quiet-hours"
+      },
+      {
+       "id": "pr-544",
+       "pr": 544,
+       "build": "ui-review-phone-shots"
+      },
+      {
+       "id": "pr-537",
+       "pr": 537,
+       "build": "voice-wake-word"
+      },
+      {
+       "id": "pr-545",
+       "pr": 545,
+       "build": ""
+      },
+      {
+       "id": "pr-535",
+       "pr": 535,
+       "build": "console-dock-sizes"
+      }
+     ],
+     "migratedFrom": {
+      "frame": "merge-queue@1",
+      "at": "2026-11-15T12:00:00Z"
+     }
+    }
    },
    "paused": {
     "$axf": "lander-state@1",
@@ -3544,7 +3621,55 @@
     "landedRecently": [
      538,
      536
-    ]
+    ],
+    "order": {
+     "$axf": "land-order@1",
+     "rev": 1,
+     "source": "default",
+     "updatedAt": "2026-11-15T12:00:00Z",
+     "updatedBy": "",
+     "items": [
+      {
+       "id": "pr-540",
+       "pr": 540,
+       "build": "skins-hot-swap"
+      },
+      {
+       "id": "pr-543",
+       "pr": 543,
+       "build": "notes-nested-lists"
+      },
+      {
+       "id": "pr-539",
+       "pr": 539,
+       "build": "push-quiet-hours"
+      },
+      {
+       "id": "pr-544",
+       "pr": 544,
+       "build": "ui-review-phone-shots"
+      },
+      {
+       "id": "pr-537",
+       "pr": 537,
+       "build": "voice-wake-word"
+      },
+      {
+       "id": "pr-545",
+       "pr": 545,
+       "build": ""
+      },
+      {
+       "id": "pr-535",
+       "pr": 535,
+       "build": "console-dock-sizes"
+      }
+     ],
+     "migratedFrom": {
+      "frame": "merge-queue@1",
+      "at": "2026-11-15T12:00:00Z"
+     }
+    }
    },
    "off": {
     "$axf": "lander-state@1",
@@ -3571,7 +3696,19 @@
      }
     ],
     "waiting": [],
-    "landedRecently": []
+    "landedRecently": [],
+    "order": {
+     "$axf": "land-order@1",
+     "rev": 1,
+     "source": "default",
+     "updatedAt": "2026-11-15T12:00:00Z",
+     "updatedBy": "",
+     "items": [],
+     "migratedFrom": {
+      "frame": "merge-queue@1",
+      "at": "2026-11-15T12:00:00Z"
+     }
+    }
    },
    "empty": {
     "$axf": "lander-state@1",
@@ -3585,7 +3722,196 @@
     "landing": null,
     "lastRuns": [],
     "waiting": [],
-    "landedRecently": []
+    "landedRecently": [],
+    "order": {
+     "$axf": "land-order@1",
+     "rev": 1,
+     "source": "default",
+     "updatedAt": "2026-11-15T12:00:00Z",
+     "updatedBy": "",
+     "items": [],
+     "migratedFrom": {
+      "frame": "merge-queue@1",
+      "at": "2026-11-15T12:00:00Z"
+     }
+    }
+   },
+   "ordered": {
+    "$axf": "lander-state@1",
+    "at": "2026-11-15T12:00:00Z",
+    "status": "running",
+    "enabled": true,
+    "paused": false,
+    "pause": null,
+    "mode": "batch",
+    "source": "merge-queue@1",
+    "landing": {
+     "pr": 540,
+     "title": "Skins: hot-swap tokens",
+     "build": "skins-hot-swap",
+     "branch": "claude/skins-hot-swap",
+     "ci": "running",
+     "since": "2026-11-15T11:50:00Z",
+     "runUrl": "https://github.com/MossesX/AmberX-AXF/actions/runs/9001"
+    },
+    "lastRuns": [
+     {
+      "$axf": "auto-lander-run@1",
+      "startedAt": "2026-11-15T11:51:00Z",
+      "finishedAt": "2026-11-15T11:51:20Z",
+      "result": "idle",
+      "mode": "batch",
+      "reason": "queue-empty",
+      "reasonText": "Nothing is ready to land.",
+      "landing": null,
+      "merged": [],
+      "waiting": 0
+     },
+     {
+      "$axf": "auto-lander-run@1",
+      "startedAt": "2026-11-15T11:54:00Z",
+      "finishedAt": "2026-11-15T11:54:30Z",
+      "result": "landing",
+      "mode": "batch",
+      "reason": "ci-waiting",
+      "reasonText": "Waiting for CI on the PR being landed.",
+      "landing": {
+       "pr": 540,
+       "title": "Skins: hot-swap tokens",
+       "build": "skins-hot-swap",
+       "branch": "",
+       "ci": "running",
+       "since": "",
+       "runUrl": ""
+      },
+      "merged": [],
+      "waiting": 2
+     }
+    ],
+    "waiting": [
+     {
+      "position": 1,
+      "pr": 539,
+      "title": "Push banner: quiet hours",
+      "build": "push-quiet-hours",
+      "branch": "claude/quiet-hours",
+      "head": "d539d539d539d539d539d539d539d539d539d539",
+      "state": "waiting",
+      "rule": "",
+      "reason": "waits its turn in the line.",
+      "since": "",
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/539"
+     },
+     {
+      "position": 2,
+      "pr": 544,
+      "title": "UI Review: phone shots",
+      "build": "ui-review-phone-shots",
+      "branch": "claude/phone-shots",
+      "head": "a544a544a544a544a544a544a544a544a544a544",
+      "state": "held",
+      "rule": "ui-review",
+      "reason": "its screenshots wait for Brett in UI Review",
+      "since": ""
+     },
+     {
+      "position": 3,
+      "pr": 543,
+      "title": "Notes: nested lists",
+      "build": "notes-nested-lists",
+      "branch": "claude/notes-nested",
+      "head": "c543c543c543c543c543c543c543c543c543c543",
+      "state": "waiting",
+      "rule": "clash",
+      "reason": "conflicts in code with #540; goes in the next batch",
+      "since": "",
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/543"
+     },
+     {
+      "position": 4,
+      "pr": 537,
+      "title": "Voice: wake word",
+      "build": "voice-wake-word",
+      "branch": "claude/wake-word",
+      "head": "e537e537e537e537e537e537e537e537e537e537",
+      "state": "kicked",
+      "rule": "ci-green",
+      "reason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
+      "since": ""
+     },
+     {
+      "position": 5,
+      "pr": 545,
+      "title": "Draft: nothing yet",
+      "build": "",
+      "branch": "",
+      "head": "b545b545b545b545b545b545b545b545b545b545",
+      "state": "held",
+      "rule": "merge-queue-only",
+      "reason": "it is a draft",
+      "since": ""
+     },
+     {
+      "position": 6,
+      "pr": 535,
+      "title": "Console: dock sizes",
+      "build": "console-dock-sizes",
+      "branch": "",
+      "head": "f535f535f535f535f535f535f535f535f535f535",
+      "state": "held",
+      "rule": "",
+      "reason": "taken out of the queue by hand (waiting for the skins build)",
+      "since": ""
+     }
+    ],
+    "landedRecently": [
+     538,
+     536
+    ],
+    "order": {
+     "$axf": "land-order@1",
+     "rev": 4,
+     "source": "brett",
+     "updatedAt": "2026-11-15T12:00:00Z",
+     "updatedBy": "",
+     "items": [
+      {
+       "id": "pr-539",
+       "pr": 539,
+       "build": "push-quiet-hours"
+      },
+      {
+       "id": "pr-544",
+       "pr": 544,
+       "build": "ui-review-phone-shots"
+      },
+      {
+       "id": "pr-540",
+       "pr": 540,
+       "build": "skins-hot-swap"
+      },
+      {
+       "id": "pr-543",
+       "pr": 543,
+       "build": "notes-nested-lists"
+      },
+      {
+       "id": "pr-537",
+       "pr": 537,
+       "build": "voice-wake-word"
+      },
+      {
+       "id": "pr-545",
+       "pr": 545,
+       "build": ""
+      },
+      {
+       "id": "pr-535",
+       "pr": 535,
+       "build": "console-dock-sizes"
+      }
+     ]
+    }
    }
   },
   "ruleForWhy": {
@@ -3632,7 +3958,17 @@
     "waiting[0].state is one of waiting, testing, passed, merging, held, kicked, skipped, paused",
     "waiting[0].reason says in plain words why it waits",
     "waiting[0].rule is a rule id",
-    "landing is null or names a PR"
+    "landing is null or names a PR",
+    "order: source is one of default, brett",
+    "order misses pr-0",
+    "order names pr-5, which is not waiting or landing"
+   ],
+   "driftedOrder": [
+    "order misses pr-543",
+    "order misses pr-537",
+    "order misses pr-545",
+    "order misses pr-535",
+    "order names pr-999, which is not waiting or landing"
    ]
   },
   "norm": {
