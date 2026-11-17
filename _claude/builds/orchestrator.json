@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:42:10.683Z",
+ "updatedAt": "2026-11-17T21:42:23.404Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168085,7 +168085,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -168093,7 +168093,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T21:38:31.411Z",
+   "updatedAt": "2026-11-17T21:42:15.589Z",
    "builtAt": "",
    "notes": [
     {
@@ -168127,6 +168127,10 @@
     {
      "text": "Clash note from icon-picker-every-banner-settings-widget (Fable, Nov 17): widget-icons@1 (framework/spec/WIDGET-ICONS.md, engines/widget-icons.ts) is now the one contract for a widget's icon pick: setting axf.widget.banner:<type>:<id>.icon (ref <glyph> | <pack>/<glyph> | own) and .mode. Its resolver reads widget-shape@1 iconOverride {pack,id} as the 'override' source under the pick, so the two compose; when this build resumes, the banner.widget …:icon=<pack>/<glyph> action and the Icon / Glyph fields in BannerWidgets.tsx should write the axf.widget.<id>.icon key (rt.settings) instead of the pref's iconOverride, and --fx-widget-icon should take resolveWidgetIcon(...).icon.",
      "at": "2026-11-17T21:38:31.411Z"
+    },
+    {
+     "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T21:42:15.589Z"
     }
    ],
    "approvals": [],
@@ -168253,7 +168257,7 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T21:42:15.589Z",
      "uid": "st-mwjveb4r10iyal",
      "createdAt": "2026-11-16T23:03:57.915Z"
     },
@@ -175256,7 +175260,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:41:16.935Z",
+   "updatedAt": "2026-11-17T21:42:17.912Z",
    "builtAt": "",
    "notes": [
     {
@@ -175454,6 +175458,10 @@
     {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T21:40:31.509Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T21:42:17.912Z"
     }
    ],
    "approvals": [
@@ -186244,7 +186252,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:41:49.711Z",
+   "updatedAt": "2026-11-17T21:42:19.988Z",
    "builtAt": "",
    "notes": [
     {
@@ -186274,6 +186282,10 @@
     {
      "text": "Phase 1 (Fable) done: s1 + s2 on branch claude/icon-picker-every-banner-settings-widget, PR #820 https://github.com/MossesX/AmberX-AXF/pull/820 (opened by the session after 90 s with no server PR). widget-icons@1 contract + fixture, resolveWidgetIcon engine + check-widget-icons.mts in CI, sizing@1 widget.textMax token. Also fixed check-token-registry red on main (plan-studio-2 manifest tokens block). Next phases: runtime + Banner / settings hosts reading the keys, the picker dialog axf.widget.icons, actions widget.icon / widget.mode / widget.icons.reset on REST, MCP, CLI and voice.",
      "at": "2026-11-17T21:41:49.711Z"
+    },
+    {
+     "text": "Headless run axf-icon-picker-every-banner-settings-widget--joey: brief only · start 17.7K tokens ($0.12) · cost $9.42 · 89 turns · 6 tools, MCP none",
+     "at": "2026-11-17T21:42:19.988Z"
     }
    ],
    "approvals": [],

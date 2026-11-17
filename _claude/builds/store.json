@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8059,
- "updatedAt": "2026-11-17T21:42:10.683Z",
+ "rev": 8060,
+ "updatedAt": "2026-11-17T21:42:23.404Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259403,7 +259403,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -259411,7 +259411,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T21:38:31.411Z",
+   "updatedAt": "2026-11-17T21:42:15.589Z",
    "builtAt": "",
    "notes": [
     {
@@ -259445,6 +259445,10 @@
     {
      "text": "Clash note from icon-picker-every-banner-settings-widget (Fable, Nov 17): widget-icons@1 (framework/spec/WIDGET-ICONS.md, engines/widget-icons.ts) is now the one contract for a widget's icon pick: setting axf.widget.banner:<type>:<id>.icon (ref <glyph> | <pack>/<glyph> | own) and .mode. Its resolver reads widget-shape@1 iconOverride {pack,id} as the 'override' source under the pick, so the two compose; when this build resumes, the banner.widget …:icon=<pack>/<glyph> action and the Icon / Glyph fields in BannerWidgets.tsx should write the axf.widget.<id>.icon key (rt.settings) instead of the pref's iconOverride, and --fx-widget-icon should take resolveWidgetIcon(...).icon.",
      "at": "2026-11-17T21:38:31.411Z"
+    },
+    {
+     "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T21:42:15.589Z"
     }
    ],
    "approvals": [],
@@ -259466,13 +259470,22 @@
     "queuedBy": "console",
     "account": "",
     "session": "",
-    "slot": "[object Object]",
+    "slot": "",
     "model": "",
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 0,
-    "lastRun": null,
+    "crashes": 1,
+    "lastRun": {
+     "at": "2026-11-17T21:42:11.765Z",
+     "exit": null,
+     "outcome": "requeued",
+     "reason": "crash",
+     "stepsLeft": 15,
+     "account": "",
+     "session": "",
+     "phase": ""
+    },
     "split": {
      "at": "2026-11-16T23:03:57.915Z",
      "by": "orchestrator",
@@ -259481,7 +259494,7 @@
      "note": "Split by Claude into 19 steps (4 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -259497,6 +259510,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T21:42:11.765Z",
+     "buildId": "banner-widget-shapes-plus-change-icon",
+     "phase": "",
+     "step": "s5",
+     "cause": "tmux-missing",
+     "exit": null,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3)."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -259621,10 +259650,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-17T21:42:15.589Z",
+     "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-16T23:03:57.915Z"
+     "updatedAt": "2026-11-17T21:42:15.591Z"
     },
     {
      "id": "s6",
@@ -259989,7 +260018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -268262,7 +268291,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:41:16.935Z",
+   "updatedAt": "2026-11-17T21:42:17.912Z",
    "builtAt": "",
    "notes": [
     {
@@ -268460,6 +268489,10 @@
     {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T21:40:31.509Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T21:42:17.912Z"
     }
    ],
    "approvals": [
@@ -268489,7 +268522,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -269221,7 +269254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -282059,7 +282092,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:41:49.711Z",
+   "updatedAt": "2026-11-17T21:42:19.988Z",
    "builtAt": "",
    "notes": [
     {
@@ -282089,6 +282122,10 @@
     {
      "text": "Phase 1 (Fable) done: s1 + s2 on branch claude/icon-picker-every-banner-settings-widget, PR #820 https://github.com/MossesX/AmberX-AXF/pull/820 (opened by the session after 90 s with no server PR). widget-icons@1 contract + fixture, resolveWidgetIcon engine + check-widget-icons.mts in CI, sizing@1 widget.textMax token. Also fixed check-token-registry red on main (plan-studio-2 manifest tokens block). Next phases: runtime + Banner / settings hosts reading the keys, the picker dialog axf.widget.icons, actions widget.icon / widget.mode / widget.icons.reset on REST, MCP, CLI and voice.",
      "at": "2026-11-17T21:41:49.711Z"
+    },
+    {
+     "text": "Headless run axf-icon-picker-every-banner-settings-widget--joey: brief only · start 17.7K tokens ($0.12) · cost $9.42 · 89 turns · 6 tools, MCP none",
+     "at": "2026-11-17T21:42:19.988Z"
     }
    ],
    "approvals": [],
@@ -282139,7 +282176,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T21:42:09.722Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-icon-picker-every-banner-settings-widget--joey",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
@@ -282455,7 +282502,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

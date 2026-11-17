@@ -830,9 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:56 UTC · `own-look-per-grid-and-tab-group` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `maintenance-plugin-clear-docker-cache` note (all) · watchdog
-- 2026-11-17 19:57 UTC · `rebuild-every-toolbar-page-specific` s4 done (all) · orchestrator
 - 2026-11-17 19:57 UTC · `terminal-main-tab-streaming-console-s` s4 done (all) · orchestrator
 - 2026-11-17 19:58 UTC · `separate-settings-per-plugin-reset` s5 done (all) · orchestrator
 - 2026-11-17 19:59 UTC · `live-build-status-real-time-grids-15` s2 done (all) · orchestrator
@@ -1230,6 +1227,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
 - 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
 - 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:42 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · watchdog
+- 2026-11-17 21:42 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:42 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
 
 ## Token passes (log)
 
