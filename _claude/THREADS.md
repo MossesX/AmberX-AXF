@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `one-true-source-for-every-setting` added (80 steps) (all) · foreign-write
 - 2026-11-17 22:59 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 22:59 UTC · `console-app-part-2-native-floating` note (all) · foreign-write
 - 2026-11-17 22:59 UTC · `banner-widget-shapes-plus-change-icon` s17 done (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:43 UTC · `move-everything-axhub-web-console` s6 done (all) · orchestrator
 - 2026-11-17 23:44 UTC · `move-everything-axhub-web-console` s6 done (all) · foreign-write
 - 2026-11-17 23:44 UTC · `move-server-side-console-parts-onto-vps` s7 done, s8 done (all) · foreign-write
+- 2026-11-17 23:45 UTC · `molly-console-commands` note (all) · dedupe-steps
 
 ## Token passes (log)
 

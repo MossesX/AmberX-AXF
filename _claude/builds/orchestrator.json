@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:44:34.799Z",
+ "updatedAt": "2026-11-17T23:45:16.542Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -5857,7 +5857,7 @@
    "pr": "#288",
    "mergedAt": "2026-11-04T12:05:57.348Z",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-17T23:41:27.378Z",
+   "updatedAt": "2026-11-17T23:45:12.896Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -5879,6 +5879,10 @@
     {
      "text": "Shipped manifest sm-molly-console-commands rev 1 sent to Shipped features (backfill): landed b14674b5b, 63 file(s), 0 test line(s), 118 open.",
      "at": "2026-11-12T03:29:45Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 112 → 7 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:12.896Z"
     }
    ],
    "approvals": [],

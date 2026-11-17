@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8432,
- "updatedAt": "2026-11-17T23:44:34.799Z",
+ "rev": 8433,
+ "updatedAt": "2026-11-17T23:45:16.542Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -64854,7 +64854,7 @@
    "pr": "#288",
    "mergedAt": "2026-11-04T12:05:57.348Z",
    "createdAt": "2026-11-03T21:05:30.629Z",
-   "updatedAt": "2026-11-17T23:41:27.378Z",
+   "updatedAt": "2026-11-17T23:45:12.896Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -64876,6 +64876,10 @@
     {
      "text": "Shipped manifest sm-molly-console-commands rev 1 sent to Shipped features (backfill): landed b14674b5b, 63 file(s), 0 test line(s), 118 open.",
      "at": "2026-11-12T03:29:45Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 112 → 7 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:12.896Z"
     }
    ],
    "approvals": [],
@@ -65050,7 +65054,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
