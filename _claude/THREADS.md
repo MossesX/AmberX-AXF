@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:08 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
 - 2026-11-17 19:08 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
 - 2026-11-17 19:08 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-17 19:08 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:18 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · pipeline
 - 2026-11-17 20:18 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
 - 2026-11-17 20:18 UTC · `guided-live-demo-test-watch-orchestrator` s4 done, → running (all) · orchestrator
+- 2026-11-17 20:19 UTC · `terminal-main-tab-streaming-console-s` s11 done (all) · orchestrator
 
 ## Token passes (log)
 
