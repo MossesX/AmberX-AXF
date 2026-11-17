@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:54:54.170Z",
+ "updatedAt": "2026-11-17T22:55:22.824Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77980,6 +77980,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -94680,6 +94681,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -131497,7 +131499,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build. If the contract isn't there yet, define the overlay side against the names in the parent's detail and note them.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "landed",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131506,8 +131508,8 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T22:25:15.677Z",
-   "builtAt": "2026-11-17T22:25:15.677Z",
+   "updatedAt": "2026-11-17T22:55:19.520Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"7eb278c6-794b-4b54-ba95-2f9723ef61d4\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
@@ -131664,6 +131666,10 @@
     {
      "text": "Refused landing → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T22:28:58.772Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T22:55:19.520Z"
     }
    ],
    "approvals": [
@@ -133492,6 +133498,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -142146,6 +142153,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -181836,7 +181844,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "landed",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181845,8 +181853,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T22:25:15.677Z",
-   "builtAt": "2026-11-17T22:25:15.677Z",
+   "updatedAt": "2026-11-17T22:55:19.520Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -182075,6 +182083,10 @@
     {
      "text": "Refused complete → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T22:28:58.772Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T22:55:19.520Z"
     }
    ],
    "approvals": [
