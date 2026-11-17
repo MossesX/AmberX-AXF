@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const MODEL_TIERS: string[];
 export const PICKABLE: string[];
+export const BOSS: { id: string; name: string };
 export const MODEL_LABEL: Record<string, string>;
 export const SHARED_FILES: string[];
 export function planJobs(builds: any, roster: any, opts?: any): { jobs: any[]; waves: string[][]; warnings: string[] };

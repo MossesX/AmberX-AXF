@@ -87,12 +87,14 @@ check(s2["costUsd"] == 0.4242 and s2["exactCost"] and not s2["toolRunning"], "th
 check(crew.redact("token sk-ant-abcdefghijk end") == "token [removed] end", "secrets removed")
 
 # ---- agents, builds, status
-roster = [{"id": "paulie", "name": "Ping Paulie", "role": "Site checker", "avatar": {"face": "tall", "hair": 1, "gear": "cap", "hue": 100}},
-          {"id": "earl", "name": "Earl the Ear", "role": "Listener"}]
+roster = [{"id": "paulie", "name": "Comet", "role": "Site checker", "avatar": {"face": "tall", "hair": 1, "gear": "cap", "hue": 100}, "formerly": ["Ping Paulie"]},
+          {"id": "earl", "name": "Whiskers", "role": "Listener", "formerly": ["Earl the Ear"]}]
 check(crew.resolve_agent(["paulie"], roster)["id"] == "paulie", "agent by tag")
 check(crew.resolve_agent(["", "earl-site-check"], roster)["id"] == "earl", "agent by job session axf-<agent>-<job>")
 check(crew.resolve_agent(["crew-live"], roster, "Brett said so. Assigned agent: Ping Paulie. Then…")["id"] == "paulie", "agent from the build's 'Agent: <name>' line")
-check(crew.resolve_agent(["x"], roster, "Agent: **Earl the Ear** (voice)")["id"] == "earl", "bold names too")
+check(crew.resolve_agent(["x"], roster, "Agent: **Earl the Ear** (voice)")["id"] == "earl", "bold names too (a former name)")
+check(crew.resolve_agent(["x"], roster, "Agent: Comet.")["id"] == "paulie", "the agent's cat name")
+check(crew.agent_view(roster[0], "x")["formerly"] == ["Ping Paulie"], "the agent view carries the former names (directory aliases)")
 check(crew.resolve_agent(["nobody"], roster, "no agent named") is None, "unknown agent: none")
 check(crew.agent_view(None, "crew-live")["initials"] == "CL", "unknown agents get initials")
 store = tmp / "store.json"
@@ -209,7 +211,7 @@ else:
     services["axf.headless@1"] = Headless()
     services["axf.swarm-roster@1"] = Roster()
     a = srv.snapshot(force=True)
-    check(a["runs"][0]["agent"]["name"] == "Ping Paulie" and a["runs"][0]["costUsd"] == 2.25, "Terminal + roster: named agent, live meter cost")
+    check(a["runs"][0]["agent"]["name"] == "Comet" and a["runs"][0]["costUsd"] == 2.25, "Terminal + roster: named agent, live meter cost")
     check(srv.agent("paulie")["run"]["id"] == "axf-demo-build" and srv.agent("axf-demo-build")["run"]["name"] == "demo-build", "detail by agent id or run")
     try:
         srv.agent("nobody")

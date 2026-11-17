@@ -284,10 +284,10 @@ t('every agent has a unique look drawn in theme colours', () => {
 // s12 group chat
 t('work lines come from orchestrator data, no tokens', () => {
   const p = c.planJobs([B('a', [{ text: 'React ui in apps/x/web/ui.tsx' }]), B('b', [{ text: 'More React in apps/x/web/ui.tsx' }])], roster);
-  const a = c.assignLine(p.jobs[0], roster); assert.equal(a.from, 'boss'); assert.match(a.text, /Rio React, you got a\.s1.*apps\/x\/web\/ui\.tsx.*Opus, budget/);
-  const l = c.leaseLines(p, roster); assert.equal(l.length, 1); assert.match(l[0].text, /waits on Rio React \(a\.s1\): both want apps\/x\/web\/ui\.tsx/);
+  const a = c.assignLine(p.jobs[0], roster); assert.equal(a.from, 'boss'); assert.match(a.text, /Pixel, you got a\.s1.*apps\/x\/web\/ui\.tsx.*Opus, budget/);
+  const l = c.leaseLines(p, roster); assert.equal(l.length, 1); assert.match(l[0].text, /waits on Pixel \(a\.s1\): both want apps\/x\/web\/ui\.tsx/);
   const r = c.reportLines({ agent: 'rio', jobId: 'a.s1', status: 'done', report: { summary: 'card in', handoff: 'props renamed' } }, roster); assert.deepEqual(r.map((x) => x.kind), ['report', 'handoff']);
-  assert.match(c.mergeLines({ branch: 'm', merged: ['a.s1'], conflicts: [{ job: 'b.s1', files: ['x'], fixer: 'b.fix-s1' }], refused: [] }, roster)[1].text, /Merge Max, b\.s1 clashed on x/);
+  assert.match(c.mergeLines({ branch: 'm', merged: ['a.s1'], conflicts: [{ job: 'b.s1', files: ['x'], fixer: 'b.fix-s1' }], refused: [] }, roster)[1].text, /Velcro, b\.s1 clashed on x/);
 });
 t('switches: global off posts nothing; an agent off stays quiet, Boss still talks', () => {
   const s = c.normState({}, roster);
@@ -307,7 +307,7 @@ t('cheap banter batch: prompt + parsing keeps only real agents', () => {
   assert.deepEqual(c.parseBanter('ok [{"agent":"rio","text":"yo"},{"agent":"ghost","text":"boo"}]', roster), [{ from: 'rio', kind: 'banter', text: 'yo' }]);
   assert.deepEqual(c.parseBanter('nope', roster), []);
 });
-t('status changes are posted by Boss', () => { const s = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'tex', status: 'off-duty', note: 'day off' }, roster, AT).state; assert.match(s.messages.at(-1).text, /Tex Tester is now Off duty: day off/); });
+t('status changes are posted by Boss', () => { const s = c.applyChange(c.normState({}, roster), { action: 'status', agent: 'tex', status: 'off-duty', note: 'day off' }, roster, AT).state; assert.match(s.messages.at(-1).text, /Glitch is now Off duty: day off/); });
 
 // s13 discipline
 t('suspend: timed, with a reason, back on duty by itself, posted', () => {
@@ -340,7 +340,7 @@ t('salary is the weekly budget: spent, left, broke stops work, top-up and payday
 });
 t('raises and docks are posted, coworkers react', () => {
   let s = c.applyChange(c.normState({ chatSettings: c.PRESETS.breakroom }, roster), { action: 'salary', agent: 'doc', usd: 9, note: 'great docs' }, roster, AT).state;
-  assert.equal(s.agents.doc.pay[0].kind, 'raise'); assert.match(s.messages.find((m) => m.kind === 'pay').text, /Doc Holli gets a raise: \$5\.00 → \$9\.00 a week\. great docs/);
+  assert.equal(s.agents.doc.pay[0].kind, 'raise'); assert.match(s.messages.find((m) => m.kind === 'pay').text, /Merlin gets a raise: \$5\.00 → \$9\.00 a week\. great docs/);
   assert.ok(s.messages.filter((m) => m.kind === 'banter').length >= 1);
   const quiet = c.applyChange(c.normState({ chatSettings: c.PRESETS.business }, roster), { action: 'salary', agent: 'doc', usd: 9 }, roster, AT).state; assert.equal(quiet.messages.filter((m) => m.kind === 'banter').length, 0);
   s = c.applyChange(s, { action: 'salary', agent: 'doc', usd: 3 }, roster, AT).state; assert.equal(s.agents.doc.pay[1].kind, 'dock'); assert.ok(s.messages.some((m) => /got docked/.test(m.text)));
@@ -423,7 +423,7 @@ t('CLI answers --json errors as JSON', () => {
 t('book: a Claude session on an agent card grows, then closes once (agent-pick)', () => {
   const dir = mkdtempSync(join(tmpdir(), 'swarm-book-'));
   const run = (...a) => JSON.parse(spawnSync(process.execPath, [new URL('./swarm.mjs', import.meta.url).pathname, ...a, '--json'], { encoding: 'utf8', env: { ...process.env, AXF_SWARM_DIR: dir, AXF_SWARM_CHATS_DIR: 'off' } }).stdout);
-  let r = run('book', JSON.stringify({ session: 's1', agent: 'Snap Sully', usd: 0.5, commits: ['abc1234'] }));
+  let r = run('book', JSON.stringify({ session: 's1', agent: 'Snickers', usd: 0.5, commits: ['abc1234'] }));
   assert.equal(run('crew').crew.find((x) => x.id === 'sully').stats.failed, 0, 'an open session is not a failure');
   assert.equal(r.run.agent, 'sully'); assert.equal(r.run.status, 'running'); assert.equal(r.run.kind, 'job'); assert.equal(r.run.jobType, 'agent-session');
   r = run('book', JSON.stringify({ session: 's1', agent: 'sully', usd: 1, commits: ['def5678'], final: true }));
@@ -573,7 +573,7 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     assert.equal(r.status, 'done'); assert.equal(r.kind, 'job'); assert.equal(r.reportedCost, 0.12); assert.ok(existsSync(r.reportFile));
     const stats = c.agentStats(sw.loadRuns(), 'paulie', sw.priceTable()); assert.equal(stats.done, 1); assert.equal(stats.feed[0].summary, '4 sites ok');
     const v = jobs.list().find((j) => j.id === 'site-check'); assert.equal(v.lastRun.status, 'done'); assert.equal(v.cost.runs, 1); assert.ok(v.next > v.lastRun.at);
-    const ms = sw.loadState().messages; assert.ok(ms.some((m) => m.kind === 'assign' && /Ping Paulie, you're on Site health check/.test(m.text))); assert.ok(ms.some((m) => m.kind === 'report' && m.from === 'paulie'));
+    const ms = sw.loadState().messages; assert.ok(ms.some((m) => m.kind === 'assign' && /Comet, you're on Site health check/.test(m.text))); assert.ok(ms.some((m) => m.kind === 'report' && m.from === 'paulie'));
   });
   t('queued by the agent cap: recorded, kept open while it waits for a desk', () => {
     writeFileSync(launch, `#!/usr/bin/env bash\nprintf '%s\\n' "$@" > ${JSON.stringify(argsFile)}\necho "queued at position 2 (slot-abc) · starts when a desk frees"\n`);
@@ -667,7 +667,7 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   });
   t('sections: Brett reassigns, history kept, back to default drops the override, a gone agent falls back', () => {
     const at = '2026-11-12T10:00:00.000Z';
-    let r = sc.assign(cat, sc.normOverrides({}), roster, 'merge-queue', 'Merge Max', at);
+    let r = sc.assign(cat, sc.normOverrides({}), roster, 'merge-queue', 'Velcro', at);
     assert.equal(r.agent.id, 'max'); assert.ok(r.changed); assert.equal(sc.owners(cat, r.overrides, roster)['merge-queue'], 'max');
     assert.equal(r.overrides.history.at(-1).from, 'lenny');
     r = sc.assign(cat, r.overrides, roster, 'merge-queue', 'lenny', at);
@@ -718,7 +718,7 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
     const r = JSON.parse(spawnSync(process.execPath, [cli, 'assign', 'backups', 'joey', '--json'], { env, encoding: 'utf8' }).stdout);
     assert.equal(r.owner, 'joey'); assert.equal(r.board.sections.find((x) => x.id === 'backups').reassigned, true);
     assert.equal(JSON.parse(readFileSync(join(d, 'sections.json'), 'utf8')).owners.backups, 'joey');
-    assert.match(JSON.parse(readFileSync(join(d, 'state.json'), 'utf8')).messages.at(-1).text, /Janitor Joey now owns AXP backups/);
+    assert.match(JSON.parse(readFileSync(join(d, 'state.json'), 'utf8')).messages.at(-1).text, /Dusty now owns AXP backups/);
   });
   t('sections: the repo passes the owner check (crew-say.mjs check)', () => {
     const r = spawnSync(process.execPath, [say, 'check', '--json'], { encoding: 'utf8' });

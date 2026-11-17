@@ -8,13 +8,14 @@
  *   breakroom-mentions@1  messages that mention Brett / the boss / the owner, newest first
  */
 import { redact } from '../../../../../framework/core/session-schema.mjs';
+import { BOSS } from '../../../../../framework/core/engines/swarm-rules.mjs';
 
 /** Folder under the hub's amberx-axf `_data` (axhub.memory_read project "amberx-axf", area "data"). */
 export const HUB_FOLDER = 'agent-swarm/chats';
 export const GROUP_CHAT = { id: 'group', title: 'Breakroom group chat' };
 
 /**
- * Words that point at Brett. "Boss" is also the orchestrator's chat name, so a plain "Boss" only counts in phrases
+ * Words that point at Brett. "Boss" was the orchestrator's chat name (now Patches), so a plain "Boss" only counts in phrases
  * that mean the owner ("the boss", "boss man", "big boss"); Boss's own posts and Brett's own posts never count.
  */
 export const MENTION_TERMS = [
@@ -37,7 +38,7 @@ export function mentionHits(text) {
 }
 export const toneOf = (text) => (NEGATIVE.test(String(text ?? '')) ? 'negative' : 'neutral');
 
-const nameMap = (roster) => Object.fromEntries([['boss', 'Boss'], ['brett', 'Brett'], ...(roster?.agents ?? []).map((a) => [a.id, a.name])]);
+const nameMap = (roster) => Object.fromEntries([['boss', BOSS.name], ['brett', 'Brett'], ...(roster?.agents ?? []).map((a) => [a.id, a.name])]);
 
 /** One message as it leaves the plugin: secrets redacted, the speaker's name attached. */
 export function outMsg(m, names) {

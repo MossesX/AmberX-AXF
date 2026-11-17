@@ -5,7 +5,7 @@
 
 export type RunStatus = 'working' | 'waiting' | 'stuck' | 'idle';
 export interface Face { face: string; hair: number; gear: string; hue: number }
-export interface CrewAgent { id: string; name: string; role: string; avatar: Face | null; initials: string; known: boolean; salary?: number; status?: string; catchphrase?: string }
+export interface CrewAgent { id: string; name: string; role: string; avatar: Face | null; initials: string; known: boolean; salary?: number; status?: string; catchphrase?: string; /** names the agent went by before (old builds and briefs still find it) */ formerly?: string[] }
 export interface Tool { id: string; tool: string; what: string; target: string; state: 'running' | 'done' | 'failed'; costUsd: number }
 export interface Step { id: string; text: string; model: string; state: 'done' | 'now' | 'next'; doneAt: string }
 export interface BuildInfo { id: string; title: string; status: string; branch: string; pr: string; prUrl: string; steps: Step[]; done: number; total: number; now: Step | null; stepStartedAt: string | null; waitingApproval: boolean }
@@ -81,7 +81,7 @@ export function sortRuns(runs: Run[], sort: Sort, dir: 1 | -1 = 1): Run[] {
 /** The agent directory entries (core/agent-directory.ts) the snapshot knows: every run's agent and the off-the-clock crew. */
 export function directoryOf(s: Snapshot): { id: string; name: string; role?: string; avatar: Face | null; aliases: string[] }[] {
   const out = new Map<string, { id: string; name: string; role?: string; avatar: Face | null; aliases: string[] }>();
-  for (const a of [...s.runs.map((r) => r.agent), ...s.offTheClock]) if (a.known && a.id && !out.has(a.id)) out.set(a.id, { id: a.id, name: a.name, role: a.role, avatar: a.avatar, aliases: [] });
+  for (const a of [...s.runs.map((r) => r.agent), ...s.offTheClock]) if (a.known && a.id && !out.has(a.id)) out.set(a.id, { id: a.id, name: a.name, role: a.role, avatar: a.avatar, aliases: [...(a.formerly ?? [])] });
   // the runs and builds an agent is on: a Terminal tab (axf-…), a build row or a step finds its agent by those
   for (const r of s.runs) { const e = r.agent.known ? out.get(r.agent.id) : undefined; if (e) e.aliases.push(r.session, r.name, ...(r.build ? [r.build.id] : [])); }
   for (const [bid, aid] of Object.entries(s.buildAgents ?? {})) out.get(aid)?.aliases.push(bid);

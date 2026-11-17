@@ -50,7 +50,8 @@ export const PICKABLE = ['on-duty', 'off-duty', 'injured', 'medical-leave', 'pro
 export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett'];
 /** Work kinds are built from orchestrator messages and agent reports: no tokens. */
 export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett'];
-export const BOSS = { id: 'boss', name: 'Boss' };
+/** The build orchestrator's chat voice: Patches, one of Brett's cats (Nov 3 2026 org chart; id stays `boss`). */
+export const BOSS = { id: 'boss', name: 'Patches' };
 export const BRETT = 'brett';
 
 /** Vibe 1–500: 1 = straight to the point, no sarcasm; 100 = chill; 250 = full Amber; 500 = off the rails. */

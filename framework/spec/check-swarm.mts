@@ -255,7 +255,7 @@ eq([L.hired.text, L.newCards.text, L.newCardsDefault.text], ['Hired Site Rookie 
 eq(L.waiting.text, 'Rio React is waiting for a desk (position 2 in the queue, 6/6 running).', 'agent cap line');
 eq([L.assignJob.text, L.assignJob.jobId, L.unassigned.text], ["Ping Paulie, you're on Site health check. opus, up to 100k tokens ($1.00).", 'site-check', 'Cert renewals has nobody: nobody owns it.'], 'agent job lines');
 eq(L.fileLists, { none: 'no files named', three: 'a, b, c', five: 'a, b, c +2' }, 'file lists');
-eq(L.names, { boss: 'Boss', brett: 'Brett', agent: 'Rio React', unknown: 'ghost', map: 'R', fn: 'RIO' }, 'names from a roster, a map or a function; Boss and Brett always known');
+eq(L.names, { boss: 'Patches', brett: 'Brett', agent: 'Rio React', unknown: 'ghost', map: 'R', fn: 'RIO' }, 'names from a roster, a map or a function; Patches (the orchestrator, id boss) and Brett always known');
 for (const l of [L.assign, ...L.lease, ...L.reportDone, ...L.merge, L.status, L.raise, L.topup, L.bonus, L.broke, ...L.suspend, ...L.quit, L.hired, L.newCards, L.waiting, L.assignJob, L.unassigned]) eq(C.messageErrors(l, ['rio', 'doc', 'max']), [], `every built line passes the message contract: ${l.kind} "${l.text.slice(0, 30)}"`);
 const B = cfx.banter;
 eq(B.moments, ['idle', 'gradle', 'fight', 'done', 'failed', 'raise', 'bonus', 'docked'], 'the eight banter moments');
