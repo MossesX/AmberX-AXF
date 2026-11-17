@@ -14,7 +14,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SKIN_MAP_CONTROLS, SKIN_MAP_FRAME, SKIN_MAP_ROW_KINDS, cssReaders, dataStoreKey, hubPlace, skinMap, skinMapErrors, skinMapFind, skinMapJsonSchema, tokensBySource } from '../core/engines/skin-map.mjs';
+import { SKIN_MAP_CONTROLS, SKIN_MAP_FRAME, SKIN_MAP_ROW_KINDS, cssReaders, dataStoreKey, hubPlace, skinMap, skinMapErrors, skinMapFind, skinMapFor, skinMapJsonSchema, skinMapRowValue, tokensBySource } from '../core/engines/skin-map.mjs';
 import { SKIN_SLOT_KEYS } from '../core/engines/skin-slots.mjs';
 import { SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageTable } from '../core/engines/skin-coverage.mjs';
@@ -79,6 +79,17 @@ t('the motion, grid and dialog rows name the tokens, attributes and selectors th
   assert.ok(grid.tokens.includes('--fx-grid-row-height') && grid.selectors.some((s) => s.includes('.axf-grid')));
   const dialog = map.slots.find((s) => s.slot === 'dialog');
   assert.ok(dialog.tokens.includes('--fx-dialog-w') && dialog.settings.includes('axf.chrome.dialog'));
+});
+t('skinMapFor: the map read through one skin (values, filled count, one slot), the document itself untouched', () => {
+  const skin = { layoutTheme: 'l', colorTheme: 'c', styleTheme: 's', assets: { toolbar: 'tb' }, parts: { toolbar: { gap: 'xs' } }, iconPack: 'ip', motion: { reduced: 'system' } };
+  const one = skinMapFor(map, 'x', skin, 'toolbar');
+  assert.deepEqual(one.slots.map((r) => [r.slot, r.value]), [['assets.toolbar', 'tb'], ['parts.toolbar', { gap: 'xs' }]]);
+  assert.equal(one.skin.filled, 2);
+  assert.equal(skinMapRowValue(map.slots.find((r) => r.slot === 'motion'), skin).reduced, 'system');
+  assert.equal(skinMapRowValue(map.slots.find((r) => r.slot === 'iconPack'), skin), 'ip');
+  assert.equal(skinMapRowValue(map.slots.find((r) => r.slot === 'colorTheme'), skin), 'c');
+  assert.equal(skinMapFor(map, '', null).skin, null);
+  assert.ok(!('value' in map.slots[0]), 'the generated document carries no skin values');
 });
 t('the snapshot schemas/skin-map.json and schemas/json/skin-map.schema.json are current (run: node framework/cli/axf.mjs schemas)', () => {
   assert.ok(same(readJson('framework/schemas/skin-map.json'), map), 'schemas/skin-map.json is stale');

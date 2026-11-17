@@ -37,3 +37,8 @@ export function skinMap(inputs: SkinMapInputs): SkinMapDocument;
 export function skinMapFind(map: SkinMapDocument | null | undefined, needle: string): SkinMapRow[];
 export function skinMapErrors(raw: unknown): string[];
 export function skinMapJsonSchema(): Record<string, unknown>;
+
+/** One row's value on a skin (folded data): asset id, part map or slot block; null = left to the level below. */
+export function skinMapRowValue(row: unknown, skin: unknown): unknown;
+/** The map read through one skin: rows gain `value` and `filled`; `slot` filters by slot, type or kind. */
+export function skinMapFor(map: unknown, id: string, skin: unknown, slot?: string): (Record<string, unknown> & { skin: { id: string; filled: number; rows: number } | null; slots: (Record<string, unknown> & { value: unknown; filled: boolean })[] }) | null;

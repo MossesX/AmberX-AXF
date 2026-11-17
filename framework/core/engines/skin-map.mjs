@@ -242,6 +242,35 @@ export function skinMap(inputs) {
   return out;
 }
 
+/**
+ * The map read through one skin (build flagship-professional-skin-covering-2, s20): every row gains `value` (what that
+ * skin sets there: an asset id, a part map, a slot block; null = left to the level below) and `filled`. `skin` is the
+ * skin's data with its `extends` chain already folded (skin-rules.mjs foldSkinExtends). `slot` filters to the rows whose
+ * slot, type or kind is that name (`toolbar`, `parts.toolbar`, `motion`). Pure; the document itself stays skin-free.
+ */
+export function skinMapRowValue(row, skin) {
+  const d = isObj(skin) ? skin : {};
+  const has = (v) => (typeof v === 'string' ? v !== '' : isObj(v) ? Object.keys(v).length > 0 : v !== undefined && v !== null);
+  let v = null;
+  if (!isObj(row)) return null;
+  if (row.kind === 'section') v = d[row.slot];
+  else if (row.kind === 'parts') v = d.parts?.[row.type];
+  else if (row.slot === 'iconPack') v = d.iconPack;
+  else if (row.kind === 'reference') v = row.via === 'iconPack' ? d.iconPack : d.assets?.[row.via];
+  else if (row.kind === 'extras') v = d.extras?.[row.slot.slice('extras.'.length)];
+  else if (row.kind === 'chrome') v = d.chrome;
+  else if (SKIN_SLOT_KEYS.includes(row.kind)) v = d[row.kind];
+  else if (typeof row.slot === 'string' && row.slot.startsWith('assets.')) v = d.assets?.[row.type];
+  return has(v) ? v : null;
+}
+export function skinMapFor(map, id, skin, slot = '') {
+  if (!isObj(map)) return null;
+  const want = String(slot ?? '').trim();
+  const rows = (map.slots ?? []).filter((r) => !want || r.slot === want || r.type === want || r.kind === want || r.slot === `assets.${want}`);
+  const slots = rows.map((r) => { const value = skin ? skinMapRowValue(r, skin) : null; return { ...r, value, filled: value !== null }; });
+  return { ...map, skin: id ? { id, filled: slots.filter((r) => r.filled).length, rows: slots.length } : null, slots };
+}
+
 /** The rows of the map that touch one settings key or token (the Where-everything-lives search). */
 export function skinMapFind(map, needle) {
   const q = String(needle ?? '').toLowerCase();
