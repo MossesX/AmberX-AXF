@@ -13,6 +13,7 @@
  * The one import is the generated-files manifest (generated-files@1): which files a merge resolves by itself and how.
  */
 import manifest from '../../../../../framework/spec/generated-files.json' with { type: 'json' };
+import { isTracking, TRACKING_PATHS } from '../../../../../framework/core/tracking-paths.mjs';
 
 export const LAND_FRAME = 'auto-land@1';
 export const CONTROL_FRAME = 'auto-land-control@1';
@@ -30,8 +31,13 @@ const SCRATCH = [/^\.brief\.md$/, /^[^/]+\.log$/, /^[^/]+\.jsonl$/, /^\.axf-[^/]
 /** Synced data (claude-sync, persist.mjs): changes here are committed on the build's own branch. */
 const SYNCED = [/^_claude\//, /^changes\//, /^sessions\//, /^apps\/[^/]+\/_claude\//, /^framework\/plan\//, /^framework\/catalog\/status\.json$/, /^tracker\.json$/, /^project\.manifest\.json$/, /^apps\/[^/]+\/project\.manifest\.json$/];
 
-/** Builds files: merged per build and step, newer wins (builds-live.mjs merge driver). */
-const BUILDS = [/^_claude\/builds\/store\.json$/, /^_claude\/builds\/orchestrator\.json$/, /^_claude\/builds\/profiles\/[^/]+\/orchestrator\.json$/, /^_claude\/builds\/journal\/[^/]+\.jsonl$/];
+/**
+ * Builds files: merged per build and step, newer wins (builds-live.mjs merge driver). The builds-kind entries of the
+ * one tracking-paths list (framework/core/tracking-paths.mjs, tracking-paths@1); a build branch never commits them.
+ */
+const BUILDS = TRACKING_PATHS.filter((t) => t.kind === 'builds').map((t) => t.re);
+/** Every tracking file (builds store exports, journal, pending list and build queue exports). */
+export const trackingPath = (p) => isTracking(p);
 /** Line files: both sides' lines kept (union). */
 const UNION = [/^_claude\/THREADS\.md$/, /^_claude\/memory\/STATUS\.md$/, /^_claude\/memory\/decisions\.md$/, /\.log$/, /\.jsonl$/];
 /**
