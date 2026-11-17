@@ -308,5 +308,15 @@ console.log(`check-hidden-assets: ${n} checks passed`);
   ok(/menu: 'assets', menuLabel: 'Assets'/.test(cc) && /action: 'chrome\.hidden', badge: HIDDEN_ASSETS_BADGE/.test(cc) && /action: 'chrome\.unhideAll'/.test(cc) && /provider: HIDEABLE_PROVIDER/.test(cc), 'Assets menu: Hidden items… (badge), Unhide all, Hide ▸');
   ok(/target: 'canvas'/.test(cc) && /register\('chrome\.hidden'/.test(cc), 'Hidden items… on the page menu too (reachable with the menu bar hidden)');
   ok(/data-axf-target="panel:hidden-assets"/.test(panel) && /data-axf-target=\{`row:\$\{key\}`\}/.test(panel) && /id="hidden\.unhide-all"/.test(panel) && /id=\{`hidden\.unhide\./.test(panel), 'console-control targets: panel, rows, both buttons');
+
+  // s10–s11 the API: REST routes, MCP tools, console actions and the deep links
+  const repo = join(root, '..');
+  const rest = readFileSync(join(repo, 'apps/console-web/server/hidden_assets.py'), 'utf8');
+  ok(['@r.get("/api/hidden-assets")', '"/api/hidden-assets/hide"', '"/api/hidden-assets/unhide"', '"/api/hidden-assets/unhide-all"'].every((x) => rest.includes(x)), 'REST: list, hide, unhide, unhide-all');
+  const mcp = readFileSync(join(repo, 'apps/console-web/server/mcp_server.py'), 'utf8');
+  ok(['hidden_assets_list', 'hidden_assets_hide', 'hidden_assets_unhide', 'hidden_assets_unhide_all'].every((x) => mcp.includes(`async def ${x}(`)), 'MCP: the four tools');
+  ok(['chrome.hide', 'chrome.unhide', 'chrome.unhideAll', 'chrome.hidden'].every((x) => cc.includes(`register('${x}'`)), 'console actions: chrome.hide / unhide / unhideAll / hidden');
+  const exe = readFileSync(join(repo, 'apps/console-web/src/control/executor.ts'), 'utf8');
+  ok(/export function splitAnchor/.test(exe) && /SETTINGS_TAB_LINK/.test(exe) && /getElementById\(`axf-\$\{anchor\}`\)/.test(exe) && /id=\{`axf-\$\{HIDDEN_ASSETS_ANCHOR\}`\}/.test(panel), 'deep link view:settings/tab:appearance#hidden lands on the panel');
   console.log(`check-hidden-assets (runtime): ${n} checks passed`);
 }

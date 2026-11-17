@@ -106,6 +106,37 @@ def test_refusals() -> None:
     assert c.get("/api/hidden-assets").json()["count"] == 0, "no document reads as nothing hidden"
 
 
+def test_mcp_tools() -> None:
+    import asyncio
+    import mcp_server
+    _fresh_look()
+    server = mcp_server.build_server(lambda op, **a: {}, terminal=lambda since: [], control=lambda c: {"ok": True})
+
+    def call(name: str, args: dict) -> dict:
+        out = asyncio.run(server.call_tool(name, args))
+        res = out[1] if isinstance(out, tuple) else out
+        if isinstance(res, dict):
+            return res.get("result", res)
+        if getattr(res, "isError", False):
+            raise RuntimeError(" ".join(getattr(c, "text", "") for c in res.content))
+        sc = getattr(res, "structuredContent", None)
+        if isinstance(sc, dict):
+            return sc.get("result", sc)
+        return json.loads(res.content[0].text)
+
+    r = call("hidden_assets_hide", {"kind": "tab-group", "id": "settings.tabs"})
+    assert r["changed"] is True and r["hidden"][0]["by"] == "api:mcp", r
+    assert call("hidden_assets_list", {})["count"] == 1
+    assert call("hidden_assets_unhide", {"kind": "tab-group", "id": "settings.tabs"})["count"] == 0
+    call("hidden_assets_hide", {"kind": "banner", "id": "top", "app": "console"})
+    assert call("hidden_assets_unhide_all", {})["shown"] == 1
+    try:
+        call("hidden_assets_hide", {"kind": "toolbar", "id": "Bad Id"})
+        raise AssertionError("a bad id is refused")
+    except Exception as e:  # ToolError surfaces as an exception from call_tool
+        assert "piece id" in str(e) or "id must" in str(e), e
+
+
 def test_mounted_in_main() -> None:
     src = (HERE.parent / "main.py").read_text()
     assert "app.include_router(hidden_assets.router_for(auth))" in src

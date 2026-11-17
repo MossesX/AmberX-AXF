@@ -43,6 +43,12 @@ for name, t in tools.items():
     if a.read_only_hint:
         ok(name in READ_TOOLS, f"{name} is read-only, so its name says it reads (list/get/status/find/…)")
 
+# hidden-assets@1: list reads, the rest write (hide / unhide / unhide all; nothing is deleted)
+for name in ("hidden_assets_list", "hidden_assets_hide", "hidden_assets_unhide", "hidden_assets_unhide_all"):
+    ok(name in tools, f"{name} exists")
+ok(tools["hidden_assets_list"].annotations.read_only_hint is True, "hidden_assets_list reads")
+ok(all(tools[n].annotations.read_only_hint is not True and tools[n].annotations.destructive_hint is not True for n in ("hidden_assets_hide", "hidden_assets_unhide", "hidden_assets_unhide_all")), "hide / unhide / unhide all write, not destructive")
+
 # veto pass tools (pass_* since build pass-all; token_pass_* are the same tools under the old names)
 for name in ("pass_grant", "pass_status", "pass_revoke", "pass_undo", "token_pass_grant", "token_pass_status", "token_pass_revoke", "token_pass_undo"):
     ok(name in tools, f"{name} exists")
