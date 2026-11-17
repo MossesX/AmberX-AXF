@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7829,
- "updatedAt": "2026-11-17T20:34:48.643Z",
+ "rev": 7830,
+ "updatedAt": "2026-11-17T20:35:01.186Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275239,7 +275239,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T20:34:48.679Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -275713,7 +275713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -275737,7 +275737,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:34:45.113Z",
+   "updatedAt": "2026-11-17T20:34:48.507Z",
    "builtAt": "",
    "notes": [
     {
@@ -275767,6 +275767,10 @@
     {
      "text": "Brief only: brief is 31162 characters (~7791 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T20:34:45.113Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-rebuild-every-toolbar-page-specific--gina, shared account login)",
+     "at": "2026-11-17T20:34:48.507Z"
     }
    ],
    "approvals": [],
@@ -275839,7 +275843,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T20:34:48.679Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -276561,7 +276565,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
