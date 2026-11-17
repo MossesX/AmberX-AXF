@@ -48,3 +48,11 @@ Brett said (verbatim): "Hire Gizmo, give him his job back."
 - Still open: **front desk** (greets each new Claude session, runs the agent picker, routes Brett's requests).
 - **Chachi** = front desk: greets each new Claude session, runs the agent picker (agent-pick build), routes Brett's requests. All-rounder, $7.50/h.
 - Correction: **Chachi is a she** (Brett: "It's a she, don't you misgender anybody."). Use she/her for Chachi.
+
+## Update 8 (Nov 17 2026, build rename-every-crew-agent-…): the crew carries cat names
+Brett's request: every crew agent gets a cat name from his 200-name pool; existing cat names stay (Amber, Marco, Patches, Polo, Gizmo, Brownie, Ashes, Jennifer).
+- Pool: `apps/console-web/plugins/agent-swarm/agents/name-pool.json` (from his Nov 7 notes "Name pool", "cats only", "100 more cats"). Read: `swarm.mjs names`, `GET /api/plugins/agent-swarm/names`.
+- Ids never change; old names stay as aliases (`formerly`) so old briefs and "Agent: …" lines still resolve.
+- Kit Kat (kat, was Kotlin Kat) · Pixel (rio, Rio React) · Byte (py, Py Pete) · Widget (manny, Manny Fest) · Velvet (tia, Tia Theme) · Glitch (tex, Tex Tester) · Merlin (doc, Doc Holli) · Velcro (max, Merge Max) · Shadow (rhonda, Reel Rhonda) · Comet (paulie, Ping Paulie) · Snickers (sully, Snap Sully) · Sir Pounce (lenny, Landin' Lenny) · Dusty (joey, Janitor Joey) · Whiskers (earl, Earl the Ear) · Olive (gina, Greenlight Gina) · Gizmo stays.
+- The orchestrator's chat voice "Boss" is now **Patches** (id `boss`), per the Nov 3 org chart.
+- Not renamed: Agent Manager chat agents (Vinny = axHub's approval bot in another repo, Mosses, AI expert, AXF expert) and Molly (Brett's kept name). Rename them only if Brett asks.

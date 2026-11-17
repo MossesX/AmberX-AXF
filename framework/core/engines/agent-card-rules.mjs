@@ -223,7 +223,7 @@ export function avatarModel(av) {
 
 /** A sample agent for previews, the designer and the fixture (identity + stats + avatar). */
 export const AGENT_CARD_SAMPLE = {
-  identity: { id: 'kat', name: 'Kotlin Kat', role: 'Android engineer', specialty: 'Kotlin kernel twins and Jetpack Compose screens', hiredAt: '2026-10-31', status: 'On duty', catchphrase: "Gradle's cookin', grab me a cold one.", signature: 'K. Kat', page: 'axf://agent-swarm/kat' },
+  identity: { id: 'kat', name: 'Kit Kat', role: 'Android engineer', specialty: 'Kotlin kernel twins and Jetpack Compose screens', hiredAt: '2026-10-31', status: 'On duty', catchphrase: "Gradle's cookin', grab me a cold one.", signature: 'K. Kat', page: 'axf://agent-swarm/kat' },
   stats: { jobs: 42, successRate: 93.4, spend: 12.5, favoriteModel: 'Opus' },
   avatar: { face: 'round', hair: 2, gear: 'headphones', hue: 0 },
 };

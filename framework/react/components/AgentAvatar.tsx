@@ -23,7 +23,7 @@ export interface AgentAvatarProps {
   agent?: string | null;
   /** the agent itself, when the caller already has it */
   info?: AgentInfo | null;
-  /** a free text that may name the agent ("Agent: Ping Paulie" in a build's detail): nothing is drawn when it names nobody known */
+  /** a free text that may name the agent ("Agent: Comet" in a build's detail): nothing is drawn when it names nobody known */
   inText?: string | null;
   /** override the asset's size (token sizes only) */
   size?: 'small' | 'regular' | 'large';

@@ -17,7 +17,7 @@ type View = (typeof VIEWS)[number]['id'];
 
 export function Bubble({ m, agents, ceiling, flag }: { m: ChatMsg; agents: Map<string, Agent>; ceiling?: number; flag?: watch.Mention }) {
   const a = agents.get(m.from);
-  const who = a?.name ?? (m.from === 'boss' ? 'Boss' : m.from === 'brett' ? 'Brett' : m.from);
+  const who = a?.name ?? (m.from === core.BOSS.id ? core.BOSS.name : m.from === 'brett' ? 'Brett' : m.from);
   return (
     <li className={`sw-msg is-${m.kind} ${m.from === 'brett' ? 'is-mine' : ''} ${flag ? `is-flag is-${flag.tone}` : ''}`} style={ceiling ? ({ '--sw-vibe': core.vibeShade(m.vibe, ceiling) } as CSSProperties) : undefined} title={m.vibe != null ? `vibe ${m.vibe}${m.toned ? ' · toned down' : ''}` : undefined}>
       {a ? <AgentAvatar info={{ id: a.id, name: a.name, role: a.role, avatar: a.avatar }} size="large" /> : <span className={`sw-msg__badge is-${m.from}`} aria-hidden="true">{who.slice(0, 1)}</span>}
@@ -55,7 +55,7 @@ export function ChatTab({ state, act }: { state: SwarmState; act: Act }) {
         {view !== 'all' && <span className="fx-muted">What the crew says about Brett, the boss or the owner. Secrets are redacted. Sessions read the same list on axHub: data path {watch.HUB_FOLDER}/mentions.json.</span>}
       </div>
       <div className={`sw-room ${colorBy ? `is-vibe is-${base}` : ''}`} data-fx-ctx-target="agent-swarm-chat">
-        {msgs.length === 0 ? <p className="fx-empty">{view === 'all' ? 'Quiet in here. Messages show up as Boss hands out jobs.' : view === 'brett' ? 'Nobody is talking about Brett.' : 'Nothing negative about Brett.'}</p>
+        {msgs.length === 0 ? <p className="fx-empty">{view === 'all' ? 'Quiet in here. Messages show up as ' + core.BOSS.name + ' hands out jobs.' : view === 'brett' ? 'Nobody is talking about Brett.' : 'Nothing negative about Brett.'}</p>
           : <ul className="sw-msgs">{msgs.map((m) => <Bubble key={m.id} m={m} agents={agents} ceiling={colorBy ? state.swarm.chatSettings.vibe : undefined} flag={view === 'all' ? undefined : flags.get(m.id)} />)}</ul>}
         <div ref={end} />
       </div>

@@ -199,7 +199,7 @@ function JobsTab({ state }: { state: SwarmState }) {
                 <td>{agents.get(j.agent)?.name ?? j.agent}</td>
                 <td><ModelChip m={j.model} /></td>
                 <td className="is-num">{core.fmtTokens(j.budget.tokens)} · {j.budget.maxTurns} turns · {core.fmtUsd(core.budgetUsd(j, state.prices))}</td>
-                <td className="sw-leases fx-mono">{j.leases.join(', ') || 'whole repo (no files named)'}{j.shared.length ? ` · Boss writes: ${j.shared.join(', ')}` : ''}</td>
+                <td className="sw-leases fx-mono">{j.leases.join(', ') || 'whole repo (no files named)'}{j.shared.length ? ` · ${core.BOSS.name} writes: ${j.shared.join(', ')}` : ''}</td>
               </tr>); })}</tbody>
           </table></div>
         </div>

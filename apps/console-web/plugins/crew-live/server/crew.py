@@ -298,7 +298,7 @@ AGENT_LINE = re.compile(r"(?:assigned\s+)?agent\s*[:=]\s*\**\s*([A-Za-z][\w' -]{
 
 def resolve_agent(names: list[str], roster: list[dict[str, Any]], detail: str = "") -> dict[str, Any] | None:
     """The crew member a run belongs to: a tag or session name that is an agent id or name (axf-<agent>-<job> from the
-    job router), else the build's "Agent: <name>" line."""
+    job router), else the build's "Agent: <name>" line (current or former name)."""
     by_id = {str(a.get("id")).lower(): a for a in roster}
     by_name = {}
     for a in roster:
@@ -307,6 +307,14 @@ def resolve_agent(names: list[str], roster: list[dict[str, Any]], detail: str = 
             by_name[nm] = a
             for w in nm.split():
                 by_name.setdefault(w, a)
+    # former names (the crew took cat names, Nov 17 2026): old build details and briefs still find their agent
+    for a in roster:
+        for old in a.get("formerly") or []:
+            old = str(old or "").lower()
+            if old:
+                by_name.setdefault(old, a)
+                for w in old.split():
+                    by_name.setdefault(w, a)
     for n in names:
         n = str(n or "").lower()
         if not n:
@@ -336,7 +344,7 @@ def agent_view(a: dict[str, Any] | None, fallback: str) -> dict[str, Any]:
         return {"id": "", "name": fallback, "role": "", "avatar": None, "initials": initials(fallback), "known": False}
     return {"id": a.get("id"), "name": a.get("name") or a.get("id"), "role": a.get("role") or "", "avatar": a.get("avatar"),
             "initials": initials(str(a.get("name") or a.get("id"))), "known": True, "salary": a.get("salary"), "status": a.get("status") or "",
-            "catchphrase": a.get("catchphrase") or ""}
+            "catchphrase": a.get("catchphrase") or "", "formerly": [str(n) for n in a.get("formerly") or [] if n]}
 
 
 # ------------------------------------------------------------------ git
@@ -587,7 +595,7 @@ def snapshot(sessions: list[dict[str, Any]], meters: dict[str, Any], builds: dic
     busy = {r["agent"]["id"] for r in runs if r["agent"]["id"] and r["status"] != "idle"}
     off = [agent_view(a, str(a.get("id"))) for a in roster if a.get("id") not in busy and a.get("status") not in ("fired", "quit")]
     working = [r for r in runs if r["status"] != "idle"]
-    # every build whose detail names a crew member ("Agent: Ping Paulie"): avatars on build rows, steps, reviews
+    # every build whose detail names a crew member ("Agent: Comet", or a former name): avatars on build rows, steps, reviews
     build_agents = {}
     for bid, b in builds.items():
         a = resolve_agent([], roster, str(b.get("detail") or ""))

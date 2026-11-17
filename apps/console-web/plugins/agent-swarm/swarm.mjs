@@ -60,6 +60,17 @@ export function loadRoster() {
   if (Array.isArray(hired)) for (const a of hired.map(core.normAgent)) if (a.id && !r.agents.some((x) => x.id === a.id)) r.agents.push(a);
   return r;
 }
+/** The crew's name pool (agents/name-pool.json): Brett's kept names, the cat names, who carries which, and each agent's
+ *  former names (old builds, briefs, chat lines and sessions still find the agent by them). Ids never change. */
+export function loadNames() {
+  const p = readJson(join(HERE, 'agents/name-pool.json'), {});
+  const arr = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string' && x.trim()).map((x) => x.trim()) : []);
+  const map = (v, f) => Object.fromEntries(Object.entries(v && typeof v === 'object' && !Array.isArray(v) ? v : {}).map(([k, x]) => [k, f(x)]));
+  const keep = arr(p.keep); const cats = arr(p.cats);
+  const taken = map(p.taken, (x) => (typeof x === 'string' ? x.trim() : '')); const formerly = map(p.formerly, arr);
+  const used = new Set(Object.values(taken).filter(Boolean));
+  return { keep, cats, taken, formerly, free: cats.filter((n) => !used.has(n)), total: keep.length + cats.length };
+}
 export function loadSkills() {
   const dir = join(HERE, 'agents/skills');
   const files = Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith('.md')).map((f) => { const s = core.parseSkill(readFileSync(join(dir, f), 'utf8')); return [s.id, s]; }));
@@ -197,7 +208,7 @@ export function crew() {
     // an open Claude session (status running) is neither a success nor a failure yet
     const st = core.agentStats(s.runs.filter((r) => r.status !== 'running'), a.id, s.prices, 8); const timed = mine.filter((r) => r.endedAt);
     return {
-      id: a.id, name: core.cardIdentity(a, as).name, role: a.role, specialty: a.specialty, avatar: a.avatar, catchphrase: a.catchphrase, bio: a.bio, jobsOnly: a.jobsOnly,
+      id: a.id, name: core.cardIdentity(a, as).name, formerly: s.names.formerly[a.id] ?? [], role: a.role, specialty: a.specialty, avatar: a.avatar, catchphrase: a.catchphrase, bio: a.bio, jobsOnly: a.jobsOnly,
       status: as.status, statusLabel: core.statusLabel(as), works: core.STATUSES[as.status]?.works !== false,
       running: mine.filter((r) => r.status === 'running').map((r) => ({ jobId: r.jobId, buildId: r.buildId, startedAt: r.startedAt, summary: r.report?.summary ?? '' })),
       pay: s.pay[a.id], spend: { today: s.spend[a.id]?.today.usd ?? 0, week: s.spend[a.id]?.week.usd ?? 0, all: s.spend[a.id]?.all.usd ?? 0, avgPerJob: s.spend[a.id]?.avgPerJob ?? 0 },
@@ -333,7 +344,7 @@ export function state() {
   const at = new Date().toISOString();
   const spend = Object.fromEntries(roster.agents.map((a) => [a.id, core.spendOf(runs, a.id, table, at)]));
   const pay = Object.fromEntries(roster.agents.map((a) => [a.id, core.payOf(a, swarm.agents[a.id], runs, table, at)]));
-  return { swarm, spend, pay, banterToday: core.banterAllowed(swarm, at).today, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
+  return { swarm, names: loadNames(), spend, pay, banterToday: core.banterAllowed(swarm, at).today, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
     runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
 }
 /** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, THREADS.md). */
@@ -376,6 +387,7 @@ export async function main(argv) {
     const r = loadRoster(); const sk = loadSkills(); const problems = core.checkRoster(r, sk);
     return out({ ok: true, roster: r, skills: sk, problems }, [...r.agents.map((a) => `${a.id.padEnd(6)} ${a.name.padEnd(12)} ${a.skill.padEnd(17)} ${a.models.join('/')}`), ...problems.map((p) => `! ${p}`)].join('\n'));
   }
+  if (cmd === 'names') { const n = loadNames(); return out({ ok: true, names: n }, [`${n.total} names · ${n.cats.length - n.free.length} cat names taken · ${n.free.length} free`, `Kept: ${n.keep.join(', ')}`, ...Object.entries(n.taken).map(([id, nm]) => `${id.padEnd(8)} ${nm}${n.formerly[id]?.length ? `  (was ${n.formerly[id].join(', ')})` : ''}`)].join('\n')); }
   if (cmd === 'state') return out({ ok: true, state: state() }, JSON.stringify(state(), null, 1));
   if (cmd === 'crew') { const c = crew(); return out({ ok: true, crew: c }, c.map((a) => `${a.id.padEnd(8)} ${a.name.padEnd(16)} ${a.statusLabel.padEnd(12)} today ${core.fmtUsd(a.spend.today)} · ${a.stats.done} done`).join('\n')); }
   if (cmd === 'book') { const r = book(JSON.parse(rest[0] ?? '{}')); return out({ ok: true, run: r }, `${r.jobId} on ${r.agent}: ${r.status}${r.reportedCost != null ? ` · ${core.fmtUsd(r.reportedCost)}` : ''}`); }
