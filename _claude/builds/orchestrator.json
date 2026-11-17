@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:45:30.674Z",
+ "updatedAt": "2026-11-17T19:45:50.000Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142459,15 +142459,15 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-17T19:40:33.705Z",
-   "builtAt": "2026-11-17T19:40:33.705Z",
+   "updatedAt": "2026-11-17T19:45:29.921Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--lenny.",
@@ -142548,6 +142548,10 @@
     {
      "text": "s5: merged origin/main and pushed 3ff3f4d7e. Fixes: dropped duplicate Gizmo guide help entry (main already fixed), drafted help for 4 watchdog controls from main, regenerated skin-config snapshot (voice@1), baked voice assets into all 4 apps, wrote Plan Studio 2 token manifest (from main, missing). Android job failure was Maven Central not serving kotlin-stdlib 2.2.0 (transient; no android diff vs main) and should pass on the re-run. Ran locally green: help-coverage, check-skin-config, token-registry, shared-assets, the console web/Python chain, theme/controls/console-control/toolbars/chrome. Disk briefly hit 100% on the VPS during this session (182 worktrees = 168 GB) and recovered on its own.",
      "at": "2026-11-17T19:38:33.917Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:45:29.921Z"
     }
    ],
    "approvals": [],
@@ -180256,7 +180260,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T19:45:12.779Z",
+   "updatedAt": "2026-11-17T19:45:41.999Z",
    "builtAt": "",
    "notes": [
     {
@@ -180274,6 +180278,10 @@
     {
      "text": "Claude account: hulu0241 (axf-separate-settings-per-plugin-reset--earl, shared account login)",
      "at": "2026-11-17T19:27:30.297Z"
+    },
+    {
+     "text": "Headless run axf-separate-settings-per-plugin-reset--earl: brief only · start 20.0K tokens ($0.19) · cost $7.43 · 100 turns · 6 tools, MCP none",
+     "at": "2026-11-17T19:45:41.999Z"
     }
    ],
    "approvals": [],
