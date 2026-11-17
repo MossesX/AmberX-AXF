@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7422,
- "updatedAt": "2026-11-17T12:47:27.275Z",
+ "rev": 7423,
+ "updatedAt": "2026-11-17T12:48:47.594Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244621,7 +244621,7 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-17T12:28:51.223Z",
+   "updatedAt": "2026-11-17T12:48:45.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -244690,7 +244690,7 @@
     "session": "axf-fix-console-deep-links-open-page-lands--gina",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 1",
+    "phase": "",
     "launchedAt": "2026-11-17T12:28:43.007Z",
     "runs": 1,
     "crashes": 0,
@@ -244804,12 +244804,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T12:48:45.001Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T22:51:15.161Z",
-     "updatedAt": "2026-11-16T22:51:16.365Z"
+     "updatedAt": "2026-11-17T12:48:45.406Z"
     },
     {
      "id": "s4",
@@ -244842,7 +244842,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
