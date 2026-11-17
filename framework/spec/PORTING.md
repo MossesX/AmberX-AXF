@@ -352,3 +352,7 @@ animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPre
 `setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
 `sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
 Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.
+
+Build stop-auto-lander-committing-tracking adds `framework/core/tracking-paths.mjs` (tracking-paths@1: the files a build
+branch never commits) and the builds journal's hub home (builds-journal@1). Build tooling only (lander, CI, CLI): no
+Kotlin twin, none needed; the baked copies ride along unused.

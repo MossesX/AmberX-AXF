@@ -1818,3 +1818,4 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - Waits on: nothing from Brett (UI Review shots are non-blocking for this build).
 - First message to carry on: "Carry on tab-group-assets from the typecheck step on branch claude/tab-group-assets (see THREADS.md To carry on)."
 - 2026-11-13 10:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` s1 + s2: every skin has light + dark (skin-modes@1), check-skin-modes in CI, CLI/REST/MCP/voice `mode` (all) · claude
+- 2026-11-17 00:55 UTC · `stop-auto-lander-committing-tracking` s2–s14: tracking files never committed by the lander (reset to main's base copy, take-main on conflict), build worktrees keep the store on the hub, worktree guard, journal moved to the hub (916 MB untracked, pointer + sha256), CI guard check-tracking-files, API land-tracking (REST/MCP/CLI/voice), tests (all) · claude
