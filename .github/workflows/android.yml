@@ -122,6 +122,7 @@ jobs:
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
       - run: node framework/spec/check-ui-predict.mjs                # ui-prediction@1 / ui-mockup@1: predicted looks before a build runs, look gate, CLI offline
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
+      - run: node framework/spec/check-phone-connect.mjs             # phone-connect@1: engine vs fixture (records, commands, wire, dispatch order, personOnly, pairing flow, migration), wire error codes frozen, schema snapshots + JSON Schemas current and agreeing with the engine
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: (git fetch -q --unshallow origin || true) && git fetch -q origin +refs/heads/main:refs/remotes/origin/main && node framework/cli/check-tracking-files.mjs   # tracking-paths@1: a PR branch never changes the builds store, orchestrator / origins / pending / queue exports or journal parts (builds-live status commits excepted); names the file

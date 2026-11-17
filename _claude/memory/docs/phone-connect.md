@@ -71,3 +71,10 @@ INTEROP.md's: `invalid` · `denied` · `not_found` · `unavailable` · `validati
 | s3 | `framework/schemas/phone-connect.json`, `framework/schemas/json/phone-{device,pairing,command,result}.schema.json`, `framework/schemas/data-store-paths.json` (+ `data-store.json` namespace `phone`) |
 | s4 | `framework/core/phone-connect.mjs`, `framework/spec/fixtures/phone-connect.json` |
 | s5 | `framework/spec/check-phone-connect.mjs`, `.github/workflows/android.yml` |
+
+## Phase 1 landed (Nov 17 2026, Fable)
+
+- Engine `framework/core/phone-connect.mjs` is the one source: REGISTRY → `axf schemas` writes `framework/schemas/phone-connect.json` and the four JSON Schemas (with if/then cross-field rules: paired → owner, claimed → claimedBy / deviceId / claimedAt, ack never fails or carries state, `retryable` follows the code, a person carries a tap).
+- data-store@1 namespace `phone` (plugin folder `phone-connect` is the namespace, like `ui-review`); `data-store-paths.json` maps `phone-connect/<kind>/<file>` → `phone/<kind>/<file>`, `log.jsonl` → `phone/log`. Nothing to migrate yet.
+- Fixture `framework/spec/fixtures/phone-connect.json` is generated (`node framework/spec/check-phone-connect.mjs --write`) from seeded inputs: validators, makeCommand, wire, dispatch order, personOnly, presence, urls, the pairing flow, the AmberX migration, frozen error codes. 295 checks in CI (android.yml sweep).
+- Kotlin twin and the companion app: deferred gap in `framework/spec/PORTING.md`. Next phase: the console plugin (`apps/console-web/plugins/phone-connect`, Python port reading the snapshot), the hub `phone` relay, then the app.
