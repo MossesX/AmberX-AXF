@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7558,
- "updatedAt": "2026-11-17T18:10:21.273Z",
+ "rev": 7559,
+ "updatedAt": "2026-11-17T18:10:31.627Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -267982,7 +267982,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T18:10:19.398Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -268460,7 +268466,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -268532,8 +268538,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T18:10:19.647Z",
-   "updatedAt": "2026-11-17T18:10:19.647Z",
+   "updatedAt": "2026-11-17T18:10:21.567Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -268559,7 +268566,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
