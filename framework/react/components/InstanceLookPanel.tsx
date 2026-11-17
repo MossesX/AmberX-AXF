@@ -82,9 +82,8 @@ export function InstanceLookPanel({ kind, instance, levelOk, descriptions = true
               <div className="axf-grid-row is-active"><span className="axf-grid-cell">Row</span><span className="axf-grid-cell">Selected</span><span className="axf-grid-cell">3</span></div>
             </div>
           ) : (
-            <div className="fx-tabs fx-tabs--group" data-fx-tabs="underline" style={preview.style} {...preview.attrs}>
-              <span className="fx-tab is-active">Active</span><span className="fx-tab">Idle</span><span className="fx-tab">Another</span>
-            </div>
+            // a drawn sample, not a working row: it carries the hand-drawn strip marks (check-chrome-assets) and does nothing on press
+            <div className="fx-tabs fx-tabs--group" data-fx-tabs="underline" data-axf-tab-group="chrome.look-preview" data-fx-ctx-target="tab-group" style={preview.style} {...preview.attrs}>{['Active', 'Idle', 'Another'].map((t, i) => <span key={t} className={i ? 'fx-tab' : 'fx-tab is-active'} data-axf-tab-group="chrome.look-preview" data-fx-ctx-target="tab-group">{t}</span>)}</div>
           )}
         </div>
         {keys.map((k) => {

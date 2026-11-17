@@ -37,8 +37,10 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
-import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
+import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, chromeInstanceOfTarget, chromeIsAssetType, chromePickType, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
+import { instanceLookList, instanceLookSettingsKey, isInstanceLookKind, normalizeInstanceLook, type InstanceLookKind } from '../../core/engines/instance-look';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
+import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentToken, componentTokenError, instanceHasPrevious, instanceTokenValues, isComponentTokenFamily, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken, type ComponentTokenFamily } from '../../core/engines/component-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Segmented, Slider } from './Controls';
@@ -47,6 +49,7 @@ import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
+import { INSTANCE_LOOK_SECTION, InstanceLookPanel } from './InstanceLookPanel';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -91,6 +94,7 @@ export function setChromeInterface(rt: AxfRuntime, type: ChromeType, instance: s
 
 /** The data an instance renders with today (the active asset, or the row's own pick, plus its overrides). */
 function baseDataOf(rt: AxfRuntime, type: ChromeType, instance: string): Record<string, unknown> | null {
+  if (!chromeIsAssetType(type)) return null; // a grid: no asset of its own, every field is the instance's choice
   if (type === 'tab-group') {
     const pick = rt.settings.get(CHROME_INSTANCE_ASSET_KEY(type, instance));
     const own = typeof pick === 'string' && pick ? rt.registry.get('tab-group', pick) : null;
@@ -139,6 +143,7 @@ export function moveChrome(rt: AxfRuntime, type: ChromeType, instance: string, p
 
 /** Use another asset: a tab group picks for itself, every other kind swaps the app's slot. `next` cycles. */
 export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, asset: string): boolean {
+  if (type === 'grid') return pickGridLook(rt, instance, asset);
   const list = rt.registry.list(type as AssetType);
   if (!list.length) return false;
   let id = asset;
@@ -156,13 +161,48 @@ export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, a
   return rt.swap(type as AssetType, id);
 }
 
+/** The named looks (instance-look@1 assets) a grid's Change… offers: every one for kind grid. */
+export function gridLookAssets(rt: AxfRuntime): Array<{ id: string; name: string; description?: string; look: Record<string, string> }> {
+  return rt.registry.list(chromePickType('grid') as AssetType)
+    .filter((a) => (a.data as { kind?: string } | undefined)?.kind === 'grid')
+    .map((a) => ({ id: a.id, name: a.name, description: a.description, look: normalizeInstanceLook((a.data as { look?: unknown }).look, rt.instanceLookColourTokens()) as Record<string, string> }));
+}
+
+/**
+ * A grid's Change…: copy a named look into this grid's own look record (axf.chrome.grid.<id>.look), `default` / ''
+ * drops the record (the grid follows the skin), `next` / `prev` cycle. The copy is the grid's own from then on.
+ */
+export function pickGridLook(rt: AxfRuntime, instance: string, asset: string): boolean {
+  const key = instanceLookSettingsKey('grid', instance);
+  if (asset === 'default' || asset === '') { rt.settings.clear(key); return true; }
+  const list = gridLookAssets(rt);
+  if (!list.length) return false;
+  let pick = list.find((a) => a.id === asset);
+  if (asset === 'next' || asset === 'prev') {
+    const cur = gridLookPicked(rt, instance);
+    const i = list.findIndex((a) => a.id === cur);
+    pick = list[(i + (asset === 'next' ? 1 : list.length - 1) + list.length) % list.length];
+  }
+  if (!pick) return false;
+  rt.settings.set(key, pick.look as unknown as SettingValue);
+  return true;
+}
+
+/** The named look a grid's record equals today ('default' when it has none, '' when it is its own mix). */
+export function gridLookPicked(rt: AxfRuntime, instance: string): string {
+  const own = normalizeInstanceLook(rt.settings.get(instanceLookSettingsKey('grid', instance)), rt.instanceLookColourTokens());
+  if (!Object.keys(own).length) return 'default';
+  const same = (a: Record<string, string>) => JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(own).sort());
+  return gridLookAssets(rt).find((a) => same(a.look))?.id ?? '';
+}
+
 /** The context-menu block every chrome kind shares. */
 export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): MenuEntry[] {
   const label = chromeLabel(type);
   const m = CHROME_MOVES[type];
   const items: MenuEntry[] = [
     { id: `chrome-settings-${type}`, label: `${label} settings…`, icon: 'settings', action: `chrome.settings:${type}:${instance}` },
-    { id: `chrome-pick-${type}`, label: type === 'tab-group' ? 'Change tab style…' : `Change ${label.toLowerCase()}…`, icon: CHROME_ICONS[type], action: `chrome.pick:${type}:${instance}` },
+    { id: `chrome-pick-${type}`, label: type === 'tab-group' ? 'Change tab style…' : type === 'grid' ? 'Change grid look…' : `Change ${label.toLowerCase()}…`, icon: CHROME_ICONS[type], action: `chrome.pick:${type}:${instance}` },
   ];
   if (m.positions.length) {
     const cur = m.via === 'instance' ? chromeFieldValue(type, baseDataOf(rt, type, instance), rt.settings.get(CHROME_INSTANCE_KEY(type, instance)), m.field) : (rt.asset('layout').data as unknown as Record<string, unknown>)[m.field];
@@ -193,6 +233,17 @@ export function installChrome(rt: AxfRuntime): void {
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.unset', ([type, instance, key = ''], ctx) => { const ty = t(type); if (ty && key) setChromeField(rt, ty, inst(ty, instance, ctx), key, null); }, { label: 'Reset one chrome setting to the app (chrome.unset:<type>:<instance>:<field>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.edits', () => rt.dispatch('settings.open:appearance'), { label: 'Assets with edits (Settings → Appearance)' });
+    // component-tokens@1: one tab row's (or grid's) own token values; the same three moves as the settings dialog's panel
+    const fam = (v: unknown): ComponentTokenFamily | null => (isComponentTokenFamily(v) ? v : null);
+    rt.actions.register('chrome.token', ([family, instance, key = '', ...rest], ctx) => {
+      const fa = fam(family); if (!fa) return;
+      const id = (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE;
+      const value = rest.join(':');
+      try { rt.settings.set(INSTANCE_TOKENS_KEY, setInstanceToken(rt.settings.get(INSTANCE_TOKENS_KEY), fa, id, key, value === '' ? null : value) as never); }
+      catch (e) { rt.toast((e as Error).message, 'warning', 'Component tokens'); }
+    }, { label: 'Set one token of one tab row or grid (chrome.token:<tabs|grid>:<instance>:<token>:<value>; empty value = drop it)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.token-restore', ([family, instance], ctx) => { const fa = fam(family); if (fa) rt.settings.set(INSTANCE_TOKENS_KEY, restorePreviousInstanceTokens(rt.settings.get(INSTANCE_TOKENS_KEY), fa, (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE) as never); }, { label: 'Restore previous edit of a tab row\'s / grid\'s tokens (chrome.token-restore:<tabs|grid>:<instance>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.token-hub', ([family, instance], ctx) => { const fa = fam(family); if (fa) rt.settings.set(INSTANCE_TOKENS_KEY, restoreInstanceTokensFromHub(rt.settings.get(INSTANCE_TOKENS_KEY), fa, (typeof instance === 'string' && instance) || (typeof ctx?.payload === 'string' ? ctx.payload : '') || CHROME_APP_INSTANCE) as never); }, { label: 'Restore a tab row\'s / grid\'s tokens from axHub (drop its own values; follow the shared look) (chrome.token-hub:<tabs|grid>:<instance>)', params: true, requires: 'assets.swap' });
     rt.actions.register('settings.controlled-colour', ([c]) => { if (c && (CONTROLLED_COLORS as readonly string[]).includes(c)) rt.settings.set(CONTROLLED_COLOR_KEY, c); }, { label: 'Colour of controlled (overridden) settings', params: true });
     rt.actions.register('chrome.interface', ([type, which = 'default']) => {
       const ty = t(type); if (!ty) return;
@@ -231,13 +282,66 @@ export function installChrome(rt: AxfRuntime): void {
     }, { label: 'How many rows a tab group stacks its tabs on (tabs.rows:<tab group id or name>:<1-6|auto>)', params: true });
     rt.actions.register('tapconfirm.window', ([ms = '']) => { rt.settings.set(TAP_KEYS.armMs, String(tapArmMs(ms))); }, { label: 'Tap to confirm: how long an armed item waits (tapconfirm.window:<ms>)', params: true });
   });
+  installLookActions(rt);
   // The shared block, after the kind's own items (window tab groups: Undock / Split…; banners: Hide…).
   rt.contextExtras.set('*:chrome', (target, payload) => {
     const type = chromeTypeOfTarget(target);
     if (!type) return [];
-    const instance = instanceOf(type, payload);
+    const instance = instanceOf(type, chromeInstanceOfTarget(target) ?? payload);
     return instance ? chromeMenu(rt, type, instance) : [];
   });
+}
+
+/**
+ * instance-look@1 actions (console actions, AmberX voice, console_show deep links): the same runtime calls as the Look
+ * section. `<id>` may be `-` for every instance of the kind in the app.
+ *   chrome.look.open:<kind>:<id>              open its Settings on the Look tab (navigate only: console_show action:chrome.look.open:grid:<id>)
+ *   chrome.look.get:<kind>:<id>[:<key>]       read its resolved look (value + where each key comes from)
+ *   chrome.look.list                          every grid / tab row with an own look in this app
+ *   chrome.look.set:<kind>:<id>:<key>:<value> set one key (value skin = drop it)
+ *   chrome.look.reset:<kind>:<id>             Reset to skin (one undo)
+ *   chrome.look.undo:<kind>:<id>              undo the last reset
+ */
+function installLookActions(rt: AxfRuntime): void {
+  const kindOf = (v: unknown): InstanceLookKind | null => (isInstanceLookKind(v) ? v : null);
+  const idOf = (v: unknown, ctx?: { payload?: unknown }): string => { const s = (typeof v === 'string' && v) || (typeof ctx?.payload === 'string' ? ctx.payload : ''); return s === '-' ? '' : s; };
+  const bad = (what: string) => { rt.toast(`Use ${what} (kind tab-group or grid).`, 'warning', 'Own look'); return false; };
+  rt.actions.register('chrome.look.open', ([kind, id], ctx) => {
+    const k = kindOf(kind); const i = idOf(id, ctx);
+    if (!k || !i) return bad('chrome.look.open:<kind>:<id>');
+    rt.openDialog(CHROME_SETTINGS_DIALOG, { type: k, instance: i, tab: 'look' });
+    return true;
+  }, { label: 'Open the own look of one grid or tab row (Settings → Look)', params: true, effect: 'navigate' });
+  rt.actions.register('chrome.look.get', ([kind, id, key], ctx) => {
+    const k = kindOf(kind); if (!k) return bad('chrome.look.get:<kind>:<id>[:<key>]');
+    const r = rt.instanceLook(k, idOf(id, ctx));
+    const text = key ? `${key}: ${r.look[key as keyof typeof r.look] ?? 'not set'}${r.source[key as keyof typeof r.source] ? ` (${r.source[key as keyof typeof r.source]})` : ''}` : Object.keys(r.look).length ? Object.entries(r.look).map(([a, b]) => `${a} ${b} (${r.source[a as keyof typeof r.source]})`).join(', ') : 'follows the skin';
+    rt.toast(text, 'info', `${chromeLabel(k)} ${idOf(id, ctx) || '(every one)'}`);
+    return { look: r.look, source: r.source, followsSkin: r.followsSkin, own: rt.instanceLookRecord(k, idOf(id, ctx)) };
+  }, { label: 'Read the own look of one grid or tab row (chrome.look.get:<kind>:<id>[:<key>])', params: true, effect: 'read' });
+  rt.actions.register('chrome.look.list', () => {
+    const rows = instanceLookList(rt.settings.savedValues(), rt.instanceLookColourTokens());
+    rt.toast(rows.length ? rows.map((r) => `${r.kind} ${r.id || '(every one)'}: ${Object.keys(r.look).length} key(s)`).join(' · ') : 'No grid or tab row has an own look.', 'info', 'Own looks');
+    return rows;
+  }, { label: 'List every grid and tab row with an own look', effect: 'read' });
+  rt.actions.register('chrome.look.set', ([kind, id, key = '', ...rest], ctx) => {
+    const k = kindOf(kind); if (!k || !key) return bad('chrome.look.set:<kind>:<id>:<key>:<value>');
+    const value = rest.join(':');
+    try { return rt.setInstanceLook(k, idOf(id, ctx), key, value === '' || value === 'skin' ? null : value); }
+    catch (e) { rt.toast((e as Error).message, 'warning', 'Own look'); return false; }
+  }, { label: 'Set one key of a grid\'s or tab row\'s own look (chrome.look.set:<kind>:<id>:<key>:<token|step|skin>)', params: true, requires: 'assets.swap', effect: 'write' });
+  rt.actions.register('chrome.look.reset', ([kind, id], ctx) => {
+    const k = kindOf(kind); if (!k) return bad('chrome.look.reset:<kind>:<id>');
+    const done = rt.resetInstanceLook(k, idOf(id, ctx));
+    rt.toast(done ? 'Back to the skin. Undo: chrome.look.undo.' : 'Already follows the skin.', 'info', 'Own look');
+    return done;
+  }, { label: 'Reset a grid\'s or tab row\'s own look to the skin (one undo)', params: true, requires: 'assets.swap', effect: 'write' });
+  rt.actions.register('chrome.look.undo', ([kind, id], ctx) => {
+    const k = kindOf(kind); if (!k) return bad('chrome.look.undo:<kind>:<id>');
+    const done = rt.undoInstanceLookReset(k, idOf(id, ctx));
+    if (!done) rt.toast('Nothing to undo.', 'info', 'Own look');
+    return done;
+  }, { label: 'Undo the last Reset to skin of a grid or tab row', params: true, requires: 'assets.swap', effect: 'write' });
 }
 
 /* ================================================================== dialogs */
@@ -267,6 +371,50 @@ function FieldControl({ type, instance, field, descriptions }: { type: ChromeTyp
   );
 }
 
+/**
+ * component-tokens@1: one instance's own token values (this tab row / this grid), on top of the skin's grid.* / tabs.*.
+ * Pick a token, type a value (a colour-theme token name like accentSoft, a CSS colour, a length), Set. Restore previous
+ * edit swaps back to the values before the last edit; Restore from axHub drops every value of this instance so it follows
+ * the shared look again. The same moves by API: control@1 tokens.instances (REST / MCP / CLI) and the chrome.token*
+ * actions (voice, console actions).
+ */
+export function InstanceTokensPanel({ family, instance }: { family: ComponentTokenFamily; instance: string }) {
+  const rt = useRuntime();
+  useSettingsTick(rt, [INSTANCE_TOKENS_KEY]);
+  const fam = COMPONENT_TOKEN_FAMILIES[family];
+  const values = instanceTokenValues(rt.settings.get(INSTANCE_TOKENS_KEY), family, instance);
+  const [key, setKey] = useState(fam.tokens[0]!.key);
+  const [text, setText] = useState('');
+  const [error, setError] = useState<string | undefined>(undefined);
+  const tok = componentToken(family, key)!;
+  const current = values[key];
+  const save = (raw: string | null) => {
+    const err = raw === null ? null : componentTokenError(family, key, raw);
+    if (err) { setError(err); return; }
+    setError(undefined);
+    try { rt.settings.set(INSTANCE_TOKENS_KEY, setInstanceToken(rt.settings.get(INSTANCE_TOKENS_KEY), family, instance, key, raw) as never); setText(''); }
+    catch (e) { setError((e as Error).message); }
+  };
+  const n = Object.keys(values).length;
+  const hasPrevious = instanceHasPrevious(rt.settings.get(INSTANCE_TOKENS_KEY), family, instance);
+  const colour = controlledColorOf(rt.settings.get(CONTROLLED_COLOR_KEY));
+  return (
+    <Section title={`${fam.label} colours & style (this one)`} aside={<span className="fx-small fx-muted">{n ? `${n} token${n === 1 ? '' : 's'} set for this one` : 'Follows the skin'}</span>}>
+      <div className="fx-stack fx-stack--xs" data-axf-instance-tokens={`${family}.${instance}`}>
+        <SelectField label="Token" value={key} options={fam.tokens.map((x) => ({ value: x.key, label: `${x.key}${x.key in values ? ' •' : ''} — ${x.description}` }))} onChange={(k) => { setKey(k); setText(''); setError(undefined); }} />
+        <TextField label="Value" value={text} onChange={setText} placeholder={current !== undefined ? `now ${current} (default ${tok.default})` : `default ${tok.default}`} hint={error ?? `${tok.kind}: a colour-theme token name (accent, surface2, accentSoft), a CSS value or a number`} error={error} mono />
+        <div className="fx-row fx-row--wrap">
+          <Button size="sm" icon="check" onClick={() => save(text)} disabled={!text.trim()}>Set</Button>
+          {current !== undefined && <Button size="sm" tone="neutral" icon="undo" onClick={() => save(null)}>Drop this token</Button>}
+          <Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`chrome.token-restore:${family}:${instance}`)} disabled={!hasPrevious}>Restore previous edit</Button>
+          <Button size="sm" tone="neutral" icon="refresh" onClick={() => rt.dispatch(`chrome.token-hub:${family}:${instance}`)} disabled={!n && !hasPrevious}>Restore from axHub</Button>
+        </div>
+        {n > 0 && <ul className={`fx-small axf-controlled axf-controlled--${colour}`}>{Object.entries(values).map(([k, v]) => <li key={k}><span className="fx-mono">{k}</span>: <span className="fx-mono">{String(v)}</span></li>)}</ul>}
+      </div>
+    </Section>
+  );
+}
+
 function fieldInput(field: ChromeField, value: unknown, hint: string | undefined, set: (v: string | number | boolean | null) => void): ReactNode {
   if (field.kind === 'toggle') return <Switch label={field.label} hint={hint} checked={value === true} onChange={(on) => set(on)} />;
   if (field.kind === 'number') return <Slider label={field.label} value={typeof value === 'number' ? value : field.min ?? 0} min={field.min} max={field.max} step={1} onChange={(n) => set(n)} />;
@@ -277,6 +425,29 @@ function fieldInput(field: ChromeField, value: unknown, hint: string | undefined
 
 /** The asset picker for a kind: tab groups pick for themselves (plus "the app's default"); the rest swap the app's slot. */
 export function ChromeAssetPicker({ type, instance }: { type: ChromeType; instance: string }) {
+  if (type === 'grid') return <GridLookPicker instance={instance} />;
+  return <ChromeSlotPicker type={type} instance={instance} />;
+}
+
+/** A grid's Change…: the named looks (instance-look@1, kind grid), copied into the grid's own look; Follow the skin drops it. */
+function GridLookPicker({ instance }: { instance: string }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsTick(rt, [instanceLookSettingsKey('grid', instance)]);
+  const picked = gridLookPicked(rt, instance);
+  const choices = [
+    { id: 'default', title: 'Follow the skin', text: 'No own look: the grid draws from the skin (and the app-wide grid look, if one is set).', icon: 'layers' },
+    ...gridLookAssets(rt).map((a) => ({ id: a.id, title: a.name, text: a.description, icon: 'grid' })),
+  ];
+  return (
+    <div className="fx-stack">
+      <ChoiceGrid label="Grid look" choices={choices} selected={picked ? [picked] : []} onToggle={(id) => pickGridLook(rt, instance, id)} />
+      {picked === '' && <Note tone="info">This grid has its own mix of look values (Settings… → Look). Picking a look here replaces it.</Note>}
+    </div>
+  );
+}
+
+function ChromeSlotPicker({ type, instance }: { type: ChromeType; instance: string }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsTick(rt, [CHROME_INSTANCE_ASSET_KEY(type, instance)]);
@@ -377,7 +548,7 @@ function ExtraGroup({ group }: { group: { id: string; label: string; icon?: stri
 }
 
 /** The settings dialog of one chrome instance, laid out by the settings asset in force for its type. */
-export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; instance: string }) {
+export function ChromeSettingsPanel({ type, instance, tab: openTab }: { type: ChromeType; instance: string; tab?: string }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsTick(rt, [CHROME_INSTANCE_KEY(type, instance), CHROME_INSTANCE_ASSET_KEY(type, instance), CHROME_INSTANCE_INTERFACE_KEY(type, instance), CHROME_SETTINGS_PICK_KEY(type), CHROME_SETTINGS_PATCH_KEY(type), SETTINGS_LEVEL_KEY]);
@@ -392,7 +563,7 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
     const all = [...base, ...extra].map((t) => { const o = ui.tabs.find((x) => x.id === t.id); return o ? { ...t, label: o.label ?? t.label, icon: o.icon ?? t.icon, order: o.order ?? t.order, hidden: o.hidden } : t; });
     return all.filter((t) => !('hidden' in t && t.hidden) && !ui.hide.includes(t.id)).sort((a, b) => a.order - b.order);
   }, [ui]);
-  const [tab, setTab] = useState(tabs[0]?.id ?? 'look');
+  const [tab, setTab] = useState(openTab && tabs.some((t) => t.id === openTab) ? openTab : tabs[0]?.id ?? 'look');
   const shownTab = tabs.some((t) => t.id === tab) ? tab : tabs[0]?.id ?? 'look';
   const levelOk = (id: string, own: string) => !ui.levels || settingsLevelRank(level) >= settingsLevelRank(settingsLevelOf(ui.levelOf[id]) ?? (own as SettingsLevel));
   const q = query.trim().toLowerCase();
@@ -407,6 +578,8 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
         <div className="fx-stack">
           {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
           {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => rt.openDialog(BANNER_SETTINGS_DIALOG, instance !== CHROME_APP_INSTANCE ? { id: instance } : {})}>Banner settings (look, behaviour, Apply to all)…</Button>}
+          {id === 'look' && (type === 'tab-group' || type === 'grid') && instance !== CHROME_APP_INSTANCE && levelOk(INSTANCE_LOOK_SECTION, 'simple') && <InstanceLookPanel kind={type} instance={instance} levelOk={levelOk} descriptions={ui.descriptions} />}
+          {id === 'look' && type === 'tab-group' && levelOk('tokens', 'developer') && <InstanceTokensPanel family="tabs" instance={instance} />}
           {id === 'behaviour' && <Note tone="info">Tap to confirm: on a touch screen the first tap shows what an item is and the second tap confirms it. Same as all follows the switch for every {chromeLabel(type).toLowerCase()} in Settings → Plugins → Toolbars.</Note>}
           {id === 'behaviour' && type === 'nav-menu' && <Note tone="info">Sub menus, animation and colours of a nav that opts in are the Navigation style settings (nav-style@1).</Note>}
           {ui.groups.filter((g) => g.tab === id && levelOk(g.id, g.level ?? ui.defaultLevel)).map((g) => <ExtraGroup key={g.id} group={g} />)}
@@ -445,7 +618,7 @@ const instOf = (p: Record<string, unknown>): string => (typeof p.instance === 's
 
 /** The dialogs AppShell registers: chrome settings + the asset picker. */
 export const chromeDialogs: DialogMap = {
-  [CHROME_SETTINGS_DIALOG]: { title: 'Chrome settings', icon: 'settings', searchable: false, render: (p) => <ChromeSettingsPanel type={typeOf(p)} instance={instOf(p)} /> },
+  [CHROME_SETTINGS_DIALOG]: { title: 'Chrome settings', icon: 'settings', searchable: false, render: (p) => <ChromeSettingsPanel type={typeOf(p)} instance={instOf(p)} tab={typeof p.tab === 'string' ? p.tab : undefined} /> },
   [CHROME_PICK_DIALOG]: { title: 'Change asset', icon: 'layers', searchable: false, render: (p) => <div className="fx-stack"><p className="fx-muted"><Icon name={CHROME_ICONS[typeOf(p)]} size={14} /> {chromeLabel(typeOf(p))}{instOf(p) !== CHROME_APP_INSTANCE ? ` · ${instOf(p)}` : ''}</p><ChromeAssetPicker type={typeOf(p)} instance={instOf(p)} /></div> },
 };
 

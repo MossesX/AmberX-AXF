@@ -92,6 +92,8 @@ const scalePaths = (type) => [...Object.keys(SCALE_FIELDS[type]), ...Object.keys
 const TOKEN_OPS = ['list', 'get', 'set', 'reset'];
 /** component-tokens@1 per-instance target id (control-rules + the Token control runner + the chrome dialogs share it). */
 export const INSTANCE_TOKENS_TARGET = 'tokens.instances';
+/** instance-look@1 target id (control-rules + the Token control runner + the theme-manager routes share it). */
+export const INSTANCE_LOOK_TARGET = 'tokens.looks';
 const ENTITY_OPS = ['list', 'get', 'set', 'add', 'remove', 'act'];
 
 /**
@@ -129,6 +131,8 @@ export const CONTROL_TARGETS = {
     doc: `console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "plugin:<id>"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. ${CONSOLE_DELIVERY}` },
   // component-tokens@1 (core/engines/component-tokens.mjs): one grid's or one tab row's own token values, on top of the style theme's grid.* / tabs.*
   [INSTANCE_TOKENS_TARGET]: { domain: 'tokens', label: 'Per-instance component tokens', ops: ['list', 'get', 'set', 'reset', 'act'], paths: 'pattern', pathShape: '<grid|tabs>.<instance>[.<token>]', value: 'field', acts: { 'restore-previous': {}, 'restore-hub': {} }, doc: 'component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look.' },
+  // instance-look@1 (build own-look-per-grid-and-tab-group): one grid's / tab row's own look record in an app's look document (append-only: last)
+  [INSTANCE_LOOK_TARGET]: { domain: 'tokens', label: 'Own look of one grid or tab row', ops: ['list', 'get', 'set', 'reset', 'act'], paths: 'pattern', pathShape: '<tab-group|grid>.<instance>[.<key>]', value: 'field', select: { app: 'string' }, acts: { undo: {} }, doc: 'instance-look@1 (core/engines/instance-look-rules.mjs): the own look of one grid (its DataGrid id) or one tab row (its TabGroup id), stored as axf.chrome.<kind>.<id>.look in the app\'s look document (input.app, default axf-console). Keys rowBg rowAltBg textSize spacing borderW borderColor radius hoverBg selectedBg selectedFg; values a colour-theme token name, transparent (backgrounds) or a step, never a raw px or colour. set <kind>.<id>.<key> value (value skin or empty = drop the key); reset <kind>.<id> = Reset to skin (keeps one undo); act <kind>.<id> undo. Instance id - = every instance of the kind in the app. Console addresses setting:chrome.<kind>.<id>.look.<key> and function:chrome.look.reset; deep link action:chrome.look.open:<kind>:<id>.' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -195,6 +199,8 @@ export function controlPaths(target) {
 export function controlPathKnown(target, path) {
   if (target === 'tokens.nav' && typeof path === 'string' && path.startsWith(NAV_ACCENT_PREFIX)) return /^accents\.[a-z0-9][a-z0-9._:/-]{0,119}$/i.test(path);
   if (target === INSTANCE_TOKENS_TARGET) return parseInstanceTokenPath(path) !== null;
+  // instance-look@1: <kind>.<instance>[.<key>]; the values are checked by the runner against the colour-theme registry
+  if (target === INSTANCE_LOOK_TARGET) return typeof path === 'string' && /^(tab-group|grid)\.[a-z0-9-][a-z0-9._:/-]{0,160}$/i.test(path);
   const ps = controlPaths(target);
   return ps ? ps.some((p) => p.id === path) : null;
 }

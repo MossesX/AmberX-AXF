@@ -26,6 +26,7 @@ import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/compo
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
 import { Icon } from './Icon';
+import { useInstanceLook } from '../instanceLook';
 
 export interface TabDef<T extends string = string> {
   value: T;
@@ -96,6 +97,8 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   const rt = useRuntime();
   const data = useTabGroupData(id, asset);
   useSettingsKeys(rt, [TAB_GROUP_FOLD_KEY(id), INSTANCE_TOKENS_KEY]);
+  // instance-look@1: this row's own look (skin → app → row), scoped --fx-inst-* + the bound --fx-tab-* on the root
+  const look = useInstanceLook('tab-group', id);
   const hidden = rt.slotHidden('tab-group');
   const out = tabGroupStyle(data, hidden);
   const rowRef = useRef<HTMLDivElement>(null);
@@ -184,8 +187,9 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
 
   const vars = out.vars as Record<string, string>;
   // component-tokens@1: this one row's own token values (axf.tokens.instances → --fx-tab-* on the element) win over the skin's
-  const style = { ...Object.fromEntries(Object.entries(vars)), ...rowsOut.vars, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'tabs', id) } as CSSProperties;
-  const attrs = { ...out.attrs, ...rowsOut.attrs };
+  // instance-look@1 goes last: the look record is the row's own choice and wins over the legacy per-row token values
+  const style = { ...Object.fromEntries(Object.entries(vars)), ...rowsOut.vars, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'tabs', id), ...look.style } as CSSProperties;
+  const attrs = { ...out.attrs, ...rowsOut.attrs, ...look.attrs };
   const cls = ['fx-tabs', 'fx-tabs--group', size === 'sm' ? 'fx-tabs--sm' : '', folded ? 'is-folded' : '', className ?? ''].filter(Boolean).join(' ');
   const vertical = data.position === 'left' || data.position === 'right';
   const closable = data.closable && !!onClose;

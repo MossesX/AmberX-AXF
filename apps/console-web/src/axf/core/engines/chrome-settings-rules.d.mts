@@ -1,6 +1,6 @@
 /** Types for chrome-settings-rules.mjs (chrome-settings@1). */
 
-export type ChromeType = 'tab-group' | 'toolbar' | 'banner' | 'nav-menu' | 'app-menu' | 'context-menu';
+export type ChromeType = 'tab-group' | 'toolbar' | 'banner' | 'nav-menu' | 'app-menu' | 'context-menu' | 'grid';
 export type ChromeFieldKind = 'choice' | 'toggle' | 'number';
 export type ChromeFieldGroup = 'look' | 'behaviour';
 export type ChromeLevel = 'simple' | 'basic' | 'developer' | 'administrator';
@@ -32,6 +32,10 @@ export const CHROME_TYPES: ChromeType[];
 export const CHROME_LABELS: Record<ChromeType, string>;
 export const CHROME_ICONS: Record<ChromeType, string>;
 export const CHROME_MANY: Record<ChromeType, boolean>;
+export const CHROME_PICK_TYPE: Partial<Record<ChromeType, string>>;
+export function chromePickType(t: ChromeType): string;
+export function chromeIsAssetType(t: ChromeType): boolean;
+export function chromeInstanceOfTarget(target: unknown): string | null;
 export const CHROME_SETTINGS_PREFIX: 'chrome-';
 export const CHROME_SETTINGS_MAX_DEPTH: number;
 export function isChromeType(t: unknown): t is ChromeType;
@@ -47,6 +51,9 @@ export function CHROME_INSTANCE_ASSET_KEY(type: string, instance: string): strin
 export const CHROME_TARGET_PREFIXES: Partial<Record<ChromeType, string[]>>;
 export function chromeInstanceSlug(label: unknown): string;
 export function CHROME_INSTANCE_INTERFACE_KEY(type: string, instance: string): string;
+export const CHROME_LOOK_KINDS: string[];
+export function CHROME_INSTANCE_LOOK_KEY(kind: string, instance: string): string;
+export function CHROME_KIND_LOOK_KEY(kind: string): string;
 export const CHROME_INSTANCE_PICK_SUFFIXES: string[];
 export function TAB_GROUP_LAST_KEY(instance: string): string;
 export function TAB_GROUP_FOLD_KEY(instance: string): string;

@@ -6,10 +6,12 @@ export const PART_ELEMENTS: readonly PartElement[];
 export const SKIN_SCOPE_KINDS: readonly SkinScopeKind[];
 export const SKIN_SCOPE_GLOBAL: 'global';
 export const SKIN_SCOPE_APP: 'app';
+/** The root level: the hub default skin (`defaultSkin` on appearance@1), the floor every app stands on. */
+export const SKIN_SCOPE_DEFAULT: 'default';
 
 export type CoverageKind = 'slot' | 'parts' | 'reference' | 'bundle' | 'none';
 export type PartElement = 'box' | 'text' | 'icon' | 'items';
-export type SkinScopeKind = 'global' | 'app' | 'ui' | 'plugin';
+export type SkinScopeKind = 'default' | 'global' | 'app' | 'ui' | 'plugin';
 
 /** One place in an app: the app, a UI / screen in it, a plugin in it. */
 export interface SkinScope { app: string; ui: string; plugin: string }
@@ -56,3 +58,5 @@ export function uncoveredTypes(spec: TypeSpecs, targets?: StyleTargets, never?: 
 export function coverageSummary(rows: readonly CoverageRow[]): CoverageSummary;
 export function partsTypes(spec: TypeSpecs, targets?: StyleTargets): string[];
 export function partsErrors(parts: unknown, spec: TypeSpecs, targets?: StyleTargets): string[];
+export function referenceErrors(spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): string[];
+export function referencedTypes(spec: TypeSpecs): Array<{ type: string; via: string }>;

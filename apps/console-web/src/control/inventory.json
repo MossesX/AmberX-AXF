@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 275,
+    "functions": 281,
     "buttons": 62,
     "plugins": 71
   },
@@ -7811,6 +7811,105 @@
       ],
       "params": true,
       "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.look.open",
+      "kind": "function",
+      "id": "chrome.look.open",
+      "label": "Open the own look of one grid or tab row (Settings → Look)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.look.open",
+        "chrome",
+        "look",
+        "open"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.look.get",
+      "kind": "function",
+      "id": "chrome.look.get",
+      "label": "Read the own look of one grid or tab row (chrome.look.get:<kind>:<id>[:<key>])",
+      "detail": "Action",
+      "keywords": [
+        "chrome.look.get",
+        "chrome",
+        "look",
+        "get"
+      ],
+      "effect": "read",
+      "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.look.list",
+      "kind": "function",
+      "id": "chrome.look.list",
+      "label": "List every grid and tab row with an own look",
+      "detail": "Action",
+      "keywords": [
+        "chrome.look.list",
+        "chrome",
+        "look",
+        "list"
+      ],
+      "effect": "read",
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.look.set",
+      "kind": "function",
+      "id": "chrome.look.set",
+      "label": "Set one key of a grid's or tab row's own look (chrome.look.set:<kind>:<id>:<key>:<token|step|skin>)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.look.set",
+        "chrome",
+        "look",
+        "set"
+      ],
+      "effect": "write",
+      "params": true,
+      "requires": "assets.swap",
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.look.reset",
+      "kind": "function",
+      "id": "chrome.look.reset",
+      "label": "Reset a grid's or tab row's own look to the skin (one undo)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.look.reset",
+        "chrome",
+        "look",
+        "reset"
+      ],
+      "effect": "write",
+      "params": true,
+      "requires": "assets.swap",
+      "destructive": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.look.undo",
+      "kind": "function",
+      "id": "chrome.look.undo",
+      "label": "Undo the last Reset to skin of a grid or tab row",
+      "detail": "Action",
+      "keywords": [
+        "chrome.look.undo",
+        "chrome",
+        "look",
+        "undo"
+      ],
+      "effect": "write",
+      "params": true,
+      "requires": "assets.swap",
+      "file": "src/axf/react/components/ChromeContext.tsx"
     }
   ],
   "buttons": [
@@ -10348,7 +10447,7 @@
       "id": "ai.amberx.axf.console.theme-manager",
       "label": "Theme manager",
       "folder": "theme-manager",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "detail": "Plugin · module",
       "keywords": [
         "theme-manager",

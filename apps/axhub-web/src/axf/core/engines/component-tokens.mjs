@@ -80,6 +80,8 @@ export const COMPONENT_TOKEN_FAMILIES = {
       t('cellPadX', 'length', 'var(--fx-size-table-pad-x)', 'pro', 'Horizontal cell padding (table cells).'),
       t('rowHeight', 'length', 'auto', 'pro', 'Minimum row height; auto = as tall as the content.'),
       t('radius', 'length', '0', 'basic', 'Corner radius of the whole grid.'),
+      t('fontSize', 'length', 'inherit', 'pro', 'Text size of the rows and headers (inherit = the text around the grid; instance-look@1 textSize sets it).'),
+      t('borderW', 'length', 'var(--fx-border-w)', 'pro', 'Thickness of the grid lines (instance-look@1 borderW sets it).'),
       // groups, sticky, empty
       t('groupHeaderBg', 'colour', 'var(--fx-surface3)', 'pro', 'Background of a top-level group header row.'),
       t('groupHeaderBgNested', 'colour', 'var(--fx-surface2)', 'advanced', 'Background of a second-level group header row.'),
@@ -100,6 +102,7 @@ export const COMPONENT_TOKEN_FAMILIES = {
       t('barBg', 'colour', 'transparent', 'basic', 'Background of the tab row.'),
       t('barBorder', 'colour', 'var(--fx-border)', 'basic', 'Rule under (or beside) the tab row.'),
       t('gap', 'length', 'var(--fx-dens-gap-md)', 'pro', 'Space between tabs.'),
+      t('fontSize', 'length', 'inherit', 'pro', 'Text size of the tabs (inherit = the text around the row; instance-look@1 textSize sets it).'),
       // idle
       t('text', 'colour', 'var(--fx-muted)', 'basic', 'Text of an idle tab.'),
       t('bg', 'colour', 'transparent', 'basic', 'Background of an idle tab.'),

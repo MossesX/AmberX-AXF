@@ -32,7 +32,7 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
-import { backToSkin, composeLookAt, globalSkinOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
+import { backToSkin, composeLookAt, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, type AnimationState } from './engines/behavior';
 import { sweepOrigin } from './engines/swatches';
@@ -43,6 +43,8 @@ import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppear
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+import { colourTokensOf, instanceLookSettingsKey, kindLookSettingsKey, migrateLegacyInstanceLooks, normalizeInstanceLook, resolveFromSettings, setInstanceLookKey, type InstanceLook, type InstanceLookKind, type ResolvedInstanceLook } from './engines/instance-look';
+import assetTypeSpec from '../schemas/asset-types.json';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -694,7 +696,7 @@ export class AxfRuntime {
     const look = this.lookLayerOn() ? store.get() : null;
     if (look) {
       const global = globalSkinOf(this.lastAppearance);
-      const inForce = resolveLookSkin(look, global, null);
+      const inForce = resolveLookSkin(look, global, null, this.hubDefaultSkin());
       // a colour theme pick under a skin is switched inside that skin: the skin itself is never changed or copied
       this.saveLook(lookAfterChange(look, change, inForce.id ? this.skinData(inForce.id) : null, inForce.from === 'global' ? global?.colorTheme ?? '' : ''));
       // the hub's own pages take their colours from axHub's look, the one thing the shared document still carries
@@ -735,6 +737,7 @@ export class AxfRuntime {
   /** The app's look document; the first read saves the snapshot, so the app's current look is its default from then on. */
   private ensureLook(): AppLookDocument | null {
     this.migrateLocalLook();
+    this.migrateInstanceLooks();
     if (!this.lookLayerOn()) return null;
     const store = this.lookStore();
     const cur = store.get();
@@ -768,6 +771,73 @@ export class AxfRuntime {
     for (const k of r.clear) this.settings.clear(k);
     for (const [k, v] of Object.entries(r.set)) this.settings.set(k, v);
     if (r.clear.length) this.terminal.ok('appearance', `skins only: ${r.clear.length} retired look setting(s) backed up under ${LEGACY_LOOK_KEY}: ${r.clear.join(', ')}`);
+  }
+
+  /* ---- instance-look@1 (build own-look-per-grid-and-tab-group, Nov 16 2026): once per profile on load, engines/instance-look.ts ---- */
+
+  private instanceLooksMigrated = false;
+  /** Legacy per-row token values (component-tokens@1 axf.tokens.instances) that are token refs move into own-look records; the rest stay. */
+  private migrateInstanceLooks(): void {
+    if (this.instanceLooksMigrated) return;
+    this.instanceLooksMigrated = true;
+    const values = this.settings.savedValues();
+    const r = migrateLegacyInstanceLooks(values, colourTokensOf(assetTypeSpec));
+    if (!r.changed) return;
+    for (const k of Object.keys(values)) if (!(k in r.settings)) this.settings.clear(k);
+    for (const [k, v] of Object.entries(r.settings)) if (JSON.stringify(values[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
+    this.terminal.ok('appearance', `instance looks: ${r.moved.length} legacy per-row value(s) moved into own-look records (axf.chrome.<kind>.<id>.look); ${r.kept.length} kept as token values`);
+  }
+
+  /** The colour-theme token names a look value may name (registry: asset-types.json → color-theme.nested.tokens). */
+  instanceLookColourTokens(): string[] { return colourTokensOf(assetTypeSpec); }
+
+  /**
+   * One grid's / tab row's resolved own look (instance-look@1): the skin's style theme family maps, then the app-wide
+   * record axf.chrome.<kind>.look, then the instance's axf.chrome.<kind>.<id>.look. The component puts vars + bind on its root.
+   */
+  instanceLook(kind: InstanceLookKind, id: string): ResolvedInstanceLook {
+    const saved: Record<string, unknown> = { [kindLookSettingsKey(kind)]: this.settings.get(kindLookSettingsKey(kind)) };
+    if (id) saved[instanceLookSettingsKey(kind, id)] = this.settings.get(instanceLookSettingsKey(kind, id));
+    const style = this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data) as { grid?: Record<string, unknown>; tabs?: Record<string, unknown> };
+    return resolveFromSettings(saved, kind, id, style, colourTokensOf(assetTypeSpec));
+  }
+
+  /** The settings key of one instance's record, or of the app-wide record when id is ''. */
+  private lookKey(kind: InstanceLookKind, id: string): string { return id ? instanceLookSettingsKey(kind, id) : kindLookSettingsKey(kind); }
+
+  /** One instance's own saved record (cleaned; {} = follows the skin). id '' = the app-wide record of the kind. */
+  instanceLookRecord(kind: InstanceLookKind, id: string): InstanceLook {
+    return normalizeInstanceLook(this.settings.get(this.lookKey(kind, id)), colourTokensOf(assetTypeSpec));
+  }
+
+  /** Set (value) or drop (null / '') one look key of an instance. Throws the rules' message on a raw px / colour. */
+  setInstanceLook(kind: InstanceLookKind, id: string, key: string, value: string | null): InstanceLook {
+    const next = setInstanceLookKey(this.instanceLookRecord(kind, id), key, value, colourTokensOf(assetTypeSpec));
+    const k = this.lookKey(kind, id);
+    if (Object.keys(next).length) this.settings.set(k, next as unknown as SettingValue); else this.settings.clear(k);
+    return next;
+  }
+
+  /** The record each instance had before its last reset (one undo per instance; this session only). */
+  private lookUndo = new Map<string, InstanceLook>();
+  /** Reset to skin: drop the instance's record; the record it had is kept for one undo. Returns false when there was none. */
+  resetInstanceLook(kind: InstanceLookKind, id: string): boolean {
+    const before = this.instanceLookRecord(kind, id);
+    if (!Object.keys(before).length) return false;
+    this.lookUndo.set(this.lookKey(kind, id), before);
+    this.settings.clear(this.lookKey(kind, id));
+    return true;
+  }
+  /** True when the instance has a reset to undo. */
+  canUndoInstanceLook(kind: InstanceLookKind, id: string): boolean { return this.lookUndo.has(this.lookKey(kind, id)); }
+  /** Undo the last reset: put the record back (once). Returns false when there is nothing to undo. */
+  undoInstanceLookReset(kind: InstanceLookKind, id: string): boolean {
+    const k = this.lookKey(kind, id);
+    const before = this.lookUndo.get(k);
+    if (!before) return false;
+    this.lookUndo.delete(k);
+    this.settings.set(k, before as unknown as SettingValue);
+    return true;
   }
 
   /** The pure fold of one document against this app's skins and registry (engines/look-migration.mjs). */
@@ -1032,6 +1102,9 @@ export class AxfRuntime {
   /** The hub-wide skin the shared document carries (null = none). */
   globalSkin(): { id: string; overrides?: Record<string, string> } | null { return globalSkinOf(this.lastAppearance); }
 
+  /** The hub default skin the shared document carries (`defaultSkin`; null = none): the floor every app stands on without opting in. */
+  hubDefaultSkin(): { id: string; overrides?: Record<string, string>; colorTheme?: string } | null { return hubDefaultOf(this.lastAppearance); }
+
   /**
    * A UI or plugin level of the chain: `key` = `ui:<id>` | `plugin:<id>`, `use` on (with `id`, else the skin already
    * picked there, else the app's), off (no skin inside it) or inherit (the parent decides, the default).
@@ -1051,7 +1124,7 @@ export class AxfRuntime {
 
   /** The skin in force at a place in this app, hub-wide skin included: `{ id, overrides, from }` (from = the level that decided). */
   skinAt(scope?: Partial<SkinScope> | null): ResolvedSkin {
-    return resolveLookSkin(this.lookInForce(), this.globalSkin(), { ...scope, app: this.manifest.app.id });
+    return resolveLookSkin(this.lookInForce(), this.globalSkin(), { ...scope, app: this.manifest.app.id }, this.hubDefaultSkin());
   }
 
   /** The skin in force at the app level (the one Settings → Appearance shows), '' = none. */
@@ -1075,10 +1148,10 @@ export class AxfRuntime {
     if (!isSubScopeKey(key)) return null;
     const look = this.lookInForce();
     if (!look) return null;
-    const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id));
+    const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id), this.hubDefaultSkin());
     // the app level from the same document (not the last composed look, which a store without a change feed leaves behind
     // for a moment after a pick): a colour theme switched inside the skin must not make every screen a scope of its own
-    const app = resolveLookSkin(look, this.globalSkin(), { app: this.manifest.app.id });
+    const app = resolveLookSkin(look, this.globalSkin(), { app: this.manifest.app.id }, this.hubDefaultSkin());
     if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides) && (here.colorTheme ?? '') === (app.colorTheme ?? '')) { this.dropScope(skinScopeDomId(key)); return null; }
     const scopeId = skinScopeDomId(key);
     const resolve = (): ResolvedInterface => {

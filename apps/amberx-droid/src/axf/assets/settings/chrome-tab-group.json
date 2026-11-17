@@ -3,8 +3,8 @@
   "type": "settings",
   "id": "chrome-tab-group",
   "name": "Tab group settings (default)",
-  "version": "1.0.0",
-  "description": "The shared default settings interface for every tab group (chrome-settings@1): how the Settings dialog you reach by right-clicking one is laid out. Every tab row: page tabs, section switchers, settings tab bars, window tab bars. Every app gets its own copy (chrome-tab-group-<app>) that follows this one until edited; this default is what the dialog uses unless an app picks its copy.",
+  "version": "1.1.0",
+  "description": "The shared default settings interface for every tab group (chrome-settings@1): how the Settings dialog you reach by right-clicking one is laid out. Every tab row: page tabs, section switchers, settings tab bars, window tab bars. Every app gets its own copy (chrome-tab-group-<app>) that follows this one until edited; this default is what the dialog uses unless an app picks its copy. Look carries this one's own look (instance-look@1): a token picker per look key, a live preview, Reset to skin with one Undo; levelOf look.<key> sets each picker's level.",
   "author": "AmberX AXF",
   "tags": [
     "default",
@@ -51,7 +51,19 @@
       "look": "simple",
       "behaviour": "basic",
       "asset": "basic",
-      "interface": "developer"
+      "interface": "developer",
+      "instanceLook": "simple",
+      "look.rowBg": "simple",
+      "look.selectedBg": "simple",
+      "look.textSize": "simple",
+      "look.spacing": "simple",
+      "look.rowAltBg": "basic",
+      "look.hoverBg": "basic",
+      "look.selectedFg": "basic",
+      "look.borderColor": "basic",
+      "look.borderW": "basic",
+      "look.radius": "basic",
+      "tokens": "developer"
     }
   }
 }

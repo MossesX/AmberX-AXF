@@ -26,11 +26,20 @@
  */
 
 export const CHROME_SETTINGS_CONTRACT = 'chrome-settings@1';
-export const CHROME_TYPES = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 'context-menu'];
-export const CHROME_LABELS = { 'tab-group': 'Tab group', toolbar: 'Toolbar', banner: 'Banner', 'nav-menu': 'Navigation menu', 'app-menu': 'Application menu', 'context-menu': 'Context menu' };
-export const CHROME_ICONS = { 'tab-group': 'layers', toolbar: 'sliders', banner: 'menu', 'nav-menu': 'list', 'app-menu': 'menu', 'context-menu': 'grid' };
+export const CHROME_TYPES = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 'context-menu', 'grid'];
+export const CHROME_LABELS = { 'tab-group': 'Tab group', toolbar: 'Toolbar', banner: 'Banner', 'nav-menu': 'Navigation menu', 'app-menu': 'Application menu', 'context-menu': 'Context menu', grid: 'Grid' };
+export const CHROME_ICONS = { 'tab-group': 'layers', toolbar: 'sliders', banner: 'menu', 'nav-menu': 'list', 'app-menu': 'menu', 'context-menu': 'grid', grid: 'grid' };
 /** How many assets of the type one app shows at once: tab groups are many (each row its own instance), the rest one. */
-export const CHROME_MANY = { 'tab-group': true, toolbar: false, banner: false, 'nav-menu': false, 'app-menu': false, 'context-menu': false };
+export const CHROME_MANY = { 'tab-group': true, toolbar: false, banner: false, 'nav-menu': false, 'app-menu': false, 'context-menu': false, grid: true };
+/**
+ * The asset type a kind's "Change…" picks from, when it is not the kind itself. A grid (build own-look-per-grid-and-tab-group,
+ * Nov 2026) is a chrome kind without an asset type of its own: its settings interface is the `settings/chrome-grid`
+ * asset and its Change… picks a named look (instance-look@1, data.kind = grid) to copy into the grid's own look.
+ */
+export const CHROME_PICK_TYPE = { grid: 'instance-look' };
+export const chromePickType = (t) => CHROME_PICK_TYPE[t] ?? t;
+/** True for a kind that is an asset type itself (its slot can be swapped, its fields read from the active asset). */
+export const chromeIsAssetType = (t) => !(t in CHROME_PICK_TYPE);
 
 export const CHROME_SETTINGS_PREFIX = 'chrome-';
 export const CHROME_SETTINGS_MAX_DEPTH = 4;
@@ -68,8 +77,18 @@ export const CHROME_INSTANCE_KEY = (type, instance) => `axf.chrome.${type}.${ins
 export const CHROME_INSTANCE_ASSET_KEY = (type, instance) => `axf.chrome.${type}.${instance}.asset`;
 /** The settings interface one instance picked for its own dialog (every kind; unset = the kind's pick, else the default). */
 export const CHROME_INSTANCE_INTERFACE_KEY = (type, instance) => `axf.chrome.${type}.${instance}.interface`;
-/** Suffixes of per-instance keys that are picks, not field overrides (never listed as "assets with edits"). */
-export const CHROME_INSTANCE_PICK_SUFFIXES = ['.asset', '.interface'];
+/**
+ * instance-look@1 (build own-look-per-grid-and-tab-group, Nov 16 2026): the kinds whose instances carry an own-look
+ * record (core/engines/instance-look.ts). Both are chrome kinds too (grid since phase 2: settings/chrome-grid, the
+ * right-click block on every lib-datagrid grid, data-fx-ctx-target="grid" + the grid's id).
+ */
+export const CHROME_LOOK_KINDS = ['tab-group', 'grid'];
+/** One instance's own look record: axf.chrome.<kind>.<instance>.look (a cleaned instance-look@1 record). */
+export const CHROME_INSTANCE_LOOK_KEY = (kind, instance) => `axf.chrome.${kind}.${instance}.look`;
+/** The app-wide look record of a kind (every instance of it in this app): axf.chrome.<kind>.look. */
+export const CHROME_KIND_LOOK_KEY = (kind) => `axf.chrome.${kind}.look`;
+/** Suffixes of per-instance keys that are picks or looks, not field overrides (never listed as "assets with edits"). */
+export const CHROME_INSTANCE_PICK_SUFFIXES = ['.asset', '.interface', '.look'];
 /** A tab group's remembered tab and fold state (per device). */
 export const TAB_GROUP_LAST_KEY = (instance) => `axf.tabs.${instance}.last`;
 export const TAB_GROUP_FOLD_KEY = (instance) => `axf.tabs.${instance}.folded`;
@@ -78,9 +97,18 @@ export const isChromeInstanceId = (id) => typeof id === 'string' && INSTANCE.tes
 /* ---------------- context targets + moves ---------------- */
 
 /** data-fx-ctx-target names each chrome kind reports on right-click / long-press (several per kind: older names kept). */
-export const CHROME_TARGETS = { 'tab-group': ['tab-group'], toolbar: ['toolbar'], banner: ['banner', 'axf-banner'], 'nav-menu': ['nav', 'nav-item'], 'app-menu': ['app-menu', 'menubar'], 'context-menu': [] };
+export const CHROME_TARGETS = { 'tab-group': ['tab-group'], toolbar: ['toolbar'], banner: ['banner', 'axf-banner'], 'nav-menu': ['nav', 'nav-item'], 'app-menu': ['app-menu', 'menubar'], 'context-menu': [], grid: ['grid'] };
 /** Target prefixes that are a chrome kind too (a library's own toolbar target, `axf-ws-toolbar:<workspace>`). */
-export const CHROME_TARGET_PREFIXES = { toolbar: ['axf-ws-toolbar:'] };
+export const CHROME_TARGET_PREFIXES = { toolbar: ['axf-ws-toolbar:'], grid: ['axf-grid-header:'] };
+/**
+ * The instance a prefixed target names itself (`axf-grid-header:<grid id>` → the grid id; its payload is the column),
+ * or null when the target carries none (the instance is then the payload, as for every other kind).
+ */
+export function chromeInstanceOfTarget(target) {
+  if (typeof target !== 'string') return null;
+  for (const p of CHROME_TARGET_PREFIXES.grid) if (target.startsWith(p) && target.length > p.length) return target.slice(p.length);
+  return null;
+}
 export function chromeTypeOfTarget(target) {
   if (typeof target !== 'string') return null;
   for (const t of CHROME_TYPES) if (CHROME_TARGETS[t].includes(target)) return t;
@@ -104,6 +132,7 @@ export const CHROME_MOVES = {
   banner: { positions: [], via: 'none', field: '' },
   'app-menu': { positions: [], via: 'none', field: '' },
   'context-menu': { positions: [], via: 'none', field: '' },
+  grid: { positions: [], via: 'none', field: '' },
 };
 export const POSITION_LABELS = { top: 'Top', bottom: 'Bottom', left: 'Left', right: 'Right' };
 
@@ -162,6 +191,10 @@ export const CHROME_FIELDS = {
     { key: 'variant', label: 'Style', kind: 'choice', options: ['compact', 'roomy', 'glass'], default: "compact", group: 'look', level: 'simple' },
     { key: 'showIcons', label: 'Icons', kind: 'toggle', default: true, group: 'look', level: 'basic' },
     { key: 'showShortcuts', label: 'Shortcuts', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+  ],
+  // a grid has no asset type: every field is the instance's own choice (its colours, sizes and lines are its own look, instance-look@1)
+  grid: [
+    { key: 'compact', label: 'Compact rows', kind: 'toggle', default: false, group: 'look', level: 'basic', instanceOnly: true },
   ],
 };
 
