@@ -157,6 +157,64 @@
         "description": "Resume the auto-lander in its current mode. Logged in History."
       },
       {
+        "id": "auto-lander-status",
+        "route": "GET /auto-lander",
+        "title": "Server auto-lander: status",
+        "readOnly": true,
+        "description": "The server auto-lander (auto-lander@1, a VPS service): service up, the build it works on, its queue, every build's state (waiting, merging-main, fixing, ci-running, landing, landed, escalated) with attempt counts and the last decision, escalations, settings."
+      },
+      {
+        "id": "auto-lander-build",
+        "route": "GET /auto-lander/builds/{build}",
+        "title": "Server auto-lander: one build's attempts",
+        "readOnly": true,
+        "description": "One build in the server auto-lander: its record and every attempt (clash, red-ci, land) with result, account, session and log."
+      },
+      {
+        "id": "auto-lander-run",
+        "route": "POST /auto-lander/run",
+        "title": "Server auto-lander: run a tick now",
+        "description": "Ask the server auto-lander for a tick now (it runs within a minute): merge main into clashing builds, start fix sessions for red CI, hand green PRs to the merge queue."
+      },
+      {
+        "id": "auto-lander-retry",
+        "route": "POST /auto-lander/retry/{build}",
+        "title": "Server auto-lander: retry a build",
+        "description": "Reset one build's attempts and escalation; the next tick tries again from attempt 1. Resolves its phone alert."
+      },
+      {
+        "id": "auto-lander-fix",
+        "route": "POST /auto-lander/fix/{build}",
+        "title": "Server auto-lander: fix a build now",
+        "description": "Reset one build and start a fix session for it on the next tick, whatever CI says (the escalation item's Fix)."
+      },
+      {
+        "id": "auto-lander-pause",
+        "route": "POST /auto-lander/pause",
+        "title": "Server auto-lander: pause",
+        "description": "Pause the server auto-lander: nothing new is merged, fixed or landed until it is resumed."
+      },
+      {
+        "id": "auto-lander-resume",
+        "route": "POST /auto-lander/resume",
+        "title": "Server auto-lander: resume",
+        "description": "Resume the server auto-lander."
+      },
+      {
+        "id": "auto-lander-settings",
+        "route": "GET /auto-lander/settings",
+        "title": "Server auto-lander: settings",
+        "readOnly": true,
+        "description": "The server auto-lander's settings: enabled, maxAttempts (1-10), backoffBaseMin, backoffFactor, backoffMaxMin, attemptTimeoutMin, pushOnEscalation."
+      },
+      {
+        "id": "auto-lander-settings-set",
+        "input": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "maxAttempts": {"type": "integer", "minimum": 1, "maximum": 10}, "backoffBaseMin": {"type": "number", "exclusiveMinimum": 0}, "backoffFactor": {"type": "number", "exclusiveMinimum": 0}, "backoffMaxMin": {"type": "number", "exclusiveMinimum": 0}, "attemptTimeoutMin": {"type": "number", "exclusiveMinimum": 0}, "pushOnEscalation": {"type": "boolean"}, "key": {"type": "string", "description": "one setting by name (with value)"}, "value": {"description": "the value for key"}}, "additionalProperties": false},
+        "route": "POST /auto-lander/settings",
+        "title": "Server auto-lander: change settings",
+        "description": "Change server auto-lander settings ({key: value, …} or {key, value}): enabled, maxAttempts (1-10), backoffBaseMin, backoffFactor, backoffMaxMin, attemptTimeoutMin, pushOnEscalation. Every key is checked first."
+      },
+      {
         "id": "settings",
         "route": "GET /settings",
         "title": "Gate: plugin settings",

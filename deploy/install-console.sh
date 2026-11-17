@@ -158,10 +158,12 @@ done
 
 # ---- 4. container ----
 axf_stop_container "$NAME"  # clean shutdown first (alerts: no false "unclean restart")
-# the console reads what the host's headless runs and the watchdog leave (meters, events, run ends; read-only) and
-# hands a watchdog pass it is asked for to the host's cron (AXF_WATCHDOG_HOST=request: watchdog.mjs requestRun)
+# the console reads what the host's headless runs and the watchdog leave (read-only) and hands watchdog passes to the host's cron
 HL_DIR="${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"; mkdir -p "$HL_DIR"
 COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf -v "$HL_DIR":/var/tmp/axf-headless:ro -e AXF_WATCHDOG_HOST=request "${DATA_ARGS[@]}" -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF "${PLUGIN_ARGS[@]}")
+# axf-data (deploy/install-data.sh): its URL + the console's service token, and the internal network after the start
+AXF_DATA_ENV="${AXF_DATA_CONF:-/root/hub/data/axf-data/conf}/env/console.env"
+[ -s "$AXF_DATA_ENV" ] && COMMON+=(--env-file "$AXF_DATA_ENV")
 if axf_coolify_proxy_running; then
   say "Coolify proxy detected — publishing https://$DOMAIN behind Traefik"
   NET="$(axf_coolify_network)"
@@ -221,6 +223,7 @@ else
   URL="http://$(curl -fsS -4 --max-time 10 https://ifconfig.me 2>/dev/null || hostname -I | awk '{print $1}'):$PORT"
 fi
 
+docker network inspect axf-data >/dev/null 2>&1 && { docker network connect axf-data "$NAME" >/dev/null 2>&1 || true; }
 [ -f "$CA_HOST" ] && NAME="$NAME" bash "$CA_HOST" attach  # axf-plugin:container-access
 
 # ---- 5. auto-update ----
@@ -252,6 +255,10 @@ WD_JS="$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs"  # axf-plu
 # Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
 # builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
 axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
+# The server auto-lander (auto-lander@1, Brett Nov 16 2026: "Make the server do it automatically without the console"):
+# a systemd service + timer, every minute: merges main into clashing builds, starts fix sessions for red CI, hands green
+# PRs to the merge queue, escalates to the systems check after maxAttempts. Status: node deploy/auto-lander/auto-lander.mjs status
+axf_auto_lander_install "$DIR" || echo "auto-lander: not installed (see above)"  # axf-plugin:gate
 # Rotated Claude tokens (refresh-token-save, Nov 6 2026): the live login's renewals reach its saved copy within a minute,
 # and pairs AI keys renews reach the host's logins. Builds' own copies save back by themselves (claude-headless.sh).
 axf_cron_file axf-claude-token-save "* * * * * root T=$DIR/deploy/claude-token-save.mjs; [ -f \$T ] && flock -n /run/axf-claude-token-save.lock node \$T sweep >> /var/log/axf-claude-token-save.log 2>&1"

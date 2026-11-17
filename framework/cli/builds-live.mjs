@@ -45,7 +45,7 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, adoptedChanges, journalDir, journalMax, journalMode, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
 import { normRunEnd } from '../core/build-pipeline.mjs';
@@ -53,6 +53,18 @@ import { normRunEnd } from '../core/build-pipeline.mjs';
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
 const JOURNAL_REL = '_claude/builds/journal';
+/**
+ * builds-journal@1: the journal's home is the hub data store, not main. With the hub (or an explicit folder) as home,
+ * or once main's pointer (_claude/builds/journal.json) says `home: 'hub'`, no journal line goes to main and none is
+ * pulled from it; a test store (AXF_BUILDS_STORE) and a spool before the migration keep the old path.
+ */
+export const JOURNAL_POINTER_REL = '_claude/builds/journal.json';
+const journalOffMain = (base) => {
+  const m = journalMode();
+  if (m === 'hub' || m === 'explicit') return true;
+  if (m === 'test') return false;
+  try { return JSON.parse(show(base, JOURNAL_POINTER_REL) ?? '{}').home === 'hub'; } catch { return false; }
+};
 const ORIGINS_REL = '_claude/builds/origins.json'; // = builds-store ORIGINS_REL (build-origin@1 sidecar)
 const SHIPPED_DIR_REL = '_claude/builds/shipped'; // shipped-manifest@1 sidecars (framework/cli/shipped-files.mjs)
 const THREADS_REL = '_claude/THREADS.md';
@@ -219,8 +231,8 @@ export function publish(entries, { journalExtra = {} } = {}) {
     const months = new Map();
     for (const e of entries) { const m = String(e.at ?? now).slice(0, 7); if (!months.has(m)) months.set(m, []); months.get(m).push(JSON.stringify(e)); }
     for (const [m, lines] of Object.entries(journalExtra)) { if (!months.has(m)) months.set(m, []); months.get(m).unshift(...lines); }
-    const sizes = journalSizes(base);
-    for (const [m, lines] of months) { const text = lines.join('\n'); const rel = `${JOURNAL_REL}/${merge.journalPart(m, sizes, Buffer.byteLength(text), journalMax())}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', text); }
+    const sizes = journalOffMain(base) ? null : journalSizes(base);
+    if (sizes) for (const [m, lines] of months) { const text = lines.join('\n'); const rel = `${JOURNAL_REL}/${merge.journalPart(m, sizes, Buffer.byteLength(text), journalMax())}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', text); }
     const threadLines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => !skipped.includes(b.id)) }));
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
@@ -309,7 +321,8 @@ export function pullFrom(files) {
   const localOnly = merge.mergeStores(main, local).taken;
   const next = localOnly.length ? store : main;
   const journals = {};
-  for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${JOURNAL_REL}/`)) {
+  const offMain = ['hub', 'explicit'].includes(journalMode());
+  for (const [rel, t] of Object.entries(files)) if (!offMain && rel.startsWith(`${JOURNAL_REL}/`)) {
     const m = rel.slice(JOURNAL_REL.length + 1, -'.jsonl'.length);
     let mine = ''; try { mine = readFileSync(join(journalDir(), `${m}.jsonl`), 'utf8'); } catch { /* new month */ }
     journals[m] = merge.mergeJournalText(t, mine);
@@ -366,7 +379,7 @@ export function syncAll() {
   const journalExtra = {};
   const mainKeys = Object.keys(journalSizes(rev));
   const onMain = new Map();   // month → every line main holds in any part of that month
-  for (const key of localJournalMonths()) {
+  for (const key of journalOffMain(rev) ? [] : localJournalMonths()) {
     const m = key.slice(0, 7);
     if (!onMain.has(m)) onMain.set(m, new Set(mainKeys.filter((k) => k.slice(0, 7) === m).flatMap((k) => (show(rev, `${JOURNAL_REL}/${k}.jsonl`) ?? '').split('\n'))));
     let mine = ''; try { mine = readFileSync(join(journalDir(), `${key}.jsonl`), 'utf8'); } catch { continue; }

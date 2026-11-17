@@ -2,14 +2,14 @@
  * Builds → Gate & rules (`view:gate`): the gate a PR must pass before it lands, the build rules and the auto-lander, in four tabs
  * (framework TabGroup, settings id `gate.tabs`, so the row is the tab-group asset and remembers the last tab).
  * console-control@1: the view is `view:gate`, the row `tab:gate.tabs`, each tab `tab:gate.tabs=rules | build-rules |
- * auto-lander | history`; deep links `console_show view:gate/tab:gate.tabs=history`, `console_open gate`, action `gate.open:<tab>`.
+ * auto-lander | history` (Auto-lander holds its own row `tab:gate.auto-lander.tabs=server | line`, AutoLanderTab); deep links `console_show view:gate/tab:gate.tabs=history`, `console_open gate`, action `gate.open:<tab>`.
  */
 import { useEffect, useState } from 'react';
 import { SkinScope, TabGroup } from '@console/axf/react';
 import { gateCall, isTab, onShowTab, takeWantedTab, type GateSettings, type GateTab } from './api';
+import { AutoLanderTab } from './AutoLanderTab';
 import { BuildRulesTab } from './BuildRulesTab';
 import { HistoryTab } from './HistoryTab';
-import { LanderTab } from './LanderTab';
 import { RulesTab } from './RulesTab';
 import './gate.css';
 
@@ -39,7 +39,7 @@ export function GateView() {
         <div className="axp-gate__panel">
           {tab === 'rules' && <RulesTab refreshSec={settings.refreshSec} />}
           {tab === 'build-rules' && <BuildRulesTab refreshSec={settings.refreshSec} />}
-          {tab === 'auto-lander' && <LanderTab refreshSec={settings.refreshSec} />}
+          {tab === 'auto-lander' && <AutoLanderTab refreshSec={settings.refreshSec} />}
           {tab === 'history' && <HistoryTab refreshSec={settings.refreshSec} />}
         </div>
       </TabGroup>

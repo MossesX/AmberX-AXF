@@ -374,6 +374,13 @@
         "text": "Shows “here · in all”. Part of Plan Studio.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "view:plan-studio",
+        "title": "Plan Studio",
+        "text": "Every plan in one place (plan@1: JSON + a Markdown body).",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

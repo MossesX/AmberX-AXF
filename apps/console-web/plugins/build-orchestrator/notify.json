@@ -107,33 +107,18 @@
       }
     },
     {
-      "id": "watchdog.fix",
-      "label": "Watchdog fixed a build",
+      "id": "pipeline.fyi",
+      "label": "Build FYI",
       "group": "builds",
       "app": "console",
-      "source": "Build orchestrator watchdog",
-      "description": "FYI: the watchdog found a build marked running with no live session (killed exit 143, failed exit 1, out of memory, a usage limit, a dead login, a hung session, tmux gone) and fixed it with no one asking: the step reset, the slot released, back in the Queue or retried on another account; or slots sat idle while the Queue had work and it ticked the dispatcher. Says which build, the cause, the action and the attempt. One push per watchdog pass (or one per fix, Watchdog settings).",
+      "source": "Build orchestrator dispatcher",
+      "description": "A running build tells you about a milestone you asked to hear about (a fix queued, a branch landed, a migration done). Information only, nothing to act on.",
       "match": {
-        "source": "watchdog",
-        "keyPrefix": "watchdog:fix:"
+        "source": "pipeline",
+        "keyPrefix": "pipeline:fyi:"
       },
       "push": true,
       "priority": "normal"
-    },
-    {
-      "id": "watchdog.gave-up",
-      "label": "Watchdog gave up on a build",
-      "group": "builds",
-      "app": "console",
-      "source": "Build orchestrator watchdog",
-      "description": "Alert: a build kept failing past the retry cap (Max retries, default 3) or every Claude account was tried, so the watchdog stopped retrying and put it back in Pending. The systems check shows it as a banner item with Fix (requeue).",
-      "match": {
-        "source": "watchdog",
-        "keyPrefix": "watchdog:gave-up:"
-      },
-      "setting": "notify.blocked",
-      "push": true,
-      "priority": "high"
     }
   ]
 }
