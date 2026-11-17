@@ -329,6 +329,19 @@ export async function realContext({ files, rec, env = process.env } = {}) {
   return ctx;
 }
 
+// ── settings (the plugin's own, data folder settings.json) ──────────────────────────────────────────────────────────
+
+/** Plugin settings: the default for Pause between steps. The gap is never a setting below the core's 30 s floor. */
+export function readSettings(files) {
+  const s = files.read('settings.json', {}) ?? {};
+  return { $axf: 'orchestrator-demo-settings@1', pauseBetweenSteps: s.pauseBetweenSteps !== false, minGapMs: core.MIN_GAP_MS };
+}
+export function writeSettings(files, patch) {
+  const next = { ...readSettings(files), ...(typeof patch?.pauseBetweenSteps === 'boolean' ? { pauseBetweenSteps: patch.pauseBetweenSteps } : {}) };
+  files.write('settings.json', { pauseBetweenSteps: next.pauseBetweenSteps });
+  return readSettings(files);
+}
+
 // ── CLI ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 function arg(argv, name) { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : undefined; }
@@ -353,9 +366,24 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
     if (cmd === 'new') {
       const old = loadRun(files, id);
       if (old && !core.TERMINAL_STATES.includes(old.run.state)) return out({ ok: false, code: 'busy', error: `run ${old.run.id} is still ${old.run.state}: stop it first`, state: view(old) });
-      const rec = newDemoRun({ pause: !argv.includes('--no-pause'), now: clock.now(), testClock: clock.test });
+      const pause = argv.includes('--pause') ? true : argv.includes('--no-pause') ? false : readSettings(files).pauseBetweenSteps;
+      const rec = newDemoRun({ pause, now: clock.now(), testClock: clock.test });
       saveRun(files, rec);
       return out({ ok: true, state: view(rec) });
+    }
+    if (cmd === 'start') {
+      // Open a run and play it at once (the overlay's Continue): reuses a run still in its overlay, refuses a playing one.
+      const p = argv.includes('--pause') ? true : argv.includes('--no-pause') ? false : readSettings(files).pauseBetweenSteps;
+      const old = loadRun(files, id);
+      if (old && !core.TERMINAL_STATES.includes(old.run.state) && old.run.state !== 'overlay') return out({ ok: false, code: 'busy', error: `run ${old.run.id} is already ${old.run.state}: stop it first`, state: view(old) });
+      let rec = old && old.run.state === 'overlay' ? old : saveRun(files, newDemoRun({ pause: p, now: clock.now(), testClock: clock.test }));
+      rec = withLock(files, rec.run.id, () => saveRun(files, applyEvent(loadRun(files, rec.run.id), 'continue', { at: clock.now(), pause: p })));
+      return out({ ok: true, state: view(rec), driver: ensureDriver(files, rec.run.id) });
+    }
+    if (cmd === 'settings') {
+      const p = arg(argv, '--pause');
+      const s = p === undefined ? readSettings(files) : writeSettings(files, { pauseBetweenSteps: p === 'true' });
+      return out({ ok: true, settings: s });
     }
     if (cmd === 'event') {
       const type = argv[1];
@@ -377,7 +405,7 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
     if (cmd === 'ensure') return out({ ok: true, ...ensureDriver(files, id) });
     if (cmd === 'state') return out({ ok: true, state: view(loadRun(files, id)) });
     if (cmd === 'summary') { const rec = loadRun(files, id); return out({ ok: !!rec, summary: rec ? (rec.driver.summary ?? summaryRecord(rec.run)) : null, checklist: rec ? core.checklist(rec.run) : [], cleanup: rec?.driver.cleanup ?? null, ...(rec ? {} : { code: 'no-run', error: 'no demo run' }) }); }
-    return out({ ok: false, code: 'usage', error: 'usage: runner.mjs new [--pause|--no-pause] | event <type> | drive | ensure | state | summary [--id <run>]' });
+    return out({ ok: false, code: 'usage', error: 'usage: runner.mjs new|start [--pause|--no-pause] | event <type> | drive | ensure | state | summary | settings [--pause true|false] [--id <run>]' });
   } catch (e) {
     process.exitCode = 1;
     return out({ ok: false, code: e?.code || 'error', error: e?.message || String(e) });
