@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7936,
- "updatedAt": "2026-11-17T21:07:52.137Z",
+ "rev": 7937,
+ "updatedAt": "2026-11-17T21:08:01.167Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -279758,7 +279758,7 @@
    "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-17T21:07:45.194Z",
+   "updatedAt": "2026-11-17T21:07:49.775Z",
    "builtAt": "2026-11-17T21:01:32.194Z",
    "notes": [
     {
@@ -279780,6 +279780,10 @@
     {
      "text": "Brief only: brief is 30827 characters (~7707 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T19:49:48.960Z"
+    },
+    {
+     "text": "Headless run axf-terminal-main-tab-streaming-console-s--sully: brief only · start 19.6K tokens ($0.07) · cost $34.93 · 260 turns · 6 tools, MCP none",
+     "at": "2026-11-17T21:07:49.775Z"
     }
    ],
    "approvals": [],
@@ -280208,7 +280212,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
