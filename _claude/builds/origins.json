@@ -4836,6 +4836,18 @@
    "from": "",
    "addenda": []
   },
+  "live-build-status-real-time-grids-15": {
+   "said": "Every time something happens, I want the console to be updated in real time. The VPS checks every 15 seconds to make sure the jobs are running and updates the console. Every running job in any grid has a spinning or animated icon, and building rows flash slowly; configure the animation, flash, pulse, colors. When it stops it goes red, a pink background with a pop-up alert that says broke, and a dialog shows what happened.",
+   "at": "2026-11-17T19:30:44.328Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "live-hot-refresh-every-grid-list-re": {
    "said": "Why don't I get a hot refresh every time shit changes in the grid? Anytime something changes, like a drag and drop or something, it has to hot render.",
    "at": "2026-11-17T15:05:47.233Z",
