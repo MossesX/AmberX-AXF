@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.claude-badge",
   "name": "Badges",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-claude-badge",
   "version": "0.5.0",
   "kind": "module",
   "apiLevel": 1,

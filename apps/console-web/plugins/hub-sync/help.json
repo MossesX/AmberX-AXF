@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "hub-sync-help",
+  "name": "axHub sync help",
+  "version": "0.1.0",
+  "description": "The hub-sync plugin's Help mode entries (help@1). Stub written by the gate fixer help-stub.",
+  "author": "AmberX AXF (gate fixer help-stub)",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:hub-sync",
+    "entries": [
+      {
+        "target": "view:hub-sync",
+        "title": "axHub sync",
+        "text": "Keeps the console's look, settings and (if picked) data on axHub, so every app and device matches: same colour theme, layout and settings on web, Android and everywhere else.",
+        "kind": "screen",
+        "draft": true
+      }
+    ]
+  }
+}

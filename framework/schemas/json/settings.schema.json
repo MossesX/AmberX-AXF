@@ -56,7 +56,101 @@
           ]
         },
         "search": {},
-        "descriptions": {}
+        "descriptions": {},
+        "scope": {
+          "enum": [
+            "app",
+            "plugin",
+            "chrome"
+          ],
+          "description": "plugin-settings@1: app (the app's own page), plugin (one plugin's, with owner) or chrome (chrome-settings@1, with for). Left out = app, or chrome when for is set."
+        },
+        "owner": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "description": "plugin-settings@1: the plugin id this interface belongs to (scope plugin only); the asset id is plugin-<owner>."
+        },
+        "for": {
+          "enum": [
+            "tab-group",
+            "toolbar",
+            "banner",
+            "nav-menu",
+            "app-menu",
+            "context-menu"
+          ],
+          "description": "chrome-settings@1: the chrome type this interface is for (scope chrome only)."
+        },
+        "extends": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "inherit@1: the settings asset this one extends."
+        },
+        "toolbar": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "a toolbar asset drawn at the top of the page"
+        },
+        "levels": {
+          "type": "boolean"
+        },
+        "defaultLevel": {
+          "enum": [
+            "simple",
+            "basic",
+            "developer",
+            "administrator"
+          ]
+        },
+        "levelOf": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "simple",
+              "basic",
+              "developer",
+              "administrator"
+            ]
+          }
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "order": {
+                "type": "number"
+              },
+              "description": {
+                "type": "string"
+              },
+              "parent": {
+                "type": "string"
+              },
+              "hidden": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "hide": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     }
   }

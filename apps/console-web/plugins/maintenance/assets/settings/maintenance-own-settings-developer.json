@@ -1,0 +1,40 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "maintenance-own-settings-developer",
+ "name": "maintenance-own-settings: Everything at once",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Opens at Developer: every setting the plugin has, descriptions on. Longest page, nothing hidden behind the level.",
+ "tags": [
+  "ui-choice",
+  "choice-set:maintenance-own-settings",
+  "choice-option:developer"
+ ],
+ "data": {
+  "scope": "plugin",
+  "owner": "ai.amberx.axf.console.maintenance",
+  "layout": "list",
+  "header": "compact",
+  "search": false,
+  "descriptions": true,
+  "tabs": [
+   {
+    "id": "maintenance"
+   }
+  ],
+  "hide": [],
+  "groups": [],
+  "levels": true,
+  "defaultLevel": "developer",
+  "levelOf": {
+   "maintenance": "basic",
+   "axf.maintenance.nightly": "basic",
+   "axf.maintenance.nightlyJobs": "basic",
+   "axf.maintenance.profileMode": "basic",
+   "axf.maintenance.profileSchedule": "basic",
+   "axf.maintenance.profileWeekday": "basic"
+  },
+  "visible": {}
+ }
+}

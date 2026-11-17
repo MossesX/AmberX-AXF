@@ -3,6 +3,7 @@
   "id": "ai.amberx.axf.console.plugin-manager",
   "lazy": { "core": "open" },
   "name": "Plugin Manager",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-plugin-manager",
   "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,

@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "version": "1.0.0",
+  "author": "check-settings-interfaces (plugin-settings@1)",
+  "id": "plugin-ai-amberx-axf-console-molly-guide",
+  "name": "Gizmo guide: its own settings",
+  "description": "Gizmo guide's own settings interface (plugin-settings@1): only its tabs and keys, the level toolbar on, opened in its own window, never the console's Settings. Generated from its registered settings; edit it like any settings asset.",
+  "tags": [
+    "plugin-settings",
+    "molly-guide"
+  ],
+  "data": {
+    "scope": "plugin",
+    "owner": "ai.amberx.axf.console.molly-guide",
+    "layout": "list",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "molly-guide"
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "molly-guide": "basic",
+      "molly-guide.speak": "basic",
+      "molly-guide.runSteps": "basic",
+      "molly-guide.autoOpen": "basic"
+    },
+    "visible": {}
+  }
+}

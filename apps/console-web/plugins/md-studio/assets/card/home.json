@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "md-studio-home",
+  "name": "MD Studio",
+  "version": "1.0.0",
+  "description": "MD Studio on Home: List Markdown files.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "MD Studio",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "md-studio",
+      "command": "list-files"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

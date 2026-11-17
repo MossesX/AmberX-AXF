@@ -7524,6 +7524,12 @@
                         "descriptions": {
                           "$ref": "#/$defs/mode"
                         },
+                        "scope": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "owner": {
+                          "$ref": "#/$defs/mode"
+                        },
                         "for": {
                           "$ref": "#/$defs/mode"
                         },

@@ -14,11 +14,17 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup, type SettingsTab } from '../../core';
 import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
+import { ChangedAssetsTable, changedAssetRows } from './changed';
+import { askReset, lastReset, registerResetActions, ResetDialogBody, undoSettingsReset } from './reset';
+export { askReset, lastReset, planReset, settingsInterfaceReport, settingsResetReport, runSettingsReset, undoSettingsReset, SETTINGS_INTERFACE_READ, SETTINGS_RESET_ASK, SETTINGS_RESET_PLAN, SETTINGS_RESET_RUN, SETTINGS_RESET_UNDO, SETTINGS_RESET_UNDO_KEY } from './reset';
+import { RESET_CONFIRM_DIALOG, setResetTableRenderer } from '../../react/components/ResetConfirmDialog';
+export { ChangedAssetsTable, changedAssetRows, resetStateOf } from './changed';
+import { PLUGIN_SETTINGS_ACTION, PLUGIN_SETTINGS_DIALOG, PluginSettingsWindow, pluginOfSettingsTab, setPluginSettingsRenderer, useSettingsUiOverride } from '../../react/components/PluginSettingsWindow';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
@@ -75,9 +81,11 @@ function useSettingsLevel(ui: SettingsUi): SettingsLevel {
 function useSettingsUi(): SettingsUi {
   const rt = useRuntime();
   useAxfState();
+  // inside a PluginSettingsWindow every body renders through the plugin's own interface (plugin-settings@1), never the app's
+  const own = useSettingsUiOverride();
   const a = rt.assetOrNull('settings');
   const visible = useSettingValue(SETTINGS_VISIBLE_KEY);
-  return useMemo(() => withSettingsVisible(normalizeSettingsUi(a?.data), visible), [a, visible]);
+  return useMemo(() => withSettingsVisible(own ?? normalizeSettingsUi(a?.data), visible), [own, a, visible]);
 }
 
 /* ---------------- level toolbar (Brett, Oct 28 2026: on every settings interface, default on, hideable) ---------------- */
@@ -412,7 +420,7 @@ function AboutPanel() {
       <div className="fx-row fx-row--wrap">
         <Button icon="info" onClick={() => rt.dispatch('help.about')}>About this app</Button>
         <Button icon="keyboard" onClick={() => rt.dispatch('view.shortcuts')}>Shortcuts</Button>
-        <Button icon="refresh" requires="assets.swap" onClick={() => rt.dispatch('assets.reset')}>Reset assets to defaults</Button>
+        <Button icon="refresh" requires="assets.swap" onClick={() => askReset(rt, 'console', { includeAssets: true })}>Reset assets to defaults…</Button>
       </div>
     </div>
   );
@@ -457,7 +465,9 @@ export function SettingsView() {
   // Every tab as the settings asset arranges it (order, labels, left out), then split into top tabs and sub-tabs.
   const level = useSettingsLevel(ui);
   const levelBar = useLevelBarOn();
-  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui).filter((t) => shownAtLevel(ui, t.id, level));
+  // A plugin's tabs are never rendered here (plugin-settings@1, Nov 17 2026): they stay registered under Plugins for
+  // discovery, and Settings → Plugins lists them; each opens the plugin's own PluginSettingsWindow.
+  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui).filter((t) => shownAtLevel(ui, t.id, level) && !pluginOfSettingsTab(rt, t.id));
   const byId = new Map(all.map((t) => [t.id, t]));
   const childrenOf = (id: string) => all.filter((t) => t.parent === id);
   const tabs = all.filter((t) => !t.parent || !byId.has(t.parent)).filter((t) => !(pluginLock && t.id === 'plugins' && !childrenOf('plugins').length));
@@ -539,7 +549,7 @@ export function SettingsView() {
           </form>
         } />
       )}
-      {ui.levels && levelBar && <SettingsLevelBar level={level} />}
+      {ui.levels && levelBar ? <SettingsLevelBar level={level} actions={<ResetSettingsButton scope="console" />} /> : <div className="fx-row axf-settings__resetrow" role="toolbar" aria-label="Settings actions"><ResetSettingsButton scope="console" /></div>}
       {ui.search && !toolbarSearch && (
         <form className="fx-search axf-settings__search" role="search" onSubmit={(e) => e.preventDefault()}>
           <Icon name="search" size={14} />
@@ -630,11 +640,12 @@ export function AppearancePanel() {
   const overridden = rt.skinOverrides();
   const colour = rt.skinColorTheme();
   const inForce = !!colour.own; // a skin with data is in force here (read from the look document, so a pick just made is seen at once)
-  const [confirm, setConfirm] = useState(false);
   const service = hasSkinSwitch(rt);
   const back = (type: string) => (service ? rt.dispatch(`skin.back:app:${type}`) : rt.backToSkin(type));
-  const restore = () => (service ? rt.dispatch('skin.restore:app') : rt.restoreDefaultAppearance());
-  const undo = () => (service ? rt.dispatch('skin.undo') : rt.undoRestoreDefault());
+  // Restore asks in the reset confirm dialog (settings-reset@1) with Include assets on; the dialog runs the skin path
+  const restore = () => askReset(rt, 'console', { includeAssets: true });
+  const resetUndo = lastReset(rt);
+  const undo = () => (resetUndo ? undoSettingsReset(rt) : service ? rt.dispatch('skin.undo') : rt.undoRestoreDefault());
   const useSkin = (on: boolean) => (service && on && skinId ? rt.dispatch(`skin.use:${skinId}:app`) : rt.useSkin(on, skinId || undefined));
   const row = (label: string, type: string) => {
     const list = rt.registry.list(type as AssetType);
@@ -688,8 +699,8 @@ export function AppearancePanel() {
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Restore to default</span><span className="fx-muted axf-settings__hint">Back to the look this app had when skins landed.</span></div>
         <div className="axf-settings__control axf-skin__action">
-          <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); restore(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button>
-          {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => undo()}>Undo</Button>}
+          <Button size="sm" tone="quiet" disabled={locked} onClick={() => restore()}>Restore…</Button>
+          {(!!look?.undo || !!resetUndo) && <Button size="sm" tone="quiet" disabled={locked} onClick={() => undo()}>Undo</Button>}
         </div>
       </div>
       {hasSkinConfigProvider(rt) && (
@@ -808,22 +819,32 @@ function SkinPickerDialog() {
       <div className="fx-row">
         <Button tone="primary" disabled={locked || !picked || picked === applied} onClick={() => { if (rt.useSkin(true, picked)) close(); }}>Apply</Button>
         {!!applied && <Button tone="quiet" onClick={() => { if (rt.useSkin(false)) close(); }}>Turn skin off</Button>}
-        <Button tone="quiet" confirm="Put this app back to its default look? Skin and picks are cleared. You can undo it once in Settings → Appearance." onClick={() => { rt.previewSkin(null); rt.restoreDefaultAppearance(); close(); }}>Reset</Button>
+        <Button tone="quiet" onClick={() => { rt.previewSkin(null); close(); askReset(rt, 'console', { includeAssets: true }); }}>Reset…</Button>
         <Button tone="quiet" onClick={close}>Cancel</Button>
       </div>
     </div>
   );
 }
 
-/** The right-click Restore to default: asks first; Undo is in Settings → Appearance. */
+/** The right-click Restore to default: the reset confirm dialog for the app, Include assets on; Undo is in Settings → Appearance. */
 function RestoreDefaultDialog() {
+  return <ResetDialogBody scope="console" includeAssets />;
+}
+
+/** Reset… on a settings interface: the confirm dialog for its scope (the app's, or one plugin's). */
+function ResetSettingsButton({ scope }: { scope: string }) {
   const rt = useRuntime();
-  return (
-    <div className="fx-stack">
-      <p>Put this app back to its default look? Skin and picks are cleared. You can undo it once in Settings → Appearance.</p>
-      <div className="fx-row"><Button tone="primary" onClick={() => { rt.closeDialog(); rt.restoreDefaultAppearance(); }}>Restore</Button><Button tone="quiet" onClick={() => rt.closeDialog()}>Cancel</Button></div>
-    </div>
-  );
+  return <IconButton icon="refresh" label="Reset settings…" data-axf-reset-open={scope} onClick={() => askReset(rt, scope)} />;
+}
+
+/** Every changed asset in the app (the reset dialog's table, the same component), under Settings → Appearance. */
+function ChangedAssetsPanel() {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  useAxfState();
+  const rows = changedAssetRows(rt);
+  if (!rows.length) return <p className="fx-muted axf-settings__hint" style={{ margin: 0 }}>Every asset is at its default.</p>;
+  return <div className="axf-reset__table" style={{ ['--axf-reset-rows' as string]: '8' }}><ChangedAssetsTable rows={rows} id="settings.changed-assets" /></div>;
 }
 
 /** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings.
@@ -846,6 +867,34 @@ function AllDialog() {
   );
 }
 
+/**
+ * Settings → Plugins: every plugin with settings, one row each, opening its own settings window (settings.plugin:<id>).
+ * Nothing of a plugin's renders inside the app's Settings.
+ */
+function PluginSettingsList() {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const byPlugin = new Map<string, SettingsTab[]>();
+  for (const t of rt.settings.listTabs()) {
+    const p = pluginOfSettingsTab(rt, t.id);
+    if (p) byPlugin.set(p, [...(byPlugin.get(p) ?? []), t]);
+  }
+  if (!byPlugin.size) return <p className="fx-muted axf-settings__hint" style={{ margin: 0 }}>No plugin has settings.</p>;
+  const rows = [...byPlugin.entries()].map(([id, tabs]) => ({ id, tab: tabs.find((t) => t.plugin === id) ?? tabs[0]! })).sort((a, b) => a.tab.label.localeCompare(b.tab.label));
+  return (
+    <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label="Plugin settings" data-axf-plugin-settings-list={rows.length} data-axf-help-id="settings.plugin-list" data-axf-not-nav="the list of plugins whose own settings open in their own window, not a navigation menu">
+      {rows.map(({ id, tab }) => <NavRow key={id} id={`plugin:${id}`} icon={tab.icon} label={tab.label} desc={tab.description ?? 'Its own settings window'} onClick={() => rt.dispatch(`settings.plugin:${id}`)} />)}
+    </nav>
+  );
+}
+
+/** The level toolbar inside a PluginSettingsWindow: the plugin's interface (useSettingsUi reads the override), the toolbar's own switch. */
+function PluginLevelBar() {
+  const ui = useSettingsUi();
+  const level = useSettingsLevel(ui);
+  return useLevelBarOn() ? <SettingsLevelBar level={level} /> : null;
+}
+
 function TabDialog({ id }: { id: string }) {
   const rt = useRuntime();
   const tab = rt.settings.getTab(id);
@@ -855,7 +904,7 @@ function TabDialog({ id }: { id: string }) {
   if (!tab) return <p className="fx-muted">No settings tab "{id}".</p>;
   return (
     <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}><ControlScope address={`view:settings/tab:settings.tabs=${id}`}>
-      <div className="axf-settings__dialoghead"><p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p></div>
+      <div className="axf-settings__dialoghead"><p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p><ResetSettingsButton scope={tab.plugin ? `plugin:${tab.plugin}` : 'console'} /></div>
       {ui.levels && bar && <SettingsLevelBar level={level} />}
       <TabContent id={id} />
     </ControlScope></div>
@@ -1084,10 +1133,13 @@ export const library: AxfWebLibrary = {
   register(rt) {
     injectStyles();
     setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} all />);
+    setResetTableRenderer((rows, o) => <ChangedAssetsTable rows={rows} id={o.id} />);
+    setPluginSettingsRenderer({ tab: (id) => <TabContent id={id} />, levelBar: () => <PluginLevelBar />, reset: (plugin) => <ResetSettingsButton scope={`plugin:${plugin}`} /> });
+    registerResetActions(rt);
     syncSettingsAsset(rt);
     applyDisplay(rt);
     applyAppLook(rt);
-    rt.actions.register('skin.restore.ask', () => rt.openDialog(RESTORE_DIALOG, {}), { label: 'Restore to default…', requires: 'assets.swap' });
+    rt.actions.register('skin.restore.ask', () => askReset(rt, 'console', { includeAssets: true }), { label: 'Restore to default…', requires: 'assets.swap' });
     rt.settings.onChange(APP_LOOK_KEY, () => applyAppLook(rt));
     rt.settings.onChange(APPEARANCE_LOCK_KEY, () => applyAppLook(rt));
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
@@ -1097,8 +1149,9 @@ export const library: AxfWebLibrary = {
     // the choice is gone). The route comes from core/engines/settingsopen.ts.
     for (const k of RETIRED_SETTINGS_OPEN_KEYS) if (k in rt.settings.savedValues()) rt.settings.clear(k);
     const openSettings = (tab: string | undefined) => {
-      const r = settingsOpenRoute({ tab, view: rt.getState().view, hostTakes: rt.hostTakes('settings') });
-      if (r.via === 'dialog') { rt.openDialog(r.dialog, r.tab ? { tab: r.tab } : {}); return; }
+      const plugin = pluginOfSettingsTab(rt, tab);
+      const r = settingsOpenRoute({ tab, view: rt.getState().view, hostTakes: rt.hostTakes('settings'), ...(plugin ? { plugin } : {}) });
+      if (r.via === 'dialog') { rt.openDialog(r.dialog, { ...(r.tab ? { tab: r.tab } : {}), ...(r.plugin ? { plugin: r.plugin } : {}) }); return; }
       rt.navigate(VIEW);
       if (r.tab) {
         rt.settings.set(TAB_KEY, r.tab);
@@ -1106,6 +1159,8 @@ export const library: AxfWebLibrary = {
       }
     };
     rt.actions.register('app.settings', () => openSettings(undefined), { label: 'Settings' });
+    // One plugin's own settings interface (plugin-settings@1, Nov 17 2026): its own window, never the app's Settings.
+    rt.actions.register(PLUGIN_SETTINGS_ACTION, ([plugin, tab]) => { if (plugin) rt.openDialog(PLUGIN_SETTINGS_DIALOG, { plugin, ...(tab ? { tab } : {}) }); }, { label: 'Open a plugin’s own settings', params: true });
     // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
     rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });
     rt.actions.register('settings.level', ([l]) => { const lv = settingsLevel(settingsUi(rt), l); if (l) rt.settings.set(SETTINGS_LEVEL_KEY, lv); }, { label: 'Pick the settings level', params: true });
@@ -1145,9 +1200,11 @@ export const library: AxfWebLibrary = {
   dialogs: {
     [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, surface: 'glass', size: 'wide', render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
     [ALL_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, surface: 'glass', size: 'wide', render: () => <AllDialog /> },
+    [PLUGIN_SETTINGS_DIALOG]: { title: 'Plugin settings', icon: 'package', searchable: false, surface: 'glass', size: 'wide', render: (p: Record<string, unknown>) => <PluginSettingsWindow key={String(p.plugin ?? '')} plugin={String(p.plugin ?? '')} {...(p.tab ? { tab: String(p.tab) } : {})} /> },
     [SKIN_DIALOG]: { title: 'Choose a skin', icon: 'palette', searchable: false, render: () => <SkinPickerDialog /> },
     [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },
+    [RESET_CONFIRM_DIALOG]: { title: 'Reset settings', icon: 'refresh', searchable: false, render: (p: Record<string, unknown>) => <ResetDialogBody scope={String(p.scope ?? 'console')} includeAssets={p.includeAssets === true} /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
   },
   settingsTabs: Object.values(SETTINGS_TABS),
@@ -1183,7 +1240,9 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
+    { id: 'axf.appearance.changed', tab: 'appearance', title: 'Changed here', icon: 'list', order: 5, render: () => <ChangedAssetsPanel /> },
     { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
+    { id: 'axf.plugins.settings', tab: 'plugins', title: 'Plugin settings', icon: 'package', order: 40, render: () => <PluginSettingsList /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

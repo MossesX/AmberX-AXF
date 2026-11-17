@@ -73,8 +73,11 @@ function OpenSettingsTab({ tab }: { tab: string }) {
 }
 
 /**
- * Plugins never get a top-level settings tab: every tab a plugin contributes becomes a sub-tab of Settings → Plugins
- * (Brett's rule, Oct 18 2026). Enforced here for every plugin, so a plugin can't opt out by forgetting `parent`.
+ * Plugins never get a top-level settings tab: every tab a plugin contributes is registered under Settings → Plugins
+ * (`parent: 'plugins'`, Brett's rule, Oct 18 2026) and carries the plugin's id (`plugin`), enforced here for every plugin.
+ * Since Nov 17 2026 (plugin-settings@1, Brett: "Each plugin needs its own settings interface, not the console's.") that
+ * is discovery only: the console's Settings never renders a plugin's tab; Settings → Plugins lists the plugins and each
+ * opens its own PluginSettingsWindow (settings.plugin:<id>).
  */
 function underPlugins(p: BundledPlugin): AxfWebLibrary {
   const m = p.manifest;
@@ -92,7 +95,7 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
   // Appearance panel (framework/libs/plugintheme), so no plugin needs code of its own.
   const themed = (l: AxfWebLibrary) => withPluginTheme(countingUses(p.folder, l, { name: m.name, settingsGear: m.settingsGear, defaultTab: m.settingsTab?.default === true }), { id: m.id, name: m.name });
   if (!lib.settingsTabs?.length) return themed(out);
-  return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) });
+  return themed({ ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins', plugin: m.id })) });
 }
 
 /** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */

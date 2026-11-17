@@ -1,0 +1,1376 @@
+{
+  "contract": "settings-reset@1",
+  "actions": {
+    "reset": "settings.reset",
+    "plan": "settings.reset.plan"
+  },
+  "includeAssetsDefault": false,
+  "tableRows": 8,
+  "lookKeyPatterns": [
+    "/^axf\\.hide\\./",
+    "/^axf\\.roll\\.slot\\./",
+    "/^axf\\.widgets\\.arrange\\./",
+    "/^axf\\.chrome\\./",
+    "/^axf\\.tokens\\./",
+    "/^axf\\.appearance\\./",
+    "/^axf\\.lock\\.hubskin/",
+    "/^axf\\.plugin\\..+\\.look$/"
+  ],
+  "appLookKey": "axf.skin.look",
+  "scopes": [
+    {
+      "input": "console",
+      "scope": {
+        "kind": "console"
+      },
+      "key": "console"
+    },
+    {
+      "input": "app",
+      "scope": {
+        "kind": "console"
+      },
+      "key": "console"
+    },
+    {
+      "input": "",
+      "scope": {
+        "kind": "console"
+      },
+      "key": "console"
+    },
+    {
+      "input": "plugin:molly-guide",
+      "scope": {
+        "kind": "plugin",
+        "id": "molly-guide"
+      },
+      "key": "plugin:molly-guide"
+    },
+    {
+      "input": "molly-guide",
+      "scope": {
+        "kind": "plugin",
+        "id": "molly-guide"
+      },
+      "key": "plugin:molly-guide"
+    },
+    {
+      "input": "plugin:",
+      "scope": null,
+      "key": null
+    },
+    {
+      "input": "bad id",
+      "scope": null,
+      "key": null
+    },
+    {
+      "input": 7,
+      "scope": null,
+      "key": null
+    },
+    {
+      "input": null,
+      "scope": null,
+      "key": null
+    },
+    {
+      "input": {
+        "kind": "console"
+      },
+      "scope": {
+        "kind": "console"
+      },
+      "key": "console"
+    },
+    {
+      "input": {
+        "kind": "plugin",
+        "id": "x"
+      },
+      "scope": {
+        "kind": "plugin",
+        "id": "x"
+      },
+      "key": "plugin:x"
+    },
+    {
+      "input": {
+        "kind": "plugin"
+      },
+      "scope": null,
+      "key": null
+    }
+  ],
+  "lookKeys": [
+    {
+      "key": "axf.display.fontScale",
+      "look": false,
+      "owner": null
+    },
+    {
+      "key": "axf.settings.level",
+      "look": false,
+      "owner": null
+    },
+    {
+      "key": "axf.hide.toolbar",
+      "look": true,
+      "owner": null
+    },
+    {
+      "key": "axf.chrome.settings.toolbar",
+      "look": true,
+      "owner": null
+    },
+    {
+      "key": "molly-guide.autoplay",
+      "look": false,
+      "owner": "molly-guide"
+    },
+    {
+      "key": "guide.voice",
+      "look": false,
+      "owner": "molly-guide"
+    },
+    {
+      "key": "molly-guide.unregistered",
+      "look": false,
+      "owner": "molly-guide"
+    },
+    {
+      "key": "axf.plugin.molly-guide.look",
+      "look": true,
+      "owner": "molly-guide"
+    },
+    {
+      "key": "feature-matrix.compact",
+      "look": false,
+      "owner": "feature-matrix"
+    },
+    {
+      "key": "axf.skin.look",
+      "look": true,
+      "owner": null
+    },
+    {
+      "key": "axf.nothing",
+      "look": false,
+      "owner": null
+    }
+  ],
+  "tabs": [
+    {
+      "id": "appearance",
+      "label": "Appearance",
+      "icon": "palette",
+      "order": 10
+    },
+    {
+      "id": "plugins",
+      "label": "Plugins",
+      "icon": "package",
+      "order": 40
+    },
+    {
+      "id": "molly-guide",
+      "label": "Gizmo guide",
+      "icon": "sparkles",
+      "order": 60,
+      "parent": "plugins",
+      "plugin": "molly-guide"
+    },
+    {
+      "id": "feature-matrix",
+      "label": "Feature matrix",
+      "icon": "grid",
+      "order": 50,
+      "parent": "plugins",
+      "plugin": "feature-matrix"
+    }
+  ],
+  "groups": [
+    {
+      "id": "axf.display",
+      "label": "Display",
+      "tab": "appearance",
+      "settings": [
+        {
+          "key": "axf.display.fontScale",
+          "label": "Text size",
+          "kind": "slider",
+          "default": 1
+        },
+        {
+          "key": "axf.display.animations",
+          "label": "Animations",
+          "kind": "toggle",
+          "default": true
+        }
+      ]
+    },
+    {
+      "id": "molly-guide.general",
+      "label": "General",
+      "tab": "molly-guide",
+      "settings": [
+        {
+          "key": "molly-guide.autoplay",
+          "label": "Autoplay",
+          "kind": "toggle",
+          "default": false
+        },
+        {
+          "key": "guide.voice",
+          "label": "Voice",
+          "kind": "text"
+        }
+      ]
+    },
+    {
+      "id": "feature-matrix.view",
+      "label": "View",
+      "tab": "feature-matrix",
+      "settings": [
+        {
+          "key": "feature-matrix.compact",
+          "label": "Compact",
+          "kind": "toggle"
+        }
+      ]
+    }
+  ],
+  "states": {
+    "full": {
+      "values": {
+        "axf.display.fontScale": 1.2,
+        "axf.settings.level": "developer",
+        "axf.hide.toolbar": true,
+        "axf.chrome.settings.toolbar": "chrome-toolbar-console",
+        "molly-guide.autoplay": true,
+        "guide.voice": "amber",
+        "molly-guide.unregistered": 3,
+        "axf.plugin.molly-guide.look": "{\"on\":true}",
+        "feature-matrix.compact": false,
+        "axf.skin.look": "{\"$axf\":\"app-look@1\"}",
+        "axf.nothing": null
+      },
+      "look": {
+        "default": {
+          "slots": {
+            "color-theme": "soft-studio",
+            "layout": "standard",
+            "toolbar": "standard"
+          },
+          "spacing": "comfortable",
+          "hidden": {
+            "banner": false
+          },
+          "settings": {
+            "axf.display.animations": true
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "midnight",
+            "layout": "standard"
+          },
+          "spacing": "compact",
+          "hidden": {
+            "banner": true,
+            "toolbar": false
+          },
+          "settings": {
+            "axf.display.animations": false
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "amber-glass",
+          "overrides": {
+            "toolbar": "slim"
+          },
+          "colorTheme": "midnight"
+        },
+        "scopes": {
+          "ui:settings": {
+            "use": "on",
+            "id": "paper",
+            "overrides": {}
+          },
+          "plugin:molly-guide": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "tab-group": "chips"
+            },
+            "colorTheme": "dusk"
+          },
+          "plugin:feature-matrix": {
+            "use": "off",
+            "id": "",
+            "overrides": {}
+          }
+        }
+      }
+    },
+    "noLook": {
+      "values": {
+        "axf.display.fontScale": 1.2,
+        "axf.settings.level": "developer",
+        "axf.hide.toolbar": true,
+        "axf.chrome.settings.toolbar": "chrome-toolbar-console",
+        "molly-guide.autoplay": true,
+        "guide.voice": "amber",
+        "molly-guide.unregistered": 3,
+        "axf.plugin.molly-guide.look": "{\"on\":true}",
+        "feature-matrix.compact": false,
+        "axf.skin.look": "{\"$axf\":\"app-look@1\"}",
+        "axf.nothing": null
+      },
+      "look": null,
+      "active": {
+        "color-theme": "midnight",
+        "layout": "standard"
+      },
+      "defaults": {
+        "color-theme": "soft-studio",
+        "layout": "standard"
+      }
+    },
+    "clean": {
+      "values": {
+        "axf.nothing": null
+      },
+      "look": {
+        "default": {
+          "slots": {
+            "color-theme": "soft-studio",
+            "layout": "standard",
+            "toolbar": "standard"
+          },
+          "spacing": "comfortable",
+          "hidden": {
+            "banner": false
+          },
+          "settings": {
+            "axf.display.animations": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {}
+      }
+    }
+  },
+  "changed": {
+    "full": [
+      {
+        "kind": "slot",
+        "type": "color-theme",
+        "label": "Color theme",
+        "current": "Midnight",
+        "default": "soft-studio",
+        "scope": "console"
+      },
+      {
+        "kind": "hidden",
+        "type": "banner",
+        "label": "Banner",
+        "current": "hidden",
+        "default": "shown",
+        "scope": "console"
+      },
+      {
+        "kind": "spacing",
+        "type": "spacing",
+        "label": "Spacing",
+        "current": "compact",
+        "default": "comfortable",
+        "scope": "console"
+      },
+      {
+        "kind": "skin",
+        "type": "skin",
+        "label": "Skin",
+        "current": "Amber glass",
+        "default": "off",
+        "scope": "console"
+      },
+      {
+        "kind": "skin-override",
+        "type": "color-theme",
+        "label": "Colour theme",
+        "current": "Midnight",
+        "default": "from the skin",
+        "scope": "console"
+      },
+      {
+        "kind": "skin-override",
+        "type": "toolbar",
+        "label": "Toolbar",
+        "current": "slim",
+        "default": "from the skin",
+        "scope": "console"
+      },
+      {
+        "kind": "scope-skin",
+        "type": "ui:settings",
+        "label": "Skin at ui:settings",
+        "current": "paper",
+        "default": "inherit",
+        "scope": "console"
+      },
+      {
+        "kind": "look-setting",
+        "type": "axf.chrome.settings.toolbar",
+        "label": "axf.chrome.settings.toolbar",
+        "current": "chrome-toolbar-console",
+        "default": "default",
+        "scope": "console"
+      },
+      {
+        "kind": "look-setting",
+        "type": "axf.display.animations",
+        "label": "axf.display.animations",
+        "current": "false",
+        "default": "true",
+        "scope": "console"
+      },
+      {
+        "kind": "look-setting",
+        "type": "axf.hide.toolbar",
+        "label": "axf.hide.toolbar",
+        "current": "true",
+        "default": "default",
+        "scope": "console"
+      },
+      {
+        "kind": "scope-skin",
+        "type": "plugin:feature-matrix",
+        "label": "Skin at plugin:feature-matrix",
+        "current": "off",
+        "default": "inherit",
+        "scope": "plugin:feature-matrix"
+      },
+      {
+        "kind": "scope-override",
+        "type": "plugin:molly-guide/color-theme",
+        "label": "Colour theme at plugin:molly-guide",
+        "current": "dusk",
+        "default": "inherit",
+        "scope": "plugin:molly-guide"
+      },
+      {
+        "kind": "scope-override",
+        "type": "plugin:molly-guide/tab-group",
+        "label": "Tab group at plugin:molly-guide",
+        "current": "chips",
+        "default": "inherit",
+        "scope": "plugin:molly-guide"
+      },
+      {
+        "kind": "plugin-look",
+        "type": "axf.plugin.molly-guide.look",
+        "label": "Molly guide look",
+        "current": "overridden",
+        "default": "theme",
+        "scope": "plugin:molly-guide"
+      }
+    ],
+    "noLook": [
+      {
+        "kind": "slot",
+        "type": "color-theme",
+        "label": "Color theme",
+        "current": "midnight",
+        "default": "soft-studio",
+        "scope": "console"
+      },
+      {
+        "kind": "look-setting",
+        "type": "axf.chrome.settings.toolbar",
+        "label": "axf.chrome.settings.toolbar",
+        "current": "chrome-toolbar-console",
+        "default": "default",
+        "scope": "console"
+      },
+      {
+        "kind": "look-setting",
+        "type": "axf.hide.toolbar",
+        "label": "axf.hide.toolbar",
+        "current": "true",
+        "default": "default",
+        "scope": "console"
+      },
+      {
+        "kind": "plugin-look",
+        "type": "axf.plugin.molly-guide.look",
+        "label": "Molly guide look",
+        "current": "overridden",
+        "default": "theme",
+        "scope": "plugin:molly-guide"
+      }
+    ],
+    "clean": []
+  },
+  "plans": [
+    {
+      "name": "console, settings only",
+      "state": "full",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "console"
+        },
+        "includeAssets": false,
+        "settings": [
+          {
+            "key": "axf.display.fontScale",
+            "label": "Text size",
+            "group": "axf.display",
+            "current": 1.2,
+            "default": 1
+          },
+          {
+            "key": "axf.settings.level",
+            "current": "developer",
+            "default": null
+          }
+        ],
+        "assets": [
+          {
+            "kind": "slot",
+            "type": "color-theme",
+            "label": "Color theme",
+            "current": "Midnight",
+            "default": "soft-studio",
+            "scope": "console"
+          },
+          {
+            "kind": "hidden",
+            "type": "banner",
+            "label": "Banner",
+            "current": "hidden",
+            "default": "shown",
+            "scope": "console"
+          },
+          {
+            "kind": "spacing",
+            "type": "spacing",
+            "label": "Spacing",
+            "current": "compact",
+            "default": "comfortable",
+            "scope": "console"
+          },
+          {
+            "kind": "skin",
+            "type": "skin",
+            "label": "Skin",
+            "current": "Amber glass",
+            "default": "off",
+            "scope": "console"
+          },
+          {
+            "kind": "skin-override",
+            "type": "color-theme",
+            "label": "Colour theme",
+            "current": "Midnight",
+            "default": "from the skin",
+            "scope": "console"
+          },
+          {
+            "kind": "skin-override",
+            "type": "toolbar",
+            "label": "Toolbar",
+            "current": "slim",
+            "default": "from the skin",
+            "scope": "console"
+          },
+          {
+            "kind": "scope-skin",
+            "type": "ui:settings",
+            "label": "Skin at ui:settings",
+            "current": "paper",
+            "default": "inherit",
+            "scope": "console"
+          },
+          {
+            "kind": "look-setting",
+            "type": "axf.chrome.settings.toolbar",
+            "label": "axf.chrome.settings.toolbar",
+            "current": "chrome-toolbar-console",
+            "default": "default",
+            "scope": "console"
+          },
+          {
+            "kind": "look-setting",
+            "type": "axf.display.animations",
+            "label": "axf.display.animations",
+            "current": "false",
+            "default": "true",
+            "scope": "console"
+          },
+          {
+            "kind": "look-setting",
+            "type": "axf.hide.toolbar",
+            "label": "axf.hide.toolbar",
+            "current": "true",
+            "default": "default",
+            "scope": "console"
+          }
+        ],
+        "apply": {
+          "clear": [
+            "axf.display.fontScale",
+            "axf.settings.level"
+          ],
+          "look": null,
+          "scopes": []
+        },
+        "empty": false,
+        "summary": "2 settings · 10 assets kept",
+        "tableRows": 8
+      }
+    },
+    {
+      "name": "console, with assets",
+      "state": "full",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "console"
+        },
+        "includeAssets": true,
+        "settings": [
+          {
+            "key": "axf.display.fontScale",
+            "label": "Text size",
+            "group": "axf.display",
+            "current": 1.2,
+            "default": 1
+          },
+          {
+            "key": "axf.settings.level",
+            "current": "developer",
+            "default": null
+          }
+        ],
+        "assets": [
+          {
+            "kind": "slot",
+            "type": "color-theme",
+            "label": "Color theme",
+            "current": "Midnight",
+            "default": "soft-studio",
+            "scope": "console"
+          },
+          {
+            "kind": "hidden",
+            "type": "banner",
+            "label": "Banner",
+            "current": "hidden",
+            "default": "shown",
+            "scope": "console"
+          },
+          {
+            "kind": "spacing",
+            "type": "spacing",
+            "label": "Spacing",
+            "current": "compact",
+            "default": "comfortable",
+            "scope": "console"
+          },
+          {
+            "kind": "skin",
+            "type": "skin",
+            "label": "Skin",
+            "current": "Amber glass",
+            "default": "off",
+            "scope": "console"
+          },
+          {
+            "kind": "skin-override",
+            "type": "color-theme",
+            "label": "Colour theme",
+            "current": "Midnight",
+            "default": "from the skin",
+            "scope": "console"
+          },
+          {
+            "kind": "skin-override",
+            "type": "toolbar",
+            "label": "Toolbar",
+            "current": "slim",
+            "default": "from the skin",
+            "scope": "console"
+          },
+          {
+            "kind": "scope-skin",
+            "type": "ui:settings",
+            "label": "Skin at ui:settings",
+            "current": "paper",
+            "default": "inherit",
+            "scope": "console"
+          },
+          {
+            "kind": "look-setting",
+            "type": "axf.chrome.settings.toolbar",
+            "label": "axf.chrome.settings.toolbar",
+            "current": "chrome-toolbar-console",
+            "default": "default",
+            "scope": "console"
+          },
+          {
+            "kind": "look-setting",
+            "type": "axf.display.animations",
+            "label": "axf.display.animations",
+            "current": "false",
+            "default": "true",
+            "scope": "console"
+          },
+          {
+            "kind": "look-setting",
+            "type": "axf.hide.toolbar",
+            "label": "axf.hide.toolbar",
+            "current": "true",
+            "default": "default",
+            "scope": "console"
+          }
+        ],
+        "apply": {
+          "clear": [
+            "axf.chrome.settings.toolbar",
+            "axf.display.fontScale",
+            "axf.hide.toolbar",
+            "axf.settings.level"
+          ],
+          "look": "restore",
+          "scopes": [
+            "ui:settings"
+          ]
+        },
+        "empty": false,
+        "summary": "2 settings · 10 assets",
+        "tableRows": 8
+      }
+    },
+    {
+      "name": "plugin molly-guide, settings only",
+      "state": "full",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "plugin",
+          "id": "molly-guide"
+        },
+        "includeAssets": false,
+        "settings": [
+          {
+            "key": "guide.voice",
+            "label": "Voice",
+            "group": "molly-guide.general",
+            "current": "amber",
+            "default": null
+          },
+          {
+            "key": "molly-guide.autoplay",
+            "label": "Autoplay",
+            "group": "molly-guide.general",
+            "current": true,
+            "default": false
+          },
+          {
+            "key": "molly-guide.unregistered",
+            "current": 3,
+            "default": null
+          }
+        ],
+        "assets": [
+          {
+            "kind": "scope-override",
+            "type": "plugin:molly-guide/color-theme",
+            "label": "Colour theme at plugin:molly-guide",
+            "current": "dusk",
+            "default": "inherit",
+            "scope": "plugin:molly-guide"
+          },
+          {
+            "kind": "scope-override",
+            "type": "plugin:molly-guide/tab-group",
+            "label": "Tab group at plugin:molly-guide",
+            "current": "chips",
+            "default": "inherit",
+            "scope": "plugin:molly-guide"
+          },
+          {
+            "kind": "plugin-look",
+            "type": "axf.plugin.molly-guide.look",
+            "label": "Molly guide look",
+            "current": "overridden",
+            "default": "theme",
+            "scope": "plugin:molly-guide"
+          }
+        ],
+        "apply": {
+          "clear": [
+            "guide.voice",
+            "molly-guide.autoplay",
+            "molly-guide.unregistered"
+          ],
+          "look": null,
+          "scopes": []
+        },
+        "empty": false,
+        "summary": "3 settings · 3 assets kept",
+        "tableRows": 8
+      }
+    },
+    {
+      "name": "plugin molly-guide, with assets",
+      "state": "full",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "plugin",
+          "id": "molly-guide"
+        },
+        "includeAssets": true,
+        "settings": [
+          {
+            "key": "guide.voice",
+            "label": "Voice",
+            "group": "molly-guide.general",
+            "current": "amber",
+            "default": null
+          },
+          {
+            "key": "molly-guide.autoplay",
+            "label": "Autoplay",
+            "group": "molly-guide.general",
+            "current": true,
+            "default": false
+          },
+          {
+            "key": "molly-guide.unregistered",
+            "current": 3,
+            "default": null
+          }
+        ],
+        "assets": [
+          {
+            "kind": "scope-override",
+            "type": "plugin:molly-guide/color-theme",
+            "label": "Colour theme at plugin:molly-guide",
+            "current": "dusk",
+            "default": "inherit",
+            "scope": "plugin:molly-guide"
+          },
+          {
+            "kind": "scope-override",
+            "type": "plugin:molly-guide/tab-group",
+            "label": "Tab group at plugin:molly-guide",
+            "current": "chips",
+            "default": "inherit",
+            "scope": "plugin:molly-guide"
+          },
+          {
+            "kind": "plugin-look",
+            "type": "axf.plugin.molly-guide.look",
+            "label": "Molly guide look",
+            "current": "overridden",
+            "default": "theme",
+            "scope": "plugin:molly-guide"
+          }
+        ],
+        "apply": {
+          "clear": [
+            "axf.plugin.molly-guide.look",
+            "guide.voice",
+            "molly-guide.autoplay",
+            "molly-guide.unregistered"
+          ],
+          "look": "drop-scope",
+          "scopes": [
+            "plugin:molly-guide"
+          ]
+        },
+        "empty": false,
+        "summary": "3 settings · 3 assets",
+        "tableRows": 8
+      }
+    },
+    {
+      "name": "plugin feature-matrix, with assets (scope off, one setting)",
+      "state": "full",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "plugin",
+          "id": "feature-matrix"
+        },
+        "includeAssets": true,
+        "settings": [
+          {
+            "key": "feature-matrix.compact",
+            "label": "Compact",
+            "group": "feature-matrix.view",
+            "current": false,
+            "default": null
+          }
+        ],
+        "assets": [
+          {
+            "kind": "scope-skin",
+            "type": "plugin:feature-matrix",
+            "label": "Skin at plugin:feature-matrix",
+            "current": "off",
+            "default": "inherit",
+            "scope": "plugin:feature-matrix"
+          }
+        ],
+        "apply": {
+          "clear": [
+            "feature-matrix.compact"
+          ],
+          "look": "drop-scope",
+          "scopes": [
+            "plugin:feature-matrix"
+          ]
+        },
+        "empty": false,
+        "summary": "1 setting · 1 asset",
+        "tableRows": 8
+      }
+    },
+    {
+      "name": "plugin unknown, with assets: nothing",
+      "state": "full",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "plugin",
+          "id": "wake-listener"
+        },
+        "includeAssets": true,
+        "settings": [],
+        "assets": [],
+        "apply": {
+          "clear": [],
+          "look": null,
+          "scopes": []
+        },
+        "empty": true,
+        "summary": "Nothing to reset",
+        "tableRows": 8
+      }
+    },
+    {
+      "name": "console, with assets, no look document (active vs defaults)",
+      "state": "noLook",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "console"
+        },
+        "includeAssets": true,
+        "settings": [
+          {
+            "key": "axf.display.fontScale",
+            "label": "Text size",
+            "group": "axf.display",
+            "current": 1.2,
+            "default": 1
+          },
+          {
+            "key": "axf.settings.level",
+            "current": "developer",
+            "default": null
+          }
+        ],
+        "assets": [
+          {
+            "kind": "slot",
+            "type": "color-theme",
+            "label": "Color theme",
+            "current": "midnight",
+            "default": "soft-studio",
+            "scope": "console"
+          },
+          {
+            "kind": "look-setting",
+            "type": "axf.chrome.settings.toolbar",
+            "label": "axf.chrome.settings.toolbar",
+            "current": "chrome-toolbar-console",
+            "default": "default",
+            "scope": "console"
+          },
+          {
+            "kind": "look-setting",
+            "type": "axf.hide.toolbar",
+            "label": "axf.hide.toolbar",
+            "current": "true",
+            "default": "default",
+            "scope": "console"
+          }
+        ],
+        "apply": {
+          "clear": [
+            "axf.chrome.settings.toolbar",
+            "axf.display.fontScale",
+            "axf.hide.toolbar",
+            "axf.settings.level"
+          ],
+          "look": "restore",
+          "scopes": []
+        },
+        "empty": false,
+        "summary": "2 settings · 3 assets",
+        "tableRows": 8
+      }
+    },
+    {
+      "name": "console, with assets, nothing changed",
+      "state": "clean",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "console"
+        },
+        "includeAssets": true,
+        "settings": [],
+        "assets": [],
+        "apply": {
+          "clear": [],
+          "look": null,
+          "scopes": []
+        },
+        "empty": true,
+        "summary": "Nothing to reset",
+        "tableRows": 8
+      }
+    },
+    {
+      "name": "console, settings only, nothing saved",
+      "state": "clean",
+      "plan": {
+        "contract": "settings-reset@1",
+        "scope": {
+          "kind": "console"
+        },
+        "includeAssets": false,
+        "settings": [],
+        "assets": [],
+        "apply": {
+          "clear": [],
+          "look": null,
+          "scopes": []
+        },
+        "empty": true,
+        "summary": "Nothing to reset",
+        "tableRows": 8
+      }
+    }
+  ],
+  "applied": {
+    "console": {
+      "default": {
+        "slots": {
+          "color-theme": "soft-studio",
+          "layout": "standard",
+          "toolbar": "standard"
+        },
+        "spacing": "comfortable",
+        "hidden": {
+          "banner": false
+        },
+        "settings": {
+          "axf.display.animations": true
+        }
+      },
+      "own": {},
+      "skin": {
+        "use": false,
+        "inherit": false,
+        "id": "amber-glass",
+        "overrides": {}
+      },
+      "scopes": {
+        "plugin:molly-guide": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {
+            "tab-group": "chips"
+          },
+          "colorTheme": "dusk"
+        },
+        "plugin:feature-matrix": {
+          "use": "off",
+          "id": "",
+          "overrides": {}
+        }
+      },
+      "undo": {
+        "own": {
+          "slots": {
+            "color-theme": "midnight",
+            "layout": "standard"
+          },
+          "spacing": "compact",
+          "hidden": {
+            "banner": true,
+            "toolbar": false
+          },
+          "settings": {
+            "axf.display.animations": false
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "amber-glass",
+          "overrides": {
+            "toolbar": "slim"
+          },
+          "colorTheme": "midnight"
+        },
+        "scopes": {
+          "ui:settings": {
+            "use": "on",
+            "id": "paper",
+            "overrides": {}
+          },
+          "plugin:molly-guide": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "tab-group": "chips"
+            },
+            "colorTheme": "dusk"
+          },
+          "plugin:feature-matrix": {
+            "use": "off",
+            "id": "",
+            "overrides": {}
+          }
+        },
+        "at": "2026-11-17T19:00:00Z",
+        "action": "settings.reset",
+        "scope": "console"
+      }
+    },
+    "plugin": {
+      "default": {
+        "slots": {
+          "color-theme": "soft-studio",
+          "layout": "standard",
+          "toolbar": "standard"
+        },
+        "spacing": "comfortable",
+        "hidden": {
+          "banner": false
+        },
+        "settings": {
+          "axf.display.animations": true
+        }
+      },
+      "own": {
+        "slots": {
+          "color-theme": "midnight",
+          "layout": "standard"
+        },
+        "spacing": "compact",
+        "hidden": {
+          "banner": true,
+          "toolbar": false
+        },
+        "settings": {
+          "axf.display.animations": false
+        }
+      },
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "amber-glass",
+        "overrides": {
+          "toolbar": "slim"
+        },
+        "colorTheme": "midnight"
+      },
+      "scopes": {
+        "ui:settings": {
+          "use": "on",
+          "id": "paper",
+          "overrides": {}
+        },
+        "plugin:feature-matrix": {
+          "use": "off",
+          "id": "",
+          "overrides": {}
+        }
+      },
+      "undo": {
+        "own": {
+          "slots": {
+            "color-theme": "midnight",
+            "layout": "standard"
+          },
+          "spacing": "compact",
+          "hidden": {
+            "banner": true,
+            "toolbar": false
+          },
+          "settings": {
+            "axf.display.animations": false
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "amber-glass",
+          "overrides": {
+            "toolbar": "slim"
+          },
+          "colorTheme": "midnight"
+        },
+        "scopes": {
+          "ui:settings": {
+            "use": "on",
+            "id": "paper",
+            "overrides": {}
+          },
+          "plugin:molly-guide": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {
+              "tab-group": "chips"
+            },
+            "colorTheme": "dusk"
+          },
+          "plugin:feature-matrix": {
+            "use": "off",
+            "id": "",
+            "overrides": {}
+          }
+        },
+        "at": "2026-11-17T19:00:00Z",
+        "action": "settings.reset",
+        "scope": "plugin:molly-guide"
+      }
+    },
+    "untouched": {
+      "default": {
+        "slots": {
+          "color-theme": "soft-studio",
+          "layout": "standard",
+          "toolbar": "standard"
+        },
+        "spacing": "comfortable",
+        "hidden": {
+          "banner": false
+        },
+        "settings": {
+          "axf.display.animations": true
+        }
+      },
+      "own": {
+        "slots": {
+          "color-theme": "midnight",
+          "layout": "standard"
+        },
+        "spacing": "compact",
+        "hidden": {
+          "banner": true,
+          "toolbar": false
+        },
+        "settings": {
+          "axf.display.animations": false
+        }
+      },
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "amber-glass",
+        "overrides": {
+          "toolbar": "slim"
+        },
+        "colorTheme": "midnight"
+      },
+      "scopes": {
+        "ui:settings": {
+          "use": "on",
+          "id": "paper",
+          "overrides": {}
+        },
+        "plugin:molly-guide": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {
+            "tab-group": "chips"
+          },
+          "colorTheme": "dusk"
+        },
+        "plugin:feature-matrix": {
+          "use": "off",
+          "id": "",
+          "overrides": {}
+        }
+      }
+    }
+  },
+  "requestErrors": [
+    {
+      "input": {},
+      "errors": []
+    },
+    {
+      "input": {
+        "scope": "console"
+      },
+      "errors": []
+    },
+    {
+      "input": {
+        "scope": "plugin:molly-guide",
+        "includeAssets": true
+      },
+      "errors": []
+    },
+    {
+      "input": {
+        "scope": "bad id"
+      },
+      "errors": [
+        "scope must be \"console\" or a plugin id (\"plugin:<id>\")"
+      ]
+    },
+    {
+      "input": {
+        "scope": "console",
+        "includeAssets": "yes"
+      },
+      "errors": [
+        "includeAssets must be true or false"
+      ]
+    },
+    {
+      "input": "console",
+      "errors": [
+        "request must be an object { scope, includeAssets? }"
+      ]
+    },
+    {
+      "input": null,
+      "errors": [
+        "request must be an object { scope, includeAssets? }"
+      ]
+    }
+  ]
+}

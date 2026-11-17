@@ -21,7 +21,11 @@ const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 
 const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager: true, import: 'default' });
 // Plugin Home cards (card@1 at plugins/<folder>/assets/card/*.json; the VPS writes missing ones, build rule home-card).
 const pluginCards = import.meta.glob(['../plugins/*/assets/card/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
-const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...overrideAssets };
+// Each plugin's own settings interface (plugin-settings@1: settings/plugin-<slug>, scope plugin, owner = the plugin id),
+// written by check-settings-interfaces.mjs --fix; only real plugin interfaces load (UI Review choices keep their own ids).
+const pluginSettingsFiles = import.meta.glob(['../plugins/*/assets/settings/plugin-*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
+const pluginSettings = Object.fromEntries(Object.entries(pluginSettingsFiles).filter(([, a]) => (a as { data?: { scope?: string; owner?: string } }).data?.scope === 'plugin' && !!(a as { data?: { owner?: string } }).data?.owner));
+const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...pluginSettings, ...overrideAssets };
 
 const axf = createAxf({
   manifest: manifest as AxfManifest,

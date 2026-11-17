@@ -88,6 +88,13 @@
         "text": "Shows the “Brand library” part of this screen. Part of Brand library.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "view:brand-library",
+        "title": "Brand library",
+        "text": "Browse the framework's brand library: 250 logos, 250 animated logos, 100 icon packs and 50 branding packages for AmberX and GizmoX, in tabs with search, brand and style filters and a virtualised grid.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

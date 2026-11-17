@@ -71,6 +71,13 @@
         "target": "pc-card",
         "title": "Add to Home",
         "text": "Draws this read as a card on Home: the card dialog opens with it picked, shows the live result and preselects a view from the data's shape. You can also drag the row onto Home."
+      },
+      {
+        "target": "view:plugin-commands",
+        "title": "Plugin commands",
+        "text": "Every plugin, existing and new, exposes all of its commands and reads automatically, so Claude (through axHub), the REST API and the CLI can do anything a plugin can.",
+        "kind": "screen",
+        "draft": true
       }
     ]
   }

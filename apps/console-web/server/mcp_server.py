@@ -561,6 +561,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     if console is not None:
         _register_console_tools(mcp, console)
         _register_console_control_tools(mcp, console_control or console_control_runner())
+        _register_settings_tools(mcp)
 
     # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
 
@@ -1146,6 +1147,62 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
     return run
 
 
+SETTINGS_TOOLS = ("settings_interface_get", "settings_reset")
+
+
+def _settings_call(method: str, path: str, body: dict[str, Any] | None = None) -> tuple[int, dict[str, Any]]:
+    """The settings routes (settings_api.py): in the console process directly, in stdio mode over REST."""
+    try:
+        import plugin_services  # noqa: F401 — present only inside the console process
+        import settings_api as sa
+    except ImportError:
+        import urllib.error
+        import urllib.request
+        base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/settings"
+        auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
+        req = urllib.request.Request(f"{base}{path}", data=json.dumps(body).encode() if body is not None else None, method=method, headers={"content-type": "application/json", **auth})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as res:
+                return res.status, json.loads(res.read().decode() or "{}")
+        except urllib.error.HTTPError as e:
+            try:
+                return e.code, json.loads(e.read().decode() or "{}")
+            except ValueError:
+                return e.code, {"ok": False, "message": f"{e.code} from {base}"}
+        except (OSError, ValueError) as e:
+            return 503, {"ok": False, "code": "unavailable", "message": f"could not reach {base}: {str(e)[:200]}"}
+    if method == "GET":
+        return sa.get_interface(path.rsplit("/", 1)[-1], "mcp")
+    return sa.reset(body or {}, "mcp")
+
+
+def _register_settings_tools(mcp: MCPServer) -> None:
+    """settings_interface_get / settings_reset (= SETTINGS_TOOLS; plugin-settings@1, settings-reset@1): the same as
+    GET /api/settings/interfaces/<owner> and POST /api/settings/reset, `axf settings get|reset` and voice."""
+
+    @mcp.tool(annotations=READ)
+    async def settings_interface_get(owner: str = "console") -> dict[str, Any]:
+        """One settings interface: owner = console or a plugin (id, folder or name). Answers the resolved interface (the
+        plugin's own settings/plugin-<id> asset or its generated default, never the console's), its current values, its
+        changed assets and what a reset would clear. Opening it: console_open settings plugin/<id> (settings:plugin/<id>)."""
+        status, body = await anyio.to_thread.run_sync(lambda: _settings_call("GET", f"/interfaces/{owner}"))
+        if status >= 400:
+            raise ToolError(f"{body.get('code', status)}: {body.get('message', 'failed')}")
+        return body
+
+    @mcp.tool(annotations=DESTRUCTIVE)
+    async def settings_reset(scope: str = "console", include_assets: bool = False, dry_run: bool = True, confirm: str = "") -> dict[str, Any]:
+        """Reset a settings interface: scope = console or a plugin. Destructive, so two steps: dry_run=true (the default)
+        answers the plan (every setting it clears and the changed-assets table) and a confirm token; tell Brett, then call
+        again with dry_run=false and that confirm token. include_assets=true also resets the scope's changed assets and
+        skins (off by default). One undo: console action settings.reset.undo."""
+        body: dict[str, Any] = {"scope": scope, "includeAssets": include_assets, "dryRun": dry_run, **({"confirm": confirm} if confirm else {})}
+        status, out = await anyio.to_thread.run_sync(lambda: _settings_call("POST", "/reset", body))
+        if status >= 400 and status != 428:
+            raise ToolError(f"{out.get('code', status)}: {out.get('message', 'failed')}")
+        return out
+
+
 def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
     """console_control_* (= CONSOLE_CONTROL_TOOLS): drive every part of the console by address. Reads and navigation are
     read-only (axHub runs them at once); press / set / plugin are writes (veto); a destructive press answers
@@ -1218,8 +1275,8 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
 
     @mcp.tool(annotations=WRITE)
     async def console_control_plugin_settings(plugin: str, open: bool = False, set: dict[str, Any] | None = None, enabled: bool | None = None, reason: str = "", to: str = "recent") -> dict[str, Any]:
-        """One console plugin's settings (id, folder or name): with no other argument, its Settings → Plugins sub-tab,
-        the gear on its screen, on/off and every setting in the tab. open=true opens that sub-tab in the open console
+        """One console plugin's settings (id, folder or name): with no other argument, its settings tab, the gear on its
+        screen, on/off and every setting in the tab. open=true opens the plugin's own settings window in the open console
         (the same as pressing the plugin's settings gear); set={key: value} changes settings in it; enabled turns the
         plugin on or off. Same as GET /api/console-control/plugins/<id>/settings and `axf console plugin-settings`."""
         import console_control as cc  # noqa: PLC0415 — the same module REST uses (reads the static inventory)
@@ -1235,10 +1292,8 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
             if spec is None:
                 raise ToolError(f"not_found: {st.get('label')} has no setting {key}")
             done.append(await go({"verb": "set", "address": spec["address"], "value": value, "reason": reason, "to": to}))
-        if open:
-            if not st.get("tab"):
-                raise ToolError(f"not_found: {st.get('label')} has no settings sub-tab")
-            done.append(await go({"verb": "open", "address": st["tab"]["address"], "to": to}))
+        if open:  # the plugin's own settings window (plugin-settings@1), never Settings → Plugins → <tab>
+            done.append(await go({"verb": "press", "address": "function:plugin.settings.open", "value": st.get("folder") or st.get("plugin"), "to": to}))
         return {**st, **({"done": done} if done else {})}
 
     @mcp.tool(annotations=WRITE)

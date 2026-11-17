@@ -3,6 +3,7 @@
   "id": "ai.amberx.axf.console.console-commands",
   "lazy": { "core": "start" },
   "name": "Console commands",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-console-commands",
   "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,

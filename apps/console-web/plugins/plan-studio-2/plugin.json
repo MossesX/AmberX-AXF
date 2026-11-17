@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.plan-studio-2",
   "name": "Plan Studio 2.0",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-plan-studio-2",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

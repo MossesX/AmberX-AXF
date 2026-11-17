@@ -176,7 +176,7 @@ def test_plugin_settings_state_and_open() -> None:
     j = r.json()
     assert r.status_code == 200 and j["plugin"] == screen["id"] and j["folder"] == screen["folder"]
     assert j["tab"] == {"address": sub, "id": screen["folder"]} and j["gear"] == f"{screen['view']}/button:settings-gear" and j["enabled"] is True
-    assert j["open"] == {"action": f"plugin.settings.open:{screen['folder']}", "address": sub}
+    assert j["open"] == {"action": f"plugin.settings.open:{screen['folder']}", "address": f"settings:plugin/{screen['id']}", "window": True}
     assert not fake.sent, "the state read needs no browser"
     # by name and by id; a library tab a plugin spreads in keeps the library's id; a plugin with no screen has no gear
     assert client.get(f"{U}/plugins/{screen['label']}/settings").json()["folder"] == screen["folder"]
@@ -186,9 +186,9 @@ def test_plugin_settings_state_and_open() -> None:
     headless = next(p for p in inv if p.get("settingsTab") and not p.get("view"))
     assert "gear" not in client.get(f"{U}/plugins/{headless['folder']}/settings").json(), "no screen, no gear"
     assert client.get(f"{U}/plugins/nope-nope/settings").status_code == 404
-    # open = the gear's press: console_open on the sub-tab in the open console
+    # open = the gear's press: the plugin's own settings window (plugin-settings@1), never Settings → Plugins → <tab>
     r = client.post(f"{U}/plugins/{screen['folder']}/settings/open", json={})
-    assert r.status_code == 200 and fake.sent[-1]["verb"] == "open" and fake.sent[-1]["address"] == sub
+    assert r.status_code == 200 and fake.sent[-1]["verb"] == "press" and fake.sent[-1]["address"] == "function:plugin.settings.open" and fake.sent[-1]["value"] == screen["folder"]
     assert r.json()["policy"]["tag"] == "allow", "opening settings only navigates"
     # set: a setting in a plugin's tab by key; unknown keys name what exists
     withset = next(p for p in inv if cc.plugin_settings_state(p["id"]).get("settings"))
@@ -200,10 +200,13 @@ def test_plugin_settings_state_and_open() -> None:
     assert r.status_code == 404 and spec["key"] in r.json()["nearest"]
     # every gear is a static target, and so is every plugin sub-tab (voice finds "open <plugin> settings" with no console open)
     t = {x["address"]: x for x in cc.static_targets()}
-    assert t[f"{screen['view']}/button:settings-gear"]["opens"] == sub and t[sub]["kind"] == "subtab"
+    assert t[f"{screen['view']}/button:settings-gear"]["opens"] == f"settings:plugin/{screen['id']}" and t[sub]["kind"] == "subtab"
     fake.open = False
     r = client.post(f"{U}/voice", json={"text": f"open {screen['label']} settings"})
-    assert sub in str(r.json()), r.json()
+    assert r.json()["command"] == {"verb": "press", "address": "function:plugin.settings.open", "value": screen["folder"]}, r.json()
+    # "reset <plugin> settings" opens the reset confirm dialog for it (settings-reset@1); the reset is the dialog's tap
+    r = client.post(f"{U}/voice", json={"text": f"reset {screen['label']} settings"})
+    assert r.json()["command"]["address"] == "function:settings.reset.ask" and r.json()["policy"]["tag"] == "allow", r.json()
 
 
 def test_person_only_and_confirm() -> None:
@@ -311,8 +314,8 @@ def test_mcp_plugin_settings() -> None:
         assert not getattr(res, "is_error", False), res.content[0].text if res.content else ""
         sc = getattr(res, "structured_content", None)
         data = sc.get("result", sc) if sc else json.loads(res.content[0].text)
-    assert data["gear"] == screen["settingsGear"] and data["done"][0]["verb"] == "open"
-    assert fake.sent[-1]["address"] == screen["settingsTab"]
+    assert data["gear"] == screen["settingsGear"] and data["done"][0]["verb"] == "press"
+    assert fake.sent[-1]["address"] == "function:plugin.settings.open", "open = the plugin's own settings window"
 
 
 if __name__ == "__main__":

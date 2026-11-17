@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "builds-page-help",
+  "name": "Builds help",
+  "version": "0.1.0",
+  "description": "The builds-page plugin's Help mode entries (help@1). Stub written by the gate fixer help-stub.",
+  "author": "AmberX AXF (gate fixer help-stub)",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:builds-page",
+    "entries": [
+      {
+        "target": "view:builds-page",
+        "title": "Builds",
+        "text": "One Builds page over the one builds store (builds@1, owned by the Build orchestrator): every build of the active build profile, with switchable views.",
+        "kind": "screen",
+        "draft": true
+      }
+    ]
+  }
+}

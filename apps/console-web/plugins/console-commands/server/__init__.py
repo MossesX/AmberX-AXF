@@ -603,6 +603,8 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
         return control_target(command, grants, by, audience)
     if command.get("target") == "console.pluginsettings":
         return plugin_settings_target(command, grants, by, audience)
+    if command.get("target") == "console.settingsinterfaces":
+        return settings_interfaces_target(command, grants, by, audience)
     command = focus_rewrite(command, audience)
     _late_prune()
     r = _runner(command, grants, by, ready_clients(audience))
@@ -786,6 +788,36 @@ def control_target(command: dict[str, Any], grants: list[str], by: str, audience
     return out
 
 
+def settings_interfaces_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+    """control@1 `console.settingsinterfaces` (plugin-settings@1 + settings-reset@1): path = console or a plugin.
+    get = its resolved interface, values and changed assets (GET /api/settings/interfaces/<owner>); act open = its own
+    settings window (settings:plugin/<id>) or the console's Settings; act reset = POST /api/settings/reset (input
+    {includeAssets, dryRun, confirm}: without a confirm token it answers the plan and the token); act undo = the one undo."""
+    import settings_api as sa  # the console server's settings routes
+    op, path = str(command.get("op") or ""), str(command.get("path") or "console")
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+    act = lambda action, args: run({"$axf": "control@1", "target": "console.actions", "op": "act", "path": action, "action": "run", "input": {"args": args}}, grants, by, audience)  # noqa: E731
+    if op == "get":
+        status, body = sa.get_interface(path, by, audience)
+        return {"$axf": "control@1", **body, "ok": status == 200}
+    if op == "list":
+        items = [{"owner": "console", "opens": "view:settings"}] + [{"owner": f"plugin:{m['id']}", "folder": d.name, "opens": f"settings:plugin/{m['id']}"} for d, m in sa.plugin_manifests()]
+        return {"$axf": "control@1", "ok": True, "items": items}
+    if op == "act":
+        action = str(command.get("action") or "")
+        scope = sa.scope_of(path) or "console"
+        if action == "open":
+            return act("plugin.settings.open", [scope[7:]]) if scope.startswith("plugin:") else act("app.settings", [])
+        if action == "reset":
+            status, body = sa.reset({"scope": scope, **{k: inp[k] for k in ("includeAssets", "dryRun", "confirm") if k in inp}}, by, audience)
+            return {"$axf": "control@1", **body, "ok": status == 200 and body.get("ok", False)}
+        if action == "reset.ask":
+            return act("settings.reset.ask", [scope, "assets" if inp.get("includeAssets") is True else ""])
+        if action == "undo":
+            return act("settings.reset.undo", [])
+    return {"$axf": "control@1", "ok": False, "code": "validation", "message": "console.settingsinterfaces takes get, list, act open | reset | reset.ask | undo"}
+
+
 def plugin_settings_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
     """control@1 `console.pluginsettings` (core/engines/control-rules.mjs): one plugin's Settings → Plugins sub-tab and
     the gear on its screen. get = the state REST answers at /api/console-control/plugins/<id>/settings; act open / set /
@@ -805,9 +837,9 @@ def plugin_settings_target(command: dict[str, Any], grants: list[str], by: str, 
             st = cc.plugin_settings_state(path)
             action = str(command.get("action") or "")
             if action == "open":
-                if not st.get("tab"):
-                    raise cc.ControlError("not_found", f"{st.get('label')} has no settings sub-tab")
-                body: dict[str, Any] = {"verb": "open", "address": st["tab"]["address"]}
+                # the plugin's own settings window (plugin-settings@1, Nov 17 2026), never the console's Settings
+                return run({"$axf": "control@1", "target": "console.actions", "op": "act", "path": "plugin.settings.open", "action": "run",
+                            "input": {"args": [str(st.get("folder") or st.get("plugin") or path)]}}, grants, by, audience)
             elif action == "set":
                 key = str(inp.get("key") or "")
                 spec = next((x for x in st.get("settings") or [] if key and (x.get("key") == key or x.get("address") == key)), None)

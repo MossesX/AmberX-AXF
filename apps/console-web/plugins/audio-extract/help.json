@@ -165,6 +165,13 @@
         "text": "Records screen. Part of Audio Extract.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "view:audio-extract",
+        "title": "Audio Extract",
+        "text": "Pulls the audio out of videos on the phone into audio files (screen recordings first): the original AAC copied out as .m4a with no re-encode, or WAV when picked.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

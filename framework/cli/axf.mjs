@@ -57,6 +57,8 @@
  *                               the VPS stale-row watchdog (Build orchestrator): what it cleaned, run it, change its settings
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
+ *   axf settings open|get|reset <owner> [--include-assets] [--dry-run] [--confirm <token>] [--ask] · axf settings undo
+ *                               every settings interface (console or a plugin's own) and its reset (framework/cli/settings.mjs)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
  *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
@@ -86,6 +88,11 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   if (!dir) { console.error('no plugin provides control@1 (install the Token control plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'control.mjs')).href);
   process.exit(await main([cmd, ...rest]));
+}
+// plugin-settings@1 + settings-reset@1: every settings interface and its reset (framework/cli/settings.mjs)
+if (cmd === 'settings') {
+  const { main } = await import('./settings.mjs');
+  process.exit(await main(rest));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
 if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings'].includes(rest[0] ?? '')) {

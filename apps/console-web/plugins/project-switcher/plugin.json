@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.project-switcher",
   "name": "Project switcher",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-project-switcher",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

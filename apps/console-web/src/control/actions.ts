@@ -23,7 +23,9 @@ const personOnlyError = (label: string) => new ConsoleControlError(CONSOLE_CONTR
 
 /** Whether an action is destructive / deciding, from its meta and its id. */
 export function actionRules(id: string, meta: { effect?: string; personOnly?: boolean }): { destructive: boolean; personOnly: boolean } {
-  return { destructive: meta.effect === 'destructive' || DESTRUCTIVE_RE.test(id), personOnly: meta.personOnly === true || DECIDING_RE.test(id) };
+  // an action that only opens or reads (e.g. settings.reset.ask, which opens the reset confirm dialog) is never destructive by its name
+  const opensOnly = meta.effect === 'navigate' || meta.effect === 'read';
+  return { destructive: meta.effect === 'destructive' || (!opensOnly && DESTRUCTIVE_RE.test(id)), personOnly: meta.personOnly === true || DECIDING_RE.test(id) };
 }
 
 function functionDef(rt: AxfRuntime, id: string, meta: { label: string; requires?: string; params?: boolean; effect?: string; personOnly?: boolean; module?: string }): ControlTargetDef {

@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.plugin-update",
   "name": "Plugin Update",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-plugin-update",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.github-app",
   "name": "GitHub",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-github-app",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,

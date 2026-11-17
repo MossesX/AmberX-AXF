@@ -1677,7 +1677,10 @@
         "title": "Find an option",
         "text": "Narrows the list to options whose name or group matches what you type.",
         "kind": "field"
-      }
+      },
+      {"target": "settings.plugin-window", "title": "Plugin settings window", "text": "This plugin's own settings: only its tabs and keys, with its level toolbar. It never opens the app's Settings. Reset… asks first.", "kind": "screen"},
+      {"target": "settings.reset-dialog", "title": "Reset settings", "text": "Lists everything the reset changes. Include assets also puts changed assets and skins back to their defaults. One undo afterwards.", "kind": "screen"},
+      {"target": "settings.plugin-list", "title": "Plugin settings", "text": "Every plugin with settings. Each opens its own settings window.", "kind": "nav"}
     ],
     "intros": [
       {

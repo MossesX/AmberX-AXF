@@ -1791,6 +1791,11 @@ app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 import console_control_api  # noqa: E402
 
 app.include_router(console_control_api.router_for(auth))
+
+# ---- Settings interfaces + reset (plugin-settings@1, settings-reset@1): /api/settings/* (settings_api.py)
+import settings_api  # noqa: E402
+
+app.include_router(settings_api.router_for(auth))
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch)
 
 

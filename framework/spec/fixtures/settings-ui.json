@@ -63,6 +63,7 @@
       "fn": "normalize",
       "input": null,
       "expected": {
+        "scope": "app",
         "layout": "tabs-top",
         "header": "full",
         "search": false,
@@ -95,6 +96,7 @@
         }
       },
       "expected": {
+        "scope": "app",
         "layout": "tabs-top",
         "header": "full",
         "search": false,
@@ -127,6 +129,7 @@
         ]
       },
       "expected": {
+        "scope": "app",
         "layout": "tabs-top",
         "header": "full",
         "search": false,
@@ -175,6 +178,7 @@
         ]
       },
       "expected": {
+        "scope": "app",
         "layout": "tabs-top",
         "header": "full",
         "search": false,
@@ -259,6 +263,7 @@
         }
       },
       "expected": {
+        "scope": "app",
         "layout": "tabs-top",
         "header": "full",
         "search": false,
@@ -305,6 +310,7 @@
         "visible": "nope"
       },
       "expected": {
+        "scope": "app",
         "layout": "tabs-top",
         "header": "full",
         "search": false,
@@ -951,6 +957,7 @@
         "toolbar": "settings-page"
       },
       "expected": {
+        "scope": "app",
         "layout": "tabs-top",
         "header": "full",
         "search": false,
@@ -989,6 +996,7 @@
         "descriptions": false
       },
       "expected": {
+        "scope": "app",
         "layout": "tabs-top",
         "header": "full",
         "search": false,
@@ -1032,6 +1040,7 @@
         ]
       },
       "expected": {
+        "scope": "app",
         "layout": "list",
         "header": "none",
         "search": true,
@@ -1153,6 +1162,7 @@
         ]
       },
       "expected": {
+        "scope": "app",
         "layout": "tabs-side",
         "header": "compact",
         "search": false,

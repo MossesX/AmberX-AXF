@@ -1170,8 +1170,10 @@
       "label": "Settings interface",
       "group": "System",
       "icon": "settings",
-      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
+      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts. Every interface has one owner (plugin-settings@1, spec/PLUGIN-SETTINGS.md): the app's page (scope app, e.g. settings/console), one plugin's settings (scope plugin, owner = the plugin id, asset id plugin-<owner>) or one chrome type (scope chrome, `for`); interfaces are never shared across owners, and a plugin never renders through the console's. Engine core/engines/plugin-settings.ts.",
       "optional_fields": {
+        "scope": "plugin-settings@1: who this interface belongs to — app (the app's own settings page; the console's is settings/console), plugin (one plugin's settings, Settings → Plugins → <plugin>; never the app's and never another plugin's) or chrome (chrome-settings@1, with `for`). Left out = app, or chrome when `for` is set.",
+        "owner": "plugin-settings@1: the plugin id this interface is for when scope = plugin; the asset id is plugin-<owner>. A plugin with no asset of its own gets a generated default from its SettingsTab keys (core/engines/plugin-settings.ts), never the console's interface.",
         "for": "chrome-settings@1: the chrome type this settings asset is the settings interface of (tab-group | toolbar | banner | nav-menu | app-menu | context-menu); the shared default is chrome-<type>, an app's custom copy chrome-<type>-<app> (core/engines/chrome-settings-rules.mjs)",
         "extends": "inherit@1: id of the settings asset this one extends; fields it does not set come from that one (an app's custom chrome copy extends the shared default until edited)",
         "toolbar": "id of a toolbar asset drawn at the top of the settings page (its items + the settings search when it has showSearch)",
@@ -1196,6 +1198,11 @@
           "full",
           "compact",
           "none"
+        ],
+        "scope": [
+          "app",
+          "plugin",
+          "chrome"
         ]
       },
       "roll": {

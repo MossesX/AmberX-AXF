@@ -11,6 +11,7 @@
     "shared"
   ],
   "data": {
+    "scope": "app",
     "layout": "list",
     "header": "compact",
     "search": true,

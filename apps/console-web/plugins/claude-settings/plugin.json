@@ -2,6 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.claude-settings",
   "name": "Claude",
+  "settingsInterface": "settings/plugin-ai-amberx-axf-console-claude-settings",
   "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
