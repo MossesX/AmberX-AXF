@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8216,
- "updatedAt": "2026-11-17T22:34:06.784Z",
+ "rev": 8217,
+ "updatedAt": "2026-11-17T22:34:19.561Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208362,6 +208362,10 @@
     {
      "text": "Refused pending → landed (asked by pending): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T22:26:13.280Z"
+    },
+    {
+     "text": "Refused pending → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T22:30:19.999Z"
     }
    ],
    "approvals": [

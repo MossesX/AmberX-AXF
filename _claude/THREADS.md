@@ -831,8 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:35 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
-- 2026-11-17 21:36 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-17 21:36 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 - 2026-11-17 21:36 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 21:36 UTC · `land-pr-730-reset-all-button-far-right` s3 done (all) · orchestrator
@@ -1231,6 +1229,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-17 22:33 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
 - 2026-11-17 22:33 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:34 UTC · `console-app-part-2-native-floating` → pending, note (all) · builds-live
+- 2026-11-17 22:34 UTC · `move-everything-axhub-web-console` → pending (all) · builds-live
 
 ## Token passes (log)
 
