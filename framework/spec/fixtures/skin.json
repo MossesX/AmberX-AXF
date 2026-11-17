@@ -2084,6 +2084,912 @@
       "undo": null
     }
   },
+  "skinSlots": {
+    "contract": "skin-slots@1",
+    "keys": [
+      "motion",
+      "behavior",
+      "hooks",
+      "grid",
+      "dialog",
+      "settings"
+    ],
+    "normalized": {
+      "motion": {
+        "speed": {
+          "fast": 60,
+          "normal": 200
+        },
+        "easing": {
+          "standard": "cubic-bezier(0.2, 0, 0, 1)",
+          "exit": "spring"
+        },
+        "reduced": "system",
+        "chrome": {
+          "toolbar": {
+            "enter": "rise",
+            "duration": "fast",
+            "stagger": 20
+          },
+          "dialog": {
+            "exit": "fade"
+          },
+          "page": {
+            "enter": "slide"
+          }
+        }
+      },
+      "behavior": {
+        "tapConfirm": {
+          "armMs": 2500,
+          "toolbar": "on",
+          "context-menu": "off"
+        },
+        "hover": "lift",
+        "press": "ripple",
+        "overflow": {
+          "tab-group": "more"
+        },
+        "sticky": {
+          "tab-group": true
+        },
+        "collapse": {
+          "toolbar": true,
+          "nav-menu": false
+        }
+      },
+      "hooks": {
+        "toolbar": {
+          "hooks": [
+            {
+              "id": "notes.pin"
+            },
+            {
+              "id": "ai.amberx.axf.gate:run",
+              "args": {
+                "confirm": true
+              }
+            }
+          ],
+          "drop": [
+            "axf-toolbar"
+          ]
+        },
+        "grid-row": {
+          "hooks": [
+            {
+              "id": "builds.open"
+            }
+          ]
+        }
+      },
+      "grid": {
+        "density": "compact",
+        "rows": 2,
+        "header": "boxed",
+        "zebra": true,
+        "lines": "cells",
+        "sticky": true
+      },
+      "dialog": {
+        "variant": "sheet",
+        "backdrop": "blur",
+        "width": 560
+      },
+      "settings": {
+        "page": "developer",
+        "toolbar": "chrome-toolbar-axf-console"
+      }
+    },
+    "dropped": {
+      "motion": {
+        "speed": {
+          "fast": 0
+        },
+        "chrome": {
+          "toolbar": {
+            "stagger": 200
+          }
+        }
+      },
+      "behavior": {
+        "tapConfirm": {
+          "armMs": 1000
+        }
+      },
+      "grid": {
+        "rows": 6
+      },
+      "dialog": {
+        "width": 240
+      }
+    },
+    "empty": {
+      "none": {},
+      "oldSkin": {
+        "layoutTheme": "windows-explorer",
+        "colorTheme": "windows-light",
+        "styleTheme": "windows",
+        "assets": {
+          "button": "windows",
+          "banner": "windows-titlebar"
+        },
+        "preview": {
+          "caption": "Windows"
+        },
+        "extras": {
+          "spacing": "compact",
+          "hidden": {
+            "toolbar": false
+          }
+        }
+      },
+      "sameAsBefore": true
+    },
+    "errors": {
+      "good": [],
+      "bad": [
+        "data.motion.speed.fast must be a number from 0 to 2000 (ms)",
+        "data.motion.speed.warp: not a speed (fast, normal, slow)",
+        "data.motion.easing.exit must be standard, emphasized, linear, spring, bounce, a CSS easing keyword or cubic-bezier(...)",
+        "data.motion.reduced must be one of system, always, never",
+        "data.motion.chrome.nope: not a motion kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, dialog, popup, grid, page)",
+        "data.motion.chrome.toolbar.enter must be one of none, fade, rise, scale, slide",
+        "data.motion.chrome.toolbar.stagger must be a number from 0 to 200 (ms)",
+        "data.behavior.tapConfirm.armMs must be a number from 1000 to 10000 (ms)",
+        "data.behavior.tapConfirm.gizmo: not a tap-to-confirm kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)",
+        "data.behavior.tapConfirm.toolbar must be on or off",
+        "data.behavior.hover must be one of theme, none, tint, lift, glow, underline",
+        "data.behavior.overflow.toolbar: no overflow default for this kind (tab-group)",
+        "data.behavior.overflow.tab-group must be one of scroll, wrap, more, dropdown",
+        "data.behavior.sticky.banner: no sticky default for this kind (tab-group)",
+        "data.behavior.collapse.tab-group must be true or false",
+        "data.hooks.grid: not a hook kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, grid-row)",
+        "data.hooks.toolbar.hooks[0] must be a hook id or { id, args? }",
+        "data.hooks.toolbar.hooks[1] must be a hook id or { id, args? }",
+        "data.hooks.toolbar.drop[0] must be a drop zone id",
+        "data.grid.extra: not a grid field (density, rows, header, zebra, lines, sticky)",
+        "data.grid.density must be one of compact, regular, roomy",
+        "data.grid.rows must be a number from 1 to 6",
+        "data.grid.header must be one of plain, bold, boxed, hidden",
+        "data.grid.zebra must be true or false",
+        "data.grid.lines must be one of none, rows, cells",
+        "data.grid.sticky must be true or false",
+        "data.dialog.bogus: not a dialog field (variant, backdrop, animation, header, closeOnBackdrop, width)",
+        "data.dialog.variant must be one of modal, drawer, sheet",
+        "data.dialog.width must be a number from 240 to 1600",
+        "data.settings.page must be a settings asset id",
+        "data.settings.gizmo: not page or a chrome kind (page, tab-group, toolbar, banner, nav-menu, app-menu, context-menu)"
+      ],
+      "notObjects": [
+        "data.motion must be an object",
+        "data.behavior must be an object",
+        "data.hooks must be an object (kind → { hooks, drop })",
+        "data.grid must be an object",
+        "data.dialog must be an object",
+        "data.settings must be an object (page / chrome kind → settings asset id)"
+      ],
+      "skinGood": [],
+      "skinBad": [
+        "data.motion.speed.fast must be a number from 0 to 2000 (ms)",
+        "data.motion.speed.warp: not a speed (fast, normal, slow)",
+        "data.motion.easing.exit must be standard, emphasized, linear, spring, bounce, a CSS easing keyword or cubic-bezier(...)",
+        "data.motion.reduced must be one of system, always, never",
+        "data.motion.chrome.nope: not a motion kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, dialog, popup, grid, page)",
+        "data.motion.chrome.toolbar.enter must be one of none, fade, rise, scale, slide",
+        "data.motion.chrome.toolbar.stagger must be a number from 0 to 200 (ms)",
+        "data.behavior.tapConfirm.armMs must be a number from 1000 to 10000 (ms)",
+        "data.behavior.tapConfirm.gizmo: not a tap-to-confirm kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)",
+        "data.behavior.tapConfirm.toolbar must be on or off",
+        "data.behavior.hover must be one of theme, none, tint, lift, glow, underline",
+        "data.behavior.overflow.toolbar: no overflow default for this kind (tab-group)",
+        "data.behavior.overflow.tab-group must be one of scroll, wrap, more, dropdown",
+        "data.behavior.sticky.banner: no sticky default for this kind (tab-group)",
+        "data.behavior.collapse.tab-group must be true or false",
+        "data.hooks.grid: not a hook kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, grid-row)",
+        "data.hooks.toolbar.hooks[0] must be a hook id or { id, args? }",
+        "data.hooks.toolbar.hooks[1] must be a hook id or { id, args? }",
+        "data.hooks.toolbar.drop[0] must be a drop zone id",
+        "data.grid.extra: not a grid field (density, rows, header, zebra, lines, sticky)",
+        "data.grid.density must be one of compact, regular, roomy",
+        "data.grid.rows must be a number from 1 to 6",
+        "data.grid.header must be one of plain, bold, boxed, hidden",
+        "data.grid.zebra must be true or false",
+        "data.grid.lines must be one of none, rows, cells",
+        "data.grid.sticky must be true or false",
+        "data.dialog.bogus: not a dialog field (variant, backdrop, animation, header, closeOnBackdrop, width)",
+        "data.dialog.variant must be one of modal, drawer, sheet",
+        "data.dialog.width must be a number from 240 to 1600",
+        "data.settings.page must be a settings asset id",
+        "data.settings.gizmo: not page or a chrome kind (page, tab-group, toolbar, banner, nav-menu, app-menu, context-menu)"
+      ]
+    },
+    "motion": {
+      "style": {
+        "vars": {
+          "--fx-motion-fast": "60ms",
+          "--fx-motion-normal": "200ms",
+          "--fx-motion": "200ms",
+          "--fx-motion-ease-standard": "cubic-bezier(0.2, 0, 0, 1)",
+          "--fx-motion-ease-exit": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+          "--fx-motion-toolbar-enter": "rise",
+          "--fx-motion-toolbar-dur": "var(--fx-motion-fast)",
+          "--fx-motion-toolbar-stagger": "20ms",
+          "--fx-motion-dialog-exit": "fade",
+          "--fx-motion-page-enter": "slide"
+        },
+        "attrs": {
+          "data-fx-motion-toolbar-enter": "rise",
+          "data-fx-motion-dialog-exit": "fade",
+          "data-fx-motion-page-enter": "slide",
+          "data-fx-motion-reduced": "0"
+        }
+      },
+      "reduced": {
+        "vars": {
+          "--fx-motion-fast": "0ms",
+          "--fx-motion-normal": "0ms",
+          "--fx-motion": "0ms",
+          "--fx-motion-ease-standard": "cubic-bezier(0.2, 0, 0, 1)",
+          "--fx-motion-ease-exit": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+          "--fx-motion-toolbar-enter": "none",
+          "--fx-motion-toolbar-dur": "0ms",
+          "--fx-motion-toolbar-stagger": "0ms",
+          "--fx-motion-dialog-exit": "none",
+          "--fx-motion-page-enter": "none"
+        },
+        "attrs": {
+          "data-fx-motion-toolbar-enter": "none",
+          "data-fx-motion-dialog-exit": "none",
+          "data-fx-motion-page-enter": "none",
+          "data-fx-motion-reduced": "1"
+        }
+      },
+      "never": {
+        "vars": {
+          "--fx-motion-fast": "60ms",
+          "--fx-motion-normal": "200ms",
+          "--fx-motion": "200ms",
+          "--fx-motion-ease-standard": "cubic-bezier(0.2, 0, 0, 1)",
+          "--fx-motion-ease-exit": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+          "--fx-motion-toolbar-enter": "rise",
+          "--fx-motion-toolbar-dur": "var(--fx-motion-fast)",
+          "--fx-motion-toolbar-stagger": "20ms",
+          "--fx-motion-dialog-exit": "fade",
+          "--fx-motion-page-enter": "slide"
+        },
+        "attrs": {
+          "data-fx-motion-toolbar-enter": "rise",
+          "data-fx-motion-dialog-exit": "fade",
+          "data-fx-motion-page-enter": "slide",
+          "data-fx-motion-reduced": "0"
+        }
+      },
+      "always": {
+        "vars": {
+          "--fx-motion-slow": "0ms"
+        },
+        "attrs": {
+          "data-fx-motion-reduced": "1"
+        }
+      },
+      "none": {
+        "vars": {},
+        "attrs": {}
+      },
+      "settings": {
+        "axf.motion": {
+          "speed": {
+            "fast": 60,
+            "normal": 200
+          },
+          "easing": {
+            "standard": "cubic-bezier(0.2, 0, 0, 1)",
+            "exit": "spring"
+          },
+          "reduced": "system",
+          "chrome": {
+            "toolbar": {
+              "enter": "rise",
+              "duration": "fast",
+              "stagger": 20
+            },
+            "dialog": {
+              "exit": "fade"
+            },
+            "page": {
+              "enter": "slide"
+            }
+          }
+        }
+      }
+    },
+    "behavior": {
+      "settings": {
+        "axf.toolbars.armMs": 2500,
+        "axf.toolbars.tapConfirm": true,
+        "axf.tapConfirm.context-menu": false,
+        "axf.behavior": {
+          "interaction": {
+            "hover": "lift",
+            "press": "ripple"
+          }
+        },
+        "axf.nav.collapsedDefault": false,
+        "axf.chrome.tab-group.*": {
+          "overflow": "more",
+          "sticky": true
+        },
+        "axf.chrome.toolbar.*": {
+          "collapsible": true
+        }
+      },
+      "none": {},
+      "kindKeys": {
+        "defaults": "axf.chrome.tab-group.*",
+        "tap": [
+          "axf.toolbars.tapConfirm",
+          "axf.tapConfirm.tab-group",
+          "axf.tapConfirm.banner"
+        ],
+        "arm": "axf.toolbars.armMs",
+        "overrides": "axf.behavior",
+        "nav": "axf.nav.collapsedDefault"
+      }
+    },
+    "hooks": {
+      "settings": {
+        "axf.hooks.toolbar": {
+          "hooks": [
+            {
+              "id": "notes.pin"
+            },
+            {
+              "id": "ai.amberx.axf.gate:run",
+              "args": {
+                "confirm": true
+              }
+            }
+          ],
+          "drop": [
+            "axf-toolbar"
+          ]
+        },
+        "axf.hooks.grid-row": {
+          "hooks": [
+            {
+              "id": "builds.open"
+            }
+          ],
+          "drop": []
+        }
+      },
+      "resolved": {
+        "kinds": {
+          "toolbar": {
+            "hooks": [
+              {
+                "id": "notes.pin",
+                "known": true
+              },
+              {
+                "id": "ai.amberx.axf.gate:run",
+                "args": {
+                  "confirm": true
+                },
+                "known": false
+              }
+            ],
+            "drop": [
+              {
+                "id": "axf-toolbar",
+                "known": true
+              }
+            ]
+          },
+          "grid-row": {
+            "hooks": [
+              {
+                "id": "builds.open",
+                "known": true
+              }
+            ],
+            "drop": []
+          }
+        },
+        "unknown": [
+          "toolbar:ai.amberx.axf.gate:run"
+        ]
+      },
+      "unknownAll": {
+        "kinds": {
+          "toolbar": {
+            "hooks": [
+              {
+                "id": "notes.pin",
+                "known": false
+              },
+              {
+                "id": "ai.amberx.axf.gate:run",
+                "args": {
+                  "confirm": true
+                },
+                "known": false
+              }
+            ],
+            "drop": [
+              {
+                "id": "axf-toolbar",
+                "known": false
+              }
+            ]
+          },
+          "grid-row": {
+            "hooks": [
+              {
+                "id": "builds.open",
+                "known": false
+              }
+            ],
+            "drop": []
+          }
+        },
+        "unknown": [
+          "toolbar:notes.pin",
+          "toolbar:ai.amberx.axf.gate:run",
+          "toolbar:drop:axf-toolbar",
+          "grid-row:builds.open"
+        ]
+      },
+      "ref": {
+        "string": {
+          "id": "a.b"
+        },
+        "object": {
+          "id": "x:y",
+          "args": {
+            "n": 1,
+            "s": "v",
+            "b": true
+          }
+        },
+        "junk": null
+      }
+    },
+    "grid": {
+      "tokens": {
+        "grid.cellPadY": "var(--fx-dens-gap-xs)",
+        "grid.cellPadX": "var(--fx-dens-gap-sm)",
+        "grid.rowHeight": "calc(var(--fx-row-h) * 2)",
+        "grid.headerWeight": 600,
+        "grid.headerBg": "surface3",
+        "grid.tableHeaderBg": "surface3",
+        "grid.headerBorder": "border",
+        "grid.rowAltBg": "surface2",
+        "grid.lineColor": "border",
+        "grid.stickyShadow": "shadow.sm"
+      },
+      "settings": {
+        "axf.tokens.style": {
+          "*": {
+            "grid.radius": 6,
+            "grid.cellPadY": "var(--fx-dens-gap-xs)",
+            "grid.cellPadX": "var(--fx-dens-gap-sm)",
+            "grid.rowHeight": "calc(var(--fx-row-h) * 2)",
+            "grid.headerWeight": 600,
+            "grid.headerBg": "surface3",
+            "grid.tableHeaderBg": "surface3",
+            "grid.headerBorder": "border",
+            "grid.rowAltBg": "surface2",
+            "grid.lineColor": "border",
+            "grid.stickyShadow": "shadow.sm"
+          },
+          "windows": {
+            "grid.opacity": 0.9
+          }
+        },
+        "axf.grid": {
+          "density": "compact",
+          "rows": 2,
+          "header": "boxed",
+          "zebra": true,
+          "lines": "cells",
+          "sticky": true
+        }
+      },
+      "plain": {
+        "grid.cellPadY": "var(--fx-size-table-pad-y)",
+        "grid.cellPadX": "var(--fx-size-table-pad-x)",
+        "grid.rowHeight": "var(--fx-row-h)",
+        "grid.headerWeight": 500,
+        "grid.headerBg": "transparent",
+        "grid.tableHeaderBg": "transparent",
+        "grid.rowAltBg": "transparent",
+        "grid.lineColor": "transparent",
+        "grid.stickyShadow": "none"
+      },
+      "none": {}
+    },
+    "dialog": {
+      "settings": {
+        "axf.chrome.dialog": {
+          "variant": "sheet",
+          "backdrop": "blur",
+          "width": 560
+        }
+      },
+      "none": {}
+    },
+    "settingsChrome": {
+      "out": {
+        "slots": {
+          "settings": "developer"
+        },
+        "settings": {
+          "axf.chrome.settings.toolbar": "chrome-toolbar-axf-console"
+        }
+      },
+      "none": {
+        "slots": {},
+        "settings": {}
+      }
+    },
+    "all": {
+      "settings": {
+        "axf.motion": {
+          "speed": {
+            "fast": 60,
+            "normal": 200
+          },
+          "easing": {
+            "standard": "cubic-bezier(0.2, 0, 0, 1)",
+            "exit": "spring"
+          },
+          "reduced": "system",
+          "chrome": {
+            "toolbar": {
+              "enter": "rise",
+              "duration": "fast",
+              "stagger": 20
+            },
+            "dialog": {
+              "exit": "fade"
+            },
+            "page": {
+              "enter": "slide"
+            }
+          }
+        },
+        "axf.toolbars.armMs": 2500,
+        "axf.toolbars.tapConfirm": true,
+        "axf.tapConfirm.context-menu": false,
+        "axf.behavior": {
+          "interaction": {
+            "hover": "lift",
+            "press": "ripple"
+          }
+        },
+        "axf.nav.collapsedDefault": false,
+        "axf.chrome.tab-group.*": {
+          "overflow": "more",
+          "sticky": true
+        },
+        "axf.chrome.toolbar.*": {
+          "collapsible": true
+        },
+        "axf.hooks.toolbar": {
+          "hooks": [
+            {
+              "id": "notes.pin"
+            },
+            {
+              "id": "ai.amberx.axf.gate:run",
+              "args": {
+                "confirm": true
+              }
+            }
+          ],
+          "drop": [
+            "axf-toolbar"
+          ]
+        },
+        "axf.hooks.grid-row": {
+          "hooks": [
+            {
+              "id": "builds.open"
+            }
+          ],
+          "drop": []
+        },
+        "axf.tokens.style": {
+          "*": {
+            "grid.radius": 6,
+            "grid.cellPadY": "var(--fx-dens-gap-xs)",
+            "grid.cellPadX": "var(--fx-dens-gap-sm)",
+            "grid.rowHeight": "calc(var(--fx-row-h) * 2)",
+            "grid.headerWeight": 600,
+            "grid.headerBg": "surface3",
+            "grid.tableHeaderBg": "surface3",
+            "grid.headerBorder": "border",
+            "grid.rowAltBg": "surface2",
+            "grid.lineColor": "border",
+            "grid.stickyShadow": "shadow.sm"
+          }
+        },
+        "axf.grid": {
+          "density": "compact",
+          "rows": 2,
+          "header": "boxed",
+          "zebra": true,
+          "lines": "cells",
+          "sticky": true
+        },
+        "axf.chrome.dialog": {
+          "variant": "sheet",
+          "backdrop": "blur",
+          "width": 560
+        },
+        "axf.chrome.settings.toolbar": "chrome-toolbar-axf-console"
+      },
+      "prefixes": [
+        "axf.motion",
+        "axf.behavior",
+        "axf.toolbars.armMs",
+        "axf.toolbars.tapConfirm",
+        "axf.tapConfirm.",
+        "axf.nav.collapsedDefault",
+        "axf.chrome.",
+        "axf.hooks.",
+        "axf.grid"
+      ],
+      "styleKeys": [
+        "axf.motion",
+        "axf.behavior",
+        "axf.chrome.dialog",
+        "axf.grid",
+        "axf.nav.collapsedDefault",
+        "axf.chrome.tab-group.*",
+        "axf.chrome.toolbar.*",
+        "axf.chrome.banner.*",
+        "axf.chrome.nav-menu.*",
+        "axf.chrome.app-menu.*",
+        "axf.chrome.context-menu.*"
+      ]
+    },
+    "composed": {
+      "full": {
+        "layoutTheme": "windows-explorer",
+        "colorTheme": "windows-light",
+        "styleTheme": "windows",
+        "assets": {
+          "button": "windows",
+          "banner": "windows-titlebar"
+        },
+        "preview": {
+          "caption": "Windows"
+        },
+        "extras": {
+          "spacing": "compact",
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.tokens.style": {
+              "*": {
+                "grid.radius": 6
+              }
+            }
+          }
+        },
+        "chrome": {
+          "toolbar": {
+            "interface": "chrome-toolbar-windows"
+          }
+        },
+        "motion": {
+          "speed": {
+            "fast": 60,
+            "normal": 200
+          },
+          "easing": {
+            "standard": "cubic-bezier(0.2, 0, 0, 1)",
+            "exit": "spring"
+          },
+          "reduced": "system",
+          "chrome": {
+            "toolbar": {
+              "enter": "rise",
+              "duration": "fast",
+              "stagger": 20
+            },
+            "dialog": {
+              "exit": "fade"
+            },
+            "page": {
+              "enter": "slide"
+            }
+          }
+        },
+        "behavior": {
+          "tapConfirm": {
+            "armMs": 2500,
+            "toolbar": "on",
+            "context-menu": "off"
+          },
+          "hover": "lift",
+          "press": "ripple",
+          "overflow": {
+            "tab-group": "more"
+          },
+          "sticky": {
+            "tab-group": true
+          },
+          "collapse": {
+            "toolbar": true,
+            "nav-menu": false
+          }
+        },
+        "hooks": {
+          "toolbar": {
+            "hooks": [
+              {
+                "id": "notes.pin"
+              },
+              {
+                "id": "ai.amberx.axf.gate:run",
+                "args": {
+                  "confirm": true
+                }
+              }
+            ],
+            "drop": [
+              "axf-toolbar"
+            ]
+          },
+          "grid-row": {
+            "hooks": [
+              {
+                "id": "builds.open"
+              }
+            ]
+          }
+        },
+        "grid": {
+          "density": "compact",
+          "rows": 2,
+          "header": "boxed",
+          "zebra": true,
+          "lines": "cells",
+          "sticky": true
+        },
+        "dialog": {
+          "variant": "sheet",
+          "backdrop": "blur",
+          "width": 560
+        },
+        "settings": {
+          "page": "developer",
+          "toolbar": "chrome-toolbar-axf-console"
+        }
+      },
+      "settingsKeys": [
+        "axf.appearance.overrides",
+        "axf.banners.group",
+        "axf.behavior",
+        "axf.chrome.dialog",
+        "axf.chrome.settings.toolbar",
+        "axf.chrome.tab-group.*",
+        "axf.chrome.toolbar.*",
+        "axf.grid",
+        "axf.hooks.grid-row",
+        "axf.hooks.toolbar",
+        "axf.motion",
+        "axf.nav.collapsedDefault",
+        "axf.tapConfirm.context-menu",
+        "axf.tokens.button",
+        "axf.tokens.style",
+        "axf.toolbars.armMs",
+        "axf.toolbars.tapConfirm"
+      ],
+      "settingsPage": "developer",
+      "chromeWins": "chrome-toolbar-windows",
+      "gridMerged": {
+        "*": {
+          "grid.radius": 6,
+          "grid.cellPadY": "var(--fx-dens-gap-xs)",
+          "grid.cellPadX": "var(--fx-dens-gap-sm)",
+          "grid.rowHeight": "calc(var(--fx-row-h) * 2)",
+          "grid.headerWeight": 600,
+          "grid.headerBg": "surface3",
+          "grid.tableHeaderBg": "surface3",
+          "grid.headerBorder": "border",
+          "grid.rowAltBg": "surface2",
+          "grid.lineColor": "border",
+          "grid.stickyShadow": "shadow.sm"
+        }
+      },
+      "motion": {
+        "speed": {
+          "fast": 60,
+          "normal": 200
+        },
+        "easing": {
+          "standard": "cubic-bezier(0.2, 0, 0, 1)",
+          "exit": "spring"
+        },
+        "reduced": "system",
+        "chrome": {
+          "toolbar": {
+            "enter": "rise",
+            "duration": "fast",
+            "stagger": 20
+          },
+          "dialog": {
+            "exit": "fade"
+          },
+          "page": {
+            "enter": "slide"
+          }
+        }
+      },
+      "withoutSlots": [
+        "axf.appearance.overrides",
+        "axf.banners.group",
+        "axf.tokens.button"
+      ]
+    },
+    "schemas": {
+      "motion": [
+        "speed",
+        "easing",
+        "reduced",
+        "chrome"
+      ],
+      "behavior": [
+        "tapConfirm",
+        "hover",
+        "press",
+        "focusRing",
+        "overflow",
+        "sticky",
+        "collapse"
+      ],
+      "hooks": [
+        "tab-group",
+        "toolbar",
+        "banner",
+        "nav-menu",
+        "app-menu",
+        "context-menu",
+        "grid-row"
+      ],
+      "grid": [
+        "density",
+        "rows",
+        "header",
+        "zebra",
+        "lines",
+        "sticky"
+      ],
+      "dialog": [
+        "variant",
+        "backdrop",
+        "animation",
+        "header",
+        "closeOnBackdrop",
+        "width"
+      ],
+      "settings": [
+        "page",
+        "tab-group",
+        "toolbar",
+        "banner",
+        "nav-menu",
+        "app-menu",
+        "context-menu"
+      ]
+    }
+  },
   "hubDefault": {
     "chain": [
       "plugin:notes",

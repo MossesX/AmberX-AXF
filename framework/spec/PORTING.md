@@ -163,6 +163,27 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 
 `framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. Build skins-own-everything-colour-theme-swaps-independ (Fable, Nov 10 2026) added the colour theme switched inside the skin: `colorTheme` on the app level, on a scope and on the hub-wide skin (never an override, never a new skin), `setSkinColorTheme`, `skinColorTheme`, `skinColorOf`, `setLookSlot(look, slot, id, global)`, the legacy `overrides["color-theme"]` migration on read, and the `colour` block of the fixture; a port carries those too. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
 
+## Deferred: skin-slots@1 and skin-map@1 (build flagship-professional-skin-covering-2, Fable, Nov 17 2026)
+
+`framework/core/engines/skin-slots.mjs` (the five optional, additive slots of skin@1: `motion`, `behavior`, `hooks`,
+`grid`, `dialog`, `settings`; normalise, errors, and what each compiles to: `skinMotionStyle` → `--fx-motion-*` tokens
+and `data-fx-motion-<kind>-enter / -exit` attributes, `skinBehaviorSettings` → `axf.toolbars.armMs`, the per-kind
+tap-to-confirm switches, `axf.behavior`, `axf.chrome.<kind>.*` kind-wide defaults and `axf.nav.collapsedDefault`,
+`skinHookSettings` / `resolveSkinHooks` → `axf.hooks.<kind>`, `skinGridSettings` → the component-tokens grid paths under
+`axf.tokens.style['*']` + `axf.grid`, `skinDialogSettings` → `axf.chrome.dialog`, `skinSettingsChrome` → the settings
+slot + `axf.chrome.settings.<kind>`), the `withBehaviorOverrides` fold in `behavior.ts`, the kind-wide defaults in
+`chromeInstanceData` / `chromeFieldValue` (`chrome-settings-rules.mjs`), the `SKIN_SLOT_SETTING_PREFIXES` that make those
+keys appearance settings (`designpackage.ts`) and the runtime's `navCollapsed`, `skinHooks`, `hookRegistry` and the
+motion / behaviour / dialog parts of `compileStyles` have **no Kotlin twin** (Android on hold, no new Kotlin work). A port
+replays the `slots` block of `spec/fixtures/skin.json`: the same normalised slots, the same error lines, the same tokens,
+attributes and settings keys, and the same composed look (`composed`), then reads the same keys in its own chrome.
+
+`framework/core/engines/skin-map.mjs` (skin-map@1: the generated, read-only map of what every slot controls and where
+every dataset and layout lives, `skinMap`, `skinMapFind`, `skinMapErrors`, `dataStoreKey`, `hubPlace`, `cssReaders`,
+`tokensBySource`) has **no Kotlin twin** either. An Android app reads the snapshot `framework/schemas/skin-map.json`
+(the console serves it at `/skins/map`) instead of generating one; a port replays `spec/fixtures/skin-map.json` (small
+registry, token registry, data-store rules and stylesheets in `inputs`) and must produce the same `map`.
+
 ## Deferred: look-migration@1 and the skin sections (Nov 10 2026)
 
 Build remove-the-old-theme-manager-style-and-layout-se (Fable): `framework/core/engines/look-migration.mjs` (the one-run

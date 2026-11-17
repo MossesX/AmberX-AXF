@@ -7,6 +7,11 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+// skin-slots@1 + skin-map@1 (build flagship-professional-skin-covering-2)
+import { BEHAVIOR_ARM_KEY, BEHAVIOR_OVERRIDES_KEY, CHROME_KIND_DEFAULTS_KEY, MOTION_KEY, NAV_COLLAPSED_SETTING, SKIN_SLOT_KEYS, SKIN_SLOT_SETTING_PREFIXES, behaviorTapKindKey, normalizeHookRef, normalizeSkinSlots, resolveSkinHooks, skinBehaviorSettings, skinDialogSettings, skinGridSettings, skinGridTokens, skinHookSettings, skinMotionSettings, skinMotionStyle, skinSettingsChrome, skinSlotSettings, skinSlotStyleKeys, skinSlotsErrors, skinSlotsJsonSchemas } from '../core/engines/skin-slots.mjs';
+import { cssReaders, dataStoreKey, hubPlace, skinMap, skinMapErrors, skinMapFind, tokensBySource } from '../core/engines/skin-map.mjs';
+/** normalizeSkin as it was before skin-slots@1 (the five keys stripped): an old skin must come out byte-identical. */
+const fxNormalizeBefore = (raw: unknown) => { const { motion: _m, behavior: _b, hooks: _h, grid: _g, dialog: _d, settings: _s, ...rest } = normalizeSkin(raw) as Record<string, unknown>; return rest; };
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
@@ -2167,6 +2172,36 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         roundTrip: parseAppLook(JSON.stringify(pluginSkin)),
       };
     })(),
+    // skin-slots@1 (build flagship-professional-skin-covering-2, Nov 17 2026): motion, behaviour, hooks, grid, dialog and
+    // settings chrome on skin@1: normalise (an old skin is byte-identical), errors (both validators), what each compiles
+    // to (tokens, attributes, settings-layer defaults), the composed look carrying them, and hook resolution.
+    skinSlots: (() => {
+      const good = { motion: { speed: { fast: 60, normal: 200 }, easing: { exit: 'spring', standard: 'cubic-bezier(0.2, 0, 0, 1)' }, reduced: 'system', chrome: { toolbar: { enter: 'rise', duration: 'fast', stagger: 20 }, dialog: { exit: 'fade' }, page: { enter: 'slide' } } }, behavior: { tapConfirm: { armMs: 2500, toolbar: 'on', 'context-menu': 'off' }, hover: 'lift', press: 'ripple', overflow: { 'tab-group': 'more' }, sticky: { 'tab-group': true }, collapse: { toolbar: true, 'nav-menu': false } }, hooks: { toolbar: { hooks: ['notes.pin', { id: 'ai.amberx.axf.gate:run', args: { confirm: true } }], drop: ['axf-toolbar'] }, 'grid-row': { hooks: ['builds.open'] } }, grid: { density: 'compact', rows: 2, header: 'boxed', zebra: true, lines: 'cells', sticky: true }, dialog: { variant: 'sheet', backdrop: 'blur', width: 560 }, settings: { page: 'developer', toolbar: 'chrome-toolbar-axf-console' } };
+      const bad = { motion: { speed: { fast: -1, warp: 3 }, easing: { exit: 'wobble' }, reduced: 'maybe', chrome: { nope: {}, toolbar: { enter: 'spin', stagger: 999 } } }, behavior: { tapConfirm: { armMs: 5, gizmo: 'on', toolbar: 'maybe' }, hover: 'x', overflow: { toolbar: 'wrap', 'tab-group': 'x' }, sticky: { banner: true }, collapse: { 'tab-group': 'yes' } }, hooks: { grid: {}, toolbar: { hooks: [7, { args: {} }], drop: ['Bad Id!'] } }, grid: { density: 'huge', rows: 9, header: 'x', zebra: 'y', lines: 'z', sticky: 1, extra: 1 }, dialog: { variant: 'x', width: 10, bogus: 1 }, settings: { page: 'Bad', gizmo: 'x' } };
+      const full = normalizeSkin({ ...skin, ...good, extras: { ...skin.extras, settings: { 'axf.tokens.style': { '*': { 'grid.radius': 6 } } } }, chrome: { toolbar: { interface: 'chrome-toolbar-windows' } } });
+      const registry = { hook: (id: string) => id === 'notes.pin' || id === 'builds.open', zone: (id: string) => id === 'axf-toolbar' };
+      return {
+        contract: 'skin-slots@1',
+        keys: SKIN_SLOT_KEYS,
+        normalized: normalizeSkinSlots(good),
+        dropped: normalizeSkinSlots(bad),
+        empty: { none: normalizeSkinSlots({}), oldSkin: normalizeSkin(skin), sameAsBefore: JSON.stringify(normalizeSkin(skin)) === JSON.stringify(fxNormalizeBefore(skin)) },
+        errors: { good: skinSlotsErrors(good), bad: skinSlotsErrors(bad), notObjects: skinSlotsErrors({ motion: 1, behavior: [], hooks: 'x', grid: null, dialog: 2, settings: true }), skinGood: skinErrors({ ...skin, ...good }), skinBad: skinErrors({ ...skin, ...bad }) },
+        motion: { style: skinMotionStyle(good.motion), reduced: skinMotionStyle(good.motion, true), never: skinMotionStyle({ ...good.motion, reduced: 'never' }, true), always: skinMotionStyle({ reduced: 'always', speed: { slow: 400 } }), none: skinMotionStyle({}), settings: skinMotionSettings(good.motion) },
+        behavior: { settings: skinBehaviorSettings(good.behavior), none: skinBehaviorSettings({}), kindKeys: { defaults: CHROME_KIND_DEFAULTS_KEY('tab-group'), tap: ['toolbar', 'tab-group', 'banner'].map(behaviorTapKindKey), arm: BEHAVIOR_ARM_KEY, overrides: BEHAVIOR_OVERRIDES_KEY, nav: NAV_COLLAPSED_SETTING } },
+        hooks: { settings: skinHookSettings(good.hooks), resolved: resolveSkinHooks(good.hooks, registry), unknownAll: resolveSkinHooks(good.hooks, {}), ref: { string: normalizeHookRef('a.b'), object: normalizeHookRef({ id: 'x:y', args: { n: 1, s: 'v', b: true, bad: {} } }), junk: normalizeHookRef({ args: {} }) } },
+        grid: { tokens: skinGridTokens(good.grid), settings: skinGridSettings(good.grid, { '*': { 'grid.radius': 6 }, windows: { 'grid.opacity': 0.9 } }), plain: skinGridTokens({ header: 'plain', zebra: false, lines: 'none', sticky: false, rows: 1, density: 'regular' }), none: skinGridSettings({}, { '*': { 'grid.radius': 6 } }) },
+        dialog: { settings: skinDialogSettings(good.dialog), none: skinDialogSettings({}) },
+        settingsChrome: { out: skinSettingsChrome(good.settings), none: skinSettingsChrome({}) },
+        all: { settings: skinSlotSettings(good, { '*': { 'grid.radius': 6 } }), prefixes: SKIN_SLOT_SETTING_PREFIXES, styleKeys: skinSlotStyleKeys() },
+        composed: (() => {
+          const look = setUseSkin(pickSkin(look0, 'full'), true);
+          const doc = composeLook(shared as never, look, full);
+          return { full, settingsKeys: Object.keys(doc.settings ?? {}).sort(), settingsPage: doc.slots?.settings, chromeWins: doc.settings?.['axf.chrome.settings.toolbar'], gridMerged: doc.settings?.['axf.tokens.style'], motion: doc.settings?.[MOTION_KEY], withoutSlots: Object.keys(composeLook(shared as never, setUseSkin(pickSkin(look0, 'windows'), true), skin as never).settings ?? {}).sort() };
+        })(),
+        schemas: Object.fromEntries(Object.entries(skinSlotsJsonSchemas()).map(([k, v]) => [k, Object.keys((v as { properties: Record<string, unknown> }).properties)])),
+      };
+    })(),
     // The hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026, Brett: "make it the default axHub
     // look, and then make all the apps inherit it right now"): the `default` root of the chain, the floor every app stands
     // on; its own picks are the edits over it; adopt / backup / restore; the skin's chrome block; the shared document.
@@ -2528,6 +2563,39 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+    },
+  });
+}
+
+// skin-map@1 (build flagship-professional-skin-covering-2): the generated map replayed over a small registry, a small
+// token registry and two stylesheets, so a port can check the same rows without the real files; plus the helpers.
+{
+  const registry = { types: { 'color-theme': { label: 'Colour theme', group: 'Themes' }, 'style-theme': { label: 'Style theme', group: 'Themes' }, layout: { label: 'Layout', group: 'Themes' }, button: { label: 'Button', group: 'Controls' }, toolbar: { label: 'Toolbar', group: 'Navigation' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack' } }, help: { label: 'Help', group: 'System', skin: { by: 'none', why: 'no look' } }, skin: { label: 'Skin', group: 'System', skin: { by: 'bundle' } }, settings: { label: 'Settings', group: 'System' } } };
+  const customize = { targets: { button: { root: '.fx-btn', tokens: { radius: 'x', textColor: 'x' } }, toolbar: { root: '.fx-toolbar', item: '.fx-toolbar .fx-btn', tokens: { bg: 'x' } }, label: { root: '.fx-widget-label', tokens: { textColor: 'x' } } } };
+  const tokens = [
+    { id: '--fx-accent', element: 'palette', source: 'color-theme:amber', sources: ['color-theme:amber', 'color-theme:night'] },
+    { id: '--fx-radius-md', element: 'page', source: 'engine:framework/core/engines/theme.ts' },
+    { id: '--fx-layout-nav-w', element: 'layout', source: 'engine:layout@1' },
+    { id: '--fx-btn-radius', element: 'button', source: 'engine:framework/core/engines/components.ts' },
+    { id: '--fx-toolbar-h', element: 'toolbar', source: 'engine:framework/core/engines/components.ts' },
+    { id: '--fx-motion-fast', element: 'motion', source: 'framework/ui/axf.css' },
+  ];
+  const componentFamilies = { grid: { label: 'Grid', prefix: '--fx-grid-', tokens: [{ key: 'headerBg' }, { key: 'rowHeight' }] } };
+  const dataStorePaths = { rules: { projects: [{ re: '^_shared/_data/settings/(.+)$', to: 'settings/{1}' }, { re: '^amberx-axf/_data/.*$', to: null }] } };
+  const sheets = { 'framework/ui/axf.css': '/* c */ :root { --fx-accent: #000; } .fx-btn { color: var(--fx-accent); border-radius: var(--fx-btn-radius); } .fx-toolbar { height: var(--fx-toolbar-h); } [data-fx-motion-toolbar-enter=\'rise\'] .fx-toolbar { animation: x var(--fx-motion-toolbar-dur); } @keyframes x { from { opacity: 0; } }', 'framework/libs/datagrid/datagrid.css': '.axf-grid-head { background: var(--fx-grid-header-bg); } .axf-grid[data-fx-grid-lines=\'cells\'] .axf-grid-cell { box-shadow: none; }' };
+  const inputs = { registry, customize, tokens, componentFamilies, dataStorePaths, apps: [{ id: 'app-a', dir: 'apps/a' }, { id: 'app-b', dir: 'apps/b' }], assets: { skin: ['windows', 'atelier'], layout: ['focus-top', 'classic-ide'], 'icon-pack': ['amberx-outline'], settings: ['developer'] }, sheets };
+  const map = skinMap(inputs);
+  write('skin-map.json', {
+    contract: 'skin-map@1',
+    inputs,
+    map,
+    errors: { good: skinMapErrors(map), empty: skinMapErrors({}), badRow: skinMapErrors({ ...map, slots: [{ slot: 'x', kind: 'nope', controls: ['tokens', 'magic'], tokens: 'no', settings: [], components: [] }] }), badDataset: skinMapErrors({ ...map, datasets: [{ id: 'd', contract: 'c' }] }) },
+    find: { token: skinMapFind(map, '--fx-grid-').map((r) => r.slot), key: skinMapFind(map, 'axf.hooks.').map((r) => r.slot), label: skinMapFind(map, 'dialog chrome').map((r) => r.slot), none: skinMapFind(map, 'zzz'), empty: skinMapFind(map, '') },
+    helpers: {
+      dataStore: { shared: dataStoreKey(dataStorePaths, 'projects', '_shared/_data/settings/looks/app-a.json'), local: dataStoreKey(dataStorePaths, 'projects', 'amberx-axf/_data/x.json'), none: dataStoreKey(dataStorePaths, 'projects', 'other/thing.json'), noRoot: dataStoreKey(dataStorePaths, 'repo', 'x') },
+      hubPlace: { look: hubPlace(dataStorePaths, 'shared', 'settings/looks/app-a.json'), other: hubPlace(dataStorePaths, 'amberx-axf', 'plan-studio/plans/x.json') },
+      cssReaders: { token: cssReaders(sheets['framework/ui/axf.css'], 'var(--fx-accent'), attr: cssReaders(sheets['framework/ui/axf.css'], '[data-fx-motion-'), none: cssReaders(sheets['framework/ui/axf.css'], 'var(--fx-nope'), junk: cssReaders('', 'x') },
+      tokensBySource: { colour: tokensBySource(tokens, /^color-theme:/), layout: tokensBySource(tokens, 'engine:layout@1'), none: tokensBySource(tokens, 'engine:nope') },
     },
   });
 }
