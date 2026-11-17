@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7958,
- "updatedAt": "2026-11-17T21:15:37.655Z",
+ "rev": 7959,
+ "updatedAt": "2026-11-17T21:16:36.420Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275906,7 +275906,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275914,7 +275914,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:11:11.623Z",
+   "updatedAt": "2026-11-17T21:16:34.083Z",
    "builtAt": "",
    "notes": [
     {
@@ -276038,6 +276038,10 @@
      "at": "2026-11-17T21:09:12.533Z"
     },
     {
+     "text": "s27 open: the 57 option assets (dense icons / icons + text / grouped with overflow, one set per page toolbar) are committed, but the pictures for review.mjs submit --choices could not be taken on this VPS. rebuild-shots.mjs starts a scratch console that waits for axHub (hub-only look) and the headless browser has no hub session; the running live preview (172.16.1.1:37079) shows the same 'Waiting for axHub'. Tried: rebuild-shots (playwright from /root/expense-tracker), the live preview. Next: capture from an environment with a hub session (rebuild-shots --env AXF_APPEARANCE_HUB=<hub> with a signIn shot), then submit with options.mjs choices files; then s28 (report and THREADS row already written, CI checks green).",
+     "at": "2026-11-17T21:16:34.083Z"
+    },
+    {
      "text": "Session stopped on its own with 2 steps left: back in Pending for Brett.",
      "at": "2026-11-17T21:11:07.996Z"
     },
@@ -276080,16 +276084,7 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-17T21:11:05.477Z",
-     "exit": 0,
-     "outcome": "returned",
-     "reason": "stopped",
-     "stepsLeft": 2,
-     "account": "",
-     "session": "",
-     "phase": "Phase 2"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-17T18:58:57.805Z",
      "by": "orchestrator",
@@ -276098,14 +276093,14 @@
      "note": "Split by Claude into 28 steps (7 Fable)."
     },
     "splitRequested": "",
-    "note": "Session stopped on its own with 2 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T21:12:07.973Z",
+     "at": "2026-11-17T18:58:59.749Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -276114,22 +276109,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:11:05.472Z",
-     "buildId": "rebuild-every-toolbar-page-specific",
-     "phase": "",
-     "step": "s27",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "2026-11-17T21:11:16.164Z",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",

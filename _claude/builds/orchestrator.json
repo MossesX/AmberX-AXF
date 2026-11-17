@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:15:37.655Z",
+ "updatedAt": "2026-11-17T21:16:36.420Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181394,7 +181394,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181402,7 +181402,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:11:11.623Z",
+   "updatedAt": "2026-11-17T21:16:34.083Z",
    "builtAt": "",
    "notes": [
     {
@@ -181524,6 +181524,10 @@
     {
      "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s25): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:09:12.533Z"
+    },
+    {
+     "text": "s27 open: the 57 option assets (dense icons / icons + text / grouped with overflow, one set per page toolbar) are committed, but the pictures for review.mjs submit --choices could not be taken on this VPS. rebuild-shots.mjs starts a scratch console that waits for axHub (hub-only look) and the headless browser has no hub session; the running live preview (172.16.1.1:37079) shows the same 'Waiting for axHub'. Tried: rebuild-shots (playwright from /root/expense-tracker), the live preview. Next: capture from an environment with a hub session (rebuild-shots --env AXF_APPEARANCE_HUB=<hub> with a signIn shot), then submit with options.mjs choices files; then s28 (report and THREADS row already written, CI checks green).",
+     "at": "2026-11-17T21:16:34.083Z"
     },
     {
      "text": "Session stopped on its own with 2 steps left: back in Pending for Brett.",
