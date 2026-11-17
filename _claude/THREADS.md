@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 22:54 UTC · `home-cards-follow-plugin-off-home-always` → archived, note (all) · builds-live
 - 2026-11-16 22:54 UTC · `fable-icon-map-icon-packs-icon-pack` note (all) · builds-live
 - 2026-11-16 22:54 UTC · `launch-landing-page-waitlist-referral` → archived, note (all) · cli
 - 2026-11-16 22:54 UTC · `molly-gap-expenses-cors` → archived, note (all) · cli
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:42 UTC · `every-plugin-screen-gets-a-settings-gear` s18 done (all) · orchestrator
 - 2026-11-17 00:43 UTC · `land-per-instance-settings-picker` → running, note (all) · pipeline
 - 2026-11-17 00:43 UTC · `stop-auto-lander-committing-tracking` s12 done (all) · orchestrator
+- 2026-11-17 00:43 UTC · `orchestrator-stale-row-watchdog-vps` s2 done (all) · orchestrator
 
 ## Token passes (log)
 

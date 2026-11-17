@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7214,
- "updatedAt": "2026-11-17T00:43:28.519Z",
+ "rev": 7215,
+ "updatedAt": "2026-11-17T00:44:03.111Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -222834,7 +222834,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T00:41:56.359Z",
+   "updatedAt": "2026-11-17T00:43:59.320Z",
    "builtAt": "",
    "notes": [
     {
@@ -222875,13 +222875,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:20:10.359Z",
     "queuedBy": "brett",
-    "account": "hulu0241",
-    "session": "axf-orchestrator-stale-row-watchdog-vps--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T00:34:23.849Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -222894,7 +222894,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T00:34:23.849Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -222903,7 +222903,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T00:34:23.849Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -222952,12 +222952,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:43:59.320Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T17:47:32.020Z",
-     "updatedAt": "2026-11-14T17:47:32.020Z"
+     "updatedAt": "2026-11-17T00:43:59.743Z"
     },
     {
      "id": "s3",
