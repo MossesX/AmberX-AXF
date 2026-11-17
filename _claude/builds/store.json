@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7613,
- "updatedAt": "2026-11-17T19:02:36.886Z",
+ "rev": 7614,
+ "updatedAt": "2026-11-17T19:05:25.847Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151789,7 +151789,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "built",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151798,8 +151798,8 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T15:12:00.171Z",
-   "builtAt": "2026-11-14T23:13:42.882Z",
+   "updatedAt": "2026-11-17T19:05:23.349Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -152151,6 +152151,28 @@
      "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
      "updatedAt": "2026-11-14T23:13:15.819Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwl2bcst01vopa",
+     "title": "",
+     "text": "Auto-lander fix, attempt 1: make CI green on claude/pass-approval-hook-deep-link-amberx-notification so the build lands. Merge origin/main in first, fix the failures below at their cause (never by skipping a check), run the failing checks locally, commit, push, and tick this step. The auto-lander re-reads CI on the new head and lands it.\nFailure summary:\nCI is red on 4b5465ae5 (claude/pass-approval-hook-deep-link-amberx-notification):\n- Web Dev Console (React/TS) + Python API › Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption\nBrett said (verbatim): \"I'm gonna need a link to the pass, a hook to it.\"",
+     "model": "Opus",
+     "why": "auto-lander red-ci",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T19:05:23.350Z",
+     "updatedAt": "2026-11-17T19:05:23.597Z"
     }
    ],
    "profiles": [
@@ -152161,7 +152183,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 111,
+   "rev": 112,
    "deleted": false,
    "deletedAt": "",
    "pending": {
