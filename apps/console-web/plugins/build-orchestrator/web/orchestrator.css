@@ -77,3 +77,10 @@ button.oc-model { cursor: pointer }
 .oc-wd-chips { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) }
 :where([data-fx-tiny], [data-fx-small]) .oc-wd-row { flex-direction: column }
 :where([data-fx-tiny], [data-fx-small]) .oc-wd-row__side { white-space: normal }
+
+/* Watchdog layouts (UI Review choice set build-watchdog-panel-lay-mwk6tob9): stacked is the base above */
+.oc-wd[data-layout='cards'] .oc-wd-running .oc-wd-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 18), 1fr)); gap: var(--fx-dens-gap-md); border: 0 }
+.oc-wd[data-layout='cards'] .oc-wd-running .oc-wd-row { flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.oc-wd[data-layout='split'] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: var(--fx-dens-gap-xl) }
+.oc-wd[data-layout='split'] > :not(.oc-wd-running):not(.oc-wd-fixes) { grid-column: 1 / -1 }
+:where([data-fx-tiny], [data-fx-small]) .oc-wd[data-layout='split'] { grid-template-columns: minmax(0, 1fr) }

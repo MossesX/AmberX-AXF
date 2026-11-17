@@ -12,10 +12,14 @@
  *   recent fixes (cause → action, attempt, told the phone), builds it gave up on (Requeue), and a Run now toolbar.
  *   Everything here is also GET watchdog/status · POST watchdog/run · POST watchdog/requeue (REST), the watchdog_* MCP
  *   commands, `axf watchdog …` and the voice actions watchdog.run / watchdog.status.
+ *   Three layouts (UI Review choice set build-watchdog-panel-lay-mwk6tob9, assets/container/build-watchdog-panel-lay-mwk6tob9-*.json):
+ *   stacked (sections one under the other), cards (running builds as cards), split (running beside the fixes on
+ *   desktop). The picked one is the default; the Layout control switches per browser (orch-watchdog-layout).
  * - RecoveriesList: a build's own recoveries[] (GET builds/<id>/recoveries) in its expanded detail.
  */
 import { useEffect, useState } from 'react';
-import { Button, Chip, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Note, Segmented, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import * as consoleApi from '@console/api';
 import { pluginApi } from '@console/plugins';
 const FOLDER = 'build-orchestrator'; // = ui.tsx FOLDER (not imported: ui.tsx imports this file)
 
@@ -91,8 +95,16 @@ export function RecoveryLine({ r, showBuild = true }: { r: Recovery; showBuild?:
   );
 }
 
+export const WATCHDOG_LAYOUTS = ['stacked', 'cards', 'split'] as const;
+export type WatchdogLayout = (typeof WATCHDOG_LAYOUTS)[number];
+const LAYOUT_LABEL: Record<WatchdogLayout, string> = { stacked: 'Stacked', cards: 'Cards', split: 'Split' };
+/** The default until Brett picks one in UI Review (then the pick is written here). */
+export const DEFAULT_WATCHDOG_LAYOUT: WatchdogLayout = 'stacked';
+
 export function WatchdogTab({ focus = '' }: { focus?: string }) {
   const rt = useRuntime();
+  const [layout, setLayout] = useState<WatchdogLayout>(() => { const v = consoleApi.readLocal<string>('orch-watchdog-layout', DEFAULT_WATCHDOG_LAYOUT); return (WATCHDOG_LAYOUTS as readonly string[]).includes(v) ? v as WatchdogLayout : DEFAULT_WATCHDOG_LAYOUT; });
+  useEffect(() => { consoleApi.writeLocal('orch-watchdog-layout', layout); }, [layout]);
   const [s, setS] = useState<WatchdogStatus | null>(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
@@ -115,10 +127,11 @@ export function WatchdogTab({ focus = '' }: { focus?: string }) {
   const rows = s.lastScan?.builds ?? [];
   const recent = focus ? s.recent.filter((r) => r.buildId === focus) : s.recent;
   return (
-    <section className="fx-stack oc-wd" aria-label="Build watchdog">
+    <section className="fx-stack oc-wd" data-layout={layout} aria-label="Build watchdog">
       <div className="fx-toolbar oc-wd-bar" role="toolbar" aria-label="Watchdog actions">
         <Button tone="primary" icon="play" disabled={busy} onClick={() => void runNow()}>Run now</Button>
         <Button icon="refresh" disabled={busy} onClick={() => void load()}>Refresh</Button>
+        <Segmented label="Layout" value={layout} onChange={(v) => setLayout(v as WatchdogLayout)} options={WATCHDOG_LAYOUTS.map((l) => ({ value: l, label: LAYOUT_LABEL[l] }))} />
         <span className="fx-small fx-muted" aria-live="polite">
           {s.settings.enabled ? 'On' : 'Off'} · last pass {s.lastPass ? ago(s.lastPass) : 'never'} · every {s.settings.intervalMin} min · {s.passes} passes{s.request ? ` · a pass was asked for ${ago(s.request.at)}` : ''}
         </span>
@@ -138,7 +151,7 @@ export function WatchdogTab({ focus = '' }: { focus?: string }) {
           </ul>
         </div>
       )}
-      <div className="fx-stack">
+      <div className="fx-stack oc-wd-running">
         <h3 className="oc-wd-head">Marked running ({rows.length}){s.lastScan ? <span className="fx-small fx-muted"> · probed {ago(s.lastScan.at)}</span> : null}</h3>
         {rows.length ? (
           <ul className="oc-wd-list">
@@ -155,7 +168,7 @@ export function WatchdogTab({ focus = '' }: { focus?: string }) {
           </ul>
         ) : <p className="fx-small fx-muted">Nothing marked running at the last pass.</p>}
       </div>
-      <div className="fx-stack">
+      <div className="fx-stack oc-wd-fixes">
         <h3 className="oc-wd-head">Recent fixes{focus ? ` for ${focus}` : ''} ({recent.length})</h3>
         {recent.length ? <ul className="oc-wd-list">{recent.map((r) => <RecoveryLine key={`${r.buildId}-${r.at}`} r={r} />)}</ul> : <p className="fx-small fx-muted">No fixes yet.</p>}
       </div>
