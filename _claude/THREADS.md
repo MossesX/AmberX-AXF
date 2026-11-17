@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:23 UTC · `server-rule-done-means-merged-working` s1 done, → running (all) · orchestrator
 - 2026-11-17 00:24 UTC · `gate-auto-lander-tab-and-controls` s1 done, → running (all) · orchestrator
 - 2026-11-17 00:24 UTC · `every-plugin-screen-gets-a-settings-gear` s7 done (all) · orchestrator
 - 2026-11-17 00:24 UTC · `gate-auto-lander-tab-and-controls` note (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:01 UTC · `auto-lander-drag-rows-to-set-merge-order` → running, note (all) · pipeline
 - 2026-11-17 15:01 UTC · `auto-lander-drag-rows-to-set-merge-order` branch claude/auto-lander-drag-rows-to-set-merge-order (all) · pipeline
 - 2026-11-17 15:01 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · orchestrator
+- 2026-11-17 15:01 UTC · `rebuild-fresh-main-hide-any-asset` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
