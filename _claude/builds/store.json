@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8319,
- "updatedAt": "2026-11-17T23:01:59.651Z",
+ "rev": 8320,
+ "updatedAt": "2026-11-17T23:02:13.517Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -291983,7 +291983,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:00:41.831Z",
+   "updatedAt": "2026-11-17T23:02:04.238Z",
    "builtAt": "",
    "notes": [
     {
@@ -292071,7 +292071,16 @@
      "at": "2026-11-17T22:59:22.796Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T23:02:04.238Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "build a skin with Fable Ultra Code, really sick professional skin that covers everything: context menus, app menus, navigation menus, animations, colors, behavior, hooks, everything. Show me where the data sets go, the layouts, every single thing. Professional. One app: axHub, console, AmberX all as one app.",
@@ -292633,12 +292642,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:02:04.238Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T21:34:10.438Z"
+     "updatedAt": "2026-11-17T23:02:05.127Z"
     },
     {
      "id": "s21",
@@ -292853,7 +292862,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:01:59.651Z",
+ "updatedAt": "2026-11-17T23:02:13.517Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -190962,7 +190962,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:00:41.831Z",
+   "updatedAt": "2026-11-17T23:02:04.238Z",
    "builtAt": "",
    "notes": [
     {
@@ -191050,7 +191050,16 @@
      "at": "2026-11-17T22:59:22.796Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T23:02:04.238Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "build a skin with Fable Ultra Code, really sick professional skin that covers everything: context menus, app menus, navigation menus, animations, colors, behavior, hooks, everything. Show me where the data sets go, the layouts, every single thing. Professional. One app: axHub, console, AmberX all as one app.",
@@ -191508,8 +191517,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:02:04.238Z",
      "note": "",
      "uid": "st-mwl7mosm0kovn1",
      "createdAt": "2026-11-17T21:34:10.438Z"
