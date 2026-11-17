@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7987,
- "updatedAt": "2026-11-17T21:24:29.319Z",
+ "rev": 7988,
+ "updatedAt": "2026-11-17T21:24:37.097Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268230,7 +268230,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:23:23.531Z",
+   "updatedAt": "2026-11-17T21:24:30.866Z",
    "builtAt": "",
    "notes": [
     {
@@ -268440,7 +268440,17 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T21:06:34.794Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
@@ -268685,12 +268695,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:24:30.866Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T16:54:55.110Z"
+     "updatedAt": "2026-11-17T21:24:31.385Z"
     },
     {
      "id": "s11",
@@ -269123,7 +269133,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
