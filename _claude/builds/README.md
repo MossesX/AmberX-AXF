@@ -26,7 +26,15 @@ node framework/cli/builds-store.mjs                     # rev, builds and % per 
 node framework/cli/builds-store.mjs verify              # every build, step, note and status of the old files is in the store
 node framework/cli/builds-store.mjs history <id>        # every journal revision of a build
 node framework/cli/builds-store.mjs restore <id> <rev>  # put it back as it was (itself versioned)
+node framework/cli/builds-store.mjs demo <id>           # demo-build@1: is it a demo (throwaway) build? exit 1 if not
 ```
+
+**Demo builds (demo-build@1, since Nov 17 2026, build `guided-live-demo-test-watch-orchestrator`):** the guided live
+demo plays on throwaway builds whose id starts with `demo-`; the store tags them `demo: true` on read (no migration:
+older records load unchanged, a `demo-` id gets the tag, nothing else ever does). Every projection, the dispatcher, the
+auto-lander, alerts, builds-live commit lines and the console rows mark them demo-only, and a demo action (a write with
+`demo: true` in its meta, `set-status … --demo`) on any build without the tag is refused whole. Spec:
+`framework/spec/BUILDS.md` → Demo builds; core `framework/core/demo-build.mjs`.
 
 The Builds page (console and AmberX: Builds → Builds) shows it: Builds and Steps views, rename, drag to reorder,
 divide, harvest / split into N, Restore default, a draft until Apply, live progress bars. <!-- axf-plugin:builds-page -->

@@ -17,8 +17,10 @@
  *   … attempt <build> --attempt <json> | --close ok|failed  done-means-merged@1: add an attempt to the build's one log (an
  *                                                        auto-lander attempt is folded in), or close the open one
  *   … fail <build> --kind k --why "…" [--head sha]        record a failure found outside the dispatcher: status fixing
- *   … set-status <build> <status> [--by who]             set a status through the done-means-merged@1 guard: landed / built /
- *                                                        complete without merge + green CI + verify are refused (a note says why)
+ *   … set-status <build> <status> [--by who] [--demo]    set a status through the done-means-merged@1 guard: landed / built /
+ *                                                        complete without merge + green CI + verify are refused (a note says why);
+ *                                                        --demo = a demo action (demo-build@1): refused on a build without the tag
+ *   … demo <build>                                        demo-build@1: is this a demo build (tag demo: true, id demo-…)? exit 1 if not
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
@@ -53,6 +55,7 @@ import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, journalReadDirs, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 import * as files from '../core/data-files.mjs';
 import { DataStoreError } from '../core/data-store.mjs';
+import { DemoGuardError, demoGuard } from '../core/demo-build.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
 /**
@@ -484,6 +487,8 @@ function withStoreOnce(fn, meta) {
   const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
   const guarded = core.enforceDoneGuard(start, r && r.$axf ? r : r.store, { by: meta.by || 'cli' });
   const next = guarded.store;
+  // demo-build@1: a demo write (meta.demo, the live demo's acts) may touch demo builds only; anything else is refused whole
+  if (meta.demo === true) { const bad = core.demoViolations(start, next); if (bad.length) throw new DemoGuardError(`demo action refused: ${bad.map((x) => x.id).join(', ')} ${bad.length === 1 ? 'is' : 'are'} not demo build(s) (id prefix ${core.DEMO_PREFIX}, tag demo: true)`, { builds: bad.map((x) => x.id), action: meta.action || '' }); }
   if (guarded.refused.length) process.stderr.write(guarded.refused.map((x) => `builds-store: refused ${x.id} ${x.from} → ${x.to}: ${x.why}\n`).join(''));
   const saved = saveStore(start, next, meta);
   if (exportsOn()) exportAll(saved.store);
@@ -702,7 +707,8 @@ async function main(argv) {
   }
   if (cmd === 'set-status') {
     const [id, to] = rest; const bi = rest.indexOf('--by'); const by = (bi >= 0 && rest[bi + 1]) || 'cli';
-    if (!id || !core.STATUSES.includes(to)) { process.exitCode = 2; return out({ ok: false, error: `usage: set-status <build> <${core.STATUSES.join('|')}> [--by who]` }, `usage: set-status <build> <status> [--by who]`); }
+    const demo = rest.includes('--demo'); // demo-build@1: a demo action, refused on a build without the tag
+    if (!id || !core.STATUSES.includes(to)) { process.exitCode = 2; return out({ ok: false, error: `usage: set-status <build> <${core.STATUSES.join('|')}> [--by who] [--demo]` }, `usage: set-status <build> <status> [--by who] [--demo]`); }
     let why = ''; let ok = true;
     const r = withStore((x) => {
       const b = core.findBuild(x, id); if (!b) throw new Error(`no build "${id}"`);
@@ -710,7 +716,7 @@ async function main(argv) {
       ok = g.ok; why = g.why;
       Object.assign(b, g.build, { updatedAt: new Date().toISOString() });
       return x;
-    }, { by, action: 'set-status', note: `${id} → ${to}` });
+    }, { by, action: 'set-status', note: `${id} → ${to}`, demo });
     const b = core.findBuild(r.store, id);
     if (!ok) process.exitCode = 1;
     return out({ ok, why, id: b.id, status: b.status }, ok ? `${b.id}: ${b.status}` : `refused: ${b.id} stays ${b.status}: ${why}`);
@@ -778,6 +784,15 @@ async function main(argv) {
     const lines = r.report.moved.map((m) => `${m.id}: ${m.from} → ${m.to} (${m.why})`);
     return out({ ok: true, dry: !apply, already: r.already ?? null, report: r.report }, r.already ? `already migrated at ${r.already.at} (${r.already.moved} moved, ${r.already.unprovable} unprovable); nothing written` : `${apply ? 'migrated' : 'dry run'}: ${r.report.moved.length} moved, ${r.report.unprovable.length} unprovable (kept complete, no PR / branch / merge to check)\n${lines.join('\n')}`);
   }
+  if (cmd === 'demo') {
+    // demo-build@1: the sandbox guard's answer for one build (exit 1 when a demo action would be refused on it)
+    const [id] = rest;
+    if (!id) { process.exitCode = 2; return out({ ok: false, error: 'usage: demo <build>' }, 'usage: demo <build>'); }
+    const b = core.findBuild(loadStore(), id);
+    const g = demoGuard(b, 'demo action');
+    if (!g.ok) process.exitCode = 1;
+    return out({ ok: g.ok, id: b?.id ?? id, demo: !!b && core.isDemo(b), why: g.why }, g.ok ? `${b.id}: demo build (demo actions allowed)` : g.why);
+  }
   if (cmd === 'verify') {
     // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
     const store = loadStore();
@@ -794,7 +809,9 @@ async function main(argv) {
     // build-watchdog@1: recoveries[] is optional on a build
     const recovered = store.builds.filter((b) => Array.isArray(b.recoveries) && b.recoveries.length);
     const recoveries = { builds: recovered.length, records: recovered.reduce((n, b) => n + b.recoveries.length, 0), without: store.builds.length - recovered.length };
-    return out({ ok: !bad.length && v.ok && jv.ok, store: v, total: checks.length, failed: bad, journal: jv, recoveries }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store${jtext}; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without`);
+    // demo-build@1: demo builds (tag + demo- id) are counted, never mixed with the rest
+    const demo = { builds: store.builds.filter((b) => core.isDemo(b)).map((b) => b.id) };
+    return out({ ok: !bad.length && v.ok && jv.ok, store: v, total: checks.length, failed: bad, journal: jv, recoveries, demo }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records${demo.builds.length ? `, ${demo.builds.length} demo` : ''}); ${checks.length} checks, everything from the old files is in the store${jtext}; watchdog recoveries on ${recoveries.builds} build(s) (${recoveries.records} record(s)), ${recoveries.without} without`);
   }
   const s = loadStore();
   if (cmd === 'status') {

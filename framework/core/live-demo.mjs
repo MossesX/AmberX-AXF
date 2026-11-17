@@ -32,6 +32,8 @@
  * other build id (not-demo-build), so a tour can never touch a real build.
  */
 
+import { DEMO_PREFIX, isDemoId } from './demo-build.mjs';
+
 export const SCHEMA = 'demo-run@1';
 export const ACT_SCHEMA = 'demo-act@1';
 export const RESULT_SCHEMA = 'act-result@1';
@@ -41,8 +43,8 @@ export const VERSION = 1;
 export const MIN_GAP_MS = 30000;
 /** Default timeout for an act's action and for watching its expectation. */
 export const DEFAULT_TIMEOUT_MS = 60000;
-/** Id prefix of a demo (throwaway) build; the builds store tags them `demo: true`. */
-export const DEMO_PREFIX = 'demo-';
+/** Id prefix of a demo (throwaway) build; the builds store tags them `demo: true` (framework/core/demo-build.mjs). */
+export { DEMO_PREFIX };
 
 export const STATES = ['idle', 'overlay', 'focusing', 'captioned', 'running', 'waiting-next', 'cooldown', 'done', 'stopped'];
 export const TERMINAL_STATES = ['done', 'stopped'];
@@ -87,7 +89,6 @@ export class DemoTransitionError extends Error {
 const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
 const SLUG = /^[a-z0-9][a-z0-9-]{0,59}$/;
 const RUN_ID = /^[a-z0-9][a-z0-9-]{0,79}$/;
-const DEMO_ID = /^demo-[a-z0-9][a-z0-9-]{0,74}$/;
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : '');
 const iso = (v) => (ISO.test(str(v, 40)) ? str(v, 40) : '');
 const int = (v, min, dflt) => { const n = typeof v === 'string' && v.trim() !== '' ? Number(v) : v; return Number.isFinite(n) && Number.isInteger(n) && n >= min ? n : dflt; };
@@ -96,7 +97,7 @@ const addMs = (t, n) => new Date(ms(t) + n).toISOString();
 const slug = (v) => (SLUG.test(str(v, 60)) ? str(v, 60) : '');
 const clone = (v) => JSON.parse(JSON.stringify(v));
 /** Is this a demo build id? (the id side of the sandbox; the store adds the `demo: true` tag) */
-export const isDemoBuildId = (id) => typeof id === 'string' && id.length <= 80 && DEMO_ID.test(id);
+export const isDemoBuildId = isDemoId;
 
 /* ---------------- normalization ---------------- */
 
