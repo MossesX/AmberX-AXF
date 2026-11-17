@@ -815,8 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 22:52 UTC · `toolbar-widgets-in-any-banner-style` note (all) · orchestrator
-- 2026-11-16 22:52 UTC · `auto-land-every-finished-build-lands` → archived, note (all) · cli
 - 2026-11-16 22:52 UTC · `axf-molly-container-orchestrator-gate` → archived, note (all) · cli
 - 2026-11-16 22:52 UTC · `change-to-move-amberx-web-app-console` → archived, note (all) · cli
 - 2026-11-16 22:53 UTC · `auto-land-every-finished-build-lands` → archived, note (all) · builds-live
@@ -1215,6 +1213,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:37 UTC · `every-plugin-screen-gets-a-settings-gear` s12 done (all) · orchestrator
 - 2026-11-17 00:37 UTC · `prompting-engine-control-panel-to-create` s2 done (all) · orchestrator
 - 2026-11-17 00:37 UTC · `every-plugin-screen-gets-a-settings-gear` s13 done (all) · orchestrator
+- 2026-11-17 00:38 UTC · `every-plugin-screen-gets-a-settings-gear` s14 done (all) · orchestrator
+- 2026-11-17 00:38 UTC · `every-plugin-screen-gets-a-settings-gear` s15 done (all) · orchestrator
 
 ## Token passes (log)
 
