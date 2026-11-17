@@ -42,7 +42,8 @@ import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, res
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
-import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
+import { hide as hideAsset, hiddenAssetKinds, hiddenAssetTarget, hiddenAssetTargetError, hiddenCount, isHidden as isAssetHidden, listHidden, unhide as unhideAsset, unhideAll as unhideAllAssets, type HiddenAsset, type HiddenAssetRef } from './engines/hidden-assets';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -799,15 +800,16 @@ export class AxfRuntime {
 
   private bumpLook(): void { this.set({ swaps: this.state.swaps + 1 }); }
 
-  /** Save a look change and draw it. */
-  private changeLook(next: (cur: AppLookDocument) => AppLookDocument): boolean {
+  /** Save a look change and draw it (`fx` false: a plain repaint, no skin-switch sweep; hiding a toolbar is not a skin switch). */
+  private changeLook(next: (cur: AppLookDocument) => AppLookDocument, fx = true): boolean {
     if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const cur = this.ensureLook();
     if (!cur) { this.toast("This app's look can't be read from axHub right now.", 'warning', 'Appearance'); return false; }
     this.lookPreview = null;
     this.saveLook(next(cur));
-    this.withSkinSwitchFx(() => { this.applyAppearance(this.lastAppearance); this.bumpLook(); });
+    const paint = () => { this.applyAppearance(this.lastAppearance); this.bumpLook(); };
+    if (fx) this.withSkinSwitchFx(paint); else paint();
     return true;
   }
 
@@ -1018,6 +1020,69 @@ export class AxfRuntime {
     if (!this.changeLook(undoRestore)) return false;
     this.toast('Look brought back.', 'success', 'Appearance');
     return true;
+  }
+
+  /* ---- hidden assets (hidden-assets@1, engines/hidden-assets.ts; Brett, Nov 17 2026: "hide toolbars and tab groups and all
+     that and be able to see what's hidden"): one chrome piece at a time, kept in this app's look document on axHub ---- */
+
+  /** What is hidden in this app, oldest first (empty while the look document can't be read). */
+  hidden(): HiddenAsset[] { return listHidden(this.appLook()); }
+
+  /** How many pieces are hidden in this app. */
+  hiddenCount(): number { return hiddenCount(this.appLook()); }
+
+  /** Is this piece (`{ kind, id }` or `<kind>:<id>`) hidden in this app? A kind that can't be hidden is never hidden. */
+  isHidden(ref: HiddenAssetRef): boolean { return isAssetHidden(this.appLook(), ref); }
+
+  /** The kinds a piece can be hidden as (the chrome-settings kinds with a region on the page, plus widget). */
+  hideableKinds(): string[] { return hiddenAssetKinds(); }
+
+  /**
+   * Hide a piece in this app. The entry records who (`by`, default this app) and the asset the piece is drawn with
+   * (`assetRef`, default its own pick or the kind's slot). Refused with a toast for a kind that can't be hidden or a bad
+   * id; hiding what is already hidden changes nothing and is fine.
+   */
+  hide(ref: HiddenAssetRef, opts: { by?: string; assetRef?: string } = {}): boolean {
+    const err = hiddenAssetTargetError(ref);
+    if (err) { this.toast(err, 'warning', 'Hide'); return false; }
+    const t = hiddenAssetTarget(ref)!;
+    if (isAssetHidden(this.appLook(), t)) return true;
+    const assetRef = opts.assetRef ?? this.chromeAssetOf(t.kind, t.id);
+    if (!this.changeLook((cur) => hideAsset(cur, t, { by: opts.by ?? this.manifest.app.id, ...(assetRef ? { assetRef } : {}) }), false)) return false;
+    this.terminal.ok('appearance', `${t.kind} ${t.id} hidden (${this.hiddenCount()} hidden in this app)`);
+    return true;
+  }
+
+  /** Show a hidden piece again. Refused with a toast for a kind that can't be hidden; showing what isn't hidden is fine. */
+  unhide(ref: HiddenAssetRef): boolean {
+    const err = hiddenAssetTargetError(ref);
+    if (err) { this.toast(err, 'warning', 'Show'); return false; }
+    const t = hiddenAssetTarget(ref)!;
+    if (!isAssetHidden(this.appLook(), t)) return true;
+    if (!this.changeLook((cur) => unhideAsset(cur, t), false)) return false;
+    this.terminal.ok('appearance', `${t.kind} ${t.id} shown again (${this.hiddenCount()} hidden in this app)`);
+    return true;
+  }
+
+  /** Show every hidden piece again. Nothing hidden = nothing to do. */
+  unhideAll(): boolean {
+    const n = this.hiddenCount();
+    if (!n) return true;
+    if (!this.changeLook((cur) => unhideAllAssets(cur), false)) return false;
+    this.terminal.ok('appearance', `${n} hidden piece(s) shown again`);
+    return true;
+  }
+
+  /** Hide or show, as asked. */
+  setHidden(ref: HiddenAssetRef, on: boolean, opts: { by?: string; assetRef?: string } = {}): boolean {
+    return on ? this.hide(ref, opts) : this.unhide(ref);
+  }
+
+  /** The asset a chrome piece is drawn with: its own pick (`axf.chrome.<kind>.<id>.asset`), else the kind's slot, else none. */
+  private chromeAssetOf(kind: string, id: string): string {
+    const own = this.settings.get(CHROME_INSTANCE_ASSET_KEY(kind, id));
+    if (typeof own === 'string' && own) return own;
+    return (ASSET_TYPES as readonly string[]).includes(kind) ? this.state.active[kind as AssetType] ?? '' : '';
   }
 
   /* ---- scopes: hub-wide, this app, one UI, one plugin (skin-coverage@1, engines/skin-coverage.mjs) ---- */
@@ -1372,6 +1437,7 @@ export class AxfRuntime {
    */
   refreshFromSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     this.appearanceSource?.refresh(); // developer apps: the saved values live on the hub
+    this.lookStoreRef?.refresh?.(); // and so does this app's look document (skin state, hidden assets): a change there repaints through its subscription
     return this.reloadSaved();
   }
 

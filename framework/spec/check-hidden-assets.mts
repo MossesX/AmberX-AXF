@@ -11,7 +11,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { HIDDEN_ASSETS_CONTRACT, HIDDEN_ASSETS_FIELD, HIDDEN_ASSETS_MAX, HIDDEN_ASSET_WIDGET_KIND, hide, hiddenAssetKey, hiddenAssetKinds, hiddenAssetTarget, hiddenAssetTargetError, hiddenAssetsSchema, hiddenCount, hiddenEntry, hiddenOfKind, isHidden, isHiddenAssetKind, listHidden, normalizeHiddenAssets, parseHiddenAssetKey, setHidden, unhide, unhideAll, type HiddenAsset } from '../core/engines/hidden-assets';
 import { appLookSchema, lookAfterChange, newAppLook, normalizeAppLook, normalizeLookPart, parseAppLook, restoreAppDefault, undoRestore, type AppLookDocument } from '../core/engines/skin';
-import { CHROME_TARGETS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
+import { CHROME_INSTANCE_ASSET_KEY as CHROME_INSTANCE_ASSET_KEY_, CHROME_TARGETS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 import { hideableTypes } from '../core/engines/hide';
 
 const root = new URL('../', import.meta.url).pathname;
@@ -142,3 +142,132 @@ const entry: HiddenAsset = listHidden(one)[0]!;
 ok(entry.kind === 'toolbar' && entry.id === 'main', 'typed entry');
 
 console.log(`check-hidden-assets: ${n} checks passed`);
+
+/* ---- the runtime: rt.hidden / rt.hide / rt.unhide / rt.unhideAll read and write the app's look document through the look
+   writer (so the state survives reloads and reaches the hub), repaint without a skin-switch sweep, refresh on focus ---- */
+{
+  const { AxfRuntime } = await import('../core/runtime');
+  type AppearanceSource = import('../core/runtime').AppearanceSource;
+  type AppLookStore = import('../core/engines/skin').AppLookStore;
+  type AppearanceDocument = import('../core/engines/appearance').AppearanceDocument;
+  type AppearanceSourceState = import('../core/engines/appearance').AppearanceSourceState;
+  const { readdirSync, statSync } = await import('node:fs');
+  const assets: Record<string, unknown>[] = [];
+  for (const t of readdirSync(join(root, 'assets'))) {
+    const dir = join(root, 'assets', t);
+    if (!statSync(dir).isDirectory()) continue;
+    for (const f of readdirSync(dir)) if (f.endsWith('.json')) assets.push(JSON.parse(readFileSync(join(dir, f), 'utf8')));
+  }
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const manifest = (id: string) => ({ $axf: 'manifest@1', app: { id, name: id, version: '0' }, framework: { version: '0.2.0', template: 'react-ts' }, targets: ['web'], defaults }) as never;
+  { const m = new Map<string, string>(); (globalThis as { localStorage?: unknown }).localStorage = { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => { m.set(k, v); }, removeItem: (k: string) => { m.delete(k); } }; }
+  class Store implements AppLookStore {
+    doc: AppLookDocument | null = null; listeners = new Set<() => void>(); st: ReturnType<AppLookStore['status']> = 'missing'; saves = 0; refreshes = 0;
+    get() { return this.doc; } status() { return this.st; }
+    save(d: AppLookDocument) { this.doc = d; this.st = 'ready'; this.saves++; }
+    subscribe(f: () => void) { this.listeners.add(f); return () => { this.listeners.delete(f); }; }
+    refresh() { this.refreshes++; }
+    /** another tab or the CLI wrote the document: the hub feed says so */
+    arrive(d: AppLookDocument) { this.doc = d; this.st = 'ready'; for (const f of this.listeners) f(); }
+  }
+  class Source implements AppearanceSource {
+    st: AppearanceSourceState = { status: 'ready', version: 'v' }; saved: unknown[] = []; refreshes = 0;
+    listeners = new Set<Parameters<AppearanceSource['subscribe']>[0]>();
+    constructor(readonly appLook: Store, readonly doc: AppearanceDocument | null) {}
+    state() { return this.st; }
+    subscribe(l: Parameters<AppearanceSource['subscribe']>[0]) { this.listeners.add(l); return () => { this.listeners.delete(l); }; }
+    start() { for (const l of this.listeners) { l({ state: this.st }); l({ doc: this.doc, version: 'v' }); } }
+    stop() {} refresh() { this.refreshes++; } save(c: unknown) { this.saved.push(c); }
+  }
+  const hubDoc = { $axf: 'appearance@1', slots: { 'color-theme': 'arctic-daylight', 'style-theme': 'soft-studio', layout: 'focus-top', button: 'rounded-solid' }, spacing: 'tight', hidden: {}, settings: {} } as unknown as AppearanceDocument;
+  const rt = new AxfRuntime({ manifest: manifest('app-h'), assets: assets as never, storageKey: 'hidden-app-h' });
+  const store = new Store();
+  const src = new Source(store, hubDoc);
+  rt.attachAppearanceSource(src);
+  const swaps = () => rt.getState().swaps;
+
+  eq(rt.hidden(), [], 'nothing hidden to start');
+  eq(rt.hiddenCount(), 0, 'count 0');
+  eq(rt.hideableKinds(), hiddenAssetKinds(), 'the runtime names the same kinds');
+  ok(!rt.isHidden('toolbar:main'), 'not hidden');
+  const saves0 = store.saves; const s0 = swaps();
+  ok(rt.hide('toolbar:main'), 'hide a toolbar');
+  ok(rt.isHidden('toolbar:main') && rt.isHidden({ kind: 'toolbar', id: 'main' }), 'hidden by key and by target');
+  eq(rt.hidden().map((e) => `${e.kind}:${e.id}`), ['toolbar:main'], 'listed');
+  eq(rt.hidden()[0]!.by, 'app-h', 'by = this app');
+  ok(rt.hidden()[0]!.assetRef === rt.getState().active.toolbar, "assetRef = the toolbar the app draws (the kind's slot)");
+  ok(/^\d{4}-\d{2}-\d{2}T/.test(rt.hidden()[0]!.hiddenAt), 'hiddenAt is set');
+  ok(store.saves === saves0 + 1, 'saved once through the look writer');
+  eq(listHidden(store.doc).map((e) => e.id), ['main'], 'the look document on the hub carries it');
+  ok(store.doc!.updatedBy === 'app-h', 'the look writer stamps the app');
+  ok(swaps() === s0 + 1, 'one repaint');
+  eq(src.saved, [], 'nothing goes to the shared appearance document');
+  ok(rt.hide('toolbar:main'), 'hiding again is fine');
+  ok(store.saves === saves0 + 1 && swaps() === s0 + 1, 'and writes and repaints nothing');
+  ok(!rt.hide('grid:main'), 'an unknown kind is refused');
+  ok(!rt.hide('context-menu:main'), 'a context menu is refused');
+  ok(!rt.hide({ kind: 'toolbar', id: 'Bad Id' }), 'a bad id is refused');
+  ok(store.saves === saves0 + 1, 'a refusal writes nothing');
+  rt.settings.set(CHROME_INSTANCE_ASSET_KEY_('tab-group', 'settings.tabs'), 'chips');
+  ok(rt.hide('tab-group:settings.tabs', { by: 'api:rest' }), 'hide a tab row with its own pick, from the API');
+  eq(rt.hidden().at(-1), { kind: 'tab-group', id: 'settings.tabs', hiddenAt: rt.hidden().at(-1)!.hiddenAt, by: 'api:rest', assetRef: 'chips' }, "the entry: the caller and the row's own asset pick");
+  ok(rt.hide('widget:clock', { assetRef: 'clock-plain' }), 'hide a widget with the asset named by the caller');
+  eq(rt.hidden().at(-1)!.assetRef, 'clock-plain', 'the named asset is kept');
+  ok(rt.hide('banner:top'), 'hide a banner');
+  eq(rt.hiddenCount(), 4, 'four hidden');
+  ok(rt.unhide('toolbar:main'), 'unhide');
+  ok(!rt.isHidden('toolbar:main'), 'shown again');
+  eq(rt.hidden().map((e) => e.id), ['settings.tabs', 'clock', 'top'], 'the others stay');
+  ok(rt.unhide('toolbar:main'), 'unhiding what is shown is fine');
+  ok(!rt.unhide('grid:main'), 'unhiding an unknown kind is refused');
+  ok(rt.setHidden('nav-menu:side', true) && rt.isHidden('nav-menu:side') && rt.setHidden('nav-menu:side', false) && !rt.isHidden('nav-menu:side'), 'setHidden on / off');
+  const savesBefore = store.saves;
+  ok(rt.unhideAll(), 'unhide all');
+  eq(rt.hidden(), [], 'nothing hidden');
+  ok(store.saves === savesBefore + 1 && !('hiddenAssets' in store.doc!.own), 'one write, the field dropped');
+  ok(rt.unhideAll() && store.saves === savesBefore + 1, 'unhide all with nothing hidden writes nothing');
+
+  // survives a reload: a fresh runtime on the same (hub) document sees the same list
+  ok(rt.hide('toolbar:main') && rt.hide('banner:top'), 'hide two');
+  const again = new AxfRuntime({ manifest: manifest('app-h'), assets: assets as never, storageKey: 'hidden-app-h-2' });
+  const store2 = new Store(); store2.doc = JSON.parse(JSON.stringify(store.doc)); store2.st = 'ready';
+  again.attachAppearanceSource(new Source(store2, hubDoc));
+  eq(again.hidden().map((e) => `${e.kind}:${e.id}`), ['toolbar:main', 'banner:top'], 'a reload reads the same hidden list from the look document');
+  ok(again.isHidden('banner:top'), 'hidden after the reload');
+
+  // the look rides along: a pick keeps the list, Restore to default clears it, undo brings it back
+  rt.swap('button' as never, 'terminal');
+  eq(rt.hidden().length, 2, 'a pick keeps the hidden list');
+  rt.restoreDefaultAppearance();
+  eq(rt.hidden(), [], 'Restore to default shows everything');
+  ok(rt.undoRestoreDefault(), 'undo');
+  eq(rt.hidden().length, 2, 'undo brings the hidden list back');
+
+  // fresh on focus: refreshFromSaved re-reads the look document; a change that arrives from the hub repaints
+  const r0 = store.refreshes; const sw = swaps();
+  rt.refreshFromSaved();
+  ok(store.refreshes === r0 + 1 && src.refreshes >= 1, 'refreshFromSaved asks the look store and the appearance source');
+  store.arrive(unhideAll(store.doc!));
+  eq(rt.hidden(), [], 'a document that arrives from the hub (another tab, the CLI) is read at once');
+  ok(swaps() > sw, 'and repaints');
+  const stale = new Store(); delete (stale as { refresh?: unknown }).refresh;
+  const rt2 = new AxfRuntime({ manifest: manifest('app-j'), assets: assets as never, storageKey: 'hidden-app-j' });
+  rt2.attachAppearanceSource(new Source(stale, hubDoc));
+  rt2.refreshFromSaved();
+  ok(true, 'a store without refresh is fine');
+
+  // without a hub source the list lives in the local look setting
+  const local = new AxfRuntime({ manifest: manifest('app-k'), assets: assets as never, storageKey: 'hidden-app-k' });
+  ok(local.hide('toolbar:main') && local.isHidden('toolbar:main'), 'local hide');
+  ok(local.unhide('toolbar:main') && !local.isHidden('toolbar:main'), 'local unhide');
+
+  // the web look store re-reads on refresh
+  const hubStore = readFileSync(join(root, 'react/hubAppLook.ts'), 'utf8');
+  ok(/refresh\(\): void \{/.test(hubStore) && /this\.read\(\)/.test(hubStore), 'HubAppLookStore.refresh re-reads the document');
+  const sync = readFileSync(join(root, 'react/editorSync.ts'), 'utf8');
+  ok(/refreshFromSaved\(\)/.test(sync) && /'focus'/.test(sync) && /visibilitychange/.test(sync), 'useEditorSync refreshes on focus and when the tab is visible again');
+  const runtimeSrc = readFileSync(join(root, 'core/runtime.ts'), 'utf8');
+  ok(/lookStoreRef\?\.refresh\?\.\(\)/.test(runtimeSrc), 'refreshFromSaved re-reads the look document');
+  ok(/changeLook\(\(cur\) => hideAsset\(cur, t, [\s\S]*?\}\), false\)/.test(runtimeSrc) && /changeLook\(\(cur\) => unhideAsset\(cur, t\), false\)/.test(runtimeSrc), 'a hide or unhide repaints without the skin-switch sweep');
+  console.log(`check-hidden-assets (runtime): ${n} checks passed`);
+}

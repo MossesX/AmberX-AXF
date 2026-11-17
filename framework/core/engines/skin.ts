@@ -89,6 +89,8 @@ export interface AppLookStore {
   status(): 'loading' | 'ready' | 'missing' | 'failed';
   save(doc: AppLookDocument): void;
   subscribe(fn: () => void): () => void;
+  /** Re-read now (the UI-editor rule: fresh on focus, `rt.refreshFromSaved`); subscribers hear of a change. A store without one is read live. */
+  refresh?(): void;
 }
 /** One row of the Skin picker. */
 export interface SkinEntry { id: string; name: string; kind: 'skin' | 'design-package'; description: string; data: SkinData }
