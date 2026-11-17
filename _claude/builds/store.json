@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8315,
- "updatedAt": "2026-11-17T23:01:10.375Z",
+ "rev": 8316,
+ "updatedAt": "2026-11-17T23:01:22.340Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -121082,7 +121082,6 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -142847,7 +142846,6 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -211361,7 +211359,6 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -223758,7 +223755,6 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -262491,7 +262487,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T22:55:28.811Z",
+   "updatedAt": "2026-11-17T23:00:51.127Z",
    "builtAt": "",
    "notes": [
     {
@@ -262643,6 +262639,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T22:09:09.103Z",
+     "buildId": "banner-widget-shapes-plus-change-icon",
+     "phase": "",
+     "step": "s5",
+     "cause": "tmux-missing",
+     "exit": null,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "2026-11-17T22:09:23.059Z",
+     "session": "",
+     "note": "its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3)."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -263092,12 +263104,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:00:51.127Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-16T23:03:57.915Z"
+     "updatedAt": "2026-11-17T23:00:51.945Z"
     },
     {
      "id": "s19",
@@ -263135,7 +263147,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291963,7 +291975,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:00:26.720Z",
+   "updatedAt": "2026-11-17T23:00:41.831Z",
    "builtAt": "",
    "notes": [
     {
@@ -292039,28 +292051,19 @@
      "at": "2026-11-17T22:54:16.354Z"
     },
     {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s19): session on hulu0241 failed (exit 129): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T23:00:26.720Z"
+    },
+    {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T22:56:21.741Z"
     },
     {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T22:59:22.796Z"
-    },
-    {
-     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s19): session on hulu0241 failed (exit 129): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
-     "at": "2026-11-17T23:00:26.720Z"
     }
    ],
-   "approvals": [
-    {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-17T22:47:43.903Z",
-     "by": "auto",
-     "kind": "downgrade"
-    }
-   ],
+   "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "build a skin with Fable Ultra Code, really sick professional skin that covers everything: context menus, app menus, navigation menus, animations, colors, behavior, hooks, everything. Show me where the data sets go, the layouts, every single thing. Professional. One app: axHub, console, AmberX all as one app.",
@@ -292078,21 +292081,21 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-flagship-professional-skin-covering-2--earl",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T21:58:22.524Z",
     "runs": 2,
-    "crashes": 4,
+    "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T23:00:15.657Z",
-     "exit": 129,
+     "at": "2026-11-17T21:54:44.467Z",
+     "exit": 3,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 10,
+     "stepsLeft": 28,
      "account": "hulu0241",
-     "session": "axf-flagship-professional-skin-covering-2--earl",
+     "session": "axf-flagship-professional-skin-covering-2--sully",
      "phase": "Phase 1"
     },
     "split": {
@@ -292103,76 +292106,22 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "session on hulu0241 failed (exit 129): step s19 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
+     "model": "Fable",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T22:45:35.083Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-17T21:34:22.330Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T21:58:22.524Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T22:43:47.278Z",
-     "exit": 129,
-     "signal": "HUP",
-     "kind": "crash",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-move-everything-axhub-web-console--sully",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T22:44:09.502Z",
-     "buildId": "flagship-professional-skin-covering-2",
-     "phase": "Phase 1",
-     "step": "s10",
-     "cause": "exit-failed",
-     "exit": 129,
-     "action": "retry",
-     "attempt": 1,
-     "account": "hulu0241",
-     "notified": "2026-11-17T22:44:32.474Z",
-     "session": "axf-flagship-professional-skin-covering-2--earl",
-     "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3)."
-    },
-    {
-     "at": "2026-11-17T22:54:14.803Z",
-     "buildId": "flagship-professional-skin-covering-2",
-     "phase": "Phase 1",
-     "step": "s17",
-     "cause": "exit-failed",
-     "exit": 129,
-     "action": "retry",
-     "attempt": 1,
-     "account": "hulu0241",
-     "notified": "2026-11-17T22:54:18.677Z",
-     "session": "axf-flagship-professional-skin-covering-2--earl",
-     "note": "session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3)."
-    },
-    {
-     "at": "2026-11-17T23:00:15.657Z",
-     "buildId": "flagship-professional-skin-covering-2",
-     "phase": "Phase 1",
-     "step": "s19",
-     "cause": "exit-failed",
-     "exit": 129,
-     "action": "retry",
-     "attempt": 1,
-     "account": "hulu0241",
-     "notified": "",
-     "session": "axf-flagship-professional-skin-covering-2--earl",
-     "note": "session on hulu0241 failed (exit 129): step s19 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -292652,12 +292601,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-17T23:00:26.720Z",
+     "done": true,
+     "doneAt": "2026-11-17T23:00:41.831Z",
+     "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T23:00:26.722Z"
+     "updatedAt": "2026-11-17T23:00:48.570Z"
     },
     {
      "id": "s20",
@@ -292900,7 +292849,7 @@
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Fable",
+    "model": "Opus",
     "status": "pending",
     "estimate": "",
     "source": "console",
