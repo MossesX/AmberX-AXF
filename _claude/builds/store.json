@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7162,
- "updatedAt": "2026-11-17T00:23:57.210Z",
+ "rev": 7163,
+ "updatedAt": "2026-11-17T00:24:15.460Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259988,7 +259988,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:05:48.290Z",
-   "updatedAt": "2026-11-17T00:14:26.132Z",
+   "updatedAt": "2026-11-17T00:24:01.055Z",
    "builtAt": "",
    "notes": [
     {
@@ -260025,13 +260025,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T00:05:53.899Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-gate-auto-lander-tab-and-controls--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T00:14:17.994Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -260044,7 +260044,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T00:14:17.994Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -260053,7 +260053,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T00:14:17.994Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -260078,12 +260078,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:24:01.055Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T00:12:16.022Z",
-     "updatedAt": "2026-11-17T00:12:16.022Z"
+     "updatedAt": "2026-11-17T00:24:02.882Z"
     },
     {
      "id": "s2",
