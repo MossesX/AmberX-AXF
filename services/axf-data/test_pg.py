@@ -9,6 +9,8 @@ SQLite mirrors (ledger_*, chats_*), the SQLite → Postgres migration with count
 
 Without AXF_DATA_TEST_DSN the file prints "skipped" and exits 0 (CI starts a postgres container first).
 pg_dump / pg_restore: installed, or AXF_DATA_PG_TOOLS="docker exec -i <container>" + AXF_DATA_PG_TOOLS_DSN.
+AXF_DATA_PG_TOOLS_DSN is seen from inside that container, so it names the container's own port (127.0.0.1:5432), not
+the host port the test DSN maps to.
 """
 from __future__ import annotations
 
