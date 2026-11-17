@@ -1056,7 +1056,7 @@
       {
         "target": "action:native.permission",
         "title": "Phone: ask for a permission",
-        "text": "Asks the phone for the mic, notifications or \"Display over other apps\". Android shows its own prompt; you answer it on the phone.",
+        "text": "Asks the phone for the mic, notifications or \"Display over other apps\". For the floating toolbar the app first says why, then opens Android's page (find AXF Console, switch it on); coming back it checks and tells you whether the toolbar is on. The first start offers it once by itself.",
         "kind": "control",
         "tryIt": "Run native.permission:overlay if the toolbar never appears."
       },
