@@ -595,8 +595,18 @@ const STRATEGY_TEXT = Object.freeze({
 });
 const FAILURE_TEXT = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'the branch clashes with main', 'push-fail': 'the push or the PR failed', stalled: 'the session stalled (no sign of life)', 'fell-to-pending': 'the session stopped with steps left' });
 
-/** Does the auto-lander own this failure? A PR-side failure (clash, red CI) on a build with every step done is the lander's until it escalates. */
-export const landerOwns = (b, f, land = null) => !!f && ['clash', 'ci-red'].includes(f.kind) && allDone(b) && !!b.pr && !(land && (land.state === 'escalated' || land.escalation));
+/**
+ * Does the auto-lander own this failure? A PR-side failure (clash, red CI) on a build with every step done is the
+ * lander's first: it merges main in and hands a fix agent once per head. It stops owning it once one of its tries for
+ * that kind failed or ran past the attempt timeout (or it escalated): then the build's ladder takes over with the
+ * lander's attempts counted (DONE-MEANS-MERGED.md: the lander's per-PR ladder sits inside the build's).
+ */
+export function landerOwns(b, f, land = null, { now = Date.now(), attemptTimeoutMin = 45 } = {}) {
+  if (!f || !['clash', 'ci-red'].includes(f.kind) || !allDone(b) || !b.pr) return false;
+  if (land && (land.state === 'escalated' || land.escalation)) return false;
+  const mine = normAttempts(b.attempts).filter((a) => a.source === 'auto-lander' && a.kind === f.kind);
+  return !mine.some((a) => a.result === 'failed' || a.result === 'timeout' || (a.result === 'started' && minsSince(a.startedAt, now) >= attemptTimeoutMin));
+}
 
 /** The brief block a relaunch carries: what failed, every attempt so far, and what to do differently this time. */
 export function retryAddendum(d, f, attempts = []) {

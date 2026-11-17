@@ -14,6 +14,9 @@
  *   … export                                                regenerate the old files (read-only exports of the store)
  *   … done-means-merged [--apply] [--report <file>]         done-means-merged@1: built / complete records with no merged PR
  *                                                            back to landing / fixing, once (dry run without --apply)
+ *   … attempt <build> --attempt <json> | --close ok|failed  done-means-merged@1: add an attempt to the build's one log (an
+ *                                                        auto-lander attempt is folded in), or close the open one
+ *   … fail <build> --kind k --why "…" [--head sha]        record a failure found outside the dispatcher: status fixing
  *   … set-status <build> <status> [--by who]             set a status through the done-means-merged@1 guard: landed / built /
  *                                                        complete without merge + green CI + verify are refused (a note says why)
  *   … history <id>                                          every journal revision of one build
@@ -474,6 +477,51 @@ async function main(argv) {
     const b = core.findBuild(r.store, id);
     if (!ok) process.exitCode = 1;
     return out({ ok, why, id: b.id, status: b.status }, ok ? `${b.id}: ${b.status}` : `refused: ${b.id} stays ${b.status}: ${why}`);
+  }
+  if (cmd === 'attempt') {
+    // done-means-merged@1: one log. The auto-lander (and a hand) add attempts here: --attempt '<auto-lander-attempt@1 | attempt@1>'
+    // (a lander attempt is folded with fromAutoLanderAttempt); --close ok|failed closes the build's open attempt of that source
+    const [id] = rest; const gi = (k) => { const i = rest.indexOf(k); return i >= 0 ? rest[i + 1] : ''; };
+    const by = gi('--by') || 'cli'; const close = gi('--close'); const raw = gi('--attempt');
+    if (!id || (!raw && !close)) { process.exitCode = 2; return out({ ok: false, error: 'usage: attempt <build> --attempt <json> | --close ok|failed [--source auto-lander] [--note …] [--by who]' }, 'usage: attempt <build> --attempt <json> | --close ok|failed [--source s] [--note …]'); }
+    const BP = await import('../core/build-pipeline.mjs');
+    let added = null; let closed = null;
+    withStore((x) => {
+      const b = core.findBuild(x, id); if (!b) throw new Error(`no build "${id}"`);
+      const at = new Date().toISOString(); const list = BP.normAttempts(b.attempts);
+      if (raw) {
+        const j = JSON.parse(raw);
+        const a = j.$axf === 'auto-lander-attempt@1' || ['red-ci', 'land'].includes(j.kind) ? BP.fromAutoLanderAttempt(j) : BP.normAttempt(j);
+        // the same try reported twice (one per round) is one attempt: same source, kind, strategy, head and start
+        if (!list.some((y) => y.source === a.source && y.kind === a.kind && y.strategy === a.strategy && y.head === a.head && y.startedAt === a.startedAt)) { list.push(a); added = a; }
+      }
+      if (close) {
+        const src = gi('--source') || 'auto-lander';
+        const o = [...list].reverse().find((y) => y.result === 'started' && y.source === src);
+        if (o) { o.result = close === 'ok' ? 'ok' : 'failed'; o.endedAt = at; o.note = `${o.note ? `${o.note} ` : ''}${gi('--note') || (close === 'ok' ? 'Ok.' : 'Failed.')}`.slice(0, 600); closed = o; if (close === 'ok' && b.failure && ['clash', 'ci-red'].includes(b.failure.kind)) b.failure = null; }
+      }
+      b.attempts = BP.normAttempts(list);
+      if (added || closed) { b.updatedAt = at; if (added) b.notes.push({ text: `Attempt ${b.attempts.length} (${added.source}): ${added.kind} ${added.strategy}${added.fixStrategy ? ` (${added.fixStrategy})` : ''} → ${added.result}${added.note ? `: ${added.note.slice(0, 200)}` : ''}`, at }); }
+      return x;
+    }, { by, action: 'attempt', note: id });
+    return out({ ok: true, added, closed }, `${id}: ${added ? `attempt added (${added.kind} ${added.strategy})` : 'nothing new'}${closed ? `; attempt ${closed.n} closed ${closed.result}` : ''}`);
+  }
+  if (cmd === 'fail') {
+    // a failure found outside the dispatcher (the auto-lander: red CI on the merge commit): failure on the build, status fixing
+    const [id] = rest; const gi = (k) => { const i = rest.indexOf(k); return i >= 0 ? rest[i + 1] : ''; };
+    const BP = await import('../core/build-pipeline.mjs');
+    const f = BP.normFailure({ kind: gi('--kind'), at: new Date().toISOString(), why: gi('--why'), head: gi('--head'), step: gi('--step') });
+    if (!id || !f) { process.exitCode = 2; return out({ ok: false, error: `usage: fail <build> --kind <${BP.FAILURE_KINDS.join('|')}> --why "…" [--head sha] [--step s]` }, 'usage: fail <build> --kind k --why "…" [--head sha]'); }
+    let changed = false;
+    withStore((x) => {
+      const b = core.findBuild(x, id); if (!b) throw new Error(`no build "${id}"`);
+      const open = BP.normFailure(b.failure);
+      if (b.status === 'fixing' && open && open.kind === f.kind && open.head === f.head) return x;
+      b.failure = f; b.status = 'fixing'; b.builtAt = ''; b.updatedAt = f.at; changed = true;
+      b.notes.push({ text: `Fixing: ${f.kind}${f.head ? ` at ${f.head.slice(0, 10)}` : ''} (${f.why}). The server retries on its ladder.`, at: f.at });
+      return x;
+    }, { by: gi('--by') || 'cli', action: 'fail', note: `${id} ${f.kind}` });
+    return out({ ok: true, changed, failure: f }, `${id}: ${changed ? `fixing (${f.kind})` : 'already fixing this failure'}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
   if (cmd === 'done-means-merged') {

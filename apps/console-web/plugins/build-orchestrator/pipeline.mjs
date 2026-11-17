@@ -791,7 +791,7 @@ export function retryFixing({ env = process.env, accounts = [], settings = loadS
     if (b.deleted || b.status !== 'fixing') continue;
     const f = BP.normFailure(b.failure);
     if (!f) continue;
-    if (P.landerOwns(b, f, land.get(b.id))) { out.push({ id: b.id, action: 'lander', why: 'the auto-lander is fixing it on the PR' }); continue; }
+    if (P.landerOwns(b, f, land.get(b.id), { now, attemptTimeoutMin: policy.attemptTimeoutMin })) { out.push({ id: b.id, action: 'lander', why: 'the auto-lander is fixing it on the PR' }); continue; }
     const pinned = BP.nextModel(b) || b.pipeline?.model || 'Opus';
     const usable = accounts.filter((a) => a.usable !== false).map((a) => a.name);
     const d = RL.nextStrategy(b.attempts, f, policy, { at, pinnedModel: pinned, model: b.pipeline?.model || pinned, account: b.pipeline?.account || '', accounts: usable });

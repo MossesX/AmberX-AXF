@@ -300,3 +300,53 @@ export function applyControl(doc, cmd, build, { why = '', at = new Date().toISOS
   d.updatedAt = at;
   return d;
 }
+
+// ------------------------------------------------------------------ one log with the builds (done-means-merged@1)
+
+/** Statuses the lander may move a finished build to landing from (never over fixing / escalated: the ladder has it). */
+const TO_LANDING = Object.freeze(['built', 'running', 'queued', 'pending', 'waiting']);
+
+/**
+ * What one round's item means for the build's attempts[] and status, pure → [{ op, ... }]:
+ *   { op: 'status', to: 'landing' }                     a finished build the lander now owns
+ *   { op: 'add', attempt }                               a new try (attempt@1, source auto-lander)
+ *   { op: 'close', result: 'ok', note }                  the lander's open try worked (the build is ready to merge)
+ * A try is reported once: by head and kind against the previous round's item.
+ */
+export function shareOps(b, it, old = {}, at = new Date().toISOString()) {
+  const ops = [];
+  if (!b || !it) return ops;
+  if (TO_LANDING.includes(b.status) && b.status !== 'landing') ops.push({ op: 'status', to: 'landing' });
+  const pr = Number(it.pr) || 0;
+  const k = it.reason?.kind;
+  // a code conflict merging main in: the merge-main try failed (once per head)
+  if (k === 'conflict' && !(old.reason?.kind === 'conflict' && old.head === it.head)) {
+    ops.push({ op: 'add', attempt: { kind: 'clash', strategy: 'merge-main', head: it.head, pr, startedAt: at, endedAt: at, result: 'failed', note: str(it.reason.text, 600), source: 'auto-lander' } });
+  }
+  // main merged in after GitHub said it conflicts: the merge-main try worked
+  if (it.mergedMain && old.mergeable === false && !it.reason) {
+    ops.push({ op: 'add', attempt: { kind: 'clash', strategy: 'merge-main', head: it.mergedMain.sha || it.head, pr, startedAt: at, endedAt: at, result: 'ok', note: 'main merged in; data conflicts resolved by themselves', source: 'auto-lander' } });
+  }
+  // a fix agent handed the red CI or the conflict (once per head): a fix attempt, started (or failed to start)
+  const ag = it.agent;
+  if (ag && !(old.agent && old.agent.at === ag.at)) {
+    ops.push({ op: 'add', attempt: { kind: ag.kind === 'ci' ? 'ci-red' : 'clash', strategy: 'fix', fixStrategy: 'targeted', session: ag.session || '', head: ag.head || it.head, pr, startedAt: ag.at || at, endedAt: ag.exit === 0 ? '' : at, result: ag.exit === 0 ? 'started' : 'failed', note: str(ag.exit === 0 ? it.reason?.text : `the fix agent did not start: ${ag.why || 'no answer'}`, 600), source: 'auto-lander' } });
+  }
+  // nothing holds it any more after a hold: the lander's open try worked
+  if (it.state === 'ready' && old.state && old.state !== 'ready' && old.agent) ops.push({ op: 'close', result: 'ok', note: `CI green on ${str(it.head, 10)}; ready to merge.` });
+  return ops;
+}
+
+/**
+ * Merged builds whose merge commit still has no green CI on record (landed.ci): the lander checks CI on the merge
+ * commit and records it (landed when green; a ci-red failure when red). Recent merges only (7 days), at most `max`.
+ */
+export function mergeFollow(builds, { now = Date.now(), max = 3 } = {}) {
+  return (Array.isArray(builds) ? builds : [])
+    .filter((b) => b && !b.deleted && b.mergedAt && b.pr && ['landing', 'landed', 'built', 'fixing'].includes(b.status))
+    .filter((b) => !(b.landed?.sha && b.landed?.ci === 'success'))
+    .filter((b) => now - Date.parse(b.mergedAt) < 7 * 864e5)
+    .sort((a, b) => String(b.mergedAt).localeCompare(String(a.mergedAt)))
+    .slice(0, max);
+}
+
