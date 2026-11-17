@@ -2,7 +2,7 @@
 
 Build `fix-refreshing-console-jumps-back` · Brett (Nov 17 2026): "when are we fixing the refresh bug"
 
-Status: draft (step 1, findings).
+Status: all 11 steps done, PR open on `claude/fix-refreshing-console-jumps-back`.
 
 ## How the console finds its place on load (before the fix)
 
@@ -62,8 +62,57 @@ plus what is left on screen after the reload:
    (`plugins/console-terminal/web/nav.tsx:246`, `terminal.css:100`). Both are tied to live state, so they can only stay
    if that state does.
 
-Fix plan (step 8): when a reload or refresh ends, and once on every load as a safety net, clear any inline
-`overflow` / `pointer-events` / `touch-action` / `inert` on `html`, `body`, `#root` and `.fx-main`, drop a stale
-`axfDialog` history entry when no dialog is open, and keep `.fx-main` scroll chaining contained
-(`overscroll-behavior-y: contain`) so an upward scroll in the console never turns into a reload by accident. Reloading
-on purpose stays one tap (browser reload, `axf console refresh`, the console place API).
+Fix (step 8): when a restore or a soft refresh ends, once on every load and on pageshow, `releaseScrollLock`
+(`apps/console-web/src/place/scrollLock.ts`) clears any inline `overflow` / `pointer-events` / `touch-action` /
+`overscroll-behavior` lock and `inert` on `html`, `body`, `#root`, `.fx-frame`, `.fx-shell` and `.fx-main`, and drops a
+stale `axfDialog` history entry when no dialog is open. Pull-down refresh is left as it is (no `overscroll-behavior:
+contain` on `.fx-main`): Brett uses it on the phone, and it now keeps the place instead of throwing it away.
+
+## The fix
+
+`apps/console-web/src/place/`:
+
+| File | What it does |
+|---|---|
+| `placeCore.ts` | The place frame `console-place@1`, parse / age / deep-link precedence / merge, sessionStorage read and write (pure, unit tested) |
+| `placeState.ts` | Captures the place from the control registry (`tab:` / `subtab:` rows, `grid:` selection) and the DOM (`scroll:main`, `data-axf-scroll` panes); saves debounced on every change and at once on pagehide, hidden and beforeunload |
+| `placeRestore.ts` | Opens the saved view before the first render (`rt.navigate` in `main.tsx`), then switches each tab row as it registers; saving is held meanwhile; a tap, key, wheel or touch, or leaving the view, ends it; 12 s cap |
+| `placeScroll.ts` | Restores grid selection through the grid target's `set`, then scroll once the pane is tall enough and the offset has held for two checks |
+| `pullRefresh.ts` | A downward touch pull at the top saves the place right away (`by: pull-refresh`) for WebViews that skip pagehide |
+| `scrollLock.ts` | The safety net above |
+| `placeApi.ts` | `panel:console-place`, `console.place.restore`, `console.place.get`, `window.axfConsolePlace` |
+
+Also: `plugins/console-commands/web/index.tsx` `reloadPage` saves the place before a pushed soft or hard reload, and the
+hard reload's `?axf-refresh=` is stripped once loaded; the in-page `console.refresh` action captures the place before
+re-reading the data and puts it back after.
+
+## How each part is reached
+
+| Driver | Read the saved place | Put it back |
+|---|---|---|
+| REST | `GET /api/console-control/state?address=panel:console-place` | `POST /api/console-control/do {verb:'press', address:'function:console.place.restore'}` |
+| MCP | `console_control_state {address:'panel:console-place'}` | `console_control_do {verb:'press', address:'function:console.place.restore'}` |
+| CLI | `axf console place get` | `axf console place restore` |
+| Voice (AmberX) | | "put me back", "back to where I was", "restore my place", "where was I" (both twins: `console-control-voice.mjs`, `server/console_control.py`; fixture regenerated) |
+| Deep link / search | Ctrl+K "Saved place" | `?axf-open=console.place.restore` |
+
+## Before / after
+
+- Before: any reload landed on Home at the top, default tabs, nothing selected; a pull past the top of a list on the
+  phone did that by accident.
+- After (`scripts/place-refresh.e2e.mjs`, 16 checks pass against `vite preview`): Assets → Navigation tab → scrolled
+  600 px; reload, server-pushed refresh and pull refresh all come back to Assets / Navigation / 600 px (the pull at
+  the top of the same tab), the pane still scrolls, nothing is locked, and `?axf-open=view:home` still opens Home.
+
+## Checks
+
+typecheck ✓ · check-theme ✓ · check-controls ✓ · check-console-control ✓ · check-toolbars ✓ · check-chrome-assets ✓ ·
+`place-state-check.mts` 7/7 ✓ · `place-refresh.e2e.mjs` 16/16 ✓ · `console-control-parity.mjs` 14 cases ✓ ·
+server `test_voice` ✓.
+
+## Notes
+
+- The console's baked `src/axf/ui/axf.css` already differs from the framework on main, so `rebake.mjs apply` refuses;
+  only the two voice engine files were copied into `src/axf/core/engines` with their lock hashes updated.
+- No Android work: the Android shell's WebView keeps sessionStorage across `reload()` and `loadUrl(HOME)`, so the
+  restore covers its content updates as is.
