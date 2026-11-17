@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:01:17.387Z",
+ "updatedAt": "2026-11-17T22:01:29.727Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175288,7 +175288,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:01:06.633Z",
+   "updatedAt": "2026-11-17T22:01:11.334Z",
    "builtAt": "",
    "notes": [
     {
@@ -175558,6 +175558,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 3 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T22:01:06.633Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T22:01:11.334Z"
     }
    ],
    "approvals": [
@@ -183441,7 +183445,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -183449,7 +183453,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T22:00:35.071Z",
+   "updatedAt": "2026-11-17T22:01:15.733Z",
    "builtAt": "",
    "notes": [
     {
@@ -183675,6 +183679,10 @@
     {
      "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
      "at": "2026-11-17T21:57:10.326Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 2 of 3).",
+     "at": "2026-11-17T22:01:15.733Z"
     }
    ],
    "approvals": [
@@ -184195,9 +184203,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-17T22:00:35.071Z",
-     "note": "",
+     "done": false,
+     "doneAt": "",
+     "note": "Reset by the watchdog (exit-killed, attempt 2) 2026-11-17T22:01:15.733Z",
      "uid": "st-mwl3j61f19mo1o",
      "createdAt": "2026-11-17T19:39:27.698Z"
     },
