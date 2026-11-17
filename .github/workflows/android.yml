@@ -124,6 +124,21 @@ jobs:
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
+      - run: node framework/spec/check-data-store.mjs               # data-store@1: registry mirror, the client on memory + file backends (same answers), rev/etag conflicts, append-only journals, watch, count manifests, http error mapping + retries, migration map, mode transitions
+      - name: axf-data service tests (CRUD, rev conflicts, append-only journals, history + restore, watch, auth refusal) and the wire contract replayed from Node
+        run: |
+          python3 -m pip install --quiet -r services/axf-data/requirements.txt httpx
+          python3 services/axf-data/test_store.py
+      - name: axf-data on Postgres (real tables, SQLite mirrors, SQLite → Postgres migration with count checks, staged engine move, pg_dump backups, the wire contract replayed)
+        run: |
+          docker run -d --name axf-pg -e POSTGRES_PASSWORD=axf -e POSTGRES_DB=axfdata -p 127.0.0.1:5432:5432 postgres:16-alpine
+          for i in $(seq 1 30); do docker exec axf-pg pg_isready -U postgres -d axfdata && break; sleep 1; done
+          AXF_DATA_TEST_DSN=postgresql://postgres:axf@127.0.0.1:5432/axfdata AXF_DATA_PG_TOOLS="docker exec -i axf-pg" AXF_DATA_PG_TOOLS_DSN=postgresql://postgres:axf@127.0.0.1:5432/axfdata \
+            python3 services/axf-data/test_pg.py
+          docker rm -f axf-pg
+      - run: node framework/spec/check-data-migrate.mjs             # data-migrate on a seeded copy of real data: dry run by default, backup first, copy, verify M0 = M1, roll back from the backup, idempotent re-run, forced mismatches fail
+      - run: node framework/spec/check-builds-store-data.mjs        # builds store on data-store@1: local, shadow (mirrored store + journal), cutover (axf-data only, lock = rev check, history from the remote journal), rollback refused
+      - run: python3 apps/console-web/server/test_data_store.py      # console server data layer (data_store.py): storage-shaped calls in local, shadow, cutover and rollback against an in-process axf-data
       - run: node framework/spec/check-landing-line.mjs              # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
       - run: node framework/spec/check-gate-rules.mjs                # gate-rules@1: default rule set, migration from the lander settings, verdicts (green, red CI, UI Review held, clash, draft, held by hand, warn / off / molly-owned rules), lander-state@1 from the merge queue, schema snapshots
       - run: node framework/spec/check-build-rules.mjs               # build-rules@1: schema validation, the inventory → seed migration losing nothing (home-card first), briefBlocks per build (VPS rules never in a brief), history on edit / toggle / add / remove / restore, disabled rules skipped, the locked store round trip, schema snapshots
