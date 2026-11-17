@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7641,
- "updatedAt": "2026-11-17T19:18:51.926Z",
+ "rev": 7642,
+ "updatedAt": "2026-11-17T19:19:21.897Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -247181,7 +247181,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -247189,7 +247189,7 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T19:17:30.623Z",
+   "updatedAt": "2026-11-17T19:19:18.373Z",
    "builtAt": "",
    "notes": [
     {
@@ -247259,6 +247259,10 @@
     {
      "text": "Headless run axf-every-plugin-screen-gets-a-settings-gear--gina: brief only · start 20.1K tokens ($0.07) · cost $1.05 · 53 turns · 6 tools, MCP none",
      "at": "2026-11-17T19:17:30.623Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-17T19:19:18.373Z"
     }
    ],
    "approvals": [],
@@ -247279,14 +247283,23 @@
     "queuedAt": "2026-11-17T19:07:07.565Z",
     "queuedBy": "auto-lander",
     "account": "hulu0241",
-    "session": "axf-every-plugin-screen-gets-a-settings-gear--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T19:08:43.298Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T19:19:09.281Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 1,
+     "account": "hulu0241",
+     "session": "axf-every-plugin-screen-gets-a-settings-gear--gina",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-16T18:29:38.397Z",
      "by": "orchestrator",
@@ -247295,7 +247308,7 @@
      "note": "Split by Claude into 20 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-17T19:08:43.298Z",
     "planned": {
@@ -247868,7 +247881,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
