@@ -45,6 +45,10 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
+
+control@1 host targets answered here: console.control, console.pluginsettings, console.toolbars and console.widgeticons
+(widget-icons@1: every banner and settings widget's icon and mode; list / get / act set, reset, open through
+server/widget_icons.py, the same code as REST /api/widget-icons).
 """
 from __future__ import annotations
 

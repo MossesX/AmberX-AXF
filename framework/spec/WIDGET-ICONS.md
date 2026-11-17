@@ -124,19 +124,25 @@ it is the full text whenever the text is hidden or clipped, so nothing the widge
   `settings:setting:<key>`; a long tab label becomes its icon with the label as the tooltip.
 - Every host reads the two keys live, so a change in the picker, by API or by voice redraws at once.
 
-## API, MCP, CLI, voice (phase 2+)
+## API, MCP, CLI, voice (built in phase 2, Nov 17 2026)
 
-These are the addresses the later phases build; the contract fixes them now so the picker, the server and the voice
-grammar agree:
+Every action and setting of the picker is reachable without the UI, all on the same code:
 
-- Picker dialog `axf.widget.icons` (console_open target `dialog:axf.widget.icons`, with `?widget=<id>` to open on one),
-  from the banner's context menu (**Icon…**), the Widgets picker's gear and Settings → Appearance → Widget icons.
-- Console actions `widget.icon:<id>:<ref|own>`, `widget.mode:<id>:<icon|icon+text|text|auto>`,
-  `widget.icons.reset[:<id>]`; REST `/api/console-control` `setting:axf.widget.<id>.icon` / `.mode` read and set;
-  MCP `console_action("widget.icon", [id, ref])`; CLI `console.mjs action widget.icon <id> <ref>`; voice "use the
-  rocket icon for the usage widget", "show the usage widget as text".
-- State: `settings` (control@1) lists every `axf.widget.*` key; `widget.icons.list` returns every widget the open
-  console has resolved, with `icon`, `via`, `mode` and `fell`.
+| Channel | How |
+|---|---|
+| UI | right-click / long-press a banner widget, a Settings tab, sub-tab, group header or setting row → **Choose icon…** and **Show as**; Banner widgets dialog → each widget's **Choose icon…** and **Icon or text** |
+| Deep link | dialog `axf.widget.icons` with `arg=<widget id>` (MCP `console_dialog("axf.widget.icons", arg="banner:status:project")`, REST `POST /api/console/dialog {id, arg}`, `POST /api/widget-icons/<id>/open`); action `widget.icons:<id>` |
+| REST | `GET /api/widget-icons[?app=&q=]`, `GET /api/widget-icons/glyphs`, `GET/PUT/DELETE /api/widget-icons/<id>` (`{icon?, mode?, app?}`), `POST /api/widget-icons/reset` (`server/widget_icons.py`) |
+| MCP | `widget_icons_list`, `widget_icons_get` (read-only), `widget_icons_set`, `widget_icons_reset` |
+| control@1 | target `console.widgeticons` (list, get; act `set` `{icon?, mode?}`, `reset` (path `*` = all), `open`) |
+| CLI | `axf widget-icon list|get|set|reset|glyphs|open` (`framework/cli/widget-icon.mjs`) |
+| Console actions | `widget.icons[:<id>]`, `widget.icon:<id>:<ref|own>`, `widget.mode:<id>:<mode>`, `widget.icons.reset[:<id>]`, `widget.icon.set:<phrase>`, `widget.icon.reset[:<phrase|id>]` |
+| Voice | "use the rocket icon for the project widget", "set the usage meter icon to star", "show the ticker as text", "reset the project widget icon", "reset all widget icons" (console `src/actions/widget-icon-voice.ts`, server twin `widget_icons.voice`, run before the console-control grammar) |
+
+Server-side channels read and write the app's look document on axHub (`shared/settings/looks/<app>.json`,
+`own.settings`), so they work with no console open and every device of the app follows. The inventory of every
+widget and its default icon is `framework/schemas/widget-icon-defaults.json` (widget-icon-defaults@1,
+`engines/widget-icon-defaults.ts`).
 
 ## Related builds
 
