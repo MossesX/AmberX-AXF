@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7711,
- "updatedAt": "2026-11-17T19:48:00.011Z",
+ "rev": 7712,
+ "updatedAt": "2026-11-17T19:48:17.218Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207059,7 +207059,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T19:47:21.441Z",
+   "updatedAt": "2026-11-17T19:48:10.030Z",
    "builtAt": "2026-11-17T19:47:21.446Z",
    "notes": [
     {
@@ -207164,7 +207164,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T19:48:10.030Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-console-app-part-2-native-floating--rhonda",
+     "phase": "Phase 2"
+    }
    },
    "steps": [
     {
@@ -207333,7 +207343,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
