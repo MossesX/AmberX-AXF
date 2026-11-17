@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:26 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · mcp
 - 2026-11-16 20:26 UTC · `plan-studio-collapse-all-expand-all` added (0 steps) (all) · console
 - 2026-11-16 20:26 UTC · `plan-studio-collapse-all-expand-all` → queued, note (all) · console
 - 2026-11-16 20:26 UTC · `fable-rebuild-to-do-manager-unlimited` note (all) · orchestrator
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:08 UTC · `server-rule-done-means-merged-working` → queued, note (all) · console
 - 2026-11-17 00:07 UTC · `grids-get-their-own-full-token-set` → complete (all) · orchestrator
 - 2026-11-17 00:08 UTC · `grid-token-set-colours-hover-selected` note (all) · orchestrator
+- 2026-11-17 00:09 UTC · `own-look-per-grid-and-tab-group` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
