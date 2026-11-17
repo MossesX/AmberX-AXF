@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7348,
- "updatedAt": "2026-11-17T04:14:04.823Z",
+ "rev": 7349,
+ "updatedAt": "2026-11-17T04:15:59.149Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -260992,10 +260992,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-rule-done-means-merged-working",
-   "pr": "",
+   "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T04:13:38.448Z",
+   "updatedAt": "2026-11-17T04:15:54.980Z",
    "builtAt": "",
    "notes": [
     {
@@ -261503,7 +261503,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
