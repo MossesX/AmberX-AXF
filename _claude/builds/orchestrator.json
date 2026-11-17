@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:10:50.189Z",
+ "updatedAt": "2026-11-17T20:12:08.634Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -182183,7 +182183,7 @@
    "title": "Live build status: real-time grids, 15-second VPS liveness check, animated running rows, red alert + dialog when a build breaks",
    "category": "",
    "detail": "1) Live updates: the console updates in real time whenever a build changes (push over the console's live channel, no refresh), on every grid and tab (Active, Queue, Pending, Incomplete, etc.). 2) The VPS checks every 15 seconds that each running job is really alive (session, pid, heartbeat) and pushes the result to the console. 3) Every running/building row in any grid shows an animated indicator: a spinning/animated icon next to it, and the row itself slowly flashes or pulses. Configurable in settings: animation type (flash, pulse, glow, other), colors, speed, as a hot-swappable asset with tokens only. 4) When a running job stops or breaks: the animation stops, the row turns red/pink, a pop-up alert says it broke, and a dialog shows what happened (cause, exit code, last step, what the watchdog is doing about it), with a link to the build. 5) Full API: deep link, state read, REST, MCP, CLI, voice for the settings and the alert. Coordinate with both watchdogs (#772 recovery, #780 stale-row) instead of duplicating their checks.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -182191,7 +182191,7 @@
    "pr": "#815",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T20:10:27.932Z",
+   "updatedAt": "2026-11-17T20:12:05.888Z",
    "builtAt": "",
    "notes": [
     {
@@ -182229,6 +182229,10 @@
     {
      "text": "Watchdog fixed Live build status: real-time grids, 15-second VPS liveness check, animated runni (step s5): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T20:10:21.881Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 18 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T20:12:05.888Z"
     }
    ],
    "approvals": [],
