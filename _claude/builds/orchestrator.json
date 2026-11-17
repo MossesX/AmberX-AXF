@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T17:05:15.727Z",
+ "updatedAt": "2026-11-17T18:04:28.958Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -174368,6 +174368,37 @@
      "createdAt": "2026-11-17T16:54:55.110Z"
     }
    ]
+  },
+  {
+   "id": "every-grid-select-highlight-all-rows",
+   "title": "Every grid: select/highlight all rows matching a keyword, then act on them (move to top etc.)",
+   "category": "",
+   "detail": "Framework DataGrid gains a match-select command available on every grid now and in the future (built into DataGrid, not per screen): select and highlight the WHOLE row (not just one cell) for every row whose title/name contains a keyword (case-insensitive), adding to the multi-selection instead of replacing it; clear selection; then bulk actions on the selection, including move to top/bottom. Reachable by voice, console-control (grid:<id>/select-match?q=), REST, MCP and CLI. Fix console_control_focus select:true so it adds to the multi-selection rather than replacing it. Tests + UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:04:26.928Z",
+   "updatedAt": "2026-11-17T18:04:26.928Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "File a build that adds commands for every single grid now and in the future to highlight all rows that contain a keyword. Select them all and move them to the top.",
+    "at": "2026-11-17T18:04:26.928Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

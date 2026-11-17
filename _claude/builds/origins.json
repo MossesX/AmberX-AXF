@@ -3074,6 +3074,18 @@
    "from": "",
    "addenda": []
   },
+  "every-grid-select-highlight-all-rows": {
+   "said": "File a build that adds commands for every single grid now and in the future to highlight all rows that contain a keyword. Select them all and move them to the top.",
+   "at": "2026-11-17T18:04:26.928Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "every-plugin-screen-gets-a-settings-gear": {
    "said": "Every one has a gear icon to open its settings, right? Yeah, check and fix.",
    "at": "2026-11-16T18:27:11.774Z",
