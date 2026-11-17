@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7950,
- "updatedAt": "2026-11-17T21:12:19.621Z",
+ "rev": 7951,
+ "updatedAt": "2026-11-17T21:12:29.359Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265894,7 +265894,7 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -265902,7 +265902,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:12:13.615Z",
+   "updatedAt": "2026-11-17T21:12:24.516Z",
    "builtAt": "",
    "notes": [
     {
@@ -265936,6 +265936,14 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what (step s6): its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T21:11:04.164Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-rebuild-fresh-main-hide-any-asset--lenny.",
+     "at": "2026-11-17T21:12:22.255Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-rebuild-fresh-main-hide-any-asset--lenny, shared account login)",
+     "at": "2026-11-17T21:12:24.516Z"
     }
    ],
    "approvals": [],
@@ -265955,13 +265963,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T14:50:36.734Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-rebuild-fresh-main-hide-any-asset--lenny",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-17T21:12:20.028Z",
+    "runs": 1,
     "crashes": 1,
     "lastRun": {
      "at": "2026-11-17T21:11:03.193Z",
@@ -265981,9 +265989,9 @@
      "note": "Split by Claude into 16 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T21:12:20.028Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -265992,7 +266000,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T21:12:20.028Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -266437,7 +266445,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
