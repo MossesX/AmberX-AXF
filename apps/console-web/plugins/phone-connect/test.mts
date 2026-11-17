@@ -1,3 +1,4 @@
+// @ts-nocheck: a Node test, not part of the console's build
 /** Phone Connect CLI: argv → REST request (pure). node --experimental-strip-types apps/console-web/plugins/phone-connect/test.mts */
 import assert from 'node:assert/strict';
 import { cliWords, request } from './phone-connect.mjs';
