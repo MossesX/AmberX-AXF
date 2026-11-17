@@ -833,8 +833,6 @@ VPS). The session reads the rules and this file first, as usual.
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
 - 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
-- 2026-11-17 22:27 UTC · `icon-picker-every-banner-settings-widget` s8 done, note (all) · foreign-write
-- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
 - 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · pending
 - 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · pending
 - 2026-11-17 22:27 UTC · `icon-picker-every-banner-settings-widget` s8 done, note (all) · reconciler
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:47 UTC · `icon-picker-every-banner-settings-widget` s10 done (all) · foreign-write
 - 2026-11-17 22:47 UTC · `flagship-professional-skin-covering-2` s10 done, → running (all) · orchestrator
 - 2026-11-17 22:47 UTC · `flagship-professional-skin-covering-2` s10 done (all) · foreign-write
+- 2026-11-17 22:48 UTC · `icon-picker-every-banner-settings-widget` s10 done (all) · foreign-write
+- 2026-11-17 22:48 UTC · `flagship-professional-skin-covering-2` s10 done (all) · foreign-write
 
 ## Token passes (log)
 

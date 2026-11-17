@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8263,
- "updatedAt": "2026-11-17T22:48:14.664Z",
+ "rev": 8264,
+ "updatedAt": "2026-11-17T22:48:27.472Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288605,7 +288605,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:47:50.286Z"
+     "updatedAt": "2026-11-17T22:48:05.603Z"
     },
     {
      "id": "s11",
@@ -290865,7 +290865,7 @@
      "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-17T22:44:30.480Z",
      "rev": 3,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T22:47:50.286Z"
+     "updatedAt": "2026-11-17T22:48:05.603Z"
     },
     {
      "id": "s11",
