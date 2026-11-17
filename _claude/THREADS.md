@@ -830,8 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
-- 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 - 2026-11-17 20:18 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 - 2026-11-17 20:18 UTC · `live-build-status-real-time-grids-15` s5 done (all) · orchestrator
 - 2026-11-17 20:18 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
@@ -1230,6 +1228,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:52 UTC · `land-pr-730-reset-all-button-far-right` note (all) · pipeline
 - 2026-11-17 21:52 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-17 21:52 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
+- 2026-11-17 21:52 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:52 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 
 ## Token passes (log)
 
