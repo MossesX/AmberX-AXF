@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T13:01:10.344Z",
+ "updatedAt": "2026-11-17T13:04:59.582Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142941,7 +142941,7 @@
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T12:51:22.077Z",
+   "updatedAt": "2026-11-17T13:04:57.572Z",
    "builtAt": "",
    "notes": [
     {
@@ -142987,6 +142987,10 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-orchestrator-stale-row-watchdog-vps--earl.",
      "at": "2026-11-17T12:29:47.664Z"
+    },
+    {
+     "text": "s15: PR #780 open, all checks pass, main merged in. Not done: UI Review 3-option submit — a local capture of the Watchdog card (rebuild-shots, AXF_APPEARANCE_HUB=off) never reached the panel, so there are no screenshots to submit; take them from the deployed console after landing (ui-predict.mjs real). check-done-means-merged.mjs named in the brief does not exist on main.",
+     "at": "2026-11-17T13:04:57.572Z"
     }
    ],
    "approvals": [
