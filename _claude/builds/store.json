@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8102,
- "updatedAt": "2026-11-17T21:54:32.525Z",
+ "rev": 8103,
+ "updatedAt": "2026-11-17T21:54:42.911Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -284355,7 +284355,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:54:29.197Z",
+   "updatedAt": "2026-11-17T21:54:33.713Z",
    "builtAt": "",
    "notes": [
     {
@@ -284389,6 +284389,10 @@
     {
      "text": "Claude account: hulu0241 (axf-flagship-professional-skin-covering-2--sully, shared account login)",
      "at": "2026-11-17T21:54:29.197Z"
+    },
+    {
+     "text": "Brief only: brief is 26309 characters (~6578 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T21:54:33.713Z"
     }
    ],
    "approvals": [],
@@ -285164,7 +285168,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
