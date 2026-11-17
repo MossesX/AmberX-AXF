@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:10:44.718Z",
+ "updatedAt": "2026-11-17T21:10:52.363Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175183,7 +175183,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175191,7 +175191,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:06:42.636Z",
+   "updatedAt": "2026-11-17T21:10:39.705Z",
    "builtAt": "",
    "notes": [
     {
@@ -175281,6 +175281,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 23 steps left: back in Pending for Brett.",
      "at": "2026-11-17T21:06:42.636Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: back in the Queue (requeue-stuck by reconciler; phase Phase 1 finished on 2026-11-17 21:06 with 22 step(s) left and nothing needing Brett).",
+     "at": "2026-11-17T21:10:39.705Z"
     }
    ],
    "approvals": [],
