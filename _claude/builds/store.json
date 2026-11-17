@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7344,
- "updatedAt": "2026-11-17T04:11:14.354Z",
+ "rev": 7345,
+ "updatedAt": "2026-11-17T04:11:40.599Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -260995,7 +260995,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T04:07:10.216Z",
+   "updatedAt": "2026-11-17T04:11:37.655Z",
    "builtAt": "",
    "notes": [
     {
@@ -261063,7 +261063,7 @@
     "queuedBy": "console",
     "account": "",
     "session": "",
-    "slot": "[object Object]",
+    "slot": "",
     "model": "",
     "phase": "",
     "launchedAt": "",
@@ -261438,12 +261438,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T04:11:37.655Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T00:13:50.489Z",
-     "updatedAt": "2026-11-17T00:13:50.489Z"
+     "updatedAt": "2026-11-17T04:11:38.112Z"
     },
     {
      "id": "s15",
@@ -261503,7 +261503,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
