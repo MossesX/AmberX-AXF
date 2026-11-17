@@ -275,6 +275,85 @@ def open_picker(wid: str, to: str = "recent", by: str = "api") -> dict[str, Any]
     return relay.run(cmd, by=by)
 
 
+# ---------------------------------------------------------------------- voice (= src/actions/widget-icon-voice.ts)
+
+MODE_WORDS = {"icon only": "icon", "an icon": "icon", "icon": "icon", "just an icon": "icon", "icon and text": "icon+text", "icon plus text": "icon+text",
+              "icon with text": "icon+text", "text only": "text", "text": "text", "just text": "text", "automatic": "auto", "auto": "auto"}
+
+
+def _clean(t: str) -> str:
+    p = re.sub(r"[.!?,]", " ", str(t or "").lower())
+    p = re.sub(r"\s+", " ", p).strip()
+    p = re.sub(r"^(please|hey amber|amber)\s+", "", p)
+    return re.sub(r"\s+please$", "", p).strip()
+
+
+def _target(w: str) -> str:
+    w = re.sub(r"^(?:the|my)\s+", "", w.strip())
+    return re.sub(r"\s+(?:widget|tab|setting|chip|badge)$", "", w).strip()
+
+
+def _glyph(w: str) -> str:
+    w = re.sub(r"^(?:the|a|an)\s+", "", w.strip())
+    return re.sub(r"\s+", "-", re.sub(r"\s+icon$", "", w))
+
+
+def voice_intent(text: str) -> dict[str, Any] | None:
+    """A phrase → {op: icon | mode | reset, widget: words, value?}, or None (not a widget-icon phrase)."""
+    p = _clean(text)
+    if re.match(r"^(?:reset|restore) (?:all|every)(?: the)? widget icons?$", p):
+        return {"op": "reset", "widget": "*"}
+    if m := re.match(r"^(?:reset|restore)(?: the)? (.+?)(?:'s)? icon(?: to (?:its )?default)?$", p):
+        return {"op": "reset", "widget": _target(m.group(1))}
+    if m := re.match(r"^(?:use|give|put)(?: the| a| an)? (.+?) icon (?:for|on|to)(?: the)? (.+)$", p):
+        return {"op": "icon", "widget": _target(m.group(2)), "value": _glyph(m.group(1))}
+    if m := re.match(r"^(?:set|change|make)(?: the)? (.+?)(?:'s)? icon (?:to|into)(?: the| a| an)? (.+)$", p):
+        return {"op": "icon", "widget": _target(m.group(1)), "value": _glyph(m.group(2))}
+    if (m := re.match(r"^show(?: the)? (.+?) as (.+)$", p)) and m.group(2) in MODE_WORDS:
+        return {"op": "mode", "widget": _target(m.group(1)), "value": MODE_WORDS[m.group(2)]}
+    return None
+
+
+def find_widget(words: str, app: str = DEFAULT_APP) -> dict[str, Any] | None:
+    if parse_id(words):
+        return {"id": words, "label": words}
+    rows = list_widgets(app)["widgets"]
+    w = words.lower()
+    dash = re.sub(r"\s+", "-", w)
+    for test in (lambda x: str(x["label"]).lower() == w, lambda x: x["id"].split(":", 2)[2].lower() == dash, lambda x: str(x["label"]).lower().startswith(w),
+                 lambda x: w in str(x["label"]).lower(), lambda x: dash in x["id"].lower()):
+        hit = next((x for x in rows if test(x)), None)
+        if hit:
+            return hit
+    return None
+
+
+def voice(text: str, app: str = DEFAULT_APP, by: str = "voice") -> dict[str, Any] | None:
+    """Run a widget-icon phrase. None = not one (the console-control grammar takes it)."""
+    intent = voice_intent(text)
+    if intent is None:
+        return None
+    base = {"$axf": FRAME, "heard": text, "intent": intent}
+    try:
+        if intent["op"] == "reset" and intent["widget"] == "*":
+            reset_widget("", app, by)
+            return {**base, "ok": True, "say": "Every widget icon is back to its default."}
+        hit = find_widget(intent["widget"], app)
+        if hit is None:
+            return {**base, "ok": False, "code": "not_found", "say": f"I couldn't find a widget called {intent['widget']}."}
+        if intent["op"] == "reset":
+            reset_widget(hit["id"], app, by)
+            return {**base, "ok": True, "widget": hit["id"], "say": f"{hit['label']} is back to its default icon."}
+        if intent["op"] == "icon":
+            set_widget(hit["id"], icon=intent["value"], app=app, by=by)
+            return {**base, "ok": True, "widget": hit["id"], "say": f"{hit['label']} now uses the {intent['value']} icon."}
+        set_widget(hit["id"], mode=intent["value"], app=app, by=by)
+        shown = "icon and text" if intent["value"] == "icon+text" else intent["value"]
+        return {**base, "ok": True, "widget": hit["id"], "say": f"{hit['label']} now shows as {shown}."}
+    except WidgetIconError as e:
+        return {**base, "ok": False, "code": e.code, "message": e.message, "say": e.message}
+
+
 def router_for(auth: Any) -> APIRouter:
     from fastapi import Depends
     r = APIRouter(prefix="/api/widget-icons", dependencies=[Depends(auth)])

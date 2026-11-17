@@ -134,6 +134,10 @@ export const CONTROL_TARGETS = {
     acts: { open: {}, set: { key: 'string', value: 'any' }, enable: {}, disable: { options: 'object' } },
     actEffect: { open: 'navigate', set: 'write', enable: 'write', disable: 'write' },
     doc: `Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. ${CONSOLE_DELIVERY}` },
+  // widget-icons@1 (Nov 17 2026, build icon-picker-every-banner-settings-widget, appended last)
+  'console.widgeticons': { domain: 'console', label: 'Widget icons (banner and settings widgets)', ops: ['list', 'get', 'act'], paths: 'host', select: { q: 'string', app: 'string' },
+    acts: { open: {}, set: { icon: 'string', mode: 'string' }, reset: {} }, actEffect: { open: 'navigate', set: 'write', reset: 'write' },
+    doc: `The icon and display mode of every banner and settings widget (spec/WIDGET-ICONS.md). path = a widget id <host>:<kind>:<id> (banner:status:project, settings:tab:appearance). list = every widget with its icon, where it came from (pick or default), mode and pick; get = one; act set (input {icon?: <glyph> | <pack>/<glyph> | own, mode?: auto | icon | icon+text | text}) picks; act reset puts it back to its default (path "*" = every widget); act open opens the picker on it in the open console. Saved in the app's look document on axHub (input.app, default the Dev Console), the same as REST /api/widget-icons, the MCP tools widget_icons_*, the CLI axf widget-icon and the console actions widget.icon / widget.mode / widget.icons.reset.` },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 

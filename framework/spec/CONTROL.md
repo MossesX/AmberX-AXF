@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` · `console.pluginsettings` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` · `console.pluginsettings` · `console.widgeticons` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -91,6 +91,12 @@ console that says hello (checked first against that user's last catalog, so a wr
 waits up to 60 s. After 3 s with no console, the owner's AmberX phone is asked through axHub (`amberx.open_url`, amberxai.com only)
 to open `…/?axf-cmd=<id>`. Every sent answer carries `delivery.how`: `live` · `after reconnect` · `woke via AmberX` · `queued`
 (`queued: true`, still waiting when the call returned). A command for one named client that isn't there still answers `not_found`.
+
+`console.widgeticons` (Nov 17 2026, build `icon-picker-every-banner-settings-widget`, appended last) is the icon and
+display mode of every banner and settings widget (widget-icons@1, `spec/WIDGET-ICONS.md`): path = a widget id
+`<host>:<kind>:<id>`; list / get answer from the app's look document on axHub (no console needed); act `set`
+(input `{icon?, mode?}`) and `reset` (path `*` = every widget) write it; act `open` opens the picker in the open console.
+Answered by the console-commands host handler through `server/widget_icons.py`, the same code as REST `/api/widget-icons`.
 
 Reliable delivery (build console-commands-reliable, Nov 11 2026). Only the console proves it is alive (hello, seen every
 `CONSOLE_HEARTBEAT_MS` = 15 s and on every wake, ack, opening its stream); the server's stream keep-alive never counts, because a

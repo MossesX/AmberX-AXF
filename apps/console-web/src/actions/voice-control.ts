@@ -13,6 +13,7 @@ import type { AxfRuntime } from '../axf/core';
 import { intentCommand, voiceIntent, voiceReply, type VoiceIntent } from '../axf/core/engines/console-control-voice.mjs';
 import { executeControl, type ControlAnswer } from '../control/executor';
 import { consoleSearch, type ConsoleSearchHit } from '../control/search';
+import { runWidgetVoice } from './widget-icon-voice';
 
 export const VOICE_ACTION = 'console.control.voice';
 
@@ -40,6 +41,9 @@ export async function runVoice(rt: AxfRuntime, text: string, opts: { speak?: boo
     if (opts.speak !== false) { speak(r.say); rt.toast(r.say, r.ok ? 'info' : 'warning', 'Voice'); }
     return r;
   };
+  // widget-icons@1 phrases first ("set the project widget icon to rocket" would otherwise read as a setting)
+  const widget = runWidgetVoice(rt, heard);
+  if (widget) return done({ heard, intent: null, ...widget });
   if (!intent) return done({ heard, intent, say: "That isn't a console command I know.", ok: false });
   let hit: ConsoleSearchHit | null = null;
   if (intent.find) {

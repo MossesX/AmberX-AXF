@@ -566,6 +566,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     _register_claude_settings_tools(mcp)
     _register_expenses_tools(mcp)
+    _register_widget_icon_tools(mcp)
 
     # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
 
@@ -732,6 +733,42 @@ def _expenses(method: str, path: str, query: dict[str, Any] | None = None, body:
         raise ToolError(f"expenses {e.code}: {e.read().decode()[:300]}") from None
     except (urllib.error.URLError, TimeoutError) as e:
         raise ToolError(f"unavailable: {str(e)[:200]}") from None
+
+
+def _register_widget_icon_tools(mcp: MCPServer) -> None:
+    """widget-icons@1 (framework/spec/WIDGET-ICONS.md): the icon and display mode of every banner and settings widget,
+    the same as REST /api/widget-icons, the CLI `axf widget-icon` and the console actions widget.icon / widget.mode."""
+    import widget_icons as wi
+
+    async def go(fn: Callable[..., dict[str, Any]], *a: Any) -> dict[str, Any]:
+        try:
+            return await anyio.to_thread.run_sync(lambda: fn(*a))
+        except wi.WidgetIconError as e:
+            raise ToolError(f"{e.code}: {e.message}") from e
+
+    @mcp.tool(annotations=READ)
+    async def widget_icons_list(app: str = "axf-console", q: str = "") -> dict[str, Any]:
+        """Every banner and settings widget of an app (default the Dev Console) with the icon it draws, where that came
+        from (`via`: pick or default), how it is drawn (`mode`: auto, icon, icon+text, text) and the person's pick.
+        Widget ids are <host>:<kind>:<id>, e.g. banner:status:project, settings:tab:appearance. `q` filters by id or name."""
+        return await go(wi.list_widgets, app, q)
+
+    @mcp.tool(annotations=READ)
+    async def widget_icons_get(widget: str, app: str = "axf-console") -> dict[str, Any]:
+        """One widget's icon, mode, pick and default (widget = <host>:<kind>:<id>)."""
+        return await go(wi.get_widget, widget, app)
+
+    @mcp.tool(annotations=WRITE)
+    async def widget_icons_set(widget: str, icon: str = "", mode: str = "", app: str = "axf-console") -> dict[str, Any]:
+        """Pick a widget's icon and / or how it is drawn. icon = a framework glyph ("rocket"), "<pack>/<glyph>" or "own"
+        (its default); mode = auto (icon when the text is long), icon, icon+text or text. Saved in the app's look on
+        axHub, so every device follows. widget_icons_list shows the ids; GET /api/widget-icons/glyphs the glyphs."""
+        return await go(wi.set_widget, widget, icon or None, mode or None, app, "mcp")
+
+    @mcp.tool(annotations=WRITE)
+    async def widget_icons_reset(widget: str = "", app: str = "axf-console") -> dict[str, Any]:
+        """Put one widget (or, with widget="", every widget) back to its default icon and the long-text rule."""
+        return await go(wi.reset_widget, widget, app, "mcp")
 
 
 def _register_expenses_tools(mcp: MCPServer) -> None:
