@@ -13,6 +13,7 @@
  ],
  "data": {
   "toolbar": "build-orchestrator.slots",
+  "scope": "view:build-orchestrator",
   "layout": "list",
   "role": "toolbar",
   "ariaLabel": "Agent slots",
