@@ -60,6 +60,13 @@
         "text": "Shows the “Plugin Update” part of this screen. Part of Plugin Update.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "view:plugin-update",
+        "title": "Plugin Update",
+        "text": "Every installed plugin with the model that built it, when it was built and its version, checked against the plugin catalog on axHub.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

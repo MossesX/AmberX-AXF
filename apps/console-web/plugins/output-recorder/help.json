@@ -66,6 +66,13 @@
         "title": "Search what was said",
         "text": "Searches what was said in your session recordings. Every word has to be there, in any order. Covers the newest 200 transcripts.",
         "kind": "field"
+      },
+      {
+        "target": "view:output-recorder",
+        "title": "Audio Output Recorder",
+        "text": "Records everything the phone plays while it is on (AudioPlaybackCapture; the mic only as an opt-in second track, Record my mic too, off by default), in timestamped 30-minute chunks sent to axHub; each chunk stays on the phone until axHub confirms it, queued and retried while offline, within a small",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

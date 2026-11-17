@@ -46,6 +46,13 @@
         "text": "Shows “Changes & features grid”. Part of Build Breaker.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "view:changes-grid",
+        "title": "Changes & features grid",
+        "text": "One grid of every change (the Codebase changes log, read through axf.changes@1) and every feature (the plan).",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

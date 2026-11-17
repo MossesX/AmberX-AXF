@@ -53,6 +53,13 @@
         "text": "Shows “PR #”. Part of Build Breaker.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "view:build-breaker",
+        "title": "Build Breaker",
+        "text": "Everything Brett ever asked for, in plain English (build-asks@1): one compact row per ask with its date and time, a status badge (built, in progress, pending, planned, held, removed, waiting for push / pull / deploy / approval), build time, cost and model.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

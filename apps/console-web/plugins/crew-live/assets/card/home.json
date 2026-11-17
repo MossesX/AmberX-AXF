@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "crew-live-home",
+  "name": "Crew",
+  "version": "1.0.0",
+  "description": "Crew on Home: Working agents.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Crew",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "crew-live",
+      "command": "agents"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

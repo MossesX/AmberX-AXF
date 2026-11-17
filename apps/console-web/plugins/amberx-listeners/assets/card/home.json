@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "amberx-listeners-home",
+  "name": "AmberX listeners",
+  "version": "1.0.0",
+  "description": "AmberX listeners on Home: Every AmberX device and its background listeners (state, who has the mic, last error, policy).",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "AmberX listeners",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "amberx-listeners",
+      "command": "devices"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "claude-session-home",
+  "name": "Claude sessions",
+  "version": "1.0.0",
+  "description": "Claude sessions on Home: Who this Claude session is.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Claude sessions",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "claude-session",
+      "command": "agent"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

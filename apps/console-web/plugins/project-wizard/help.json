@@ -80,6 +80,13 @@
         "title": "Fix in settings",
         "text": "Opens Settings → Plugins → Project wizard, where the GitHub token or VPS git problem shown here is fixed.",
         "kind": "button"
+      },
+      {
+        "target": "view:project-wizard",
+        "title": "Project wizard",
+        "text": "Turns a GitHub repo, a VPS repo, a folder or a new AXF app into a Claude project: name and description, a home on GitHub, the VPS and/or a local git folder (existing or new), a validated project manifest and _claude/ files, and a Claude.ai project kit (instructions + context files).",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

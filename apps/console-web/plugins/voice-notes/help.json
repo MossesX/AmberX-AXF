@@ -256,6 +256,13 @@
         "text": "Shows the “Voice notes” part of this screen. Part of Voice notes.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "view:voice-notes",
+        "title": "Voice notes",
+        "text": "Sets up a voice-activated notes pusher and shows the notes it saved.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

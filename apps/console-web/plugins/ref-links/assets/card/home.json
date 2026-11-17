@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "ref-links-home",
+  "name": "Reference links",
+  "version": "1.0.0",
+  "description": "Reference links on Home: Every reference target.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Reference links",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "ref-links",
+      "command": "targets"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

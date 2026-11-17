@@ -214,6 +214,13 @@
         "text": "Shows the “Context menu designer” part of this screen. Part of Context menu designer.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "view:context-menu-designer",
+        "title": "Context menu designer",
+        "text": "Design context menus: create, edit, name, rename and save them, and make 'chunks' (reusable pieces of a menu, saved from any menu with Save as chunk) that you insert into menus by name; chunks can hold items, separators and other chunks.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []

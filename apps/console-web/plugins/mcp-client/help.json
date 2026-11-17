@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "mcp-client-help",
+  "name": "MCP client help",
+  "version": "0.1.0",
+  "description": "The mcp-client plugin's Help mode entries (help@1). Stub written by the gate fixer help-stub.",
+  "author": "AmberX AXF (gate fixer help-stub)",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:mcp-client",
+    "entries": [
+      {
+        "target": "view:mcp-client",
+        "title": "MCP client",
+        "text": "Connect the console to other MCP servers (Streamable HTTP) through the framework's MCP client library (ai.amberx.axf.mcp): browse their tools, resources and prompts, call tools, and keep a call log.",
+        "kind": "screen",
+        "draft": true
+      }
+    ]
+  }
+}

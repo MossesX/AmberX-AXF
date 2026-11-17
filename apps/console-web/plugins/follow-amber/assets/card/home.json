@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "follow-amber-home",
+  "name": "Follow Amber",
+  "version": "1.0.0",
+  "description": "Follow Amber on Home: Is Follow Amber on (and how many consoles follow).",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Follow Amber",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "follow-amber",
+      "command": "state"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}
