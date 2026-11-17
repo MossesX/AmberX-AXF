@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:06:22.449Z",
+ "updatedAt": "2026-11-17T22:07:12.670Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131490,7 +131490,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T22:00:29.241Z",
+   "updatedAt": "2026-11-17T22:05:21.473Z",
    "builtAt": "",
    "notes": [
     {
@@ -131616,6 +131616,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T22:00:29.241Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T22:05:21.473Z"
     }
    ],
    "approvals": [
@@ -168163,6 +168167,22 @@
     {
      "text": "Phase 1 done (s1-s4, Fable). widget-shape@1: per-widget shape circle|square|rounded|pill|hexagon|custom (customPath, one closed SVG outline in a 0..100 square → percent polygon), iconOverride {pack, id}; tokens --fx-widget-shape-radius / --fx-widget-shape-clip / --fx-widget-icon; default circle = today's look, saved choices migrated once to shape circle. API: UI = right-click banner → Banner widgets… → Shape / Custom outline / Icon / Glyph fields (deep link action banner.widgets:<type>:<id>); state = rt.bannerWidgets()[].view.shape|customPath|iconOverride + rt.bannerWidgetShape(key) tokens and fallbacks; actions = banner.widget:<widget>:<shape> | path=<svg> | icon=<pack>/<glyph> | icon=own | reset, one action for REST /api/console-control, console_control MCP tools, axf console and AmberX voice through the command catalog; banner-wide default = customize token widgetShape on the banner (Settings → Appearance → Assets → Banner). Android twin deferred in PORTING.md. No console build or screenshot this session (engine + framework only).",
      "at": "2026-11-16T23:29:07.821Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-banner-widget-shapes-plus-change-icon--lenny.",
+     "at": "2026-11-17T22:05:32.665Z"
+    },
+    {
+     "text": "Brief only: brief is 24418 characters (~6105 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T22:05:38.058Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-banner-widget-shapes-plus-change-icon--lenny, shared account login)",
+     "at": "2026-11-17T22:05:41.549Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 3) with 15 steps left: back in the Queue (run 1).",
+     "at": "2026-11-17T22:05:57.394Z"
     }
    ],
    "approvals": [],
@@ -181644,7 +181664,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T22:00:29.241Z",
+   "updatedAt": "2026-11-17T22:05:21.473Z",
    "builtAt": "",
    "notes": [
     {
@@ -181842,6 +181862,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T22:00:29.241Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T22:05:21.473Z"
     }
    ],
    "approvals": [
@@ -183453,7 +183477,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -183461,7 +183485,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T22:04:49.879Z",
+   "updatedAt": "2026-11-17T22:07:09.967Z",
    "builtAt": "",
    "notes": [
     {
@@ -183689,12 +183713,16 @@
      "at": "2026-11-17T21:57:10.326Z"
     },
     {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 2 of 3).",
+     "at": "2026-11-17T22:01:15.733Z"
+    },
+    {
      "text": "Opus phase done, PR #816. Dry run 21/21 in auto and pause mode on a copy of the real store. Open: (1) UI Review item r-20261117-qxltg01 is saved in the build worktree only (no console token in this session); it needs posting with --console using _claude/builds/reports/guided-live-demo-test-watch-orchestrator/choices.json. (2) Start refuses until live-build-status-real-time-grids-15 lands (dependency check). (3) Fable follow-up: demo-build@1 treats any demo-* id as demo; 4 real builds have such ids, so the contract should require the tag.",
      "at": "2026-11-17T22:04:49.879Z"
     },
     {
-     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 2 of 3).",
-     "at": "2026-11-17T22:01:15.733Z"
+     "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-17T22:07:09.967Z"
     }
    ],
    "approvals": [
