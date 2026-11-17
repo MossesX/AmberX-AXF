@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:27:34.262Z",
+ "updatedAt": "2026-11-17T22:27:44.595Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186573,7 +186573,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:27:12.259Z",
+   "updatedAt": "2026-11-17T22:27:28.552Z",
    "builtAt": "",
    "notes": [
     {
@@ -186639,6 +186639,10 @@
     {
      "text": "Overlap with banner-widget-shapes-plus-change-icon (#821): it adds iconOverride {pack,id} per banner widget (widget-shape@1, framework/core/engines/bannerwidgets.ts) and a Change icon… dialog. Reuse one IconPicker component (framework/react/components/IconPicker.tsx) and one per-widget icon key; whichever lands second adopts the first.",
      "at": "2026-11-17T22:13:20.545Z"
+    },
+    {
+     "text": "Reconciler: PR #820 names s1, s2, s3, s4, s5, s6, s7, s8 done",
+     "at": "2026-11-17T22:27:28.552Z"
     }
    ],
    "approvals": [
@@ -186837,7 +186841,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:27:12.259Z",
+     "doneAt": "2026-11-17T22:27:28.552Z",
      "note": "",
      "uid": "st-mwl76ubl08bwhj",
      "createdAt": "2026-11-17T21:21:51.104Z"
@@ -189441,9 +189445,18 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:27:03.346Z",
-   "updatedAt": "2026-11-17T22:27:03.346Z",
+   "updatedAt": "2026-11-17T22:27:31.549Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: run this now on Fable, on the hulu0241 account. Top priority.",
+     "at": "2026-11-17T22:27:18.963Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:27:31.549Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

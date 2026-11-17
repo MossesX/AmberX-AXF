@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8192,
- "updatedAt": "2026-11-17T22:27:34.262Z",
+ "rev": 8193,
+ "updatedAt": "2026-11-17T22:27:44.595Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -285288,7 +285288,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:27:12.259Z",
+   "updatedAt": "2026-11-17T22:27:28.552Z",
    "builtAt": "",
    "notes": [
     {
@@ -285354,6 +285354,10 @@
     {
      "text": "Overlap with banner-widget-shapes-plus-change-icon (#821): it adds iconOverride {pack,id} per banner widget (widget-shape@1, framework/core/engines/bannerwidgets.ts) and a Change icon… dialog. Reuse one IconPicker component (framework/react/components/IconPicker.tsx) and one per-widget icon key; whichever lands second adopts the first.",
      "at": "2026-11-17T22:13:20.545Z"
+    },
+    {
+     "text": "Reconciler: PR #820 names s1, s2, s3, s4, s5, s6, s7, s8 done",
+     "at": "2026-11-17T22:27:28.552Z"
     }
    ],
    "approvals": [
@@ -285620,11 +285624,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-17T22:27:12.259Z",
+     "doneAt": "2026-11-17T22:27:28.552Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:27:12.639Z"
+     "updatedAt": "2026-11-17T22:27:36.933Z"
     },
     {
      "id": "s9",
@@ -285738,10 +285742,33 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-17T21:20:30.021Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwl76ubk01w860": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl02wc67": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl03howi": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl041zog": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl05tdcz": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl06ref4": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl07moc4": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl08bwhj": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl098bzd": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl0afwg6": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl0bya65": "2026-11-17T21:21:51.104Z",
+     "st-mwl76ubl0cmdsf": "2026-11-17T21:21:51.104Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-17T21:21:51.104Z",
    "rearranged": false,
@@ -289169,9 +289196,18 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:27:03.346Z",
-   "updatedAt": "2026-11-17T22:27:03.346Z",
+   "updatedAt": "2026-11-17T22:27:31.549Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: run this now on Fable, on the hulu0241 account. Top priority.",
+     "at": "2026-11-17T22:27:18.963Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:27:31.549Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -289195,11 +289231,11 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
+    "model": "Fable",
     "status": "pending",
     "estimate": "",
     "source": "mcp",

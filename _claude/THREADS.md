@@ -831,9 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:58 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 20:58 UTC · `rebuild-fresh-main-phone-connect-small` s4 done (all) · orchestrator
-- 2026-11-17 20:58 UTC · `terminal-main-tab-streaming-console-s` s12 done (all) · orchestrator
 - 2026-11-17 20:58 UTC · `rebuild-every-toolbar-page-specific` s13 done (all) · orchestrator
 - 2026-11-17 20:59 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
 - 2026-11-17 20:59 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
@@ -1231,6 +1228,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:27 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:27 UTC · `icon-picker-every-banner-settings-widget` s8 done (all) · orchestrator
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `icon-picker-every-banner-settings-widget` s8 done, note (all) · foreign-write
+- 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
 
 ## Token passes (log)
 
