@@ -51,9 +51,10 @@ export function readQueueConfig(s) {
   return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
 }
 export function queueControl(s, cmd, pr, opts = {}) {
-  const cur = (readQueue(s).items || []).map((x) => x.pr);
-  const head = opts.head ?? ((readQueue(s).items || []).find((x) => x.pr === Number(pr))?.head || (readQueue(s).waiting || []).find((x) => x.pr === Number(pr))?.head || '');
-  const d = q.applyQueueControl(readQueueControl(s), cmd, pr, { ...opts, head, current: cur });
+  const queue = readQueue(s);
+  const cur = (queue.items || []).map((x) => x.pr);
+  const head = opts.head ?? ((queue.items || []).find((x) => x.pr === Number(pr))?.head || (queue.waiting || []).find((x) => x.pr === Number(pr))?.head || '');
+  const d = q.applyQueueControl(readQueueControl(s), cmd, pr, { ...opts, head, current: cur, currentAt: queue.at || '' });
   writeJson(queueControlFile(s), d);
   return d;
 }

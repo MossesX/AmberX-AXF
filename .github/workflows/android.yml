@@ -109,6 +109,7 @@ jobs:
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
+      - run: node framework/spec/check-build-pipeline.mjs           # build-pipeline@1 exit transition: phase done → Queue (same place, no crash counted), crash → Queue until the limit → Pending, blocked upgrade → Pending, all done → built; fixtures/build-pipeline-exit.json
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/groups.test.mjs   # build-groups@1: custom groups and tabs, state order and counts, smart rules, group actions, per project  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
