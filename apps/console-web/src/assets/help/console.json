@@ -1108,13 +1108,14 @@
       {
         "target": "drag-anything",
         "title": "Drag anything (drag-move@1)",
-        "kind": "concept",
-        "text": "Whatever can be dragged can be moved by command. How each kind is reached: banner widgets (container banner, items type:id; move, add, remove), the app toolbar's widgets (toolbar; move) and workspace toolbars (<workspace>.<toolbar>; move, add, remove), tab strips (Terminal terminal.<window>, workspace panes workspace.<id>.<area>, window tab stacks by group id; move across stacks), dock panes (window id; split to a side, join a stack, close), grid columns and rows (grid id; columns move, show, hide on every grid), lists (build-manager.queue, merge-queue, plan-studio.<status>, ai-keys.accounts), layout regions (show, hide). Each is reached by deep link drag:<kind>:<container>:<item>, REST /api/drag, the console_drag_* MCP tools, axf drag and voice.",
+        "kind": "control",
+        "text": "Whatever can be dragged can be moved by command, with the same result as dragging it. Every kind is reached by the deep link drag:<kind>:<container>:<item>, REST /api/drag, the console_drag_* MCP tools, axf drag and voice.",
         "related": [
           "action:drag.list",
           "action:drag.move",
           "action:drag.show"
-        ]
+        ],
+        "more": "Banner widgets: container banner, items type:id; move, add, remove. App toolbar widgets: toolbar; move. Workspace toolbars: <workspace>.<toolbar>; move, add, remove. Tab strips: Terminal terminal.<window>, workspace panes workspace.<id>.<area>, window tab stacks by group id (move across stacks). Dock panes: the window id; split to a side, join a stack, close. Grid columns and rows: the grid id; columns move, show and hide on every grid. Lists: build-manager.queue, merge-queue, plan-studio.<status>, ai-keys.accounts. Layout regions: show and hide."
       }
     ],
     "intros": [
