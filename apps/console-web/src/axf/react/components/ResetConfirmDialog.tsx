@@ -100,7 +100,7 @@ export function ResetConfirmDialog({ scope, name, plan, onReset, onCancel, inclu
   const [assets, setAssets] = useState(includeAssets ?? SETTINGS_RESET_INCLUDE_ASSETS_DEFAULT);
   const p = useMemo(() => plan(assets), [plan, assets]);
   return (
-    <div className="fx-stack axf-reset" data-axf-target={resetDialogTarget(scope)} data-axf-reset-scope={scope} data-axf-reset-assets={assets ? 'on' : 'off'}>
+    <div className="fx-stack axf-reset" data-axf-target={resetDialogTarget(scope)} data-axf-reset-scope={scope} data-axf-help-id="settings.reset-dialog" data-axf-reset-assets={assets ? 'on' : 'off'}>
       <p className="axf-reset__question">Reset {name}’s settings to their defaults? <span className="fx-muted">{p.summary}.</span></p>
       <Switch label="Include assets" checked={assets} onChange={setAssets}
         hint={assets ? 'Changed assets and skins in this scope go back to their defaults too.' : 'Only settings are cleared; changed assets stay as they are.'} />

@@ -882,7 +882,7 @@ function PluginSettingsList() {
   if (!byPlugin.size) return <p className="fx-muted axf-settings__hint" style={{ margin: 0 }}>No plugin has settings.</p>;
   const rows = [...byPlugin.entries()].map(([id, tabs]) => ({ id, tab: tabs.find((t) => t.plugin === id) ?? tabs[0]! })).sort((a, b) => a.tab.label.localeCompare(b.tab.label));
   return (
-    <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label="Plugin settings" data-axf-plugin-settings-list={rows.length} data-axf-not-nav="the list of plugins whose own settings open in their own window, not a navigation menu">
+    <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label="Plugin settings" data-axf-plugin-settings-list={rows.length} data-axf-help-id="settings.plugin-list" data-axf-not-nav="the list of plugins whose own settings open in their own window, not a navigation menu">
       {rows.map(({ id, tab }) => <NavRow key={id} id={`plugin:${id}`} icon={tab.icon} label={tab.label} desc={tab.description ?? 'Its own settings window'} onClick={() => rt.dispatch(`settings.plugin:${id}`)} />)}
     </nav>
   );

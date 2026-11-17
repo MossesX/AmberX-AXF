@@ -169,6 +169,8 @@ jobs:
         run: node framework/cli/check-plugin-pages.mjs
       - name: Plugin settings — every plugin screen has a Settings → Plugins sub-tab and the host settings gear (opt-out only with plugin.json settingsGear false + settingsGearReason); file:line
         run: node framework/cli/check-plugin-settings.mjs && node framework/spec/check-plugin-settings.test.mjs
+      - name: Settings interfaces — every plugin, page and app opens its own default settings interface (plugin-settings@1; ratchet framework/spec/settings-interfaces-baseline.json at 0)
+        run: (cd apps/console-web && node scripts/control-inventory.mjs) && node framework/cli/check-settings-interfaces.mjs
       - name: Shipped features plugin (SQLite ledger, build-hook listener plans features and edits, importers, live dates from the deploy log)  # axf-plugin:shipped-features
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
       - name: Plan Studio 2.0 plugin (plan-tree@1 nesting, moves, undo, links, export, build hand-off, voice parser, CLI on a scratch store)  # axf-plugin:plan-studio-2
