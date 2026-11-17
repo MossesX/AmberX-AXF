@@ -832,11 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `icon-picker-every-banner-settings-widget` s10 done (all) · foreign-write
-- 2026-11-17 22:58 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `flagship-professional-skin-covering-2` s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `move-everything-axhub-web-console` s1 done, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `vps-sets-every-build-status-manifest` added (120 steps) (all) · foreign-write
@@ -1232,6 +1227,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:19 UTC · `move-server-side-console-parts-onto-vps` s4 done (all) · orchestrator
 - 2026-11-17 23:19 UTC · `move-server-side-console-parts-onto-vps` s4 done (all) · foreign-write
 - 2026-11-17 23:19 UTC · `fix-launcher-crash-duplicate-steps-brief` → queued, note (all) · console
+- 2026-11-17 23:20 UTC · `move-server-side-console-parts-onto-vps` s3 done, s4 done, note (all) · foreign-write
+- 2026-11-17 23:20 UTC · `rebuild-every-toolbar-page-specific` → complete (all) · foreign-write
+- 2026-11-17 23:20 UTC · `flagship-professional-skin-covering-2` s22 done, s23 done, note (all) · foreign-write
+- 2026-11-17 23:20 UTC · `move-everything-axhub-web-console` s4 done (all) · foreign-write
+- 2026-11-17 23:20 UTC · `fix-launcher-crash-duplicate-steps-brief` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
