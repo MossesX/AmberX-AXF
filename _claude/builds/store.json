@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7658,
- "updatedAt": "2026-11-17T19:28:14.383Z",
+ "rev": 7659,
+ "updatedAt": "2026-11-17T19:28:25.037Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207469,7 +207469,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build. If the contract isn't there yet, define the overlay side against the names in the parent's detail and note them.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -207477,7 +207477,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T19:28:10.297Z",
+   "updatedAt": "2026-11-17T19:28:20.131Z",
    "builtAt": "",
    "notes": [
     {
@@ -207515,6 +207515,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-17T19:21:00.758Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-console-app-part-2-native-floating--rhonda.",
+     "at": "2026-11-17T19:28:15.663Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-console-app-part-2-native-floating--rhonda, shared account login)",
+     "at": "2026-11-17T19:28:20.131Z"
     }
    ],
    "approvals": [],
@@ -207534,13 +207542,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T19:20:52.457Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
-    "slot": "[object Object]",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "account": "hulu0241",
+    "session": "axf-console-app-part-2-native-floating--rhonda",
+    "slot": "",
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-17T19:28:14.887Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -207553,7 +207561,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T19:28:14.887Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -207562,7 +207570,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T19:28:14.887Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -207734,7 +207742,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
