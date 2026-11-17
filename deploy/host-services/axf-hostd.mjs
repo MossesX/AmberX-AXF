@@ -379,13 +379,15 @@ const JOURNALCTL_ROOT = '/usr/bin/journalctl';
 
 /** systemd facts for one unit (no root needed for `show`). */
 export async function unitFacts(unit) {
-  const r = await exec(SYSTEMCTL, ['show', unit, '-p', 'ActiveState,MainPID,NRestarts,ActiveEnterTimestamp,UnitFileState,LoadState'], { timeoutMs: 5000 });
+  const r = await exec(SYSTEMCTL, ['show', unit, '-p', 'ActiveState,MainPID,NRestarts,ActiveEnterTimestamp,UnitFileState,LoadState,Result,ExecMainExitTimestamp,ExecMainStatus'], { timeoutMs: 5000 });
   const kv = Object.fromEntries(r.stdout.split('\n').filter(Boolean).map((l) => { const i = l.indexOf('='); return [l.slice(0, i), l.slice(i + 1)]; }));
   const t = Date.parse(kv.ActiveEnterTimestamp || '');
   return {
     unitState: H.UNIT_STATES.includes(kv.ActiveState) ? kv.ActiveState : 'unknown', loaded: kv.LoadState === 'loaded',
     enabled: kv.UnitFileState === 'enabled', pid: Number(kv.MainPID) || 0, restarts: Number(kv.NRestarts) || 0,
     activeSince: Number.isFinite(t) ? new Date(t).toISOString() : null,
+    // A oneshot's last run, for adopted ticks that write no state.json (the auto-lander, the pipeline, the watchdogs).
+    lastRun: Number.isFinite(Date.parse(kv.ExecMainExitTimestamp || '')) ? { at: new Date(Date.parse(kv.ExecMainExitTimestamp)).toISOString(), result: kv.Result === 'success' && (kv.ExecMainStatus || '0') === '0' ? 'ok' : kv.Result === 'timeout' ? 'timeout' : 'error', durationMs: 0, message: kv.Result && kv.Result !== 'success' ? `systemd: ${kv.Result}, exit ${kv.ExecMainStatus}` : '' } : null,
   };
 }
 
@@ -403,7 +405,7 @@ export function makeHostApi(apiManifest, { manifestsFn = () => loadManifests(), 
     const f = await facts(m.unit);
     const timer = m.kind === 'tick' ? await facts(m.timer) : null;
     let health = null;
-    let lastRun = readJson(dataPath(`${m.dataDir}/state.json`), null);
+    let lastRun = readJson(dataPath(`${m.dataDir}/state.json`), null) || f.lastRun || null;
     if (m.kind === 'daemon' && f.unitState === 'active') {
       const t0 = Date.now();
       const r = await callSocket(socketOf(m), 'GET', '/v1/health', undefined, m.health.timeoutMs);
@@ -411,7 +413,8 @@ export function makeHostApi(apiManifest, { manifestsFn = () => loadManifests(), 
       health = err ? { ok: false, at: now(), message: err.message, code: r.error ? 'host_service_down' : err.code } : { ok: r.body?.ok !== false, at: now(), message: r.body?.message || '', latencyMs: Date.now() - t0 };
       if (!err && r.body?.lastRun) lastRun = r.body.lastRun;
     }
-    const st = H.serviceState(m, { ...f, timerState: timer?.unitState, health, lastRun, mode: H.modeOf(modeState, m.id) }, prev, now());
+    const { lastRun: _sysRun, loaded: _loaded, ...unitOnly } = f;
+    const st = H.serviceState(m, { ...unitOnly, timerState: timer?.unitState, health, lastRun, mode: H.modeOf(modeState, m.id) }, prev, now());
     return { ...st, heartbeat: readJson(dataPath(`${m.dataDir}/heartbeat.json`), null) };
   }
   async function states() {

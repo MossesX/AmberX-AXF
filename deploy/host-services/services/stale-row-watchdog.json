@@ -1,0 +1,23 @@
+{
+  "$axf": "host-service@1",
+  "id": "stale-row-watchdog",
+  "title": "Stale-row watchdog",
+  "description": "Builds-list rows left after their PR merged or closed are completed or removed (watchdog.mjs run --cron). Adopted from the axf-stale-watchdog cron as deploy/systemd/axf-stale-row-watchdog.*.",
+  "kind": "tick",
+  "unit": "axf-stale-row-watchdog.service",
+  "timer": "axf-stale-row-watchdog.timer",
+  "plugin": "build-orchestrator",
+  "runner": "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+  "health": {
+    "intervalSec": 60,
+    "timeoutMs": 60000,
+    "staleSec": 1800
+  },
+  "replaces": [
+    {
+      "kind": "cron",
+      "name": "axf-stale-watchdog",
+      "where": "deploy/cron/axf-stale-watchdog"
+    }
+  ]
+}

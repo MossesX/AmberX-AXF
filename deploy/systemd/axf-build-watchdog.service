@@ -1,0 +1,18 @@
+# axf-build-watchdog.service — build watchdog (running builds with no live session)
+# Adopted as a host service (host-service@1, deploy/host-services/services/build-watchdog.json): the same command the cron line in
+# deploy/install-console.sh runs, as a oneshot started by axf-build-watchdog.timer. Installed (not enabled) by
+# deploy/install-host-services.sh; the migration enables the timer and removes the cron file when build-watchdog moves to host mode
+# (deploy/host-services/migrate.mjs), and puts the cron back on rollback. @DIR@ is the checkout (/opt/axf).
+[Unit]
+Description=AXF build watchdog (running builds with no live session)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@DIR@
+Environment=AXF_CONSOLE_ROOT=@DIR@
+ExecStart=/usr/bin/flock -n /run/axf-watchdog.lock /usr/bin/timeout 600 /usr/bin/env node @DIR@/apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs cron
+StandardOutput=append:/var/log/axf-build-watchdog.log
+StandardError=append:/var/log/axf-build-watchdog.log
+Nice=5

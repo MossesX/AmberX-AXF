@@ -1,0 +1,11 @@
+[Unit]
+Description=AXF stale-row watchdog (builds-list rows that should have gone), every 300s
+
+[Timer]
+OnBootSec=120s
+OnUnitActiveSec=300s
+AccuracySec=5s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

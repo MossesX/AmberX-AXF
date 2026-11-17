@@ -131,8 +131,14 @@ while IFS=$'\t' read -r id unit nnp render _kind; do
     grep -q '@[A-Z]*@' "$UNITS/$unit" && { echo "$unit: placeholder left" >&2; exit 1; }
     ENABLE+=("$unit")
     say "unit $unit (NoNewPrivileges=$nnp)"
+  elif [ -f "$DIR/deploy/systemd/$unit" ]; then
+    # an adopted tick (auto-lander, pipeline, watchdogs): its own unit + timer, installed but not enabled here; the
+    # migration enables the timer and removes the cron line when it moves to host mode (deploy/host-services/migrate.mjs)
+    AXF_SYSTEMD_DIR="$UNITS" axf_systemd_unit "$DIR/deploy/systemd/$unit" "$DIR" >/dev/null
+    [ -f "$DIR/deploy/systemd/${unit%.service}.timer" ] && AXF_SYSTEMD_DIR="$UNITS" axf_systemd_unit "$DIR/deploy/systemd/${unit%.service}.timer" "$DIR" >/dev/null
+    say "unit $unit is adopted (its own unit file and timer, installed; the mode decides whether its timer or its cron line runs)"
   else
-    say "unit $unit is adopted (its own unit file; listed, health-checked, not rendered here)"
+    say "unit $unit is adopted (its own unit file elsewhere; listed and health-checked)"
   fi
 done <<< "$PLAN"
 

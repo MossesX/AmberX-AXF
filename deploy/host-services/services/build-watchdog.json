@@ -1,0 +1,23 @@
+{
+  "$axf": "host-service@1",
+  "id": "build-watchdog",
+  "title": "Build watchdog",
+  "description": "Running builds with no live session are reset, requeued or retried, idle slots filled (recovery-watchdog.mjs cron). Adopted from the axf-watchdog cron as deploy/systemd/axf-build-watchdog.*.",
+  "kind": "tick",
+  "unit": "axf-build-watchdog.service",
+  "timer": "axf-build-watchdog.timer",
+  "plugin": "build-orchestrator",
+  "runner": "apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs",
+  "health": {
+    "intervalSec": 60,
+    "timeoutMs": 60000,
+    "staleSec": 600
+  },
+  "replaces": [
+    {
+      "kind": "cron",
+      "name": "axf-watchdog",
+      "where": "apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs install-cron"
+    }
+  ]
+}
