@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8324,
- "updatedAt": "2026-11-17T23:03:41.463Z",
+ "rev": 8325,
+ "updatedAt": "2026-11-17T23:03:51.918Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262491,7 +262491,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "landing",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -262499,7 +262499,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T23:03:16.256Z",
+   "updatedAt": "2026-11-17T23:03:41.339Z",
    "builtAt": "2026-11-17T23:03:16.256Z",
    "notes": [
     {
@@ -262581,6 +262581,14 @@
     {
      "text": "Reconciler: PR #821 names s1, s2, s3, s4, s5, s6, s7, s8 done",
      "at": "2026-11-17T22:20:39.518Z"
+    },
+    {
+     "text": "Headless run axf-banner-widget-shapes-plus-change-icon--paulie: brief only · start 17.1K tokens ($0.06) · cost $14.51 · 254 turns · 6 tools, MCP none",
+     "at": "2026-11-17T23:03:38.257Z"
+    },
+    {
+     "text": "Session axf-banner-widget-shapes-plus-change-icon--paulie on hulu0241 ended (exit 0); the build was already complete.",
+     "at": "2026-11-17T23:03:41.339Z"
     }
    ],
    "approvals": [
@@ -262610,7 +262618,7 @@
     "queuedAt": "2026-11-16T22:59:53.814Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-banner-widget-shapes-plus-change-icon--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 2",
@@ -262618,14 +262626,14 @@
     "runs": 1,
     "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T22:09:09.103Z",
-     "exit": null,
-     "outcome": "requeued",
-     "reason": "crash",
-     "stepsLeft": 15,
-     "account": "",
-     "session": "",
-     "phase": ""
+     "at": "2026-11-17T23:03:37.043Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "hulu0241",
+     "session": "axf-banner-widget-shapes-plus-change-icon--paulie",
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-16T23:03:57.915Z",
@@ -262649,7 +262657,17 @@
     "pickedAt": "2026-11-17T22:10:38.850Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T23:03:29.010Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-banner-widget-shapes-plus-change-icon--paulie",
+     "phase": "Phase 2"
+    }
    },
    "recoveries": [
     {
@@ -263159,17 +263177,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-16T22:59:51.546Z",
-    "builtAt": "",
+    "builtAt": "2026-11-17T23:03:16.256Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwjveb4r0wu6j1": "2026-11-16T23:03:57.915Z",

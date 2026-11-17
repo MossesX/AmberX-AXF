@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:03:41.463Z",
+ "updatedAt": "2026-11-17T23:03:51.918Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168205,7 +168205,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "landing",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -168213,7 +168213,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T23:03:16.256Z",
+   "updatedAt": "2026-11-17T23:03:41.339Z",
    "builtAt": "2026-11-17T23:03:16.256Z",
    "notes": [
     {
@@ -168295,6 +168295,14 @@
     {
      "text": "Reconciler: PR #821 names s1, s2, s3, s4, s5, s6, s7, s8 done",
      "at": "2026-11-17T22:20:39.518Z"
+    },
+    {
+     "text": "Headless run axf-banner-widget-shapes-plus-change-icon--paulie: brief only · start 17.1K tokens ($0.06) · cost $14.51 · 254 turns · 6 tools, MCP none",
+     "at": "2026-11-17T23:03:38.257Z"
+    },
+    {
+     "text": "Session axf-banner-widget-shapes-plus-change-icon--paulie on hulu0241 ended (exit 0); the build was already complete.",
+     "at": "2026-11-17T23:03:41.339Z"
     }
    ],
    "approvals": [
