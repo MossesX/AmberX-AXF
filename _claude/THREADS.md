@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `unlink-plan-studio-builds-delete-all` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `vps-badge-shows-shell-commands-work` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `full-voice-api-control-type-fields-press` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `chrome-settings-actually-apply-toolbars` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:53 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 - 2026-11-17 20:53 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 - 2026-11-17 20:53 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 20:53 UTC · `rebuild-every-toolbar-page-specific` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
