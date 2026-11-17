@@ -858,6 +858,27 @@ function skinSchemaProperties() {
   };
 }
 
+/**
+ * settings@1 optional properties: the owner block (plugin-settings@1: scope / owner / for / extends) and the page fields
+ * (toolbar, levels). Enums come from asset-types.json; the plugin id rule is the one plugin.json uses.
+ */
+function settingsSchemaProperties(ts) {
+  const id = { type: 'string', pattern: '^[a-z0-9][a-z0-9-]*$' };
+  const levels = ['simple', 'basic', 'developer', 'administrator'];
+  return {
+    scope: { enum: ts.enums.scope, description: 'plugin-settings@1: app (the app\'s own page), plugin (one plugin\'s, with owner) or chrome (chrome-settings@1, with for). Left out = app, or chrome when for is set.' },
+    owner: { type: 'string', pattern: '^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$', description: 'plugin-settings@1: the plugin id this interface belongs to (scope plugin only); the asset id is plugin-<owner>.' },
+    for: { enum: CHROME_TYPES, description: 'chrome-settings@1: the chrome type this interface is for (scope chrome only).' },
+    extends: { ...id, description: 'inherit@1: the settings asset this one extends.' },
+    toolbar: { ...id, description: 'a toolbar asset drawn at the top of the page' },
+    levels: { type: 'boolean' },
+    defaultLevel: { enum: levels },
+    levelOf: { type: 'object', additionalProperties: { enum: levels } },
+    tabs: { type: 'array', items: { type: 'object', required: ['id'], properties: { id: { type: 'string' }, label: { type: 'string' }, icon: { type: 'string' }, order: { type: 'number' }, description: { type: 'string' }, parent: { type: 'string' }, hidden: { type: 'boolean' } } } },
+    hide: { type: 'array', items: { type: 'string' } },
+  };
+}
+
 /** Emit JSON Schema files (for editor autocompletion) from the type spec. */
 export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   mkdirSync(outDir, { recursive: true });
@@ -880,6 +901,8 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
     const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
     if (type === 'skin') Object.assign(props, skinSchemaProperties());
+    // settings@1: the owner block (plugin-settings@1) and the page fields
+    if (type === 'settings') Object.assign(props, settingsSchemaProperties(ts));
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),

@@ -294,7 +294,7 @@ export function rollInterface(seed: string, env: RollerEnv, locks: RollLocks = {
   }
   if (!locked('settings')) {
     const base = currentData(env, 'settings');
-    if (base) { const data = rollFields(rnd, 'settings', base, env, ['tabs', 'hide', 'groups', 'levels', 'toolbar']); assets.push(asset('settings', id('settings'), 'Rolled settings interface', data, `Settings ${String(data.layout)} (seed ${seed}).`)); slots.settings = id('settings'); }
+    if (base) { const data = rollFields(rnd, 'settings', base, env, ['tabs', 'hide', 'groups', 'levels', 'toolbar', 'scope', 'owner', 'for', 'extends']); assets.push(asset('settings', id('settings'), 'Rolled settings interface', data, `Settings ${String(data.layout)} (seed ${seed}).`)); slots.settings = id('settings'); }
   }
   // brand
   if (!locked('brand')) {
