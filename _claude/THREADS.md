@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `all-banners-hide-when-empty` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `auto-recover-stuck-builds` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:25 UTC · `icon-picker-every-banner-settings-widget` s11 done, note (all) · foreign-write
 - 2026-11-17 23:25 UTC · `flagship-professional-skin-covering-2` s24 done, s25 done (all) · foreign-write
 - 2026-11-17 23:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-17 23:25 UTC · `active-tab-stop-button-grid-alignment` added (0 steps) (all) · console
 
 ## Token passes (log)
 

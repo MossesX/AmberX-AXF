@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8377,
- "updatedAt": "2026-11-17T23:25:52.065Z",
+ "rev": 8378,
+ "updatedAt": "2026-11-17T23:26:08.863Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -433180,6 +433180,56 @@
    ],
    "order": {
     "all": 989
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "active-tab-stop-button-grid-alignment",
+   "title": "Active tab Stop button and grid alignment fix",
+   "category": "",
+   "detail": "Build orchestrator Active tab: add a Stop button on every running build row (stops its VPS tmux session through the VPS, marks it Hold, never relaunches). Fix the Active tab grid so headers and cells line up at all widths. Add a CI check.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-17T23:25:30.509Z",
+   "updatedAt": "2026-11-17T23:25:34.787Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "There's no button to stop it, and the grid is all out of alignment.",
+    "at": "2026-11-17T23:25:30.509Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 990
    },
    "kind": "build",
    "planRef": "",
