@@ -16,6 +16,7 @@ import { toolbarErrors, toolbarItemSchema, toolbarSchemaProperties } from '../co
 import { toolbarMigrationErrors } from '../core/engines/toolbar-migrate.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
+import { skinSlotsErrors, skinSlotsJsonSchemas } from '../core/engines/skin-slots.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
@@ -242,6 +243,7 @@ export function skinErrors(d) {
     }
   }
   errors.push(...skinChromeErrors(d.chrome));
+  errors.push(...skinSlotsErrors(d)); // skin-slots@1: motion, behaviour, hooks, grid, dialog, settings (one rules file)
   return errors;
 }
 
@@ -861,6 +863,8 @@ function skinSchemaProperties() {
     colorThemes: { type: 'object', description: "The skin's light and dark colour themes (skin-modes@1); colorTheme is one of the two.", required: ['light', 'dark'], properties: { light: id, dark: id } },
     behaviorTheme: id,
     chrome: { type: 'object', description: 'Chrome settings the skin puts in force per chrome-settings@1 kind; lands in the composed look\'s settings after extras.settings.', properties: fields, additionalProperties: false },
+    // skin-slots@1: motion, behaviour, hooks, grid, dialog and settings chrome (core/engines/skin-slots.mjs owns the enums and ranges)
+    ...skinSlotsJsonSchemas(),
   };
 }
 

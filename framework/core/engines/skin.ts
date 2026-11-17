@@ -39,6 +39,10 @@ import spec from '../../schemas/asset-types.json';
 import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, normalizeSkinChrome, resolveLookSkin, setSkinColorTheme, skinChromeErrors, skinChromeSettings, type AppLookDocument, type GlobalSkin, type LookPart, type SkinChrome, skinSlotMap } from './skin-rules.mjs';
 import { SKIN_SCOPE_DEFAULT, coverageSummary, coverageTable, isSubScopeKey, partsErrors, partsTypes, skinScopeChain, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
 import { normalizeHubSkin } from './appearance';
+import { normalizeSkinSlots, skinSlotsErrors, type SkinBehavior, type SkinDialog, type SkinGrid, type SkinHooks, type SkinMotion, type SkinSettingsChrome } from './skin-slots.mjs';
+// skin-slots@1 (build flagship-professional-skin-covering-2, Nov 17 2026): motion, behaviour, hooks, grid, dialog and settings chrome on skin@1
+export { BEHAVIOR_ARM_KEY, BEHAVIOR_ARM_RANGE, BEHAVIOR_COLLAPSE_KINDS, BEHAVIOR_FEEDBACK_ENUMS, BEHAVIOR_OVERFLOW_KINDS, BEHAVIOR_OVERRIDES_KEY, BEHAVIOR_STICKY_KINDS, BEHAVIOR_TAP_KINDS, CHROME_KIND_DEFAULTS_KEY, DIALOG_ENUMS, DIALOG_FIELDS, DIALOG_KEY, DIALOG_WIDTH_RANGE, GRID_DENSITIES, GRID_FIELDS, GRID_HEADERS, GRID_KEY, GRID_LINES, GRID_ROWS_RANGE, HOOKS_KEY, HOOK_KINDS, HOOK_REF_CONTRACT, MOTION_EASING_NAMES, MOTION_EASING_ROLES, MOTION_ENTERS, MOTION_KINDS, MOTION_REDUCED, MOTION_REDUCED_ATTR, MOTION_SPEEDS, MOTION_SPEED_DEFAULTS, MOTION_SPEED_RANGE, MOTION_STAGGER_RANGE, NAV_COLLAPSED_SETTING, SETTINGS_CHROME_KEYS, SETTINGS_PAGE_SLOT, SKIN_SLOTS_CONTRACT, SKIN_SLOT_KEYS, STYLE_TOKENS_KEY, behaviorTapKindKey, easingCss, isEasing, isHookId, motionEaseVar, motionKindVar, motionSpeedVar, normalizeHookRef, normalizeSkinBehavior, normalizeSkinDialog, normalizeSkinGrid, normalizeSkinHooks, normalizeSkinMotion, normalizeSkinSettingsChrome, normalizeSkinSlots, resolveSkinHooks, skinBehaviorErrors, skinBehaviorSettings, skinDialogErrors, skinDialogSettings, skinGridErrors, skinGridSettings, skinGridTokens, skinHookSettings, skinHooksErrors, skinMotionErrors, skinMotionStyle, skinSettingsChrome, skinSettingsChromeErrors, skinSlotSettings, skinSlotsErrors, skinSlotsJsonSchemas } from './skin-slots.mjs';
+export type { GridDensity, GridHeader, GridLines, HookRef, HookRegistry, MotionEasingRole, MotionEnter, MotionReduced, MotionSpeed, ResolvedSkinHooks, SkinBehavior, SkinDialog, SkinGrid, SkinHookKind, SkinHooks, SkinMotion, SkinMotionKind, SkinSettingsChrome, SkinSlotKey, SkinSlots } from './skin-slots.mjs';
 
 export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, adoptHubDefault, appLookPath, backToSkin, backupLook, hubOnlyLook, lookBackup, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookBackup, LookPart, LegacyLook, LookMigrated, LookUndo, SkinChrome, SkinChromeKind, SkinSection } from './skin-rules.mjs';
@@ -82,6 +86,18 @@ export interface SkinData {
    * Lands in the composed look's settings after `extras.settings`.
    */
   chrome?: SkinChrome;
+  /**
+   * skin-slots@1 (build flagship-professional-skin-covering-2): how things move and behave, which hooks and drop zones
+   * each chrome kind carries, how grids are laid out, and which dialog and settings chrome is in force. All optional
+   * and additive (`skin-slots.mjs`): motion compiles to --fx-motion-* tokens (a compileStyles part), the rest to
+   * settings-layer defaults under the app's own picks; unset = today's defaults.
+   */
+  motion?: SkinMotion;
+  behavior?: SkinBehavior;
+  hooks?: SkinHooks;
+  grid?: SkinGrid;
+  dialog?: SkinDialog;
+  settings?: SkinSettingsChrome;
 }
 /** Where an app's app-look document is kept: the hub, or a setting without one. `failed` = unreadable: nothing is written. */
 export interface AppLookStore {
@@ -153,6 +169,7 @@ export function normalizeSkin(raw: unknown): SkinData {
   }
   const chrome = normalizeSkinChrome(d.chrome);
   if (Object.keys(chrome).length) out.chrome = chrome;
+  Object.assign(out, normalizeSkinSlots(d)); // skin-slots@1: a slot left with nothing is absent, so an old skin is byte-identical
   return out;
 }
 
@@ -180,6 +197,7 @@ export function skinErrors(raw: unknown): string[] {
     }
   }
   errors.push(...skinChromeErrors(raw.chrome));
+  errors.push(...skinSlotsErrors(raw));
   return errors;
 }
 
