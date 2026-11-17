@@ -831,8 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:42 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · builds-live
-- 2026-11-17 20:43 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · orchestrator
 - 2026-11-17 20:43 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · builds-live
 - 2026-11-17 20:44 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · orchestrator
 - 2026-11-17 20:44 UTC · `rebuild-every-toolbar-page-specific` → running, note (all) · pipeline
@@ -1231,6 +1229,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:16 UTC · `icon-picker-every-banner-settings-widget` s4 done (all) · orchestrator
 - 2026-11-17 22:16 UTC · `banner-widget-shapes-plus-change-icon` s6 done (all) · orchestrator
 - 2026-11-17 22:16 UTC · `fix-refreshing-console-jumps-back` PR #825 (all) · builds-live
+- 2026-11-17 22:16 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
+- 2026-11-17 22:16 UTC · `fix-refreshing-console-jumps-back` note (all) · pipeline
 
 ## Token passes (log)
 
