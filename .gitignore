@@ -6,6 +6,9 @@ dist-single/
 framework/node_modules/
 __pycache__/
 .axf-console/
+# console-control inventory: generated from each plugin's registered targets (apps/console-web/scripts/control-inventory.mjs),
+# published to axf-data as the control_targets table; never hand-edited, never committed (builds used to clash on it)
+apps/console-web/src/control/inventory.json
 
 # Synced copies of /projects/_shared/_claude (claude-sync); committed once, at the repo root (_claude/shared/)
 apps/*/_claude/shared/

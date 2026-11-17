@@ -85,6 +85,8 @@ check(sp.archive.join() === '_claude/dup.md' && sp.restore.join() === '_claude/s
 check(sp.code.join() === 'framework/core/a.ts' && sp.keep.join() === 'notes.txt', 'uncommitted code is reported, other untracked files left alone');
 check(core.strayPlan(' M _claude/builds/journal/2026-11.jsonl').reset.length === 1, 'a journal deep in _claude/ is a tracking file (reset), not a scratch log');
 check(core.strayPlan('?? _claude/builds/journal/2026-11-p13.jsonl\n M framework/plan/pending.json').skip.join() === '_claude/builds/journal/2026-11-p13.jsonl' && core.strayPlan(' M framework/plan/pending.json').reset.length === 1, 'an untracked journal part is left alone; the pending export is reset');
+check(core.strayPlan(' M _claude/builds/orchestrator.json\n M _claude/builds/origins.json').commit.length === 0, 'orchestrator.json and origins.json are never committed on a branch (GitHub would see a conflict)');
+check(core.strayPlan(' M _claude/memory/notes.jsonl').commit.length === 1, 'other data deep in _claude/ is still committed');
 
 const B = (id, o = {}) => ({ id, title: id, branch: `claude/${id}`, status: 'built', steps: [{ id: 's1', done: true }], notes: [], ...o });
 check(core.isCandidate(B('a')) && core.isCandidate(B('b', { status: 'running' })), 'built, or every step done = a candidate');

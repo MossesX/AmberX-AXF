@@ -17,6 +17,7 @@
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
  *   axf repo create <name> [--private|--public] [--description "…"]
  *                               new GitHub repo with the GitHub App's user token (framework/cli/github-app.mjs)
+ *   axf data [status|backup|verify|mode <ns> <shadow|cutover|rollback|local>|drift <ns>|migrate|get <key>|list <ns>]   axf-data (framework/cli/data.mjs)
  *   axf shot <file> --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by type:id]
  *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
@@ -381,6 +382,12 @@ try {
       const { appDir, createRepo } = await import('./github-app.mjs');
       const r = await createRepo(appDir(), { name, private: !flags.public, description: typeof flags.description === 'string' ? flags.description : '' });
       console.log(c.ok(`✓ ${r.created ? 'created' : 'already there'}: ${r.fullName} (${r.private ? 'private' : 'public'}) ${r.htmlUrl}`));
+      break;
+    }
+    case 'data': {
+      // axf-data (data-store@1): status, backup, verify, mode, drift, migrate, get, list: framework/cli/data.mjs
+      const { main: data } = await import('./data.mjs');
+      process.exitCode = await data(process.argv.slice(3));
       break;
     }
     case 'shot': {
