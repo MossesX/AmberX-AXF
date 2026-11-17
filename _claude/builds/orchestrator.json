@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:52:14.219Z",
+ "updatedAt": "2026-11-17T21:52:23.745Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175268,7 +175268,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175276,7 +175276,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:51:42.750Z",
+   "updatedAt": "2026-11-17T21:52:12.042Z",
    "builtAt": "",
    "notes": [
     {
@@ -175510,6 +175510,10 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:50:24.569Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 5 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T21:52:12.042Z"
     }
    ],
    "approvals": [
@@ -183385,7 +183389,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -183393,7 +183397,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T21:27:33.860Z",
+   "updatedAt": "2026-11-17T21:52:13.867Z",
    "builtAt": "",
    "notes": [
     {
@@ -183603,6 +183607,10 @@
     {
      "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T21:27:33.860Z"
+    },
+    {
+     "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-17T21:52:13.867Z"
     }
    ],
    "approvals": [
@@ -187088,7 +187096,7 @@
    "pr": "#803",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:51:57.240Z",
+   "updatedAt": "2026-11-17T21:52:09.673Z",
    "builtAt": "2026-11-17T21:36:44.501Z",
    "notes": [
     {
@@ -187126,6 +187134,10 @@
     {
      "text": "Headless run axf-land-pr-730-reset-all-button-far-right--gina: brief only · start 16.4K tokens ($0.05) · cost $7.74 · 84 turns · 6 tools, MCP none",
      "at": "2026-11-17T21:51:54.501Z"
+    },
+    {
+     "text": "Session axf-land-pr-730-reset-all-button-far-right--gina on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-17T21:52:09.673Z"
     },
     {
      "text": "Session axf-land-pr-730-reset-all-button-far-right--gina on hulu0241 ended (exit 0); the build was already landing.",
