@@ -186,6 +186,51 @@ under `<SkinScope>` on every view root and every plugin root; a skin's `iconPack
 and its `parts` in the customize sheet. Pure functions: `resolveSkinChain`, `resolveLookSkin`, `composeLookAt`,
 `setScopeSkin`, `setInheritSkin`; fixture `spec/fixtures/skin.json` (`coverage`, `scopes`), `spec/check-skin.mts`.
 
+## Motion, behaviour, hooks, grid, dialog and settings chrome: skin-slots@1 (build flagship-professional-skin-covering-2, Fable, Nov 17 2026)
+
+Brett: "build a skin with Fable Ultra Code, really sick professional skin that covers everything: context menus, app
+menus, navigation menus, animations, colors, behavior, hooks, everything. Show me where the data sets go, the layouts,
+every single thing." Picking assets was not enough for that: skin@1 gains five **optional, additive** slots
+(`framework/core/engines/skin-slots.mjs`, one rules file shared by `skin.ts`, the build engine's validator and the JSON
+Schema generator). A skin without them normalises byte-identical and draws exactly as before; every field inside a slot
+is optional and compiles to nothing when unset, so today's defaults stand (`axf.css` `:root`, the behaviour theme, the
+chrome-settings@1 field defaults).
+
+| Slot | What it says | Compiles to |
+| --- | --- | --- |
+| `motion` | `speed { fast, normal, slow }` ms, `easing { standard, emphasized, exit }` (a named curve or `cubic-bezier(…)`), `reduced` system \| always \| never, `chrome.<kind> { enter, exit, duration, stagger }` for tab-group, toolbar, banner, nav-menu, app-menu, context-menu, dialog, popup, grid, page | the setting `axf.motion`; `compileStyles` turns it into `--fx-motion-fast / -normal / -slow` (normal also moves `--fx-motion`), `--fx-motion-ease-<role>`, `--fx-motion-<kind>-dur / -stagger`, and the root attributes `data-fx-motion-<kind>-enter / -exit` and `data-fx-motion-reduced` the stylesheet selects on |
+| `behavior` | `tapConfirm { armMs, <kind>: on \| off }`, `hover`, `press`, `focusRing` (the behaviour theme's enums), `overflow { tab-group }`, `sticky { tab-group }`, `collapse { tab-group, toolbar, nav-menu }` | settings-layer defaults: `axf.toolbars.armMs`, `axf.toolbars.tapConfirm` / `axf.tapConfirm.<kind>`, `axf.behavior` (interaction overrides folded over the behaviour theme, `withBehaviorOverrides`), `axf.chrome.<kind>.*` (kind-wide field defaults read under every instance override: asset → kind defaults → instance), `axf.nav.collapsedDefault` (the user's own fold `axf.nav.collapsed` wins when set) |
+| `hooks` | `<kind> { hooks: [ id \| { id, args } ], drop: [ zone ids ] }` for the six chrome kinds and `grid-row` | `axf.hooks.<kind>`; `rt.skinHooks(kind)` resolves the refs through `rt.hookRegistry()` (registered actions, lib-datagrid's grid-hook@1 row hooks, lib-dnd's zones; a hook@1 registry when that contract lands) and lists the unknown ones. A skin carries ids, never code |
+| `grid` | `density`, `rows` (1..6 lines per item), `header` plain \| bold \| boxed \| hidden, `zebra`, `lines` none \| rows \| cells, `sticky` | the component-tokens@1 grid paths under `axf.tokens.style['*']` (`grid.rowHeight`, `grid.cellPadY / X`, `grid.headerWeight`, `grid.headerBg`, `grid.tableHeaderBg`, `grid.headerBorder`, `grid.rowAltBg`, `grid.lineColor`, `grid.stickyShadow`), merged over what the skin's `extras.settings` already holds, plus `axf.grid` for the DataGrid's `data-fx-grid-density / -header / -lines / -rows` |
+| `dialog` | the dialog asset's own fields as overrides (`variant`, `backdrop`, `animation`, `header`, `closeOnBackdrop`, `width`) | `axf.chrome.dialog`, folded into `dialogStyle` over the active dialog asset |
+| `settings` | `page` (the settings page asset) and `<chrome kind>` (the settings interface per chrome-settings@1 kind) | the `settings` slot and `axf.chrome.settings.<kind>`; `chrome.<kind>.interface` wins when both name one |
+
+**Precedence** is unchanged: the chain plugin → ui → app → global → default decides the skin (`resolveLookSkin`), and
+`composeLookAt` folds the slots after `extras.settings` and before the chrome block, under the chain's overrides. The
+keys the slots write are appearance settings (`SKIN_SLOT_SETTING_PREFIXES` in `designpackage.ts`, `axf.chrome.` among
+them), so the look document carries them, every app applies them like any other look setting, a scoped view reads its
+own, and a local change rides the document as the app's own pick. A value an app saved locally before Nov 17 2026 under
+one of those keys is adopted into its look document on the first apply instead of being cleared.
+
+**Token families** added: `--fx-motion-*` (speeds, easing roles, one duration and stagger per chrome kind; `:root`
+defaults in `axf.css` equal today's values, e.g. the context menu's 120 ms pop is `--fx-motion * 0.75`), the
+`data-fx-motion-<kind>-enter` attributes with per-kind enter animations (`fx-fade`, `fx-rise`, `fx-scale`, `fx-slide-in`,
+staggered up to six siblings), and the DataGrid's `data-fx-grid-*` attributes. The grid's tokens stay the component-tokens@1
+family. Behaviour and hooks write no tokens: they are settings.
+
+**skin-map@1** (`framework/core/engines/skin-map.mjs`): "show me where the data sets go, the layouts, every single thing"
+is a generated, read-only document, never typed by hand. From the registries, the token registry, the slot rules, the
+data-store rules (`schemas/data-store-paths.json`) and the stylesheets it derives, per skin slot, the asset / dataset /
+layout it controls, the tokens and settings keys it writes and the components and selectors that read them; and for every
+dataset (the shared appearance@1 document, each app's app-look@1, Default skin and skin-config, the framework skins, the
+animation picks) and every layout type its hub path (`project:path` and the `/projects/…` mount), repo path and
+data-store namespace. Snapshot `framework/schemas/skin-map.json` + JSON Schema `schemas/json/skin-map.schema.json`
+(written by `node framework/cli/axf.mjs schemas`); `node framework/cli/skins.mjs map [find]` prints or filters it;
+`GET /skins/map?find=` (theme-manager; MCP by plugin-commands). CI: `node framework/spec/check-skin-map.mjs`.
+
+**Migration note:** additive. No stored skin changes; no skin@2. `framework/assets/skin/*.json` validate unchanged and
+compose the same look (`check-skin.mts` proves both). Kotlin twin deferred (`spec/PORTING.md`, "skin-slots@1 and skin-map@1").
+
 ## The document: `appearance@1`
 
 Project `shared`, path `settings/appearance.json` on the hub's data server (`/projects/_shared/_data/settings/appearance.json`,

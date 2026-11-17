@@ -51,3 +51,42 @@ Note on hooks: `hook@1` / `drop-target@1` were dropped from build toolbar-tap-co
 
 Precedence stays child-overrides-parent through `resolveLookSkin`; every unset slot compiles to nothing, so today's
 defaults (axf.css `:root`, the behaviour theme, chrome-settings@1 field defaults) stand.
+
+## What landed (Phase 1, s3 to s9)
+
+| Piece | Where |
+| --- | --- |
+| The six slots on skin@1 (registry entry, skin-config extras options) | `framework/schemas/asset-types.json` |
+| One rules file: normalise, errors, compile, JSON Schema | `framework/core/engines/skin-slots.mjs` (+ `.d.mts`), re-exported by `engines/skin.ts` |
+| Validators (TS reference + mjs mirror) and `skin.schema.json` | `engines/skin.ts`, `cli/build-engine.mjs` |
+| Compose: slots fold into the look after `extras.settings`, before the chrome block | `engines/skin.ts` `composeWith` |
+| Runtime: motion part, behaviour overrides, dialog overrides, kind-wide chrome defaults, nav collapsed default, hook resolution | `core/runtime.ts` (`compileStyles`, `chromeData`, `navCollapsed`, `skinHooks`, `hookRegistry`, `registerHookRegistry`) |
+| Settings layer: the slot keys count as appearance settings; local values adopted once | `engines/designpackage.ts` (`SKIN_SLOT_SETTING_PREFIXES`, `isAdoptedSetting`), `runtime.ts` `applyAppearance` |
+| Kind-wide defaults under instance overrides | `engines/chrome-settings-rules.mjs` (`chromeInstanceData`, `chromeFieldValue`, `CHROME_KIND_DEFAULTS_KEY`), `react/components/TabGroup.tsx`, `ChromeContext.tsx`, `libs/workspace/look.ts` |
+| Stylesheet: `--fx-motion-*` tokens, per-kind enter animations, stagger, reduced rule; DataGrid attributes | `framework/ui/axf.css`, `libs/datagrid/datagrid.css`, `libs/datagrid/index.tsx` |
+| Hook registries | `libs/datagrid/datasets.ts` (`hasRowHook`), `libs/dnd/index.tsx` (`hasZone`) |
+| skin-map@1 generator, snapshot, schema, CLI, route | `engines/skin-map.mjs` (+ `.d.mts`), `schemas/skin-map.json`, `schemas/json/skin-map.schema.json`, `cli/skins.mjs map`, theme-manager `GET /skins/map` |
+| Fixtures and checks | `spec/fixtures/skin.json` (`skinSlots`), `spec/fixtures/skin-map.json`, `spec/check-skin.mts` (+100), `spec/check-skin-map.mjs` (CI) |
+| Docs | `spec/APPEARANCE-SOURCE.md` (skin-slots@1 + skin-map@1 section), `spec/PORTING.md` (deferred Kotlin twin) |
+
+## How each piece is reached (API parity)
+
+- **CLI**: `node framework/cli/skins.mjs map [find]`; `node framework/cli/axf.mjs schemas` regenerates the snapshot; `validate --framework` runs both validators over every stored skin.
+- **REST / MCP**: `GET /skins/map?find=` on the theme-manager (plugin-commands `auto: true` exposes it as an MCP command); the slots ride the app-look document the existing `/skins/{app}/…` routes and control@1 already read and write (`axf.motion`, `axf.behavior`, `axf.hooks.<kind>`, `axf.grid`, `axf.chrome.dialog`, `axf.chrome.<kind>.*` are plain appearance settings).
+- **Voice**: the same settings keys through AmberX's console control (`setting:axf.motion`, …); Phase 2 adds the Where-everything-lives tab and its deep link.
+- **UI**: Phase 2 (plan `flagship-professional-skin` s10 to s14): the Fable Ultra Code skin asset, three UI Review choices, the hub default, the Appearance tab drawn from skin-map@1.
+
+## Checks
+
+check-skin.mts 600 (100 new), check-skin-map 12, check-skin-coverage 55 / 0 uncovered, check-skin-config 38,
+check-token-registry (353 tokens, 27 new motion tokens), check-theme, check-controls, check-component-tokens,
+check-skin-animations 80, check-chrome-settings 304, check-design-package 1158, check-skin-switch 392, check-skin-sections,
+check-skin-modes, check-skin-colour-rule, check-look-migration 241, check-asset-overrides, check-tapconfirm 80,
+check-navstyle 98. tsc clean on `core/runtime.ts` and `core/engines/skin.ts`.
+
+## Fixed on the way
+
+- `apps/console-web/plugins/plan-studio-2/plugin.json` had no `tokens` block (token-registry@1), so `check-token-registry`
+  was red after PR #761 merged; written with `token-registry.mjs manifest plan-studio-2 --write`.
+- A skin's `chrome` block (and now the slots) landed in the composed look's settings but `axf.chrome.*` was not an
+  appearance setting, so the app level never applied it; it is one now, with the one-time adoption of local values.
