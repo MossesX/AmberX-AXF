@@ -218,6 +218,7 @@ async def get_command(cid: str, wait: int = 0) -> Any:
 
 @router.get("/status")
 def get_status() -> dict[str, Any]:
+    svc.ensure_health()
     return svc.status()
 
 
@@ -327,4 +328,5 @@ async def device_ws(ws: WebSocket) -> None:
 # ---- capability
 
 plugin_services.provide("axf.phone@1", svc.PhoneCapability(), folder="phone-connect")
+svc.ensure_health()
 

@@ -215,3 +215,31 @@ stt = cl.get(f"{P}/state").json()
 ok("state carries status, devices, settings and commands", stt["$axf"] == "phone-connect-state@1" and stt["devices"] and "features" in stt["settings"] and isinstance(stt["commands"], list))
 check("state names the settings address", stt["links"]["settings"], "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect")
 check("state names each phone's row", stt["links"]["devices"]["phone-0123456789abcdef"], "row:device/phone-0123456789abcdef")
+
+# ---- s15 systems check
+regd: dict = {}
+
+
+class Health:
+    def register(self, item, owner):
+        regd[item["id"]] = (item, owner)
+
+
+plugin_services.provide("axf.health@1", Health(), folder="systems-check")
+svc._health_done = False
+ok("the check registers on axf.health@1", svc.ensure_health() and "phone-connect" in regd and regd["phone-connect"][1] == "phone-connect")
+item = regd["phone-connect"][0]
+check("online phone → ok", item["run"]()["status"], "ok")
+cl.post(f"{P}/devices/phone-0123456789abcdef/settings", json={"watch": {"on": True}}, headers=PERSON)
+late = E.iso(E.ms(E.now_iso()) + 3600_000)
+check("watched phone silent an hour → red", svc.health_probe(late)["status"], "error")
+raised: list = []
+import console_context as cx  # noqa: E402
+cx.set_context(raise_alert=lambda a: raised.append(a) or {})
+r = svc.health_fix(late)
+ok("auto fix sends the open-the-app notice", r["state"] == "started" and raised and raised[-1]["key"].startswith("phone-connect:offline:"))
+for d in S.paired():
+    svc.revoke(d["deviceId"], {"kind": "person", "who": "brett"})
+check("nothing paired → amber", svc.health_probe()["status"], "warn")
+r = svc.health_fix()
+ok("auto fix issues a pairing code and sends it", r["state"] == "done" and E.is_code(svc.current_pairing()["code"]) and raised[-1]["key"] == "phone-connect:pair:notice")

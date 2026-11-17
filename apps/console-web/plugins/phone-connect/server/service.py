@@ -506,3 +506,66 @@ class PhoneCapability:
         link = url if url.startswith("https://") and d and not E.url_errors(url, d, origin()) else ""
         return self.notify(kind, str(alert.get("title") or "Console alert"), str(alert.get("body") or ""), notify_id=(notify_id or "phone-connect.direct")[: E.LIMITS["tool"]],
                            url=link, priority="high" if sev in ("error", "critical") else "normal", by={"kind": "service", "who": "alerts", "via": "console"})
+
+
+# ---- systems check (health@1): "Phone offline / not paired" with an auto-fix that re-sends the pairing notice
+
+HEALTH_ID = "phone-connect"
+OFFLINE_RED_S = 600  # paired and watched, but silent this long = red
+
+
+def health_probe(at: str = "") -> dict[str, Any]:
+    at = at or now()
+    paired = S.paired()
+    if not paired:
+        revoked = [d for d in S.devices() if d.get("state") == "revoked"]
+        return {"status": "warn", "summary": "No phone is paired with Phone Connect: pushes, approvals on the phone and the recorder can't reach you." + (" The last one was revoked." if revoked else ""),
+                "details": ["Auto fix makes a pairing code and sends you a notice with it.", "Or: Settings → Plugins → Phone Connect → New code, then type it in the Phone Connect app."],
+                "link": SETTINGS_ADDRESS}
+    d = sorted(paired, key=lambda x: x.get("lastSeenAt") or "", reverse=True)[0]
+    if E.is_online(d, at):
+        return {"status": "ok", "summary": f"{d['name']} is online (Phone Connect).", "details": []}
+    silent = (E.ms(at) - E.ms(d["lastSeenAt"])) / 1000 if E.is_timestamp(d.get("lastSeenAt")) else 1e9
+    pres = E.presence(d, at)
+    red = d.get("watch", {}).get("on") and silent > OFFLINE_RED_S
+    return {"status": "error" if red else "warn", "summary": f"{d['name']} is {pres}: pushes, approvals and the recorder wait until it polls again.",
+            "details": ["Open the Phone Connect app on the phone, or switch its watch on.", "Auto fix sends you a notice to open it (and a fresh pairing code if it was unpaired)."],
+            "link": f"row:device/{d['deviceId']}"}
+
+
+def health_fix(at: str = "") -> dict[str, Any]:
+    """Re-send the pairing notice: a fresh code when nothing is paired, else a notice to open the app. Through the alert
+    hub (axf.notify@1 decides where it goes: web push / ntfy, AmberX while it exists)."""
+    at = at or now()
+    paired = S.paired()
+    if not paired:
+        p = current_pairing(at) or pair_start({"kind": "service", "who": "systems-check", "via": "console"}, at)["pairing"]
+        _alert("pair", "notice", f"Pair your phone: code {p['code']} in the Phone Connect app (10 min)", "warning")
+        return {"state": "done", "message": f"Pairing code {p['code']} issued and sent as a notice.", "link": SETTINGS_ADDRESS}
+    d = sorted(paired, key=lambda x: x.get("lastSeenAt") or "", reverse=True)[0]
+    _alert("offline", d["deviceId"], f"{d['name']} is offline: open Phone Connect on it", "warning")
+    return {"state": "started", "message": f"Sent a notice to open Phone Connect on {d['name']}.", "waitS": 300}
+
+
+_health_done = False
+
+
+def ensure_health() -> bool:
+    """Registers the check once axf.health@1 is there (plugins load in any order)."""
+    global _health_done
+    if _health_done:
+        return True
+    import plugin_services
+    reg = plugin_services.get("axf.health@1")
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": HEALTH_ID, "label": "Phone Connect (phone paired and online)", "service": "phone", "order": 45, "severity": "warn",
+                      "run": lambda: health_probe(),
+                      "breaks": "Without a paired, online phone, notifications, approval prompts on the phone, open-a-page and the audio recorder can't reach you.",
+                      "instructions": ["Settings → Plugins → Phone Connect → New code.", "Open the Phone Connect app, type the code, sign in to axHub when it asks.", "Switch Watch on so the link stays open."],
+                      "autoFix": {"label": "Re-send the pairing notice", "run": lambda: health_fix()}}, "phone-connect")
+    except Exception:  # noqa: BLE001 — the plugin works without its health item
+        return False
+    _health_done = True
+    return True
