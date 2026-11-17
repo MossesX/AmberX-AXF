@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8043,
- "updatedAt": "2026-11-17T21:37:31.223Z",
+ "rev": 8044,
+ "updatedAt": "2026-11-17T21:37:40.669Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282418,7 +282418,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T21:34:56.644Z",
+   "updatedAt": "2026-11-17T21:37:31.908Z",
    "builtAt": "",
    "notes": [
     {
@@ -282448,6 +282448,10 @@
     {
      "text": "Dispatch gate: fix-banner-settings-interface-tab still has axf-fix-banner-settings-interface-tab--paulie alive: not launched again, tracking that session.",
      "at": "2026-11-17T21:26:09.938Z"
+    },
+    {
+     "text": "URGENT regression (Brett, 21:38Z): the toolbar Settings dialog lost its tab group entirely; no Interface/Behavior/Assets tabs, just one page. Likely from PR #817 (page toolbars) landing at 8cbff5a. Restore the tab group in every chrome settings dialog first, before anything else in this build, and add a test that each settings dialog renders its tab row.",
+     "at": "2026-11-17T21:37:31.908Z"
     }
    ],
    "approvals": [],
@@ -282845,7 +282849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

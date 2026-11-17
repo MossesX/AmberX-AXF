@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:56 UTC · `vps-badge-shows-shell-commands-work` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `full-voice-api-control-type-fields-press` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `chrome-settings-actually-apply-toolbars` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `vps-builds-get-console-token-ui-review` → archived, note (all) · watchdog
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:37 UTC · `land-pr-730-reset-all-button-far-right` note (all) · builds-live
 - 2026-11-17 21:37 UTC · `fix-refreshing-console-jumps-back` added (0 steps) (all) · builds-live
 - 2026-11-17 21:37 UTC · `rebuild-fresh-main-phone-connect-small` s14 done (all) · orchestrator
+- 2026-11-17 21:37 UTC · `fix-banner-settings-interface-tab` note (all) · builds-live
 
 ## Token passes (log)
 
