@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:50:22.601Z",
+ "updatedAt": "2026-11-17T21:50:35.525Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131490,7 +131490,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T21:45:22.955Z",
+   "updatedAt": "2026-11-17T21:50:21.569Z",
    "builtAt": "",
    "notes": [
     {
@@ -131604,6 +131604,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: The build is complete (not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T21:45:22.955Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); not on main; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T21:50:21.569Z"
     }
    ],
    "approvals": [
@@ -163513,7 +163517,7 @@
    "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-17T21:47:19.202Z",
+   "updatedAt": "2026-11-17T21:50:28.112Z",
    "builtAt": "",
    "notes": [
     {
@@ -163583,6 +163587,10 @@
     {
      "text": "Branch claude/reset-all-button-every-asset-override handed to build land-pr-730-reset-all-button-far-right (PR #803), so the merge queue maps the PR to the live build instead of this archived one.",
      "at": "2026-11-17T21:47:19.200Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 803 → Remove: The build was cancelled (PR #803 open; not on main; build reset-all-button-every-asset-override: archived)",
+     "at": "2026-11-17T21:50:28.112Z"
     }
    ],
    "approvals": [],
@@ -175268,7 +175276,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:50:18.345Z",
+   "updatedAt": "2026-11-17T21:50:24.569Z",
    "builtAt": "",
    "notes": [
     {
@@ -175498,6 +175506,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 6 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T21:50:18.345Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:50:24.569Z"
     }
    ],
    "approvals": [
@@ -181572,7 +181584,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:45:22.955Z",
+   "updatedAt": "2026-11-17T21:50:21.569Z",
    "builtAt": "",
    "notes": [
     {
@@ -181758,6 +181770,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: The build is complete (build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
      "at": "2026-11-17T21:45:22.955Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landed)",
+     "at": "2026-11-17T21:50:21.569Z"
     }
    ],
    "approvals": [
@@ -186288,7 +186304,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -186296,7 +186312,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:44:20.310Z",
+   "updatedAt": "2026-11-17T21:50:32.993Z",
    "builtAt": "",
    "notes": [
     {
@@ -186342,6 +186358,14 @@
     {
      "text": "Reconciler: PR #820; PR #820 names s1, s2 done",
      "at": "2026-11-17T21:44:07.855Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 10 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T21:50:30.156Z"
+    },
+    {
+     "text": "Watchdog fixed Icon picker for every banner and settings widget (step s3): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:50:32.993Z"
     }
    ],
    "approvals": [],
