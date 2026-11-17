@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7674,
- "updatedAt": "2026-11-17T19:34:46.546Z",
+ "rev": 7675,
+ "updatedAt": "2026-11-17T19:34:58.835Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276671,6 +276671,56 @@
    "kind": "build",
    "planRef": "",
    "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "terminal-main-tab-streaming-console-s",
+   "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
+   "category": "",
+   "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T19:34:48.701Z",
+   "updatedAt": "2026-11-17T19:34:51.602Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Give terminal a main tab that outputs in real time the console's connection to cloud.",
+    "at": "2026-11-17T19:34:48.701Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 966
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

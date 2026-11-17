@@ -9229,6 +9229,18 @@
    "from": "",
    "addenda": []
   },
+  "terminal-main-tab-streaming-console-s": {
+   "said": "Give terminal a main tab that outputs in real time the console's connection to cloud.",
+   "at": "2026-11-17T19:34:48.701Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "terminal-no-focus": {
    "said": "I don't want the terminal to come to the front on every session.",
    "at": "2026-11-04T00:00:00Z",
