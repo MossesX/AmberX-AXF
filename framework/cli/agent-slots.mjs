@@ -22,6 +22,10 @@
  *   … bind <id> --pid N [--session s] · finish <id> [--exit N] · release <id>
  *   … run-end [<slot>] --build b --exit N [--signal s] [--kind k] [--limit usage|auth] [--account a] [--session s]
  *                                  how a run ended: <dir>/runs/<build>.json (run-status@1) + the slot's exit (watchdog evidence)
+ *   … alive <build> [--dir worktree] [--since iso] [--json]   liveness probe for the watchdog (build-watchdog@1 probe):
+ *                                  pid (a claude process in its worktree / with its AXF_BUILD_ID), tmux (axf-<build>*), the
+ *                                  heartbeat (newest of its log, its meter, its build lock), the exit recorded since --since
+ *   … reap [--json]                free orphan slots: entries whose process is gone (no pid, no tmux, or a pane with no claude)
  *   … cancel <id> · up <id>        queue actions (the console's Builds page)
  *   … reprioritise <build> <level> a build's priority changed: its waiting entries follow it (Move up still wins)
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
@@ -42,6 +46,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { loadLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
 import { buildMayTakeSlot } from './dispatch-gate.mjs';
+import { claudePids, readLock, sessionOf, tmuxSessions as buildTmux } from './build-lock.mjs';
 
 export const LEVELS = ['boss', 'urgent', 'high', 'normal', 'low'];
 export const DEFAULTS = {
@@ -388,6 +393,69 @@ export function writeRunStatus(slot, o = {}) {
   return rec;
 }
 
+/* ---------------- liveness (build-watchdog@1) ---------------- */
+
+const mtimeIso = (f) => { try { return statSync(f).mtime.toISOString(); } catch { return ''; } };
+const newest = (xs) => xs.filter(Boolean).sort().pop() ?? '';
+const worktreesRoot = () => process.env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
+const headlessDir = () => process.env.AXF_HEADLESS_DIR || '/var/tmp/axf-headless';
+
+/**
+ * Is anything alive for this build? A build-watchdog@1 probe plus what it saw:
+ *   { build, at, pid, tmux, lastSeenAt, exit, exitKind, limit, pids, sessions, slots, heartbeat: {log, meter, lock}, runStatus, dir }
+ * pid / tmux are null when they can't be judged here (AXF_SLOTS_TMUX=off, no /proc). `since` (ISO, the launch time):
+ * an exit recorded before it belongs to an older run and is ignored. `facts` lets tests pass { pids, sessions, now }.
+ */
+export function alive(build, { dir = '', since = '', facts = {} } = {}) {
+  const st = loadState();
+  const slots = st.running.filter((r) => r.build === build || (r.session && sessionOf(build, r.session)));
+  const wt = dir || slots.find((r) => r.cwd)?.cwd || join(worktreesRoot(), build);
+  const sessions = facts.sessions ?? (tmuxOff() ? null : buildTmux(build));
+  const pids = facts.pids ?? (existsSync('/proc') && process.env.AXF_BUILD_LOCK_PIDS !== 'off' ? claudePids(build, existsSync(wt) ? wt : '') : null);
+  const logs = existsSync(wt) ? [join(wt, `${build}.log`), join(wt, '.axf-headless.log')].map(mtimeIso) : [];
+  const meters = (sessions ?? []).concat(slots.map((r) => r.session).filter(Boolean)).map((n) => mtimeIso(join(headlessDir(), `${n}.meter.json`)));
+  const lock = existsSync(wt) ? readLock(wt) : null;
+  const hb = { log: newest(logs), meter: newest(meters), lock: lock?.build === build ? (lock.beat || lock.at || '') : '' };
+  const rs = readRunStatus(build);
+  const fresh = rs && (!since || String(rs.endedAt) > since) ? rs : null;
+  const kindOf = (k) => (['phase-done', 'crash', 'stopped'].includes(k) ? k : '');
+  return {
+    $axf: 'build-liveness@1', build, at: new Date(facts.now ?? Date.now()).toISOString(), dir: existsSync(wt) ? wt : '',
+    pid: pids == null ? null : pids.length > 0, tmux: sessions == null ? null : sessions.length > 0,
+    // the session's own output says it is working; the lock beat is the dispatcher's and only counts when nothing else wrote
+    lastSeenAt: newest([hb.log, hb.meter]) || hb.lock,
+    exit: fresh ? fresh.exit : null, exitKind: fresh ? kindOf(fresh.kind) : '', limit: fresh?.limit ?? '',
+    pids: pids ?? [], sessions: sessions ?? [], slots: slots.map((r) => ({ id: r.id, state: r.state, session: r.session, pid: r.pid, exit: r.exit ?? null })), heartbeat: hb, runStatus: rs,
+  };
+}
+
+/**
+ * Orphan slot reaping: running entries this host started, past the start grace, whose process is gone (pid dead and no
+ * tmux session) or whose tmux pane has no claude left while the entry still says running (crashed, never finished). Freed
+ * at once (state 'reaped' in done). Returns { reaped: [{ id, build, session, why }] }.
+ */
+export function reap(facts = {}) {
+  const now = facts.now ?? Date.now();
+  const tm = facts.tmux !== undefined ? facts.tmux : tmuxSessions();
+  const hasClaude = facts.hasClaude ?? paneHasClaude;
+  const isAlive = facts.pidAlive ?? pidAlive;
+  const reaped = [];
+  withState((st) => {
+    st.running = st.running.filter((r) => {
+      if ((r.host ?? HOST()) !== HOST() || now - Date.parse(r.startedAt || r.enqueuedAt || 0) < GRACE_MS) return true;
+      const inTmux = !!(r.session && tm && tm.has(r.session));
+      let why = '';
+      if (!inTmux && !isAlive(r.pid)) why = 'process gone';
+      else if (inTmux && r.state === 'running' && !hasClaude(tm.get(r.session).pid)) why = 'no claude left in its session';
+      if (!why) return true;
+      reaped.push({ id: r.id, build: r.build ?? '', session: r.session ?? '', why });
+      st.done = [...st.done, { ...r, state: 'reaped', why, closedAt: new Date(now).toISOString() }].slice(-KEEP_DONE);
+      return false;
+    });
+  });
+  return { reaped };
+}
+
 export const cancel = (id, by = '') => withState((st) => {
   const q = st.queue.find((x) => x.id === id && x.state === 'waiting');
   if (!q) throw new Error(`${id} isn't waiting in the queue`);
@@ -533,6 +601,12 @@ async function cli(argv) {
     case 'finish': return void (finish(f._[0], f.exit) || (process.exitCode = 4));
     case 'release': return void (release(f._[0], f.exit) || (process.exitCode = 4));
     case 'run-end': return json(writeRunStatus(f._[0] ?? '', { build: f.build, exit: f.exit, signal: f.signal, kind: f.kind, limit: f.limit, account: f.account, session: f.session, pid: f.pid }));
+    case 'alive': {
+      if (!f._[0]) throw new Error('alive <build> [--dir worktree] [--since iso]');
+      const a = alive(f._[0], { dir: typeof f.dir === 'string' ? f.dir : '', since: typeof f.since === 'string' ? f.since : '' });
+      return json(a);
+    }
+    case 'reap': return json(reap());
     case 'cancel': cancel(f._[0], f.by); return console.log(`cancelled ${f._[0]}`);
     case 'up': return console.log(up(f._[0]) ? `moved ${f._[0]} up` : `${f._[0]} is already first`);
     case 'reprioritise': return console.log(`${reprioritise(f._[0], f._[1])} waiting entr(ies) of ${f._[0]} now ${f._[1]}`);
@@ -557,7 +631,7 @@ async function cli(argv) {
       process.exitCode = code; return;
     }
     case 'sweep': return json(sweep());
-    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, run-end, cancel, up, reprioritise, settings, set, get, heavy, sweep)`);
+    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, run-end, alive, reap, cancel, up, reprioritise, settings, set, get, heavy, sweep)`);
   }
 }
 
