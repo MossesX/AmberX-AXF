@@ -125,6 +125,15 @@ export const PHRASEBOOK = {
   'control:planner.builds:note': { title: 'Add a note to a build', group: 'pipelines', confirm: true, say: ['add a note to build {id} {text}', 'note on build {id} {text}', 'add a note to a build'], fields: [{ name: 'id', ask: 'Which build?' }, { name: 'text', ask: 'What is the note?' }], control: { op: 'act', target: 'planner.builds', path: '{id}', action: 'note', input: { text: '{text}' } }, summary: 'add a note to {id}' },
   'control:planner.builds:approve': { title: 'Approve a build phase', group: 'pipelines', confirm: true, say: ['approve build {id}', 'approve the build {id}', 'approve phase {phase} of {id}', 'approve a build'], fields: [{ name: 'id', ask: 'Which build?' }, { name: 'phase', ask: 'Which phase number?', type: 'number', optional: true }], control: { op: 'act', target: 'planner.builds', path: '{id}', action: 'approve', input: { phase: '{number:phase|1}' } }, summary: 'approve build {id}' },
   'control:planner.builds:land': { title: 'Mark a build complete', group: 'pipelines', confirm: true, say: ['land {id}', 'land build {id}', 'land the build {id}', 'mark {id} complete', 'mark {id} done', 'complete build {id}', 'land a build'], fields: [{ name: 'id', ask: 'Which build?' }], control: { op: 'act', target: 'planner.builds', path: '{id}', action: 'status', input: { status: 'complete' } }, summary: 'mark the build {id} complete' },
+  // Plan Studio 2.0 (plan-tree@1): one spoken sentence → the plugin's `say`, which parses and runs it (tree.mjs parseVoice)
+  'plan-studio-2/say': {
+    title: 'Plan Studio 2.0: say a plan command', group: 'projects',
+    say: ['plan studio {text}', 'in plan studio {text}', 'tell plan studio {text}', 'plan tree {text}', 'plan studio'],
+    fields: [{ name: 'text', ask: 'What should Plan Studio do? For example: new plan Launch, add a step Deploy to Launch, delete Deploy, undo.' }],
+    body: { text: '{text}' }, speak: 'say', summary: 'plan studio: {text}',
+  },
+  'plan-studio-2/find': { title: 'Plan Studio 2.0: find an item', group: 'projects', say: ['find {q} in plan studio', 'search plan studio for {q}', 'where is {q} in the plan'], fields: [{ name: 'q', ask: 'Find what?' }], speak: 'hits' },
+  'plan-studio-2/undo': { title: 'Plan Studio 2.0: undo a delete', group: 'projects', say: ['undo in plan studio', 'plan studio undo', 'bring the plan item back'], fields: [], body: {}, speak: 'say' },
   'control:planner.plans:add': { title: 'Put an idea in Plan Studio', group: 'projects', confirm: true, say: ['plan {title}', 'add a plan {title}', 'put {title} in a plan', 'park the idea {title}', 'add a plan'], fields: [{ name: 'title', ask: 'What is the plan called?' }], control: { op: 'add', target: 'planner.plans', value: { title: '{title:title}', status: 'parked' } }, summary: 'park the plan "{title}"' },
 };
 
@@ -434,6 +443,8 @@ export function speakResult(entry, result) {
   if (entry.speak === 'claude-mode' && typeof r.useClaude === 'boolean') return r.useClaude ? `Claude mode is on${r.claudeConnected === false ? `, but Claude isn't connected: the scripted matcher answers for now` : ''}.` : 'Claude mode is off. The scripted matcher answers, and nothing you say goes to Claude.';
   if (entry.speak === 'pipeline' && r.status) return `Pipeline: ${typeof r.status === 'string' ? r.status : JSON.stringify(r.status).slice(0, 160)}.`;
   if (entry.speak === 'priority' && Array.isArray(r.items ?? r.builds)) { const items = r.items ?? r.builds; return `${items.length} in the queue${items.length ? `: ${items.slice(0, 5).map((b) => b.title || b.id).join('; ')}` : ''}.`; }
+  if (entry.speak === 'say' && typeof r.say === 'string' && r.say) return r.say;
+  if (entry.speak === 'hits' && Array.isArray(r.hits)) return r.hits.length ? `Found ${r.hits.length}: ${r.hits.slice(0, 5).map((h) => h.path || h.title).join('; ')}.` : 'Nothing matches.';
   if (typeof r.message === 'string' && r.message) return r.message;
   if (r.state === 'pending' || r.pending) return 'Asked. axHub is waiting for your approval.';
   return 'Done.';

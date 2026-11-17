@@ -1805,6 +1805,18 @@
    "from": "",
    "addenda": []
   },
+  "build-grids-full-column-set-date-time": {
+   "said": "All the visible columns right now in all grids are set as the default view. Every table grid in the orchestrator or the lander or anywhere that has build information or notes or tests, they all have to have a column called date and time, model used, account used, how many steps, steps out of how many are complete, a whole bunch of columns. Add a column so everyone is numbered one, two, three all the way down, and they keep that number even if you move them. If I say take the highlighted ones and put them at the top, it's only for that session; they won't stay there after the console's closed. Keep the ones visible now as default, with the rest hidden. Hide or unhide all columns from the context menu: right click on the header, a submenu called Columns, then Visible listing the visible ones with check marks and Hidden listing the hidden ones with no-smoking crosses, and they toggle.",
+   "at": "2026-11-17T18:08:39.671Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-manager-history": {
    "said": "every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "at": "2026-10-21",
@@ -2062,6 +2074,18 @@
    "from": "",
    "addenda": []
   },
+  "change-asset-only-assets-built-screen": {
+   "said": "Don't allow switching asset types unless they're built for the same screen. They must carry a field that says which plugin. That way you can't add an incompatible toolbar or tab group or nav menu. Only assets built for that particular screen show up in the change asset list.",
+   "at": "2026-11-17T18:15:39.557Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "change-to-move-amberx-web-app-console": {
    "said": "",
    "at": "",
@@ -2130,6 +2154,18 @@
    "link": "",
    "by": "chrome-settings-actually-apply-toolbars",
    "brief": "# Build: chrome-settings-actually-apply-toolbars\n\n## Brett said (verbatim)\nAt: 2026-11-13T17:44:36.515Z\n> do all tab groups have their own settings interface ... the toolbar and nav ignore it, why\n\n## What to build\nContinue build \"Chrome settings actually apply on toolbars, nav and menu bar (not just tab groups)\" (chrome-settings-actually-apply-toolbars) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 17:44):\n\"do all tab groups have their own settings interface ... the toolbar and nav ignore it, why\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) The framework chrome settings dialog (framework/react/components/ChromeContext.tsx, chrome-settings-rules.mjs, chrome.settings:<type>:<instance>) gives every tab group, toolbar, banner, nav and menu bar its own settings. Only tab groups apply the per-item settings (look, size, etc.); the main toolbar, nav and menu bar ignore most of them. Make every setting in the dialog take effect live on every chrome type and instance, persist per instance, and survive reload. Add a check that sets every value on every chrome type and verifies the render changes. Expose via REST/MCP/CLI/voice. Shipped features.\n[ ] s2 (~10 min) do all tab groups have their own settings interface ... the toolbar and nav ignore it, why\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/chrome-settings-actually-apply-toolbars.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/chrome-settings-actually-apply-toolbars.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step chrome-settings-actually-apply-toolbars <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link chrome-settings-actually-apply-toolbars --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step chrome-settings-actually-apply-toolbars <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note chrome-settings-actually-apply-toolbars \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ci-run-only-what-changed-no-second-run": {
+   "said": "Make that a rule in, in a settings to disable that.",
+   "at": "2026-11-17T18:43:16.825Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -2632,6 +2668,18 @@
    "from": "report",
    "addenda": []
   },
+  "context-menu-containers-show-hide-list": {
+   "said": "Add to the context menu an item called containers. Hidden, visible, with the same check mark, the same stop signs, the same toggle that lists every single container pane, like data set, every single thing, and you need to be able to hide or show. Also the context menu needs a global thing anytime a UI screen is open that is a main screen, like a full screen main plugin type of main UI, right above the settings in the same top container, called IDE layout. When you click it, it converts the layout to IDE style with drag and drop containers. You can drag one container into another one, and every container is a tab group, which will drop as a tab group. It needs to be reset in every floating, in every container, and just make it powerful.",
+   "at": "2026-11-17T18:10:12.979Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "context-menu-editor": {
    "said": "Hold C + click: shows which menu fires there and its file. Drag an element into the map to save it; saves the action/destination, not the element. Pinned top: Build profiles submenu, Settings, user picks.",
    "at": "2026-10-30",
@@ -3074,6 +3122,18 @@
    "from": "",
    "addenda": []
   },
+  "every-grid-select-highlight-all-rows": {
+   "said": "File a build that adds commands for every single grid now and in the future to highlight all rows that contain a keyword. Select them all and move them to the top.",
+   "at": "2026-11-17T18:04:26.928Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "every-plugin-screen-gets-a-settings-gear": {
    "said": "Every one has a gear icon to open its settings, right? Yeah, check and fix.",
    "at": "2026-11-16T18:27:11.774Z",
@@ -3362,6 +3422,18 @@
    "from": "",
    "addenda": []
   },
+  "fix-column-alignment-every-grid-table": {
+   "said": "Check all the grids and tables in Orchestrator and Lander and everywhere, to line up the columns. All the columns are fucked up.",
+   "at": "2026-11-17T18:10:52.360Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o": {
    "said": "",
    "at": "",
@@ -3479,6 +3551,18 @@
    "by": "fix-owner-check-bug-dead-start-button",
    "brief": "# Build: fix-owner-check-bug-dead-start-button\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Fix owner check bug + dead start button\" (fix-owner-check-bug-dead-start-button) [bug fix] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~1.8 h):\n[ ] s1 (~30 min) Signed in to the console as admin (the only account), Gizmo could raise Max parallel builds but 'Launch builds without asking' says owner only and won't toggle.\n[ ] s2 (~30 min) The owner check must treat the admin login as the owner for every owner-only setting.\n[ ] s3 (~30 min) Also: the Build Manager start button on a pending build does nothing (no log line).\n[ ] s4 (~20 min) Tests green, report _claude/builds/reports/fix-owner-check-bug-dead-start-button.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/fix-owner-check-bug-dead-start-button.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-owner-check-bug-dead-start-button <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link fix-owner-check-bug-dead-start-button --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step fix-owner-check-bug-dead-start-button <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-owner-check-bug-dead-start-button \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": false,
+   "from": "",
+   "addenda": []
+  },
+  "fix-pop-up-windows-don-t-close-x-only": {
+   "said": "Pop-up windows, some, they don't close when I click X. I can only minimize them, so fix that.",
+   "at": "2026-11-17T18:10:19.647Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
    "from": "",
    "addenda": []
   },
@@ -3972,6 +4056,18 @@
    "from": "",
    "addenda": []
   },
+  "grid-filter-plugin-one-filter-search": {
+   "said": "We need a tab that shows every single one in the orchestrator, but just have filters. Make a plugin, a little dialogue with filters, search bar, sort by, all that stuff. It has its own settings, but it would also exist in any data set settings, any grid. Every grid will have in its settings a tab for plugins, and that plugin ties that dialogue to that grid. You can open the plugin and see all the grids it's tied to. If you right click on any grid, you can apply that, which will remove any filter or queue there and have the new one. You'll click a little filter or right click the grid and it will open the dialogue.",
+   "at": "2026-11-17T18:34:36.995Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "grid-sort-filter": {
    "said": "Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones). Framework grid (part of the app, not the filter plugin): every grid that has no date/time column gets an automatic 'Date and time' column (row created / last changed), hidden by default; grids that already show a date/time get nothing. Right-click the header -> Show/Hide 'Date and time'. Web + Android. UPDATE (Brett): build BOTH into the framework grid. Sort/search/filter live in the framework (not the Basic filter plugin); smart per-grid defaults, right-click on/off, All grids list and hover offer all framework features. Date and time column is ensured at first render: if a grid renders without one, the framework adds the hidden column then. New grids get everything automatically. CI check flags any table not built on the framework grid.",
    "at": "2026-10-30",
@@ -3999,6 +4095,18 @@
   "grids-get-their-own-full-token-set": {
    "said": "how many tokens does a grid have; colors, list them all; why don't they, don't they need that to have hover colors",
    "at": "2026-11-13T19:57:20.524Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "grids-layout-control-voice-controlled": {
+   "said": "Make them all one build.",
+   "at": "2026-11-17T18:11:55.610Z",
    "source": "",
    "session": "",
    "link": "",
@@ -5100,6 +5208,18 @@
    "from": "",
    "addenda": []
   },
+  "merge-queue-view-every-build-s-fully": {
+   "said": "I think we should still have the merge queue, but it doesn't have anything to do with merging it. That is still controlled by the orchestrator. A merge queue showing anything that is ready to be merged. Completely built, ready for merging, but not yet.",
+   "at": "2026-11-17T18:32:41.029Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "merge-review-one-by-one-every-built-but-unmerged": {
    "said": "I gotta make sure nothing that's built or that I've written gets overwritten or broken from one of those old branches. Go one by one and I'll tell you to merge it or not.",
    "at": "2026-11-11T00:06:50.193Z",
@@ -5609,6 +5729,18 @@
    "said": "\"Make the sections in your note collapsible.\" (Asked: just this note or every note?) \"Yeah, make a couple of views. One view is the same way it is now, but with collapsible sections, and another view is the notes in a grid with expandable rows that shows the note.\"",
    "at": "2026-11-04T21:40:00Z",
    "source": "voice",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "nothing-saved-browser-all-console": {
+   "said": "I don't want anything saved in the browser anymore. Right now it says 10 assets are controlled. If I refresh it, it brings me to the homepage.",
+   "at": "2026-11-17T18:28:34.337Z",
+   "source": "",
    "session": "",
    "link": "",
    "by": "",
@@ -6373,6 +6505,18 @@
    "brief": "",
    "verbatim": false,
    "from": "notes",
+   "addenda": []
+  },
+  "pending-optimizer-ai-finds-pending": {
+   "said": "It'd have to be AI that will optimize pending. It will take all the jobs that should be made one and combine them. It will go through all the pending builds, figure out which ones can be combined or should be, and optimize that and merge them all into their own build with the same steps that existed in the individual builds.",
+   "at": "2026-11-17T18:47:36.225Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "pending-tab-one-collapsed-row-per-2": {
@@ -7638,6 +7782,30 @@
    "from": "",
    "addenda": []
   },
+  "rebuild-every-toolbar-page-specific": {
+   "said": "Everywhere there's a toolbar, rebuild the asset for that page/plugin with useful, integrated buttons made for it. Use Fable.",
+   "at": "2026-11-17T18:56:41.307Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "rebuild-fresh-main-collapsible-sections": {
+   "said": "Why aren't these sections in my settings collapsible?",
+   "at": "2026-11-17T18:25:05.725Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "rebuild-fresh-main-hide-any-asset": {
    "said": "Why can't we hide assets yet? We're supposed to be able to hide toolbars and tab groups and all that and be able to see what's hidden. ... You have to rebuild it.",
    "at": "2026-11-17T14:50:33.375Z",
@@ -8045,6 +8213,18 @@
    "link": "",
    "by": "self-healing-build-folders-auto-clear-stale-git",
    "brief": "# Build: self-healing-build-folders-auto-clear-stale-git\n\n## Brett said (verbatim)\nAt: 2026-11-10T02:22:06.131Z\n> Anytime that happens, you gotta remove that. You guys have to deal with the problems. I can't have it just stop working every time something goes wrong. Put in the code: if something breaks, it needs to remove locks. Put it in the code so it doesn't rely on AI.\n\n## What to build\nContinue build \"Self-healing build folders: auto-clear stale git locks and stray files, plain script, no AI\" (self-healing-build-folders-auto-clear-stale-git) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 02:22):\n\"Anytime that happens, you gotta remove that. You guys have to deal with the problems. I can't have it just stop working every time something goes wrong. Put in the code: if something breaks, it needs to remove locks. Put it in the code so it doesn't rely on AI.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.\n[ ] s2 (~30 min) Anytime that happens, you gotta remove that. You guys have to deal with the problems. I can't have it just stop working every time something goes wrong. Put in the code: if something breaks, it needs to remove locks. Put it in the code so it doesn't rely on AI.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/self-healing-build-folders-auto-clear-stale-git.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/self-healing-build-folders-auto-clear-stale-git.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step self-healing-build-folders-auto-clear-stale-git <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link self-healing-build-folders-auto-clear-stale-git --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step self-healing-build-folders-auto-clear-stale-git <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note self-healing-build-folders-auto-clear-stale-git \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "separate-settings-per-plugin-reset": {
+   "said": "Each plugin needs its own settings interface, not the console's. Reset asks in a confirm dialog with a switch to include assets and a scrollable table of changed assets. Make sure every page has the correct default settings interface.",
+   "at": "2026-11-17T18:56:36.706Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
    "verbatim": true,
    "from": "",
    "addenda": []
