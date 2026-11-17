@@ -832,11 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:55 UTC · `one-true-source-for-every-setting` added (80 steps) (all) · foreign-write
-- 2026-11-17 22:55 UTC · `vps-sets-every-build-status-manifest` added (120 steps) (all) · foreign-write
-- 2026-11-17 22:55 UTC · `api-fully-drives-every-field-type-forms` added (0 steps) (all) · foreign-write
-- 2026-11-17 22:55 UTC · `banner-widget-shapes-plus-change-icon` s17 done (all) · orchestrator
-- 2026-11-17 23:00 UTC · `console-app-part-2-native-floating` → complete, note (all) · foreign-write
 - 2026-11-17 23:00 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-17 23:00 UTC · `rebuild-every-toolbar-page-specific` → complete, note (all) · foreign-write
 - 2026-11-17 23:00 UTC · `flagship-professional-skin-covering-2` s17 done, s18 done, note (all) · foreign-write
@@ -1232,6 +1227,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:45 UTC · `always-fill-every-slot-when-slots-are` note (all) · dedupe-steps
 - 2026-11-17 23:45 UTC · `fix-step-splitter-claude-exit-1-input` note (all) · dedupe-steps
 - 2026-11-17 23:45 UTC · `orchestrator-settings-collapsible-split` note (all) · dedupe-steps
+- 2026-11-17 23:46 UTC · `molly-ri-court-records` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `new-app-wizard` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · foreign-write
+- 2026-11-17 23:46 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · foreign-write
 
 ## Token passes (log)
 
