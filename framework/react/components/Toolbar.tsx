@@ -82,7 +82,7 @@ function PageToolbarView({ hook, toolbar: t, label, className, children }: { hoo
         ))}
         {t.more.length > 0 && (
           <div className="fx-toolbar__group fx-toolbar__more" role="group" aria-label={t.moreLabel}>
-            <button type="button" className={`fx-toolbtn${more ? ' is-on' : ''}`} aria-haspopup="menu" aria-expanded={more} aria-label={`${t.moreLabel} (${t.more.length})`} title={t.moreLabel} data-axf-toolbar-more="" onClick={() => setMore((o) => !o)}>
+            <button type="button" className={`fx-toolbtn${more ? ' is-on' : ''}`} aria-haspopup="menu" aria-expanded={more} aria-label={`${t.moreLabel} (${t.more.length})`} title={t.moreLabel} data-axf-toolbar-more="" data-axf-target={`button:toolbar.${t.id}.more`} onClick={() => setMore((o) => !o)}>
               <Icon name="more" size={16} />
               {variant !== 'icons' && <span>{t.moreLabel}</span>}
               {t.more.some((b) => b.badge) && <span className="fx-toolbtn__badge" aria-hidden="true">{t.more.filter((b) => b.badge).length}</span>}

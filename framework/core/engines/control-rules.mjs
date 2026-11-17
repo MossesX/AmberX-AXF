@@ -134,6 +134,11 @@ export const CONTROL_TARGETS = {
     acts: { open: {}, set: { key: 'string', value: 'any' }, enable: {}, disable: { options: 'object' } },
     actEffect: { open: 'navigate', set: 'write', enable: 'write', disable: 'write' },
     doc: `Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. ${CONSOLE_DELIVERY}` },
+  // build rebuild-every-toolbar-page-specific (Nov 17 2026): every page toolbar (page-toolbar@1) and its buttons, by settings id
+  'console.toolbars': { domain: 'console', label: 'Page toolbars (buttons by settings id)', ops: ['list', 'get', 'act'], paths: 'host', select: { limit: 'number', view: 'string' },
+    acts: { press: { button: 'string', value: 'any' }, open: {} },
+    actEffect: { press: 'write', open: 'navigate' },
+    doc: `Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press.` },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
