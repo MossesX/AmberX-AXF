@@ -375,6 +375,22 @@ def delete_rule(rule: str, request: Request, body: Any = Body(None)) -> dict[str
     return _raise(_run("remove-rule", rule, "--confirm", _text(_body(body).get("confirm"), 80), by=_who(request)))
 
 
+@router.post("/rules/from-words")
+def rule_from_words(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    """'when a build fails, ask me to retry or archive' → a rule (a template when one fits). save = true stores it."""
+    b = _body(body)
+    text = _text(b.get("text") or b.get("words"), 600)
+    if not text:
+        raise HTTPException(400, 'from-words needs text, e.g. "when a build fails, ask me to retry or archive"')
+    args = ["from-words", text]
+    if b.get("save") is True:
+        args.append("--save")
+    for k in ("id", "title"):
+        if _text(b.get(k), 200):
+            args += [f"--{k}", _text(b[k], 200)]
+    return _raise(_run(*args, by=_who(request)))
+
+
 @router.post("/rules/{rule}/test")
 def test_rule(rule: str, request: Request, body: Any = Body(None)) -> dict[str, Any]:
     b = _body(body)

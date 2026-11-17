@@ -64,6 +64,20 @@ async function api<T = Record<string, unknown>>(path: string, body?: unknown, me
 let runtime: AxfRuntime | null = null;
 let openTab: Tab | null = null;
 let editRuleId: string | null = null;
+let historyRule: string | null = null;
+/** Deep links: ?axf-view=prompt-engine&tab=<tab>[&rule=<id> (edit it, or its history with tab=history)][&prompt=<id> (Waiting)]. */
+function readDeepLink(): boolean {
+  const q = new URLSearchParams(globalThis.location?.search ?? '');
+  const tab = q.get('tab') as Tab | null; const rule = q.get('rule'); const prompt = q.get('prompt');
+  if (prompt) { openTab = 'waiting'; return true; }
+  if (tab && TABS.some((t) => t.value === tab)) {
+    openTab = tab;
+    if (rule && tab === 'builder') editRuleId = rule;
+    if (rule && tab === 'history') historyRule = rule;
+    return true;
+  }
+  return false;
+}
 
 /* ---------------- small pieces ---------------- */
 const EFFECT_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = { read: undefined, write: 'accent', destructive: 'danger', navigate: 'success', ask: 'warning' };
@@ -512,7 +526,15 @@ function PromptEngineView() {
   const [opts, setOpts] = useState<Options | null>(null);
   const [hist, setHist] = useState<Audit[] | null>(null);
   const [histKind, setHistKind] = useState('');
-  const [histRule, setHistRule] = useState('');
+  const [histRule, setHistRule] = useState(() => { const r = historyRule ?? ''; historyRule = null; return r; });
+  const [wordsText, setWordsText] = useState('');
+  const [wordsRule, setWordsRule] = useState<{ summary: string; from: string; ok: boolean; errors: { field: string; message: string }[] } | null>(null);
+  const fromWords = async (save: boolean) => {
+    const r = await api<{ summary: string; from: string; saved: boolean; errors: { field: string; message: string }[] }>('rules/from-words', { text: wordsText, save });
+    if (!r.ok) { rt.toast(r.error ?? 'No rule from those words.', 'danger', 'From words'); setWordsRule(null); return; }
+    setWordsRule({ summary: r.summary, from: r.from, ok: !r.errors?.length, errors: r.errors ?? [] });
+    if (save && r.saved) { rt.toast('Rule added.', 'success', 'From words'); setWordsText(''); setWordsRule(null); await load(); }
+  };
   const [runList, setRunList] = useState<RunRecord[] | null>(null);
   const [runStatus, setRunStatus] = useState('');
   const [params, setParams] = useState('');
@@ -555,6 +577,12 @@ function PromptEngineView() {
       <TabGroup id="prompt-engine.tabs" label="Prompt engine sections" value={tab} onChange={pick} tabs={TABS.map((t) => ({ ...t, badge: t.value === 'waiting' ? counts?.waiting : t.value === 'events' ? counts?.rules : t.value === 'runs' ? counts?.runsWaiting || undefined : undefined }))} />
       {tab === 'events' && (
         <div className="fx-stack">
+        <div className="axp-pe__tools" role="toolbar" aria-label="Rule from words" data-axf-target="field:prompt-engine.from-words">
+          <TextField label="Say what should happen" value={wordsText} onChange={(v) => { setWordsText(v); setWordsRule(null); }} placeholder="when a build fails, ask me to retry or archive" />
+          <Button tone="neutral" size="sm" icon="eye" disabled={!wordsText.trim()} onClick={() => void fromWords(false)}>Preview</Button>
+          <Button tone="primary" size="sm" icon="plus" disabled={!wordsText.trim()} onClick={() => void fromWords(true)}>Add rule</Button>
+        </div>
+        {wordsRule && <Note tone={wordsRule.ok ? 'info' : 'warning'}>{wordsRule.summary} ({wordsRule.from}){wordsRule.errors.length ? ` · ${wordsRule.errors.map((e) => `${e.field}: ${e.message}`).join('; ')}` : ''}</Note>}
         <Container title={`Templates (${st?.templates.length ?? 0})`} icon="copy" collapsible defaultOpen={!st?.rules.length}>
           <ul className="axp-pe__list" data-axf-target="list:prompt-engine.templates">
             {st?.templates.map((t) => (
@@ -700,8 +728,9 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('prompt-engine.new', () => { editRuleId = ''; openTab = 'builder'; rt.navigate(VIEW); }, { label: 'New prompt rule' });
     rt.actions.register('prompt-engine.tools', () => { openTab = 'tools'; rt.navigate(VIEW); }, { label: 'Prompt engine tool sets' });
     rt.actions.register('prompt-engine.runs', () => { openTab = 'runs'; rt.navigate(VIEW); }, { label: 'Prompt engine runs' });
-    const p = new URLSearchParams(globalThis.location?.search ?? '').get('prompt');
-    if (p) { openTab = 'waiting'; setTimeout(() => rt.navigate(VIEW), 0); }
+    rt.actions.register('prompt-engine.history', () => { openTab = 'history'; rt.navigate(VIEW); }, { label: 'Prompt engine history' });
+    rt.actions.register('prompt-engine.templates', () => { openTab = 'events'; rt.navigate(VIEW); }, { label: 'Prompt engine templates' });
+    if (readDeepLink()) setTimeout(() => rt.navigate(VIEW), 0);
     void api<State>('').then((r) => { if (r.ok && runtime) runtime.setBadge(COUNTER, r.counts.waiting); });
   },
   views: { [VIEW]: { title: 'Prompt engine', icon: 'zap', render: () => <PromptEngineView /> } },

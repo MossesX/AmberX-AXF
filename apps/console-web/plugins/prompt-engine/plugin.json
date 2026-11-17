@@ -18,6 +18,8 @@
     "action:prompt-engine.new",
     "action:prompt-engine.tools",
     "action:prompt-engine.runs",
+    "action:prompt-engine.history",
+    "action:prompt-engine.templates",
     "service:axf.prompt-engine@1"
   ],
   "scopes": [
@@ -63,6 +65,7 @@
       { "route": "POST /rules/{rule}/enable", "id": "enable-rule", "title": "Turn a rule on", "description": "Enable a rule (voice: 'turn on the build failed rule')." },
       { "route": "POST /rules/{rule}/disable", "id": "disable-rule", "title": "Turn a rule off", "description": "Disable a rule; it stays and can be turned on again (voice: 'turn off the UI review popup rule')." },
       { "route": "POST /rules/{rule}/delete", "id": "delete-rule", "title": "Delete a rule", "description": "Remove a rule for good; confirm = the rule id.", "destructive": true, "confirm": true, "input": { "type": "object", "properties": { "confirm": { "type": "string", "description": "the rule id" } }, "required": ["confirm"] } },
+      { "route": "POST /rules/from-words", "id": "rule-from-words", "title": "A rule from plain words", "description": "Say what should happen and get the rule: { text: \"when a build fails, ask me to retry or archive\", save? }. The event is picked from the registry by its words, \"ask me to A or B\" is a pick (A, B), \"ask me whether\" an approve, \"veto\" a veto countdown, \"push me\" a notification; each option runs what its word means for that event (retry → queue the build again, archive → archive it, approve / reject → decide the review item). A template with the same event and answers wins. Shows the rule; save = true stores it (voice: 'when a build fails, ask me to retry or archive').", "input": { "type": "object", "properties": { "text": { "type": "string" }, "save": { "type": "boolean" }, "id": { "type": "string" }, "title": { "type": "string" } }, "required": ["text"] } },
       { "route": "POST /rules/{rule}/test", "id": "test-rule", "title": "Test-fire a rule", "description": "Fire a rule with a sample event (or the event given), limits ignored. Dry by default: shows whether it fires, the prompt it would ask and the plan for every answer, runs nothing. live = true really asks / runs (voice: 'test the build failed rule').", "input": { "type": "object", "properties": { "event": { "type": "object", "description": "{ source, event, payload }" }, "live": { "type": "boolean" } } } },
       { "route": "GET /macros", "id": "macros", "title": "List macros", "description": "Every macro (a saved sequence of actions with parameters).", "readOnly": true },
       { "route": "POST /macros", "id": "add-macro", "title": "Add a macro", "description": "Create a macro (prompt-macro@1): { id?, title, params?: [{ name, type?, default?, required? }], steps: [{ action, input }] }.", "input": { "type": "object", "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "description": { "type": "string" }, "params": { "type": "array" }, "steps": { "type": "array" } }, "required": ["steps"] } },

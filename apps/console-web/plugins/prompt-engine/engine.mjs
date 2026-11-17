@@ -593,6 +593,76 @@ export function testRule(id, opts = {}) {
   } else out.run = run(res.actions, { rule: r.id, by: opts.by, ctx }, { registry: reg, dry: !opts.live, exec: opts.exec, trail: [`rule:${r.id}`, 'test'] });
   return out;
 }
+/* ------------------------------------------------------------------ a rule from plain words (voice, chat, CLI) */
+
+const STOP = new Set(['a', 'an', 'the', 'when', 'whenever', 'if', 'ask', 'me', 'to', 'or', 'and', 'it', 'is', 'on', 'of', 'for', 'something', 'any', 'every', 'i', 'my', 'then', 'should', 'whether', 'gets', 'get', 'goes', 'go', 'with', 'that']);
+const wordList = (t) => String(t ?? '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w));
+const stem = (w) => w.replace(/(ing|ed|es|s)$/, '');
+/** Words that name an event source without sharing a word with its title. */
+const ALIASES = { say: 'voice', said: 'voice', hear: 'voice', heard: 'voice', speak: 'voice', review: 'ui-review', webhook: 'webhook', hook: 'webhook', clash: 'merge', conflict: 'clash', held: 'held', schedule: 'schedule', every: 'schedule', daily: 'schedule' };
+const overlap = (a, b) => { const B = new Set(b.map(stem)); return a.map(stem).filter((w) => B.has(w)).length; };
+/** What an answer word does, by the event's fields: a build, a review item, an approval. */
+const VERB_ACTIONS = [
+  { re: /^(retry|re-?queue|queue|rerun|restart|try again)/, when: 'build', action: { action: 'build.status', input: { build: '{{build.id}}', status: 'queued' } } },
+  { re: /^archive/, when: 'build', action: { action: 'build.archive', input: { build: '{{build.id}}' } } },
+  { re: /^(block|hold|pause)/, when: 'build', action: { action: 'build.status', input: { build: '{{build.id}}', status: 'blocked' } } },
+  { re: /^approve/, when: 'item', action: { action: 'ui-review.decide', input: { item: '{{item.id}}', decision: 'approve' } } },
+  { re: /^reject/, when: 'item', action: { action: 'ui-review.decide', input: { item: '{{item.id}}', decision: 'reject' } } },
+  { re: /^(change|request change)/, when: 'item', action: { action: 'ui-review.decide', input: { item: '{{item.id}}', decision: 'changes' } } },
+];
+
+/**
+ * "when a build fails, ask me to retry or archive" → a prompt-event@1 rule. The event is the registry event whose title
+ * and id share the most words with the "when …" part (a template with the same event and options wins); "ask me to A or
+ * B" is a pick with A and B, "ask me (whether / to approve)" an approve, "veto" a veto countdown, "tell / push me" a
+ * push with no question. Each option runs what its word means for that event (retry → queue the build again, archive
+ * → archive it, approve → decide the item …), else an audit note. Not saved unless save = true.
+ */
+export function ruleFromWords(text, opts = {}) {
+  const raw = String(text ?? '').trim().slice(0, 600);
+  if (!raw) return { ok: false, error: 'say what should happen, e.g. "when a build fails, ask me to retry or archive"', code: 'usage' };
+  const reg = registry();
+  const m = /^\s*(?:when(?:ever)?|if|on)\s+(.+?)(?:,|\s+then\s+|\s+(?=(?:ask|tell|push|notify|veto|let me)\b)|$)(.*)$/i.exec(raw);
+  const whenPart = m ? m[1] : raw; const doPart = m ? m[2] : '';
+  const ww = wordList(whenPart).flatMap((w) => (ALIASES[w] ? [w, ALIASES[w]] : [w]));
+  let best = null;
+  for (const [id, ev] of Object.entries(reg.events || {})) {
+    const score = overlap(ww, wordList(`${ev.title} ${id.replace(/[.-]/g, ' ')}`)) * 2 + overlap(ww, wordList(ev.source || ''));
+    if (score > 0 && (!best || score > best.score)) best = { id, ev, score };
+  }
+  if (!best) return { ok: false, error: `no event matches "${whenPart}"; GET /manifest lists them`, code: 'not_found' };
+  const d = doPart.toLowerCase();
+  const pickM = /ask(?: me)?(?: to| whether to| if i want to)?\s+(.+?)\s*$/.exec(d);
+  let kind = 'none'; let options = [];
+  if (/\bveto\b|count ?down/.test(d)) kind = 'veto';
+  else if (pickM && /\bor\b|,/.test(pickM[1])) { kind = 'pick'; options = pickM[1].split(/\s*(?:,|\bor\b)\s*/).map((x) => x.replace(/^(to|it|them)\s+/, '').replace(/\s+(it|them)$/, '').trim()).filter(Boolean).slice(0, E.MAX_OPTIONS); }
+  else if (/\bask\b|approve|confirm/.test(d)) kind = 'approve';
+  else if (/\btype|write|name\b/.test(d)) kind = 'text';
+  const fields = (best.ev.fields || []).map((f) => f.name);
+  const subject = fields.some((f) => f.startsWith('build.')) ? 'build' : fields.some((f) => f.startsWith('item.')) ? 'item' : fields.some((f) => f.startsWith('approval.')) ? 'approval' : '';
+  const actFor = (word) => VERB_ACTIONS.find((v) => v.when === subject && v.re.test(word))?.action ?? { action: 'log.note', input: { text: `Brett picked "${word}" for {{event.id}}.` } };
+  const slugs = options.map((o) => E.slug(o) || 'option');
+  // a template with the same event (and, for a pick, the same answers) wins: it carries the tested wording and limits
+  const tpl = E.TEMPLATES.find((t) => t.rule.trigger.event === best.id && t.rule.ask.kind === kind && (kind !== 'pick' || slugs.every((sl, i) => (t.rule.ask.options || []).some((o) => o.id === sl || actFor(options[i]).action === (t.rule.on.pick?.[o.id]?.[0]?.action)))))
+    ?? E.TEMPLATES.find((t) => t.rule.trigger.event === 'build.status' && best.id === 'build.failed' && kind === 'pick' && t.id === 'build-failed-retry' && slugs.every((sl) => /retry|queue|archive|leave/.test(sl)));
+  const title = raw.replace(/^./, (c) => c.toUpperCase()).slice(0, 120);
+  let rule;
+  if (tpl) rule = E.fromTemplate(tpl.id, { id: E.slug(opts.id) || tpl.id, title: opts.title || tpl.title }, { now: now() });
+  else {
+    const ask = kind === 'none' ? { kind: 'none' } : { kind, title: `${best.ev.title}${subject === 'build' ? ': {{build.title}}' : subject === 'item' ? ': {{item.name}}' : subject === 'approval' ? ': {{approval.tool}}' : ''}`, ...(kind === 'pick' ? { options: options.map((o, i) => ({ id: slugs[i], label: o.replace(/^./, (c) => c.toUpperCase()) })) } : {}), ...(kind === 'veto' ? { countdownSec: E.DEFAULT_VETO_SEC } : {}), outputs: ['dialog', 'push'] };
+    const on = kind === 'pick' ? { pick: Object.fromEntries(options.map((o, i) => [slugs[i], [actFor(o)]])) }
+      : kind === 'none' ? { fire: [{ action: 'notify.push', input: { title: best.ev.title, text: raw.slice(0, 200) } }] }
+      : kind === 'text' ? { text: [{ action: 'log.note', input: { text: 'Brett: {{answer.text}}' } }] }
+      : { approve: [{ action: 'log.note', input: { text: 'Approved: {{event.id}}' } }], deny: [{ action: 'log.note', input: { text: 'Denied: {{event.id}}' } }] };
+    const said = best.id === 'voice.phrase' ? (/\b(?:say|said|hear|speak)\s+["“]?(.+?)["”]?\s*$/i.exec(whenPart)?.[1] ?? '').trim() : '';
+    rule = E.normRule({ id: E.slug(opts.id) || E.slug(raw).slice(0, 60), title: opts.title || title, description: `From: "${raw}"`, trigger: { source: best.ev.source, event: best.id }, ...(said ? { when: { all: [{ field: 'phrase', op: 'contains', value: said.toLowerCase() }] } } : {}), ask, on, limits: subject === 'build' ? { dedupeKey: '{{build.id}}', dedupeSec: 86400 } : {} }, { now: now() });
+  }
+  const v = E.validateRule(rule, reg);
+  const out = { ok: v.ok, rule, from: tpl ? `template ${tpl.id}` : 'words', event: best.id, ask: rule.ask.kind, summary: E.summarize(rule, reg), errors: v.errors, saved: false };
+  if (v.ok && opts.save) { const r = rules.add({ ...rule, by: opts.by || '' }, opts.by); out.saved = r.ok; if (!r.ok) { out.ok = false; out.error = r.error; out.code = r.code; } }
+  return out;
+}
+
 export function history(filter = {}, limit = 100) { return { ok: true, items: E.historyOf(readAudit(), filter, Math.min(1000, Math.max(1, Number(limit) || 100))) }; }
 
 /* ------------------------------------------------------------------ CLI */
@@ -655,6 +725,7 @@ export function main(argv = process.argv.slice(2)) {
     case 'templates': return { ok: true, items: E.TEMPLATES.map((t) => ({ ...t, summary: E.summarize(E.fromTemplate(t.id), registry()) })) };
     case 'use-template': return a ? useTemplate(a, { id: flags.id, title: flags.title }, by) : need('use-template <id> [--id x] [--title t]');
     case 'fire': { const j = jsonArg(a); return j ? fire(j, { by, dry: Boolean(flags.dry), brett }) : need('fire <json|-> [--dry]'); }
+    case 'from-words': { const t = words.slice(1).join(' '); return t ? ruleFromWords(t, { save: Boolean(flags.save), id: flags.id, title: flags.title, by }) : need('from-words "when a build fails, ask me to retry or archive" [--save] [--id x]'); }
     case 'test': return a ? testRule(a, { event: flags.event ? jsonArg(flags.event) : null, live: Boolean(flags.live), by }) : need('test <rule> [--event json] [--live]');
     case 'waiting': return waiting();
     case 'answer': { if (!a) return need('answer <instance|n> <approve|deny|later|pick|text> [--option o] [--text t]'); const ans = b === 'pick' ? { kind: 'pick', option: flags.option ?? words[3] } : b === 'text' ? { kind: 'text', text: flags.text ?? words.slice(3).join(' ') } : b || flags.text; return answer(a, ans, { by, brett }); }

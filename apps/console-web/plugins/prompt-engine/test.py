@@ -231,4 +231,11 @@ t.join(5)
 ok(fired_events and fired_events[0]["event"] == "ui-review.submitted", "emit fires off the caller's thread")
 ok(hasattr(svc, "emit"), "the capability has emit")
 
+# s7: a rule from words over REST (= MCP / CLI / voice through plugin-commands)
+r = c.post(f"{API}/rules/from-words", json={"text": "when a build fails, ask me to retry or archive"})
+ok(r.status_code == 200 and r.json()["ask"] == "pick" and r.json()["saved"] is False, "from-words previews a pick rule")
+r = c.post(f"{API}/rules/from-words", json={"text": "when a build fails, ask me to retry or archive", "save": True, "id": "fail-words"})
+ok(r.status_code == 200 and r.json()["saved"] is True and c.get(f"{API}/rules/fail-words").status_code == 200, "from-words saves it")
+ok(c.post(f"{API}/rules/from-words", json={}).status_code == 400, "from-words needs text")
+
 print(f"prompt-engine server: {checks} checks passed")

@@ -290,6 +290,21 @@ await test('MCP and axHub calls go through the MCP client plugin; an answer can 
   } finally { R.EXEC['tool.run'] = orig; R.toolsets.remove('remote', 'remote'); }
 });
 
+await test('a rule from plain words: "when a build fails, ask me to retry or archive"', async () => {
+  const r = R.ruleFromWords('when a build fails, ask me to retry or archive');
+  assert.equal(r.ok, true); assert.equal(r.ask, 'pick'); assert.equal(r.saved, false);
+  assert.deepEqual(Object.keys(r.rule.on.pick).slice(0, 2), ['retry', 'archive']);
+  assert.equal(r.rule.on.pick.retry[0].action, 'build.status'); assert.equal(r.rule.on.pick.archive[0].action, 'build.archive');
+  const up = R.ruleFromWords('when a step asks for a model upgrade, ask me to approve');
+  assert.equal(up.event, 'build.upgrade-requested'); assert.equal(up.ask, 'approve');
+  const v = R.ruleFromWords('when I say good night, ask me whether to pause', { id: 'good-night' });
+  assert.equal(v.event, 'voice.phrase'); assert.equal(v.rule.when.all[0].value, 'good night'); assert.equal(v.from, 'words');
+  const own = R.ruleFromWords('when a build is blocked, ask me to retry or hold', { id: 'blocked-pick', save: true });
+  assert.equal(own.ok, true, JSON.stringify(own.errors)); assert.equal(own.saved, true); assert.equal(own.rule.on.pick.hold[0].input.status, 'blocked');
+  assert.ok(R.rules.get('blocked-pick'));
+  assert.equal(R.ruleFromWords('').code, 'usage'); assert.equal(R.ruleFromWords('when zzz qqq happens').code, 'not_found');
+});
+
 await test('data stays in the data folder; audit lines are prompt-audit@1', async () => {
   for (const f of ['rules.json', 'macros.json', 'pipelines.json', 'toolsets.json', 'runs.json', 'instances.json', 'state.json', 'audit.jsonl', 'manifests.json']) assert.ok(readFileSync(join(T, f), 'utf8').length > 0, f);
   for (const l of R.readAudit()) { assert.equal(l.$axf, 'prompt-audit@1'); assert.ok(E.AUDIT_KINDS.includes(l.kind), l.kind); }

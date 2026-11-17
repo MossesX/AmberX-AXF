@@ -8,7 +8,7 @@
     "tabs": 87,
     "settingsTabs": 72,
     "settings": 89,
-    "functions": 280,
+    "functions": 282,
     "buttons": 62,
     "plugins": 72
   },
@@ -1593,7 +1593,7 @@
       "view": "prompt-engine",
       "plugin": "ai.amberx.axf.console.prompt-engine",
       "file": "plugins/prompt-engine/web/index.tsx",
-      "line": 555,
+      "line": 577,
       "tabs": [
         {
           "address": "view:prompt-engine/tab:prompt-engine.tabs=events",
@@ -6557,6 +6557,36 @@
         "prompt",
         "engine",
         "runs"
+      ],
+      "plugin": "ai.amberx.axf.console.prompt-engine",
+      "file": "plugins/prompt-engine/web/index.tsx"
+    },
+    {
+      "address": "function:prompt-engine.history",
+      "kind": "function",
+      "id": "prompt-engine.history",
+      "label": "Prompt engine history",
+      "detail": "Action · Prompt engine",
+      "keywords": [
+        "prompt-engine.history",
+        "prompt",
+        "engine",
+        "history"
+      ],
+      "plugin": "ai.amberx.axf.console.prompt-engine",
+      "file": "plugins/prompt-engine/web/index.tsx"
+    },
+    {
+      "address": "function:prompt-engine.templates",
+      "kind": "function",
+      "id": "prompt-engine.templates",
+      "label": "Prompt engine templates",
+      "detail": "Action · Prompt engine",
+      "keywords": [
+        "prompt-engine.templates",
+        "prompt",
+        "engine",
+        "templates"
       ],
       "plugin": "ai.amberx.axf.console.prompt-engine",
       "file": "plugins/prompt-engine/web/index.tsx"

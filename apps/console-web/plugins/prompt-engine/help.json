@@ -345,6 +345,42 @@
         "title": "Answer",
         "text": "Your text answer to this prompt; the rule reads it as {{answer.text}}.",
         "kind": "field"
+      },
+      {
+        "target": "from-words",
+        "title": "Say what should happen",
+        "text": "Type or say a rule in plain words, e.g. \"when a build fails, ask me to retry or archive\". Preview shows the rule it makes (a template when one fits); Add rule stores it. Also: POST /rules/from-words, MCP prompt-engine_rule-from-words, axf prompt-engine rule-from-words --text \"…\", or say it to AmberX.",
+        "kind": "field"
+      },
+      {
+        "target": "test-fire",
+        "title": "Test-fire",
+        "text": "Fires the event for real with a sample event: it asks you (see Waiting) or runs its actions now. Test only explains what would happen.",
+        "kind": "button"
+      },
+      {
+        "target": "event-history",
+        "title": "History",
+        "text": "Opens History filtered to this event: when it fired, was skipped (and why), asked, was answered and what ran.",
+        "kind": "button"
+      },
+      {
+        "target": "templates",
+        "title": "Templates",
+        "text": "Ready-made events for the common cases: UI Review pop-up, build failed (retry or archive), held call veto, merge clash, model upgrade, watchdog, service down, daily digest, shipped note. Use adds one; edit it like any other.",
+        "kind": "section"
+      },
+      {
+        "target": "mcp-call",
+        "title": "Call an MCP tool",
+        "text": "An answer can call a tool on any MCP server the MCP client plugin knows (server, tool, arguments). Tool sets name them mcp.<server>.<tool>.",
+        "kind": "field"
+      },
+      {
+        "target": "axhub-call",
+        "title": "Call an axHub service",
+        "text": "An answer can call an axHub service (service, tool, args) with reason { title, description }; without both the rule is refused. Tool sets name them axhub.<service>.<tool>.",
+        "kind": "field"
       }
     ],
     "intros": [
