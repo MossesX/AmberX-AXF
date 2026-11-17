@@ -288,6 +288,7 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner-widgets__check { min-width: 0; }
 .fx-banner-widgets__grip { display: inline-flex; flex: none; padding: var(--fx-dens-gap-sm); color: var(--fx-muted); cursor: grab; touch-action: none; }
 .fx-banner-widgets__wide { grid-column: 1 / -1; }
+.fx-banner-widgets__icon { align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
 /* Iconic banner widgets (widget-icons@1, Banner.tsx): icon, then the text under the --fx-size-widget-text-max cap; the full text is the tooltip. */
 .fx-widget-iconic { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; max-width: 100%; color: inherit; font: inherit; background: none; border: 0; padding: 0; }
 .fx-widget-iconic.is-tap { cursor: pointer; }

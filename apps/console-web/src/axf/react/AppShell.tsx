@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { compileSlots, regionAccepts } from '../core/engines/layout';
+import { FRAMEWORK_MODULE } from '../core/engines/actions';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
@@ -9,6 +10,7 @@ import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
 import { bannerWidgetsDialog } from './components/BannerWidgets';
 import { iconPickerDialog } from './components/IconPicker';
+import { installWidgetIcons } from './widgetIcons';
 import { chromeDialogs, installChrome } from './components/ChromeContext';
 import { priorityDialogs } from './components/PriorityTag';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
@@ -72,6 +74,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   useWindowShortcuts();
   // chrome-settings@1: Settings / Change / Move on every tab group, toolbar, banner, nav and menu bar (once per runtime)
   installChrome(rt);
+  // widget-icons@1: widget.icons / widget.icon / widget.mode / widget.icons.reset and the banner widget's Choose icon…
+  installWidgetIcons(rt, FRAMEWORK_MODULE);
   const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...iconPickerDialog, ...chromeDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);

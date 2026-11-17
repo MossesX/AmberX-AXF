@@ -93,3 +93,44 @@ export function resetWidgetIcon(rt: AxfRuntime, id: string): void {
 export function WidgetGlyph({ icon, size = 14 }: { icon: string; size?: number }) {
   return <Icon name={icon} size={size} />;
 }
+
+/* ---------------- actions and the context menu (installed once per runtime from AppShell) ---------------- */
+
+const installed = new WeakSet<AxfRuntime>();
+const MODE_ITEMS: [string, string][] = [['icon', 'Icon only'], ['icon+text', 'Icon and text'], ['text', 'Text only'], ['auto', 'Automatic']];
+
+/** `<host>:<kind>:<id>` spans three action args; whatever follows is the value (an icon ref may hold a colon too). */
+export function splitWidgetArgs(args: readonly string[]): { id: string; value: string } {
+  return { id: args.slice(0, 3).join(':'), value: args.slice(3).join(':') };
+}
+
+/** The context menu entries for one widget: Choose icon… and Show as (icon / icon+text / text / automatic). */
+export function widgetIconMenu(rt: AxfRuntime, id: string, label: string): import('../core/engines/windows').MenuEntry[] {
+  const mode = String(rt.settings.get(widgetModeKey(id)) ?? '') || 'auto';
+  return [
+    { id: `widget-icon-${id}`, label: `Choose icon… (${label})`, icon: 'star', action: `widget.icons:${id}` },
+    { id: `widget-mode-${id}`, label: 'Show as', icon: 'type', items: MODE_ITEMS.map(([m, l]) => ({ id: `widget-mode-${id}-${m}`, label: l, icon: m === mode ? 'check' : undefined, action: `widget.mode:${id}:${m}` })) },
+  ];
+}
+
+export function installWidgetIcons(rt: AxfRuntime, module: string): void {
+  if (installed.has(rt)) return;
+  installed.add(rt);
+  const bad = (msg: string | null) => { if (msg) rt.toast(msg, 'warning', 'Widget icon'); return !msg; };
+  rt.actions.withModule(module, () => {
+    rt.actions.register('widget.icons', (args) => { const { id } = splitWidgetArgs(args); rt.openDialog(WIDGET_ICONS_DIALOG, id ? { widget: id } : {}); }, { label: 'Widget icons: choose the icon of a banner or settings widget (widget.icons[:<widget id>])', params: true });
+    rt.actions.register('widget.icon', (args) => { const { id, value } = splitWidgetArgs(args); bad(setWidgetIcon(rt, id, value || 'own')); }, { label: 'Set a widget\'s icon (widget.icon:<widget id>:<glyph | pack/glyph | own>)', params: true, searchable: false });
+    rt.actions.register('widget.mode', (args) => { const { id, value } = splitWidgetArgs(args); bad(setWidgetMode(rt, id, value || 'auto')); }, { label: 'Show a widget as icon, icon+text, text or auto (widget.mode:<widget id>:<mode>)', params: true, searchable: false });
+    rt.actions.register('widget.icons.reset', (args) => {
+      const { id } = splitWidgetArgs(args);
+      if (id) { if (bad(parseWidgetIconId(id) ? null : `"${id}" is not a widget id`)) resetWidgetIcon(rt, id); return; }
+      for (const w of widgetIconsSeen(rt)) resetWidgetIcon(rt, w.id);
+    }, { label: 'Put a widget\'s icon back to its default (widget.icons.reset[:<widget id>]; no id = every widget)', params: true });
+  });
+  // Right-click a banner widget: Choose icon… and Show as, after Widget settings
+  rt.contextExtras.set('*:widget-icons', (target) => {
+    if (target !== 'banner' || !rt.contextBannerWidget) return [];
+    const hit = rt.bannerWidgets().find((w) => w.key === rt.contextBannerWidget);
+    return hit ? widgetIconMenu(rt, `banner:${hit.key}`, hit.label) : [];
+  });
+}

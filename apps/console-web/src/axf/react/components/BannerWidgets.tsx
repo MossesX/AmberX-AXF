@@ -18,6 +18,8 @@ import { Button, IconButton } from './Controls';
 import { Checkbox, Note, SelectField, Switch, TextField } from './Forms';
 import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
+import { WIDGET_ICONS_DIALOG, resolveWidget, setWidgetMode } from '../widgetIcons';
+import { widgetModeKey } from '../../core/engines/widget-icons';
 
 const SIZE_LABEL: Record<BannerWidgetSize, string> = { icon: 'Icon only', compact: 'Compact', normal: 'Normal', wide: 'Wide' };
 const SHOW_LABEL: Record<BannerWidgetShow, string> = { auto: 'Its own mix', both: 'Icon and text', icon: 'Icon only', text: 'Text only', number: 'Number only' };
@@ -126,9 +128,24 @@ function WidgetFields({ w }: { w: BannerWidget }) {
       <SelectField label="Width in" value={unit} options={[{ value: 'px', label: 'Pixels' }, { value: 'ch', label: 'Characters' }]} onChange={(v) => { if (saved.maxWidth) set({ maxWidth: Math.max(BANNER_WIDGET_MAX_WIDTH[v as BannerWidthUnit].min, Math.min(BANNER_WIDGET_MAX_WIDTH[v as BannerWidthUnit].max, saved.maxWidth)), maxUnit: v }); else set({ maxUnit: null }); }} />
       <SelectField label="Region" value={w.at} options={BANNER_SIDES.map((s) => ({ value: s, label: SIDE_LABEL[s] ?? s }))} onChange={(v) => { if (w.attached) rt.moveHostItem('banner', w.key, v, 999); }} disabled={!w.attached} />
       <SelectField label="Priority" hint="Low goes into ⋯ first" value={String(w.view.priority)} options={Array.from({ length: BANNER_WIDGET_PRIORITY.max }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))} onChange={(v) => set({ priority: Number(v) })} />
+      <WidgetIconFields id={`banner:${w.key}`} label={w.label} />
       <Switch className="fx-banner-widgets__wide" label="Hide when there's nothing to report" checked={w.view.hideWhenEmpty} onChange={(v) => set({ hideWhenEmpty: v })} />
       <Switch className="fx-banner-widgets__wide" label="Move into the ⋯ menu when space runs out" checked={w.view.overflow} onChange={(v) => set({ overflow: v })} />
       <div className="fx-row fx-banner-widgets__wide"><Button size="sm" tone="ghost" icon="undo" onClick={() => rt.dispatch(`banner.widget:${w.key}:reset`)}>Back to default</Button></div>
+    </div>
+  );
+}
+
+/** widget-icons@1: the widget's icon (Choose icon… opens the picker) and whether it draws icon, icon+text, text or auto. */
+export function WidgetIconFields({ id, label }: { id: string; label: string }) {
+  const rt = useRuntime();
+  useAxfState();
+  const r = resolveWidget(rt, { id, kind: id.split(':')[1], name: label });
+  const mode = String(rt.settings.get(widgetModeKey(id)) ?? '') || 'auto';
+  return (
+    <div className="fx-row fx-banner-widgets__wide fx-banner-widgets__icon" data-axf-widget-icon={id}>
+      <Button size="sm" tone="neutral" icon={r.icon} id={`widget-icon.${id}`} onClick={() => rt.openDialog(WIDGET_ICONS_DIALOG, { widget: id, label })}>Choose icon…</Button>
+      <SelectField label="Icon or text" value={mode} options={[['auto', 'Automatic (icon when the text is long)'], ['icon', 'Icon only'], ['icon+text', 'Icon and text'], ['text', 'Text only']].map(([value, l]) => ({ value: value!, label: l! }))} onChange={(v) => setWidgetMode(rt, id, v)} />
     </div>
   );
 }
