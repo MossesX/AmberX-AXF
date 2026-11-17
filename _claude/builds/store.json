@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8321,
- "updatedAt": "2026-11-17T23:02:22.072Z",
+ "rev": 8322,
+ "updatedAt": "2026-11-17T23:03:22.920Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -291987,7 +291987,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:02:18.989Z",
+   "updatedAt": "2026-11-17T23:03:11.868Z",
    "builtAt": "",
    "notes": [
     {
@@ -292077,6 +292077,10 @@
     {
      "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T23:02:18.989Z"
+    },
+    {
+     "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T23:03:11.868Z"
     }
    ],
    "approvals": [
@@ -292106,7 +292110,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-flagship-professional-skin-covering-2--earl",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -292924,7 +292928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
