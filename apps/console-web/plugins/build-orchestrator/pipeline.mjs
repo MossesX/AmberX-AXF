@@ -198,8 +198,10 @@ export function accountsRead(store, settings = loadSettings(), env = process.env
   const w = workerRows(env);
   const rows = w.rows.map((r) => ({ ...r }));
   const running = live(store).filter((b) => (b.status === 'running' || b.status === 'waiting') && b.pipeline?.account);
+  // step groups (step-groups@1): every live group of a split build holds a place on its account too
+  const groupRuns = live(store).filter((b) => BP.isSplit(b)).flatMap((b) => BP.groupsOf(b).filter((g) => BP.GROUP_LIVE_STATES.includes(g.state) && g.account).map((g) => ({ account: g.account, key: g.session || `build:${b.id}--${g.id}` })));
   for (const r of rows) {
-    const mine = running.filter((b) => b.pipeline.account === r.name).map((b) => b.pipeline.session || `build:${b.id}`);
+    const mine = [...running.filter((b) => b.pipeline.account === r.name).map((b) => b.pipeline.session || `build:${b.id}`), ...groupRuns.filter((x) => x.account === r.name).map((x) => x.key)];
     r.running = [...new Set([...(r.running ?? []), ...mine])];
   }
   return { accounts: P.accountViews(rows, loadOwnAccounts(), { settings }), rows: w.rows, source: w.source, at: w.at, why: w.why };
@@ -625,6 +627,43 @@ export function briefFor(b, rules, { account, model, kind = '' }, { blocks = sto
   ].join('\n');
 }
 
+/** The key of one group's run: dispatch token, build lock, session name (axf-<key>) and log (<key>.log). */
+export const groupKey = (id, gid) => `${id}--${gid}`;
+
+/**
+ * Start one group of a split build (step-groups@1) in its own headless session: the build worktree and branch first
+ * (the group's sub-branch starts at its head), then the group's worktree on `<build branch>--<gid>`, a group brief, a
+ * dispatch token for `<build>--<gid>` and the launcher with --group / --worktree. The build lock is taken on the group
+ * key in the group's worktree, so groups of one build run beside each other but never twice.
+ */
+export function launchGroup(b, gid, { account, model, kind = '', phase = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+  const g = BP.groupsOf(b).find((x) => x.id === gid);
+  if (!g) throw Object.assign(new Error(`${b.id} has no group ${gid}`), { code: 2 });
+  ensureWorktree(b.id, env);
+  if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
+  const { dir, branch } = SG.ensureGroupWorktree(b.id, gid, { env });
+  const key = groupKey(b.id, gid);
+  lock.acquire(key, { dir, account, by: 'dispatcher', env: lockEnv(env) });
+  writeFileSync(join(dir, '.axf-brief.md'), `${briefFor(b, rules, { account, model, kind, group: g, branch })}\n`);
+  const token = issueDispatch(key, { account, model, env });
+  const mk = modelKey(model) || 'opus';
+  const args = ['--name', key, '--group', gid, '--worktree', dir, '--account', account, '--brief', '.axf-brief.md', '--log', `${key}.log`, '--', '--model', MODEL_IDS[mk], ...CLAUDE_ARGS];
+  const pr = effectivePriority(b);
+  const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: mk, AXF_BUILD_ID: b.id, AXF_BUILD_GROUP: gid, AXF_BUILD_PHASE: str(phase, 80), AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[pr] ?? 'normal' };
+  let r;
+  try { r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 180e3, env: e }); }
+  catch (err) { lock.release(key, { dir }); throw err; }
+  const text = `${r.stdout || ''}\n${r.stderr || ''}`;
+  const session = /started (axf-\S+) in/.exec(text)?.[1] ?? /queued at position \d+ \((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
+  const slot = /\((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
+  if (r.status !== 0 || (!session && !/queued at position|queued for look approval/.test(text))) {
+    lock.release(key, { dir });
+    throw new Error(`launcher exit ${r.status}: ${str(text.trim().split('\n').filter(Boolean).pop() || 'no output', 300)}`);
+  }
+  lock.beat(key, { dir, session });
+  return { dir, branch, session, slot, queuedInSlots: /queued at position/.test(text), out: text.trim().slice(-600) };
+}
+
 /** Start one headless session for a queued build on an account. */
 export function launch(b, { account, model, kind = '', phase = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
@@ -940,7 +979,9 @@ export function tick({ env = process.env } = {}) {
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
+  state.groupRuns = state.groupRuns && typeof state.groupRuns === 'object' ? state.groupRuns : {};
   for (const first of plan.launches) {
+    if (first.group) { dispatchGroup(first, { store, accounts, settings, rules, env, state, alert, launched, failed, waits: plan.waits, hourAgo }); continue; }
     const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
     if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
     const b = live(store).find((x) => x.id === first.id);
@@ -1025,6 +1066,46 @@ export function tick({ env = process.env } = {}) {
 }
 
 const MAX_PICK_TRIES = 4;
+
+/**
+ * One group launch of a tick (step-groups@1): the planned account first, then every other account that runs the
+ * group's model, until one accepts. Success records the run on the group (running, account, session, slot) and in the
+ * dispatcher state (state.groupRuns[<build>--<gid>]: runs, crashes, model, phase); the build goes to running with its
+ * first group. A failure counts towards the group's launch fails (3 an hour) and the phone hears it.
+ */
+function dispatchGroup(first, { store, accounts, settings, rules, env, state, alert, launched, failed, waits, hourAgo }) {
+  const key = groupKey(first.id, first.group);
+  const fails = (state.launchFails[key] ?? []).filter((t) => Date.parse(t) > hourAgo);
+  if (fails.length >= LAUNCH_FAILS_PER_HOUR) { waits.push({ id: first.id, group: first.group, why: `launch failed ${fails.length} times in the last hour: waiting` }); return; }
+  const b = live(store).find((x) => x.id === first.id);
+  const options = [first, ...P.routeOptions(b, accounts, first.model, settings).filter((o) => o.account !== first.account).map((o) => ({ ...first, ...o }))].slice(0, MAX_PICK_TRIES);
+  const tried = []; let l = first; let r = null; let lastErr = null;
+  for (const o of options) {
+    l = o;
+    try { r = launchGroup(b, first.group, l, { rules, env }); break; }
+    catch (e) { lastErr = e; if (e.code === 'live' || e.code === 2) break; tried.push(l.account); logLine({ event: 'launch-refused', build: b.id, group: first.group, account: l.account, error: str(e.message, 300) }); }
+  }
+  if (!r && lastErr?.code === 'live') { waits.push({ id: b.id, group: first.group, why: str(lastErr.message, 300) }); return; }
+  const now = nowIso();
+  if (!r) {
+    state.launchFails[key] = [...fails, now];
+    failed.push({ id: b.id, group: first.group, error: lastErr?.message ?? 'no account accepted the launch', tried });
+    try { SG.updateGroup(b.id, first.group, { note: `launch failed: ${str(lastErr?.message, 300)}` }, { action: 'pipeline:group-launch-failed' }); } catch { /* the group may be gone */ }
+    logLine({ event: 'launch-failed', build: b.id, group: first.group, tried, error: lastErr?.message });
+    alert('launch-failed', { id: b.id, title: `${b.title} (group ${first.group})`, account: l.account, error: lastErr?.message ?? '', reasons: [{ account: l.account, error: str(lastErr?.message, 300) }], tries: state.launchFails[key].length, maxTries: LAUNCH_FAILS_PER_HOUR });
+    return;
+  }
+  const prev = state.groupRuns[key] ?? {};
+  state.groupRuns[key] = { runs: (prev.runs ?? 0) + 1, crashes: prev.crashes ?? 0, model: l.model, phase: l.phase || '', account: l.account, session: r.session, launchedAt: now };
+  SG.updateGroup(b.id, first.group, {}, { action: 'pipeline:group-launch', note: `${b.id}/${first.group} on ${l.account}`, fn: (g) => { Object.assign(g, { state: 'running', account: l.account, session: r.session, slot: r.slot, startedAt: g.startedAt || now, endedAt: '', note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : '' }); } });
+  if (b.status === 'queued') setPipeline(b.id, { launchedAt: b.pipeline?.launchedAt || now, dispatchedAt: now, note: '' }, { status: 'running', note: `Started as step groups: ${first.group} on ${l.account} (${l.model}).`, action: 'pipeline:launch' });
+  else setPipeline(b.id, { dispatchedAt: now }, { note: `Started group ${first.group} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:group-launch' });
+  delete state.launchFails[key];
+  launched.push({ ...l, session: r.session, dir: r.dir });
+  alert('launched', { id: b.id, title: `${b.title} (group ${first.group})`, account: l.account, model: l.model, phase: l.phase, session: r.session });
+  logLine({ event: 'launched', build: b.id, group: first.group, account: l.account, kind: l.kind || 'subscription', model: l.model, session: r.session });
+  crewSay('dispatcher', 'start', `Started ${b.id} group ${first.group} on ${l.account}${l.kind === 'api' ? ' (API key)' : ''}, ${l.model}${r.queuedInSlots ? ', waiting for a free slot' : ''}.`, { ref: b.id });
+}
 
 /**
  * The orchestrator's plan for every split build that waits (Pending, Queue): its next model and the account it expects

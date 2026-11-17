@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { DEFAULT_MAX_RUNS, GROUP_LIVE_STATES, groupsOf, isHeld, isSplit, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { planGroups } from '../../../../framework/core/build-groups.mjs';
@@ -366,6 +366,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
   for (const b of queue) {
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
+    // a build split into step groups is dispatched group by group (groupLaunches), never as one session
+    if (isSplit(b)) continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
@@ -386,7 +388,65 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (active.length) idle = { reason: `${active.length} build${active.length === 1 ? '' : 's'} in the Queue, nothing running: ${firstWait?.why ?? 'no launch this tick'}`, kind: 'stuck' };
     else if (pending.length) idle = { reason: `Queue empty, nothing running: ${pending.length} build${pending.length === 1 ? '' : 's'} wait in Pending for you to queue them`, kind: 'empty' };
   }
+  const after = groupLaunches({ builds: live, accounts: acc, free, settings, rules, slots });
+  launches.push(...after.launches); waits.push(...after.waits);
   return { launches, waits, queue: queue.map((b) => b.id), held: queue.filter(isHeld).map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, idle, at: new Date(now).toISOString() };
+}
+
+// ------------------------------------------------------------------ step groups (step-groups@1): one build over several slots
+
+/** The open steps of one group, in its run order. */
+export function groupOpenSteps(b, g) {
+  const byId = new Map(list(b?.steps).map((s) => [s.id, s]));
+  return list(g?.steps).map((id) => byId.get(id)).filter((s) => s && !s.done && !s.skip);
+}
+/** The build as one group's session sees it: only that group's steps, in the group's order (phases, next model, approvals). */
+export function groupView(b, g) {
+  const byId = new Map(list(b?.steps).map((s) => [s.id, s]));
+  return { ...b, steps: list(g?.steps).map((id) => byId.get(id)).filter(Boolean) };
+}
+/** The model a group's next session runs on: the pin of its first open step (never higher than a step is pinned to). */
+export const groupModel = (b, g) => nextModel(groupView(b, g));
+
+/**
+ * Which groups of split builds start this tick (pure). `builds` = live builds; a split build takes part while Queued
+ * (its first groups) or Running (more groups as they become ready). Per build at most settings.maxParallelGroups
+ * groups are live at once; every launch takes one agent slot (`free`, the agent cap) and one place on an account that
+ * runs the group's model (routeFor: subscriptions first, then API by the overflow rule); `accounts` is changed in
+ * place, so the caller's single-build launches and these share the counts. Off (settings.parallelGroups false) = a
+ * split build still runs, one group at a time. Returns { launches: [{ id, group, account, model, phase, … }], waits }.
+ */
+export function groupLaunches({ builds, accounts, free = 0, settings = normSettings(), rules, slots = null }) {
+  const s = normSettings(settings);
+  const split = list(builds).filter((b) => !b.deleted && isSplit(b));
+  // running builds first (finishing what started beats starting more), oldest launch first; then the Queue in its order
+  const cands = [...split.filter((b) => b.status === 'running').sort((a, b) => str(a.pipeline?.launchedAt).localeCompare(str(b.pipeline?.launchedAt))), ...queueOrder(split, (b) => effectivePriority(b))];
+  const launches = []; const waits = [];
+  for (const b of cands) {
+    if (isHeld(b)) { waits.push({ id: b.id, why: 'on hold: skipped until released', held: true }); continue; }
+    const groups = groupsOf(b);
+    const cap = s.parallelGroups ? s.maxParallelGroups : 1;
+    let liveN = groups.filter((g) => GROUP_LIVE_STATES.includes(g.state)).length;
+    const merged = new Set(groups.filter((g) => g.state === 'merged').map((g) => g.id));
+    for (const g of groups) {
+      if (!['planned', 'ready'].includes(g.state)) continue;
+      const waitsOn = g.dependsOn.filter((d) => !merged.has(d));
+      if (waitsOn.length) { waits.push({ id: b.id, group: g.id, why: `waiting for ${waitsOn.join(', ')} to merge` }); continue; }
+      if (!groupOpenSteps(b, g).length) continue; // every step done: the lifecycle moves it to ready-to-merge
+      if (liveN >= cap) { waits.push({ id: b.id, group: g.id, why: `${liveN} of ${cap} groups of ${b.id} running (Max parallel groups per build)` }); continue; }
+      const v = groupView(b, g); const n = orchNextUp(v, rules);
+      if (n.needsApproval) { waits.push({ id: b.id, group: g.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
+      if (free <= 0) { waits.push({ id: b.id, group: g.id, why: slots?.hard?.max && Number(slots.hard.free) <= 0 ? `VPS hard build limit reached (${slots.hard.live ?? '?'}/${slots.hard.max} running)` : `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
+      const model = nextModel(v);
+      const r = routeFor(b, accounts, model, s);
+      const a = r.account ? list(accounts).find((x) => x.name === r.account) : null;
+      if (!a) { waits.push({ id: b.id, group: g.id, why: r.why }); continue; }
+      a.running += 1; a.free -= 1; free -= 1; liveN += 1;
+      if (a.kind === 'api' && a.api && a.free <= 0) a.api = { ...a.api, usable: false, why: `full (${a.running}/${a.parallel})` };
+      launches.push({ id: b.id, group: g.id, account: a.name, model, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)), kind: r.kind, rule: r.rule, why: r.why });
+    }
+  }
+  return { launches, waits, free };
 }
 
 // ------------------------------------------------------------------ session end
