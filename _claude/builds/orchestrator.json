@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:01:11.573Z",
+ "updatedAt": "2026-11-17T19:02:25.249Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67159,14 +67159,14 @@
    "title": "Live reload (axf dev) + device hot reload",
    "category": "Build engine",
    "detail": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "claude/x.engine.dev",
    "pr": "#513",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-17T17:04:33.388Z",
+   "updatedAt": "2026-11-17T19:02:22.905Z",
    "builtAt": "",
    "notes": [
     {
@@ -67192,6 +67192,10 @@
     {
      "text": "Phase 1 done, PR #513. Web live reload works and is checked. Android emulator e2e job is manual: the device never gets axf.devServer/axf.hotReload (needs Kotlin, deferred in PORTING.md).",
      "at": "2026-11-12T03:24:10.859Z"
+    },
+    {
+     "text": "Watchdog: Pending build x.engine.dev → Remove: Its PR was closed without a merge (PR #513 closed; build x.engine.dev: pending; branch claude/x.engine.dev deleted) (pending → archived)",
+     "at": "2026-11-17T19:02:22.905Z"
     }
    ],
    "approvals": [],
@@ -143103,8 +143107,9 @@
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "#780",
+   "mergedAt": "2026-11-17T18:59:35Z",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T15:30:22.248Z",
+   "updatedAt": "2026-11-17T19:02:22.905Z",
    "builtAt": "",
    "notes": [
     {
@@ -143174,6 +143179,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:30:22.248Z"
+    },
+    {
+     "text": "Watchdog: Pending build orchestrator-stale-row-watchdog-vps → Complete: Its PR merged on main (PR #780 merged 2026-11-17T18:59:35Z (e5452d2cadf1); on main by squash e5452d2cadf1; build orchestrator-stale-row-watchdog-vps: pending) (status stays pending: steps still open)",
+     "at": "2026-11-17T19:02:22.905Z"
     }
    ],
    "approvals": [
@@ -149005,7 +149014,7 @@
    "title": "Merge main and land console-axhub-retry-failed-calls",
    "category": "",
    "detail": "Auto-land could not land `console-axhub-retry-failed-calls` (console-axhub-retry-failed-calls): merging main into it clashes in code: .github/workflows/android.yml, apps/console-web/server/mcp_server.py.\n\nWork on its own branch `claude/console-axhub-retry-failed-calls` (PR #589); do not open a new PR.\n1. git fetch origin && git checkout claude/console-axhub-retry-failed-calls && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-axhub-retry-failed-calls. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -149013,7 +149022,7 @@
    "pr": "#589",
    "priority": "P0",
    "createdAt": "2026-11-15T00:07:23.857Z",
-   "updatedAt": "2026-11-17T00:02:44.120Z",
+   "updatedAt": "2026-11-17T19:02:22.905Z",
    "builtAt": "",
    "notes": [
     {
@@ -149063,6 +149072,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "Watchdog: Pending build merge-main-land-console-axhub-retry → Remove: Its PR was closed without a merge (PR #589 closed; not on main; build merge-main-land-console-axhub-retry: pending) (pending → archived)",
+     "at": "2026-11-17T19:02:22.905Z"
     }
    ],
    "approvals": [],
@@ -161718,7 +161731,7 @@
    "title": "AmberX open_url must open the page even when Chrome is already in front",
    "category": "",
    "detail": "Bug Nov 16: amberx.open_url only posts a notification instead of opening the page, even while Brett has Chrome in the foreground on the console. Android background-start limits block AmberX. Fix: (1) when an AXF console tab is open and connected, route open_url through it (console navigates the tab / opens a new tab via a console-control 'navigate' command); (2) otherwise use a full-screen-intent or an allowed exemption (SYSTEM_ALERT_WINDOW / companion device) so it really opens; (3) notification only as a last resort. Tests on the S26 Ultra, land, new APK, AmberX FYI.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -161726,7 +161739,7 @@
    "pr": "#763",
    "priority": "P0",
    "createdAt": "2026-11-16T18:37:43.199Z",
-   "updatedAt": "2026-11-17T15:30:22.248Z",
+   "updatedAt": "2026-11-17T19:02:22.905Z",
    "builtAt": "",
    "notes": [
     {
@@ -161804,6 +161817,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:30:22.248Z"
+    },
+    {
+     "text": "Watchdog: Pending build amberx-open-url-must-open-page-even-when → Remove: Its PR was closed without a merge (PR #763 closed; not on main; build amberx-open-url-must-open-page-even-when: pending) (pending → archived)",
+     "at": "2026-11-17T19:02:22.905Z"
     }
    ],
    "approvals": [
@@ -167810,7 +167827,7 @@
    "title": "Orchestrator runs long builds across multiple slots",
    "category": "",
    "detail": "Any build estimated over 30 minutes is split into independent step groups that run in parallel in separate slots (separate sessions on their own worktrees or sub-branches), then merged back onto the build's branch in order before landing. The splitter marks which steps are independent (no shared files) vs must run in sequence; dependent steps wait for their group. Uses free slots on any usable account. Shows per-group progress in the orchestrator. Server-gate rule. Same on REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -167818,7 +167835,7 @@
    "pr": "#773",
    "priority": "P0",
    "createdAt": "2026-11-16T23:25:33.721Z",
-   "updatedAt": "2026-11-17T15:30:22.248Z",
+   "updatedAt": "2026-11-17T19:02:22.905Z",
    "builtAt": "",
    "notes": [
     {
@@ -167872,6 +167889,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:30:22.248Z"
+    },
+    {
+     "text": "Watchdog: Pending build orchestrator-runs-long-builds-across → Remove: Its PR was closed without a merge (PR #773 closed; not on main; build orchestrator-runs-long-builds-across: pending) (pending → archived)",
+     "at": "2026-11-17T19:02:22.905Z"
     }
    ],
    "approvals": [

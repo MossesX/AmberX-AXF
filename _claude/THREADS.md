@@ -823,11 +823,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s10 done (all) · orchestrator
-- 2026-11-17 03:45 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s6 done (all) · foreign-write
-- 2026-11-17 03:39 UTC · `server-auto-lander-fixes-lands` s8 done (all) · orchestrator
-- 2026-11-17 03:40 UTC · `server-auto-lander-fixes-lands` s9 done (all) · orchestrator
-- 2026-11-17 03:42 UTC · `server-auto-lander-fixes-lands` s10 done (all) · orchestrator
 - 2026-11-17 03:42 UTC · `orchestrator-runs-long-builds-across` s7 done (all) · orchestrator
 - 2026-11-17 03:43 UTC · `server-rule-done-means-merged-working` s7 done (all) · orchestrator
 - 2026-11-17 03:46 UTC · `orchestrator-runs-long-builds-across` s8 done (all) · orchestrator
@@ -1223,6 +1218,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:00 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · Brett
 - 2026-11-17 19:00 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → queued (all) · Brett
 - 2026-11-17 19:01 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running (all) · Brett
+- 2026-11-17 19:02 UTC · `x.engine.dev` → archived, note (all) · cli
+- 2026-11-17 19:02 UTC · `orchestrator-stale-row-watchdog-vps` merged, note (all) · cli
+- 2026-11-17 19:02 UTC · `merge-main-land-console-axhub-retry` → archived, note (all) · cli
+- 2026-11-17 19:02 UTC · `amberx-open-url-must-open-page-even-when` → archived, note (all) · cli
+- 2026-11-17 19:02 UTC · `orchestrator-runs-long-builds-across` → archived, note (all) · cli
 
 ## Token passes (log)
 
