@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7941,
- "updatedAt": "2026-11-17T21:10:03.648Z",
+ "rev": 7942,
+ "updatedAt": "2026-11-17T21:10:25.975Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207268,7 +207268,7 @@
    "mergedAt": "2026-11-17T20:38:44Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T21:05:18.840Z",
+   "updatedAt": "2026-11-17T21:10:23.565Z",
    "builtAt": "",
    "notes": [
     {
@@ -207350,6 +207350,10 @@
     {
      "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); on main by squash 07f9873c59b8; build console-app-part-2-native-floating: pending) (pending → landed)",
      "at": "2026-11-17T21:05:18.840Z"
+    },
+    {
+     "text": "Watchdog: Pending build console-app-part-2-native-floating → Complete: Its PR merged on main (PR #813 merged 2026-11-17T20:38:44Z (07f9873c59b8); on main by squash 07f9873c59b8; build console-app-part-2-native-floating: pending) (pending → landed)",
+     "at": "2026-11-17T21:10:23.565Z"
     }
    ],
    "approvals": [
@@ -207584,7 +207588,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
