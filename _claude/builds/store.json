@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8382,
- "updatedAt": "2026-11-17T23:27:33.154Z",
+ "rev": 8383,
+ "updatedAt": "2026-11-17T23:28:19.614Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268437,7 +268437,7 @@
    "title": "Move server-side console parts onto the VPS host as services, UI stays in console",
    "category": "",
    "detail": "Audit every console plugin. Anything that must keep running when the console is down, or touches Docker, disk or git, moves out of the axf-console container onto the VPS host as systemd services that start on boot and auto-restart, code at /opt/axf, run under a dedicated limited user with a sudo whitelist of only the commands needed (no general root). Candidates: Maintenance (coordinate with maintenance-plugin-clear-docker-cache), Systems check and its Auto fixes, agent-swarm job runner (CI-fix jobs), builds-live publisher, shipped-features watcher, axHub sync. Orchestrator/lander/watchdog are already moving in server-auto-lander-fixes-lands; reuse that, don't duplicate. App-only plugins (settings, skins, etc.) stay in the container. Console UI calls the host services over a local socket/API and shows a clear 'host service down' state. Include install script, health checks in Systems check, migration with rollback, and reachable via UI, REST, MCP, CLI, voice. Write the audit list into the report first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -268445,7 +268445,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:27:21.169Z",
+   "updatedAt": "2026-11-17T23:28:15.445Z",
    "builtAt": "",
    "notes": [
     {
@@ -268515,6 +268515,10 @@
     {
      "text": "Headless run axf-move-server-side-console-parts-onto-vps--lenny: brief only · start 20.2K tokens ($0.15) · cost $8.20 · 57 turns · 6 tools, MCP none",
      "at": "2026-11-17T23:27:21.169Z"
+    },
+    {
+     "text": "phase Phase 2 done, requeued for Opus: Session on mossesx-max- finished phase Phase 2 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T23:28:15.445Z"
     }
    ],
    "approvals": [
@@ -268546,7 +268550,7 @@
     "queuedAt": "2026-11-17T12:26:43.338Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 2",
@@ -268554,14 +268558,14 @@
     "runs": 1,
     "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T22:42:08.826Z",
-     "exit": null,
+     "at": "2026-11-17T23:28:06.377Z",
+     "exit": 0,
      "outcome": "requeued",
-     "reason": "crash",
-     "stepsLeft": 24,
-     "account": "",
-     "session": "",
-     "phase": ""
+     "reason": "phase-done",
+     "stepsLeft": 21,
+     "account": "mossesx-max-",
+     "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-17T12:28:31.327Z",
@@ -268571,7 +268575,7 @@
      "note": "Split by Claude into 26 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- finished phase Phase 2 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "2026-11-17T23:04:29.385Z",
     "planned": {
@@ -269269,7 +269273,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
