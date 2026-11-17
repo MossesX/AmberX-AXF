@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `fix-console-deep-links-open-page-lands` s5 done, s4 done, → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `orchestrator-on-hold-status-and-tab` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `axhub-veto-countdown-setting-read-only` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:54 UTC · `move-server-side-console-parts-onto-vps` s14 done (all) · foreign-write
 - 2026-11-17 23:54 UTC · `move-everything-axhub-web-console` s7 done (all) · foreign-write
 - 2026-11-17 23:54 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · foreign-write
+- 2026-11-17 23:54 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
