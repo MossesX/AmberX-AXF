@@ -86,14 +86,15 @@ try {
       if (!r.toolbar || !r.aria) problems.push(`${name} ${v.id}: the gear is not in a labelled role="toolbar"`);
       if (r.overlap) problems.push(`${name} ${v.id}: the gear row overlaps the page head`);
       if (SHOTS && ONLY.length) await page.screenshot({ path: join(SHOTS, `gear-${v.id}-${name}.png`) });
-      // press it once (desktop: mouse click, no tap-confirm) and see the plugin's sub-tab open
+      // press it once (desktop: mouse click, no tap-confirm) and see the plugin's own settings window open, never the
+      // console's Settings (plugin-settings@1, Nov 17 2026)
       if (name === 'desktop' && r.host === 1) {
         await page.click(`${sel} [data-axf-plugin-gear]`);
-        const tab = r.opens.split('settings.subtabs=')[1];
-        try { await page.waitForSelector(`[data-axf-settings-tab="${tab}"], [data-axf-settings-sub="${tab}"]`, { timeout: 5_000 }); } catch {
+        try { await page.waitForSelector('[data-axf-plugin-settings]', { timeout: 5_000 }); } catch {
           const st = await page.evaluate(() => window.axfConsoleControlState?.());
-          if (!st?.dialog?.startsWith('axf.settings')) problems.push(`${name} ${v.id}: pressing the gear did not open Settings (${st?.dialog ?? 'no dialog'})`);
+          problems.push(`${name} ${v.id}: pressing the gear did not open the plugin's own settings window (${st?.dialog ?? 'no dialog'})`);
         }
+        if (await page.$('[data-axf-settings-all], [data-axf-settings-tab]')) problems.push(`${name} ${v.id}: the gear opened the console's Settings`);
         await page.keyboard.press('Escape');
       }
     }

@@ -11,7 +11,7 @@
  *                 (the console's PluginDefaultSettingsTab), or plugin.json `provides` a `settings-tab:<id>`
  *  - gear:        the console host header draws it (src/PluginSettingsGear.tsx mounted by src/pluginLoader.tsx) unless
  *                 plugin.json says `settingsGear: false` with a `settingsGearReason`; a hand-made gear is any on-screen
- *                 Button / IconButton with icon "settings" that dispatches `settings.open:<its tab>`
+ *                 Button / IconButton with icon "settings" that opens the plugin's own settings window (`plugin.settings.open:<folder>`)
  *
  * --report prints the table (and the problems as notes) and exits 0. Without it (CI: .github/workflows/android.yml) a
  * plugin with a view and no settings sub-tab, a view with no gear (the host gear not mounted, no hand-made one), a

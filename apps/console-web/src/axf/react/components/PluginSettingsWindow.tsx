@@ -21,9 +21,10 @@ import { TabGroup } from './TabGroup';
 import { resolveSettingsInterface, type ResolvedSettingsInterface } from '../../core/engines/plugin-settings';
 import type { SettingsUi } from '../../core/engines/settingsui';
 import type { AxfRuntime } from '../../core';
+import { SETTINGS_PLUGIN_DIALOG } from '../../core/engines/settingsopen';
 
 /** Dialog id of the window (props: `plugin` = plugin id, `tab` = one of its tab ids). */
-export const PLUGIN_SETTINGS_DIALOG = 'axf.settings.plugin';
+export const PLUGIN_SETTINGS_DIALOG = SETTINGS_PLUGIN_DIALOG;
 /** Action that opens it: `settings.plugin:<plugin id>[:<tab>]`. */
 export const PLUGIN_SETTINGS_ACTION = 'settings.plugin';
 /** console-control@1 address of one plugin's window. */
@@ -45,6 +46,13 @@ export interface PluginSettingsRenderer {
 }
 let renderer: PluginSettingsRenderer | null = null;
 export function setPluginSettingsRenderer(r: PluginSettingsRenderer | null): void { renderer = r; }
+
+/** The plugin a settings tab belongs to: its own `plugin`, else its parent's. */
+export function pluginOfSettingsTab(rt: AxfRuntime, tabId: string | undefined): string | undefined {
+  if (!tabId) return undefined;
+  const t = rt.settings.getTab(tabId);
+  return t?.plugin ?? (t?.parent ? rt.settings.getTab(t.parent)?.plugin : undefined);
+}
 
 /** Every tab and group the registry holds now (the engine keeps the plugin's). */
 function registered(rt: AxfRuntime) {

@@ -23,6 +23,8 @@ export const RETIRED_SETTINGS_OPEN_KEYS = ['axf.settings.opensAs'] as const;
 /** Dialog ids the settings library registers: the whole interface, and one tab. */
 export const SETTINGS_ALL_DIALOG = 'axf.settings.all';
 export const SETTINGS_TAB_DIALOG = 'axf.settings.tab';
+/** One plugin's own settings interface (plugin-settings@1, react/components/PluginSettingsWindow.tsx). */
+export const SETTINGS_PLUGIN_DIALOG = 'axf.settings.plugin';
 
 export interface SettingsOpenInput {
   /** The tab asked for (undefined = the whole interface). */
@@ -31,16 +33,21 @@ export interface SettingsOpenInput {
   view?: string;
   /** The host took the settings view (embed@1): it opens there, never in our dialog. */
   hostTakes?: boolean;
+  /** The plugin the tab belongs to (its `plugin`, or its parent's): it opens in that plugin's own window (Nov 17 2026). */
+  plugin?: string;
 }
 
 export type SettingsOpenRoute =
   | { via: 'page'; tab?: string; why: string }
-  | { via: 'dialog'; dialog: string; tab?: string; why: string };
+  | { via: 'dialog'; dialog: string; tab?: string; plugin?: string; why: string };
 
 /** Where one opening lands: always the floating dialog, unless a host shows settings or the Settings view is already up. */
 export function settingsOpenRoute(i: SettingsOpenInput): SettingsOpenRoute {
   const tab = i.tab || undefined;
   if (i.hostTakes) return { via: 'page', tab, why: 'the host shows settings' };
+  // Brett, Nov 17 2026: "Each plugin needs its own settings interface, not the console's." A plugin's tab never opens
+  // the app's Settings at Plugins → <tab>: it opens the plugin's own window, wherever the opener is.
+  if (tab && i.plugin) return { via: 'dialog', dialog: SETTINGS_PLUGIN_DIALOG, tab, plugin: i.plugin, why: "the plugin's own settings interface" };
   // Already on the Settings view (an old link): switch the tab in place, never stack a dialog over the same settings.
   if (i.view === 'settings') return { via: 'page', tab, why: 'already on the Settings view' };
   return tab

@@ -20,17 +20,20 @@ export function settingsTabOf(p: BundledPlugin): string | undefined {
 }
 
 /**
- * Console action `plugin.settings.open:<plugin>` (folder, id or name): opens Settings → Plugins → that plugin's sub-tab,
- * the same as pressing its gear. Reached by console.actions / console_action (MCP), `axf console plugin-settings <id>`,
- * REST POST /api/console-control/plugins/<id>/settings/open and AmberX ("open <plugin> settings").
+ * Console action `plugin.settings.open:<plugin>[:<tab>]` (folder, id or name): opens that plugin's own settings window
+ * (PluginSettingsWindow, framework action `settings.plugin:<id>`; plugin-settings@1), the same as pressing its gear. It
+ * never opens the console's Settings at Plugins → <tab> (Brett, Nov 17 2026: "Each plugin needs its own settings
+ * interface, not the console's."). Reached by console.actions / console_action (MCP), `axf settings open <plugin>`,
+ * `axf console plugin-settings <id>`, REST POST /api/console-control/plugins/<id>/settings/open and AmberX
+ * ("open <plugin> settings").
  */
 export function registerPluginSettingsActions(rt: AxfRuntime): () => void {
   // the ⋯ menu on a plugin screen (gear placement `menu`): its Settings item
   rt.contextExtras.set('plugin-host', (_t, folder) => (folder ? [{ id: 'plugin-host.settings', label: 'Settings', icon: 'settings', action: `plugin.settings.open:${folder}` }] : []));
-  return rt.actions.register('plugin.settings.open', ([ref = '']) => {
+  return rt.actions.register('plugin.settings.open', ([ref = '', tab = '']) => {
     const p = findPlugin(ref);
-    if (!p) { rt.toast(`No plugin called “${ref}”.`, 'warning', 'Plugins'); rt.dispatch('settings.open:plugins'); return; }
-    const tab = settingsTabOf(p);
-    rt.dispatch(tab ? `settings.open:${tab}` : 'settings.open:plugins');
-  }, { label: 'Open a plugin’s settings', params: true });
+    if (!p) { rt.toast(`No plugin called “${ref}”.`, 'warning', 'Plugins'); return; }
+    const want = tab || settingsTabOf(p);
+    rt.dispatch(`settings.plugin:${p.manifest.id}${want ? `:${want}` : ''}`);
+  }, { label: 'Open a plugin’s own settings', params: true, effect: 'navigate' });
 }

@@ -24,7 +24,7 @@ import { askReset, lastReset, registerResetActions, ResetDialogBody, undoSetting
 export { askReset, lastReset, planReset, runSettingsReset, undoSettingsReset, SETTINGS_RESET_ASK, SETTINGS_RESET_RUN, SETTINGS_RESET_UNDO, SETTINGS_RESET_UNDO_KEY } from './reset';
 import { RESET_CONFIRM_DIALOG, setResetTableRenderer } from '../../react/components/ResetConfirmDialog';
 export { ChangedAssetsTable, changedAssetRows, resetStateOf } from './changed';
-import { PLUGIN_SETTINGS_ACTION, PLUGIN_SETTINGS_DIALOG, PluginSettingsWindow, setPluginSettingsRenderer, useSettingsUiOverride } from '../../react/components/PluginSettingsWindow';
+import { PLUGIN_SETTINGS_ACTION, PLUGIN_SETTINGS_DIALOG, PluginSettingsWindow, pluginOfSettingsTab, setPluginSettingsRenderer, useSettingsUiOverride } from '../../react/components/PluginSettingsWindow';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
@@ -1126,8 +1126,9 @@ export const library: AxfWebLibrary = {
     // the choice is gone). The route comes from core/engines/settingsopen.ts.
     for (const k of RETIRED_SETTINGS_OPEN_KEYS) if (k in rt.settings.savedValues()) rt.settings.clear(k);
     const openSettings = (tab: string | undefined) => {
-      const r = settingsOpenRoute({ tab, view: rt.getState().view, hostTakes: rt.hostTakes('settings') });
-      if (r.via === 'dialog') { rt.openDialog(r.dialog, r.tab ? { tab: r.tab } : {}); return; }
+      const plugin = pluginOfSettingsTab(rt, tab);
+      const r = settingsOpenRoute({ tab, view: rt.getState().view, hostTakes: rt.hostTakes('settings'), ...(plugin ? { plugin } : {}) });
+      if (r.via === 'dialog') { rt.openDialog(r.dialog, { ...(r.tab ? { tab: r.tab } : {}), ...(r.plugin ? { plugin: r.plugin } : {}) }); return; }
       rt.navigate(VIEW);
       if (r.tab) {
         rt.settings.set(TAB_KEY, r.tab);

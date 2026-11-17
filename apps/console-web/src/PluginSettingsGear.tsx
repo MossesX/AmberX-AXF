@@ -4,11 +4,12 @@
  *
  * One shared gear, drawn by the console host, never by a plugin: `countingUses()` (pluginLoader.tsx) wraps every
  * plugin view in <PluginViewHost>, a slim role="toolbar" row above the screen with the gear at its right end. The gear
- * opens Settings → Plugins → <the plugin's sub-tab> through the standard `settings.open:<tab>` action, so it is the same
- * press as the console action `plugin.settings.open:<folder>`, the CLI and voice.
+ * opens the plugin's own settings window (PluginSettingsWindow, plugin-settings@1; Brett, Nov 17 2026: "Each plugin needs
+ * its own settings interface, not the console's.") through the console action `plugin.settings.open:<folder>`, the same
+ * press as the CLI, MCP and voice. It never opens the console's Settings.
  *
  *   address  view:<screen>/button:settings-gear              (console-control@1; relative inside the view's ControlScope)
- *   opens    view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=<tab>
+ *   opens    settings:plugin/<folder>                         (the plugin's own window; its plugin.json id works too)
  *
  * Tap-to-confirm needs no code here: the row is a role="toolbar", which framework/react/tapConfirm.ts arms.
  * A plugin opts out only through plugin.json `"settingsGear": false` with a `"settingsGearReason"`.
@@ -33,8 +34,8 @@ function usePlacement(): SettingsGearPlacement {
   return v === 'label' || v === 'menu' ? v : 'icon';
 }
 
-/** The Settings → Plugins sub-tab address of one plugin settings tab id. */
-export const pluginSettingsAddress = (tab: string) => `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=${tab}`;
+/** The address of one plugin's own settings window (folder or plugin.json id). */
+export const pluginSettingsAddress = (plugin: string) => `settings:plugin/${plugin}`;
 
 export interface PluginSettingsGearProps {
   /** plugin folder (apps/console-web/plugins/<folder>) */
@@ -45,18 +46,18 @@ export interface PluginSettingsGearProps {
   tab: string;
 }
 
-/** The gear: a framework IconButton (or Button with its label, or a ⋯ menu) that opens the plugin's Settings → Plugins sub-tab. */
+/** The gear: a framework IconButton (or Button with its label, or a ⋯ menu) that opens the plugin's own settings window. */
 export function PluginSettingsGear({ folder, name, tab }: PluginSettingsGearProps): ReactNode {
   const rt = useRuntime();
   const placement = usePlacement();
-  const open = () => rt.dispatch(`settings.open:${tab}`);
-  const common = { id: SETTINGS_GEAR_TARGET, className: 'cw-plugin-gear', 'data-axf-plugin-gear': folder, 'data-axf-opens': pluginSettingsAddress(tab), 'data-axf-placement': placement };
-  if (placement === 'label') return <Button {...common} size="sm" tone="quiet" icon="settings" title={`${name} settings (Settings → Plugins → ${name})`} onClick={open}>Settings</Button>;
+  const open = () => rt.dispatch(`plugin.settings.open:${folder}:${tab}`);
+  const common = { id: SETTINGS_GEAR_TARGET, className: 'cw-plugin-gear', 'data-axf-plugin-gear': folder, 'data-axf-opens': pluginSettingsAddress(folder), 'data-axf-placement': placement };
+  if (placement === 'label') return <Button {...common} size="sm" tone="quiet" icon="settings" title={`${name} settings (its own settings window)`} onClick={open}>Settings</Button>;
   if (placement === 'menu') {
     const more = (e: MouseEvent<HTMLButtonElement>) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(r.left, r.bottom, PLUGIN_HOST_MENU, folder); };
     return <IconButton {...common} icon="more" label={`${name}: more`} title={`${name}: settings and more`} onClick={more} />;
   }
-  return <IconButton {...common} icon="settings" label={`${name} settings`} title={`${name} settings (Settings → Plugins → ${name})`} onClick={open} />;
+  return <IconButton {...common} icon="settings" label={`${name} settings`} title={`${name} settings (its own settings window)`} onClick={open} />;
 }
 
 /** What the host needs to draw a plugin's screen with its gear. null tab = no settings tab (the CI check refuses that). */
