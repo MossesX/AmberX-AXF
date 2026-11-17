@@ -78,6 +78,7 @@ import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
 import * as RL from '../../../../framework/core/retry-ladder.mjs';
+import * as V from './verify.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
 import { isBuildId, namesOf, planAliases, uniqueBuildId } from '../../../../framework/core/build-id.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -1132,13 +1133,16 @@ export function tick({ env = process.env } = {}) {
     try { check = selfCheck({ reason: asked ? asked.reason || 'on demand' : 'queued builds wait, nothing launched', by: asked?.by || 'dispatcher', env, alert: (kind, d) => consoleApi('POST', '/api/alerts', P.alertFor(kind, d)) }); }
     catch (e) { logLine({ event: 'self-check-failed', error: str(e.message, 300) }); }
   }
+  // done-means-merged@1: a landed build's feature verify runs in the background (one at a time): pass = complete, fail = fixing
+  let verify = null;
+  try { verify = kickVerify({ env }); } catch (e) { logLine({ event: 'verify-kick-failed', error: str(e.message, 300) }); }
   // account health: every healthEveryMin minutes, in the background, so the tick never waits on it
   let health = null;
   try { health = kickHealth({ env, settings }); } catch (e) { logLine({ event: 'health-kick-failed', error: str(e.message, 300) }); }
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify };
 }
 
 const MAX_PICK_TRIES = 4;
@@ -1278,6 +1282,18 @@ export function kickHealth({ env = process.env, settings = loadSettings(env), no
   const child = spawn(process.execPath, [fileURLToPath(import.meta.url), 'health', '--by', asked?.by || 'dispatcher'], { cwd: REPO_ROOT, env, detached: true, stdio: 'ignore' });
   child.unref();
   return { started: true, pid: child.pid };
+}
+
+/** Start verify.mjs run in the background when a landed build waits for its verify and none runs (AXF_PIPELINE_VERIFY=off skips). */
+export function kickVerify({ env = process.env } = {}) {
+  if (env.AXF_PIPELINE_VERIFY === 'off' || (env.AXF_PIPELINE_LAUNCHER && env.AXF_PIPELINE_VERIFY !== 'on')) return null;
+  const waiting = V.waiting(loadStore().builds);
+  if (!waiting.length) return null;
+  if (V.locked(env)) return { started: false, why: 'a verify is running', waiting: waiting.map((b) => b.id) };
+  const child = spawn(process.execPath, [join(HERE, 'verify.mjs'), 'run'], { cwd: REPO_ROOT, env, detached: true, stdio: 'ignore' });
+  child.unref();
+  logLine({ event: 'verify-started', builds: waiting.map((b) => b.id), pid: child.pid });
+  return { started: true, pid: child.pid, waiting: waiting.map((b) => b.id) };
 }
 
 /**
