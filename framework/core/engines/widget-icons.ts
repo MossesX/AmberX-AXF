@@ -31,7 +31,7 @@ export const WIDGET_ICON_FALLBACK = 'box';
 
 /** The sizing@1 token the long-text threshold is read from, and its range. */
 export const WIDGET_TEXT_MAX_TOKEN: string = scaleToken('sizing', 'widget.textMax');
-const TEXT_MAX_FIELD = (SCALE_FIELDS as Record<string, Record<string, [number, number, number, string]>>).sizing['widget.textMax']!;
+const TEXT_MAX_FIELD = (SCALE_FIELDS as Record<string, Record<string, [number, number, number, string]>>).sizing!['widget.textMax']!;
 export const WIDGET_TEXT_MAX = { default: TEXT_MAX_FIELD[0], min: TEXT_MAX_FIELD[1], max: TEXT_MAX_FIELD[2] } as const;
 
 /* ---------------- widget ids ---------------- */
