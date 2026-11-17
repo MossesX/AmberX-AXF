@@ -832,11 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:34 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
-- 2026-11-17 22:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-17 22:35 UTC · `auto-lander-never-wait-missing-ui-review` added (0 steps) (all) · pending
-- 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · pending
 - 2026-11-17 22:36 UTC · `auto-lander-never-wait-missing-ui-review` → queued, note (all) · console
 - 2026-11-17 22:37 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · orchestrator
 - 2026-11-17 22:38 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · pending
@@ -1232,6 +1227,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:58 UTC · `auto-lander-never-wait-missing-ui-review` added (187 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `one-true-source-for-every-setting` added (80 steps) (all) · foreign-write
 - 2026-11-17 22:59 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
+- 2026-11-17 22:59 UTC · `console-app-part-2-native-floating` note (all) · foreign-write
+- 2026-11-17 22:59 UTC · `banner-widget-shapes-plus-change-icon` s17 done (all) · foreign-write
+- 2026-11-17 22:59 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:59 UTC · `flagship-professional-skin-covering-2` s14 done, s15 done, s16 done, s17 done, s18 done, note (all) · foreign-write
+- 2026-11-17 22:59 UTC · `api-fully-drives-every-field-type-forms` added (180 steps) (all) · foreign-write
 
 ## Token passes (log)
 
