@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:12 UTC · `terminal-main-tab-streaming-console-s` s9 done (all) · orchestrator
 - 2026-11-17 20:12 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 - 2026-11-17 20:13 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 - 2026-11-17 20:14 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · pipeline
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:47 UTC · `flagship-professional-skin-covering-2` note (all) · mcp
 - 2026-11-17 21:48 UTC · `rebuild-fresh-main-phone-connect-small` s21 done (all) · orchestrator
 - 2026-11-17 21:49 UTC · `rebuild-fresh-main-phone-connect-small` s22 done (all) · orchestrator
+- 2026-11-17 21:49 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 
 ## Token passes (log)
 
