@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7797,
- "updatedAt": "2026-11-17T20:26:18.945Z",
+ "rev": 7798,
+ "updatedAt": "2026-11-17T20:26:28.491Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275008,7 +275008,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:26:09.027Z",
+   "updatedAt": "2026-11-17T20:26:15.497Z",
    "builtAt": "",
    "notes": [
     {
@@ -275098,6 +275098,10 @@
     {
      "text": "Session stopped on its own with 5 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:26:09.027Z"
+    },
+    {
+     "text": "Watchdog fixed Separate settings per plugin + reset confirm dialog (step s14): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:26:15.497Z"
     }
    ],
    "approvals": [
@@ -275190,6 +275194,20 @@
      "attempt": 0,
      "account": "",
      "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:26:06.455Z",
+     "buildId": "separate-settings-per-plugin-reset",
+     "phase": "",
+     "step": "s14",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-17T20:26:19.545Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -275663,7 +275681,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -277864,14 +277882,14 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-17T20:16:06.064Z",
+     "at": "2026-11-17T20:24:12.392Z",
      "exit": 0,
-     "outcome": "requeued",
-     "reason": "phase-done",
-     "stepsLeft": 21,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 16,
      "account": "",
      "session": "",
-     "phase": "Phase 1"
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-17T19:39:27.698Z",
@@ -277881,7 +277899,7 @@
      "note": "Split by Claude into 24 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "Session stopped on its own with 16 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -277909,6 +277927,20 @@
      "attempt": 0,
      "account": "",
      "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:24:12.383Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s8",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-17T20:24:25.858Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -278137,7 +278169,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T20:25:57.030Z"
+     "updatedAt": "2026-11-17T20:26:18.199Z"
     },
     {
      "id": "s10",
@@ -278517,7 +278549,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
