@@ -19,6 +19,7 @@
  *   --json on any command prints JSON.
  *
  * AXF_BUILDS_STORE=<file> points at another store (tests); its journal goes next to it.
+ * In a build worktree the store lives on the hub data store (worktreeHome), never in the checkout.
  * Live (Nov 3 2026, orch-live-sync): every write that changes a build is also queued for main (builds-live.mjs) and
  * published there at once as its own status-only commit, whatever branch this checkout is on. AXF_BUILDS_LIVE=0 = off.
  * The old per-profile files (orchestrator.json, pending.json, build-queue.json) stay for one release as READ-ONLY
@@ -33,6 +34,7 @@
  */
 import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
@@ -40,20 +42,75 @@ import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
-import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
+import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, journalReadDirs, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 import * as files from '../core/data-files.mjs';
 import { DataStoreError } from '../core/data-store.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
-/** A scratch data folder (AXF_DATA_DIR set to a folder, as tests do): the store lives there too, seeded from the repo's. */
-const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !== 'off' ? d : ''; };
+/**
+ * A build worktree's data home (stop-auto-lander-committing-tracking s4): in a linked git worktree (`.git` is a file)
+ * on a branch other than main, with the hub data store reachable (persist.mjs persistRoot), the store, its sidecars and
+ * its orchestrator exports live at <data root>/builds/worktrees/<worktree>/ instead of the checkout, seeded once
+ * from the checkout's copy. The checkout's tracking files (framework/core/tracking-paths.mjs) are then never written,
+ * so never staged on the build branch. The status-only publish to main (builds-live.mjs) is unchanged: it reads the
+ * store wherever it lives. AXF_BUILDS_HOME=repo keeps the store in the checkout; tests (AXF_BUILDS_STORE,
+ * AXF_DATA_DIR) are unaffected.
+ */
+let worktreeHomeMemo;
+export function worktreeHome() {
+  if (process.env.AXF_BUILDS_STORE || process.env.AXF_DATA_DIR !== undefined || process.env.AXF_BUILDS_HOME === 'repo') return '';
+  if (worktreeHomeMemo !== undefined) return worktreeHomeMemo;
+  worktreeHomeMemo = '';
+  try {
+    if (!statSync(join(REPO_ROOT, '.git')).isFile()) return worktreeHomeMemo;
+    const head = readFileSync(join(REPO_ROOT, '.git'), 'utf8').match(/gitdir:\s*(.+)/)?.[1]?.trim();
+    const ref = head ? readFileSync(join(resolve(REPO_ROOT, head), 'HEAD'), 'utf8').trim() : '';
+    if (/^ref: refs\/heads\/main$/.test(ref)) return worktreeHomeMemo;
+    const root = persistRoot();
+    if (root) worktreeHomeMemo = join(root, 'builds/worktrees', REPO_ROOT.split('/').pop().replace(/[^A-Za-z0-9._-]/g, '-'));
+  } catch { /* not a worktree */ }
+  return worktreeHomeMemo;
+}
+/**
+ * A scratch data folder (AXF_DATA_DIR set to a folder, as tests do), or a build worktree's hub home: the store lives
+ * there too, seeded from the repo's.
+ */
+const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !== 'off' ? d : d === undefined ? worktreeHome() : ''; };
 export const storeFile = () => process.env.AXF_BUILDS_STORE || (scratchDir() ? join(scratchDir(), STORE_REL) : join(REPO_ROOT, STORE_REL));
-export const journalDir = () => join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal');
+/**
+ * The journal (builds-journal@1, framework/spec/BUILDS.md → Journal home): next to a test store (AXF_BUILDS_STORE),
+ * else persist.mjs journalHome(): AXF_BUILDS_JOURNAL, the hub data store (<data root>/builds/journal), or the
+ * git-ignored repo spool. Reads also look in the repo folder for parts written before the move (journalReadDirs).
+ */
+const testJournal = () => (process.env.AXF_BUILDS_STORE ? join(dirname(storeFile()), `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal`) : '');
+export const journalDir = () => testJournal() || journalHome().dir;
+/** test | explicit | hub | spool */
+export const journalMode = () => (testJournal() ? 'test' : journalHome().mode);
+const journalDirs = () => (testJournal() ? [testJournal()] : journalReadDirs().filter((d) => existsSync(d)));
+/** Every journal part by key ('YYYY-MM[-pN]'): the files holding it (home first) and its size (the biggest copy). */
+export function journalParts() {
+  const out = {};
+  for (const d of journalDirs()) {
+    let names = []; try { names = readdirSync(d).filter((f) => f.endsWith('.jsonl')); } catch { continue; }
+    for (const f of names) { const k = f.slice(0, -6); const size = statSync(join(d, f)).size; const p = (out[k] ??= { files: [], size: 0 }); p.files.push(join(d, f)); p.size = Math.max(p.size, size); }
+  }
+  return out;
+}
+/** One part's lines: the union of every copy (home and the repo's old one), in order, each line once. */
+export function journalPartText(key) {
+  const p = journalParts()[key]; if (!p) return '';
+  const texts = p.files.map((f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } });
+  return texts.length === 1 ? texts[0] : merge.mergeJournalText(...texts);
+}
 
 export class StoreLocked extends Error {}
 /** cutover: someone else wrote the store on axf-data between our read and our write (withStore re-runs). */
 export class StoreConflict extends Error {}
-const storeKey = () => files.keyFor(storeFile());
+/**
+ * The store's axf-data key. A build worktree's hub home (worktreeHome) is a local copy of the one store, so it maps
+ * to the canonical key (builds/store.json), never to a per-worktree key: in cutover nothing is written to the checkout.
+ */
+const storeKey = () => files.keyFor(worktreeHome() && !process.env.AXF_BUILDS_STORE ? join(REPO_ROOT, STORE_REL) : storeFile());
 /** The data-store@1 mode of the builds store: local unless the store maps onto axf-data and `builds` has moved. */
 export const storeMode = () => { const k = storeKey(); return k ? files.modeOf(k) : 'local'; };
 const remoteOn = () => { const m = storeMode(); return m === 'cutover' || m === 'rollback'; };
@@ -130,7 +187,10 @@ function readStore() {
     return healOrigins(core.normalizeStore(r ? r.data : core.emptyStore()));
   }
   const f = storeFile();
-  if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, readFileSync(join(REPO_ROOT, STORE_REL))); }
+  if (!existsSync(f) && scratchDir() && !process.env.AXF_BUILDS_STORE && existsSync(join(REPO_ROOT, STORE_REL))) {
+    mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, readFileSync(join(REPO_ROOT, STORE_REL)));
+    const o = join(REPO_ROOT, ORIGINS_REL); if (!existsSync(originsFile()) && existsSync(o)) writeFileSync(originsFile(), readFileSync(o));
+  }
   if (!existsSync(f)) {
     if (process.env.AXF_BUILDS_STORE) return core.emptyStore();
     // first use on this checkout: migrate from the older files (the dry run is `migrate --dry`)
@@ -292,16 +352,34 @@ export function exportNow() { const f = storeFile(); const unlock = lock(f); try
 /** Bytes a journal file may reach (AXF_BUILDS_JOURNAL_BYTES moves it for tests). */
 export const journalMax = () => Number(process.env.AXF_BUILDS_JOURNAL_BYTES) || merge.JOURNAL_PART_BYTES;
 
+/** A folder made with the owner and group of its nearest existing parent (the hub's belong to deploy, not root). */
+function ensureDirKeepingOwner(d) {
+  if (existsSync(d)) return;
+  let p = dirname(d); const made = [];
+  for (let x = d; !existsSync(x); x = dirname(x)) made.unshift(x);
+  for (const m of made) mkdirSync(m);
+  p = dirname(made[0]);
+  if (process.getuid?.() === 0) { try { const st = statSync(p); for (const m of made) chownSync(m, st.uid, st.gid); } catch { /* best effort */ } }
+}
+
 function journal(entry) {
-  const d = journalDir(); mkdirSync(d, { recursive: true });
   const line = `${JSON.stringify(entry)}\n`;
-  const sizes = Object.fromEntries(readdirSync(d).filter((f) => f.endsWith('.jsonl')).map((f) => [f.slice(0, -6), statSync(join(d, f)).size]));
-  const part = join(d, `${merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax())}.jsonl`);
   const mode = storeMode();
   if (mode === 'cutover') remoteJournal(`builds/journal/${entry.at.slice(0, 7)}`, entry, false);
   else {
-    appendFileSync(part, line);
-    const key = files.keyFor(part);
+    const d = journalDir(); ensureDirKeepingOwner(d);
+    // one lock per journal folder, shared by every checkout on the machine (the hub home is shared by all of them)
+    const unlock = testJournal() ? () => {} : lock(join(d, '.journal'));
+    let part;
+    try {
+      // part sizes count the old repo copies too, so the hub continues the numbering instead of reopening a full part
+      const sizes = Object.fromEntries(Object.entries(journalParts()).map(([k, p]) => [k, p.size]));
+      part = merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax());
+      const f = join(d, `${part}.jsonl`);
+      if (existsSync(f)) appendFileSync(f, line); else writeKeepingOwner(f, line);
+    } finally { unlock(); }
+    // the axf-data key is the part's own (builds/journal/<part>) wherever the part lives (hub home, spool, repo)
+    const key = testJournal() ? files.keyFor(join(d, `${part}.jsonl`)) : `builds/journal/${part}`;
     if (mode === 'shadow' && key) remoteJournal(key, entry, true);
   }
   // every change to a build goes live to main (builds-live.mjs); draft-only writes stay local
@@ -416,7 +494,8 @@ export function gatherSources({ history = true } = {}) {
   const hub = persistRoot();
   const profiles = [];
   for (const id of [BASE_PROFILE, ...[...ids].filter((x) => x !== BASE_PROFILE)]) {
-    const orchFile = orchestratorPath(id);
+    // a build worktree's exports are on the hub with its store (worktreeHome), not the checkout's stale copies
+    const orchFile = worktreeHome() && hasRepoExport(id) ? join(worktreeHome(), rel(orchestratorPath(id))) : orchestratorPath(id);
     const pRel = profileRel(id, 'framework/plan/pending.json');
     const qRel = profileRel(id, 'framework/plan/build-queue.json');
     const planRel = profileRel(id, 'framework/plan/plan.json');
@@ -471,12 +550,87 @@ export function dryRunMarkdown({ store, report, sources }) {
   return L.join('\n');
 }
 
+// ------------------------------------------------------------------ journal pointer + migration (builds-journal@1)
+export const JOURNAL_POINTER_REL = '_claude/builds/journal.json';
+const sha256 = (buf) => createHash('sha256').update(buf).digest('hex');
+const lineAt = (text, last) => { const ls = text.split('\n').filter((l) => l.trim()); const l = last ? ls[ls.length - 1] : ls[0]; try { return String(JSON.parse(l).at || ''); } catch { return ''; } };
+/** The open part of each month: the highest pN that exists (only the current month's can still grow). */
+function openParts(keys, now = new Date().toISOString().slice(0, 7)) {
+  const n = (k) => Number((k.match(/-p(\d+)$/) || [0, 1])[1]);
+  const top = {}; for (const k of keys) { const m = k.slice(0, 7); if (!top[m] || n(k) > n(top[m])) top[m] = k; }
+  return new Set(Object.entries(top).filter(([m]) => m >= now).map(([, k]) => k));
+}
+/** The pointer for the hub home's parts: { $axf, home, dir, updatedAt, storeRev, parts }. */
+export function journalPointer(dir = journalHome().dir, { storeRev = null } = {}) {
+  const keys = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.jsonl')).map((f) => f.slice(0, -6)).sort() : [];
+  const open = openParts(keys); const parts = {};
+  for (const k of keys) { const buf = readFileSync(join(dir, `${k}.jsonl`)); const t = buf.toString('utf8'); parts[k] = { bytes: buf.length, lines: t.split('\n').filter((l) => l.trim()).length, sha256: sha256(buf), sealed: !open.has(k), firstAt: lineAt(t, false), lastAt: lineAt(t, true) }; }
+  return { $axf: 'builds-journal@1', home: 'hub', dir: 'builds/journal', updatedAt: new Date().toISOString(), storeRev, parts };
+}
+/**
+ * Check the hub home against a pointer: every part exists, a sealed part hashes exactly, the open part meets its
+ * floor (at least `bytes` long, its first `bytes` hash to `sha256`). → { ok, checked, failed: [why], warning }
+ */
+export function verifyJournal(pointer, dir = journalHome().dir) {
+  if (!pointer || pointer.home !== 'hub') return { ok: true, checked: 0, failed: [], warning: 'journal: still in the repo (no hub pointer)' };
+  if (journalMode() !== 'hub' && journalMode() !== 'explicit') return { ok: true, checked: 0, failed: [], warning: 'journal: not checked (hub not mounted)' };
+  const failed = [];
+  for (const [k, e] of Object.entries(pointer.parts || {})) {
+    const f = join(dir, `${k}.jsonl`);
+    if (!existsSync(f)) { failed.push(`${k}: missing on the hub`); continue; }
+    const buf = readFileSync(f);
+    if (e.sealed && (buf.length !== e.bytes || sha256(buf) !== e.sha256)) failed.push(`${k}: sealed part changed (${buf.length} bytes, pointer says ${e.bytes})`);
+    if (!e.sealed && (buf.length < e.bytes || sha256(buf.subarray(0, e.bytes)) !== e.sha256)) failed.push(`${k}: open part lost lines (below its floor of ${e.bytes} bytes)`);
+  }
+  return { ok: !failed.length, checked: Object.keys(pointer.parts || {}).length, failed };
+}
+/**
+ * Move the repo's journal parts to the hub home (once; re-running only adds lines the hub lacks): each part is the
+ * union of the repo copy, the hub copy and the stale claude-sync copy (<projects>/<name>/_claude/builds/journal),
+ * written in place on the hub, then every repo line is checked to be on the hub and the pointer is written.
+ * `--apply` also untracks the parts (git rm --cached; the files stay on disk). → { ok, parts, moved, missing, pointer }
+ */
+export function migrateJournal({ apply = false } = {}) {
+  const h = journalHome(); if (h.mode !== 'hub' && h.mode !== 'explicit') throw new Error('the hub data store is not reachable here: run the migration on the VPS');
+  const repo = join(REPO_ROOT, '_claude/builds/journal');
+  const stale = join(process.env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_claude/builds/journal');
+  const keysOf = (d) => (existsSync(d) ? readdirSync(d).filter((f) => f.endsWith('.jsonl')).map((f) => f.slice(0, -6)) : []);
+  const keys = [...new Set([...keysOf(repo), ...keysOf(h.dir), ...keysOf(stale)])].sort();
+  const read = (d, k) => { try { return readFileSync(join(d, `${k}.jsonl`), 'utf8'); } catch { return ''; } };
+  const report = []; const missing = [];
+  if (apply) ensureDirKeepingOwner(h.dir);
+  const unlock = apply ? lock(join(h.dir, '.journal'), 60000) : () => {};
+  try {
+  for (const k of keys) {
+    // the repo's lines first (the older history), then what only the hub or the stale copy has
+    const mine = read(repo, k); const hub = read(h.dir, k);
+    const next = merge.mergeJournalText(mine, hub, read(stale, k));
+    const add = Buffer.byteLength(next) - Buffer.byteLength(hub);
+    if (apply && next !== hub) { const f = join(h.dir, `${k}.jsonl`); const tmp = `${f}.tmp-${process.pid}`; writeKeepingOwner(tmp, next); renameSync(tmp, f); }
+    const have = new Set((apply ? read(h.dir, k) : next).split('\n'));
+    const lost = mine.split('\n').filter((l) => l.trim() && !have.has(l)).length;
+    if (lost) missing.push(`${k}: ${lost} repo line(s) not on the hub`);
+    report.push({ part: k, repoBytes: Buffer.byteLength(mine), hubBytes: Buffer.byteLength(next), added: Math.max(0, add) });
+  }
+  } finally { unlock(); }
+  if (!apply) return { ok: !missing.length, dry: true, parts: report, missing };
+  if (missing.length) return { ok: false, parts: report, missing };
+  const pointer = journalPointer(h.dir, { storeRev: readStore().rev ?? null });
+  const v = verifyJournal(pointer, h.dir); if (!v.ok) return { ok: false, parts: report, missing: v.failed };
+  writeFileSync(join(REPO_ROOT, JOURNAL_POINTER_REL), `${JSON.stringify(pointer, null, 1)}\n`);
+  const tracked = execFileSync('git', ['ls-files', '--', '_claude/builds/journal'], { cwd: REPO_ROOT, encoding: 'utf8' }).split('\n').filter(Boolean);
+  if (tracked.length) {
+    execFileSync('git', ['update-index', '--no-skip-worktree', '--', ...tracked], { cwd: REPO_ROOT });
+    execFileSync('git', ['rm', '-q', '--cached', '--', ...tracked], { cwd: REPO_ROOT });
+  }
+  return { ok: true, parts: report, missing: [], untracked: tracked, pointer: { parts: Object.keys(pointer.parts).length } };
+}
+
 /** Restore one build to the state it had at journal revision `rev` (itself a new, journalled write). */
 export function journalOf(id) {
   if (remoteOn()) return remoteJournalOf(id);
-  const d = journalDir(); if (!existsSync(d)) return [];
   const out = [];
-  for (const f of readdirSync(d).filter((x) => x.endsWith('.jsonl')).sort()) for (const line of readFileSync(join(d, f), 'utf8').split('\n')) {
+  for (const key of Object.keys(journalParts()).sort()) for (const line of journalPartText(key).split('\n')) {
     if (!line.trim()) continue; let e; try { e = JSON.parse(line); } catch { continue; }
     for (const b of e.builds ?? []) if (b.id === id) out.push({ rev: e.rev, at: e.at, by: e.by, action: e.action, op: b.op, buildRev: b.rev, after: b.after });
   }
@@ -521,6 +675,13 @@ async function main(argv) {
     if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${dryRunMarkdown(r)}\n`); }
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
+  if (cmd === 'journal') {
+    const sub = rest[0] || 'status';
+    if (sub === 'migrate') { const r = migrateJournal({ apply: argv.includes('--apply') }); if (!r.ok) process.exitCode = 1; return out(r, `${r.dry ? 'dry run: ' : ''}${r.parts.length} part(s)${r.parts.reduce((a, p) => a + p.added, 0) ? `, ${r.parts.reduce((a, p) => a + p.added, 0)} byte(s) added on the hub` : ', the hub has every line'}${r.untracked ? `; ${r.untracked.length} repo part(s) untracked` : ''}${r.missing?.length ? `\n✗ ${r.missing.join('\n✗ ')}` : ''}`); }
+    if (sub === 'verify') { const r = verifyJournal(readJson(join(REPO_ROOT, JOURNAL_POINTER_REL))); if (!r.ok) process.exitCode = 1; return out(r, r.warning || (r.ok ? `ok: ${r.checked} part(s) match the pointer` : r.failed.map((f) => `✗ ${f}`).join('\n'))); }
+    if (sub === 'status') { const p = journalParts(); return out({ ok: true, home: journalHome(), mode: journalMode(), parts: p }, `journal home ${journalDir()} (${journalMode()}): ${Object.keys(p).length} part(s)`); }
+    throw new Error('journal migrate [--apply] | verify | status');
+  }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
   if (cmd === 'verify') {
     // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
@@ -529,8 +690,13 @@ async function main(argv) {
     const checks = core.verifyNothingLost(gatherSources({ history: false }), store);
     const bad = checks.filter((c) => !c.ok);
     if (bad.length || !v.ok) process.exitCode = 1;
-    const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`)];
-    return out({ ok: !bad.length && v.ok, store: v, total: checks.length, failed: bad }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store`);
+    // 3. the journal (builds-journal@1): the hub home against main's pointer (a warning when the hub is not mounted)
+    const pointer = readJson(join(REPO_ROOT, JOURNAL_POINTER_REL));
+    const jv = process.env.AXF_BUILDS_STORE ? { ok: true, checked: 0, failed: [], warning: '' } : verifyJournal(pointer);
+    if (!jv.ok) process.exitCode = 1;
+    const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`), ...jv.failed.map((f) => `✗ journal ${f}`)];
+    const jtext = jv.warning ? `; ${jv.warning}` : jv.checked ? `; journal: ${jv.checked} part(s) on the hub match the pointer` : '';
+    return out({ ok: !bad.length && v.ok && jv.ok, store: v, total: checks.length, failed: bad, journal: jv }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store${jtext}`);
   }
   const s = loadStore();
   if (cmd === 'status') {
