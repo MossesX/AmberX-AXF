@@ -614,6 +614,8 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     by = by or str(command.get("by") or "")
     if command.get("target") == "console.control":
         return control_target(command, grants, by, audience)
+    if command.get("target") == "console.pluginsettings":
+        return plugin_settings_target(command, grants, by, audience)
     command = focus_rewrite(command, audience)
     _late_prune()
     r = _runner(command, grants, by, ready_clients(audience))
@@ -793,6 +795,53 @@ def control_target(command: dict[str, Any], grants: list[str], by: str, audience
     if not r.get("ok"):
         out.update({k: r[k] for k in ("code", "message", "openUrl") if k in r})
     _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.control", "path": path, "action": command.get("action") or op, "ok": out["ok"],
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
+    return out
+
+
+def plugin_settings_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+    """control@1 `console.pluginsettings` (core/engines/control-rules.mjs): one plugin's Settings → Plugins sub-tab and
+    the gear on its screen. get = the state REST answers at /api/console-control/plugins/<id>/settings; act open / set /
+    enable / disable run through the console-control guards like console.control."""
+    import console_control as cc  # the console server's console-control half
+    import console_control_api as api
+    op, path = str(command.get("op") or ""), str(command.get("path") or "")
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+    try:
+        if op == "list":
+            items = [cc.plugin_state(p) | {"settingsTab": p.get("settingsTab"), "settingsGear": p.get("settingsGear")} for p in cc.inventory().get("plugins", []) or [] if p.get("settingsTab")]
+            lim = int((command.get("select") or {}).get("limit") or 0) if isinstance(command.get("select"), dict) else 0
+            r: dict[str, Any] = {"ok": True, "items": items[:lim] if lim > 0 else items}
+        elif op == "get":
+            r = cc.plugin_settings_state(path)
+        elif op == "act":
+            st = cc.plugin_settings_state(path)
+            action = str(command.get("action") or "")
+            if action == "open":
+                if not st.get("tab"):
+                    raise cc.ControlError("not_found", f"{st.get('label')} has no settings sub-tab")
+                body: dict[str, Any] = {"verb": "open", "address": st["tab"]["address"]}
+            elif action == "set":
+                key = str(inp.get("key") or "")
+                spec = next((x for x in st.get("settings") or [] if key and (x.get("key") == key or x.get("address") == key)), None)
+                if spec is None:
+                    raise cc.ControlError("not_found", f"{st.get('label')} has no setting {key or '(no key)'}")
+                body = {"verb": "set", "address": spec["address"], "value": inp.get("value")}
+            elif action in ("enable", "disable"):
+                body = {"verb": f"plugin.{action}", "address": path, **({"options": inp["options"]} if isinstance(inp.get("options"), dict) else {})}
+            else:
+                raise cc.ControlError("invalid", "console.pluginsettings act takes open, set, enable or disable")
+            if inp.get("reason"):
+                body["reason"] = inp["reason"]
+            r = api.command({**body, "to": str(inp.get("to") or "recent")}, by or "control", audience, set(grants))
+        else:
+            raise cc.ControlError("invalid", "console.pluginsettings takes list, get or act")
+    except cc.ControlError as e:
+        r = e.envelope()
+    out = {"$axf": "control@1", "ok": bool(r.get("ok")), "target": "console.pluginsettings", "op": op, **({"path": path} if path else {}), "data": r}
+    if not r.get("ok"):
+        out.update({k: r[k] for k in ("code", "message", "openUrl") if k in r})
+    _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.pluginsettings", "path": path, "action": command.get("action") or op, "ok": out["ok"],
                         "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
     return out
 

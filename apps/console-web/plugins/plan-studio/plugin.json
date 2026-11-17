@@ -49,5 +49,6 @@
     "model": "opus",
     "builtAt": "2026-10-30"
   },
-  "opens": "main"
+  "opens": "main",
+  "settingsTab": { "default": true }
 }

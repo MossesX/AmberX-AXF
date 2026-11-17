@@ -13,7 +13,9 @@
 # 2 min; 120 s without the cap), logs kept. If a client is attached it waits for Enter up to a day.
 # Headless tabs (Nov 3 2026, Brett): the console opens a tab for every running session with the agent, the model and a
 # live cost. The run tags its tmux session (@axf_agent, @axf_model, @axf_meter, @axf_chain, @axf_cwd, @axf_kind) and
-# appends session-start / session-end lines to $AXF_HEADLESS_DIR/events.jsonl (default /var/tmp/axf-headless). The stream
+# appends session-start / session-end lines to $AXF_HEADLESS_DIR/events.jsonl (default /var/tmp/axf-headless); session-end
+# carries the exit kind (phase-done | crash | stopped) and the phase (AXF_BUILD_PHASE). A dispatcher build (AXF_SURFACE=pipeline)
+# then calls pipeline.mjs exit, which ends the run and starts the next phase at once (AXF_PIPELINE_EXIT=off skips it). The stream
 # printer keeps <session>.meter.json (headless-meter@1: status, cost from usage × framework/schemas/model-pricing.json,
 # reconciled to the result's total_cost_usd) and <session>.chain.json (context-chain@1: the files the session takes in,
 # with their rules) there, which the Terminal reads. Agent = --agent, else AXF_AGENT, else --name; model = AXF_MODEL,
@@ -118,14 +120,15 @@ model="${AXF_MODEL:-}"
 if [[ -z "$model" ]]; then prev=""; for a in "$@"; do [[ "$prev" == --model ]] && model="$a"; [[ "$a" == --model=* ]] && model="${a#--model=}"; prev="$a"; done; fi
 agent="${agent:-$name}"
 hdir_ready() { mkdir -p "$HDIR" 2>/dev/null && { [[ -O "$HDIR" ]] && chmod 1777 "$HDIR" 2>/dev/null; true; } && [[ -w "$HDIR" ]]; }
-event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit (end only); one JSON line, never fails the run
+event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit, $4 = exit kind (end only); one JSON line, never fails the run
   hdir_ready || return 0
   command -v node >/dev/null || return 0
-  EV="$1" SES="$2" EXITC="${3:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" node -e '
+  EV="$1" SES="$2" EXITC="${3:-}" KIND="${4:-}" PHASE="${AXF_BUILD_PHASE:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" node -e '
     const e = process.env; const fs = require("fs"); const path = require("path");
     let cost = 0; try { cost = Number(JSON.parse(fs.readFileSync(path.join(e.HDIR, `${e.SES}.meter.json`), "utf8")).costUsd) || 0; } catch {}
     const line = { event: e.EV, session: e.SES, name: e.NAME, agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
       surface: e.AXF_SURFACE || "", at: new Date().toISOString(), ...(e.EXITC !== "" ? { exit: Number(e.EXITC) } : {}),
+      ...(e.KIND ? { kind: e.KIND } : {}), ...(e.KIND && e.PHASE ? { phase: e.PHASE } : {}),
       ...(e.ACCT ? { account: e.ACCT, email: e.ACCT_EMAIL } : {}), ...(/^session-(part|end)$/.test(e.EV) && cost ? { costUsd: cost } : {}) };
     fs.appendFileSync(path.join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
 }
@@ -146,6 +149,7 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 LOGIN_JS="$HERE/claude-login.mjs"
 TOKEN_JS="$HERE/claude-token-save.mjs"
 ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
+PIPE_JS="$HERE/../apps/console-web/plugins/build-orchestrator/pipeline.mjs"  # axf-plugin:build-orchestrator
 login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind="" login_config=""
 own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; never stops the run
   [[ "${AXF_OWN_LOGIN:-on}" == off ]] && return 0
@@ -285,6 +289,29 @@ ctx_plan() {   # $1 = session name
   return 0
 }
 
+# Run end (build-watchdog@1, Nov 13 2026, Brett: "Detect builds marked running with no live session (e.g. killed exit
+# 143, failed exit 1)"): the moment claude exits (or the wrapper is killed: HUP / TERM), the exit code, signal, exit kind,
+# account stop (usage | auth), account and time go onto the build's run record (builds-live.mjs run-end → pipeline.runEnd,
+# live on main) and into <slots dir>/runs/<build>.json (agent-slots.mjs run-end), so the watchdog has evidence even when
+# nothing after this line runs. Once per run; never fails the run. AXF_RUN_END=off skips it (tests).
+LIVE_JS="$HERE/../framework/cli/builds-live.mjs"
+run_end_done=""
+record_run_end() {   # $1 = exit code, $2 = signal name ('' = from the code)
+  [[ -n "$run_end_done" || "${AXF_RUN_END:-on}" == off ]] && return 0
+  run_end_done=1
+  command -v node >/dev/null || return 0
+  local code="$1" sig="${2:-}" kind lim="" bid="${AXF_BUILD_ID:-${run_build:-}}" ses
+  case "$code" in 0) kind=phase-done ;; 130|143) kind=stopped ;; *) kind=crash ;; esac
+  [[ -z "$sig" ]] && (( code > 128 && code < 160 )) && sig="$(kill -l $((code - 128)) 2>/dev/null)"
+  [[ -f "$WORKERS_JS" && -f "$log" ]] && lim="$(node "$WORKERS_JS" hit --log "$log" --exit "$code" 2>/dev/null | grep -xE 'usage|auth' | head -1)"
+  ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+  if [[ -z "$bid" ]]; then read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true; fi
+  [[ -n "$bid" ]] || return 0
+  slots_on && node "$SLOTS" run-end ${slot:+"$slot"} --build "$bid" --exit "$code" ${sig:+--signal "$sig"} --kind "$kind" ${lim:+--limit "$lim"} ${login_account:+--account "$login_account"} --session "$ses" --pid "$$" >/dev/null 2>&1
+  [[ -f "$LIVE_JS" ]] && node "$LIVE_JS" run-end "$bid" --exit "$code" ${sig:+--signal "$sig"} --kind "$kind" ${lim:+--limit "$lim"} ${login_account:+--account "$login_account"} --session "$ses" ${AXF_BUILD_PHASE:+--phase "$AXF_BUILD_PHASE"} --quiet >/dev/null 2>&1
+  return 0
+}
+
 LIMIT_JS="$HERE/../framework/cli/build-limit.mjs"
 limit_on() { [[ "${AXF_BUILD_LIMIT:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LIMIT_JS" ]]; }
 
@@ -347,6 +374,8 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
   for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
   wl="$(start_watch_live "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")")"
+  # worktree guard (tracking-paths@1): a build worktree never commits store/orchestrator/origins/journal/pending/queue files
+  [[ -f "$HERE/../framework/cli/worktree-setup.mjs" ]] && command -v node >/dev/null && node "$HERE/../framework/cli/worktree-setup.mjs" guard --dir "$(pwd)" 2>&1 | sed 's/^/# /' || true
   prompt="$(cat "$brief")"
   # brief only: the rules this job needs ride in the brief (rules brief + rule snippets by tag) when it has none yet
   [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && prompt="$prompt"$'\n\n'"$(cat "$ctx_rules")"
@@ -378,6 +407,8 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
   run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
   read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+  # killed from outside (tmux kill-session = HUP, kill = TERM): leave the evidence, then go
+  [[ -n "$gate_ok" ]] && trap 'record_run_end 129 HUP; exit 129' HUP && trap 'record_run_end 143 TERM; exit 143' TERM
   while [[ -n "$gate_ok" ]]; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
@@ -423,6 +454,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
     switches=$((switches + 1))
   done
+  [[ -n "$gate_ok" ]] && record_run_end "$st"   # first, before anything that could be cut short
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
   [[ -n "${ctx_dir:-}" && -d "$ctx_dir" ]] && rm -rf "$ctx_dir"
   # per-build start tokens and cost: one note on the build (every build view shows its notes)
@@ -434,7 +466,11 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "$on_worker" ]] && release_worker   # its slot on that account frees for the next job
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
-  event session-end "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" "$st"
+  # how the run ended, for the dispatcher: a clean exit = its phase is done (the store confirms it: a phase with steps
+  # still open lands in Pending as stopped), SIGINT / SIGTERM = stopped on purpose, anything else = a crash
+  case "$st" in 0) exit_kind=phase-done ;; 130|143) exit_kind=stopped ;; *) exit_kind=crash ;; esac
+  end_session="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+  event session-end "$end_session" "$st" "$exit_kind"
   if [[ -n "$on_worker" ]]; then
     worker_note="$(node "$WORKERS_JS" note "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" 2>/dev/null)"
     [[ -n "$worker_note" ]] && build_note "$worker_note"
@@ -447,6 +483,16 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -n "$slot" ]] && slots_on; then   # finished = the slot is free now
     node "$SLOTS" finish "$slot" --exit "$st" >/dev/null 2>&1 || true
     if (( clients == 0 )); then close="$(node "$SLOTS" get closeFinishedAfterSec 2>/dev/null || echo 120)"; [[ "$close" =~ ^[0-9]+$ ]] || close=120; fi
+  fi
+  # a dispatcher build: tell the pipeline now that the slot is free (pipeline.mjs exit, under the dispatcher's lock): the
+  # run ends at once and a requeued build's next phase starts without waiting for the cron tick. Detached and in a clean
+  # environment (this session's AXF_BUILD_ID / AXF_SESSION / TMUX must not leak into the next launch); the cron tick's
+  # checkEnds() reads the same session-end event when this call can't run.
+  if [[ "${AXF_SURFACE:-}" == pipeline && -n "${AXF_BUILD_ID:-}" && "${AXF_PIPELINE_EXIT:-on}" != off && -f "$PIPE_JS" ]] && command -v node >/dev/null; then
+    pexit_env=(PATH="$PATH" HOME="$HOME")
+    for v in AXF_PIPELINE_LOCK AXF_HEADLESS_DIR AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_WORKERS AXF_SLOTS_DIR AXF_BUILD_PROFILE; do [[ -n "${!v:-}" ]] && pexit_env+=("$v=${!v}"); done
+    pexit_log="${AXF_PIPELINE_EXIT_LOG:-/var/log/axf-pipeline.log}"; [[ -w "$(dirname "$pexit_log")" ]] || pexit_log="$HDIR/pipeline-exit.log"
+    ( cd "$HERE/.." && setsid env -i "${pexit_env[@]}" node "$PIPE_JS" exit "$AXF_BUILD_ID" --session "$end_session" --exit "$st" --kind "$exit_kind" ${AXF_BUILD_PHASE:+--phase "$AXF_BUILD_PHASE"} --by headless >> "$pexit_log" 2>&1 < /dev/null & )
   fi
   if (( close > 0 )); then
     if (( clients > 0 )); then read -r -t "$close" -p "Enter closes it (waits up to ${close}s). " _ || true
@@ -526,7 +572,7 @@ if [[ -n "${AXF_BUILD_ID:-}" ]] && command -v node >/dev/null && [[ -f "$LOCK_CL
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUILD_LIMIT_POLL AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
+for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUILD_LIMIT_POLL AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE AXF_BUILD_PHASE AXF_PIPELINE_EXIT AXF_PIPELINE_LOCK; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 envs+=(-e "AXF_BUILD_ID=${AXF_BUILD_ID:-}")   # always set: never the tmux server's stale value from an older launch

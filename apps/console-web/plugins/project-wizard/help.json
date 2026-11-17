@@ -74,6 +74,12 @@
         "text": "Shows the “Project wizard” part of this screen. Part of Project wizard.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "fix-in-settings",
+        "title": "Fix in settings",
+        "text": "Opens Settings → Plugins → Project wizard, where the GitHub token or VPS git problem shown here is fixed.",
+        "kind": "button"
       }
     ],
     "intros": []
