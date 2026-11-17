@@ -13,6 +13,7 @@ import {
   bannerWidgetIconId, formatIconRef, isLongText, longTextThreshold, modeFromBannerShow, parseIconRef, parseWidgetIconId, registerWidgetIconHost, registerWidgetKindIcon, resolveWidgetIcon, settingsWidgetIconId, widgetIconKey, widgetIconSettings, widgetModeKey, widgetText,
   type WidgetIconInput, type WidgetIconMap, type WidgetIconSettings,
 } from '../core/engines/widget-icons';
+import { widgetDefaultIcon, widgetDefaultRows } from '../core/engines/widget-icon-defaults';
 import { APPEARANCE_SETTING_PREFIXES } from '../core/engines/designpackage';
 import { sizingVars } from '../core/engines/scale';
 
@@ -97,6 +98,17 @@ eq(resolveWidgetIcon({ id: 'banner:zzz:x', text: 'x' }, {}, { fallback: 'Bad Gly
 // the threshold token's compiled value is what the host passes
 eq(resolveWidgetIcon({ id: 'banner:status:x', kind: 'status', text: 'abcdefghijklmnopqrstuvwxy' }, { textMax: sizingVars(null)[WIDGET_TEXT_MAX_TOKEN] }, map).mode, 'icon', '25 characters at the default 24 is long');
 eq(resolveWidgetIcon({ id: 'banner:status:x', kind: 'status', text: 'abcdefghijklmnopqrstuvwxy' }, { textMax: sizingVars({ widget: { textMax: 30 } })[WIDGET_TEXT_MAX_TOKEN] }, map).mode, 'icon+text', 'a sizing asset raising it to 30 keeps the text');
+
+// ---- the inventory (schemas/widget-icon-defaults.json): every row a real id, a framework glyph, unique ----
+const glyphs = new Set([...read('react/components/Icon.tsx').matchAll(/^  '?([a-z0-9-]+)'?: '/gm)].map((m) => m[1]));
+const seen = new Set<string>();
+for (const w of widgetDefaultRows()) {
+  ok(parseWidgetIconId(w.id), `defaults: ${w.id} is a widget id`);
+  ok(glyphs.has(w.icon), `defaults: ${w.id} icon ${w.icon} is a framework glyph`);
+  ok(!seen.has(w.id), `defaults: ${w.id} once`); seen.add(w.id);
+}
+eq(widgetDefaultIcon('settings:setting:axf.x'), 'sliders', 'defaults: a setting row falls to its rule');
+eq(widgetDefaultIcon('banner:zzz:x'), undefined, 'defaults: an unknown banner widget has none');
 
 // ---- the contract and the porting note ----
 const doc = read('spec/WIDGET-ICONS.md');

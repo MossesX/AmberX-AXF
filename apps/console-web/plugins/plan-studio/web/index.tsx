@@ -42,7 +42,7 @@ export const plugin: AxfWebLibrary = {
         description: 'Quick capture: a new plan in two taps.', tags: ['plans'],
         data: { icon: 'plus', label: 'Plan', action: 'plan-studio.capture', show: 'both', tone: 'neutral', tooltip: 'New plan (Plan Studio)' },
       } as never, 'app', ID);
-      if (on) rt.attachToBanner({ type: 'action-button', id: BANNER_ASSET, at: 'right', order: 31, origin: ID, widget: { label: 'Plan', icon: 'map', size: 'compact', priority: 3, aliases: ['plan studio'] } });
+      if (on) rt.attachToBanner({ type: 'action-button', id: BANNER_ASSET, at: 'right', order: 31, origin: ID, widget: { label: 'Plan', icon: 'list', size: 'compact', priority: 3, aliases: ['plan studio'] } });
       else rt.detachFromBanner(`action-button:${BANNER_ASSET}`);
     };
     rt.settings.onChange(KEYS.banner, paint);

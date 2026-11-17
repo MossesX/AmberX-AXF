@@ -1,0 +1,49 @@
+{
+  "frame": "widget-icon-defaults@1",
+  "about": "Inventory of every banner and settings widget the Dev Console draws (widget-icons@1, spec/WIDGET-ICONS.md), what it showed before this build, and the default icon each one gets when it has none of its own. Read by resolveWidgetIcon's host (the default stands in as the widget's own icon), the /api/widget-icons routes, the MCP tools and the CLI. Append-only: a new widget adds a row; an id never changes meaning.",
+  "inventoried": "2026-11-17",
+  "fields": {
+    "id": "widget id <host>:<kind>:<id>",
+    "owner": "the plugin, library or framework module that attaches it",
+    "label": "its name in the Widgets picker",
+    "hadIcon": "did it draw an icon before this build",
+    "longText": "can it draw text past --fx-size-widget-text-max (24 characters by default)",
+    "icon": "its default icon (a framework glyph); the person's pick wins"
+  },
+  "widgets": [
+    { "id": "banner:badge:claude", "owner": "claude-badge", "label": "Claude (console AI)", "hadIcon": true, "longText": false, "icon": "sparkles" },
+    { "id": "banner:badge:claude-vps", "owner": "claude-badge", "label": "VPS (Claude login)", "hadIcon": true, "longText": false, "icon": "cloud" },
+    { "id": "banner:badge:axhub", "owner": "claude-badge", "label": "axHub (connection)", "hadIcon": true, "longText": false, "icon": "shield" },
+    { "id": "banner:badge:amberx-phone", "owner": "claude-badge", "label": "AmberX (phone app)", "hadIcon": true, "longText": false, "icon": "smartphone" },
+    { "id": "banner:badge:claude-usage", "owner": "claude-badge", "label": "Usage meter", "hadIcon": true, "longText": true, "icon": "clock" },
+    { "id": "banner:status:claude-account", "owner": "claude-accounts", "label": "Claude account", "hadIcon": false, "longText": true, "icon": "user" },
+    { "id": "banner:status:project", "owner": "project-switcher", "label": "Project", "hadIcon": false, "longText": true, "icon": "folder" },
+    { "id": "banner:status:build-profile", "owner": "build-profiles", "label": "Build profile", "hadIcon": false, "longText": true, "icon": "sliders" },
+    { "id": "banner:status:follow-amber", "owner": "follow-amber", "label": "Following Amber", "hadIcon": false, "longText": true, "icon": "eye" },
+    { "id": "banner:status:shipped", "owner": "whats-shipped", "label": "What's new ticker", "hadIcon": false, "longText": true, "icon": "sparkles" },
+    { "id": "banner:status:main-build", "owner": "main-build-status", "label": "Main build status", "hadIcon": false, "longText": true, "icon": "branch" },
+    { "id": "banner:status:wake-listener", "owner": "wake-listener", "label": "Wake listener", "hadIcon": false, "longText": false, "icon": "mic" },
+    { "id": "banner:status:agent-voice", "owner": "agent-voice", "label": "Agent voice", "hadIcon": false, "longText": false, "icon": "mic" },
+    { "id": "banner:status:axhub", "owner": "hubstatus", "label": "axHub status", "hadIcon": false, "longText": true, "icon": "cloud" },
+    { "id": "banner:counter:builds-progress", "owner": "builds-page", "label": "% building", "hadIcon": true, "longText": false, "icon": "hammer" },
+    { "id": "banner:counter:approvals", "owner": "hub", "label": "Approvals", "hadIcon": true, "longText": false, "icon": "check-circle" },
+    { "id": "banner:counter:alerts-bell", "owner": "alerts-bell", "label": "Alerts count", "hadIcon": true, "longText": false, "icon": "bell" },
+    { "id": "banner:action-button:alerts-bell", "owner": "alerts-bell", "label": "Alerts bell", "hadIcon": true, "longText": false, "icon": "bell" },
+    { "id": "banner:action-button:plan-studio-capture", "owner": "plan-studio", "label": "Plan", "hadIcon": true, "longText": false, "icon": "list" },
+    { "id": "banner:action-button:skins", "owner": "framework", "label": "Skins", "hadIcon": true, "longText": false, "icon": "sparkles" },
+    { "id": "banner:clock:digital-12h", "owner": "banner asset", "label": "Clock", "hadIcon": false, "longText": false, "icon": "clock" },
+    { "id": "banner:search-bar:everything", "owner": "banner asset", "label": "Search", "hadIcon": true, "longText": false, "icon": "search" },
+    { "id": "settings:tab:appearance", "owner": "settings", "label": "Appearance", "hadIcon": true, "longText": false, "icon": "palette" },
+    { "id": "settings:tab:account", "owner": "settings", "label": "Account & security", "hadIcon": true, "longText": false, "icon": "shield" },
+    { "id": "settings:tab:connections", "owner": "settings", "label": "Connections", "hadIcon": true, "longText": false, "icon": "cloud" },
+    { "id": "settings:tab:plugins", "owner": "settings", "label": "Plugins", "hadIcon": true, "longText": false, "icon": "package" },
+    { "id": "settings:tab:banners", "owner": "settings", "label": "Banners", "hadIcon": true, "longText": false, "icon": "bell" },
+    { "id": "settings:tab:about", "owner": "settings", "label": "About", "hadIcon": true, "longText": false, "icon": "info" },
+    { "id": "settings:tab:skin-config", "owner": "settings", "label": "Skin config", "hadIcon": true, "longText": false, "icon": "sliders" }
+  ],
+  "rules": [
+    { "match": "settings:tab:*", "icon": "package", "why": "a plugin's settings sub-tab without its own icon" },
+    { "match": "settings:group:*", "icon": "list", "why": "an option group" },
+    { "match": "settings:setting:*", "icon": "sliders", "why": "a setting row that acts as a widget" }
+  ]
+}
