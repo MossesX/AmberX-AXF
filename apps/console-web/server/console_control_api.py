@@ -407,6 +407,30 @@ def router_for(auth: Any) -> APIRouter:
             return fail(cc.ControlError("invalid", "voice needs text", field="text"))
         return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent")))
 
+    @r.get("/plugins/{ref}/settings")
+    async def plugin_settings(request: Request, ref: str, live: int = 0) -> JSONResponse:
+        """One plugin's settings sub-tab, gear, on/off and settings; live=1 also asks the open console for the tab's state."""
+        try:
+            r = await run_in_threadpool(cc.plugin_settings_state, ref)
+        except cc.ControlError as e:
+            return fail(e)
+        if live and r.get("tab"):
+            audience, name = audience_of(request)
+            r["live"] = await run_in_threadpool(guarded, {"$axf": cc.FRAME, "verb": "state", "address": r["tab"]["address"]}, name, audience, grants_of(request))
+        return answer(r)
+
+    @r.post("/plugins/{ref}/settings/open")
+    async def plugin_settings_open(request: Request, ref: str) -> JSONResponse:
+        """Open Settings → Plugins → <plugin> in the open console (the same as pressing its gear)."""
+        try:
+            st = await run_in_threadpool(cc.plugin_settings_state, ref)
+        except cc.ControlError as e:
+            return fail(e)
+        if not st.get("tab"):
+            return fail(cc.ControlError("not_found", f"{st.get('label')} has no settings sub-tab"))
+        b = await _body(request)
+        return await from_body(request, {**b, "verb": "open", "address": st["tab"]["address"]})
+
     @r.post("/plugins/{ref}/{op}")
     async def plugin(request: Request, ref: str, op: str) -> JSONResponse:
         if op not in ("enable", "disable"):

@@ -89,3 +89,19 @@ parent rule, so the tab is always under Settings → Plugins: when the plugin ha
 folder; when it has one, the default panels go to the top of that tab and its own settings stay as they are. The
 shared Install & uninstall panel is added unless the plugin already ships one. The Plugin Manager's `uiOf()` counts the
 default tab too.
+
+## API (s8)
+
+- Console action `plugin.settings.open:<plugin>` (folder, manifest id, last id segment or name):
+  `apps/console-web/src/pluginSettingsActions.ts`, registered in `main.tsx`. Same press as the gear.
+- Control targets: every gear is `view:<screen>/button:settings-gear` (live, registered by the framework
+  IconButton inside the view's ControlScope; static, in `server/console_control.py static_targets()` with `opens`),
+  every plugin sub-tab `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=<tab>`. The control
+  inventory (`scripts/control-inventory.mjs`) now resolves tab ids from constants anywhere in the plugin's web
+  folder (`FOLDER`, `VIEW`), double-quoted labels, library tabs a plugin declares in `provides`, and the default tab;
+  every plugin entry carries `settingsTab`, `settingsTabId` and `settingsGear`. Plugins with a sub-tab in the
+  inventory: 58 → 71 of 71; gears: 44.
+- REST: `GET /api/console-control/plugins/<id>/settings[?live=1]` → `{plugin, folder, label, version, enabled,
+  tab {address, id}, gear, view, settings[], open {action, address}, can}`;
+  `POST /api/console-control/plugins/<id>/settings/open` opens it in the open console (console_open semantics);
+  on/off stays `POST /api/console-control/plugins/<id>/enable|disable`.

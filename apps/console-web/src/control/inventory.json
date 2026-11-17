@@ -6,7 +6,7 @@
     "nav": 16,
     "tabGroups": 27,
     "tabs": 78,
-    "settingsTabs": 71,
+    "settingsTabs": 83,
     "settings": 89,
     "functions": 275,
     "buttons": 62,
@@ -1878,6 +1878,20 @@
       "plugin": "ai.amberx.axf.console.basic-filter"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library",
+      "id": "brand-library",
+      "label": "Brand library",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.brand-library"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-breaker",
+      "id": "build-breaker",
+      "label": "Build Breaker",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.build-breaker"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-orchestrator",
       "id": "build-orchestrator",
       "label": "Build orchestrator",
@@ -1890,6 +1904,13 @@
       "label": "Build profiles",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.build-profiles"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page",
+      "id": "builds-page",
+      "label": "Builds",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.builds-page"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=changes-grid",
@@ -1925,6 +1946,13 @@
       "label": "Claude handoff",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.claude-handoff"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-session",
+      "id": "claude-session",
+      "label": "Claude sessions",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.claude-session"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings",
@@ -1976,6 +2004,13 @@
       "plugin": "ai.amberx.axf.console.crew-live"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer",
+      "id": "demonstration-designer",
+      "label": "Demonstration Designer",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.demonstration-designer"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=fable-rebuilds",
       "id": "fable-rebuilds",
       "label": "Fable rebuilds",
@@ -2002,6 +2037,13 @@
       "label": "Follow Amber",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.follow-amber"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+      "id": "gate",
+      "label": "Gate",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.gate"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=github-app",
@@ -2032,6 +2074,13 @@
       "plugin": "ai.amberx.axf.console.maintenance"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio",
+      "id": "md-studio",
+      "label": "MD Studio",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.md-studio"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide",
       "id": "molly-guide",
       "label": "Gizmo guide",
@@ -2060,6 +2109,13 @@
       "plugin": "ai.amberx.axf.console.output-recorder"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio",
+      "id": "plan-studio",
+      "label": "Plan Studio",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.plan-studio"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-commands",
       "id": "plugin-commands",
       "label": "Plugin commands",
@@ -2086,6 +2142,13 @@
       "label": "Plugin Update",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.plugin-update"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugins-menu",
+      "id": "plugins-menu",
+      "label": "Plugins menu",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.plugins-menu"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=projects",
@@ -2121,6 +2184,13 @@
       "label": "Session check-in",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.session-checkin"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=shipped-features",
+      "id": "shipped-features",
+      "label": "Shipped features",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.shipped-features"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=skin-editor",
@@ -2179,6 +2249,13 @@
       "plugin": "ai.amberx.axf.console.token-control"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
+      "id": "ui-review",
+      "label": "UI Review",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.ui-review"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
       "id": "voice-notes",
       "label": "Voice notes",
@@ -2191,6 +2268,13 @@
       "label": "Wake listener",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.wake-listener"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=whats-shipped",
+      "id": "whats-shipped",
+      "label": "What's new",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.whats-shipped"
     },
     {
       "address": "view:settings/tab:settings.tabs=alerts",
@@ -2218,14 +2302,14 @@
       "id": "hubsync",
       "label": "axHub sync",
       "parent": "plugins",
-      "plugin": null
+      "plugin": "ai.amberx.axf.console.hub-sync"
     },
     {
-      "address": "view:settings/tab:settings.tabs=mcp",
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=mcp",
       "id": "mcp",
       "label": "MCP servers",
-      "parent": null,
-      "plugin": null
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.mcp-client"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=toolbars",
@@ -8765,6 +8849,7 @@
         "activity banner"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity",
+      "settingsTabId": "activity",
       "provides": [
         "service:axf.activity@1"
       ],
@@ -8794,6 +8879,8 @@
       ],
       "view": "view:agent-manager",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-manager",
+      "settingsTabId": "agent-manager",
+      "settingsGear": "view:agent-manager/button:settings-gear",
       "provides": [
         "service:axf.agents@1"
       ],
@@ -8822,6 +8909,7 @@
         "agent cap"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots",
+      "settingsTabId": "agent-slots",
       "provides": [
         "service:axf.agent-slots@1"
       ],
@@ -8849,6 +8937,8 @@
       ],
       "view": "view:agent-swarm",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-swarm",
+      "settingsTabId": "agent-swarm",
+      "settingsGear": "view:agent-swarm/button:settings-gear",
       "provides": [
         "service:agent-jobs@1",
         "service:axf.crew@1",
@@ -8878,6 +8968,8 @@
       ],
       "view": "view:agent-voice",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-voice",
+      "settingsTabId": "agent-voice",
+      "settingsGear": "view:agent-voice/button:settings-gear",
       "provides": [
         "service:axf.agent-voice@1",
         "service:axf.speech@1"
@@ -8906,6 +8998,8 @@
       ],
       "view": "view:ai-assistant",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-assistant",
+      "settingsTabId": "ai-assistant",
+      "settingsGear": "view:ai-assistant/button:settings-gear",
       "provides": [
         "service:axf.llm@1",
         "service:axf.live-sessions@1"
@@ -8935,6 +9029,7 @@
         "ai keys"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-keys",
+      "settingsTabId": "ai-keys",
       "provides": [
         "service:axf.ai-keys@1"
       ],
@@ -8963,6 +9058,7 @@
         "alerts bell"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=alerts-bell",
+      "settingsTabId": "alerts-bell",
       "provides": [],
       "requires": [],
       "optional": []
@@ -8986,6 +9082,8 @@
       ],
       "view": "view:amberx-listeners",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=amberx-listeners",
+      "settingsTabId": "amberx-listeners",
+      "settingsGear": "view:amberx-listeners/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9008,6 +9106,7 @@
         "approvals banner"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner",
+      "settingsTabId": "approvals-banner",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9032,6 +9131,8 @@
       "enabledByDefault": false,
       "view": "view:audio-extract",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract",
+      "settingsTabId": "audio-extract",
+      "settingsGear": "view:audio-extract/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9054,6 +9155,7 @@
         "basic filter"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=basic-filter",
+      "settingsTabId": "basic-filter",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9076,6 +9178,9 @@
         "brand library"
       ],
       "view": "view:brand-library",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library",
+      "settingsTabId": "brand-library",
+      "settingsGear": "view:brand-library/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9098,6 +9203,9 @@
         "build breaker"
       ],
       "view": "view:build-breaker",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-breaker",
+      "settingsTabId": "build-breaker",
+      "settingsGear": "view:build-breaker/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9121,6 +9229,8 @@
       ],
       "view": "view:build-orchestrator",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-orchestrator",
+      "settingsTabId": "build-orchestrator",
+      "settingsGear": "view:build-orchestrator/button:settings-gear",
       "provides": [
         "service:orchestrator@1",
         "service:axf.build-dispatch@1"
@@ -9151,6 +9261,7 @@
         "build profiles"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-profiles",
+      "settingsTabId": "build-profiles",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9173,6 +9284,9 @@
         "builds"
       ],
       "view": "view:builds",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=builds-page",
+      "settingsTabId": "builds-page",
+      "settingsGear": "view:builds/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9196,6 +9310,8 @@
       ],
       "view": "view:changes-grid",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=changes-grid",
+      "settingsTabId": "changes-grid",
+      "settingsGear": "view:changes-grid/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9221,6 +9337,8 @@
       ],
       "view": "view:chat-viewer",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=chat-viewer",
+      "settingsTabId": "chat-viewer",
+      "settingsGear": "view:chat-viewer/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9244,6 +9362,8 @@
       ],
       "view": "view:claude-accounts",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-accounts",
+      "settingsTabId": "claude-accounts",
+      "settingsGear": "view:claude-accounts/button:settings-gear",
       "provides": [
         "service:axf.claude-accounts@1"
       ],
@@ -9271,6 +9391,7 @@
         "badges"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-badge",
+      "settingsTabId": "claude-badge",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9300,6 +9421,8 @@
       ],
       "view": "view:claude-handoff",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-handoff",
+      "settingsTabId": "claude-handoff",
+      "settingsGear": "view:claude-handoff/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9321,6 +9444,8 @@
         "claude-session",
         "claude sessions"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-session",
+      "settingsTabId": "claude-session",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9347,6 +9472,8 @@
       ],
       "view": "view:claude-settings",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings",
+      "settingsTabId": "claude-settings",
+      "settingsGear": "view:claude-settings/button:settings-gear",
       "provides": [
         "service:axf.claude-settings@1"
       ],
@@ -9374,6 +9501,8 @@
       ],
       "view": "view:codebase-changes",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=codebase-changes",
+      "settingsTabId": "codebase-changes",
+      "settingsGear": "view:codebase-changes/button:settings-gear",
       "provides": [
         "service:axf.changes@1"
       ],
@@ -9399,6 +9528,7 @@
       ],
       "core": true,
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-commands",
+      "settingsTabId": "console-commands",
       "provides": [
         "service:console-commands@1"
       ],
@@ -9424,6 +9554,7 @@
       ],
       "core": true,
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=terminal",
+      "settingsTabId": "terminal",
       "provides": [
         "service:axf.headless@1",
         "service:axf.session-feed@1"
@@ -9451,6 +9582,7 @@
         "container access"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=container-access",
+      "settingsTabId": "container-access",
       "provides": [
         "service:axf.containers@1"
       ],
@@ -9478,6 +9610,8 @@
       ],
       "view": "view:context-menu-designer",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=context-menu-designer",
+      "settingsTabId": "context-menu-designer",
+      "settingsGear": "view:context-menu-designer/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9501,6 +9635,8 @@
       ],
       "view": "view:crew",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live",
+      "settingsTabId": "crew-live",
+      "settingsGear": "view:crew/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9526,6 +9662,9 @@
         "demonstration designer"
       ],
       "view": "view:demonstration-designer",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer",
+      "settingsTabId": "demonstration-designer",
+      "settingsGear": "view:demonstration-designer/button:settings-gear",
       "provides": [
         "service:demonstrations@1"
       ],
@@ -9553,6 +9692,8 @@
       ],
       "view": "view:fable-rebuilds",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=fable-rebuilds",
+      "settingsTabId": "fable-rebuilds",
+      "settingsGear": "view:fable-rebuilds/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9575,6 +9716,7 @@
         "feature assistant"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-assist",
+      "settingsTabId": "feature-assist",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9603,6 +9745,8 @@
       ],
       "view": "view:feature-matrix",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-matrix",
+      "settingsTabId": "feature-matrix",
+      "settingsGear": "view:feature-matrix/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9627,6 +9771,7 @@
         "follow amber"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber",
+      "settingsTabId": "follow-amber",
       "provides": [
         "service:follow-amber@1"
       ],
@@ -9653,6 +9798,9 @@
         "gate & rules"
       ],
       "view": "view:gate",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+      "settingsTabId": "gate",
+      "settingsGear": "view:gate/button:settings-gear",
       "provides": [
         "service:axf.gate@1",
         "service:axf.build-rules@1"
@@ -9682,6 +9830,7 @@
         "github"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=github-app",
+      "settingsTabId": "github-app",
       "provides": [
         "service:axf.github-app@1"
       ],
@@ -9709,6 +9858,8 @@
       ],
       "view": "view:glossary-index",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index",
+      "settingsTabId": "glossary-index",
+      "settingsGear": "view:glossary-index/button:settings-gear",
       "provides": [
         "service:glossary@1"
       ],
@@ -9732,6 +9883,8 @@
         "hub-sync",
         "axhub sync"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubsync",
+      "settingsTabId": "hubsync",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9754,6 +9907,7 @@
         "main build status"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=main-build-status",
+      "settingsTabId": "main-build-status",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9776,6 +9930,8 @@
       ],
       "view": "view:maintenance",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance",
+      "settingsTabId": "maintenance",
+      "settingsGear": "view:maintenance/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9800,6 +9956,9 @@
         "mcp client"
       ],
       "view": "view:mcp",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=mcp",
+      "settingsTabId": "mcp",
+      "settingsGear": "view:mcp/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9822,6 +9981,9 @@
         "md studio"
       ],
       "view": "view:md-studio",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=md-studio",
+      "settingsTabId": "md-studio",
+      "settingsGear": "view:md-studio/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": [
@@ -9846,6 +10008,7 @@
         "gizmo guide"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide",
+      "settingsTabId": "molly-guide",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9869,6 +10032,8 @@
       ],
       "view": "view:notes",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notes-browser",
+      "settingsTabId": "notes-browser",
+      "settingsGear": "view:notes/button:settings-gear",
       "provides": [
         "service:axf.notes@1"
       ],
@@ -9894,6 +10059,8 @@
       ],
       "view": "view:notify-control",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notify-control",
+      "settingsTabId": "notify-control",
+      "settingsGear": "view:notify-control/button:settings-gear",
       "provides": [
         "service:axf.notify@1"
       ],
@@ -9922,6 +10089,8 @@
       ],
       "view": "view:output-recorder",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder",
+      "settingsTabId": "output-recorder",
+      "settingsGear": "view:output-recorder/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -9944,6 +10113,9 @@
         "plan studio"
       ],
       "view": "view:plan-studio",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio",
+      "settingsTabId": "plan-studio",
+      "settingsGear": "view:plan-studio/button:settings-gear",
       "provides": [
         "service:plans@1"
       ],
@@ -9972,6 +10144,8 @@
       ],
       "view": "view:plugin-commands",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-commands",
+      "settingsTabId": "plugin-commands",
+      "settingsGear": "view:plugin-commands/button:settings-gear",
       "provides": [
         "service:plugin-commands@1"
       ],
@@ -10001,6 +10175,8 @@
       "core": true,
       "view": "view:plugin-manager",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-manager",
+      "settingsTabId": "plugin-manager",
+      "settingsGear": "view:plugin-manager/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10023,6 +10199,7 @@
         "plugin switches"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-switches",
+      "settingsTabId": "plugin-switches",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10046,6 +10223,8 @@
       ],
       "view": "view:plugin-update",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-update",
+      "settingsTabId": "plugin-update",
+      "settingsGear": "view:plugin-update/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10067,6 +10246,8 @@
         "plugins-menu",
         "plugins menu"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugins-menu",
+      "settingsTabId": "plugins-menu",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10089,6 +10270,7 @@
         "project switcher"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=projects",
+      "settingsTabId": "projects",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10112,6 +10294,8 @@
       ],
       "view": "view:project-wizard",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=project-wizard",
+      "settingsTabId": "project-wizard",
+      "settingsGear": "view:project-wizard/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10134,6 +10318,7 @@
         "push banner"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
+      "settingsTabId": "push-banner",
       "provides": [
         "service:axf.merge-queue@1"
       ],
@@ -10160,6 +10345,7 @@
         "reference links"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ref-links",
+      "settingsTabId": "ref-links",
       "provides": [
         "service:ref-links@1"
       ],
@@ -10189,6 +10375,8 @@
       ],
       "view": "view:sessions",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=session-checkin",
+      "settingsTabId": "session-checkin",
+      "settingsGear": "view:sessions/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10211,6 +10399,9 @@
         "shipped features"
       ],
       "view": "view:shipped-features",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=shipped-features",
+      "settingsTabId": "shipped-features",
+      "settingsGear": "view:shipped-features/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10234,6 +10425,8 @@
       ],
       "view": "view:skin-editor",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=skin-editor",
+      "settingsTabId": "skin-editor",
+      "settingsGear": "view:skin-editor/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10257,6 +10450,8 @@
       ],
       "view": "view:skin-gallery",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=skin-gallery",
+      "settingsTabId": "skin-gallery",
+      "settingsGear": "view:skin-gallery/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10279,6 +10474,7 @@
         "snapshot manager"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=snapshots",
+      "settingsTabId": "snapshots",
       "provides": [
         "service:axf.snapshots@1"
       ],
@@ -10306,6 +10502,7 @@
       ],
       "core": true,
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=systems-check",
+      "settingsTabId": "systems-check",
       "provides": [
         "service:axf.syscheck@1",
         "service:axf.health@1",
@@ -10336,6 +10533,8 @@
       ],
       "view": "view:theme-editor",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=theme-editor",
+      "settingsTabId": "theme-editor",
+      "settingsGear": "view:theme-editor/button:settings-gear",
       "provides": [],
       "requires": [
         "service:axf.token-tree@1"
@@ -10361,6 +10560,8 @@
       ],
       "view": "view:theme-manager",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=theme-manager",
+      "settingsTabId": "theme-manager",
+      "settingsGear": "view:theme-manager/button:settings-gear",
       "provides": [
         "service:axf.token-tree@1",
         "service:axf.skin-config@1"
@@ -10387,6 +10588,8 @@
       ],
       "view": "view:todo-manager",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=todo-manager",
+      "settingsTabId": "todo-manager",
+      "settingsGear": "view:todo-manager/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10410,6 +10613,8 @@
       ],
       "view": "view:token-control",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=token-control",
+      "settingsTabId": "token-control",
+      "settingsGear": "view:token-control/button:settings-gear",
       "provides": [
         "service:control@1"
       ],
@@ -10436,6 +10641,9 @@
         "ui review"
       ],
       "view": "view:ui-review",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
+      "settingsTabId": "ui-review",
+      "settingsGear": "view:ui-review/button:settings-gear",
       "provides": [
         "service:ui-review@1",
         "service:ui-screenshots@1"
@@ -10462,6 +10670,8 @@
       ],
       "view": "view:voice-notes",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
+      "settingsTabId": "voice-notes",
+      "settingsGear": "view:voice-notes/button:settings-gear",
       "provides": [],
       "requires": [],
       "optional": []
@@ -10484,6 +10694,7 @@
         "wake listener"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
+      "settingsTabId": "wake-listener",
       "provides": [
         "service:axf.wake-listener@1"
       ],
@@ -10509,6 +10720,8 @@
         "whats-shipped",
         "what's new"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=whats-shipped",
+      "settingsTabId": "whats-shipped",
       "provides": [],
       "requires": [],
       "optional": []
