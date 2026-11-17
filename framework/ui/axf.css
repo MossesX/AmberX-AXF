@@ -1431,6 +1431,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-tabs--group[data-fx-inst~='selectedBg'] > .fx-tab.is-active, .fx-tabs--group[data-fx-inst~='selectedBg'] > .fx-tab[aria-selected='true'] { background: var(--fx-inst-selected-bg); }
 .fx-tabs--group[data-fx-inst~='selectedFg'] > .fx-tab.is-active, .fx-tabs--group[data-fx-inst~='selectedFg'] > .fx-tab[aria-selected='true'] { color: var(--fx-inst-selected-fg); }
 .fx-tabs--group[data-fx-inst~='radius'] > .fx-tab { border-radius: var(--fx-inst-radius); }
+/* the live sample in a tab group's / grid's Look section (InstanceLookPanel): drawn with the resolved look, never clickable */
+.axf-look-preview { padding: var(--fx-dens-gap-md); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); pointer-events: none; overflow: hidden; }
 .fx-tabframe { display: flex; min-width: 0; min-height: 0; }
 .fx-tabframe[data-fx-tabs-position='top'] { flex-direction: column; }
 .fx-tabframe[data-fx-tabs-position='bottom'] { flex-direction: column-reverse; }

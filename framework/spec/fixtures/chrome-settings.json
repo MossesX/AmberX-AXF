@@ -805,7 +805,19 @@
         "look": "simple",
         "behaviour": "basic",
         "asset": "basic",
-        "interface": "developer"
+        "interface": "developer",
+        "instanceLook": "simple",
+        "look.rowBg": "simple",
+        "look.selectedBg": "simple",
+        "look.textSize": "simple",
+        "look.spacing": "simple",
+        "look.rowAltBg": "basic",
+        "look.hoverBg": "basic",
+        "look.selectedFg": "basic",
+        "look.borderColor": "basic",
+        "look.borderW": "basic",
+        "look.radius": "basic",
+        "tokens": "developer"
       },
       "extends": "chrome-tab-group"
     }
@@ -851,7 +863,19 @@
         "look": "simple",
         "behaviour": "basic",
         "asset": "basic",
-        "interface": "developer"
+        "interface": "developer",
+        "instanceLook": "simple",
+        "look.rowBg": "simple",
+        "look.selectedBg": "simple",
+        "look.textSize": "simple",
+        "look.spacing": "simple",
+        "look.rowAltBg": "basic",
+        "look.hoverBg": "basic",
+        "look.selectedFg": "basic",
+        "look.borderColor": "basic",
+        "look.borderW": "basic",
+        "look.radius": "basic",
+        "tokens": "developer"
       }
     },
     "edited": {
@@ -896,7 +920,19 @@
         "look": "basic",
         "behaviour": "basic",
         "asset": "basic",
-        "interface": "developer"
+        "interface": "developer",
+        "instanceLook": "simple",
+        "look.rowBg": "simple",
+        "look.selectedBg": "simple",
+        "look.textSize": "simple",
+        "look.spacing": "simple",
+        "look.rowAltBg": "basic",
+        "look.hoverBg": "basic",
+        "look.selectedFg": "basic",
+        "look.borderColor": "basic",
+        "look.borderW": "basic",
+        "look.radius": "basic",
+        "tokens": "developer"
       }
     },
     "default": {
@@ -939,7 +975,19 @@
         "look": "simple",
         "behaviour": "basic",
         "asset": "basic",
-        "interface": "developer"
+        "interface": "developer",
+        "instanceLook": "simple",
+        "look.rowBg": "simple",
+        "look.selectedBg": "simple",
+        "look.textSize": "simple",
+        "look.spacing": "simple",
+        "look.rowAltBg": "basic",
+        "look.hoverBg": "basic",
+        "look.selectedFg": "basic",
+        "look.borderColor": "basic",
+        "look.borderW": "basic",
+        "look.radius": "basic",
+        "tokens": "developer"
       }
     },
     "loop": {

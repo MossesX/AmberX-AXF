@@ -49,6 +49,7 @@ import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
+import { INSTANCE_LOOK_SECTION, InstanceLookPanel } from './InstanceLookPanel';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -524,7 +525,8 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
         <div className="fx-stack">
           {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
           {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => rt.openDialog(BANNER_SETTINGS_DIALOG, instance !== CHROME_APP_INSTANCE ? { id: instance } : {})}>Banner settings (look, behaviour, Apply to all)…</Button>}
-          {id === 'look' && type === 'tab-group' && levelOk('tokens', 'basic') && <InstanceTokensPanel family="tabs" instance={instance} />}
+          {id === 'look' && (type === 'tab-group' || type === 'grid') && instance !== CHROME_APP_INSTANCE && levelOk(INSTANCE_LOOK_SECTION, 'simple') && <InstanceLookPanel kind={type} instance={instance} levelOk={levelOk} descriptions={ui.descriptions} />}
+          {id === 'look' && type === 'tab-group' && levelOk('tokens', 'developer') && <InstanceTokensPanel family="tabs" instance={instance} />}
           {id === 'behaviour' && <Note tone="info">Tap to confirm: on a touch screen the first tap shows what an item is and the second tap confirms it. Same as all follows the switch for every {chromeLabel(type).toLowerCase()} in Settings → Plugins → Toolbars.</Note>}
           {id === 'behaviour' && type === 'nav-menu' && <Note tone="info">Sub menus, animation and colours of a nav that opts in are the Navigation style settings (nav-style@1).</Note>}
           {ui.groups.filter((g) => g.tab === id && levelOk(g.id, g.level ?? ui.defaultLevel)).map((g) => <ExtraGroup key={g.id} group={g} />)}

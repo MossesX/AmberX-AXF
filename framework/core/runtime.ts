@@ -43,7 +43,7 @@ import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppear
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { CHROME_INSTANCE_KEY, CHROME_TYPES, chromeInstanceData } from './engines/chrome-settings-rules.mjs';
-import { colourTokensOf, instanceLookSettingsKey, kindLookSettingsKey, migrateLegacyInstanceLooks, resolveFromSettings, type InstanceLookKind, type ResolvedInstanceLook } from './engines/instance-look';
+import { colourTokensOf, instanceLookSettingsKey, kindLookSettingsKey, migrateLegacyInstanceLooks, normalizeInstanceLook, resolveFromSettings, setInstanceLookKey, type InstanceLook, type InstanceLookKind, type ResolvedInstanceLook } from './engines/instance-look';
 import assetTypeSpec from '../schemas/asset-types.json';
 import { OutputTerminal } from './terminal';
 import {
@@ -800,6 +800,44 @@ export class AxfRuntime {
     if (id) saved[instanceLookSettingsKey(kind, id)] = this.settings.get(instanceLookSettingsKey(kind, id));
     const style = this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data) as { grid?: Record<string, unknown>; tabs?: Record<string, unknown> };
     return resolveFromSettings(saved, kind, id, style, colourTokensOf(assetTypeSpec));
+  }
+
+  /** The settings key of one instance's record, or of the app-wide record when id is ''. */
+  private lookKey(kind: InstanceLookKind, id: string): string { return id ? instanceLookSettingsKey(kind, id) : kindLookSettingsKey(kind); }
+
+  /** One instance's own saved record (cleaned; {} = follows the skin). id '' = the app-wide record of the kind. */
+  instanceLookRecord(kind: InstanceLookKind, id: string): InstanceLook {
+    return normalizeInstanceLook(this.settings.get(this.lookKey(kind, id)), colourTokensOf(assetTypeSpec));
+  }
+
+  /** Set (value) or drop (null / '') one look key of an instance. Throws the rules' message on a raw px / colour. */
+  setInstanceLook(kind: InstanceLookKind, id: string, key: string, value: string | null): InstanceLook {
+    const next = setInstanceLookKey(this.instanceLookRecord(kind, id), key, value, colourTokensOf(assetTypeSpec));
+    const k = this.lookKey(kind, id);
+    if (Object.keys(next).length) this.settings.set(k, next as unknown as SettingValue); else this.settings.clear(k);
+    return next;
+  }
+
+  /** The record each instance had before its last reset (one undo per instance; this session only). */
+  private lookUndo = new Map<string, InstanceLook>();
+  /** Reset to skin: drop the instance's record; the record it had is kept for one undo. Returns false when there was none. */
+  resetInstanceLook(kind: InstanceLookKind, id: string): boolean {
+    const before = this.instanceLookRecord(kind, id);
+    if (!Object.keys(before).length) return false;
+    this.lookUndo.set(this.lookKey(kind, id), before);
+    this.settings.clear(this.lookKey(kind, id));
+    return true;
+  }
+  /** True when the instance has a reset to undo. */
+  canUndoInstanceLook(kind: InstanceLookKind, id: string): boolean { return this.lookUndo.has(this.lookKey(kind, id)); }
+  /** Undo the last reset: put the record back (once). Returns false when there is nothing to undo. */
+  undoInstanceLookReset(kind: InstanceLookKind, id: string): boolean {
+    const k = this.lookKey(kind, id);
+    const before = this.lookUndo.get(k);
+    if (!before) return false;
+    this.lookUndo.delete(k);
+    this.settings.set(k, before as unknown as SettingValue);
+    return true;
   }
 
   /** The pure fold of one document against this app's skins and registry (engines/look-migration.mjs). */
