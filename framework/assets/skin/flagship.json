@@ -35,7 +35,19 @@
       "dialog": "flagship",
       "popup": "flagship",
       "container": "flagship",
-      "settings": "flagship"
+      "settings": "flagship",
+      "button": "enterprise-crisp",
+      "slider": "enterprise-crisp",
+      "gauge": "level-bar",
+      "meter": "hairline",
+      "dock-layout": "main-side",
+      "xlayout": "molly",
+      "branding": "amberx",
+      "agent-card": "corporate-badge",
+      "demonstration": "what-is-an-asset",
+      "book": "getting-started",
+      "clip": "what-is-an-asset-clip",
+      "docs": "getting-started-docs"
     },
     "preview": {
       "caption": "Blue-black and amber, compact, quiet motion: one product across console, axHub and AmberX."
@@ -198,6 +210,25 @@
       },
       "divider": {
         "borderColor": "border"
+      },
+      "slider": {
+        "radius": "pill",
+        "focusRing": "soft"
+      },
+      "container": {
+        "radius": "md",
+        "shadow": "sm",
+        "padding": "md",
+        "gap": "sm"
+      },
+      "gauge": {
+        "fontFamily": "mono",
+        "fontWeight": "600",
+        "iconColor": "accent"
+      },
+      "meter": {
+        "radius": "pill",
+        "gap": "xs"
       }
     },
     "grid": {
