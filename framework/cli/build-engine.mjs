@@ -13,7 +13,7 @@ import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
-import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
+import { appLookSchema, skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
@@ -938,6 +938,8 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   const skinTree = skinConfigTree(readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json')), customizeSpec, SKIN_NEVER);
   const scf = join(outDir, 'skin-config.schema.json'); writeFileSync(scf, JSON.stringify(skinConfigSchema(skinTree), null, 2) + '\n'); written.push(scf);
   const screg = join(FRAMEWORK_DIR, 'schemas/skin-config.json'); writeFileSync(screg, JSON.stringify(skinConfigSnapshot(skinTree), null, 2) + '\n'); written.push(screg);
+  // app-look@1: one app's look document on axHub, with the hidden-assets@1 list on every look part (core/engines/skin-rules.mjs)
+  const alf = join(outDir, 'app-look.schema.json'); writeFileSync(alf, JSON.stringify(appLookSchema(), null, 2) + '\n'); written.push(alf);
   return written;
 }
 

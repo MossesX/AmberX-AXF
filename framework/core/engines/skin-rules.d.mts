@@ -1,4 +1,5 @@
 import type { ResolvedSkin, SkinScope, SkinScopeState } from './skin-coverage.mjs';
+import type { HiddenAsset } from './hidden-assets-rules.mjs';
 
 export const APP_LOOK_FRAME: 'app-look@1';
 export const APP_LOOK_PROJECT: string;
@@ -24,7 +25,8 @@ export interface LegacyLook { at: string; own?: LookPart; settings?: Record<stri
 /** The one-run stamp of look-migration@1 on a document. */
 export interface LookMigrated { version: number; at: string; by: string; /** picks left as the app's own (no skin could carry them) */ kept?: string[] }
 /** A look: what a snapshot holds and what picks add. */
-export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
+/** One look part: picks, spacing, hidden slots, look settings, and the hidden assets (hidden-assets@1; absent = nothing hidden). */
+export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown>; hiddenAssets?: HiddenAsset[] }
 /** The app level: Use skin, follow the hub-wide skin while off, the skin, its overrides, and the colour theme picked inside it (absent = the skin's own; never an override, never a new skin). */
 export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; colorTheme?: string }
 /** The hub-wide skin (kept on the shared appearance document). */
@@ -61,6 +63,8 @@ export function skinChromeErrors(raw: unknown): string[];
 /** The settings keys the chrome block puts in force (`axf.chrome.settings.<kind>`, `axf.chrome.<kind>.<instance>`). */
 export function skinChromeSettings(chrome: SkinChrome | null | undefined): Record<string, unknown>;
 export function appLookPath(appId: string): string;
+/** The JSON Schema of an app-look@1 document (`axf schemas` → schemas/json/app-look.schema.json). */
+export function appLookSchema(): Record<string, unknown>;
 export function normalizeLookPart(raw: unknown): LookPart;
 export function normalizeLookBackup(raw: unknown): LookBackup | null;
 export function normalizeScopeState(raw: unknown): SkinScopeState;
