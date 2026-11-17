@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8191,
- "updatedAt": "2026-11-17T22:27:25.516Z",
+ "rev": 8192,
+ "updatedAt": "2026-11-17T22:27:34.262Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -285288,7 +285288,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:24:04.755Z",
+   "updatedAt": "2026-11-17T22:27:12.259Z",
    "builtAt": "",
    "notes": [
     {
@@ -285619,12 +285619,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:27:12.259Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T21:21:51.104Z"
+     "updatedAt": "2026-11-17T22:27:12.639Z"
     },
     {
      "id": "s9",
@@ -285741,30 +285741,7 @@
    "rev": 30,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T21:20:30.021Z",
-    "builtAt": "",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mwl76ubk01w860": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl02wc67": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl03howi": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl041zog": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl05tdcz": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl06ref4": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl07moc4": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl08bwhj": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl098bzd": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl0afwg6": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl0bya65": "2026-11-17T21:21:51.104Z",
-     "st-mwl76ubl0cmdsf": "2026-11-17T21:21:51.104Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T21:21:51.104Z",
    "rearranged": false,
