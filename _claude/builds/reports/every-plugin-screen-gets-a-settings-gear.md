@@ -78,3 +78,14 @@ screen shows exactly one.
   not overlapping the page head; pressing it on desktop opens Settings. Skipped: audio-extract (off by default),
   agent-manager / agent-swarm / sessions (not registered with the API offline), theme-manager (crashes offline
   without the axHub look: `rt.asset(type).data` on a type with no active asset; pre-existing, not gear-related).
+
+## Default settings sub-tab (s7)
+
+`apps/console-web/src/PluginDefaultSettingsTab.tsx`: `PluginDefaultSettingsTab` (on/off switch, version, builtWith
+model badge, dependencies and dependents from plugin-inventory@1 via the Plugin Manager's `/inventory`, the last 20
+log lines, Open in Plugin Manager) and `withDefaultSettingsTab()`. A plugin gets it with plugin.json
+`"settingsTab": { "default": true }` (optional label / icon / order). `App.tsx → underPlugins()` applies it before the
+parent rule, so the tab is always under Settings → Plugins: when the plugin has no tab of its own the sub-tab id is its
+folder; when it has one, the default panels go to the top of that tab and its own settings stay as they are. The
+shared Install & uninstall panel is added unless the plugin already ships one. The Plugin Manager's `uiOf()` counts the
+default tab too.
