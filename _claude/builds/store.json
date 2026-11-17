@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7590,
- "updatedAt": "2026-11-17T18:35:41.519Z",
+ "rev": 7591,
+ "updatedAt": "2026-11-17T18:41:11.187Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182989,7 +182989,7 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T15:06:54.532Z",
+   "updatedAt": "2026-11-17T18:41:09.042Z",
    "builtAt": "2026-11-17T15:06:54.532Z",
    "notes": [
     {
@@ -183027,6 +183027,10 @@
     {
      "text": "Brett: land after server-rule-done-means-merged-working",
      "at": "2026-11-17T15:06:54.532Z"
+    },
+    {
+     "text": "Brett: the VPS monitors every build in real time. If a build drops, stops, gets kicked back or fails, it goes straight back to the Queue at the top: right below whatever is running, ahead of everything waiting. Never back to Pending.",
+     "at": "2026-11-17T18:41:09.042Z"
     }
    ],
    "approvals": [
@@ -183624,7 +183628,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
