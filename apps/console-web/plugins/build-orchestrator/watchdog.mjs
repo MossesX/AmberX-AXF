@@ -13,7 +13,9 @@
  *   3 classify every row (framework/core/stale-rows.mjs: keep | complete | remove, with a reason and evidence)
  *   4 unless dry: apply each change in its table, log it, tell AmberX once
  *
- *   node apps/console-web/plugins/build-orchestrator/watchdog.mjs run [--dry-run] [--force] [--json] [--by who]
+ *   node apps/console-web/plugins/build-orchestrator/watchdog.mjs run [--dry-run] [--force] [--cron] [--json] [--by who]
+ *        (--cron: the scheduled run; skips when the last run is younger than intervalMin)
+ *   … cron install|uninstall|status      the VPS schedule (/etc/cron.d/axf-stale-watchdog)
  *   … status [--json]                    settings, last run, last runs
  *   … log [--limit N] [--kind K] [--action A] [--build B] [--json]   the cleanup log (stale-row-log@1 records)
  *   … settings [--json]                  every setting with its value
@@ -160,6 +162,11 @@ export async function run(opts = {}) {
   const dry = !!opts.dry || settings.dryRun;
   const started = Date.now();
   if (!settings.enabled && !opts.force) return { $axf: FRAME, at: new Date().toISOString(), skipped: 'the watchdog is off', ok: true, dry };
+  if (opts.cron && !opts.force) {
+    // cron fires every 5 minutes; a longer interval setting makes most of those ticks skip
+    const last = Date.parse(readJson(file('state.json'), {})?.last?.at ?? '');
+    if (Number.isFinite(last) && Date.now() - last < settings.intervalMin * 60000 - 30000) return { $axf: FRAME, at: new Date().toISOString(), skipped: 'not due yet', ok: true, dry };
+  }
   const unlock = takeLock();
   if (!unlock) return { $axf: FRAME, at: new Date().toISOString(), skipped: 'another run is still going', ok: true, dry };
   const rec = { $axf: FRAME, at: new Date().toISOString(), by, dry, ok: false };
@@ -225,8 +232,14 @@ export async function main(argv = process.argv.slice(2)) {
   const [cmd = 'status', ...rest] = pos;
   const out = (o, print) => (json ? console.log(JSON.stringify(o, null, 1)) : print(o));
   if (cmd === 'run' || cmd === 'dry-run') {
-    const r = await run({ dry: cmd === 'dry-run' || argv.includes('--dry-run'), force: argv.includes('--force'), by: opt('by') ?? 'cli' });
+    const r = await run({ dry: cmd === 'dry-run' || argv.includes('--dry-run'), force: argv.includes('--force'), cron: argv.includes('--cron'), by: opt('by') ?? 'cli' });
     out(r, printRun); if (!r.ok) process.exitCode = 1; return r;
+  }
+  if (cmd === 'cron') {
+    const cron = await import('./watchdog/cron.mjs');
+    const sub = rest[0] ?? 'status';
+    const r = sub === 'install' ? cron.install({ force: argv.includes('--force') }) : sub === 'uninstall' ? cron.uninstall() : cron.status();
+    return out(r, (o) => console.log(JSON.stringify(o)));
   }
   if (cmd === 'status') {
     return out(status(), (s) => {
