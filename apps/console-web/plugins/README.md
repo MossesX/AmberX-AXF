@@ -116,6 +116,20 @@ fill in `builtWith` before they install.
 
 **Plugins menu** (right-click → Plugins): Install… browses every archive location (axHub is permanent and needs its token; add folders, https servers or other consoles with their credentials, kept on the console server only) and installs through `plugin-catalog.mjs install-package`; Settings… is one browser over every plugin's settings tab. <!-- axf-plugin:plugins-menu -->
 
+## Settings → Plugins: every screen has a tab and a gear (Nov 16 2026)
+
+Brett: "Every one has a gear icon to open its settings, right? Yeah, check and fix." Every plugin that draws a screen
+(a view) has its own sub-tab under Settings → Plugins (`settingsTabs` with `parent: 'plugins'`, or plugin.json
+`"settingsTab": { "default": true }` for the console's standard one: on/off, version, built-with model, dependencies,
+logs, Install & uninstall; a plugin with its own tab gets that panel added to it). The gear on the screen is drawn by the
+console host, never by the plugin: `src/PluginSettingsGear.tsx` (PluginViewHost, mounted for every plugin view by
+`countingUses()` in `src/pluginLoader.tsx`), address `view:<screen>/button:settings-gear`. Don't draw a second gear.
+A screen that truly can't carry one sets `"settingsGear": false` with a `"settingsGearReason"`. The same press without the
+UI: console action `plugin.settings.open:<plugin>`, REST `GET|POST /api/console-control/plugins/<id>/settings[/open|/set]`,
+MCP `console_control_plugin_settings`, control@1 `console.pluginsettings`, `axf console plugin-settings <id>` and AmberX
+("open <plugin> settings"). CI: `node framework/cli/check-plugin-settings.mjs` (file:line; unit test
+`framework/spec/check-plugin-settings.test.mjs`).
+
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 
 Brett's rule (Oct 18 2026): a plugin must be removable **completely**, with no stale code, so a newer build (e.g. a

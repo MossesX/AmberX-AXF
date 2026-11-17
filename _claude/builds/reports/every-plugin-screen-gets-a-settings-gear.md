@@ -149,3 +149,11 @@ they match, nothing to fix. `plugin.settings.open:hub-sync`, `GET /api/console-c
   `test_mcp_plugin_settings`. 10 tests pass; console-control parity 132 comparisons pass.
 - Checks: check-console-control, check-toolbars, check-theme, check-controls, check-chrome-assets,
   check-plugin-pages and check-plugin-settings all pass; check-control (control@1) 410 checks pass.
+
+## Help and glossary (s18)
+
+Help (console.json): `settings-gear`, `plugin-default-settings`, `open-in-plugin-manager`; project-wizard help:
+`fix-in-settings`. Glossary terms: plugin settings gear, default plugin settings tab, `plugin.settings.open`,
+`axf console plugin-settings`; the CI check is listed from its CLI header. `help-coverage.mjs --check` and
+`glossary-index/catalog.mjs --check` pass. Plugins README: new section "Settings → Plugins: every screen has a tab
+and a gear".
