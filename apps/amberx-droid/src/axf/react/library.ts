@@ -169,6 +169,8 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);
   rt.noteSkippedLibraries(skipped);
+  // every installed view and dialog is drawable in a sandbox (rt.uiRenderers: the Skin editor's live preview)
+  rt.registerUiRenderers(views, dialogs);
   banners.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   for (const list of Object.values(slots)) list.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   return { views, dialogs, tabs, banners, slots, missing };
