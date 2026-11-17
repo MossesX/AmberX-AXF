@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `blueprint-notes-tasks` → complete, note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `molly-one-shell` note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `molly-native-expenses` note (all) · foreign-write
-- 2026-11-17 23:04 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `skins-as-packages-of-slices-every-section-its-ow` → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · foreign-write
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:46 UTC · `vps-sets-every-build-status-manifest` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `api-fully-drives-every-field-type-forms` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · dedupe-steps
+- 2026-11-17 23:47 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
+- 2026-11-17 23:47 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
+- 2026-11-17 23:47 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
+- 2026-11-17 23:47 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 
 ## Token passes (log)
 
