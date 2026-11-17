@@ -64,7 +64,7 @@ check(core.regenFor('changes/2026/11/x.json') === null && core.regenFor('framewo
   check(plan.map((g) => g.id).join(' ') === 'rebake:molly rebake:demo fixtures', `each generator once, per app for re-bakes (${plan.map((g) => g.id).join(' ')})`);
   check(plan[0].outputs.join(' ') === 'apps/molly/src/axf apps/molly/axf.lock.json' && plan[2].timeoutMs === 300000 && Array.isArray(plan[2].check), 'a generator knows its outputs, check and time limit');
   const pc = core.planConflicts(['framework/catalog/status.json', 'framework/spec/PORTING.md', 'apps/console-web/src/control/inventory.json', 'framework/core/x.ts', '_claude/builds/store.json']);
-  check(pc.unionJson.length === 1 && pc.union.length === 1 && pc.generated.length === 1 && pc.code.length === 1 && pc.builds.length === 1, 'planConflicts sorts every kind');
+  check(pc.unionJson.length === 1 && pc.union.length === 1 && pc.generated.length === 1 && pc.code.length === 1 && pc.tracking.join() === '_claude/builds/store.json', 'planConflicts sorts every kind (tracking files on their own: main\'s copy)');
   check(core.landTests().length >= 1 && core.landTests().every((t) => Array.isArray(t) && t[0] === 'node'), 'tests after regenerating are node commands from the manifest');
 }
 // 3-way JSON merge by key: both sides' additions kept, a deletion on one side holds, main wins a scalar clash

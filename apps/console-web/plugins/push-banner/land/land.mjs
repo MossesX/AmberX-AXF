@@ -285,6 +285,7 @@ export function codeBehind({ s, git, br }) {
 
 /**
  * Resolve a stopped merge's conflicted files in worktree `wt` by land-core's rules (generated-files@1 manifest):
+ *   tracking     main's side (`mainSide`; a file main deleted is removed): tracking-paths@1, never a build's
  *   builds       the side `buildsSide` names (the builds-live merge driver did the rest)
  *   union        both sides' lines (git merge-file --union): THREADS, STATUS, logs, PORTING.md
  *   union-json   both sides' keys (land-core mergeJson3, main wins a scalar clash): help packs, catalog status
@@ -298,8 +299,15 @@ export function codeBehind({ s, git, br }) {
 export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', buildsSide = 'theirs', log = () => {} }) {
   const plan = core.planConflicts(left);
   if (plan.code.length) return { conflicts: plan.code };
-  const resolved = [];
+  const resolved = []; const tracked = [];
   const stage = (p, n) => { const x = g(['show', `:${n}:${p}`]); return x.code ? '' : `${x.out}\n`; };
+  // tracking files (tracking-paths@1): main's copy, whichever side main is; main deleted it = it goes (s6)
+  const mainStage = mainSide === 'ours' ? 2 : 3;
+  for (const p of plan.tracking) {
+    const has = g(['cat-file', '-e', `:${mainStage}:${p}`]).code === 0;
+    const r = has ? g(['checkout', `--${mainSide}`, '--', p]) : g(['rm', '-q', '--cached', '--ignore-unmatch', '--', p]);
+    if (r.code === 0) { if (has) g(['add', '--', p]); resolved.push(p); tracked.push(p); log(`${p}: main's copy taken (tracking file)`); }
+  }
   for (const p of plan.builds) { if (g(['checkout', `--${buildsSide}`, '--', p]).code === 0) { g(['add', '--', p]); resolved.push(p); } }
   for (const p of plan.union) {
     const f = (n, t) => { const q = join(dir, `${n}.txt`); writeFileSync(q, t); return q; };
@@ -336,7 +344,7 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
     for (const t of core.landTests()) { const c = run(t, 180000); if (c.code) return { error: `tests after regenerating failed (${t.join(' ')}): ${c.text}` }; }
   }
   if (regenerated.length) log(`regenerated ${regenerated.join(', ')} after the merge`);
-  return { resolved, regenerated, skipped };
+  return { resolved, regenerated, skipped, tracking: tracked };
 }
 
 /**
@@ -353,7 +361,7 @@ export function mergeMain({ s, git, b, dry, log = () => {} }) {
     let r = git(['worktree', 'add', '-q', '--detach', wt, `${s.remote}/${b.branch}`]);
     if (r.code) return { merged: false, conflicts: [], pushError: `worktree: ${r.err.slice(-200)}` };
     const m = g([...drv, 'merge', '--no-edit', '-m', `Merge main into ${b.branch} (auto-land: builds files newer-wins, logs unioned, generated files regenerated)`, `${s.remote}/${s.base}`], { timeout: 180000 });
-    let resolved = []; let regenerated = [];
+    let resolved = []; let regenerated = []; let trackingTaken = [];
     if (m.code) {
       const left = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
       if (!left.length) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${m.err.slice(-200) || m.out.slice(-200)}` }; }
@@ -361,14 +369,14 @@ export function mergeMain({ s, git, b, dry, log = () => {} }) {
       const res = resolveConflicts({ g, wt, dir, left, mainSide: 'theirs', buildsSide: 'theirs', log });
       if (res.conflicts) { g(['merge', '--abort']); return { merged: false, conflicts: res.conflicts }; }
       if (res.error) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${res.error.slice(-300)}` }; }
-      resolved = res.resolved; regenerated = res.regenerated;
+      resolved = res.resolved; regenerated = res.regenerated; trackingTaken = res.tracking || [];
       const c = g([...drv, 'commit', '-q', '--no-edit']);
       if (c.code) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `commit: ${c.err.slice(-200)}` }; }
     }
     const sha = g(['rev-parse', 'HEAD']).out;
-    if (dry) return { merged: true, sha, conflicts: [], resolved, regenerated, dry: true };
+    if (dry) return { merged: true, sha, conflicts: [], resolved, regenerated, tracking: trackingTaken, dry: true };
     const p = g(['push', '-q', s.remote, `HEAD:refs/heads/${b.branch}`], { timeout: 90000 });
-    return p.code ? { merged: false, conflicts: [], resolved, regenerated, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved, regenerated };
+    return p.code ? { merged: false, conflicts: [], resolved, regenerated, tracking: trackingTaken, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved, regenerated, tracking: trackingTaken };
   } finally { git(['worktree', 'remove', '--force', wt]); rmSync(dir, { recursive: true, force: true }); }
 }
 
@@ -452,7 +460,10 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
             const m = mergeMain({ s, git, b, dry });
             if (m.conflicts?.length) facts.conflicts = m.conflicts;
             else if (m.pushError) facts.pushError = m.pushError;
-            else if (m.merged) { it.mergedMain = { sha: m.sha, resolved: m.resolved || [], regenerated: m.regenerated || [] }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]); }
+            else if (m.merged) {
+              it.mergedMain = { sha: m.sha, resolved: m.resolved || [], regenerated: m.regenerated || [] };
+              if (m.tracking?.length || m.regenerated?.length) it.tracking = { ...(it.tracking || old.tracking || {}), ...(m.tracking?.length ? { takeMain: { at, files: m.tracking.slice(0, 40), sha: m.sha } } : {}), ...(m.regenerated?.length ? { regenerate: { at, generators: m.regenerated, sha: m.sha } } : {}) }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]);
+            }
           }
           if (!pr && !facts.conflicts && !dry) {
             try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head and UI Review doesn't hold it.\n\n${String(b.detail || '').slice(0, 1500)}` }); if (pr?.number) crewSay('landing', 'start', `${b.id} is finished. Opened PR #${pr.number} and CI is on it.`, { ref: b.id, repo: s.repo }); }

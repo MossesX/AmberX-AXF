@@ -202,6 +202,23 @@ def union_lines(f, o, b, t):
     git("add", "--", f)
 
 
+# tracking files (tracking-paths@1, framework/core/tracking-paths.mjs): main's copy always; a build never carries them
+def load_tracking():
+    try:
+        out = subprocess.run(["node", "framework/cli/worktree-setup.mjs", "paths", "--json"], capture_output=True, text=True, timeout=30).stdout
+        return [re.compile(p["re"]) for p in json.loads(out).get("paths", [])]
+    except Exception:
+        return [re.compile(x) for x in (r"^_claude/builds/store\.json$", r"^_claude/builds/orchestrator\.json$", r"^_claude/builds/profiles/[^/]+/orchestrator\.json$",
+                                        r"^_claude/builds/origins\.json$", r"^_claude/builds/journal/[^/]+\.jsonl$", r"^framework/plan/pending\.json$", r"^framework/plan/build-queue\.json$")]
+
+
+TRACKING = load_tracking()
+
+
+def is_tracking(f):
+    return any(rx.match(f) for rx in TRACKING)
+
+
 def take(side, f):
     git("checkout", f"--{side}", "--", f); git("add", "--", f)
 
@@ -212,6 +229,11 @@ for f in files:
     if stale(f):
         git("rm", "-q", "-f", "--", f); resolved.append(f); continue
     b, o, t = stage(1, f), stage(2, f), stage(3, f)
+    if is_tracking(f):  # main's copy; main deleted it = it goes
+        keep = o if MAIN == "ours" else t
+        if keep is None: git("rm", "-q", "--cached", "--ignore-unmatch", "--", f)
+        else: take(MAIN, f)
+        resolved.append(f); continue
     if o is None or t is None:  # modify/delete
         keep = o if prefer == "ours" else t
         if keep is None: git("rm", "-q", "--", f)

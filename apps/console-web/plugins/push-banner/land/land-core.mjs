@@ -96,10 +96,17 @@ export function regenPlan(paths) {
 /** The quick tests the manifest asks for after generated or additive files were resolved. */
 export const landTests = () => (MANIFEST.tests || []).map((t) => [...t]);
 
-/** Split a merge's conflicted files: auto-resolvable by kind, and the code ones a person (or an agent) must look at. */
+/**
+ * Split a merge's conflicted files: auto-resolvable by kind, and the code ones a person (or an agent) must look at.
+ * `tracking` (tracking-paths@1: store, orchestrator, origins, journal, pending and build-queue exports) always takes
+ * main's copy (s6): a build branch never carries them, so main's is the live one.
+ */
 export function planConflicts(paths) {
-  const out = { builds: [], union: [], unionJson: [], generated: [], code: [] };
-  for (const p of paths || []) { const k = classifyPath(p); out[k === 'union-json' ? 'unionJson' : k].push(p); }
+  const out = { tracking: [], builds: [], union: [], unionJson: [], generated: [], code: [] };
+  for (const p of paths || []) {
+    if (isTracking(p)) { out.tracking.push(String(p).replace(/^\.\//, '')); continue; }
+    const k = classifyPath(p); out[k === 'union-json' ? 'unionJson' : k].push(p);
+  }
   return out;
 }
 
