@@ -25,6 +25,8 @@
  * Kotlin twin deferred (Android on hold, spec/PORTING.md); fixture spec/fixtures/chrome-settings.json.
  */
 
+import { INSTANCE_TOKENS_KEY, instanceTokenList, normalizeInstanceTokens, restoreInstanceTokensFromHub } from './component-tokens.mjs';
+
 export const CHROME_SETTINGS_CONTRACT = 'chrome-settings@1';
 export const CHROME_TYPES = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 'context-menu'];
 export const CHROME_LABELS = { 'tab-group': 'Tab group', toolbar: 'Toolbar', banner: 'Banner', 'nav-menu': 'Navigation menu', 'app-menu': 'Application menu', 'context-menu': 'Context menu' };
@@ -296,6 +298,116 @@ export function chromeOverrideList(saved) {
     if (Object.keys(fields).length) out.push({ type, instance, fields });
   }
   return out.sort((a, b) => CHROME_TYPES.indexOf(a.type) - CHROME_TYPES.indexOf(b.type) || a.instance.localeCompare(b.instance));
+}
+
+/* ---------------- Reset all (build reset-all-button-every-asset-override) ---------------- */
+
+/**
+ * The component-tokens@1 family whose per-instance entries belong to a chrome kind's instances (the settings dialog of
+ * a tab group carries its InstanceTokensPanel for `tabs`). Kinds not listed have no instance tokens.
+ */
+export const CHROME_TOKEN_FAMILY = { 'tab-group': 'tabs' };
+/** Where the last Reset all snapshots are kept (device-local, like the axf.chrome.* overrides themselves). */
+export const RESET_ALL_UNDO_KEY = 'axf.chrome.reset-all.undo';
+export const RESET_ALL_UNDO_MAX = 5;
+
+const keyOf = (type, instance) => `${type}:${instance}`;
+
+/**
+ * Every asset that is controlled by its own settings (Brett, Nov 16 2026: "I want to reset all, all. Button."):
+ * `saved` = the settings store's saved values. One row per chrome instance that has at least one of: a field
+ * override (`fields`, the same as chromeOverrideList), its own asset pick (`asset`), its own settings interface
+ * (`interface`) or its own component tokens (`tokens`, from axf.tokens.instances). `id` = `<type>:<instance>`.
+ * Sorted by type order, then instance.
+ */
+export function listOverriddenAssets(saved) {
+  const rows = new Map();
+  if (!isObj(saved)) return [];
+  const row = (type, instance) => {
+    const k = keyOf(type, instance);
+    if (!rows.has(k)) rows.set(k, { id: k, type, instance, fields: {}, keys: [] });
+    return rows.get(k);
+  };
+  for (const [key, raw] of Object.entries(saved)) {
+    if (!key.startsWith('axf.chrome.') || key === RESET_ALL_UNDO_KEY) continue;
+    const rest = key.slice('axf.chrome.'.length);
+    const type = CHROME_TYPES.find((t) => rest.startsWith(`${t}.`));
+    if (!type) continue;
+    let instance = rest.slice(type.length + 1);
+    const suffix = CHROME_INSTANCE_PICK_SUFFIXES.find((x) => instance.endsWith(x));
+    if (suffix) instance = instance.slice(0, -suffix.length);
+    if (!isChromeInstanceId(instance)) continue;
+    if (!suffix) {
+      const fields = normalizeInstanceOverride(type, raw);
+      if (!Object.keys(fields).length) continue;
+      const r = row(type, instance);
+      r.fields = fields; r.keys.push(key);
+    } else if (typeof raw === 'string' && raw) {
+      const r = row(type, instance);
+      r[suffix.slice(1)] = raw; r.keys.push(key);
+    }
+  }
+  for (const e of instanceTokenList(saved[INSTANCE_TOKENS_KEY])) {
+    const type = CHROME_TYPES.find((t) => CHROME_TOKEN_FAMILY[t] === e.family);
+    if (!type || !isChromeInstanceId(e.instance)) continue;
+    row(type, e.instance).tokens = e.values;
+  }
+  return [...rows.values()]
+    .map((r) => ({ ...r, keys: r.keys.sort() }))
+    .sort((a, b) => CHROME_TYPES.indexOf(a.type) - CHROME_TYPES.indexOf(b.type) || a.instance.localeCompare(b.instance));
+}
+
+/**
+ * What Reset all does, as data: every key chrome.reset clears for every overridden asset (field overrides, the own
+ * asset pick, the own interface pick), plus the chrome instances' entries dropped from axf.tokens.instances.
+ *   ids       the `<type>:<instance>` rows reset
+ *   clear     keys to clear
+ *   set       keys to write (axf.tokens.instances without the chrome entries; absent when it would be empty → clear)
+ *   snapshot  every touched key's value before the reset (null = it was unset): undoResetAllPlan(snapshot) restores it
+ * An empty plan (`ids: []`) is a no-op, so Reset all is idempotent.
+ */
+export function resetAllPlan(saved) {
+  const list = listOverriddenAssets(saved);
+  const clear = [];
+  const set = {};
+  const snapshot = {};
+  const values = isObj(saved) ? saved : {};
+  for (const r of list) for (const k of r.keys) { clear.push(k); snapshot[k] = values[k] ?? null; }
+  const tokenRows = list.filter((r) => r.tokens);
+  if (tokenRows.length) {
+    const raw = values[INSTANCE_TOKENS_KEY];
+    snapshot[INSTANCE_TOKENS_KEY] = raw ?? null;
+    let next = normalizeInstanceTokens(raw);
+    for (const r of tokenRows) next = restoreInstanceTokensFromHub(next, CHROME_TOKEN_FAMILY[r.type], r.instance);
+    if (Object.keys(next).length) set[INSTANCE_TOKENS_KEY] = next; else clear.push(INSTANCE_TOKENS_KEY);
+  }
+  return { ids: list.map((r) => r.id), clear: clear.sort(), set, snapshot };
+}
+
+/** The writes that put a resetAllPlan snapshot back exactly: unset keys cleared, the rest written as they were. */
+export function undoResetAllPlan(snapshot) {
+  const clear = [];
+  const set = {};
+  if (!isObj(snapshot)) return { clear, set };
+  for (const [k, v] of Object.entries(snapshot)) {
+    if (!k.startsWith('axf.chrome.') && k !== INSTANCE_TOKENS_KEY) continue;
+    if (v === null || v === undefined) clear.push(k); else set[k] = v;
+  }
+  return { clear: clear.sort(), set };
+}
+
+/**
+ * The undo list after one more Reset all: newest first, at most RESET_ALL_UNDO_MAX, each `{ id, at, ids, snapshot }`.
+ * `raw` = the saved RESET_ALL_UNDO_KEY value. Pure: the caller passes the id and time.
+ */
+export function pushResetAllUndo(raw, entry) {
+  const list = Array.isArray(raw) ? raw.filter((e) => isObj(e) && typeof e.id === 'string' && isObj(e.snapshot)) : [];
+  return [entry, ...list.filter((e) => e.id !== entry.id)].slice(0, RESET_ALL_UNDO_MAX);
+}
+/** One undo entry by id ('' or 'last' = the newest), else null. */
+export function findResetAllUndo(raw, id) {
+  const list = Array.isArray(raw) ? raw.filter((e) => isObj(e) && typeof e.id === 'string' && isObj(e.snapshot)) : [];
+  return (!id || id === 'last' ? list[0] : list.find((e) => e.id === id)) ?? null;
 }
 
 /** The colour that marks a controlled / overridden setting everywhere (a status token name, never a literal). */

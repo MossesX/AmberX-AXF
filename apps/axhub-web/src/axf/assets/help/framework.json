@@ -1677,6 +1677,33 @@
         "title": "Find an option",
         "text": "Narrows the list to options whose name or group matches what you type.",
         "kind": "field"
+      },
+      {
+        "target": "asset-overrides-reset-all",
+        "title": "Reset all",
+        "text": "Puts every asset that is controlled by its own settings back on the app's settings in one go: field overrides, an asset or settings interface it picked for itself, and its own tab tokens. It asks once, naming how many, and Undo reset all brings them all back. Same by voice (\"reset all asset overrides\"), REST (POST /api/plugins/theme-manager/reset-all), MCP and node framework/cli/chrome-settings.mjs reset-all --confirm.",
+        "kind": "button"
+      },
+      {
+        "target": "undo-reset-all",
+        "title": "Undo reset all",
+        "text": "Brings back every asset override the last Reset all cleared, exactly as it was. Also chrome.overrides-undo:<id>, POST /api/plugins/theme-manager/reset-all/undo or chrome-settings.mjs undo <id>.",
+        "kind": "button"
+      },
+      {
+        "target": "action:chrome.reset-all",
+        "title": "Reset all asset overrides",
+        "text": "Every asset override at once, one undo. Without confirm it opens Settings → Appearance and asks first; chrome.reset-all:confirm does it."
+      },
+      {
+        "target": "action:chrome.overrides",
+        "title": "Asset overrides",
+        "text": "Opens the list of assets controlled by their own settings (Settings → Appearance). Its state, by API: setting:appearance.asset-overrides.reset-all or GET /api/plugins/theme-manager/overrides."
+      },
+      {
+        "target": "action:chrome.overrides-undo",
+        "title": "Undo reset all",
+        "text": "Takes a Reset all back: chrome.overrides-undo:<undo id>, or last for the newest."
       }
     ],
     "intros": [

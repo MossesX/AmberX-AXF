@@ -1169,5 +1169,131 @@
         "attrs": {}
       }
     }
+  },
+  "resetAll": {
+    "saved": {
+      "axf.chrome.tab-group.settings": {
+        "style": "pills"
+      },
+      "axf.chrome.tab-group.settings.asset": "tabs-boxed",
+      "axf.chrome.toolbar.app": {
+        "density": "compact"
+      },
+      "axf.chrome.settings.toolbar": "chrome-toolbar-x",
+      "axf.tokens.instances": {
+        "tabs.files": {
+          "values": {
+            "activeBg": "accent"
+          }
+        },
+        "grid.b": {
+          "values": {
+            "rowBg": "surface2"
+          }
+        }
+      }
+    },
+    "list": [
+      {
+        "id": "tab-group:files",
+        "type": "tab-group",
+        "instance": "files",
+        "fields": {},
+        "keys": [],
+        "tokens": {
+          "activeBg": "accent"
+        }
+      },
+      {
+        "id": "tab-group:settings",
+        "type": "tab-group",
+        "instance": "settings",
+        "fields": {
+          "style": "pills"
+        },
+        "keys": [
+          "axf.chrome.tab-group.settings",
+          "axf.chrome.tab-group.settings.asset"
+        ],
+        "asset": "tabs-boxed"
+      },
+      {
+        "id": "toolbar:app",
+        "type": "toolbar",
+        "instance": "app",
+        "fields": {
+          "density": "compact"
+        },
+        "keys": [
+          "axf.chrome.toolbar.app"
+        ]
+      }
+    ],
+    "plan": {
+      "ids": [
+        "tab-group:files",
+        "tab-group:settings",
+        "toolbar:app"
+      ],
+      "clear": [
+        "axf.chrome.tab-group.settings",
+        "axf.chrome.tab-group.settings.asset",
+        "axf.chrome.toolbar.app"
+      ],
+      "set": {
+        "axf.tokens.instances": {
+          "grid.b": {
+            "values": {
+              "rowBg": "surface2"
+            }
+          }
+        }
+      },
+      "snapshot": {
+        "axf.chrome.tab-group.settings": {
+          "style": "pills"
+        },
+        "axf.chrome.tab-group.settings.asset": "tabs-boxed",
+        "axf.chrome.toolbar.app": {
+          "density": "compact"
+        },
+        "axf.tokens.instances": {
+          "tabs.files": {
+            "values": {
+              "activeBg": "accent"
+            }
+          },
+          "grid.b": {
+            "values": {
+              "rowBg": "surface2"
+            }
+          }
+        }
+      }
+    },
+    "undo": {
+      "clear": [],
+      "set": {
+        "axf.chrome.tab-group.settings": {
+          "style": "pills"
+        },
+        "axf.chrome.tab-group.settings.asset": "tabs-boxed",
+        "axf.chrome.toolbar.app": {
+          "density": "compact"
+        },
+        "axf.tokens.instances": {
+          "tabs.files": {
+            "values": {
+              "activeBg": "accent"
+            }
+          },
+          "grid.b": {
+            "values": {
+              "rowBg": "surface2"
+            }
+          }
+        }
+      }
+    }
   }
 }

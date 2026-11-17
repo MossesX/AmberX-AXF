@@ -72,6 +72,17 @@ export function chromeInstanceData<T extends object>(type: string, base: T | nul
 export function chromeFieldValue(type: string, base: unknown, override: unknown, key: string): unknown;
 export interface ChromeOverride { type: ChromeType; instance: string; fields: Record<string, string | number | boolean> }
 export function chromeOverrideList(saved: unknown): ChromeOverride[];
+export const CHROME_TOKEN_FAMILY: Partial<Record<ChromeType, string>>;
+export const RESET_ALL_UNDO_KEY: string;
+export const RESET_ALL_UNDO_MAX: number;
+export interface OverriddenAsset { id: string; type: ChromeType; instance: string; fields: Record<string, string | number | boolean>; asset?: string; interface?: string; tokens?: Record<string, string | number>; keys: string[] }
+export function listOverriddenAssets(saved: unknown): OverriddenAsset[];
+export interface ResetAllPlan { ids: string[]; clear: string[]; set: Record<string, unknown>; snapshot: Record<string, unknown> }
+export function resetAllPlan(saved: unknown): ResetAllPlan;
+export function undoResetAllPlan(snapshot: unknown): { clear: string[]; set: Record<string, unknown> };
+export interface ResetAllUndo { id: string; at: string; ids: string[]; snapshot: Record<string, unknown> }
+export function pushResetAllUndo(raw: unknown, entry: ResetAllUndo): ResetAllUndo[];
+export function findResetAllUndo(raw: unknown, id?: string): ResetAllUndo | null;
 export const CONTROLLED_COLOR_KEY: string;
 export const CONTROLLED_COLORS: readonly ('warning' | 'accent' | 'info' | 'success' | 'danger')[];
 export function controlledColorOf(v: unknown): (typeof CONTROLLED_COLORS)[number];

@@ -58,6 +58,8 @@
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
+ *   axf console overrides | reset-all --confirm | reset-all-undo <ra-…|last>  [--json]
+ *                               asset overrides in Settings → Appearance: list them, Reset all (one undo), undo it (chrome-settings.mjs)
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
  *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
  */
@@ -86,6 +88,13 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   if (!dir) { console.error('no plugin provides control@1 (install the Token control plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'control.mjs')).href);
   process.exit(await main([cmd, ...rest]));
+}
+// asset overrides (build reset-all-button-every-asset-override): axf console overrides | reset-all --confirm | reset-all-undo <id>
+if (cmd === 'console' && ['overrides', 'reset-all', 'reset-all-undo'].includes(rest[0] ?? '')) {
+  const { execFileSync } = await import('node:child_process');
+  const sub = rest[0] === 'reset-all-undo' ? 'undo' : rest[0];
+  try { execFileSync('node', [new URL('./chrome-settings.mjs', import.meta.url).pathname, sub, ...rest.slice(1)], { stdio: 'inherit' }); process.exit(0); }
+  catch (e) { process.exit(typeof e.status === 'number' ? e.status : 1); }
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
 if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings'].includes(rest[0] ?? '')) {

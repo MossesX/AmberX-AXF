@@ -229,6 +229,29 @@
       },
       "value": false
     },
+    "reset all asset overrides": {
+      "verb": "press",
+      "address": "setting:appearance.asset-overrides.reset-all"
+    },
+    "reset all asset overrides confirm": {
+      "verb": "press",
+      "address": "setting:appearance.asset-overrides.reset-all",
+      "confirm": true
+    },
+    "confirm reset all the asset overrides": {
+      "verb": "press",
+      "address": "setting:appearance.asset-overrides.reset-all",
+      "confirm": true
+    },
+    "undo reset all": {
+      "verb": "press",
+      "address": "function:chrome.overrides-undo",
+      "value": "last"
+    },
+    "show my asset overrides": {
+      "verb": "state",
+      "address": "setting:appearance.asset-overrides.reset-all"
+    },
     "what time is it": null,
     "": null
   },
@@ -366,6 +389,29 @@
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": false
+    },
+    "reset all asset overrides": {
+      "verb": "press",
+      "address": "setting:appearance.asset-overrides.reset-all"
+    },
+    "reset all asset overrides confirm": {
+      "verb": "press",
+      "address": "setting:appearance.asset-overrides.reset-all",
+      "confirm": true
+    },
+    "confirm reset all the asset overrides": {
+      "verb": "press",
+      "address": "setting:appearance.asset-overrides.reset-all",
+      "confirm": true
+    },
+    "undo reset all": {
+      "verb": "press",
+      "address": "function:chrome.overrides-undo",
+      "value": "last"
+    },
+    "show my asset overrides": {
+      "verb": "state",
+      "address": "setting:appearance.asset-overrides.reset-all"
     }
   },
   "replies": {
@@ -378,6 +424,10 @@
     "disable": "Skins is off. Crew loses a feature.",
     "confirm": "That deletes something. Say it again with confirm, or do it on screen.",
     "noConsole": "No console is open. Open it and ask again.",
-    "failed": "Couldn't: needs Brett"
+    "failed": "Couldn't: needs Brett",
+    "resetAll": "Reset 3 asset overrides. Say undo reset all to take it back.",
+    "resetAllNone": "No asset overrides to reset.",
+    "overrides": "1 asset override.",
+    "resetAllUndo": "Asset overrides restored."
   }
 }

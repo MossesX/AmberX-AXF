@@ -506,6 +506,9 @@ def plugin_settings_state(ref: str, is_enabled: Any = None) -> dict[str, Any]:
 
 # ---------------------------------------------------------------------- voice (twin of core/engines/console-control-voice.mjs)
 
+# Settings → Appearance → Reset all asset overrides and its undo (console-control-voice.mjs RESET_ALL_ADDRESS)
+RESET_ALL_ADDRESS = "setting:appearance.asset-overrides.reset-all"
+RESET_ALL_UNDO_ADDRESS = "function:chrome.overrides-undo"
 VOICE_NUMBERS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13,
                  "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20, "first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5}
 VOICE_AMOUNTS = {"a bit": 0.25, "a little": 0.25, "a little bit": 0.25, "a lot": 2, "a page": 1, "one page": 1, "half a page": 0.5}
@@ -564,6 +567,13 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": HUB_SKIN_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "lock"}
     if m := re.match(r"^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$", p):
         return {"verb": "set", "find": {"q": HUB_SKIN_OVERRIDE_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "override"}
+    # asset overrides (build reset-all-button-every-asset-override): Reset all asks first unless the phrase confirms it
+    if m := re.match(r"^(confirm )?(?:reset|clear) all(?: (?:the|my))? (?:asset )?overrides( confirm(?:ed)?)?$", p):
+        return {"verb": "press", "address": RESET_ALL_ADDRESS, **({"confirm": True} if m.group(1) or m.group(2) else {})}
+    if re.match(r"^undo (?:the )?reset all(?: (?:the )?(?:asset )?overrides)?$", p):
+        return {"verb": "press", "address": RESET_ALL_UNDO_ADDRESS, "value": "last"}
+    if re.match(r"^(?:list|show(?: me)?|what are)(?: the| my)? asset overrides$", p):
+        return {"verb": "state", "address": RESET_ALL_ADDRESS}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
@@ -594,6 +604,8 @@ def intent_command(intent: dict[str, Any], hit: str | None = None) -> dict[str, 
         cmd["value"] = intent["value"]
     if intent.get("options"):
         cmd["options"] = intent["options"]
+    if intent.get("confirm"):
+        cmd["confirm"] = True
     return cmd
 
 
@@ -607,6 +619,14 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
         return f"Couldn't: {(answer or {}).get('message') or 'that did not work'}"
     what = label or answer.get("address") or ""
     v = intent["verb"]
+    if intent.get("address") == RESET_ALL_ADDRESS:
+        if v == "state":
+            n = int((answer.get("state") or {}).get("count") or 0)
+            return f"{n} asset override{'' if n == 1 else 's'}." if n else "No asset overrides."
+        n = len(((answer.get("result") or {}).get("reset")) or [])
+        return f"Reset {n} asset override{'' if n == 1 else 's'}. Say undo reset all to take it back." if n else "No asset overrides to reset."
+    if intent.get("address") == RESET_ALL_UNDO_ADDRESS:
+        return "Asset overrides restored."
     if v == "scroll":
         s = answer.get("scroll") or (answer.get("state") or {}).get("scroll")
         if not s:

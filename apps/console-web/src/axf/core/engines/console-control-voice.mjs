@@ -22,6 +22,9 @@ export const VOICE_FRAME = 'console-control-voice@1';
 export const HUB_SKIN_SETTING = 'get my skin only from axhub';
 /** The words the override phrases search for: the Override switch's label (under the axHub-only switch). */
 export const HUB_SKIN_OVERRIDE_SETTING = 'override axhub';
+/** Settings → Appearance → Reset all asset overrides (react/components/ChromeContext.tsx RESET_ALL_TARGET) and its undo. */
+export const RESET_ALL_ADDRESS = 'setting:appearance.asset-overrides.reset-all';
+export const RESET_ALL_UNDO_ADDRESS = 'function:chrome.overrides-undo';
 
 const NUMBERS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, first: 1, second: 2, third: 3, fourth: 4, fifth: 5 };
 const AMOUNTS = { 'a bit': 0.25, 'a little': 0.25, 'a little bit': 0.25, 'a lot': 2, 'a page': 1, 'one page': 1, 'half a page': 0.5 };
@@ -86,6 +89,13 @@ export function voiceIntent(text) {
     return { verb: 'set', find: { q: HUB_SKIN_OVERRIDE_SETTING, kinds: ['setting'] }, value: m[1] === 'override' };
   }
 
+  // asset overrides (build reset-all-button-every-asset-override): Reset all asks first unless the phrase confirms it
+  if ((m = /^(confirm )?(?:reset|clear) all(?: (?:the|my))? (?:asset )?overrides( confirm(?:ed)?)?$/.exec(p))) {
+    return { verb: 'press', address: RESET_ALL_ADDRESS, ...(m[1] || m[2] ? { confirm: true } : {}) };
+  }
+  if (/^undo (?:the )?reset all(?: (?:the )?(?:asset )?overrides)?$/.test(p)) return { verb: 'press', address: RESET_ALL_UNDO_ADDRESS, value: 'last' };
+  if (/^(?:list|show(?: me)?|what are)(?: the| my)? asset overrides$/.test(p)) return { verb: 'state', address: RESET_ALL_ADDRESS };
+
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
   if ((m = /^(?:turn|switch) (?:the )?(.+?) (on|off)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2] === 'on' };
@@ -118,6 +128,7 @@ export function intentCommand(intent, hit = null) {
   else cmd.address = intentAddress(intent, hit);
   if (intent.value !== undefined) cmd.value = intent.value;
   if (intent.options) cmd.options = intent.options;
+  if (intent.confirm) cmd.confirm = true;
   return cmd;
 }
 
@@ -130,6 +141,12 @@ export function voiceReply(intent, answer, label = '') {
     return `Couldn't: ${why}`;
   }
   const what = label || answer.address || '';
+  if (intent.address === RESET_ALL_ADDRESS) {
+    if (intent.verb === 'state') { const n = Number(answer.state?.count ?? 0); return n ? `${n} asset override${n === 1 ? '' : 's'}.` : 'No asset overrides.'; }
+    const n = answer.result?.reset?.length ?? 0;
+    return n ? `Reset ${n} asset override${n === 1 ? '' : 's'}. Say undo reset all to take it back.` : 'No asset overrides to reset.';
+  }
+  if (intent.address === RESET_ALL_UNDO_ADDRESS) return 'Asset overrides restored.';
   switch (intent.verb) {
     case 'scroll': { const s = answer.scroll ?? answer.state?.scroll; return s ? (s.atBottom ? 'At the bottom.' : s.atTop ? 'At the top.' : `Scrolled, ${Math.round((s.fraction ?? 0) * 100)} percent down.`) : 'Scrolled.'; }
     case 'search': { const n = answer.hits?.length ?? 0; return n ? `${n} result${n === 1 ? '' : 's'}. Top: ${answer.hits[0].label}.` : 'Nothing found.'; }

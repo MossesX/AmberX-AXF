@@ -1,0 +1,40 @@
+{
+ "$axf": "asset@1",
+ "type": "toolbar",
+ "id": "reset-all-asset-override-mwjogdgh-count-chip",
+ "name": "reset-all-asset-override-mwjogdgh: Header toolbar with a count chip",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Short header 'Asset overrides'; the count is a chip on the Reset all button, which sits right after it (what ships now, plus the chip).",
+ "tags": [
+  "ui-choice",
+  "choice-set:reset-all-asset-override-mwjogdgh",
+  "choice-option:count-chip"
+ ],
+ "data": {
+  "variant": "icons-labels",
+  "align": "start",
+  "showSearch": false,
+  "surface": "flat",
+  "density": "regular",
+  "groups": [
+   {
+    "id": "overrides",
+    "items": [
+     {
+      "id": "overrides",
+      "icon": "chevron-down",
+      "label": "Asset overrides",
+      "action": "chrome.overrides"
+     },
+     {
+      "id": "reset-all",
+      "icon": "undo",
+      "label": "Reset all",
+      "action": "chrome.reset-all"
+     }
+    ]
+   }
+  ]
+ }
+}

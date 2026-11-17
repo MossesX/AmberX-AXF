@@ -213,6 +213,31 @@ export class SettingsRegistry {
     this.changed();
   }
 
+  /**
+   * Several writes as one change (Reset all): `set` keys written, `clear` keys forgotten, then ONE storage write (other
+   * tabs and editors see one change) and one re-render. Key watchers still fire once per touched key, so whatever
+   * follows a key (the axHub look push, a dialog) stays in step. Secret keys are not batched. Returns the keys touched.
+   */
+  batch(writes: { set?: Record<string, SettingValue>; clear?: string[] }): string[] {
+    const set = Object.entries(writes.set ?? {}).filter(([k]) => this.spec(k)?.kind !== 'secret');
+    const clear = (writes.clear ?? []).filter((k) => this.spec(k)?.kind !== 'secret' && !set.some(([s]) => s === k));
+    const fresh = readValues(this.storageKey);
+    const next: Record<string, SettingValue> = { ...this.values, ...fresh };
+    const touched: string[] = [];
+    for (const [k, v] of set) { if (JSON.stringify(next[k]) !== JSON.stringify(v)) touched.push(k); next[k] = v; }
+    for (const k of clear) { if (Object.hasOwn(next, k)) touched.push(k); delete next[k]; }
+    if (!touched.length) return [];
+    this.values = next;
+    writeValues(this.storageKey, this.values);
+    for (const k of touched) {
+      const v = Object.hasOwn(next, k) ? next[k]! : null;
+      for (const w of this.watchers.get(k) ?? []) w(v === null ? this.get(k) : v);
+      for (const w of this.anyWatchers) w(k, v);
+    }
+    this.changed();
+    return touched;
+  }
+
   /** Call `fn` whenever `key` changes. Returns an unsubscribe function. */
   onChange(key: string, fn: (value: SettingValue) => void): () => void {
     const set = this.watchers.get(key) ?? new Set();
