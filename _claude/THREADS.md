@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `terminal-main-tab-streaming-console-s` added (56 steps) (all) · foreign-write
-- 2026-11-17 22:58 UTC · `auto-lander-settings-log-placeholder` added (36 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `toolbars-1-5-build-orchestrator-incl` added (4 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `toolbars-3-5-settings-appearance-systems` added (4 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `toolbars-2-5-plan-studio-ui-review` added (4 steps) (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:39 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
 - 2026-11-17 23:40 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · watchdog
 - 2026-11-17 23:40 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 23:40 UTC · `rebuild-every-toolbar-page-specific` → complete (all) · foreign-write
+- 2026-11-17 23:40 UTC · `fix-launcher-crash-duplicate-steps-brief` s1 done, s2 done, s3 done, s4 done (all) · foreign-write
 
 ## Token passes (log)
 
