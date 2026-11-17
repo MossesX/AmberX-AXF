@@ -18,9 +18,8 @@
  *                                                        auto-lander attempt is folded in), or close the open one
  *   … fail <build> --kind k --why "…" [--head sha]        record a failure found outside the dispatcher: status fixing
  *   … set-status <build> <status> [--by who] [--demo]    set a status through the done-means-merged@1 guard: landed / built /
- *                                                        complete without merge + green CI + verify are refused (a note says why);
- *                                                        --demo = a demo action (demo-build@1): refused on a build without the tag
- *   … demo <build>                                        demo-build@1: is this a demo build (tag demo: true, id demo-…)? exit 1 if not
+ *                                                        complete without merge + green CI + verify are refused (a note says why)
+ *   … demo <build>                                        demo-build@1 check, exit 1 if not demo (--demo above: a demo action)
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
