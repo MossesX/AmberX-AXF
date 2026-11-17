@@ -351,6 +351,8 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
   for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
   wl="$(start_watch_live "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")")"
+  # worktree guard (tracking-paths@1): a build worktree never commits store/orchestrator/origins/journal/pending/queue files
+  [[ -f "$HERE/../framework/cli/worktree-setup.mjs" ]] && command -v node >/dev/null && node "$HERE/../framework/cli/worktree-setup.mjs" guard --dir "$(pwd)" 2>&1 | sed 's/^/# /' || true
   prompt="$(cat "$brief")"
   # brief only: the rules this job needs ride in the brief (rules brief + rule snippets by tag) when it has none yet
   [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && prompt="$prompt"$'\n\n'"$(cat "$ctx_rules")"

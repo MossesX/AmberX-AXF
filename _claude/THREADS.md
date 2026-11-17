@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Console deep links land on the right screen (`fix-console-deep-links-open-page-lands`, Opus; Brett Nov 16: "You didn't open the orchestrator, you just opened the main console. Yeah, we need to fix that."): `?axf-target=<address>` now opens that screen / tab / row on load (retries until the plugin screen registers, survives reload + sign-in, `src/control/deepLink.ts`); no-console answers to console_show / console_open give `openUrl` with the address and wake AmberX straight to it (MCP status pending, voice "Opening it on your phone"); AmberX `open_url {newTab: true}` opens a tab of its own | phase 1 done, PR open | `claude/fix-console-deep-links-open-page-lands` | [#721](https://github.com/MossesX/AmberX-AXF/pull/721) | Report `_claude/builds/reports/fix-console-deep-links-open-page-lands.md`. AmberX APK rebuild needed for `newTab` on the phone | 2026-11-16 |
+| Stop the auto-lander committing tracking files into builds (`stop-auto-lander-committing-tracking`) | in-pr | `claude/stop-auto-lander-committing-tracking` |  |  | 2026-11-17 |
 | Get main green, unblock the lander, land axf-data and Postgres (`get-main-green-unblock-lander-land-axf`, Opus; Brett Nov 16: "We gotta migrate to Postgres to get this going … Is the auto-lander fixed?"): main green since 11-16 21:01 (#724: 10 CI fixes; 33 h red before); the lander lands again (#724, #685, #723, #704, #713 on their own) with 5 lander fixes and 2 new health items (lander-idle, GitHub auto-merge bypass); axf-data (#704) and Postgres (#713) landed through the queue; axf-data runs on Postgres, console data copied and verified, 43/47 namespaces in shadow (builds/console/activity local: disk, hot files); #769 (axf-data image + data-migrate live-data fixes) queued. Disk 99%: Docker build cache + build worktrees, red disk item. Report `_claude/builds/reports/get-main-green-unblock-lander-land-axf.md` | phase 1 done | `claude/get-main-green-unblock-lander-land-axf` | #723 (merged), #724, #704, #713, #769 | cutover per namespace after the shadow window; builds → shadow once disk allows; host writers → axf-data | 2026-11-17 |
 | axf-data on Postgres: real tables in its own container (`axf-data-postgres-real-tables-own`, Fable + Opus; Brett Nov 15: "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it up with Postgres."): Postgres 16 in `axf-data-db` (private volume), builds/steps, UI Review, planner, settings, notes, control registry as real tables, ledger + chats mirrored, SQLite → shadow → postgres engine move, pg_dump backups; data-store@1 unchanged | review | `claude/axf-data-postgres-real-tables-own` | #713 | lands after #704; then `sudo bash deploy/install-data.sh` on the VPS (fresh install starts on Postgres), migrate + shadow one namespace at a time; ledger + chat viewer onto rows is a follow-up | Nov 17 2026 |
 | Data container: axf-data holds all console data (`data-container-axf-data-holds-all`, Fable contract + Opus; Brett Nov 15: "the console goes down, all the data is still available, all the notes are available, and the builds keep running."): `services/axf-data` (data-store@1, backups, MCP for axHub), data layer on every writer, data-migrate + data-mode (staged: shadow, then cutover at zero drift), Settings → Plugins → Data store, console-down drill passed | review (UI Review waiting: 3 layouts) | `claude/data-container-axf-data-holds-all` | #704 | VPS install after merge; axHub repo registers the downstream; migrate + shadow one namespace at a time | Nov 15 2026 |
@@ -821,17 +822,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:09 UTC · `own-look-per-grid-and-tab-group` s9 done (all) · orchestrator
-- 2026-11-17 00:09 UTC · `grid-token-set-colours-hover-selected` note (all) · orchestrator
-- 2026-11-17 00:08 UTC · `grid-token-set-colours-hover-selected` s1 done, → running (all) · orchestrator
-- 2026-11-17 00:10 UTC · `auto-lander-status-tab-rest-mcp-settings` note (all) · orchestrator
-- 2026-11-17 00:08 UTC · `orchestrator-runs-long-builds-across` s3 done (all) · orchestrator
-- 2026-11-17 00:11 UTC · `auto-lander-status-tab-rest-mcp-settings` note (all) · builds-live
-- 2026-11-17 00:11 UTC · `orchestrator-runs-long-builds-across` s4 done (all) · orchestrator
-- 2026-11-17 00:11 UTC · `orchestrator-runs-long-builds-across` note (all) · orchestrator
-- 2026-11-17 00:12 UTC · `server-auto-lander-fixes-lands` s4 done (all) · orchestrator
-- 2026-11-17 00:12 UTC · `gate-auto-lander-tab-and-controls` note (all) · orchestrator
-- 2026-11-17 00:12 UTC · `gate-auto-lander-tab-and-controls` note (all) · builds-live
 - 2026-11-17 00:12 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-17 00:13 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-17 00:13 UTC · `server-auto-lander-fixes-lands` note (all) · foreign-write
@@ -1221,6 +1211,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 12:43 UTC · `orchestrator-stale-row-watchdog-vps` s10 done (all) · orchestrator
 - 2026-11-17 12:45 UTC · `orchestrator-stale-row-watchdog-vps` s11 done (all) · orchestrator
 - 2026-11-17 12:47 UTC · `orchestrator-stale-row-watchdog-vps` s12 done (all) · orchestrator
+- 2026-11-17 12:48 UTC · `fix-console-deep-links-open-page-lands` s5 done (all) · orchestrator
+- 2026-11-17 12:50 UTC · `orchestrator-stale-row-watchdog-vps` s13 done (all) · orchestrator
+- 2026-11-17 12:50 UTC · `stop-auto-lander-committing-tracking` s15 done, → built (all) · orchestrator
+- 2026-11-17 12:50 UTC · `stop-auto-lander-committing-tracking` merged, note (all) · reconciler
+- 2026-11-17 12:51 UTC · `orchestrator-stale-row-watchdog-vps` s14 done (all) · orchestrator
+- 2026-11-17 13:00 UTC · `orchestrator-runs-long-builds-across` → pending, note (all) · reconciler
+- 2026-11-17 13:00 UTC · `move-server-side-console-parts-onto-vps` → pending, note (all) · reconciler
+- 2026-11-17 13:04 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
+- 2026-11-17 13:05 UTC · `orchestrator-stale-row-watchdog-vps` s15 done (all) · orchestrator
+- 2026-11-17 13:05 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
+- 2026-11-17 13:10 UTC · `orchestrator-stale-row-watchdog-vps` PR #780, note (all) · reconciler
 
 ## Token passes (log)
 
@@ -1823,3 +1824,4 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - Waits on: nothing from Brett (UI Review shots are non-blocking for this build).
 - First message to carry on: "Carry on tab-group-assets from the typecheck step on branch claude/tab-group-assets (see THREADS.md To carry on)."
 - 2026-11-13 10:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` s1 + s2: every skin has light + dark (skin-modes@1), check-skin-modes in CI, CLI/REST/MCP/voice `mode` (all) · claude
+- 2026-11-17 00:55 UTC · `stop-auto-lander-committing-tracking` s2–s14: tracking files never committed by the lander (reset to main's base copy, take-main on conflict), build worktrees keep the store on the hub, worktree guard, journal moved to the hub (916 MB untracked, pointer + sha256), CI guard check-tracking-files, API land-tracking (REST/MCP/CLI/voice), tests (all) · claude
