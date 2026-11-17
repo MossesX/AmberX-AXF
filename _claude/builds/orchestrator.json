@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:15:57.128Z",
+ "updatedAt": "2026-11-17T22:16:41.599Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186513,7 +186513,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:13:20.545Z",
+   "updatedAt": "2026-11-17T22:16:38.515Z",
    "builtAt": "",
    "notes": [
     {
@@ -186581,7 +186581,16 @@
      "at": "2026-11-17T22:13:20.545Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T22:12:25.094Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "allows me to select icons for all the widgets in the banner; some don't even have icons, just big long strings of text; and the settings too",
@@ -186679,8 +186688,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:16:38.515Z",
      "note": "",
      "uid": "st-mwl76ubl041zog",
      "createdAt": "2026-11-17T21:21:51.104Z"

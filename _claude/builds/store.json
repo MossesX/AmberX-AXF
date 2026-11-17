@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8162,
- "updatedAt": "2026-11-17T22:15:57.128Z",
+ "rev": 8163,
+ "updatedAt": "2026-11-17T22:16:41.599Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282389,7 +282389,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T22:13:20.545Z",
+   "updatedAt": "2026-11-17T22:16:38.515Z",
    "builtAt": "",
    "notes": [
     {
@@ -282457,7 +282457,16 @@
      "at": "2026-11-17T22:13:20.545Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T22:12:25.094Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "allows me to select icons for all the widgets in the banner; some don't even have icons, just big long strings of text; and the settings too",
@@ -282611,12 +282620,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:16:38.515Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T21:21:51.104Z"
+     "updatedAt": "2026-11-17T22:16:38.901Z"
     },
     {
      "id": "s5",
@@ -282830,7 +282839,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
