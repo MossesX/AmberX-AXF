@@ -819,9 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:22 UTC · `agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on` → archived, note (all) · cli
-- 2026-11-16 23:22 UTC · `demonstration-designer-demos-must-actually-show-things-when-a-demo-plays-the-c` → archived, note (all) · cli
-- 2026-11-16 23:22 UTC · `session-summaries-amberx-axf-project-history-readiness-audit` → archived, note (all) · cli
 - 2026-11-16 23:22 UTC · `amberx-open-any-url-apk` → archived, note (all) · cli
 - 2026-11-16 23:22 UTC · `server-auto-lander-fixes-lands` added (0 steps) (all) · console
 - 2026-11-16 23:23 UTC · `server-auto-lander-fixes-lands` → queued, note (all) · console
@@ -1219,6 +1216,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:41 UTC · `server-rule-done-means-merged-working` s6 done (all) · orchestrator
 - 2026-11-17 03:45 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s10 done (all) · orchestrator
 - 2026-11-17 03:45 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s6 done (all) · foreign-write
+- 2026-11-17 03:39 UTC · `server-auto-lander-fixes-lands` s8 done (all) · orchestrator
+- 2026-11-17 03:40 UTC · `server-auto-lander-fixes-lands` s9 done (all) · orchestrator
+- 2026-11-17 03:42 UTC · `server-auto-lander-fixes-lands` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
