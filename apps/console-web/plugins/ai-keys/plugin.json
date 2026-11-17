@@ -35,6 +35,7 @@
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/ai-keys",
+    "projectScoped": [{ "scope": "claude-accounts", "files": ["keys.json"], "secret": true }],
     "env": [
       "AXF_AI_KEYS_DIR",
       "AXF_CLAUDE_CREDENTIALS",

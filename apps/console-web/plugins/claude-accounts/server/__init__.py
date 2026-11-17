@@ -54,6 +54,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 
+import console_context as cx
 import plugin_services
 
 router = APIRouter()
@@ -282,9 +283,33 @@ def view() -> dict[str, Any]:
                 **{k: host.get(k, d) for k, d in idle.items()}}
 
     names = names + [n for n in v["host"] if n not in names]   # API worker slots whose key isn't saved yet
+    scope = project_scope()
+    if scope["own"]:   # the project keeps its own set: only its members show (logins stay saved once, for every project)
+        names = [n for n in names if n in scope["members"]]
     rows = [row(n) for n in names]
     return {"ok": True, "ready": v["ready"], "why": v["why"], "accounts": rows, "active": active, "login": login, "loginChanged": changed, "pending": pending, "note": NOTE,
-            "checked": v["checked"], "expiresAt": v["expiresAt"]}
+            "checked": v["checked"], "expiresAt": v["expiresAt"], "project": scope}
+
+
+def _project_pick(project_id: str, name: str) -> None:
+    """Record `name` as the active account of the project's own set (projects.mjs accounts --active), best effort."""
+    try:
+        subprocess.run(["node", str(ROOT / "framework" / "cli" / "projects.mjs"), "accounts", project_id, "--active", name, "--json"],
+                       cwd=ROOT, capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_ACTOR": "console:claude-accounts"})
+    except (OSError, subprocess.SubprocessError):
+        pass
+
+
+def project_scope() -> dict[str, Any]:
+    """The project in force and its Claude account set (projects@1): own = False → it uses every saved account."""
+    try:
+        p = cx.project() or {}
+    except Exception:  # noqa: BLE001 — a damaged registry reads as the shared set
+        p = {}
+    own = bool(p) and not p.get("base") and "claude-accounts" in (p.get("owns") or [])
+    acc = p.get("accounts") or {}
+    return {"id": p.get("id", ""), "name": p.get("name", ""), "own": own,
+            "members": list(acc.get("members") or []) if own else [], "preferred": (acc.get("active") or "") if own else ""}
 
 
 def _who(request: Request) -> str:
@@ -350,6 +375,8 @@ def ask(op: str, name: str, by: str) -> dict[str, Any]:
     ready, why = svc.ready()
     if not ready:
         raise HTTPException(503, f"Vinny can't reach axHub: {why}")
+    if op == "use" and (v.get("project") or {}).get("own"):
+        _project_pick(v["project"]["id"], name)
     what = {"use": f"Switch Claude on the VPS to {name}", "save": f"Save the current Claude login as {name}",
             "signin": f"Start the Claude sign-in for {name}", "remove": f"Set the saved Claude account {name} aside"}[op]
     try:

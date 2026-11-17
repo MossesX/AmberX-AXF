@@ -20,6 +20,9 @@ PROJECTS_REL = "framework/plan/projects.json"
 PROJECTS_SUBDIR = "projects"
 PROJECT_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 STATUSES = ("active", "archived")
+# What a project can take as its own (framework/spec/PROJECTS.md); same order as projects-core.mjs SCOPES.
+SCOPES = ("claude-accounts", "credentials", "plugins", "console", "hub")
+ACCOUNT_NAME = re.compile(r"^[a-z0-9-]{1,32}$")
 BASE_PROJECT: dict[str, Any] = {
     "id": "amberx-axf",
     "name": "AmberX AXF",
@@ -52,6 +55,7 @@ def normalize_registry(raw: Any, base_profile: str = "all") -> dict[str, Any]:
             "createdAt": _s(p.get("createdAt"), 40) or BASE_PROJECT["createdAt"],
             "updatedAt": _s(p.get("updatedAt"), 40) or _s(p.get("createdAt"), 40) or BASE_PROJECT["createdAt"],
             **({"archivedAt": _s(p.get("archivedAt"), 40)} if p.get("archivedAt") else {}),
+            **_owned(p),
         })
     base = next((p for p in projects if p["id"] == BASE_PROJECT["id"]), None)
     if base is None:
@@ -60,10 +64,43 @@ def normalize_registry(raw: Any, base_profile: str = "all") -> dict[str, Any]:
     base["profile"] = base_profile
     base["status"] = "active"
     base.pop("archivedAt", None)
+    base["owns"], base["ownedAt"] = [], {}
+    base.pop("accounts", None)
     for p in projects:
         p["base"] = p is base
     projects.sort(key=lambda p: not p["base"])
     return {"$axf": "projects@1", "updatedAt": _s(raw.get("updatedAt") if isinstance(raw, dict) else None, 40), "projects": projects}
+
+
+def _owned(p: dict[str, Any]) -> dict[str, Any]:
+    """The "owns" side of a stored project, cleaned like projects-core.mjs ownedFields (read side only)."""
+    want = p.get("owns") if isinstance(p.get("owns"), list) else []
+    owns = [s for s in SCOPES if s in want]
+    at = p.get("ownedAt") if isinstance(p.get("ownedAt"), dict) else {}
+    out: dict[str, Any] = {"owns": owns, "ownedAt": {s: _s(at.get(s), 40) for s in owns}}
+    acc = p.get("accounts")
+    if isinstance(acc, dict):
+        members = list(dict.fromkeys(m for m in (_s(x, 32) for x in (acc.get("members") or []) if isinstance(acc.get("members"), list)) if ACCOUNT_NAME.match(m)))
+        active = _s(acc.get("active"), 32)
+        out["accounts"] = {"members": members, "active": active if active in members else ""}
+    return out
+
+
+def owns_scope(project: dict[str, Any] | None, scope: str) -> bool:
+    return bool(project) and not project.get("base") and scope in (project.get("owns") or [])
+
+
+def scope_dir(base_dir: Path | str, project: dict[str, Any] | None, scope: str) -> Path:
+    """THE resolution rule (projects-core.mjs scopeDir): the shared folder unless `project` owns `scope`."""
+    return project_dir(base_dir, project) if owns_scope(project, scope) else Path(base_dir)
+
+
+def account_set(project: dict[str, Any] | None) -> dict[str, Any] | None:
+    """The Claude accounts `project` may use: None = every saved one (it shares), else its own set."""
+    if not owns_scope(project, "claude-accounts"):
+        return None
+    acc = (project or {}).get("accounts") or {}
+    return {"members": list(acc.get("members") or []), "active": acc.get("active") or ""}
 
 
 def project_dir(base_dir: Path | str, project: dict[str, Any] | None) -> Path:
@@ -109,6 +146,10 @@ class Projects:
 
     def dir(self, base_dir: Path | str) -> Path:
         return project_dir(base_dir, self.active())
+
+    def scope_dir(self, base_dir: Path | str, scope: str) -> Path:
+        """Where the active project keeps a shareable store (`scope`): the shared folder unless it owns the scope."""
+        return scope_dir(base_dir, self.active(), scope)
 
     # ---- a build's project (the builds store, builds@1: a build's first profile), cached on the store's mtime
     _builds: tuple[float, dict[str, str]] = (-1.0, {})
