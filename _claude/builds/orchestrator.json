@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:33:52.565Z",
+ "updatedAt": "2026-11-17T23:34:17.468Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172834,7 +172834,7 @@
    "title": "Move server-side console parts onto the VPS host as services, UI stays in console",
    "category": "",
    "detail": "Audit every console plugin. Anything that must keep running when the console is down, or touches Docker, disk or git, moves out of the axf-console container onto the VPS host as systemd services that start on boot and auto-restart, code at /opt/axf, run under a dedicated limited user with a sudo whitelist of only the commands needed (no general root). Candidates: Maintenance (coordinate with maintenance-plugin-clear-docker-cache), Systems check and its Auto fixes, agent-swarm job runner (CI-fix jobs), builds-live publisher, shipped-features watcher, axHub sync. Orchestrator/lander/watchdog are already moving in server-auto-lander-fixes-lands; reuse that, don't duplicate. App-only plugins (settings, skins, etc.) stay in the container. Console UI calls the host services over a local socket/API and shows a clear 'host service down' state. Include install script, health checks in Systems check, migration with rollback, and reachable via UI, REST, MCP, CLI, voice. Write the audit list into the report first.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -172842,7 +172842,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-17T23:33:34.842Z",
+   "updatedAt": "2026-11-17T23:33:50.068Z",
    "builtAt": "",
    "notes": [
     {
@@ -172924,20 +172924,13 @@
     {
      "text": "Self-check: move-server-side-console-parts-onto-vps was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-17T23:32:36.817Z"
-    }
-   ],
-   "approvals": [
+    },
     {
-     "phase": 1,
-     "from": "Opus",
-     "to": "Fable",
-     "at": "2026-11-17T23:14:19.219Z",
-     "by": "auto",
-     "via": "policy",
-     "kind": "upgrade",
-     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+     "text": "Claude account: hulu0241 (axf-move-server-side-console-parts-onto-vps--lenny, shared account login)",
+     "at": "2026-11-17T23:33:50.067Z"
     }
    ],
+   "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "So shouldn't we move everything to the VPS except for the UI itself for the console? ... All right, do it.",
@@ -332107,15 +332100,15 @@
    "title": "Fix launcher crash: duplicate steps + brief too big",
    "category": "",
    "detail": "auto-lander-never-wait-missing-ui-review died at launch: deploy/claude-headless.sh line 416 '/root/.local/bin/claude: Argument list too long' (brief ~54,579 tokens). Two causes: (1) the step splitter/re-split appends the same steps again and again (dispatcher-split had 897 steps, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63, all repeats of 13-15 real steps). Fix the splitter so a re-split replaces steps, dedupe by text, and clean every existing build's duplicate steps (keep done flags). (2) claude-headless.sh must pass the brief through a file/stdin, never as an argv string, and cap brief size with a trimmed step list. Also: a launch crash must be retried automatically by the VPS after the fix, and a land clash must send the build straight back to the queue with a merge-main fix step on its own (Phone Connect #787 sits with 27/27 steps done and a clash in framework/spec/check-ci-scope.mjs, so the dispatcher has nothing to run). Tests for each. Run on Opus now.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
-   "pendingId": "",
+   "pendingId": "fix-launcher-crash-duplicate-steps-brief",
    "branch": "claude/fix-launcher-crash-duplicate-steps-brief",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-17T23:31:03.149Z",
+   "updatedAt": "2026-11-17T23:32:30.655Z",
    "builtAt": "",
    "notes": [
     {
@@ -332141,6 +332134,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-launcher-crash-duplicate-steps-brief--earl.",
      "at": "2026-11-17T23:30:44.117Z"
+    },
+    {
+     "text": "Dispatch gate: fix-launcher-crash-duplicate-steps-brief still has axf-fix-launcher-crash-duplicate-steps-brief--earl alive: not launched again, tracking that session.",
+     "at": "2026-11-17T23:32:30.655Z"
     }
    ],
    "approvals": [],
@@ -332174,7 +332171,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1kux9m",
+     "uid": "st-mwlbwoi001rfoh",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332193,7 +332190,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1lyc6u",
+     "uid": "st-mwlbwoi102g2sj",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332212,7 +332209,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1movdk",
+     "uid": "st-mwlbwoi103k7t8",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332231,7 +332228,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1n4fvg",
+     "uid": "st-mwlbwoi104vhbe",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332250,7 +332247,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1o7s9w",
+     "uid": "st-mwlbwoi105zu6g",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332269,7 +332266,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1pf1f3",
+     "uid": "st-mwlbwoi106vki8",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332288,7 +332285,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1qrueq",
+     "uid": "st-mwlbwoi107cyfd",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332307,7 +332304,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1rqfci",
+     "uid": "st-mwlbwoi108gceb",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332326,7 +332323,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1s9o0d",
+     "uid": "st-mwlbwoi109djvq",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332345,7 +332342,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1t2dkz",
+     "uid": "st-mwlbwoi10afeod",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332364,7 +332361,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1u5xix",
+     "uid": "st-mwlbwoi10bbtbb",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332383,7 +332380,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1v6rat",
+     "uid": "st-mwlbwoi10cftam",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332402,7 +332399,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1wytqw",
+     "uid": "st-mwlbwoi10de0tv",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332421,7 +332418,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1xvdjw",
+     "uid": "st-mwlbwoi10e8k8w",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332440,7 +332437,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1y0z1u",
+     "uid": "st-mwlbwoi10ftcs3",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332459,7 +332456,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta1zjs8w",
+     "uid": "st-mwlbwoi10g67hp",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332478,7 +332475,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta204w0v",
+     "uid": "st-mwlbwoi10hpzlz",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332497,7 +332494,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta21oh82",
+     "uid": "st-mwlbwoi10i8v0s",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332516,7 +332513,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta22la46",
+     "uid": "st-mwlbwoi10j5yqu",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332535,7 +332532,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta23iijg",
+     "uid": "st-mwlbwoi10k89lg",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332554,7 +332551,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta24ssgm",
+     "uid": "st-mwlbwoi10lxtop",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332573,7 +332570,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta25tizu",
+     "uid": "st-mwlbwoi10m465p",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332592,7 +332589,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta26zmco",
+     "uid": "st-mwlbwoi10nn5rh",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332611,7 +332608,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta27ewce",
+     "uid": "st-mwlbwoi10o19gl",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332630,7 +332627,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta285hxq",
+     "uid": "st-mwlbwoi10ptr17",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332649,7 +332646,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta295h1r",
+     "uid": "st-mwlbwoi10qysqd",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332668,7 +332665,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2atx8k",
+     "uid": "st-mwlbwoi10ru5hd",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332687,7 +332684,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2bi9v7",
+     "uid": "st-mwlbwoi10sj00g",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332706,7 +332703,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2co1pd",
+     "uid": "st-mwlbwoi10tqpy5",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332725,7 +332722,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2dx16p",
+     "uid": "st-mwlbwoi10u15vh",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332744,7 +332741,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2egx7z",
+     "uid": "st-mwlbwoi10vk6sb",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332763,7 +332760,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2fly4z",
+     "uid": "st-mwlbwoi10wfxz1",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332782,7 +332779,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2gomr3",
+     "uid": "st-mwlbwoi10xk7w1",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332801,7 +332798,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2hobhw",
+     "uid": "st-mwlbwoi10y2w2a",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332820,7 +332817,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2i5ajj",
+     "uid": "st-mwlbwoi10zs9ko",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332839,7 +332836,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2jw355",
+     "uid": "st-mwlbwoi1100dpx",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332858,7 +332855,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2kss77",
+     "uid": "st-mwlbwoi111b2d5",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332877,7 +332874,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2lalsc",
+     "uid": "st-mwlbwoi112yjxw",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332896,7 +332893,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2ml8pf",
+     "uid": "st-mwlbwoi113uxon",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332915,7 +332912,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2nl7cj",
+     "uid": "st-mwlbwoi1140ph0",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332934,7 +332931,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2o432c",
+     "uid": "st-mwlbwoi115zvvf",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332953,7 +332950,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2pjskx",
+     "uid": "st-mwlbwoi116muny",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332972,7 +332969,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2qwn38",
+     "uid": "st-mwlbwoi117802i",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -332991,7 +332988,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2rspcj",
+     "uid": "st-mwlbwoi1188k46",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333010,7 +333007,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2sva83",
+     "uid": "st-mwlbwoi119qebn",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333029,7 +333026,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2ti01b",
+     "uid": "st-mwlbwoi11axzal",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333048,7 +333045,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2u27ym",
+     "uid": "st-mwlbwoi11byf81",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333067,7 +333064,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2vipkz",
+     "uid": "st-mwlbwoi11cal8d",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333086,7 +333083,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2wdr3p",
+     "uid": "st-mwlbwoi11dfhvm",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333105,7 +333102,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2xo19m",
+     "uid": "st-mwlbwoi11emmbe",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333124,7 +333121,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2yk6us",
+     "uid": "st-mwlbwoi11fetv5",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333143,7 +333140,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta2z6nay",
+     "uid": "st-mwlbwoi11gstst",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333162,7 +333159,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta30q2ch",
+     "uid": "st-mwlbwoi11hdkct",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333181,7 +333178,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta316heu",
+     "uid": "st-mwlbwoi11it2by",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333200,7 +333197,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta326nsh",
+     "uid": "st-mwlbwoi11j51iq",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333219,7 +333216,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta334l1e",
+     "uid": "st-mwlbwoi11k266w",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333238,7 +333235,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta341mmu",
+     "uid": "st-mwlbwoi11l6vvp",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333257,7 +333254,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta35bc4j",
+     "uid": "st-mwlbwoi11mam20",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333276,7 +333273,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta36h31c",
+     "uid": "st-mwlbwoi11nn0yj",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333295,7 +333292,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3733cd",
+     "uid": "st-mwlbwoi11oydxl",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333314,7 +333311,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta38z5ln",
+     "uid": "st-mwlbwoi11pieuv",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333333,7 +333330,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta392um2",
+     "uid": "st-mwlbwoi11qebb5",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333352,7 +333349,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3aik9p",
+     "uid": "st-mwlbwoi11rgojw",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333371,7 +333368,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3b20jx",
+     "uid": "st-mwlbwoi11svsck",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
@@ -333390,7 +333387,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3cd9bq",
+     "uid": "st-mwlbwoi11ttzu8",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333409,7 +333406,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3dzmq8",
+     "uid": "st-mwlbwoi11u812z",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333428,7 +333425,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3eal4h",
+     "uid": "st-mwlbwoi11vvxda",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333447,7 +333444,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3fzqt7",
+     "uid": "st-mwlbwoi11wo0w5",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333466,7 +333463,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3gdscb",
+     "uid": "st-mwlbwoi11xnjii",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333485,7 +333482,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3hyrvn",
+     "uid": "st-mwlbwoi11y1uzf",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333504,7 +333501,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3ipkux",
+     "uid": "st-mwlbwoi11z9hmw",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333523,7 +333520,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3jv1ip",
+     "uid": "st-mwlbwoi120235q",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333542,7 +333539,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3k250a",
+     "uid": "st-mwlbwoi121ae6s",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333561,7 +333558,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3lkkzl",
+     "uid": "st-mwlbwoi122hw49",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333580,7 +333577,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3msoen",
+     "uid": "st-mwlbwoi123s0ll",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333599,7 +333596,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3nl0zu",
+     "uid": "st-mwlbwoi124aoab",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333618,7 +333615,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3ofx5d",
+     "uid": "st-mwlbwoi125rv1u",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333637,7 +333634,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3pts29",
+     "uid": "st-mwlbwoi126q0bj",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333656,7 +333653,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3qtd4f",
+     "uid": "st-mwlbwoi1278ud5",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333675,7 +333672,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3rwfoc",
+     "uid": "st-mwlbwoi128zsur",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333694,7 +333691,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3su7sb",
+     "uid": "st-mwlbwoi129n0ao",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333713,7 +333710,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3tjgji",
+     "uid": "st-mwlbwoi12au91x",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333732,7 +333729,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3u98mc",
+     "uid": "st-mwlbwoi12bxdid",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333751,7 +333748,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3vb14x",
+     "uid": "st-mwlbwoi12co7fi",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333770,7 +333767,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3wh8ov",
+     "uid": "st-mwlbwoi12diegy",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333789,7 +333786,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3xjk56",
+     "uid": "st-mwlbwoi12ev9sq",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333808,7 +333805,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3yeixh",
+     "uid": "st-mwlbwoi12fpyqo",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333827,7 +333824,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta3zofod",
+     "uid": "st-mwlbwoi12gx6kv",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333846,7 +333843,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta40dkg3",
+     "uid": "st-mwlbwoi12h99l1",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333865,7 +333862,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta41m2hg",
+     "uid": "st-mwlbwoi12i05bd",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333884,7 +333881,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4263jj",
+     "uid": "st-mwlbwoi12juovk",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333903,7 +333900,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta43790s",
+     "uid": "st-mwlbwoi12kp34c",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333922,7 +333919,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta44xu4a",
+     "uid": "st-mwlbwoi12l5wsp",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333941,7 +333938,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta45cpfz",
+     "uid": "st-mwlbwoi12manvu",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333960,7 +333957,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta46wh72",
+     "uid": "st-mwlbwoi12nobcj",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333979,7 +333976,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta476xis",
+     "uid": "st-mwlbwoi12oc6at",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
@@ -333998,7 +333995,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta48qun5",
+     "uid": "st-mwlbwoi12ptaaa",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334017,7 +334014,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta49wclg",
+     "uid": "st-mwlbwoi12q1pau",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334036,7 +334033,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4ab7gu",
+     "uid": "st-mwlbwoi12rp882",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334055,7 +334052,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4bt8k6",
+     "uid": "st-mwlbwoi12sakam",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334074,7 +334071,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4cbe8q",
+     "uid": "st-mwlbwoi12t5f0g",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334093,7 +334090,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4dkar2",
+     "uid": "st-mwlbwoi12uljsy",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334112,7 +334109,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4ezcol",
+     "uid": "st-mwlbwoi12vpyp5",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334131,7 +334128,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4fzgfu",
+     "uid": "st-mwlbwoi12wy30z",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334150,7 +334147,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4g6fi2",
+     "uid": "st-mwlbwoi12xha2p",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334169,7 +334166,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4hebyl",
+     "uid": "st-mwlbwoi12yk4hj",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334188,7 +334185,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4iar5c",
+     "uid": "st-mwlbwoi12ztgtq",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334207,7 +334204,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4jjwkb",
+     "uid": "st-mwlbwoi130vzej",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334226,7 +334223,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4k4yfa",
+     "uid": "st-mwlbwoi131nei4",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334245,7 +334242,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4lun20",
+     "uid": "st-mwlbwoi132byuu",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334264,7 +334261,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4mszcp",
+     "uid": "st-mwlbwoi133t366",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
@@ -334283,11 +334280,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbqpta4nwbtb",
+     "uid": "st-mwlbwoi13416gi",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s113-112",
+     "id": "s113",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
      "why": "",
@@ -334302,11 +334299,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d101w4io",
+     "uid": "st-mwlbwoi135ayy1",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s114-113",
+     "id": "s114",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
      "why": "",
@@ -334321,11 +334318,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d102lz7e",
+     "uid": "st-mwlbwoi136m7yh",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s115-114",
+     "id": "s115",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
      "why": "",
@@ -334340,11 +334337,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d103rtfm",
+     "uid": "st-mwlbwoi137nvg7",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s116-115",
+     "id": "s116",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
      "why": "",
@@ -334359,11 +334356,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d104kudz",
+     "uid": "st-mwlbwoi138lkrc",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s117-116",
+     "id": "s117",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
      "why": "",
@@ -334378,11 +334375,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d105b34s",
+     "uid": "st-mwlbwoi13976jw",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s118-117",
+     "id": "s118",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
      "why": "",
@@ -334397,11 +334394,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d106kejb",
+     "uid": "st-mwlbwoi13ayteu",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s119-118",
+     "id": "s119",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
      "why": "",
@@ -334416,11 +334413,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d3073n5e",
+     "uid": "st-mwlbwoi13bnc8o",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s120-119",
+     "id": "s120",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
      "why": "",
@@ -334435,11 +334432,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d308n8xa",
+     "uid": "st-mwlbwoi13cll27",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s121-120",
+     "id": "s121",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
      "why": "",
@@ -334454,11 +334451,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d309xdzl",
+     "uid": "st-mwlbwoi13die1c",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s122-121",
+     "id": "s122",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
      "why": "",
@@ -334473,11 +334470,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d30adf84",
+     "uid": "st-mwlbwoi13eihnw",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s123-122",
+     "id": "s123",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
      "why": "",
@@ -334492,11 +334489,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d30bmlhb",
+     "uid": "st-mwlbwoi13fjjt0",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s124-123",
+     "id": "s124",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
      "why": "",
@@ -334511,11 +334508,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d30chhwy",
+     "uid": "st-mwlbwoi13gb7rw",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s125-124",
+     "id": "s125",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
      "why": "",
@@ -334530,11 +334527,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40dvwrk",
+     "uid": "st-mwlbwoi13hu83g",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s126-125",
+     "id": "s126",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
      "why": "",
@@ -334549,11 +334546,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40eske6",
+     "uid": "st-mwlbwoi13iqwnj",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s127-126",
+     "id": "s127",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
      "why": "",
@@ -334568,11 +334565,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40fjtee",
+     "uid": "st-mwlbwoi13jk0qp",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s128-127",
+     "id": "s128",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
      "why": "",
@@ -334587,11 +334584,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40ghpla",
+     "uid": "st-mwlbwoi13kj7bw",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s129-128",
+     "id": "s129",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
      "why": "",
@@ -334606,11 +334603,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40hey0l",
+     "uid": "st-mwlbwoi13llsv8",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s130-129",
+     "id": "s130",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
      "why": "",
@@ -334625,11 +334622,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40iyhxq",
+     "uid": "st-mwlbwoi13m4ct8",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s131-130",
+     "id": "s131",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
      "why": "",
@@ -334644,11 +334641,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40jwn25",
+     "uid": "st-mwlbwoi13nu1ng",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s132-131",
+     "id": "s132",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
      "why": "",
@@ -334663,11 +334660,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40k9aat",
+     "uid": "st-mwlbwoi13oucyt",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s133-132",
+     "id": "s133",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
      "why": "",
@@ -334682,11 +334679,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40l7wwf",
+     "uid": "st-mwlbwoi13pu1qv",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s134-133",
+     "id": "s134",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
      "why": "",
@@ -334701,11 +334698,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40mrpxq",
+     "uid": "st-mwlbwoi13qaiq4",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s135-134",
+     "id": "s135",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
      "why": "",
@@ -334720,11 +334717,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40n50lf",
+     "uid": "st-mwlbwoi13rnc9d",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s136-135",
+     "id": "s136",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
      "why": "",
@@ -334739,11 +334736,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40odipj",
+     "uid": "st-mwlbwoi13s9udb",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s137-136",
+     "id": "s137",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
      "why": "",
@@ -334758,11 +334755,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40ppr95",
+     "uid": "st-mwlbwoi13tqox9",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s138-137",
+     "id": "s138",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
      "why": "",
@@ -334777,11 +334774,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40q8e5o",
+     "uid": "st-mwlbwoi13u7p6l",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s139-138",
+     "id": "s139",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
      "why": "",
@@ -334796,11 +334793,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40rzknu",
+     "uid": "st-mwlbwoi13vnvet",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s140-139",
+     "id": "s140",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
      "why": "",
@@ -334815,11 +334812,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40shlu2",
+     "uid": "st-mwlbwoi13wtm5t",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s141-140",
+     "id": "s141",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
      "why": "",
@@ -334834,11 +334831,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40tgkwi",
+     "uid": "st-mwlbwoi13x00uo",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s142-141",
+     "id": "s142",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
      "why": "",
@@ -334853,11 +334850,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40ua5j2",
+     "uid": "st-mwlbwoi13yqugz",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s143-142",
+     "id": "s143",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
      "why": "",
@@ -334872,11 +334869,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40vh8sd",
+     "uid": "st-mwlbwoi13z9hno",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s144-143",
+     "id": "s144",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
      "why": "",
@@ -334891,11 +334888,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40w4zzc",
+     "uid": "st-mwlbwoi140sbts",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s145-144",
+     "id": "s145",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
      "why": "",
@@ -334910,11 +334907,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40xhzpj",
+     "uid": "st-mwlbwoi1419srl",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s146-145",
+     "id": "s146",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
      "why": "",
@@ -334929,11 +334926,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40y6yao",
+     "uid": "st-mwlbwoi142hzav",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s147-146",
+     "id": "s147",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
      "why": "",
@@ -334948,11 +334945,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d40zhg3w",
+     "uid": "st-mwlbwoi143ymj2",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s148-147",
+     "id": "s148",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
      "why": "",
@@ -334967,11 +334964,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d410qqug",
+     "uid": "st-mwlbwoi144ghr2",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s149-148",
+     "id": "s149",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
      "why": "",
@@ -334986,11 +334983,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d411kjaf",
+     "uid": "st-mwlbwoi145a1ni",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s150-149",
+     "id": "s150",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
      "why": "",
@@ -335005,11 +335002,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d4127s5l",
+     "uid": "st-mwlbwoi14663qk",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s151-150",
+     "id": "s151",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
      "why": "",
@@ -335024,11 +335021,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d413ksqv",
+     "uid": "st-mwlbwoi14714bc",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s152-151",
+     "id": "s152",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
      "why": "",
@@ -335043,11 +335040,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d414b9an",
+     "uid": "st-mwlbwoi148ryp1",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s153-152",
+     "id": "s153",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
      "why": "",
@@ -335062,11 +335059,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d415rp1y",
+     "uid": "st-mwlbwoi149y822",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s154-153",
+     "id": "s154",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
      "why": "",
@@ -335081,11 +335078,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d416yvv8",
+     "uid": "st-mwlbwoi14ay2ud",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s155-154",
+     "id": "s155",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
      "why": "",
@@ -335100,11 +335097,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d417f1j8",
+     "uid": "st-mwlbwoi14bjp8v",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s156-155",
+     "id": "s156",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
      "why": "",
@@ -335119,11 +335116,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d4182rue",
+     "uid": "st-mwlbwoi14c6pwn",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s157-156",
+     "id": "s157",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
      "why": "",
@@ -335138,11 +335135,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d419q9b9",
+     "uid": "st-mwlbwoi14dznh6",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s158-157",
+     "id": "s158",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
      "why": "",
@@ -335157,11 +335154,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41ad22f",
+     "uid": "st-mwlbwoi14eokrk",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s159-158",
+     "id": "s159",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
      "why": "",
@@ -335176,11 +335173,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41bfyg1",
+     "uid": "st-mwlbwoi14fkoll",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s160-159",
+     "id": "s160",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
      "why": "",
@@ -335195,11 +335192,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41czx0r",
+     "uid": "st-mwlbwoi14g5ojx",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s161-160",
+     "id": "s161",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
      "why": "",
@@ -335214,11 +335211,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41dyvvl",
+     "uid": "st-mwlbwoi14h2qma",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s162-161",
+     "id": "s162",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
      "why": "",
@@ -335233,11 +335230,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41erndc",
+     "uid": "st-mwlbwoi14i87il",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s163-162",
+     "id": "s163",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
      "why": "",
@@ -335252,11 +335249,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41f2thw",
+     "uid": "st-mwlbwoi14j10ol",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s164-163",
+     "id": "s164",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
      "why": "",
@@ -335271,11 +335268,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41gm6k7",
+     "uid": "st-mwlbwoi14kn6vz",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s165-164",
+     "id": "s165",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
      "why": "",
@@ -335290,11 +335287,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41h4k7b",
+     "uid": "st-mwlbwoi14lvksb",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s166-165",
+     "id": "s166",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
      "why": "",
@@ -335309,11 +335306,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41iq6eb",
+     "uid": "st-mwlbwoi14m8k32",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s167-166",
+     "id": "s167",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
      "why": "",
@@ -335328,11 +335325,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41j1a3f",
+     "uid": "st-mwlbwoi14no7rt",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s168-167",
+     "id": "s168",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
      "why": "",
@@ -335347,11 +335344,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41k6032",
+     "uid": "st-mwlbwoi14od0pb",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s169-168",
+     "id": "s169",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
      "why": "",
@@ -335366,11 +335363,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41lsy2z",
+     "uid": "st-mwlbwoi14pfipu",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s170-169",
+     "id": "s170",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
      "why": "",
@@ -335385,11 +335382,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d41mr07s",
+     "uid": "st-mwlbwoi14qkmsy",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s171-170",
+     "id": "s171",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
      "why": "",
@@ -335404,11 +335401,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d51nvm3a",
+     "uid": "st-mwlbwoi14ry9rs",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s172-171",
+     "id": "s172",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
      "why": "",
@@ -335423,11 +335420,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d51ocg95",
+     "uid": "st-mwlbwoi14s5hal",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s173-172",
+     "id": "s173",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
      "why": "",
@@ -335442,11 +335439,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d51p006k",
+     "uid": "st-mwlbwoi14txevn",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s174-173",
+     "id": "s174",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
      "why": "",
@@ -335461,11 +335458,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d51qmunt",
+     "uid": "st-mwlbwoi14uze6g",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s175-174",
+     "id": "s175",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
      "why": "",
@@ -335480,11 +335477,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d51rfxxp",
+     "uid": "st-mwlbwoi14v0m1f",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s176-175",
+     "id": "s176",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
      "why": "",
@@ -335499,11 +335496,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbm3d51s3285",
+     "uid": "st-mwlbwoi14watrz",
      "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
-     "id": "s65-64",
+     "id": "s177",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
      "why": "",
@@ -335518,11 +335515,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse01adwj",
+     "uid": "st-mwlbwoi14xjpm0",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s66-65",
+     "id": "s178",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
      "why": "",
@@ -335537,11 +335534,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse02mu96",
+     "uid": "st-mwlbwoi14yve4u",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s67-66",
+     "id": "s179",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
      "why": "",
@@ -335556,11 +335553,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse031opk",
+     "uid": "st-mwlbwoi14zojk3",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s68-67",
+     "id": "s180",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
      "why": "",
@@ -335575,11 +335572,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse04r3x9",
+     "uid": "st-mwlbwoi1503jyl",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s69-68",
+     "id": "s181",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
      "why": "",
@@ -335594,11 +335591,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse05i7gt",
+     "uid": "st-mwlbwoi151kgxj",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s70-69",
+     "id": "s182",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
      "why": "",
@@ -335613,11 +335610,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse06tlt7",
+     "uid": "st-mwlbwoi152awt4",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s71-70",
+     "id": "s183",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
      "why": "",
@@ -335632,11 +335629,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse07snji",
+     "uid": "st-mwlbwoi153e5zf",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s72-71",
+     "id": "s184",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
      "why": "",
@@ -335651,11 +335648,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse08fhuk",
+     "uid": "st-mwlbwoi1542zxt",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s73-72",
+     "id": "s185",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
      "why": "",
@@ -335670,11 +335667,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse09h500",
+     "uid": "st-mwlbwoi155k4pt",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s74-73",
+     "id": "s186",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
      "why": "",
@@ -335689,11 +335686,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0afhye",
+     "uid": "st-mwlbwoi156awlr",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s75-74",
+     "id": "s187",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
      "why": "",
@@ -335708,11 +335705,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0bb25f",
+     "uid": "st-mwlbwoi157jm3a",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s76-75",
+     "id": "s188",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
      "why": "",
@@ -335727,11 +335724,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0c5yoq",
+     "uid": "st-mwlbwoi158hau4",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s77-76",
+     "id": "s189",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
      "why": "",
@@ -335746,11 +335743,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0d28ny",
+     "uid": "st-mwlbwoi159ujq5",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s78-77",
+     "id": "s190",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
      "why": "",
@@ -335765,11 +335762,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0ehnhu",
+     "uid": "st-mwlbwoi15a2h04",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s79-78",
+     "id": "s191",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
      "why": "",
@@ -335784,11 +335781,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0fecc3",
+     "uid": "st-mwlbwoi15bn4jf",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s80-79",
+     "id": "s192",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
      "why": "",
@@ -335803,11 +335800,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0gd9o9",
+     "uid": "st-mwlbwoi15cafyi",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s81-80",
+     "id": "s193",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
      "why": "",
@@ -335822,11 +335819,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0hct4q",
+     "uid": "st-mwlbwoi15dfllp",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s82-81",
+     "id": "s194",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
      "why": "",
@@ -335841,11 +335838,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0if2pp",
+     "uid": "st-mwlbwoi15eb6m8",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s83-82",
+     "id": "s195",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
      "why": "",
@@ -335860,11 +335857,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0jiy1k",
+     "uid": "st-mwlbwoi15fqqxu",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s84-83",
+     "id": "s196",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
      "why": "",
@@ -335879,11 +335876,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0kfyyt",
+     "uid": "st-mwlbwoi15g3vcy",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s85-84",
+     "id": "s197",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
      "why": "",
@@ -335898,11 +335895,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0lzzot",
+     "uid": "st-mwlbwoi15hz9sy",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s86-85",
+     "id": "s198",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
      "why": "",
@@ -335917,11 +335914,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitse0mfl2x",
+     "uid": "st-mwlbwoi15ig923",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s87-86",
+     "id": "s199",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
      "why": "",
@@ -335936,11 +335933,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0nkj5q",
+     "uid": "st-mwlbwoi15jgq7l",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s88-87",
+     "id": "s200",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
      "why": "",
@@ -335955,11 +335952,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0owkxr",
+     "uid": "st-mwlbwoi15kftc5",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s89-88",
+     "id": "s201",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
      "why": "",
@@ -335974,11 +335971,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0pf683",
+     "uid": "st-mwlbwoi15l1zia",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s90-89",
+     "id": "s202",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
      "why": "",
@@ -335993,11 +335990,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0qjf8t",
+     "uid": "st-mwlbwoi15mno4l",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s91-90",
+     "id": "s203",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
      "why": "",
@@ -336012,11 +336009,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0rnn6l",
+     "uid": "st-mwlbwoi15n2s6x",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s92-91",
+     "id": "s204",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
      "why": "",
@@ -336031,11 +336028,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0s4t8k",
+     "uid": "st-mwlbwoi15o6hfy",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s93-92",
+     "id": "s205",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
      "why": "",
@@ -336050,11 +336047,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0t56mt",
+     "uid": "st-mwlbwoi15pl2wb",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s94-93",
+     "id": "s206",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
      "why": "",
@@ -336069,11 +336066,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0ulhe7",
+     "uid": "st-mwlbwoi15qvkpl",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s95-94",
+     "id": "s207",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
      "why": "",
@@ -336088,11 +336085,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0vaw2q",
+     "uid": "st-mwlbwoi15r02zl",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s96-95",
+     "id": "s208",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
      "why": "",
@@ -336107,11 +336104,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbitsf0wfl6q",
+     "uid": "st-mwlbwoi15sxlh0",
      "createdAt": "2026-11-17T23:23:08.164Z"
     },
     {
-     "id": "s33-32",
+     "id": "s209",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
      "why": "",
@@ -336126,11 +336123,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g9018d3d",
+     "uid": "st-mwlbwoi15tc52x",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s34-33",
+     "id": "s210",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
      "why": "",
@@ -336145,11 +336142,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g902jw1x",
+     "uid": "st-mwlbwoi15uh2q0",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s35-34",
+     "id": "s211",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
      "why": "",
@@ -336164,11 +336161,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g903t7bl",
+     "uid": "st-mwlbwoi15vdhp9",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s36-35",
+     "id": "s212",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
      "why": "",
@@ -336183,11 +336180,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g904p6ce",
+     "uid": "st-mwlbwoi15wagdj",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s37-36",
+     "id": "s213",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
      "why": "",
@@ -336202,11 +336199,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g905g6sk",
+     "uid": "st-mwlbwoi15xja9j",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s38-37",
+     "id": "s214",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
      "why": "",
@@ -336221,11 +336218,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g9061m0o",
+     "uid": "st-mwlbwoi15ythir",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s39-38",
+     "id": "s215",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
      "why": "",
@@ -336240,11 +336237,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g907idy8",
+     "uid": "st-mwlbwoi15zstyw",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s40-39",
+     "id": "s216",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
      "why": "",
@@ -336259,11 +336256,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g9085rdq",
+     "uid": "st-mwlbwoi160cqjj",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s41-40",
+     "id": "s217",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
      "why": "",
@@ -336278,11 +336275,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g909wkeq",
+     "uid": "st-mwlbwoi161wpld",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s42-41",
+     "id": "s218",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
      "why": "",
@@ -336297,11 +336294,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6g90a35x1",
+     "uid": "st-mwlbwoi162q34e",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s43-42",
+     "id": "s219",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
      "why": "",
@@ -336316,11 +336313,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6gc0bufcr",
+     "uid": "st-mwlbwoi1639ptr",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s44-43",
+     "id": "s220",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
      "why": "",
@@ -336335,11 +336332,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6gc0cwlxg",
+     "uid": "st-mwlbwoi164a763",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s45-44",
+     "id": "s221",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
      "why": "",
@@ -336354,11 +336351,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6gc0do5w2",
+     "uid": "st-mwlbwoi165jy61",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s46-45",
+     "id": "s222",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
      "why": "",
@@ -336373,11 +336370,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6gc0elt0f",
+     "uid": "st-mwlbwoi166q31d",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s47-46",
+     "id": "s223",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
      "why": "",
@@ -336392,11 +336389,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6gc0fluu0",
+     "uid": "st-mwlbwoi167d5p0",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s48-47",
+     "id": "s224",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
      "why": "",
@@ -336411,23 +336408,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh6gc0gf1zo",
+     "uid": "st-mwlbwoi168xp5w",
      "createdAt": "2026-11-17T23:21:51.175Z"
     },
     {
-     "id": "s17-16",
+     "id": "s225",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
-      "framework/cli/builds-store.mjs",
-      "apps/console-web/plugins/build-orchestrator/test/resplit-dedupe.test.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336435,21 +336427,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv01nj0d",
+     "uid": "st-mwlbwoi169nzjq",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s18-17",
+     "id": "s226",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336457,21 +336446,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv02sldl",
+     "uid": "st-mwlbwoi16aalqh",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s19-18",
+     "id": "s227",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "framework/cli/builds-store.mjs",
-      "framework/core/build-pipeline.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336479,21 +336465,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv03wr5a",
+     "uid": "st-mwlbwoi16beuaf",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s20-19",
+     "id": "s228",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/test/resplit-dedupe.test.mjs",
-      "framework/spec/check-builds-store.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336501,20 +336484,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv04odov",
+     "uid": "st-mwlbwoi16cx7xd",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s21-20",
+     "id": "s229",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "framework/cli/builds-store.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336522,22 +336503,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv05s2f4",
+     "uid": "st-mwlbwoi16dgp9k",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s22-21",
+     "id": "s230",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [
-      "_claude/builds/store.json",
-      "_claude/builds/journal/",
-      "framework/cli/builds-live.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336545,20 +336522,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv06cnt9",
+     "uid": "st-mwlbwoi16euv45",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s23-22",
+     "id": "s231",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [
-      "deploy/claude-headless.sh"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336566,21 +336541,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv07za8u",
+     "uid": "st-mwlbwoi16ft8nc",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s24-23",
+     "id": "s232",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
-      "deploy/claude-headless.sh"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336588,21 +336560,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv08b0m2",
+     "uid": "st-mwlbwoi16g658y",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s25-24",
+     "id": "s233",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "deploy/test/claude-headless-brief.test.sh",
-      "deploy/test/fixtures/"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336610,21 +336579,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv094q2c",
+     "uid": "st-mwlbwoi16h1yfc",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s26-25",
+     "id": "s234",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "framework/core/build-pipeline.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336632,21 +336598,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv0azu2u",
+     "uid": "st-mwlbwoi16i0k83",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s27-26",
+     "id": "s235",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs",
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336654,22 +336617,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv0bad8o",
+     "uid": "st-mwlbwoi16je7ia",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s28-27",
+     "id": "s236",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/push-banner/land.mjs",
-      "framework/core/landing-line.mjs",
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336677,22 +336636,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv0cwug4",
+     "uid": "st-mwlbwoi16k0dga",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s29-28",
+     "id": "s237",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [
-      "framework/spec/check-landing-line.mjs",
-      "framework/spec/fixtures/landing-line.json",
-      "apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336700,20 +336655,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv0dkufn",
+     "uid": "st-mwlbwoi16lns60",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s30-29",
+     "id": "s238",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "5 min",
-     "files": [
-      "_claude/builds/store.json"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336721,22 +336674,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv0e29do",
+     "uid": "st-mwlbwoi16mshtp",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s31-30",
+     "id": "s239",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/",
-      "apps/console-web/plugins/build-orchestrator/plugin.json",
-      "framework/cli/axf.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336744,21 +336693,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv0fb75m",
+     "uid": "st-mwlbwoi16n9lcn",
      "createdAt": "2026-11-17T23:21:46.506Z"
     },
     {
-     "id": "s32-31",
+     "id": "s240",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md",
-      "_claude/THREADS.md"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -336766,7 +336712,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlbh2bv0g1qp2",
+     "uid": "st-mwlbwoi16owmt0",
      "createdAt": "2026-11-17T23:21:46.506Z"
     }
    ]
@@ -337143,6 +337089,234 @@
    "steps": [
     {
      "id": "s1",
+     "text": "Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid72odyz",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid73a76o",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s3",
+     "text": "Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid74l5ec",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid75qenj",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s5",
+     "text": "Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid76e5by",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s6",
+     "text": "Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid778yso",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s7",
+     "text": "Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid78t8xj",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s8",
+     "text": "Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid798e4d",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s9",
+     "text": "Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid7av4kd",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s10",
+     "text": "Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid7bot0n",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s11",
+     "text": "Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid7ch9mc",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s12",
+     "text": "Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlbwoid7dj33f",
+     "createdAt": "2026-11-17T23:29:49.226Z"
+    },
+    {
+     "id": "s13-12",
      "text": "[Opus] Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
      "model": "Opus",
      "why": "",
@@ -337161,7 +337335,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s2",
+     "id": "s14-13",
      "text": "[Opus] Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
      "model": "Opus",
      "why": "",
@@ -337180,7 +337354,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s3",
+     "id": "s15-14",
      "text": "[Opus] Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
      "model": "Opus",
      "why": "",
@@ -337199,7 +337373,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s4",
+     "id": "s16-15",
      "text": "[Opus] Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
      "model": "Opus",
      "why": "",
@@ -337218,7 +337392,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s5",
+     "id": "s17-16",
      "text": "[Opus] Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
      "model": "Opus",
      "why": "",
@@ -337237,7 +337411,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s6",
+     "id": "s18-17",
      "text": "[Opus] Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
      "model": "Opus",
      "why": "",
@@ -337256,7 +337430,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s7",
+     "id": "s19-18",
      "text": "[Opus] Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
      "model": "Opus",
      "why": "",
@@ -337275,7 +337449,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s8",
+     "id": "s20-19",
      "text": "[Opus] Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
      "model": "Opus",
      "why": "",
@@ -337294,7 +337468,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s9",
+     "id": "s21-20",
      "text": "[Opus] Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
      "model": "Opus",
      "why": "",
@@ -337313,7 +337487,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s10",
+     "id": "s22-21",
      "text": "[Opus] Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
      "model": "Opus",
      "why": "",
@@ -337332,7 +337506,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s11",
+     "id": "s23-22",
      "text": "[Opus] Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
      "model": "Opus",
      "why": "",
@@ -337351,7 +337525,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s12",
+     "id": "s24-23",
      "text": "[Opus] Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -337370,7 +337544,7 @@
      "createdAt": "2026-11-17T23:29:49.226Z"
     },
     {
-     "id": "s13-12",
+     "id": "s25-24",
      "text": "Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
      "model": "Opus",
      "why": "",
@@ -337393,7 +337567,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s14-13",
+     "id": "s26-25",
      "text": "Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
      "model": "Opus",
      "why": "",
@@ -337414,7 +337588,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s15-14",
+     "id": "s27-26",
      "text": "Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
      "model": "Opus",
      "why": "",
@@ -337436,7 +337610,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s16-15",
+     "id": "s28-27",
      "text": "Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
      "model": "Opus",
      "why": "",
@@ -337458,7 +337632,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s17-16",
+     "id": "s29-28",
      "text": "Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
      "model": "Opus",
      "why": "",
@@ -337481,7 +337655,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s18-17",
+     "id": "s30-29",
      "text": "Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
      "model": "Opus",
      "why": "",
@@ -337502,7 +337676,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s19-18",
+     "id": "s31-30",
      "text": "Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
      "model": "Opus",
      "why": "",
@@ -337524,7 +337698,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s20-19",
+     "id": "s32-31",
      "text": "Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
      "model": "Opus",
      "why": "",
@@ -337547,7 +337721,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s21-20",
+     "id": "s33-32",
      "text": "Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
      "model": "Opus",
      "why": "",
@@ -337569,7 +337743,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s22-21",
+     "id": "s34-33",
      "text": "Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
      "model": "Opus",
      "why": "",
@@ -337591,7 +337765,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s23-22",
+     "id": "s35-34",
      "text": "Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
      "model": "Opus",
      "why": "",
@@ -337613,7 +337787,7 @@
      "createdAt": "2026-11-17T23:29:29.116Z"
     },
     {
-     "id": "s24-23",
+     "id": "s36-35",
      "text": "Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
