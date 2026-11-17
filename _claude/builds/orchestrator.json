@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:43:31.339Z",
+ "updatedAt": "2026-11-17T23:43:56.353Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -185945,7 +185945,7 @@
    "branch": "claude/move-everything-axhub-web-console",
    "pr": "",
    "createdAt": "2026-11-17T22:28:32.914Z",
-   "updatedAt": "2026-11-17T23:34:26.510Z",
+   "updatedAt": "2026-11-17T23:43:50.782Z",
    "builtAt": "",
    "notes": [
     {
@@ -186096,8 +186096,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T23:43:50.782Z",
      "note": "",
      "uid": "st-mwl9wsjp48oo28",
      "createdAt": "2026-11-17T22:33:53.520Z"

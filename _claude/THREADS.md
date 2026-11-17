@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `dispatcher-split-builds-evenly-across` added (728 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `move-everything-axhub-web-console` added (31 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `auto-lander-never-wait-missing-ui-review` added (187 steps) (all) · foreign-write
 - 2026-11-17 22:58 UTC · `one-true-source-for-every-setting` added (80 steps) (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:42 UTC · `fix-launcher-crash-duplicate-steps-brief` s5 done (all) · foreign-write
 - 2026-11-17 23:43 UTC · `move-server-side-console-parts-onto-vps` s7 done (all) · foreign-write
 - 2026-11-17 23:43 UTC · `move-server-side-console-parts-onto-vps` s8 done (all) · orchestrator
+- 2026-11-17 23:43 UTC · `move-everything-axhub-web-console` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
