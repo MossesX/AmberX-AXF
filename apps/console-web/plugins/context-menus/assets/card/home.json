@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "context-menus-home",
+  "name": "Context menus",
+  "version": "1.0.0",
+  "description": "Context menus on Home: List context menus.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Context menus",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "context-menus",
+      "command": "list"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

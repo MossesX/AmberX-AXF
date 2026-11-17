@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "notify-control-home",
+  "name": "Notifications",
+  "version": "1.0.0",
+  "description": "Notifications on Home: The whole Notifications panel: master, apps, quiet hours, every type.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Notifications",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "notify-control",
+      "command": "state"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}
