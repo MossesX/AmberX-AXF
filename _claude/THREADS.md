@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `every-settings-interface-gets` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `own-look-per-grid-and-tab-group` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `banner-widget-shapes-plus-change-icon` s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `server-auto-lander-fixes-lands` note (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:36 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 23:36 UTC · `fix-launcher-crash-duplicate-steps-brief` s1 done, → running (all) · orchestrator
 - 2026-11-17 23:36 UTC · `fix-launcher-crash-duplicate-steps-brief` s1 done (all) · foreign-write
+- 2026-11-17 23:36 UTC · `fix-launcher-crash-duplicate-steps-brief` s2 done (all) · orchestrator
+- 2026-11-17 23:36 UTC · `fix-launcher-crash-duplicate-steps-brief` s3 done (all) · orchestrator
+- 2026-11-17 23:37 UTC · `fix-launcher-crash-duplicate-steps-brief` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
