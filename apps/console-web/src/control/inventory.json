@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 71,
     "settings": 89,
-    "functions": 275,
+    "functions": 276,
     "buttons": 62,
     "plugins": 71
   },
@@ -7754,6 +7754,21 @@
         "interface"
       ],
       "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.transparency",
+      "kind": "function",
+      "id": "chrome.transparency",
+      "label": "Transparency of one tab group / toolbar / nav / menu / banner (chrome.transparency:<type>:<instance>:<inherit|0…100|opaque|half|glass|clear>)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.transparency",
+        "chrome",
+        "transparency"
+      ],
+      "params": true,
+      "requires": "assets.swap",
       "file": "src/axf/react/components/ChromeContext.tsx"
     },
     {

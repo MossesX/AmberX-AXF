@@ -706,6 +706,17 @@ write('spacing.json', {
     instanceInterfaces: cs.chromeInstanceInterfaceList(savedInst),
     prefixTargets: Object.fromEntries(['axf-ws-toolbar:main', 'axf-ws-toolbar:', 'axf-ws-toolbarx'].map((t) => [t, cs.chromeTypeOfTarget(t)])),
     instanceSlugs: Object.fromEntries(['Tree search', 'ui-review.sections', '  MCP server!! ', ''].map((l) => [l || '(empty)', cs.chromeInstanceSlug(l)])),
+    // per-instance transparency (Nov 17 2026, build land-per-instance-settings-picker): what callers say → the stored
+    // choice, and the opacity / backdrop tokens one instance's element gets for it
+    transparency: {
+      field: cs.CHROME_TRANSPARENCY_FIELD, options: cs.CHROME_TRANSPARENCY_OPTIONS, vars: cs.CHROME_TRANSPARENCY_VARS,
+      parse: Object.fromEntries(([0.6, '60%', '60', 'half', 'opaque', 1, '1', 0, 'clear', 'glass', 'default', 45, 150, 'x', null] as unknown[]).map((v) => [JSON.stringify(v), cs.parseTransparency(v)])),
+      apply: Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, cs.chromeTransparencyVars(t, { transparency: '40' })])),
+      opaque: cs.chromeTransparencyVars('toolbar', { transparency: '100' }),
+      inherit: cs.chromeTransparencyVars('toolbar', { transparency: 'inherit' }),
+      none: cs.chromeTransparencyVars('toolbar', null),
+      normalized: cs.normalizeInstanceOverride('nav-menu', { transparency: 0.3, style: 'rail' }),
+    },
     overrides: {
       clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }),
       number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }),
