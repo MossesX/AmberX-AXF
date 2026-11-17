@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7970,
- "updatedAt": "2026-11-17T21:19:38.963Z",
+ "rev": 7971,
+ "updatedAt": "2026-11-17T21:19:48.198Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268226,7 +268226,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:19:22.987Z",
+   "updatedAt": "2026-11-17T21:19:41.767Z",
    "builtAt": "",
    "notes": [
     {
@@ -268385,7 +268385,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -268393,13 +268393,13 @@
     "runs": 2,
     "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T21:19:06.169Z",
+     "at": "2026-11-17T21:06:39.726Z",
      "exit": 0,
      "outcome": "requeued",
      "reason": "phase-done",
-     "stepsLeft": 21,
+     "stepsLeft": 23,
      "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
      "phase": "Phase 1"
     },
     "split": {
@@ -268410,7 +268410,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on hulu0241 finished phase Phase 1 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "requeued after phase Phase 1: next phase Opus waits for a slot and an account",
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
@@ -268424,24 +268424,18 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
-   },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:19:06.166Z",
-     "buildId": "rebuild-fresh-main-phone-connect-small",
-     "phase": "Phase 1",
-     "step": "s7",
-     "cause": "exit-clean",
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T21:06:34.794Z",
      "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
      "account": "hulu0241",
-     "notified": "2026-11-17T21:19:27.343Z",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
+     "phase": "Phase 1"
     }
-   ],
+   },
    "steps": [
     {
      "id": "s1",
@@ -268611,12 +268605,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:19:41.767Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T16:54:55.110Z"
+     "updatedAt": "2026-11-17T21:19:42.144Z"
     },
     {
      "id": "s8",
