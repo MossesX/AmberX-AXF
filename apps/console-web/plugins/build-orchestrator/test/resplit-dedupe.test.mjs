@@ -2,7 +2,7 @@
 // A re-split never grows a build, two copies of the store that gave one step different uids merge into one step, the
 // save guard collapses repeats from any writer, a done copy wins, and distinct steps with similar text are kept.
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -78,6 +78,21 @@ await t('tidyStepIds renames collision ids only where free', () => {
   const b = { steps: [{ id: 's1' }, { id: 's65-64' }, { id: 's3-2' }, { id: 's2' }] };
   assert.equal(core.tidyStepIds(b), 1);
   assert.deepEqual(b.steps.map((s) => s.id), ['s1', 's65-64', 's3', 's2']);
+});
+
+await t('dedupe-steps: dry run writes nothing, apply collapses with one revision per build', () => {
+  const rep = (id, k) => ({ id, title: id, status: 'queued', steps: Array.from({ length: 3 * k }, (_, i) => ({ id: i < 3 ? `s${i + 1}` : `s${i + 1}-${i}`, uid: `${id}-${i}`, text: `Step ${i % 3}`, done: i === 4, doneAt: i === 4 ? '2026-11-17T00:00:00Z' : '' })) });
+  // written raw (normalizeStore would already collapse them)
+  writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify({ ...core.emptyStore(), builds: [core.normBuild({ id: 'clean', steps: [{ text: 'only' }] }), { ...core.normBuild({ id: 'r1' }), ...rep('r1', 4) }, { ...core.normBuild({ id: 'r2' }), ...rep('r2', 2) }] }));
+  const dry = S.dedupeStepsNow();
+  assert.deepEqual(dry.builds.map((b) => [b.id, b.before, b.after]), [['r1', 12, 3], ['r2', 6, 3]]);
+  const revBefore = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')).rev ?? 0;
+  const done = S.dedupeStepsNow({ apply: true });
+  assert.deepEqual(done.total, { before: 18, after: 6 });
+  const r1 = find('r1');
+  assert.deepEqual(r1.steps.map((s) => [s.id, s.done]), [['s1', false], ['s2', true], ['s3', false]]);
+  assert.equal(S.loadStore().rev - revBefore, 2, 'one revision per build');
+  assert.equal(S.dedupeStepsNow().builds.length, 0, 'a second run finds nothing');
 });
 
 console.log(`resplit-dedupe: ${n} passed`);

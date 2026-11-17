@@ -20,6 +20,8 @@
  *   … set-status <build> <status> [--by who] [--demo]    set a status through the done-means-merged@1 guard: landed / built /
  *                                                        complete without merge + green CI + verify are refused (a note says why)
  *   … demo <build>                                        demo-build@1 check, exit 1 if not demo (--demo above: a demo action)
+ *   … dedupe-steps [--dry-run|--apply] [build…]            step-dedupe: collapse repeated steps (done copy wins, collision
+ *                                                        ids tidied), one journal revision per build; dry run by default
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
  *   … progress [profile]                                    progress per build and per profile (the bars)
@@ -695,6 +697,38 @@ export function restoreBuild(id, rev, by = 'cli') {
   return withStore((s) => { s.builds = s.builds.filter((b) => b.id !== id); s.builds.push(core.normBuild(h.after)); return s; }, { by, action: 'restore', note: `${id} restored to journal rev ${rev}` });
 }
 
+/**
+ * step-dedupe cleanup: every build with repeated steps collapsed (a done copy wins, order of first appearance), the
+ * old collision ids (`s65-64`) put back to `s<n>` where free, one journal revision per build. `apply: false` = the dry
+ * run (nothing written). `ids` limits it to some builds. Returns { apply, builds: [{ id, before, after, renamed }], total }.
+ */
+export function dedupeStepsNow({ apply = false, ids = null, by = 'dedupe-steps' } = {}) {
+  const want = ids?.length ? new Set(ids) : null;
+  const plan = [];
+  // as written, not as read: a read already collapses repeats (normBuild), the file may still hold them
+  const raw = (() => { try { if (remoteOn()) return files.callSync({ op: 'get', key: storeKey() })?.data ?? null; return existsSync(storeFile()) ? JSON.parse(readFileSync(storeFile(), 'utf8')) : null; } catch { return null; } })();
+  for (const b of (raw?.builds ?? []).filter((x) => x && typeof x === 'object' && Array.isArray(x.steps))) {
+    if (want && !want.has(b.id)) continue;
+    const d = core.dedupeSteps(b.steps);
+    const dd = core.dedupeSteps(b.defaultSteps);
+    if (!d.dropped && !dd.dropped) continue;
+    plan.push({ id: b.id, status: b.status ?? '', before: b.steps.length, after: d.steps.length, renamed: 0 });
+  }
+  if (apply) for (const row of plan) {
+    withStore((s) => {
+      const b = core.findBuild(s, row.id); if (!b) return s;
+      const r = core.dedupeStoreSteps(s, { ids: [row.id] }).report[0];
+      if (r) { row.before = r.before; row.after = r.after; }
+      row.renamed = core.tidyStepIds(b);
+      // newer than every other copy, so a newer-wins merge (builds-live, absorb) takes the cleaned list
+      b.updatedAt = new Date().toISOString(); b.rev = (b.rev ?? 1) + 1;
+      return s;
+    }, { by, action: 'dedupe-steps', note: `${row.id}: ${row.before} → ${row.after} steps` });
+  }
+  const total = { before: plan.reduce((n, r) => n + r.before, 0), after: plan.reduce((n, r) => n + r.after, 0) };
+  return { apply, builds: plan, total };
+}
+
 export const currentProfile = () => activeProfile().id;
 
 async function main(argv) {
@@ -707,6 +741,11 @@ async function main(argv) {
     const i = rest.indexOf('--report');
     if (i >= 0) { const f = resolve(REPO_ROOT, rest[i + 1]); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `${dryRunMarkdown(r)}\n`); }
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
+  }
+  if (cmd === 'dedupe-steps') {
+    const r = dedupeStepsNow({ apply: rest.includes('--apply'), ids: rest.filter((a) => !a.startsWith('--')), by: process.env.AXF_ACTOR || 'dedupe-steps' });
+    const rows = r.builds.map((b) => `${b.id.padEnd(48)} ${String(b.before).padStart(5)} → ${String(b.after).padStart(3)}${b.renamed ? ` (${b.renamed} ids tidied)` : ''}`);
+    return out({ ok: true, ...r }, `${r.apply ? 'deduped' : 'dry run (--apply writes)'}: ${r.builds.length} build(s) with repeated steps, ${r.total.before} → ${r.total.after} steps\n${rows.join('\n')}`);
   }
   if (cmd === 'set-status') {
     const [id, to] = rest; const bi = rest.indexOf('--by'); const by = (bi >= 0 && rest[bi + 1]) || 'cli';
