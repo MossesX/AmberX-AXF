@@ -396,3 +396,79 @@ def skin_config_make(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
     except OSError as e:
         raise HTTPException(502, f"skins: {e}") from e
     return {"started": True, "app": app, "wish": wish, "results": f"/api/plugins/theme-manager/skin-config/{app}/made"}
+
+
+# ---- instance-look@1: one grid's / tab row's own look (framework/cli/instance-look.mjs is the one writer) ----
+
+LOOK_CLI = cx.ROOT / "framework" / "cli" / "instance-look.mjs"
+LOOK_KINDS = ("tab-group", "grid")
+LOOK_ID_RE = re.compile(r"^(-|[A-Za-z0-9][A-Za-z0-9._:/-]{0,119})$")
+
+
+def _looks(*args: str) -> Any:
+    try:
+        proc = subprocess.run(["node", str(LOOK_CLI), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(status_code=502, detail=f"instance-look: {e}") from e
+    if proc.returncode != 0:
+        try:
+            err = json.loads(proc.stderr or "{}")
+        except json.JSONDecodeError:
+            err = {"message": (proc.stderr or "instance-look failed").strip()}
+        raise HTTPException(status_code=404 if err.get("code") == "not_found" else 400, detail=str(err.get("message") or "instance-look failed"))
+    try:
+        return json.loads(proc.stdout or "null")
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=502, detail=f"instance-look: {e}") from e
+
+
+def _look_target(kind: str, iid: str) -> None:
+    if kind not in LOOK_KINDS:
+        raise HTTPException(400, f"kind must be one of {', '.join(LOOK_KINDS)}")
+    if not LOOK_ID_RE.match(iid):
+        raise HTTPException(400, "id is a grid / tab row settings id (letters, digits, . _ : / -), or - for every one of the kind")
+
+
+@router.get("/instance-look")
+def instance_look_list(app: str = "") -> Any:
+    """Every grid and tab row with an own look in an app (app: axf-console by default): 'which grids have their own look?'."""
+    return {"items": _looks("list", *([app] if app else []))}
+
+
+@router.get("/instance-look/keys")
+def instance_look_keys() -> Any:
+    """The ten look keys and the values each takes (colour-theme tokens, transparent on backgrounds, or steps)."""
+    return {"items": _looks("keys")}
+
+
+@router.get("/instance-look/{kind}/{iid:path}")
+def instance_look_get(kind: str, iid: str, app: str = "") -> Any:
+    """One grid's or tab row's own look (id - = every one of the kind in the app): 'what does the builds grid look like?'."""
+    _look_target(kind, iid)
+    return _looks("get", kind, iid, *(["--app", app] if app else []))
+
+
+@router.put("/instance-look/{kind}/{iid:path}")
+def instance_look_set(kind: str, iid: str, body: dict[str, Any] = Body(...), app: str = "") -> Any:
+    """Set keys of one grid's or tab row's own look, body {values: {rowBg: surface2, textSize: sm}} (or the keys at the top; value skin = drop it): 'make the builds grid rows surface2'."""
+    _look_target(kind, iid)
+    values = body.get("values") if isinstance(body.get("values"), dict) else {k: v for k, v in body.items() if k != "app"}
+    if not values:
+        raise HTTPException(400, "give at least one key: value")
+    a = app or str(body.get("app") or "")
+    pairs = [f"{k}={'skin' if v in (None, '') else v}" for k, v in values.items()]
+    return _looks("set", kind, iid, *pairs, *(["--app", a] if a else []))
+
+
+@router.delete("/instance-look/{kind}/{iid:path}")
+def instance_look_reset(kind: str, iid: str, app: str = "") -> Any:
+    """Reset to skin: drop one grid's or tab row's own look (keeps one undo): 'reset the settings tabs to the skin'."""
+    _look_target(kind, iid)
+    return _looks("reset", kind, iid, *(["--app", app] if app else []))
+
+
+@router.post("/instance-look/{kind}/{iid:path}/undo")
+def instance_look_undo(kind: str, iid: str, app: str = "") -> Any:
+    """Undo the last Reset to skin of one grid or tab row."""
+    _look_target(kind, iid)
+    return _looks("undo", kind, iid, *(["--app", app] if app else []))

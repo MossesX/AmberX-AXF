@@ -13,3 +13,22 @@ Roll colour themes, or everything themeable a skin leaves open (style, layout an
 
 Routes (console token, 404 when disabled): `GET/POST /themes`, `PUT/DELETE /themes/{type}/{id}`, `GET/PUT /presets`, `GET /skins`, `POST /skins/{app}/use` (`{skin, scope?}`), `/off` (`{scope?}`), `/inherit` (`{scope}`), `/follow` (`{on}`), `/back` (`{slot}`), `GET/POST /skins/{app}/color` (`{theme, scope?}`: the colour theme inside the skin in force; `default` = the skin's own; the skin stays and no skin is made), `/restore`, `/undo`, `GET /skins/{app}/at?scope=`, `GET/POST /skins/global` (`{skin}` | `off`), `POST /skins/global/color` (`{theme}`), `GET /skins/modes` (every skin's light and dark colour themes), `GET/POST /skins/{app}/mode` (`{mode: light|dark|system, system?, scope?}`: the skin's light or dark colour theme, or follow the device; the skin stays), `GET /skins/coverage`, `GET /skins/covers/{skin}` (scope = `ui:<id>` | `plugin:<id>`). They become MCP tools by themselves (plugin-commands@1); the CLI is `node framework/cli/skins.mjs`. Voice: "use the Windows skin in the console" and "restore AmberX to default" go through these tools; inside an app, the actions `skin.use:<id>`, `skin.off`, `skin.restore`, `skin.undo`, `skin.mode:light|dark|system` (no argument toggles), `skin.inherit:on|off` and `skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>]`.
 Self-test: `python3 apps/console-web/plugins/theme-manager/test.py`.
+
+## Own look per grid and tab row (instance-look@1)
+
+One grid (its DataGrid id) or one tab row (its TabGroup id) can carry its own look over the skin: ten keys (rowBg, rowAltBg,
+textSize, spacing, borderW, borderColor, radius, hoverBg, selectedBg, selectedFg), each a colour-theme token, `transparent`
+(backgrounds) or a step; raw px and colours are refused. Stored as `axf.chrome.<kind>.<id>.look` in the app's look document.
+
+| Route | What |
+|---|---|
+| `GET /instance-look?app=` | every grid / tab row with an own look (app default `axf-console`) |
+| `GET /instance-look/keys` | the keys and the values each takes |
+| `GET /instance-look/<kind>/<id>?app=` | one record (`-` as id = every one of the kind in the app) |
+| `PUT /instance-look/<kind>/<id>?app=` | body `{ values: { rowBg: "surface2" } }`; value `skin` drops a key |
+| `DELETE /instance-look/<kind>/<id>?app=` | Reset to skin (one undo) |
+| `POST /instance-look/<kind>/<id>/undo?app=` | undo the last reset |
+
+The same library (`framework/cli/instance-look.mjs`) is `axf look …`, control@1 `tokens.looks`, and the MCP tools plugin-commands
+makes from these routes; in the open console the actions `chrome.look.open|get|list|set|reset|undo` and the addresses
+`setting:chrome.<kind>.<id>.look.<key>` do the same. Test: `python3 apps/console-web/plugins/theme-manager/test/test_instance_look.py`.
