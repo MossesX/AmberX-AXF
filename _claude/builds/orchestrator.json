@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:03:23.749Z",
+ "updatedAt": "2026-11-17T00:03:42.042Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157392,7 +157392,7 @@
    "mergedAt": "2026-11-16T23:54:53Z",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-17T00:02:44.120Z",
+   "updatedAt": "2026-11-17T00:03:13Z",
    "builtAt": "",
    "notes": [
     {
@@ -157474,6 +157474,10 @@
     {
      "text": "Reconciler: PR #723 merged",
      "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "Shipped manifest sm-get-main-green-unblock-lander-land-axf rev 1 sent to Shipped features (orchestrator): landed ec2a35d78, 240 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-17T00:03:13Z"
     }
    ],
    "approvals": [],

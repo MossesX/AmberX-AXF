@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7109,
- "updatedAt": "2026-11-17T00:03:23.749Z",
+ "rev": 7110,
+ "updatedAt": "2026-11-17T00:03:42.042Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242460,7 +242460,7 @@
    "mergedAt": "2026-11-16T23:54:53Z",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-17T00:02:44.120Z",
+   "updatedAt": "2026-11-17T00:03:13Z",
    "builtAt": "",
    "notes": [
     {
@@ -242542,6 +242542,10 @@
     {
      "text": "Reconciler: PR #723 merged",
      "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "Shipped manifest sm-get-main-green-unblock-lander-land-axf rev 1 sent to Shipped features (orchestrator): landed ec2a35d78, 240 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-17T00:03:13Z"
     }
    ],
    "approvals": [],
@@ -242602,6 +242606,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-get-main-green-unblock-lander-land-axf",
+    "rev": 1,
+    "at": "2026-11-17T00:03:13Z",
+    "landedCommit": "ec2a35d78fe1a35a610d0c62da10ad847a9ffa28"
    },
    "steps": [
     {
@@ -243091,7 +243101,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
