@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:54 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · builds-live
-- 2026-11-17 22:54 UTC · `api-fully-drives-every-field-type-forms` note (all) · builds-live
 - 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` added (0 steps) (all) · console
 - 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` → queued, note (all) · console
 - 2026-11-17 22:53 UTC · `api-fully-drives-every-field-type-forms` note (all) · console
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:04 UTC · `one-true-source-for-every-setting` added (440 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `vps-sets-every-build-status-manifest` added (390 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `api-fully-drives-every-field-type-forms` added (684 steps) (all) · foreign-write
+- 2026-11-17 23:07 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 23:07 UTC · `move-everything-axhub-web-console` s3 done (all) · foreign-write
 
 ## Token passes (log)
 
