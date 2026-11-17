@@ -820,7 +820,6 @@ VPS). The session reads the rules and this file first, as usual.
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
 - 2026-11-16 23:31 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
-- 2026-11-16 23:31 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
 - 2026-11-16 23:32 UTC · `merge-main-land-console-axhub-retry` note (all) · orchestrator
 - 2026-11-16 23:33 UTC · `amberx-open-url-must-open-page-even-when` s10 done (all) · orchestrator
 - 2026-11-16 23:33 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running, note (all) · pipeline
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 04:02 UTC · `builds-keep-their-slot-across-phases` s1 done, → running (all) · orchestrator
 - 2026-11-17 04:03 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s16 done (all) · orchestrator
 - 2026-11-17 04:03 UTC · `orchestrator-runs-long-builds-across` s14 done (all) · orchestrator
+- 2026-11-17 04:03 UTC · `server-rule-done-means-merged-working` s12 done (all) · orchestrator
 
 ## Token passes (log)
 
