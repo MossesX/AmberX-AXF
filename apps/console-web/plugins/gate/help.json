@@ -259,6 +259,18 @@
         "title": "axf gate auto-lander",
         "text": "status, show <build>, run [--now], retry <build>, fix <build>, pause, resume, settings, set <key> <value>. Same as REST /api/plugins/gate/auto-lander and MCP gate_auto_lander_*.",
         "kind": "control"
+      },
+      {
+        "target": "fix-and-land-by-itself",
+        "title": "Fix and land by itself",
+        "text": "On: the server auto-lander merges main in, starts fix sessions and lands builds by itself every minute. Off: it still reads every build but changes nothing.",
+        "kind": "control"
+      },
+      {
+        "target": "push-to-my-phone-when-it-gives-up",
+        "title": "Push to my phone when it gives up",
+        "text": "One phone push per build the auto-lander gives up on (after the set number of failed tries). The systems check banner item shows either way.",
+        "kind": "control"
       }
     ],
     "intros": [
