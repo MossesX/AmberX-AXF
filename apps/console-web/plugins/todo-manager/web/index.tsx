@@ -8,7 +8,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { ENTRY_DIALOG, EntryEditor, TodoView, TypesPanel } from './ui';
-import { FOLDER, deleteEntry, loadAll, saveEntry, todoState } from './store';
+import { FOLDER, api, deleteEntry, loadAll, saveEntry, todoState } from './store';
 import './todo-manager.css';
 
 function Page() {
@@ -36,6 +36,14 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('todo-manager.subtask', (_a, ctx) => { const e = entryOf(ctx?.payload); if (e) rt.openDialog(ENTRY_DIALOG, { kind: 'task', listId: e.listId, parentId: e.id }); }, { label: 'Add a subtask', searchable: false });
     rt.actions.register('todo-manager.delete', (_a, ctx) => { const e = entryOf(ctx?.payload); if (e && window.confirm(`Delete “${e.title}” and its subtasks?`)) void deleteEntry(e.id); }, { label: 'Delete entry', searchable: false });
     rt.actions.register('todo-manager.reload', () => void loadAll(), { label: 'Reload todos' });
+    // Any Todo manager phrase (voice.json) as a console action: function:todo-manager.say, args = the words said.
+    rt.actions.register('todo-manager.say', async (args) => {
+      const words = (args ?? []).join(' ').trim();
+      if (!words) return rt.toast('Say what to do, e.g. make a list called Groceries.', 'info', 'Todos');
+      const r = await api.post<{ ok: boolean; say: string }>('voice', { text: words }).catch((e: unknown) => ({ ok: false, say: e instanceof Error ? e.message : String(e) }));
+      rt.toast(r.say, r.ok ? 'success' : 'info', 'Todos');
+      await loadAll(todoState().openId);
+    }, { label: 'Say a todo command', params: true });
   },
   views: { 'todo-manager': { title: 'Todos', icon: 'list', keywords: ['todo', 'tasks', 'notes', 'checklist', 'lists'], render: () => <Page /> } },
   nav: { label: 'Plugins', items: [{ id: 'todo-manager', label: 'Todos', icon: 'list', view: 'todo-manager' }] },

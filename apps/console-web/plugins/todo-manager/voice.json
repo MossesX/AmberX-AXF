@@ -1,0 +1,30 @@
+{
+  "$axf": "plugin-voice",
+  "plugin": "todo-manager",
+  "about": "What you can say to the Todo manager (AmberX, console_control_voice, POST /api/console-control/voice, POST /api/plugins/todo-manager/voice, axf todo-manager voice --text …). Checked in order: put specific phrases before general ones. `covers` names the plugin commands (plugin-commands@1 ids) each phrase drives; check-plugin-voice.mjs fails a route command no phrase covers and no `skip` explains.",
+  "commands": [
+    {"id": "list-and-entry", "op": "list-and-entry", "covers": ["lists-run", "entries-run", "by-name-list-and-entry", "by-name-list-create", "by-name-entry-add"], "phrases": ["make a new list called {list} and a {kind} called {title}", "make a list called {list} and a {kind} called {title}", "create a list called {list} with a {kind} called {title}", "new list {list} with a {kind} called {title}"]},
+    {"id": "list-create", "op": "list-create", "covers": ["lists-run", "by-name-list-create"], "phrases": ["make a new list called {title} under {parent}", "make a list called {title} under {parent}", "make a new list called {title}", "make a list called {title}", "create a list called {title}", "create a new list called {title}", "new list {title}", "add a list called {title}"]},
+    {"id": "list-rename", "op": "list-rename", "covers": ["lists-by-lid-set", "by-name-list-rename"], "phrases": ["rename the list {list} to {title}", "rename list {list} to {title}"]},
+    {"id": "list-move", "op": "list-move", "covers": ["lists-reorder", "lists-by-lid-set", "by-name-list-move"], "phrases": ["move the list {list} to position {position}", "move list {list} to position {position}", "move the list {list} into {parent}", "move list {list} into {parent}", "move the list {list} to the {parent}"]},
+    {"id": "list-delete", "op": "list-delete", "covers": ["lists-by-lid-delete", "by-name-list-delete"], "phrases": ["delete the list {list}", "delete list {list}", "remove the list {list}"]},
+    {"id": "entry-add", "op": "entry-add", "covers": ["entries-run", "by-name-entry-add"], "phrases": ["add a {kind} called {title} to {list} under {under}", "add a {kind} called {title} to {list}", "put a {kind} called {title} in {list}", "new {kind} called {title} in {list}"]},
+    {"id": "entry-reopen", "op": "entry-complete", "fixed": {"done": false}, "covers": ["entries-by-eid-set", "by-name-entry-complete"], "phrases": ["mark {entry} as not done", "mark {entry} not done", "reopen {entry}"]},
+    {"id": "entry-complete", "op": "entry-complete", "covers": ["entries-by-eid-set", "by-name-entry-complete"], "phrases": ["mark {entry} in {list} as done", "mark {entry} in {list} done", "mark {entry} as done", "mark {entry} done", "complete {entry}", "tick off {entry}", "check off {entry}"]},
+    {"id": "entry-move", "op": "entry-move", "covers": ["entries-by-eid-set", "entries-bulk", "entries-reorder", "by-name-entry-move"], "phrases": ["move {entry} from {from} to {to}", "move {entry} to {to}"]},
+    {"id": "entry-rename", "op": "entry-edit", "covers": ["entries-by-eid-set", "by-name-entry-edit"], "phrases": ["rename {entry} in {list} to {title}", "rename {entry} to {title}"]},
+    {"id": "entry-body", "op": "entry-edit", "covers": ["entries-by-eid-set", "by-name-entry-edit"], "phrases": ["set the text of {entry} to {body}", "write {body} in {entry}", "change {entry} text to {body}"]},
+    {"id": "entry-priority", "op": "entry-edit", "covers": ["entries-by-eid-set", "by-name-entry-edit"], "phrases": ["set {entry} priority to {priority}", "make {entry} priority {priority}"]},
+    {"id": "entry-status", "op": "entry-edit", "covers": ["entries-by-eid-set", "by-name-entry-edit"], "phrases": ["set {entry} status to {status}", "mark {entry} as {status}"]},
+    {"id": "entry-kind", "op": "entry-edit", "covers": ["entries-by-eid-set", "by-name-entry-edit"], "phrases": ["turn {entry} into a {kind}", "make {entry} a {kind}"]},
+    {"id": "entry-delete", "op": "entry-delete", "covers": ["entries-by-eid-delete", "entries-bulk", "by-name-entry-delete"], "phrases": ["delete {entry} from {list}", "delete {entry}", "remove {entry}"]},
+    {"id": "find", "op": "find", "covers": ["entries", "by-name-find"], "phrases": ["find {kind}s about {q}", "find todos about {q}", "search todos for {q}", "search my lists for {q}", "find {q} in my lists"]},
+    {"id": "lists-read", "op": "lists-read", "covers": ["lists", "lists-by-lid-entries", "by-name-lists-read"], "phrases": ["whats in {list}", "what is in {list}", "read the list {list}", "read list {list}", "what lists do i have", "read my lists", "list my lists"]},
+    {"id": "export", "op": "export", "covers": ["lists-by-lid-export-md", "by-name-export"], "phrases": ["export the list {list}", "export list {list}", "export {list} as markdown"]}
+  ],
+  "skip": {
+    "types": "The type schema is a settings read, not something said aloud; MCP todo_manager_types and the CLI read it.",
+    "types-set": "Editing the type schema (fields per kind) is a form, not a phrase; MCP todo_manager_types_set and the CLI set it.",
+    "voice": "This is the voice entry itself."
+  }
+}

@@ -46,5 +46,15 @@ def get(name: str) -> Any | None:
         return None
 
 
+def get_all(prefix: str) -> list[tuple[str, Any]]:
+    """Every enabled provider whose capability starts with `prefix` (e.g. ``axf.voice-phrases@1:``), as (name, impl)."""
+    out = []
+    for name in sorted(n for n in _services if n.startswith(prefix)):
+        impl = get(name)
+        if impl is not None:
+            out.append((name, impl))
+    return out
+
+
 def available() -> list[dict[str, Any]]:
     return [{"name": n, "folder": f, "enabled": bool(_is_enabled(f))} for n, (f, _) in sorted(_services.items())]

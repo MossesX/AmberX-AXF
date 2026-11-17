@@ -179,6 +179,13 @@
         "text": "Undos changes. Part of Todo manager.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "view:todo-manager",
+        "title": "Todo manager",
+        "text": "Lists with nested groups holding notes, to-dos and tasks (subtasks, checklists, tags, due dates, custom fields per kind), shown as a tree (by lists, kind, status, priority, tag or due date) or a grid, with group actions and Markdown export.",
+        "kind": "screen",
+        "draft": true
       }
     ],
     "intros": []
