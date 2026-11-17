@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8165,
- "updatedAt": "2026-11-17T22:16:58.726Z",
+ "rev": 8166,
+ "updatedAt": "2026-11-17T22:17:10.328Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -285374,10 +285374,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-refreshing-console-jumps-back",
-   "pr": "",
+   "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-17T22:16:39.135Z",
+   "updatedAt": "2026-11-17T22:16:54.152Z",
    "builtAt": "2026-11-17T22:15:44.447Z",
    "notes": [
     {
@@ -285449,17 +285449,7 @@
     "pickedAt": "2026-11-17T21:43:26.212Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T22:16:39.135Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-fix-refreshing-console-jumps-back--rhonda",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
