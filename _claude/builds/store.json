@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7357,
- "updatedAt": "2026-11-17T04:25:37.010Z",
+ "rev": 7358,
+ "updatedAt": "2026-11-17T04:28:14.390Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182934,10 +182934,10 @@
    "pendingId": "",
    "alias": "server-watchdog-orchestrator-auto",
    "branch": "claude/server-watchdog-orchestrator-auto-recovers-stuck",
-   "pr": "",
+   "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T04:25:33.055Z",
+   "updatedAt": "2026-11-17T04:28:11.332Z",
    "builtAt": "",
    "notes": [
     {
@@ -183564,7 +183564,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
