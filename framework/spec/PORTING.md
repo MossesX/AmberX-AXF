@@ -302,6 +302,11 @@ Build `every-skin-ships-a-light-and-a-dark-colour-theme`. Web only; the Kotlin t
 `setSkinMode` / `skin.mode:light|dark|system` (system follows `prefers-color-scheme`). A port maps `system` to the
 device's night mode (`isSystemInDarkTheme()`) and replays the engine cases in `spec/check-skin-modes.mjs`.
 
+Nov 17 2026 (build `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field`): the Default look
+(no skin in force, or a design package with no pair) also switches light / dark through `defaultModePair` (the app's
+`theme-switch`, else its first light and dark colour themes) and `skinModeState`; the check fails when Default lacks
+either. Kotlin twin deferred with the rest.
+
 ## Deferred: the guide's no-auto-open rule + Gizmo naming (Nov 13 2026)
 Web only (Android on hold, build `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n`). The console's
 walkthrough guide (plugin code, `molly-guide/web/walkthrough.ts` `pollDecision`) never opens on load: the first read only learns the

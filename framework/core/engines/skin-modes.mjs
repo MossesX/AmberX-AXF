@@ -87,3 +87,34 @@ export function skinModeRows(skins) {
     return { id: s.id, name: s.name ?? s.id, light: p.light, dark: p.dark, own, ownScheme: skinSchemeOf(s, own) };
   });
 }
+
+/** The id the Default look (no skin in force) goes by in lists and the API. */
+export const DEFAULT_SKIN_ID = 'default';
+
+/**
+ * The Default look's light / dark pair (no skin in force): the app's theme switch (`theme-switch` widget data
+ * `{ light, dark }`) when it ships one whose themes exist, else the first light and the first dark colour theme.
+ * `{ light, dark }`, '' where none ships. Pure.
+ */
+export function defaultModePair(switches, themes) {
+  const list = (themes ?? []).filter((t) => t && t.id);
+  const scheme = new Map(list.map((t) => [t.id, t.data?.scheme ?? '']));
+  for (const w of switches ?? []) {
+    const d = w && typeof w === 'object' ? w.data ?? {} : {};
+    const light = idOr(d.light), dark = idOr(d.dark);
+    if (light && dark && scheme.get(light) === 'light' && scheme.get(dark) === 'dark') return { light, dark };
+  }
+  const first = (want) => list.find((t) => t.data?.scheme === want)?.id ?? '';
+  return { light: first('light'), dark: first('dark') };
+}
+
+/**
+ * Where a page stands: `{ skin, mode, scheme, theme, light, dark }` for the skin in force (or Default). `mode` is the
+ * saved choice ('' = none: the look's own colours); `scheme` is the scheme of the colour theme in force. Pure.
+ */
+export function skinModeState({ skin, pair, mode, theme }) {
+  const p = pair ?? skinModePair(skin);
+  const t = idOr(theme);
+  const scheme = t && t === p.light ? 'light' : t && t === p.dark ? 'dark' : '';
+  return { skin: skin?.id ?? DEFAULT_SKIN_ID, mode: isSkinMode(mode) ? mode : '', scheme, theme: t, light: p.light, dark: p.dark };
+}

@@ -11,6 +11,7 @@ import { followAt, getActingApp, listScopes, listSkins, PLUGIN_ID, readState, sc
 import { getLink, linkFromHash, subscribeLink } from './link';
 import { kindOf, ScopePicker, scopeOf, type Kind } from './ScopePicker';
 import { SkinActions } from './SkinActions';
+import { ModeSwitch } from './ModeSwitch';
 import { SkinPreview, type Frame } from './SkinPreview';
 import { defaultScope, settings } from './settings';
 
@@ -73,6 +74,7 @@ export function SkinsScreen() {
         onKind={(k) => { setKind(k); setTarget(''); }} onTarget={setTarget} onApp={pickApp} onFollow={follow} />
 
       <SkinActions scope={scope} picked={picked} view={view} onDone={done} snack={snack} />
+      <div className="axp-skin-gallery__actions" data-axf-target="skin-mode"><ModeSwitch /></div>
       {err && <p role="alert" className="fx-muted axp-skin-gallery__msg">{err}</p>}
 
       <div className={`axp-skin-gallery__body is-${layout}`}>

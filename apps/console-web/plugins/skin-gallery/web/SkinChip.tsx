@@ -9,6 +9,7 @@ import { Button, Icon, useAxfState } from '@console/axf/react';
 import { backAt, listSkins, readState, scopeLabel, undoLast, useSkinAt, type ScopeView, type SkinRow } from './api';
 import { chipFromHash } from './link';
 import { defaultScope, onSettings, settings } from './settings';
+import { ModeSwitch } from './ModeSwitch';
 
 const useSettings = () => useSyncExternalStore(onSettings, settings, settings);
 
@@ -64,6 +65,9 @@ export function SkinChip() {
               </li>
             ))}
           </ul>
+          <div className="axp-skin-gallery-chip__bar" data-axf-target="skin-mode">
+            <ModeSwitch />
+          </div>
           <div className="axp-skin-gallery-chip__bar" role="toolbar" aria-label="Skin quick actions">
             <Button size="sm" tone="quiet" icon="arrow-left" busy={busy === 'back'} onClick={() => void run('back', () => backAt(scope))}>Back</Button>
             <Button size="sm" tone="quiet" icon="undo" busy={busy === 'undo'} disabled={!here?.canUndo} onClick={() => void run('undo', undoLast)}>Undo</Button>

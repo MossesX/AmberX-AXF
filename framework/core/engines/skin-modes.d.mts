@@ -13,3 +13,7 @@ export declare function skinModeColor(skin: SkinLike | null | undefined, mode: s
 export declare function skinSchemeOf(skin: SkinLike | null | undefined, themeId: string): SkinScheme | '';
 export declare function skinModeProblems(skins: SkinLike[] | null | undefined, themes: ThemeLike[] | null | undefined): string[];
 export declare function skinModeRows(skins: SkinLike[] | null | undefined): { id: string; name: string; light: string; dark: string; own: string; ownScheme: SkinScheme | '' }[];
+export declare const DEFAULT_SKIN_ID: 'default';
+export declare function defaultModePair(switches: unknown[] | null | undefined, themes: ThemeLike[] | null | undefined): { light: string; dark: string };
+export interface SkinModeState { skin: string; mode: SkinMode | ''; scheme: SkinScheme | ''; theme: string; light: string; dark: string }
+export declare function skinModeState(at: { skin?: SkinLike | null; pair?: { light: string; dark: string } | null; mode?: string; theme?: string }): SkinModeState;

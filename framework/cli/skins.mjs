@@ -40,7 +40,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
-import { effectiveScheme, isSkinMode, skinModeColor, skinModeProblems, skinModeRows, skinSchemeOf, SKIN_MODES } from '../core/engines/skin-modes.mjs';
+import { defaultModePair, effectiveScheme, isSkinMode, skinModeColor, skinModeProblems, skinModeRows, skinSchemeOf, DEFAULT_SKIN_ID, SKIN_MODES } from '../core/engines/skin-modes.mjs';
 import { defaultSkinMigration, isDefaultSkin, skinDeleteError, SKIN_CONFIG_GLOBAL } from '../core/engines/skin-config-rules.mjs';
 import * as SC from '../core/engines/skin-config-rules.mjs';
 import { spawnSync } from 'node:child_process';
@@ -287,8 +287,11 @@ function writeModes(doc) {
 }
 const skinAsset = (id) => assetsOf('skin').find((a) => a.id === id) ?? null;
 
+/** The Default look's light / dark pair (no skin in force): the theme switch, else the first light and dark themes. */
+export const defaultPair = () => defaultModePair(assetsOf('theme-switch'), assetsOf('color-theme'));
+
 /** Every skin's light and dark colour themes (`skins.mjs modes`). */
-export const modeRows = () => skinModeRows(assetsOf('skin'));
+export const modeRows = () => [{ id: DEFAULT_SKIN_ID, name: 'Default', ...defaultPair(), own: '', ownScheme: '' }, ...skinModeRows(assetsOf('skin'))];
 
 /** Skins missing a light or a dark colour theme (empty = every skin covered). */
 export const modeProblems = () => skinModeProblems(assetsOf('skin'), assetsOf('color-theme'));
@@ -298,6 +301,13 @@ export function mode(app, scopeKey = '') {
   const c = color(app, scopeKey);
   const skin = c.skin ? skinAsset(c.skin) : null;
   const stored = readModes()[app]?.[scopeKey || 'app'] ?? '';
+  if (!skin) {
+    // Default (no skin in force, or a design package with no pair of its own): the app's own light / dark pair
+    const pair = defaultPair();
+    const shows = c.skin ? c.colorTheme : readLook(app)?.own?.slots?.[SKIN_COLOR_SLOT] ?? '';
+    const scheme = shows && shows === pair.light ? 'light' : shows && shows === pair.dark ? 'dark' : '';
+    return { app, scope: scopeKey || 'app', skin: c.skin || DEFAULT_SKIN_ID, mode: stored || scheme, scheme, colorTheme: shows, ...pair, modes: SKIN_MODES };
+  }
   const pair = skin ? { light: skin.data?.colorThemes?.light ?? '', dark: skin.data?.colorThemes?.dark ?? '' } : { light: '', dark: '' };
   return { app, scope: scopeKey || 'app', skin: c.skin, mode: stored || skinSchemeOf(skin, c.colorTheme) || '', scheme: skinSchemeOf(skin, c.colorTheme), colorTheme: c.colorTheme, ...pair, modes: SKIN_MODES };
 }
@@ -311,10 +321,27 @@ export function setMode(app, value, scopeKey = '', prefers = '') {
   const l = need(app);
   const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
   const inForce = resolveLookSkin(l, readGlobal(), scope);
-  if (!inForce.id) throw new Error(`${app}${scopeKey ? ` ${scopeKey}` : ''} has no skin in force: use a skin first`);
+  if (!inForce.id) {
+    // Default: the app's own colour theme flips between the Default pair (screen and plugin scopes follow the app)
+    if (scopeKey) throw new Error(`${app} ${scopeKey} has no skin in force: light and dark for the Default look are set for the whole app`);
+    const want = effectiveScheme(value, prefers === 'dark');
+    const theme = defaultPair()[want];
+    if (!theme) throw new Error(`the Default look ships no ${want} colour theme`);
+    writeLook(setLookSlot(l, SKIN_COLOR_SLOT, theme, readGlobal()));
+    const modes = readModes();
+    modes[app] = { ...(modes[app] ?? {}), app: value };
+    writeModes(modes);
+    return { ...mode(app), applied: want };
+  }
   const skin = skinAsset(inForce.id);
-  if (!skin) throw new Error(`"${inForce.id}" is a design package, not a skin: pick its day or night package instead`);
-  const { pick } = skinModeColor(skin, value, prefers === 'dark');
+  let pick;
+  if (skin) pick = skinModeColor(skin, value, prefers === 'dark').pick;
+  else {
+    // a design package: the Default pair, picked inside the package (the package stays)
+    const want = effectiveScheme(value, prefers === 'dark');
+    pick = defaultPair()[want];
+    if (!pick) throw new Error(`the Default look ships no ${want} colour theme`);
+  }
   writeLook(setSkinColorTheme(l, pick, scopeKey || undefined));
   const modes = readModes();
   modes[app] = { ...(modes[app] ?? {}), [scopeKey || 'app']: value };
