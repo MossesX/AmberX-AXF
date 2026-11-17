@@ -15,13 +15,13 @@
  *
  *   node apps/console-web/plugins/build-orchestrator/watchdog.mjs run [--dry-run] [--force] [--json] [--by who]
  *   … status [--json]                    settings, last run, last runs
- *   … log [--limit N] [--json]           the cleanup log (stale-row-log@1 records)
+ *   … log [--limit N] [--kind K] [--action A] [--build B] [--json]   the cleanup log (stale-row-log@1 records)
  *   … settings [--json]                  every setting with its value
  *   … set <key> <value>                  change one setting (enabled, intervalMin, dryRun, tables.<id>, notify)
  *
  * Data (plugin dataDir .axf-console/plugins/build-orchestrator/watchdog/ under AXF_CONSOLE_ROOT, else this checkout;
- * AXF_WATCHDOG_DIR overrides): settings.json, state.json (last run), runs.jsonl (every run), log-YYYY-MM.jsonl
- * (the cleanup log), github-etags.json (the facts gatherer's cache), run.lock.
+ * AXF_WATCHDOG_DIR overrides): settings.json, state.json (last run), runs.jsonl (every run), log.jsonl
+ * (the cleanup log; log-YYYY-MM.jsonl after the month turns), github-etags.json (the facts gatherer's cache), run.lock.
  */
 import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -169,6 +169,13 @@ export async function run(opts = {}) {
     const applied = dry ? p.changes.map((v) => ({ ...v, applied: false, why: 'dry run' })) : await applyChanges(p, { by, at: rec.at });
     rec.changes = applied.map((v) => ({ table: v.table, kind: v.row.kind, id: v.row.id, build: v.row.build, pr: v.row.pr, action: v.action, reason: v.reason, applied: !!v.applied, why: v.why ?? '', line: v.line }));
     rec.cleaned = applied.filter((v) => v.applied).length;
+    if (!dry && rec.cleaned) {
+      // the cleanup log, build notes, one Codebase changes line: none of them may fail the run
+      const log = await import('./watchdog/log.mjs');
+      rec.logged = log.appendLog(dataDir(), log.recordsOf(applied, { at: rec.at, by }), rec.at);
+      try { rec.noted = await log.noteBuilds(applied, { by }); } catch (e) { rec.warnings = [...(rec.warnings ?? []), `build notes: ${String(e.message).slice(0, 200)}`]; }
+      try { const c = log.changesLine(rec); if (c.id) rec.changesEntry = c.id; } catch (e) { rec.warnings = [...(rec.warnings ?? []), `codebase changes: ${String(e.message).slice(0, 200)}`]; }
+    }
     rec.ok = true;
     if (opts.afterApply) await opts.afterApply(rec, applied, p);
     return rec;
@@ -213,7 +220,7 @@ function printRun(r) {
 export async function main(argv = process.argv.slice(2)) {
   const json = argv.includes('--json');
   const opt = (n) => { const i = argv.indexOf(`--${n}`); return i >= 0 ? argv[i + 1] : undefined; };
-  const pos = argv.filter((a, i) => !a.startsWith('--') && !['--by', '--limit'].includes(argv[i - 1]));
+  const pos = argv.filter((a, i) => !a.startsWith('--') && !['--by', '--limit', '--kind', '--action', '--build'].includes(argv[i - 1]));
   const [cmd = 'status', ...rest] = pos;
   const out = (o, print) => (json ? console.log(JSON.stringify(o, null, 1)) : print(o));
   if (cmd === 'run' || cmd === 'dry-run') {
@@ -232,8 +239,8 @@ export async function main(argv = process.argv.slice(2)) {
     return out(writeSettings({ [k]: v }, { by: opt('by') ?? 'cli' }), (s) => console.log(`${k} = ${s[k]}`));
   }
   if (cmd === 'log') {
-    const { readLog } = await import('./watchdog/log.mjs').catch(() => ({ readLog: () => [] }));
-    const recs = readLog({ limit: Number(opt('limit')) || 50 });
+    const { readLog } = await import('./watchdog/log.mjs');
+    const recs = readLog({ dir: dataDir(), limit: Number(opt('limit')) || 50, kind: opt('kind') ?? '', action: opt('action') ?? '', build: opt('build') ?? '' });
     return out({ records: recs }, (o) => { if (!o.records.length) console.log('the cleanup log is empty'); for (const r of o.records) console.log(`${r.at} ${r.dry ? '(dry) ' : ''}${stale.describe({ kind: r.kind, id: r.rowId }, r)}`); });
   }
   console.log(readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(2, 26).map((l) => l.replace(/^ \*\s?/, '')).join('\n'));
