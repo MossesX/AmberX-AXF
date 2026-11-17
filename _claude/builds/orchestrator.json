@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:17:31.773Z",
+ "updatedAt": "2026-11-17T20:17:40.076Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -182775,7 +182775,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:17:26.589Z",
+   "updatedAt": "2026-11-17T20:17:33.406Z",
    "builtAt": "",
    "notes": [
     {
@@ -182837,6 +182837,14 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-guided-live-demo-test-watch-orchestrator--earl.",
      "at": "2026-11-17T20:17:26.589Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-guided-live-demo-test-watch-orchestrator--earl, shared account login)",
+     "at": "2026-11-17T20:17:30.929Z"
+    },
+    {
+     "text": "Brief only: brief is 28358 characters (~7090 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-17T20:17:33.406Z"
     }
    ],
    "approvals": [],
