@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7996,
- "updatedAt": "2026-11-17T21:26:41.408Z",
+ "rev": 7997,
+ "updatedAt": "2026-11-17T21:26:51.175Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282809,16 +282809,22 @@
    "title": "Land PR #730 Reset all button (far right)",
    "category": "",
    "detail": "Branch claude/reset-all-button-every-asset-override (PR #730). Brett picked UI Review option: button far right. Merge origin/main: clashes only in generated files apps/axhub-web/axf.lock.json, apps/molly/axf.lock.json, apps/console-web/src/control/inventory.json; take main's lock files (molly is removed, drop if gone), regenerate inventory.json, run checks, land. Console only. At most 3 steps.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-17T21:26:38.676Z",
+   "updatedAt": "2026-11-17T21:26:46.102Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T21:26:46.102Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -282833,6 +282839,30 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-17T21:26:43.431Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -282842,7 +282872,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
