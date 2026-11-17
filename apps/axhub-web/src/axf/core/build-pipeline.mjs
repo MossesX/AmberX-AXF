@@ -145,10 +145,9 @@ export function takeSlot(slot, { id, account = '', model = '', entry = '', at = 
   return { holder, account: accountName(account) || (s.holder ? s.account : ''), model: str(model, 20) || (s.holder ? s.model : ''), since: s.holder && s.since ? s.since : iso(at) || new Date().toISOString(), entry: str(entry, 60), released: null };
 }
 
-/** A session ended with the build going on (phase done, a crash under the limit, a stop for Brett): the hold stays, the live entry is cleared. */
+/** A session ended with the build going on (phase done, a crash under the limit, a stop for Brett): the hold stays, the live entry is cleared (on a legacy string slot too: that session is over). */
 export function handoffSlot(slot) {
-  const s = normSlot(slot);
-  return s.holder ? { ...s, entry: '' } : s;
+  return { ...normSlot(slot), entry: '' };
 }
 
 /** The slot is released: merged, failed, or cancelled by Brett (why in SLOT_RELEASES). The release is kept on the record. */

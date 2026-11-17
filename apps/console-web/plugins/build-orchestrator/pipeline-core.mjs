@@ -416,7 +416,7 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
   // slot hold: phase-done and crash hand off to the next session in the same slot); only complete or the crash limit release it
   const slot = slotAfterExit(b.pipeline?.slot, r, { status, at: now });
   const patch = { lastRun: run, crashes: r.crashes, session: '', slot, note: r.outcome === 'finished' ? '' : note };
-  return { outcome: r.outcome, status, reason: r.reason, run, crashes: r.crashes, keepQueue: r.keepQueue, slot: r.slot, state: r.state, patch, note };
+  return { outcome: r.outcome, status, reason: r.reason, run, crashes: r.crashes, keepQueue: r.keepQueue, slot: r.slot, state: status === 'complete' ? '' : r.state, patch, note };
 }
 
 /**
