@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:36:03.594Z",
+ "updatedAt": "2026-11-17T23:36:18.499Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -193521,7 +193521,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:34:15.686Z",
+   "updatedAt": "2026-11-17T23:36:04.208Z",
    "builtAt": "",
    "notes": [
     {
@@ -193647,6 +193647,10 @@
     {
      "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 3 of 3).",
      "at": "2026-11-17T23:34:15.686Z"
+    },
+    {
+     "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T23:36:04.208Z"
     }
    ],
    "approvals": [
