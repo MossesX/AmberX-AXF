@@ -3242,6 +3242,12 @@ export class AxfRuntime {
       if (w) this.openDialog(dialog, { key: w.key });
       else this.toast(`No banner widget "${args.join(':')}"`, 'warning', 'Banner widgets');
     };
+    // The named forms REST, MCP, the CLI and voice document (same semantics as banner.widget):
+    // banner.widget.shape:<widget>:<shape|path=<svg>> · banner.widget.icon:<widget>:<pack>/<glyph>|own · banner.widget.reset:<widget>
+    const widgetPart = (args: string[], prefix = '') => { const last = args[args.length - 1] ?? ''; return [...args.slice(0, -1), `${prefix}${last}`].join(':'); };
+    a.register('banner.widget.shape', (args) => { if (args.length > 1) this.dispatch(`banner.widget:${widgetPart(args)}`); }, { label: 'Banner widget shape (banner.widget.shape:<widget>:<shape>|path=<svg>)', requires: 'assets.swap', params: true });
+    a.register('banner.widget.icon', (args) => { if (args.length > 1) this.dispatch(`banner.widget:${widgetPart(args, 'icon=')}`); }, { label: 'Banner widget icon (banner.widget.icon:<widget>:<pack>/<glyph>|own)', requires: 'assets.swap', params: true });
+    a.register('banner.widget.reset', (args) => { if (args.length) this.dispatch(`banner.widget:${args.join(':')}:reset`); }, { label: 'Put a banner widget back to its defaults', requires: 'assets.swap', params: true });
     a.register('banner.widget.icon-picker', widgetDialog(WIDGET_ICON_DIALOG), { label: 'Change a banner widget\'s icon…', requires: 'assets.swap', params: true });
     a.register('banner.widget.custom-shape', widgetDialog(WIDGET_SHAPE_DIALOG), { label: 'Custom shape for a banner widget…', requires: 'assets.swap', params: true });
     // Right-click / long-press a banner widget: Shape ▸ (every shape, Custom… opens the editor) and Change icon…

@@ -1096,7 +1096,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
-                         "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings", "console_control_toolbar")
+                         "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings", "console_control_toolbar",
+                         "console_control_banner_widget")
 ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):")
 
 
@@ -1117,6 +1118,16 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
         elif body.get("verb") == "targets":
             q = urllib.parse.urlencode({k: body[k] for k in ("under", "kinds", "source") if body.get(k)})
             req = urllib.request.Request(f"{base}/targets?{q}", headers=auth)
+        elif body.get("verb") == "banner-widgets":
+            w = urllib.parse.quote(str(body.get("widget") or ""), safe=":")
+            what = str(body.get("what") or "")
+            if not what:
+                req = urllib.request.Request(f"{base}/banner-widgets" + (f"/{w}" if w else ""), headers=auth)
+            else:
+                v = body.get("value")
+                field = {"shape": "path" if isinstance(v, dict) else "shape", "path": "path", "icon": "icon", "open": "what"}.get(what)
+                payload = {**({field: v["path"] if isinstance(v, dict) else v} if field and v not in (None, "") else {}), **{k: body[k] for k in ("reason", "to", "by") if body.get(k)}}
+                req = urllib.request.Request(f"{base}/banner-widgets/{w}/{what}", data=json.dumps(payload).encode(), method="POST", headers={"content-type": "application/json", **auth})
         else:
             req = urllib.request.Request(f"{base}/do", data=json.dumps(body).encode(), method="POST", headers={"content-type": "application/json", **auth})
         try:
@@ -1141,6 +1152,11 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
             return api.targets(str(body.get("under") or ""), ks or None, str(body.get("source") or "auto"), str(body.get("by") or "mcp"))
         if body.get("verb") == "voice":
             return api.voice(str(body.get("text") or ""), str(body.get("by") or "voice"), to=str(body.get("to") or "recent"))
+        if body.get("verb") == "banner-widgets":
+            by = str(body.get("by") or "mcp")
+            if not body.get("what"):
+                return api.banner_widgets(by, widget=str(body.get("widget") or ""))
+            return api.banner_widget_command(str(body.get("widget") or ""), str(body["what"]), body.get("value"), by, to=str(body.get("to") or "recent"), reason=str(body.get("reason") or ""))
         return api.command(body, str(body.get("by") or "mcp"))
 
     return run
@@ -1235,6 +1251,20 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         if open:
             return await go({"verb": "open", "address": address, "reason": reason, "to": to})
         return await go({"verb": "state", "address": address, "to": to})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_banner_widget(widget: str = "", shape: str = "", path: str = "", icon: str = "", reset: bool = False, open: str = "", reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """Banner widget shape and icon (widget-shape@1). No arguments: every banner widget with its shape, icon, custom
+        outline and the addresses that change them. widget=<type>:<id> (clock:digital-12h; a type, id or label works too)
+        alone: that widget. With shape=circle|square|rounded|pill|hexagon, or path=<SVG outline in a 0..100 square> for a
+        custom shape; icon=<icon pack>/<glyph> or own; reset=true (every choice of that widget back to default);
+        open=settings|shape|icon (deep link: the Banners settings, the custom shape editor, the Change icon picker).
+        Same as GET/POST /api/console-control/banner-widgets[/<widget>/<shape|path|icon|reset|open>], the console actions
+        banner.widget.shape|icon|reset, `axf banner widget …` and voice ("make the clock a hexagon")."""
+        what, value = ("reset", None) if reset else ("path", path) if path else ("shape", shape) if shape else ("icon", icon) if icon else ("open", open) if open else ("", None)
+        if what and not widget:
+            raise ToolError("invalid: name the widget (widget=<type>:<id>; call with no arguments to list them)")
+        return await go({"verb": "banner-widgets", "widget": widget, "what": what, "value": value, "reason": reason, "to": to})
 
     @mcp.tool(annotations=WRITE)
     async def console_control_plugin_settings(plugin: str, open: bool = False, set: dict[str, Any] | None = None, enabled: bool | None = None, reason: str = "", to: str = "recent") -> dict[str, Any]:

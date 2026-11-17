@@ -296,6 +296,12 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   eq(menu.find((e) => e.label === 'Change icon…')?.action, 'banner.widget.icon-picker:clock:digital-12h', 'widget menu: Change icon… for the hit widget');
   rt.dispatch(shape!.items![4]!.action!);
   eq(rt.bannerWidgetShape('clock:digital-12h').shape, 'hexagon', 'widget menu: Hexagon sets the shape');
+  rt.dispatch('banner.widget.shape:clock:digital-12h:pill');
+  eq(rt.bannerWidgetShape('clock:digital-12h').shape, 'pill', 'banner.widget.shape sets the shape');
+  rt.dispatch('banner.widget.shape:clock:digital-12h:path=M50 0 L100 50 L50 100 L0 50 Z');
+  eq(rt.bannerWidgetShape('clock:digital-12h').shape, 'custom', 'banner.widget.shape with path= sets a custom outline');
+  rt.dispatch('banner.widget.reset:clock:digital-12h');
+  eq(rt.bannerWidgetShape('clock:digital-12h').shape, 'circle', 'banner.widget.reset puts the circle back');
   rt.contextBannerWidget = 'nope:x';
   ok(!rt.contributedContext('banner').some((e) => e.label === 'Shape'), 'widget menu: an unknown widget gets none');
 }

@@ -564,6 +564,13 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": HUB_SKIN_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "lock"}
     if m := re.match(r"^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$", p):
         return {"verb": "set", "find": {"q": HUB_SKIN_OVERRIDE_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "override"}
+    # banner widget shape and icon (widget-shape@1): "make the clock a hexagon", "change the clock icon", "reset the clock widget"
+    if m := re.match(r"^(?:make|turn) (?:the )?(.+?)(?: widget)? (?:a |an |into a |into an )?(circle|square|rounded|pill|hexagon)(?: shape| shaped)?$", p):
+        return {"verb": "set", "find": {"q": f"{_strip(m.group(1))} shape", "kinds": ["setting"]}, "value": m.group(2)}
+    if m := re.match(r"^change (?:the )?(.+?)(?: widget)?(?:'s| s)? icon$", p):
+        return {"verb": "press", "find": {"q": f"{_strip(m.group(1))} change icon", "kinds": ["function"]}}
+    if m := re.match(r"^(?:reset|put back) (?:the )?(.+?) widget(?: to default)?$", p):
+        return {"verb": "press", "find": {"q": f"{_strip(m.group(1))} back to default", "kinds": ["function"]}}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
