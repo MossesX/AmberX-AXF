@@ -32,7 +32,7 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
-import { backToSkin, composeLookAt, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
+import { backToSkin, composeLookAt, foldSkinExtends, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAdoptedSetting, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, withBehaviorOverrides, type AnimationState } from './engines/behavior';
 import { sweepOrigin } from './engines/swatches';
@@ -897,14 +897,20 @@ export class AxfRuntime {
 
   private skinData(id: string): SkinData | null {
     const s = this.registry.get(SKIN_TYPE as AssetType, id);
-    if (s) return normalizeSkin(s.data);
+    if (s) return normalizeSkin(this.foldedSkin(s.data));
     const p = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
     return p ? skinFromDesignPackage(p.data) : null;
   }
 
-  /** Every skin this app can use: the skins, then the design packages. */
+  /** A skin's raw data with its `extends` chain folded in (skin@1 extends, skin-rules.mjs foldSkinExtends). */
+  private foldedSkin(data: unknown): unknown {
+    return foldSkinExtends(data as Record<string, unknown>, (id) => this.registry.get(SKIN_TYPE as AssetType, id)?.data ?? null);
+  }
+
+  /** Every skin this app can use: the skins (their `extends` folded in), then the design packages. */
   skinList(): SkinEntry[] {
-    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never);
+    const skins = (this.registry.list(SKIN_TYPE as AssetType) as { id: string; name: string; description?: string; data: unknown }[]).map((a) => ({ ...a, data: this.foldedSkin(a.data) }));
+    return skinEntries(skins as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never);
   }
 
   /** This app's look document (null while it can't be read). */

@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "skin",
+  "id": "flagship-daylight",
+  "name": "Flagship Daylight",
+  "description": "The flagship skin in daylight: warm ivory and indigo, light first, and calmer motion (110 / 200 / 320 ms, gentle emphasis, longer staggers). Every other slot comes from Flagship through extends.",
+  "tags": [
+    "flagship",
+    "professional",
+    "skin",
+    "daylight",
+    "light"
+  ],
+  "data": {
+    "extends": "flagship",
+    "layoutTheme": "flagship",
+    "colorTheme": "flagship-daylight-light",
+    "colorThemes": {
+      "light": "flagship-daylight-light",
+      "dark": "flagship-daylight-dusk"
+    },
+    "styleTheme": "flagship",
+    "assets": {},
+    "motion": {
+      "speed": {
+        "fast": 110,
+        "normal": 200,
+        "slow": 320
+      },
+      "easing": {
+        "emphasized": "cubic-bezier(0.2, 0, 0, 1.15)"
+      },
+      "chrome": {
+        "nav-menu": {
+          "enter": "slide",
+          "exit": "fade",
+          "duration": "normal",
+          "stagger": 24
+        },
+        "dialog": {
+          "enter": "rise",
+          "exit": "fade",
+          "duration": "normal"
+        },
+        "popup": {
+          "enter": "slide",
+          "exit": "fade",
+          "duration": "normal"
+        }
+      }
+    },
+    "preview": {
+      "caption": "Ivory and indigo, light first, calm and gentle motion."
+    }
+  }
+}

@@ -40,7 +40,7 @@
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
+import { backToSkin, foldSkinExtends, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
 import { skinMap, skinMapFind } from '../core/engines/skin-map.mjs';
 import { skinMapInputs } from './build-engine.mjs';
@@ -128,7 +128,11 @@ export function writeGlobal(skin, by = 'skins-cli', colorTheme) {
 
 function assetsOf(type) {
   const dir = join(ROOT, 'framework/assets', type);
-  return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean) : [];
+  const list = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean) : [];
+  if (type !== 'skin') return list;
+  // skin@1 extends: every reader sees the whole skin (a variant's inherited slots folded in)
+  const raw = new Map(list.map((a) => [a.id, a.data]));
+  return list.map((a) => ({ ...a, data: foldSkinExtends(a.data, (id) => raw.get(id) ?? null) }));
 }
 /** The Default skins on the hub (`skins/<app>.json`), the hub-wide one first. */
 export function defaultSkins() {

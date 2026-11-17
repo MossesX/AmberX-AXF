@@ -11,7 +11,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { composeLookAt, newAppLook, setInheritSkin, normalizeSkin } from '../core/engines/skin';
+import { composeLookAt, foldSkinExtends, newAppLook, setInheritSkin, normalizeSkin } from '../core/engines/skin';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 
 const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
@@ -59,7 +59,7 @@ for (const id of skins) {
     const skinAsset = get('skin', id);
     ok(skinAsset, `${app}: skin "${id}" is not baked (node framework/cli/shared-assets.mjs bake --all)`);
     if (!skinAsset) continue;
-    const skinOf = (sid: string) => { const a = get('skin', sid); return a ? normalizeSkin(a.data) : null; };
+    const skinOf = (sid: string) => { const a = get('skin', sid); return a ? normalizeSkin(foldSkinExtends(a.data, (pid) => get('skin', pid)?.data ?? null)) : null; };
     const skin = skinOf(id)!;
     // every asset the skin names is present in this app
     const named: [string, string][] = [['layout', skin.layoutTheme], ['color-theme', skin.colorTheme], ['style-theme', skin.styleTheme], ['behavior-theme', skin.behaviorTheme ?? ''],

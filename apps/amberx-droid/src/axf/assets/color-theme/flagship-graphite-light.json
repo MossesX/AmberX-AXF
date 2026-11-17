@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "color-theme",
+  "id": "flagship-graphite-light",
+  "name": "Flagship Graphite Light",
+  "description": "Flagship Graphite, light tone: cool grey paper and a deep teal accent with the same neutral, cast-free greys.",
+  "tags": [
+    "light",
+    "flagship",
+    "graphite",
+    "cool"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f2f3f4",
+      "surface": "#ffffff",
+      "surface2": "#f7f8f9",
+      "surface3": "#e6e8eb",
+      "text": "#16181b",
+      "muted": "#5c636c",
+      "border": "#d6d9de",
+      "accent": "#00758a",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(0,117,138,0.1)",
+      "danger": "#c3343a",
+      "success": "#1c8550",
+      "warning": "#9a6a00",
+      "info": "#2d62c8",
+      "focus": "#00758a",
+      "shadow": "rgba(17,20,24,0.12)"
+    }
+  }
+}

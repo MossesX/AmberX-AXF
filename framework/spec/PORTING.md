@@ -178,6 +178,11 @@ motion / behaviour / dialog parts of `compileStyles` have **no Kotlin twin** (An
 replays the `slots` block of `spec/fixtures/skin.json`: the same normalised slots, the same error lines, the same tokens,
 attributes and settings keys, and the same composed look (`composed`), then reads the same keys in its own chrome.
 
+`skin@1 extends` (Phase 2, Opus, s19): `foldSkinExtends` / `skinExtendsErrors` in `core/engines/skin-rules.mjs` (a skin
+names the skin it extends; the child wins, plain objects merge key by key, arrays and scalars replace, depth ≤ 4, a cycle
+stops; the folded skin carries no `extends`) have **no Kotlin twin**. The runtime folds in `skinData` / `skinList`, the
+skins CLI in `assetsOf('skin')`. A port folds before it normalises; `spec/check-skin.mts` (extends block) holds the cases.
+
 `framework/core/engines/skin-map.mjs` (skin-map@1: the generated, read-only map of what every slot controls and where
 every dataset and layout lives, `skinMap`, `skinMapFind`, `skinMapErrors`, `dataStoreKey`, `hubPlace`, `cssReaders`,
 `tokensBySource`) has **no Kotlin twin** either. An Android app reads the snapshot `framework/schemas/skin-map.json`

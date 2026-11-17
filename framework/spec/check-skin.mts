@@ -819,3 +819,31 @@ console.log(`check-skin (runtime scopes): ${n} checks passed`);
   ok(['appearance.hubskin', 'appearance.lock'].every((id) => rt.actions.list().some((x) => x.id === id)), 'both actions registered');
 }
 console.log(`check-skin (skin from axHub only): ${n} checks passed`);
+
+// skin@1 extends (build flagship-professional-skin-covering-2, Nov 17 2026): a variant names the skin it extends and
+// sets only what differs; every reader folds the chain (child wins, objects merge key by key, no `extends` left).
+{
+  const { foldSkinExtends, skinExtendsErrors } = await import('../core/engines/skin');
+  const parent = { layoutTheme: 'l', colorTheme: 'c', styleTheme: 's', assets: { toolbar: 't', banner: 'b' }, motion: { speed: { fast: 90, normal: 150 }, reduced: 'system' }, hooks: { toolbar: { hooks: ['a'] } } };
+  const child = { extends: 'p', layoutTheme: 'l', colorTheme: 'c2', styleTheme: 's', assets: { banner: 'b2' }, motion: { speed: { fast: 70 } } };
+  const lookup = (id: string) => ({ p: parent, child, loop: { extends: 'loop', layoutTheme: 'x' } } as Record<string, unknown>)[id] ?? null;
+  const folded = foldSkinExtends(child, lookup);
+  eq(folded, { layoutTheme: 'l', colorTheme: 'c2', styleTheme: 's', assets: { toolbar: 't', banner: 'b2' }, motion: { speed: { fast: 70, normal: 150 }, reduced: 'system' }, hooks: { toolbar: { hooks: ['a'] } } }, 'extends: the child wins, objects merge key by key, the rest comes from the parent');
+  ok(!('extends' in folded), 'extends: the folded skin carries no extends');
+  eq(foldSkinExtends({ extends: 'nope', layoutTheme: 'x' }, lookup), { layoutTheme: 'x' }, 'extends: an unknown parent leaves the skin as it is');
+  eq(foldSkinExtends({ extends: 'loop', layoutTheme: 'y' }, lookup), { layoutTheme: 'y' }, 'extends: a cycle stops');
+  eq(foldSkinExtends(parent, lookup), parent, 'extends: a skin without it is byte-identical');
+  eq(skinExtendsErrors({ extends: 'Bad Id' }), ['data.extends must be a skin asset id'], 'extends: must be an id');
+  eq(skinExtendsErrors({ extends: 'me' }, 'me'), ['data.extends must name another skin'], 'extends: never itself');
+  ok(skinErrors({ ...child, extends: 3 }).includes('data.extends must be a skin asset id'), 'extends: skinErrors reports it');
+  // the flagship variants: whole skins once folded, differing from Flagship only in colour and motion
+  const read = (id: string) => JSON.parse(readFileSync(join(import.meta.dirname, '..', 'assets/skin', `${id}.json`), 'utf8')).data;
+  const flag = foldSkinExtends(read('flagship'), read);
+  for (const v of ['flagship-graphite', 'flagship-daylight']) {
+    const f = foldSkinExtends(read(v), read) as Record<string, unknown>;
+    ok(skinErrors(read(v)).length === 0, `${v}: valid as written`);
+    const differs = Object.keys({ ...flag, ...f }).filter((k) => JSON.stringify((flag as Record<string, unknown>)[k]) !== JSON.stringify(f[k])).sort();
+    eq(differs.filter((k) => !['colorTheme', 'colorThemes', 'motion', 'preview'].includes(k)), [], `${v}: shares every slot but colour and motion with Flagship`);
+  }
+}
+console.log(`check-skin (extends): ${n} checks passed`);

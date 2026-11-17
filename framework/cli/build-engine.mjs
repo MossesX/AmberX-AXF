@@ -15,7 +15,7 @@ import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/car
 import { toolbarErrors, toolbarItemSchema, toolbarSchemaProperties } from '../core/engines/toolbar-rules.mjs';
 import { toolbarMigrationErrors } from '../core/engines/toolbar-migrate.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
-import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
+import { skinChromeErrors, skinExtendsErrors } from '../core/engines/skin-rules.mjs';
 import { skinSlotsErrors, skinSlotsJsonSchemas } from '../core/engines/skin-slots.mjs';
 import { skinMap, skinMapJsonSchema } from '../core/engines/skin-map.mjs';
 import { COMPONENT_TOKEN_FAMILIES } from '../core/engines/component-tokens.mjs';
@@ -246,6 +246,7 @@ export function skinErrors(d) {
   }
   errors.push(...skinChromeErrors(d.chrome));
   errors.push(...skinSlotsErrors(d)); // skin-slots@1: motion, behaviour, hooks, grid, dialog, settings (one rules file)
+  errors.push(...skinExtendsErrors(d)); // skin@1 extends: an id of another skin
   return errors;
 }
 

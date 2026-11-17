@@ -28,7 +28,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, skinScopeChain } from '../core/engines/skin-coverage.mjs';
-import { SKIN_NEVER, normalizeSkinChrome, skinChromeErrors } from '../core/engines/skin-rules.mjs';
+import { SKIN_NEVER, foldSkinExtends, normalizeSkinChrome, skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 import { GRID_FIELDS, HOOK_KINDS, MOTION_KINDS, SETTINGS_CHROME_KEYS, SKIN_SLOT_KEYS, normalizeSkinSlots } from '../core/engines/skin-slots.mjs';
 import { existsSync, readdirSync } from 'node:fs';
@@ -88,20 +88,8 @@ function findSkin(id) {
   return null;
 }
 
-/** A skin's data with its `extends` chain folded in (the child wins; objects merge one key at a time; depth ≤ 4). */
-function foldedSkin(id, seen = []) {
-  const asset = findSkin(id);
-  if (!asset) return null;
-  const data = asset.data ?? {};
-  if (!data.extends || seen.length >= 4 || seen.includes(id)) return data;
-  const parent = foldedSkin(data.extends, [...seen, id]);
-  return parent ? merge(parent, data) : data;
-}
-function merge(a, b) {
-  const out = { ...a };
-  for (const [k, v] of Object.entries(b)) out[k] = v && typeof v === 'object' && !Array.isArray(v) && a[k] && typeof a[k] === 'object' && !Array.isArray(a[k]) ? merge(a[k], v) : v;
-  return out;
-}
+/** A skin's data with its `extends` chain folded in (skin@1 extends: the engine's own fold). */
+function foldedSkin(id) { const a = findSkin(id); return a ? foldSkinExtends(a.data ?? {}, (pid) => findSkin(pid)?.data ?? null) : null; }
 
 function completeness(id) {
   const data = foldedSkin(id);

@@ -1,0 +1,60 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "skin",
+  "id": "flagship-graphite",
+  "name": "Flagship Graphite",
+  "description": "The flagship skin in graphite: neutral greys and a cyan accent, dark first, and snappier motion (70 / 120 / 200 ms, no overshoot). Every other slot (layout, menus, chrome, widgets, grids, dialogs, settings, behaviour, hooks) comes from Flagship through extends.",
+  "tags": [
+    "flagship",
+    "professional",
+    "skin",
+    "graphite",
+    "dark"
+  ],
+  "data": {
+    "extends": "flagship",
+    "layoutTheme": "flagship",
+    "colorTheme": "flagship-graphite-dark",
+    "colorThemes": {
+      "light": "flagship-graphite-light",
+      "dark": "flagship-graphite-dark"
+    },
+    "styleTheme": "flagship",
+    "assets": {},
+    "motion": {
+      "speed": {
+        "fast": 70,
+        "normal": 120,
+        "slow": 200
+      },
+      "easing": {
+        "standard": "standard",
+        "emphasized": "standard",
+        "exit": "ease-in"
+      },
+      "chrome": {
+        "context-menu": {
+          "enter": "fade",
+          "exit": "fade",
+          "duration": "fast",
+          "stagger": 0
+        },
+        "dialog": {
+          "enter": "fade",
+          "exit": "fade",
+          "duration": "fast"
+        },
+        "page": {
+          "enter": "fade",
+          "exit": "none",
+          "duration": "fast"
+        }
+      }
+    },
+    "preview": {
+      "caption": "Graphite and cyan, dark first, quick and flat motion."
+    }
+  }
+}
