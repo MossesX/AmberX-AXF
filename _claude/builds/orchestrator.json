@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T03:57:07.049Z",
+ "updatedAt": "2026-11-17T03:57:27.019Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -169865,20 +169865,28 @@
    "title": "Builds keep their slot across phases",
    "category": "",
    "detail": "When a build's phase finishes (e.g. Fable phase done, Opus phase next), it must NOT go back in line or release its slot. The next phase starts immediately in the same slot (same or new session, right model/account). A build holds its slot until it is merged and done. Builds already running always finish before any queued build starts. Server-side rule, enforced by the orchestrator on the VPS. Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/builds-keep-their-slot-across-phases",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T03:38:28.564Z",
-   "updatedAt": "2026-11-17T03:55:38.469Z",
+   "updatedAt": "2026-11-17T03:56:07.128Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 15 steps (4 Fable).",
      "at": "2026-11-17T03:41:38.121Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-builds-keep-their-slot-across-phases--rhonda.",
+     "at": "2026-11-17T03:55:55.269Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-builds-keep-their-slot-across-phases--rhonda, shared account login)",
+     "at": "2026-11-17T03:56:07.128Z"
     }
    ],
    "approvals": [],
