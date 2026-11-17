@@ -122,7 +122,7 @@
         "to": "changes/{1}"
       },
       {
-        "re": "^amberx-axf/_data/(home-cards|agents|agent-slots|agent-swarm|listeners|amberx-notes|token-log|companion|walkthrough|framework|chat-viewer)/(.+)$",
+        "re": "^amberx-axf/_data/(home-cards|agents|agent-slots|agent-swarm|listeners|amberx-notes|token-log|companion|walkthrough|framework|chat-viewer|control)/(.+)$",
         "to": "console/{1}/{2}"
       },
       {
@@ -162,6 +162,7 @@
     "projects:amberx-axf/_data/changes/2026/11/c1.json": "changes/2026/11/c1.json",
     "projects:amberx-axf/_data/home-cards/brett.json": "console/home-cards/brett.json",
     "projects:amberx-axf/_data/tracker.json": "console/tracker.json",
+    "projects:amberx-axf/_data/control/inventory.json": "console/control/inventory.json",
     "projects:amberx-axf/_data/unknown/x.json": null,
     "projects:voicevault/_data/a/b.json": "console/projects/voicevault/a/b.json",
     "projects:amberx-axf/_data/pipeline/run 1.json": null,

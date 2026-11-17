@@ -15,17 +15,17 @@
       {
         "target": "data-store",
         "title": "Data store",
-        "text": "Where the console's data lives. axf-data is a small container that holds notes, builds, settings, planner items and plugin data, so they stay readable and writable when the console is down. Each area (namespace) moves onto it in stages: Shadow, then Cut over."
+        "text": "Where the console's data lives. axf-data is a small container that holds notes, builds, settings, planner items and plugin data, so they stay readable and writable when the console is down. Its store is Postgres in its own container (axf-data-db): builds, steps, UI reviews, planner items, settings, notes and the control registry are real tables, not file copies. Each area (namespace) moves onto it in stages: Shadow, then Cut over."
       },
       {
         "target": "panel:data-store.status",
         "title": "Where the data is",
-        "text": "One row per namespace: its mode (Local = the console's files, Shadow = written to both and compared, On axf-data = axf-data only, Rolling back = being copied back), how many keys axf-data holds, the drift count and the next step."
+        "text": "One row per namespace: its mode (Local = the console's files, Shadow = written to both and compared, On axf-data = axf-data only, Rolling back = being copied back), how many keys axf-data holds, the drift count and the next step. The tables behind the keys: axf data tables, the tables plugin command, or 'what tables are there'."
       },
       {
         "target": "panel:data-store.backups",
         "title": "Backups",
-        "text": "axf-data is backed up daily at 03:17 UTC (14 days plus weekly copies) and each backup is checked against the live store. A failed or late backup turns the Systems check item red and its Auto fix runs one."
+        "text": "axf-data is backed up daily at 03:17 UTC (pg_dump of the Postgres database, 14 days plus weekly copies) and each backup is checked: readable by pg_restore, counts against the live store. At 03:40 the SQLite files the console still writes (Shipped features ledger, Chat viewer) are mirrored into Postgres rows. A failed or late backup turns the Systems check item red and its Auto fix runs one."
       },
       {
         "target": "data-store-backup",

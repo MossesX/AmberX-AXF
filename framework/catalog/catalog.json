@@ -2655,6 +2655,18 @@
                 {
                   "id": "cx.datastore.hub",
                   "title": "axHub route to axf-data (route only, token kept in axHub) and the console-down drill"
+                },
+                {
+                  "id": "cx.datastore.postgres",
+                  "title": "axf-data on Postgres in its own container: real tables for builds + steps, journal, UI reviews, planner items, settings, notes and the control registry; SQLite ledgers mirrored table for table (services/axf-data/pg.py, tables.py)"
+                },
+                {
+                  "id": "cx.datastore.postgres.move",
+                  "title": "SQLite axf-data → Postgres staged inside the service: migrate_pg.py (backup first, counts + manifests), shadow with drift, cut over, roll back (engine.py); pg_dump backups"
+                },
+                {
+                  "id": "cx.datastore.registry",
+                  "title": "The API / control registry is a generated table (control_targets), published from each plugin's targets; inventory.json is no longer committed"
                 }
               ],
               "id": "cx.gate",

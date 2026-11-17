@@ -122,10 +122,73 @@
         "confirm": "Move this namespace of console data?"
       },
       {
+        "id": "tables",
+        "route": "GET /tables",
+        "title": "The Postgres tables",
+        "description": "data-tables@1: every table axf-data keeps on Postgres (builds + build_steps, ui_review_items, planner_items, settings, notes, control_targets, journal, history, the ledger_* and chats_* mirrors…) with rows, bytes and what each holds, plus the newest SQLite mirror runs.",
+        "output": "data-tables@1",
+        "readOnly": true
+      },
+      {
+        "id": "sync-tables",
+        "route": "POST /tables/sync",
+        "title": "Mirror a SQLite file into rows now",
+        "description": "Copies a SQLite file the console still writes (chats = the Chat viewer db, ledger = the Shipped features ledger) into Postgres rows (<prefix>_<table>, full refresh, counts checked). Runs nightly anyway; this is the on-demand run.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "chats | ledger | a mirrored key (plugins/chat-viewer/chats.db, plugins/shipped-features/ledger.sqlite)"
+            }
+          },
+          "required": [
+            "source"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "engine",
+        "route": "GET /engine",
+        "title": "Store engine",
+        "description": "data-engine@1: whether axf-data reads from sqlite, shadow (SQLite reads, Postgres mirrored, drift logged) or postgres; drift count and the last drift lines; counts on both sides; the next move.",
+        "output": "data-engine@1",
+        "readOnly": true
+      },
+      {
+        "id": "engine-move",
+        "route": "POST /engine",
+        "title": "Move the store engine",
+        "description": "sqlite → shadow (needs equal counts: run migrate_pg.py first) → postgres (needs zero drift since shadow started, or acceptDrift after reading it); shadow → sqlite and postgres → shadow are always allowed. The same guards as POST /v1/_meta/engine on axf-data.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "sqlite",
+                "shadow",
+                "postgres"
+              ]
+            },
+            "acceptDrift": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        "destructive": true,
+        "confirm": "Move the axf-data store engine?"
+      },
+      {
         "id": "voice",
         "route": "POST /voice",
         "title": "Say it",
-        "description": "A spoken phrase → the Data store action it means: 'back up the data', 'verify the backup', 'where is the data', 'shadow the planner', 'cut settings over', 'roll back the builds'. Moves (shadow / cut over / roll back) answer with what they would do and need confirm: true to run.",
+        "description": "A spoken phrase → the Data store action it means: 'back up the data', 'verify the backup', 'where is the data', 'shadow the planner', 'cut settings over', 'roll back the builds', 'what tables are there', 'which engine', 'cut over to postgres', 'sync the chats'. Moves (namespace or engine) and mirror runs answer with what they would do and need confirm: true to run.",
         "input": {
           "type": "object",
           "properties": {

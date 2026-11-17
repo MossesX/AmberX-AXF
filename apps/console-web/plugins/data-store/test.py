@@ -48,11 +48,19 @@ print("data-store plugin: voice")
 cases = {"back up the data": {"action": "backup"}, "verify the backup": {"action": "verify"}, "where is my data": {"action": "state"},
          "shadow the planner": {"action": "mode", "to": "shadow", "ns": "planner"}, "cut settings over": {"action": "mode", "to": "cutover", "ns": "settings"},
          "roll back the builds": {"action": "mode", "to": "rollback", "ns": "builds"}, "shadow plugin shipped-features": {"action": "mode", "to": "shadow", "ns": "plugins/shipped-features"},
-         "show the drift for notes": {"action": "drift", "ns": "notes"}}
+         "show the drift for notes": {"action": "drift", "ns": "notes"},
+         "what tables are there": {"action": "tables"}, "which engine is the data on": {"action": "engine"},
+         "cut over to postgres": {"action": "engine", "to": "postgres"}, "shadow the engine on postgres": {"action": "engine", "to": "shadow"},
+         "go back to sqlite": {"action": "engine", "to": "sqlite"}, "sync the chats": {"action": "sync", "source": "plugins/chat-viewer/chats.db"},
+         "mirror the shipped features ledger": {"action": "sync", "source": "plugins/shipped-features/ledger.sqlite"}}
 for phrase, want in cases.items():
     check(R.parse_phrase(phrase) == want, f"{phrase!r} → {want}")
 r = R.voice(R.VoiceBody(phrase="cut settings over"))
 check(r["did"] == "ask" and "Say yes" in r["say"], "a move asks before it runs")
+r = R.voice(R.VoiceBody(phrase="cut over to postgres"))
+check(r["did"] == "ask" and r["would"] == {"action": "engine", "to": "postgres"}, "an engine move asks before it runs")
+r = R.voice(R.VoiceBody(phrase="sync the chats"))
+check(r["did"] == "ask" and "chats.db" in r["say"], "a mirror run asks before it runs")
 
 print("data-store plugin: routes against axf-data")
 client = TestClient(axf_data.create_app(tmp / "axf-data"))
@@ -70,5 +78,21 @@ for _ in range(600):  # up to 30 s: a CI runner or a container takes longer than
     time.sleep(0.05)
 check(b["job"]["state"] == "done" and b["last"]["verify"]["ok"], "…which finishes verified")
 check(R.voice(R.VoiceBody(phrase="where is the data"))["say"].startswith("axf-data is up"), "voice: state in one sentence")
+t = R.tables()
+check(t["$axf"] == "data-tables@1" and t["engine"] in ("sqlite", "postgres", "shadow"), "tables: data-tables@1 with the engine (this axf-data runs on SQLite: no Postgres tables)")
+e = R.engine()
+check(e["$axf"] == "data-engine@1" and e["mode"] == "sqlite" and e["next"] == "done", "engine: data-engine@1, sqlite here")
+try:
+    R.engine_set(R.EngineBody(mode="postgres"))
+    check(False, "engine move on a single-engine axf-data is refused")
+except Exception as ex:  # noqa: BLE001
+    check(getattr(ex, "status_code", 0) == 400 and "no second store" in str(getattr(ex, "detail", ex)), "engine move on a single-engine axf-data is refused with the reason")
+try:
+    R.engine_set(R.EngineBody(mode="mysql"))
+    check(False, "a bad engine mode is refused")
+except Exception as ex:  # noqa: BLE001
+    check(getattr(ex, "status_code", 0) == 400, "a bad engine mode is refused")
+check(R.voice(R.VoiceBody(phrase="what tables are there"))["say"].startswith("axf-data runs on sqlite"), "voice: tables in one sentence")
+check("reads from sqlite" in R.voice(R.VoiceBody(phrase="which engine"))["say"], "voice: engine in one sentence")
 print(f"data-store plugin: {'all ok' if not fails else f'{fails} failed'}")
 sys.exit(1 if fails else 0)

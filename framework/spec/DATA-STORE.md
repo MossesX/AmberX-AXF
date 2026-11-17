@@ -302,9 +302,63 @@ drift entries, a whole-store move).
 Surfaces (Phase 2, with the container): `axf data mode [<ns>] <shadow|cutover|rollback|local>` on the CLI, the same
 as a console action and MCP tool, the mode and drift counts on the Systems check page, and a voice line for Amber.
 
-## What this phase does not do
+## Engine: Postgres, real tables (build axf-data-postgres-real-tables-own, Nov 15 2026)
 
-No container, no server code, no UI: Phase 1 is the contract, the reference client with a local-file backend, the
-migration plan and the mode machine. Nothing the console writes today moves. The API rule (everything with a UI has full
-API control) has nothing to attach to yet; the modes switch and the manifests get console, MCP, CLI and voice surfaces in
-the phase that ships the container.
+Brett, Nov 15 2026: "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it
+up with Postgres." (Postgres was his Nov 6 choice.)
+
+axf-data's store is Postgres in its own container (`axf-data-db`, `postgres:16-alpine`, volume `axf-data-pg`, never
+published; `services/axf-data/compose.yaml`, `deploy/install-data.sh`). The contract above does not change: the same
+keys, revs, etags, journals, feed, history, manifests and errors; every client is untouched. What changes is the
+storage (`services/axf-data/pg.py`, `tables.py`):
+
+| Table | Holds |
+|---|---|
+| `keys` | one row per key: kind, rev, etag, at, actor, size, content type, tombstone, which table holds the body |
+| `builds`, `build_steps` | the builds store (`builds/store.json`): one row per build (id, title, status, pr, branch, dates…), one per step; the rest of the document (rules, meta, drafts, rev) in `store_heads` |
+| `journal` (+ view `build_journal`) | every journal line: `entry JSONB` plus the stored line; a trigger refuses UPDATE / DELETE |
+| `history` | earlier revs of records and blobs (restore) |
+| `ui_review_items` | `ui-review/items.json`: one row per item (kind, name, app, screen, group, status, build, branch…) |
+| `planner_items` | `planner/plans/<id>.json`, `planner/projects/<p>/plans/<id>.json`: one row per plan |
+| `settings` | one row per settings document (`$axf` lifted) |
+| `notes` (+ view `note_history`) | one row per note, Markdown text, not an opaque blob |
+| `control_targets`, `control_tabs` | the API / control registry (`console/control/inventory.json`): one row per target, generated from each plugin's registered targets, never hand-edited (the file is no longer committed) |
+| `ledger_*`, `chats_*` | the Shipped features ledger and the Chat viewer db, mirrored table for table from the SQLite files the console still writes (`mirror_runs` records each run and its counts) |
+| `records`, `blobs`, `changes`, `idem`, `meta` | everything else: records as JSONB, blobs content-addressed, the feed |
+
+**Rows, not copies.** A document whose arrays become rows is decomposed on PUT (only rows whose hash changed are
+rewritten) and assembled on GET; its etag is computed on the assembled body, so what a reader's `If-Match` names is
+what it will read. Lifted columns are typed; a value that does not fit (a PR number that is `""` in one build and
+`705` in another) stays in the row's `extra` JSONB with the column NULL: nothing coerced, nothing lost. Reformatted
+JSON, key order and `1.0` vs `1` never matter (canonical form, as everywhere in this contract).
+
+**SQLite mirrors.** `plugins/shipped-features/ledger.sqlite` arrives as a blob (blob-sqlite) and is exploded into
+`ledger_<table>` rows in the same transaction (full refresh, row counts checked, virtual FTS tables skipped); the blob is
+kept once (no history copies) so `sqliteHydrate` still works. `chats.db` is bigger than a blob may be: `mirror_sync.py`
+(nightly cron, `POST /v1/_meta/tables/sync`, `axf data tables --sync chats`) reads the mounted file instead. Until those
+two plugins write rows themselves, their SQLite files stay the writers' truth and the rows are the queryable copy.
+
+**Engine move** (`services/axf-data/engine.py`, `data-engine@1`): `sqlite → shadow → postgres`, inside the service.
+`migrate_pg.py` copies a SQLite axf-data over (backup first, every key with its rev / etag / at / by, journal lines
+verbatim, history, feed, idempotency keys) and refuses unless keys per namespace, journal lines and the manifest of every
+namespace are equal on both sides. In `shadow`, reads come from SQLite and every write also lands on Postgres with the
+same precondition; a difference is a `data-drift@1` line (`<data>/engine-drift.jsonl`). `cut-over` needs zero drift since
+shadow started (or `acceptDrift` after reading it); `back-to-sqlite` and `roll-back` (postgres → shadow) are always
+allowed. A fresh install has nothing to move and runs on Postgres directly. Surfaces: `GET/POST /v1/_meta/engine`,
+`GET /v1/_meta/tables`, `axf data tables|engine`, the health frame's `engine`, and the console's data settings tab with
+its plugin commands and voice lines ("what tables are there", "which engine", "cut over to postgres", "sync the chats").
+
+**Backups**: `backup.py` runs `pg_dump --format=custom` (same tar.gz shape, `axf-data.pgdump` + `backup.json` with counts
+per namespace, journal lines and rows per table), verifies with `pg_restore --list` and counts against the live database,
+restores with `pg_restore --clean`. Daily at 03:17 UTC; the SQLite mirrors run at 03:40.
+
+Checks: `python3 services/axf-data/test_pg.py` (the whole `test_store.py` suite replayed on Postgres, plus tables,
+mirrors, migration, engine moves, backups, and `check-data-store.mjs --http` against a Postgres-backed server; CI starts
+a postgres container). The Node client and fixtures are unchanged: an engine is invisible on the wire.
+
+## What the first phase did not do
+
+Phase 1 of `data-container-axf-data-holds-all` was the contract, the reference client with a local-file backend, the
+migration plan and the mode machine; Phase 2 shipped the container (SQLite), the clients, the modes and the surfaces;
+`axf-data-postgres-real-tables-own` moved the store onto Postgres as above. Nothing the console writes today moves until
+its namespace is shadowed and cut over on purpose (`axf data mode`).

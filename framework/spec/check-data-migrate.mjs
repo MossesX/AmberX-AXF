@@ -54,6 +54,11 @@ put(join(R.projects, 'amberx-axf/_data/changes/README.md'), '# not migrated\n');
 put(join(R.repo, '_claude/builds/journal/2026-12.jsonl'), `${JSON.stringify({ rev: 1, at: '2026-12-01T00:00:00Z', by: 't', action: 'big', blob: 'x'.repeat(300 * 1024) })}\n${JSON.stringify({ rev: 2, at: '2026-12-01T00:00:01Z', by: 't', action: 'small' })}\n`);
 put(join(R.data, 'state.json'), JSON.stringify({ projects: ['amberx-axf'] }));
 put(join(R.repo, '_claude/builds/store.json.lock'), 'pid');                              // skipped
+// not data: a git checkout inside a plugin's data folder (agent-swarm job worktrees) and a package install
+put(join(R.plugins, 'agent-swarm/job-worktrees/job-1/.git'), 'gitdir: /elsewhere\n');
+put(join(R.plugins, 'agent-swarm/job-worktrees/job-1/package.json'), '{"name":"checkout"}');
+put(join(R.plugins, 'agent-swarm/node_modules/x/package.json'), '{"name":"x"}');
+put(join(R.plugins, 'agent-swarm/state.json'), '{"jobs":[]}');
 
 Object.assign(process.env, { AXF_ROOT: R.repo, AXF_STATE: join(R.data, 'state.json'), AXHUB_PROJECTS_DIR: R.projects, AXF_DATA_URL: url, AXF_DATA_TOKEN: 'tok' });
 delete process.env.AXF_PLUGINS_DATA_DIR;
@@ -67,6 +72,11 @@ const t = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console.
 try {
   const before = { repo: hashTree(R.repo), projects: hashTree(R.projects) };
   let planned;
+  await t('checkouts and package installs inside data folders are not walked', async () => {
+    const files = M.scan().mapped.concat().map((m) => m.rel);
+    assert.ok(files.includes('agent-swarm/state.json'), 'the plugin data next to them still moves');
+    assert.ok(!files.some((f) => f.includes('job-worktrees') || f.includes('node_modules')), 'no checkout or node_modules file is mapped');
+  });
   await t('plan (the default) is a dry run: counts per namespace, nothing written', async () => {
     planned = await M.run({ cmd: 'plan' });
     assert.equal(planned.dryRun, true);
