@@ -414,6 +414,35 @@
                 }
               },
               "additionalProperties": false
+            },
+            "grid": {
+              "type": "object",
+              "description": "grid under this skin: the settings interface its dialog renders through (axf.chrome.settings.grid) and field overrides per instance (axf.chrome.grid.<instance>, this kind's chrome-settings@1 fields only).",
+              "properties": {
+                "interface": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "instances": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "compact": {
+                        "type": "boolean"
+                      },
+                      "tapConfirm": {
+                        "enum": [
+                          "inherit",
+                          "on",
+                          "off"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false

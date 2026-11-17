@@ -6,7 +6,8 @@
     "banner",
     "nav-menu",
     "app-menu",
-    "context-menu"
+    "context-menu",
+    "grid"
   ],
   "labels": {
     "tab-group": "Tab group",
@@ -14,7 +15,8 @@
     "banner": "Banner",
     "nav-menu": "Navigation menu",
     "app-menu": "Application menu",
-    "context-menu": "Context menu"
+    "context-menu": "Context menu",
+    "grid": "Grid"
   },
   "many": {
     "tab-group": true,
@@ -22,7 +24,8 @@
     "banner": false,
     "nav-menu": false,
     "app-menu": false,
-    "context-menu": false
+    "context-menu": false,
+    "grid": true
   },
   "targets": {
     "tab-group": [
@@ -43,7 +46,10 @@
       "app-menu",
       "menubar"
     ],
-    "context-menu": []
+    "context-menu": [],
+    "grid": [
+      "grid"
+    ]
   },
   "moves": {
     "tab-group": {
@@ -84,6 +90,11 @@
       "field": ""
     },
     "context-menu": {
+      "positions": [],
+      "via": "none",
+      "field": ""
+    },
+    "grid": {
       "positions": [],
       "via": "none",
       "field": ""
@@ -637,6 +648,36 @@
         "level": "simple",
         "instanceOnly": true
       }
+    ],
+    "grid": [
+      {
+        "key": "compact",
+        "label": "Compact rows",
+        "kind": "toggle",
+        "default": false,
+        "group": "look",
+        "level": "basic",
+        "instanceOnly": true
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "inherit",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "inherit": "Same as all",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "inherit",
+        "group": "behaviour",
+        "level": "simple",
+        "instanceOnly": true
+      }
     ]
   },
   "ids": {
@@ -675,6 +716,12 @@
       "custom": "chrome-context-menu-axf-console",
       "typeOfDefault": "context-menu",
       "typeOfCustom": "context-menu"
+    },
+    "grid": {
+      "default": "chrome-grid",
+      "custom": "chrome-grid-axf-console",
+      "typeOfDefault": "grid",
+      "typeOfCustom": "grid"
     }
   },
   "keys": {
@@ -1003,7 +1050,7 @@
   "errors": {
     "ok": [],
     "badFor": [
-      "data.for: not a chrome type (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)",
+      "data.for: not a chrome type (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, grid)",
       "id: a settings interface for clock is named chrome-clock[-<app>]"
     ],
     "self": [
@@ -1046,6 +1093,11 @@
       "type": "context-menu",
       "defaultId": "chrome-context-menu",
       "customId": "chrome-context-menu-molly"
+    },
+    {
+      "type": "grid",
+      "defaultId": "chrome-grid",
+      "customId": "chrome-grid-molly"
     }
   ],
   "missing": [
@@ -1057,7 +1109,9 @@
     "chrome-app-menu",
     "chrome-app-menu-molly",
     "chrome-context-menu",
-    "chrome-context-menu-molly"
+    "chrome-context-menu-molly",
+    "chrome-grid",
+    "chrome-grid-molly"
   ],
   "rows": {
     "parse": {

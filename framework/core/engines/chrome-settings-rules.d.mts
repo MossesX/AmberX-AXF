@@ -1,6 +1,6 @@
 /** Types for chrome-settings-rules.mjs (chrome-settings@1). */
 
-export type ChromeType = 'tab-group' | 'toolbar' | 'banner' | 'nav-menu' | 'app-menu' | 'context-menu';
+export type ChromeType = 'tab-group' | 'toolbar' | 'banner' | 'nav-menu' | 'app-menu' | 'context-menu' | 'grid';
 export type ChromeFieldKind = 'choice' | 'toggle' | 'number';
 export type ChromeFieldGroup = 'look' | 'behaviour';
 export type ChromeLevel = 'simple' | 'basic' | 'developer' | 'administrator';
@@ -32,6 +32,10 @@ export const CHROME_TYPES: ChromeType[];
 export const CHROME_LABELS: Record<ChromeType, string>;
 export const CHROME_ICONS: Record<ChromeType, string>;
 export const CHROME_MANY: Record<ChromeType, boolean>;
+export const CHROME_PICK_TYPE: Partial<Record<ChromeType, string>>;
+export function chromePickType(t: ChromeType): string;
+export function chromeIsAssetType(t: ChromeType): boolean;
+export function chromeInstanceOfTarget(target: unknown): string | null;
 export const CHROME_SETTINGS_PREFIX: 'chrome-';
 export const CHROME_SETTINGS_MAX_DEPTH: number;
 export function isChromeType(t: unknown): t is ChromeType;

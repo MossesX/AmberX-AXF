@@ -20,7 +20,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, referenceErrors, skinScopeChain } from '../core/engines/skin-coverage.mjs';
 import { SKIN_NEVER, normalizeSkinChrome, skinChromeErrors } from '../core/engines/skin-rules.mjs';
-import { CHROME_LOOK_KINDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
+import { CHROME_LOOK_KINDS, CHROME_TYPES, chromeIsAssetType, chromePickType } from '../core/engines/chrome-settings-rules.mjs';
 import { INSTANCE_LOOK_KINDS, INSTANCE_LOOK_TYPE } from '../core/engines/instance-look-rules.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -61,6 +61,13 @@ if (JSON.stringify(SKIN_SCOPE_KINDS) !== JSON.stringify(['default', 'global', 'a
 if (JSON.stringify(skinScopeChain({ app: 'x', ui: 'home', plugin: 'notes' })) !== JSON.stringify(['plugin:notes', 'ui:home', 'app', 'global', SKIN_SCOPE_DEFAULT])) problems.push('skinScopeChain must run plugin → ui → app → global → default');
 // a skin's chrome block names chrome-settings@1 kinds: every one must be a registered type a skin reaches as a slot (never an unreachable type)
 for (const kind of CHROME_TYPES) {
+  // a kind with no asset type of its own (grid) is reached through the type its Change… picks (instance-look, by reference via skin)
+  if (!chromeIsAssetType(kind)) {
+    const pick = rows.find((r) => r.type === chromePickType(kind));
+    if (!pick) problems.push(`chrome kind "${kind}" picks ${chromePickType(kind)}, which is not a registered asset type`);
+    else if (pick.by === 'none') problems.push(`chrome kind "${kind}" picks ${chromePickType(kind)}, which a skin cannot reach`);
+    continue;
+  }
   const row = rows.find((r) => r.type === kind);
   if (!row) problems.push(`chrome kind "${kind}" (skin chrome block) is not a registered asset type`);
   else if (row.by !== 'slot') problems.push(`chrome kind "${kind}" (skin chrome block) is covered by ${row.by}, not as a slot: a skin could set its settings but not pick its asset`);

@@ -2128,14 +2128,14 @@
         "data.chrome.toolbar.instances.main: no valid toolbar field (chrome-settings@1)",
         "data.chrome.toolbar.instances: \"Bad Id!\" is not an instance id",
         "data.chrome.tab-group.instances must be an object (instance → fields)",
-        "data.chrome.nope: not a chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)"
+        "data.chrome.nope: not a chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, grid)"
       ],
       "skinErrors": [
         "data.chrome.toolbar.interface must be a settings asset id",
         "data.chrome.toolbar.instances.main: no valid toolbar field (chrome-settings@1)",
         "data.chrome.toolbar.instances: \"Bad Id!\" is not an instance id",
         "data.chrome.tab-group.instances must be an object (instance → fields)",
-        "data.chrome.nope: not a chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu)"
+        "data.chrome.nope: not a chrome kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu, grid)"
       ],
       "settings": {
         "axf.chrome.settings.toolbar": "chrome-toolbar",

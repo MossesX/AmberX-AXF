@@ -10,6 +10,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNod
 import { ControlScope, Icon, IconButton, Meter, Slot, escapeSelector, useControlTarget, useControlTargets, useInstanceLook, useRuntime, type ControlTargetDef } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
+import { CHROME_INSTANCE_KEY } from '../../core/engines/chrome-settings-rules.mjs';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
@@ -122,6 +123,11 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   useEffect(() => rt.settings.onChange(INSTANCE_TOKENS_KEY, () => tokensTick((n) => n + 1)), [rt]);
   // instance-look@1: this grid's own look (skin → app → grid) goes last; the column template is never touched by it
   const look = useInstanceLook('grid', p.id);
+  // chrome-settings@1 (grid kind): the grid's own Compact rows choice (Settings… → Look) wins over the host's prop
+  const [, chromeTick] = useState(0);
+  useEffect(() => rt.settings.onChange(CHROME_INSTANCE_KEY('grid', p.id), () => chromeTick((n) => n + 1)), [rt, p.id]);
+  const ownCompact = (rt.settings.get(CHROME_INSTANCE_KEY('grid', p.id)) as { compact?: unknown } | undefined)?.compact;
+  const compact = typeof ownCompact === 'boolean' ? ownCompact : !!p.compact;
   const template = { ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id), ...look.style, '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}` } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
@@ -205,7 +211,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   } : {});
 
   const grid = (
-    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id} {...look.attrs}>
+    <div ref={gridRef} className={`axf-grid ${compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id} data-fx-ctx-target="grid" data-fx-ctx-payload={p.id} {...look.attrs}>
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (

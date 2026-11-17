@@ -37,7 +37,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
-import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
+import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, chromeInstanceOfTarget, chromeIsAssetType, chromePickType, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
+import { instanceLookSettingsKey, normalizeInstanceLook } from '../../core/engines/instance-look';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import { COMPONENT_TOKEN_FAMILIES, INSTANCE_TOKENS_KEY, componentToken, componentTokenError, instanceHasPrevious, instanceTokenValues, isComponentTokenFamily, restoreInstanceTokensFromHub, restorePreviousInstanceTokens, setInstanceToken, type ComponentTokenFamily } from '../../core/engines/component-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
@@ -92,6 +93,7 @@ export function setChromeInterface(rt: AxfRuntime, type: ChromeType, instance: s
 
 /** The data an instance renders with today (the active asset, or the row's own pick, plus its overrides). */
 function baseDataOf(rt: AxfRuntime, type: ChromeType, instance: string): Record<string, unknown> | null {
+  if (!chromeIsAssetType(type)) return null; // a grid: no asset of its own, every field is the instance's choice
   if (type === 'tab-group') {
     const pick = rt.settings.get(CHROME_INSTANCE_ASSET_KEY(type, instance));
     const own = typeof pick === 'string' && pick ? rt.registry.get('tab-group', pick) : null;
@@ -140,6 +142,7 @@ export function moveChrome(rt: AxfRuntime, type: ChromeType, instance: string, p
 
 /** Use another asset: a tab group picks for itself, every other kind swaps the app's slot. `next` cycles. */
 export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, asset: string): boolean {
+  if (type === 'grid') return pickGridLook(rt, instance, asset);
   const list = rt.registry.list(type as AssetType);
   if (!list.length) return false;
   let id = asset;
@@ -157,13 +160,48 @@ export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, a
   return rt.swap(type as AssetType, id);
 }
 
+/** The named looks (instance-look@1 assets) a grid's Change… offers: every one for kind grid. */
+export function gridLookAssets(rt: AxfRuntime): Array<{ id: string; name: string; description?: string; look: Record<string, string> }> {
+  return rt.registry.list(chromePickType('grid') as AssetType)
+    .filter((a) => (a.data as { kind?: string } | undefined)?.kind === 'grid')
+    .map((a) => ({ id: a.id, name: a.name, description: a.description, look: normalizeInstanceLook((a.data as { look?: unknown }).look, rt.instanceLookColourTokens()) as Record<string, string> }));
+}
+
+/**
+ * A grid's Change…: copy a named look into this grid's own look record (axf.chrome.grid.<id>.look), `default` / ''
+ * drops the record (the grid follows the skin), `next` / `prev` cycle. The copy is the grid's own from then on.
+ */
+export function pickGridLook(rt: AxfRuntime, instance: string, asset: string): boolean {
+  const key = instanceLookSettingsKey('grid', instance);
+  if (asset === 'default' || asset === '') { rt.settings.clear(key); return true; }
+  const list = gridLookAssets(rt);
+  if (!list.length) return false;
+  let pick = list.find((a) => a.id === asset);
+  if (asset === 'next' || asset === 'prev') {
+    const cur = gridLookPicked(rt, instance);
+    const i = list.findIndex((a) => a.id === cur);
+    pick = list[(i + (asset === 'next' ? 1 : list.length - 1) + list.length) % list.length];
+  }
+  if (!pick) return false;
+  rt.settings.set(key, pick.look as unknown as SettingValue);
+  return true;
+}
+
+/** The named look a grid's record equals today ('default' when it has none, '' when it is its own mix). */
+export function gridLookPicked(rt: AxfRuntime, instance: string): string {
+  const own = normalizeInstanceLook(rt.settings.get(instanceLookSettingsKey('grid', instance)), rt.instanceLookColourTokens());
+  if (!Object.keys(own).length) return 'default';
+  const same = (a: Record<string, string>) => JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(own).sort());
+  return gridLookAssets(rt).find((a) => same(a.look))?.id ?? '';
+}
+
 /** The context-menu block every chrome kind shares. */
 export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): MenuEntry[] {
   const label = chromeLabel(type);
   const m = CHROME_MOVES[type];
   const items: MenuEntry[] = [
     { id: `chrome-settings-${type}`, label: `${label} settings…`, icon: 'settings', action: `chrome.settings:${type}:${instance}` },
-    { id: `chrome-pick-${type}`, label: type === 'tab-group' ? 'Change tab style…' : `Change ${label.toLowerCase()}…`, icon: CHROME_ICONS[type], action: `chrome.pick:${type}:${instance}` },
+    { id: `chrome-pick-${type}`, label: type === 'tab-group' ? 'Change tab style…' : type === 'grid' ? 'Change grid look…' : `Change ${label.toLowerCase()}…`, icon: CHROME_ICONS[type], action: `chrome.pick:${type}:${instance}` },
   ];
   if (m.positions.length) {
     const cur = m.via === 'instance' ? chromeFieldValue(type, baseDataOf(rt, type, instance), rt.settings.get(CHROME_INSTANCE_KEY(type, instance)), m.field) : (rt.asset('layout').data as unknown as Record<string, unknown>)[m.field];
@@ -247,7 +285,7 @@ export function installChrome(rt: AxfRuntime): void {
   rt.contextExtras.set('*:chrome', (target, payload) => {
     const type = chromeTypeOfTarget(target);
     if (!type) return [];
-    const instance = instanceOf(type, payload);
+    const instance = instanceOf(type, chromeInstanceOfTarget(target) ?? payload);
     return instance ? chromeMenu(rt, type, instance) : [];
   });
 }
@@ -333,6 +371,29 @@ function fieldInput(field: ChromeField, value: unknown, hint: string | undefined
 
 /** The asset picker for a kind: tab groups pick for themselves (plus "the app's default"); the rest swap the app's slot. */
 export function ChromeAssetPicker({ type, instance }: { type: ChromeType; instance: string }) {
+  if (type === 'grid') return <GridLookPicker instance={instance} />;
+  return <ChromeSlotPicker type={type} instance={instance} />;
+}
+
+/** A grid's Change…: the named looks (instance-look@1, kind grid), copied into the grid's own look; Follow the skin drops it. */
+function GridLookPicker({ instance }: { instance: string }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsTick(rt, [instanceLookSettingsKey('grid', instance)]);
+  const picked = gridLookPicked(rt, instance);
+  const choices = [
+    { id: 'default', title: 'Follow the skin', text: 'No own look: the grid draws from the skin (and the app-wide grid look, if one is set).', icon: 'layers' },
+    ...gridLookAssets(rt).map((a) => ({ id: a.id, title: a.name, text: a.description, icon: 'grid' })),
+  ];
+  return (
+    <div className="fx-stack">
+      <ChoiceGrid label="Grid look" choices={choices} selected={picked ? [picked] : []} onToggle={(id) => pickGridLook(rt, instance, id)} />
+      {picked === '' && <Note tone="info">This grid has its own mix of look values (Settings… → Look). Picking a look here replaces it.</Note>}
+    </div>
+  );
+}
+
+function ChromeSlotPicker({ type, instance }: { type: ChromeType; instance: string }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsTick(rt, [CHROME_INSTANCE_ASSET_KEY(type, instance)]);

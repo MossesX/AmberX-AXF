@@ -29,10 +29,11 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(JSON.pars
 eq(f.contract, cs.CHROME_SETTINGS_CONTRACT, 'contract');
 eq(f.types, cs.CHROME_TYPES, 'types'); eq(f.labels, cs.CHROME_LABELS, 'labels'); eq(f.many, cs.CHROME_MANY, 'many'); eq(f.targets, cs.CHROME_TARGETS, 'targets'); eq(f.moves, cs.CHROME_MOVES, 'moves'); eq(f.tabs, cs.CHROME_SETTINGS_TABS, 'tabs'); eq(f.fields, cs.CHROME_FIELDS, 'fields');
 for (const t of cs.CHROME_TYPES) {
-  ok((ASSET_TYPES as readonly string[]).includes(t), `${t} is an asset type`);
+  ok((ASSET_TYPES as readonly string[]).includes(cs.chromePickType(t)), `${t} is an asset type (or picks one: ${cs.chromePickType(t)})`);
   ok(cs.CHROME_FIELDS[t].length > 0, `${t} has dialog fields`);
   // every field a dialog edits exists on the asset type, and every choice is in the type's enum when the schema has one
-  const ts = spec.types[t];
+  // a kind with no asset type of its own (grid): every field must be an instance-only choice
+  const ts = cs.chromeIsAssetType(t) ? spec.types[t] : {};
   const known = new Set([...(ts.required ?? []), ...Object.keys(ts.optional_fields ?? {}), ...Object.keys(ts.enums ?? {}), ...Object.keys(ts.nested ?? {})]);
   for (const fd of cs.CHROME_FIELDS[t]) {
     ok(fd.instanceOnly === true || known.has(fd.key), `${t}.${fd.key} is a field of the ${t} asset type (or an instance-only choice)`);
