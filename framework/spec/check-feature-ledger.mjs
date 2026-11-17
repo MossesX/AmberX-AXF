@@ -58,7 +58,7 @@ const IN = {
   ],
   // which deploy commits contain which merge commits (git's answer, handed in as a table)
   contains: { 'bbbbbbb|deadbeef1234': true, 'ccccccc|deadbeef1234': true, 'ddddddd|deadbeef1234': true },
-  statusFromBuild: [{ status: 'pending' }, { status: 'pending', pr: '12' }, { status: 'running' }, { status: 'built', pr: '330' }, { status: 'running', pr: '330' }, { status: 'complete', mergedAt: '2026-11-05T00:00:00Z' }, { status: 'failed' }, { status: 'failed', pr: '330' }, { status: 'blocked' }, { status: 'waiting' }, { status: 'complete', live: true }, { status: 'archived' }, { status: 'archived', mergedAt: '2026-11-05T00:00:00Z' }, { status: 'running', deleted: true }, {}],
+  statusFromBuild: [{ status: 'pending' }, { status: 'pending', pr: '12' }, { status: 'running' }, { status: 'built', pr: '330' }, { status: 'running', pr: '330' }, { status: 'complete', mergedAt: '2026-11-05T00:00:00Z' }, { status: 'failed' }, { status: 'failed', pr: '330' }, { status: 'blocked' }, { status: 'waiting' }, { status: 'complete', live: true }, { status: 'archived' }, { status: 'archived', mergedAt: '2026-11-05T00:00:00Z' }, { status: 'running', deleted: true }, {}, { status: 'fixing' }, { status: 'landing', pr: '330' }, { status: 'landed', pr: '330', mergedAt: '2026-11-05T00:00:00Z' }, { status: 'escalated' }, { status: 'escalated', pr: '330' }],
   isoTimes: ['2026-11-05T02:00:00+02:00', '2026-11-05T02:00:00-05:00', '2026-11-05T02:00:00Z', '2026-11-05T02:00', '2026-11-05', '2026-11-05T02:00:00.250+00:00', 'Nov 5', '', 20261105],
   mergeLedgersEdits: [
     { version: 1, edits: [{ id: 'e-1', feature: 'f-a', summary: 'First copy', build: 'b1', commit: 'abc1234', status: 'building', at: '2026-11-05T02:00:00Z', files: ['a.ts'] }] },
@@ -130,10 +130,11 @@ t('one lifecycle: features and edits share STATUSES; cancelled / removed never c
   for (const s of L.STATUSES) { assert.equal(L.canTransition('cancelled', s), s === 'cancelled'); assert.equal(L.canTransition('removed', s), s === 'removed'); }
   assert.deepEqual([...L.PENDING_STATUSES, ...L.COMPLETED_STATUSES, 'cancelled'].sort(), [...L.STATUSES].sort());
 });
-t('build → status mapping covers every builds@1 status', () => { for (const s of ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived']) assert.ok(L.STATUSES.includes(L.statusFromBuild({ status: s }).status)); });
+t('build → status mapping covers every builds@1 status', () => { for (const s of ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived']) assert.ok(L.STATUSES.includes(L.statusFromBuild({ status: s }).status)); });
 t('build → status reads a build the way build-hook@1 does: pending = planned, archived without a merge = cancelled, a merge wins, failed with a PR = in PR (stalled)', () => {
   const s = actual.statusFromBuild.map((x) => `${x.status}${x.stalled ? '!' : ''}`);
-  assert.deepEqual(s, ['planned', 'planned', 'building', 'in-pr', 'in-pr', 'merged', 'building!', 'in-pr!', 'queued!', 'queued', 'live', 'cancelled', 'merged', 'cancelled', 'planned']);
+  // done-means-merged@1: fixing = building, landing = in PR, landed = merged, escalated = stalled (building, or in PR with one)
+  assert.deepEqual(s, ['planned', 'planned', 'building', 'in-pr', 'in-pr', 'merged', 'building!', 'in-pr!', 'queued!', 'queued', 'live', 'cancelled', 'merged', 'cancelled', 'planned', 'building', 'in-pr', 'merged', 'building!', 'in-pr!']);
 });
 t('ISO times with a UTC offset fold to Z (both modules agree), so dates compare as text; anything else is kept or refused', () => {
   assert.deepEqual(actual.isoTimes.map(([a]) => a), ['2026-11-05T00:00:00Z', '2026-11-05T07:00:00Z', '2026-11-05T02:00:00Z', '2026-11-05T02:00', '2026-11-05', '2026-11-05T02:00:00.250Z', '', '', '']);

@@ -17,6 +17,20 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.escalated",
+      "label": "Build stuck after every retry",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "done-means-merged@1: a build failed (crash, red CI, a clash, a failed push, a stall, a fall back to Pending) and the server tried every rung of its retry ladder (the same approach, a fix, a fresh session, another model or account) without getting past it. One push per escalation with what broke, every try and since when; the build is on the systems check banner (Builds that need you) with Retry. Never pushed twice for the same escalation.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:escalated:"
+      },
+      "push": true,
+      "priority": "high"
+    },
+    {
       "id": "pipeline.selfcheck",
       "label": "Dispatcher self-check",
       "group": "builds",

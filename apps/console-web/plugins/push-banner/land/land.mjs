@@ -534,6 +534,8 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     if (!it.reason && old.state !== 'ready' && !dry) crewSay('landing', 'done', `${b.id}${it.pr ? ` (#${it.pr})` : ''} is ready: CI green, nothing holds it. It joins the merge queue.`, { ref: b.id, repo: s.repo });
     items.push(it);
   }
+  // done-means-merged@1: one log with the builds (attempts, landing) and CI on the merge commit of what merged
+  if (!dry) { try { await shareWithBuilds({ s, gh, items, prevItems, byId, builds, at, log }); } catch (e) { log(`share: ${e.message}`); } }
   // builds that left the list (merged, or no longer finished): their alert goes
   const gone = [...prevItems.keys()].filter((id) => !items.some((x) => x.id === id) && prevItems.get(id)?.pushed);
   if (gone.length && !dry && !only) await api('POST', '/api/alerts/resolve', { keys: gone.map(core.alertKey) });
@@ -541,6 +543,46 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     items: only ? [...items, ...(prev.items || []).filter((x) => x.id !== only)] : items };
   if (!dry) { writeJson(stateFile(s), st); const c = readControl(s); if (c.now?.length) writeJson(controlFile(s), { ...c, now: c.now.filter((id) => !items.some((x) => x.id === id)) }); }
   return st;
+}
+
+// ------------------------------------------------------------------ one log with the builds (done-means-merged@1)
+
+/** Run a framework CLI in the repo (this folder imports only node built-ins: the builds store is reached as a child process). */
+function storeCli(s, file, args) {
+  const r = spawnSync('node', [join(s.repo, file), ...args, '--json'], { cwd: s.repo, encoding: 'utf8', timeout: 60000 });
+  let out = null; try { out = JSON.parse((r.stdout || '').trim().split('\n').pop() || 'null'); } catch { /* plain text */ }
+  return { code: r.status ?? 1, out, err: (r.stderr || '').slice(-300) };
+}
+
+/**
+ * The lander's side of done-means-merged@1: every try it makes (main merged in, a fix agent for a clash or red CI) goes
+ * into the build's attempts[] (builds-store attempt), a finished build it owns is `landing`, and a merged build gets CI
+ * on its merge commit recorded (builds-live link --sha --ci): green = landed (complete only after the verify), red = a
+ * ci-red failure on the build (builds-store fail), so the ladder answers it. Never complete here.
+ */
+export async function shareWithBuilds({ s, gh, items, prevItems, byId, builds, at, log = () => {} }) {
+  for (const it of items) {
+    const b = byId.get(it.id); if (!b) continue;
+    for (const op of core.shareOps(b, it, prevItems.get(it.id) || {}, at)) {
+      const r = op.op === 'status' ? storeCli(s, 'framework/cli/builds-store.mjs', ['set-status', b.id, op.to, '--by', 'auto-lander'])
+        : op.op === 'add' ? storeCli(s, 'framework/cli/builds-store.mjs', ['attempt', b.id, '--attempt', JSON.stringify(op.attempt), '--by', 'auto-lander'])
+          : storeCli(s, 'framework/cli/builds-store.mjs', ['attempt', b.id, '--close', op.result, '--source', 'auto-lander', '--note', op.note, '--by', 'auto-lander']);
+      if (r.code) log(`share ${b.id} ${op.op}: ${r.err || 'failed'}`);
+    }
+  }
+  for (const b of core.mergeFollow(builds)) {
+    const n = Number(String(b.pr).replace(/\D/g, '')); if (!n) continue;
+    let pr = null; try { pr = await gh('GET', `/repos/${s.slug}/pulls/${n}`); } catch (e) { log(`merge follow ${b.id}: ${e.message}`); continue; }
+    const sha = String(pr?.merge_commit_sha || ''); if (!pr?.merged_at || !sha) continue;
+    let runs = []; try { runs = (await gh('GET', `/repos/${s.slug}/commits/${sha}/check-runs?per_page=100`))?.check_runs || []; } catch { continue; }
+    const c = ciOf(runs); const ci = c.ci === 'none' ? 'running' : c.ci;
+    if (b.landed?.sha === sha && b.landed?.ci === ci) continue;
+    const runUrl = String(runs.find((x) => x?.html_url)?.html_url || '').slice(0, 300);
+    const r = storeCli(s, 'framework/cli/builds-live.mjs', ['link', b.id, '--merged', pr.merged_at, '--sha', sha, '--ci', ci, ...(runUrl ? ['--ci-run', runUrl] : [])]);
+    if (r.code) { log(`merge follow ${b.id}: ${r.err || 'link failed'}`); continue; }
+    if (ci === 'failure') storeCli(s, 'framework/cli/builds-store.mjs', ['fail', b.id, '--kind', 'ci-red', '--why', `CI is red on main after the merge (${(c.failing || []).slice(0, 3).join(', ') || 'checks failed'})`, '--head', sha, '--by', 'auto-lander']);
+    if (ci === 'success') crewSay('landing', 'done', `${b.id} (#${n}) merged and CI is green on main: landed. Complete once its verify passes.`, { ref: b.id, repo: s.repo });
+  }
 }
 
 /**

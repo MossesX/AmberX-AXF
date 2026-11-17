@@ -53,7 +53,8 @@
       "framework/spec/check-build-limit.mjs",
       "framework/spec/check-build-pipeline.mjs",
       "framework/cli/builds-reconcile.mjs",
-      "framework/spec/check-projects.mjs"
+      "framework/spec/check-projects.mjs",
+      "framework/spec/DONE-MEANS-MERGED.md"
     ]
   },
   "commands": {
@@ -755,6 +756,62 @@
           ]
         },
         "output": "{ group, action, done: [id], refused: [{ id, error }], skipped: [{ id, state }] }"
+      },
+      {
+        "id": "attempts",
+        "route": "GET /attempts/{build}",
+        "title": "A build's attempts",
+        "description": "done-means-merged@1: every try at getting a build past a failure (crash, red CI, a clash, a failed push, a stall, a fall back to Pending) with its strategy, model, account and result; the open failure, the merge + CI + verify evidence, the escalation and what the retry ladder tries next. Say 'what's wrong with skins' or 'why did skins stop'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, attempts: [{ n, kind, strategy, fixStrategy, model, account, result, startedAt, endedAt, note }], failure, landed, escalation, ladder, next }"
+      },
+      {
+        "id": "retry",
+        "route": "POST /retry/{build}",
+        "title": "Retry a build",
+        "description": "Retry a fixing or escalated build: the ladder starts over for its failure (the attempts so far stay in the log), the next tick relaunches it, or at once on the strategy given (never above the step's pinned model). Say 'retry skins' or 'retry skins in a fresh session'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            },
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "retry",
+                "merge-main",
+                "fix:targeted",
+                "fix:regenerate",
+                "fix:redo-step",
+                "fresh-session",
+                "switch-model",
+                "switch-account"
+              ],
+              "description": "Optional: the rung to run now"
+            },
+            "why": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, strategy, launch? }"
       },
       {
         "id": "watchdog-status",

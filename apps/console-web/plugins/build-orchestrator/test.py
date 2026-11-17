@@ -147,6 +147,35 @@ try:
             code = e.status_code
         check(code == want, f"action {body}: {want}")
     check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
+    # done-means-merged@1: GET attempts/<id>, POST retry/<id> {strategy?, why?}
+    srv.build_attempts("alpha")
+    check(_calls[-1][2:4] == ["attempts", "alpha"] and _calls[-1][-1] == "--json", "attempts: pipeline.mjs attempts <id> --json")
+    try:
+        srv.build_attempts("../x")
+        check(False, "attempts: a bad id is refused")
+    except srv.HTTPException as e:
+        check(e.status_code == 400, "attempts: a bad id is a 400")
+    try:
+        srv.build_attempts("no-such-build")
+        check(False, "attempts: an unknown build is a 404")
+    except srv.HTTPException as e:
+        check(e.status_code == 404, "attempts: an unknown build is a 404")
+    asyncio.run(srv.build_retry("alpha", _Req({}, True)))
+    cmd = _calls[-1]
+    check(cmd[2:4] == ["retry", "alpha"] and cmd[4] == "--by" and cmd[5] == "Brett" and "--why" not in cmd, "retry: no strategy, by Brett")
+    asyncio.run(srv.build_retry("alpha", _Req({"strategy": "fix:regenerate", "why": "fixtures drifted"})))
+    cmd = _calls[-1]
+    check(cmd[2:5] == ["retry", "alpha", "fix:regenerate"] and cmd[cmd.index("--why") + 1] == "fixtures drifted", "retry: a strategy and the reason reach the CLI")
+    for strategy in ("escalate", "fix", "rm -rf", "switch-model:Fable"):
+        try:
+            asyncio.run(srv.build_retry("alpha", _Req({"strategy": strategy})))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 400, f"retry: strategy {strategy!r} is refused (400)")
+    check(srv.escalated_probe([])["status"] == "ok", "builds-escalated: green with nothing escalated")
+    red = srv.escalated_probe([{"id": "alpha", "kind": "crash", "why": "every rung tried", "tried": ["retry", "fresh-session"], "since": "2026-11-17T00:00:00Z"}])
+    check(red["status"] == "error" and "alpha" in red["summary"] and "retry, fresh-session" in red["details"][0] and red["link"] == "row:alpha/tab:attempts", "builds-escalated: red with what broke, every try, since when, and the Attempts deep link")
 finally:
     srv.subprocess.run = _real_run
 
