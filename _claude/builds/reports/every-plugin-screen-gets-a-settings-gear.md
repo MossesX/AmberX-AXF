@@ -118,3 +118,14 @@ default tab too.
 - control@1: `console.pluginsettings` appended as the last target (ids are `<domain>.<lowercase>`, so no hyphen):
   list / get / act open|set|enable|disable, handled in the console-commands plugin server. CONTROL.md, the snapshot,
   the fixture and check-control updated; Kotlin twin recorded as deferred in PORTING.md.
+
+## Default panels on the ten listed plugins (s10–s14)
+
+brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio,
+shipped-features and ui-review now declare `"settingsTab": { "default": true }`. Each already had its own sub-tab,
+so the default panel ("About <plugin>": on/off, version, model, dependencies, logs) joins that tab at order 85,
+after the plugin's own settings and above Install & uninstall; no tab ids changed. Gate's tab also gets
+"On the Gate screen" with links into Rules, Build rules, Auto-lander and History (`gate.open:<tab>`); those
+controls stay on its screen. ui-review's "Options every build ships" and "Ask me how many options" were already
+in its sub-tab (panel `ui-review.choices`, REST `choices/settings`), so nothing moved and the keys are unchanged.
+No lines outside the plugin folders were edited, so no lifecycle markers were needed.
