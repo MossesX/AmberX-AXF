@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:21:05.766Z",
+ "updatedAt": "2026-11-17T15:21:27.502Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -173205,7 +173205,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T15:05:47.233Z",
-   "updatedAt": "2026-11-17T15:21:02.913Z",
+   "updatedAt": "2026-11-17T15:21:25.351Z",
    "builtAt": "",
    "notes": [
     {
@@ -173223,6 +173223,10 @@
     {
      "text": "Claude account: hulu0241 (axf-live-hot-refresh-every-grid-list-re--earl, shared account login)",
      "at": "2026-11-17T15:07:28.321Z"
+    },
+    {
+     "text": "Headless run axf-live-hot-refresh-every-grid-list-re--earl: brief only · start 18.1K tokens ($0.13) · cost $7.17 · 68 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:21:25.351Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7527,
- "updatedAt": "2026-11-17T15:21:05.766Z",
+ "rev": 7528,
+ "updatedAt": "2026-11-17T15:21:27.502Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266022,7 +266022,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T15:05:47.233Z",
-   "updatedAt": "2026-11-17T15:21:02.913Z",
+   "updatedAt": "2026-11-17T15:21:25.351Z",
    "builtAt": "",
    "notes": [
     {
@@ -266040,6 +266040,10 @@
     {
      "text": "Claude account: hulu0241 (axf-live-hot-refresh-every-grid-list-re--earl, shared account login)",
      "at": "2026-11-17T15:07:28.321Z"
+    },
+    {
+     "text": "Headless run axf-live-hot-refresh-every-grid-list-re--earl: brief only · start 18.1K tokens ($0.13) · cost $7.17 · 68 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:21:25.351Z"
     }
    ],
    "approvals": [],
@@ -266612,7 +266616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
