@@ -36,6 +36,12 @@
  * still idle with the Queue non-empty after that are a pass-level recovery with cause 'idle-slots' (action 'tick'; the
  * next tick runs the dispatcher's self-check), kept in watchdog.json and sent with the pass's FYI.
  *
+ * Phone FYI (Brett: "send an FYI to the phone for each fix"): every fix goes to the console's alerts API as source
+ * `watchdog` (notify.json types: watchdog.fix, an FYI pushed to AmberX at normal priority, since low never leaves the
+ * banner; watchdog.gave-up, an alert at high priority), which axf.notify@1 (notify-control) gates and pushes to the AmberX
+ * app with build, cause, action and attempt. fyi 'batch' (default): one push per pass for all its fixes; 'each': one per
+ * fix. A give-up is always its own alert. Each sent fix gets `notified` (ISO) on its recovery record.
+ *
  * Files: <pipeline dir>/watchdog.json (watchdog-state@1: last pass, recent fixes), next to the dispatcher's state.
  * Environment for tests: AXF_WATCHDOG_SETTINGS (a JSON patch over the settings), AXF_WATCHDOG_ACCOUNTS (comma list of usable
  * accounts instead of deploy/claude-workers.mjs status), AXF_WATCHDOG_PROBE (a JSON map build → probe instead of the host).
@@ -49,8 +55,9 @@ import { loadStore } from '../../../../framework/cli/builds-store.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import * as buildLock from '../../../../framework/cli/build-lock.mjs';
 import { hitOf, markLimit, release as workersRelease, route as workersRoute, status as workersStatus } from '../../../../deploy/claude-workers.mjs';
-import { endRun, pipeDir, pipelineLock, requestSelfCheck, setPipeline, slotsNow, tick, worktreeOf } from './pipeline.mjs';
+import { endRun, makeConsole, pipeDir, pipelineLock, requestSelfCheck, setPipeline, slotsNow, tick, worktreeOf } from './pipeline.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
+import { withStore } from '../../../../framework/cli/builds-store.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const HERE = dirname(SELF);
@@ -305,6 +312,9 @@ export function run({ env = process.env, only = '', settings = loadSettings(env)
   // keep every slot filled: after the recoveries (and on every pass, recoveries or not)
   const fill = settings.enabled ? fillSlots({ env }) : { rounds: 0, launched: [], idle: null };
   const at = new Date().toISOString();
+  // the phone hears about every fix (batched per pass, or one per fix), the idle-slots fix included
+  const toSend = [...fixes, ...(fill.idle ? [fill.idle] : [])];
+  if (toSend.length) { try { notifyFixes(toSend, { env, settings, at }); } catch (e) { errors.push({ id: '', error: `notify: ${str(e.message, 200)}` }); } }
   const st = loadState(env);
   saveState({ ...st, lastPass: at, passes: (st.passes ?? 0) + 1, ...(fixes.length ? { lastFix: at } : {}), lastStuck: sc.stuck.length, lastRunning: sc.builds.length,
     recent: [...(st.recent ?? []), ...fixes.map((f) => ({ at: f.at, buildId: f.buildId, title: f.title, step: f.step, cause: f.cause, exit: f.exit, action: f.action, attempt: f.attempt, account: f.account, notified: f.notified, note: f.note })), ...(fill.idle ? [fill.idle] : [])].slice(-KEEP_RECENT),
@@ -313,6 +323,53 @@ export function run({ env = process.env, only = '', settings = loadSettings(env)
 }
 
 const line = (x) => `${x.id}: ${x.decision.cause}${x.decision.exit != null ? ` (exit ${x.decision.exit})` : ''} → ${x.decision.action}${x.decision.attempt ? ` · attempt ${x.decision.attempt}` : ''} · ${x.decision.note}`;
+
+// ------------------------------------------------------------------ phone FYI (axf.notify@1)
+
+export const ALERT_SOURCE = 'watchdog';
+export const ALERT_LINK = '#/build-orchestrator/watchdog';
+const fixLine = (f) => `${f.title || f.buildId || 'Slots'}: ${f.cause}${f.exit != null ? ` (exit ${f.exit})` : ''} → ${f.action}${f.attempt ? `, attempt ${f.attempt}` : ''}${f.next ? `, next ${f.next}` : ''}`;
+
+/** The alerts for one pass's fixes: batched FYI (or one per fix) + one alert per give-up. */
+export function alertsFor(fixes, { fyi = 'batch', at = new Date().toISOString() } = {}) {
+  const meta = (f) => ({ kind: f.action === 'give-up' ? 'gave-up' : 'fix', build: f.buildId || '', cause: f.cause, action: f.action, attempt: f.attempt, account: f.account || '', step: f.step || '' });
+  const gave = fixes.filter((f) => f.action === 'give-up'); const fixed = fixes.filter((f) => f.action !== 'give-up');
+  const out = gave.map((f) => ({ source: ALERT_SOURCE, key: `watchdog:gave-up:${f.buildId}`, severity: 'error', link: `${ALERT_LINK}?build=${encodeURIComponent(f.buildId)}`,
+    title: `Watchdog gave up: ${str(f.title || f.buildId, 100)}`, body: str(`${f.note}\nFix: requeue it from the systems check banner or Build orchestrator → Watchdog.`, 1500), meta: meta(f), fixes: [f] }));
+  if (!fixed.length) return out;
+  if (fyi === 'each') return [...fixed.map((f) => ({ source: ALERT_SOURCE, key: `watchdog:fix:${f.buildId || 'slots'}:${f.at}`, severity: 'info', link: f.buildId ? `${ALERT_LINK}?build=${encodeURIComponent(f.buildId)}` : ALERT_LINK,
+    title: `Watchdog fixed: ${str(f.title || f.buildId || 'idle slots', 100)}`, body: str(`${fixLine(f)}\n${f.note}`, 1500), meta: meta(f), fixes: [f] })), ...out];
+  return [{ source: ALERT_SOURCE, key: `watchdog:fix:${at}`, severity: 'info', link: ALERT_LINK,
+    title: fixed.length === 1 ? `Watchdog fixed: ${str(fixed[0].title || fixed[0].buildId || 'idle slots', 100)}` : (() => { const n = fixed.filter((f) => f.buildId).length; return `Watchdog fixed ${n} build${n === 1 ? '' : 's'}${n < fixed.length ? ' and filled idle slots' : ''}`; })(),
+    body: str(fixed.map((f) => `${fixLine(f)}${fixed.length === 1 ? `\n${f.note}` : ''}`).join('\n'), 1500),
+    meta: { kind: 'fix', builds: fixed.map((f) => f.buildId).filter(Boolean), causes: fixed.map((f) => f.cause), count: fixed.length }, fixes: fixed }, ...out];
+}
+
+/** Send one alert: the console's alerts API (docker exec on the host), or AXF_WATCHDOG_NOTIFY_LOG (tests: one JSON line each). */
+export function sendAlert(a, env = process.env) {
+  const { fixes, ...alert } = a;
+  if (env.AXF_WATCHDOG_NOTIFY_LOG) { try { writeFileSync(env.AXF_WATCHDOG_NOTIFY_LOG, `${JSON.stringify(alert)}\n`, { flag: 'a' }); return true; } catch { return false; } }
+  try { return makeConsole(env)('POST', '/api/alerts', alert) != null; } catch { return false; }
+}
+
+/** Send the pass's alerts and mark every fix that went out `notified` (its recovery record on the build too). */
+export function notifyFixes(fixes, { env = process.env, settings = loadSettings(env), at = new Date().toISOString() } = {}) {
+  const sent = [];
+  for (const a of alertsFor(fixes, { fyi: settings.fyi, at })) {
+    if (!sendAlert(a, env)) continue;
+    for (const f of a.fixes) { f.notified = at; sent.push(f); }
+  }
+  const onBuilds = sent.filter((f) => f.buildId);
+  if (onBuilds.length) {
+    try {
+      withStore((s) => {
+        for (const f of onBuilds) { const r = (s.builds.find((b) => b.id === f.buildId)?.recoveries ?? []).find((x) => x.at === f.at && x.action === f.action); if (r) r.notified = at; }
+        return s;
+      }, { by: 'watchdog', action: W.JOURNAL_ACTION, note: `notified ${onBuilds.map((f) => f.buildId).join(', ')}`.slice(0, 300) });
+    } catch { /* the push went out; the record says so next time */ }
+  }
+  return { alerts: sent.length, notified: at };
+}
 
 // ------------------------------------------------------------------ schedule: the axf-watchdog cron
 
