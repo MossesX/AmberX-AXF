@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7599,
- "updatedAt": "2026-11-17T18:48:24.732Z",
+ "rev": 7600,
+ "updatedAt": "2026-11-17T18:48:58.075Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -272928,12 +272928,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:47:36.225Z",
-   "updatedAt": "2026-11-17T18:48:22.927Z",
+   "updatedAt": "2026-11-17T18:48:56.267Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett: make it a plain script on the VPS (zero tokens), not AI. It groups and combines builds by overlap of the files, plugins, contracts and settings keys their steps list. The optimizer's job is to never let two builds undo or clash with each other: anything overlapping gets combined. AI only as an optional extra pass, off by default.",
      "at": "2026-11-17T18:48:22.927Z"
+    },
+    {
+     "text": "Brett: put an Optimize button on Pending, with a small 'Use Claude' switch right next to it. Off = the plain script (zero tokens). On = Claude does the grouping. Same switch over REST/MCP/CLI/voice.",
+     "at": "2026-11-17T18:48:56.267Z"
     }
    ],
    "approvals": [],
@@ -272959,7 +272963,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
