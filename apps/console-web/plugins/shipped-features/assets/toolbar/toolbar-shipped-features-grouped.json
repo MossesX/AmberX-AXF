@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-shipped-features-grouped",
+  "name": "Shipped features: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-shipped-features",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:shipped-features",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "list",
+        "label": "List",
+        "items": [
+          {
+            "id": "sync",
+            "icon": "refresh",
+            "label": "Sync",
+            "action": "command:shipped-features/sync",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "import",
+            "icon": "download",
+            "label": "Import manifests",
+            "action": "command:shipped-features/import",
+            "priority": 250
+          },
+          {
+            "id": "backfill",
+            "icon": "clock",
+            "label": "Backfill (dry run)",
+            "action": "command:shipped-features/backfill",
+            "args": {
+              "dry": true
+            },
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

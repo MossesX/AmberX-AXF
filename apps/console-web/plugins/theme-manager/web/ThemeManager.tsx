@@ -4,7 +4,7 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, HubSkinLockArea, Icon, IconButton, Switch, SwatchFan, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, CHROME_PICK_DIALOG, Chip, HubSkinLockArea, Icon, IconButton, PageToolbar, Switch, SwatchFan, useAxfState, useEditorSync, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
@@ -159,9 +159,43 @@ export function ThemeManager() {
   const shownNodes = narrow && current ? current.children : filtered;
   const selNode = sel ? byId.get(sel) : null;
 
+  // the Theme manager toolbar (page-toolbar@1, assets/toolbar/theme-manager.json): the runtime's skin@1 actions
+  const look = rt.appLook();
+  const skins = rt.skinList();
+  const skinId = look?.skin.id ?? '';
+  const overrides = rt.skinOverrides();
+  const SCOPE_HERE = 'ui:theme-manager';
+  const scoped = rt.skinScopes().some((x) => x.key === SCOPE_HERE && x.use === 'on');
+  const previewing = rt.previewedSkin();
+  usePublishPageState('theme-manager', {
+    skins: skins.length, overrides: overrides.length, locked: rt.gate('assets.swap') !== 'allow' || !!rt.appearanceLockReason(),
+    skin: { id: skinId, on: !!look?.skin.use }, previewing: !!previewing, scoped,
+    selection: selNode ? { id: selNode.id, type: selNode.type } : null,
+  });
+  useToolbarHandlers('theme-manager', {
+    'theme-manager.use-skin': () => { const on = !look?.skin.use; rt.useSkin(on, skinId || undefined); return { use: on, skin: skinId }; },
+    'theme-manager.back-to-skin': () => { for (const slot of overrides) rt.backToSkin(slot); return { back: overrides }; },
+    'theme-manager.restore': () => { rt.restoreDefaultAppearance(); return { restored: true }; },
+    'theme-manager.preview': () => {
+      if (previewing) { rt.previewSkin(null); return { preview: null }; }
+      const ids = skins.map((x) => x.id);
+      const next = ids[(ids.indexOf(skinId) + 1) % Math.max(1, ids.length)] ?? null;
+      rt.previewSkin(next);
+      return { preview: next };
+    },
+    'theme-manager.scope-here': () => { rt.scopeSkin(SCOPE_HERE, scoped ? 'inherit' : 'on', skinId || undefined); return { scope: SCOPE_HERE, on: !scoped }; },
+    'theme-manager.pick-asset': () => {
+      const type = selNode?.type;
+      if (type) rt.openDialog(CHROME_PICK_DIALOG, { type });
+      else rt.dispatch('settings.open:appearance');
+      return { type: type ?? 'appearance' };
+    },
+  });
+
   return (
     <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
+      <PageToolbar view="theme-manager" />
       {/* one toolbar: the two rolls used most, undo / redo / pin, the rest behind ⋯ (compact pages, Oct 30 2026) */}
       <div className={`${P}__bar ${P}__toolbar`} role="toolbar" aria-label="Roll">
         <Button tone="primary" size="sm" icon="shuffle" onClick={() => roll(types.filter(rollable))}>Roll ticked</Button>

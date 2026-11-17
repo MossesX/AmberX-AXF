@@ -13,6 +13,8 @@ import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
 import { cardErrors } from './engines/card-rules.mjs';
+import { toolbarErrors } from './engines/toolbar-rules.mjs';
+import { toolbarMigrationErrors } from './engines/toolbar-migrate.mjs';
 import { demoAssetErrors } from './engines/demo-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
@@ -130,6 +132,10 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...jobTypeErrors(raw.type, data));
   // card@1: ONE validator shared with the build engine (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, data));
+  // page-toolbar@1: ONE validator shared with the build engine (core/engines/toolbar-rules.mjs); both toolbar shapes
+  errors.push(...toolbarErrors(raw.type, data));
+  // toolbar-list@1 → page-toolbar@1 (core/engines/toolbar-migrate.mjs): the migrated asset is valid and draws the same
+  errors.push(...toolbarMigrationErrors(raw.type, data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));

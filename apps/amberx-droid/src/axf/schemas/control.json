@@ -54,6 +54,16 @@
       "set": "write",
       "plugin.enable": "write",
       "plugin.disable": "write"
+    },
+    "console.pluginsettings": {
+      "open": "navigate",
+      "set": "write",
+      "enable": "write",
+      "disable": "write"
+    },
+    "console.toolbars": {
+      "press": "write",
+      "open": "navigate"
     }
   },
   "domains": [
@@ -3141,6 +3151,63 @@
         "restore-hub": {}
       },
       "doc": "component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look."
+    },
+    "console.pluginsettings": {
+      "domain": "console",
+      "label": "Plugin settings (sub-tab and gear)",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "limit": "number"
+      },
+      "acts": {
+        "open": {},
+        "set": {
+          "key": "string",
+          "value": "any"
+        },
+        "enable": {},
+        "disable": {
+          "options": "object"
+        }
+      },
+      "actEffect": {
+        "open": "navigate",
+        "set": "write",
+        "enable": "write",
+        "disable": "write"
+      },
+      "doc": "Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.toolbars": {
+      "domain": "console",
+      "label": "Page toolbars (buttons by settings id)",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "limit": "number",
+        "view": "string"
+      },
+      "acts": {
+        "press": {
+          "button": "string",
+          "value": "any"
+        },
+        "open": {}
+      },
+      "actEffect": {
+        "press": "write",
+        "open": "navigate"
+      },
+      "doc": "Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press."
     }
   },
   "aliases": {
@@ -3226,7 +3293,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3282,7 +3351,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3339,7 +3410,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3403,7 +3476,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3467,7 +3542,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3531,7 +3608,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3599,7 +3678,9 @@
               "plugins.reads",
               "tokens.nav",
               "console.control",
-              "tokens.instances"
+              "tokens.instances",
+              "console.pluginsettings",
+              "console.toolbars"
             ],
             "description": "what to control"
           },
@@ -3732,7 +3813,9 @@
       "plugins.reads",
       "tokens.nav",
       "console.control",
-      "tokens.instances"
+      "tokens.instances",
+      "console.pluginsettings",
+      "console.toolbars"
     ]
   },
   "schema": {
@@ -3785,7 +3868,9 @@
           "plugins.reads",
           "tokens.nav",
           "console.control",
-          "tokens.instances"
+          "tokens.instances",
+          "console.pluginsettings",
+          "console.toolbars"
         ]
       },
       "path": {
@@ -5067,6 +5152,61 @@
           "restore-hub": {}
         },
         "paths": "pattern"
+      },
+      "console.pluginsettings": {
+        "description": "Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "limit": {
+            "type": "number"
+          }
+        },
+        "acts": {
+          "open": {},
+          "set": {
+            "key": {
+              "type": "string"
+            },
+            "value": {}
+          },
+          "enable": {},
+          "disable": {
+            "options": {
+              "type": "object"
+            }
+          }
+        },
+        "paths": "host"
+      },
+      "console.toolbars": {
+        "description": "Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press.",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "limit": {
+            "type": "number"
+          },
+          "view": {
+            "type": "string"
+          }
+        },
+        "acts": {
+          "press": {
+            "button": {
+              "type": "string"
+            },
+            "value": {}
+          },
+          "open": {}
+        },
+        "paths": "host"
       }
     }
   }

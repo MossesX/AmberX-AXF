@@ -13,7 +13,8 @@
     "row",
     "step",
     "panel",
-    "scroll"
+    "scroll",
+    "toolbar"
   ],
   "parents": {
     "view": [
@@ -42,7 +43,8 @@
       "subtab",
       "panel",
       "row",
-      "step"
+      "step",
+      "toolbar"
     ],
     "function": [
       null,
@@ -81,6 +83,13 @@
       "subtab"
     ],
     "scroll": [
+      null,
+      "view",
+      "tab",
+      "subtab",
+      "panel"
+    ],
+    "toolbar": [
       null,
       "view",
       "tab",
@@ -256,6 +265,12 @@
     "scroll": [
       "state",
       "scroll"
+    ],
+    "toolbar": [
+      "open",
+      "state",
+      "list",
+      "focus"
     ]
   },
   "scroll": {
@@ -290,8 +305,8 @@
     "unexpected"
   ],
   "patterns": {
-    "segment": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}$",
-    "address": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$"
+    "segment": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}$",
+    "address": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$"
   },
   "schemas": {
     "console-control-address.schema.json": {
@@ -302,7 +317,7 @@
       "anyOf": [
         {
           "type": "string",
-          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
           "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
         },
         {
@@ -337,7 +352,8 @@
                       "row",
                       "step",
                       "panel",
-                      "scroll"
+                      "scroll",
+                      "toolbar"
                     ]
                   },
                   "id": {
@@ -373,7 +389,8 @@
                 "row",
                 "step",
                 "panel",
-                "scroll"
+                "scroll",
+                "toolbar"
               ]
             },
             "id": {
@@ -417,7 +434,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
               "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
             },
             {
@@ -452,7 +469,8 @@
                           "row",
                           "step",
                           "panel",
-                          "scroll"
+                          "scroll",
+                          "toolbar"
                         ]
                       },
                       "id": {
@@ -498,7 +516,7 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+                  "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
                   "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
                 },
                 {
@@ -533,7 +551,8 @@
                               "row",
                               "step",
                               "panel",
-                              "scroll"
+                              "scroll",
+                              "toolbar"
                             ]
                           },
                           "id": {
@@ -565,7 +584,7 @@
             },
             "kinds": {
               "type": "array",
-              "maxItems": 12,
+              "maxItems": 13,
               "items": {
                 "enum": [
                   "view",
@@ -579,7 +598,8 @@
                   "row",
                   "step",
                   "panel",
-                  "scroll"
+                  "scroll",
+                  "toolbar"
                 ]
               }
             },
@@ -772,7 +792,8 @@
                 "row",
                 "step",
                 "panel",
-                "scroll"
+                "scroll",
+                "toolbar"
               ]
             },
             "id": {
@@ -810,7 +831,7 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+                  "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
                   "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
                 },
                 {
@@ -845,7 +866,8 @@
                               "row",
                               "step",
                               "panel",
-                              "scroll"
+                              "scroll",
+                              "toolbar"
                             ]
                           },
                           "id": {
@@ -900,7 +922,7 @@
             },
             "kinds": {
               "type": "array",
-              "maxItems": 12,
+              "maxItems": 13,
               "items": {
                 "enum": [
                   "view",
@@ -914,7 +936,8 @@
                   "row",
                   "step",
                   "panel",
-                  "scroll"
+                  "scroll",
+                  "toolbar"
                 ]
               }
             },
@@ -961,29 +984,29 @@
         },
         "address": {
           "type": "string",
-          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
           "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
         },
         "opened": {
           "type": "string",
-          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
           "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
         },
         "focused": {
           "type": "string",
-          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
           "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
         },
         "pressed": {
           "type": "string",
-          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+          "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
           "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
         },
         "changed": {
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+            "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
             "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
           }
         },
@@ -1056,7 +1079,7 @@
             "properties": {
               "address": {
                 "type": "string",
-                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
                 "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
               },
               "kind": {
@@ -1087,7 +1110,7 @@
             "properties": {
               "address": {
                 "type": "string",
-                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
                 "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
               },
               "kind": {
@@ -1103,7 +1126,8 @@
                   "row",
                   "step",
                   "panel",
-                  "scroll"
+                  "scroll",
+                  "toolbar"
                 ]
               },
               "label": {
@@ -1151,7 +1175,7 @@
               },
               "parent": {
                 "type": "string",
-                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
                 "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
               },
               "value": {
@@ -1224,7 +1248,7 @@
           "maxItems": 5,
           "items": {
             "type": "string",
-            "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+            "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
             "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
           }
         },
@@ -1232,7 +1256,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+            "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
             "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
           }
         },
@@ -1366,7 +1390,7 @@
           "properties": {
             "address": {
               "type": "string",
-              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
               "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
             },
             "kind": {
@@ -1382,7 +1406,8 @@
                 "row",
                 "step",
                 "panel",
-                "scroll"
+                "scroll",
+                "toolbar"
               ]
             },
             "label": {
@@ -1430,7 +1455,7 @@
             },
             "parent": {
               "type": "string",
-              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
               "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
             },
             "value": {
@@ -1460,7 +1485,7 @@
           "properties": {
             "address": {
               "type": "string",
-              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
               "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
             },
             "kind": {
@@ -1571,7 +1596,7 @@
             "properties": {
               "address": {
                 "type": "string",
-                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
                 "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
               },
               "kind": {
@@ -1587,7 +1612,8 @@
                   "row",
                   "step",
                   "panel",
-                  "scroll"
+                  "scroll",
+                  "toolbar"
                 ]
               },
               "label": {
@@ -1635,7 +1661,7 @@
               },
               "parent": {
                 "type": "string",
-                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+                "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
                 "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
               },
               "value": {
@@ -1668,7 +1694,7 @@
           "properties": {
             "address": {
               "type": "string",
-              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
               "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
             },
             "kind": {
@@ -1684,7 +1710,8 @@
                 "row",
                 "step",
                 "panel",
-                "scroll"
+                "scroll",
+                "toolbar"
               ]
             },
             "label": {
@@ -1732,7 +1759,7 @@
             },
             "parent": {
               "type": "string",
-              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+              "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):[^/]{1,160}){0,7}$",
               "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
             },
             "value": {
