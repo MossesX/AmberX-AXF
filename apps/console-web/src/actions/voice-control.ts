@@ -13,6 +13,8 @@ import type { AxfRuntime } from '../axf/core';
 import { intentCommand, voiceIntent, voiceReply, type VoiceIntent } from '../axf/core/engines/console-control-voice.mjs';
 import { executeControl, type ControlAnswer } from '../control/executor';
 import { consoleSearch, type ConsoleSearchHit } from '../control/search';
+import { looksLikeDrag } from '../axf/core/engines/drag-voice.mjs';
+import { runDragVoice } from './drag';
 
 export const VOICE_ACTION = 'console.control.voice';
 
@@ -40,6 +42,11 @@ export async function runVoice(rt: AxfRuntime, text: string, opts: { speak?: boo
     if (opts.speak !== false) { speak(r.say); rt.toast(r.say, r.ok ? 'info' : 'warning', 'Voice'); }
     return r;
   };
+  // no console-control intent: a drag phrase ("move the clock widget to the left of the banner") runs as drag.voice
+  if (!intent && looksLikeDrag(heard)) {
+    const d = await runDragVoice(rt, heard);
+    return done({ heard, intent, say: d.say, ok: d.ok });
+  }
   if (!intent) return done({ heard, intent, say: "That isn't a console command I know.", ok: false });
   let hit: ConsoleSearchHit | null = null;
   if (intent.find) {

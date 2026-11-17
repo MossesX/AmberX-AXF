@@ -140,3 +140,26 @@ def normalize(raw: Any) -> dict[str, Any]:
         if k in raw:
             out[k] = raw[k]
     return out
+
+
+# ---------------------------------------------------------------------- voice (= looksLikeDrag in core/engines/drag-voice.mjs)
+
+import re as _re
+
+_MOVE = r"(?:move|drag|put|shift|place|slide)"
+_REMOVE = r"(?:remove|hide|take off|take away|drop|get rid of)"
+_ADD = r"(?:add|show|bring back|put back|restore)"
+_LEAD = _re.compile(rf"^(?:{_MOVE}|{_REMOVE}|{_ADD}|reorder)\b")
+
+
+def looks_like_drag(text: str) -> bool:
+    """Does a phrase lead with a drag verb? The server hands such a phrase to the console (drag.voice), which resolves
+    the names against its live hosts; console-control's own intents are tried first."""
+    try:
+        import console_control as cc
+        p = cc.clean_phrase(text) if hasattr(cc, "clean_phrase") else None
+    except Exception:  # noqa: BLE001 — tests without the console
+        p = None
+    if p is None:
+        p = _re.sub(r"\s+", " ", _re.sub(r"\b(please|can you|could you|would you|for me|now)\b", " ", _re.sub(r"^\s*(hey |ok |okay )?(amber|amberx)\b[\s,]*", " ", _re.sub(r"[\u201c\u201d\"'\u2019,!?;:.]+", " ", str(text or "").lower())))).strip()
+    return bool(_LEAD.match(p))

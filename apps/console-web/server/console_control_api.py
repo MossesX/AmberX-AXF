@@ -324,6 +324,11 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
     g = grants if grants is not None else {"*"}
     intent = cc.voice_intent(text)
     if intent is None:
+        # a drag phrase ("move the clock widget to the left of the banner"): the console resolves it (drag_api, drag.voice)
+        import drag_move
+        if drag_move.looks_like_drag(text):
+            import drag_api
+            return drag_api.command("voice", {"text": text, "to": to}, by, audience, g)
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}
     hit: dict[str, Any] | None = None
     if intent.get("find"):

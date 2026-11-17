@@ -6,6 +6,7 @@
     POST /add      {kind, source, target, by?, reason?, to?}          add an item to a host
     POST /remove   {kind, source, confirm?, by?, reason?, to?}        remove an item from a host
     POST /preview  {kind, source, target, …}                          plan it and highlight it on the screen, move nothing
+    POST /voice    {text, to?}        "move the clock widget to the left of the banner": the console resolves the names
 
 The command is checked here (drag_move.py, the engine's twin) and relayed to the open console over the console-commands
 relay (`control` op, verb `drag.*`); the console plans it against its live hosts and answers drag-move-result@1. No
@@ -90,6 +91,11 @@ def command(verb: str, body: dict[str, Any], by: str = "", audience: str = "owne
         if not (body.get("kind") and body.get("container") and body.get("id")):
             return {"$axf": "drag-zones@1", "ok": False, "code": "invalid", "message": "zones needs kind, container and id"}
         return guarded({"verb": "drag.zones", "kind": body["kind"], "container": body["container"], "id": body["id"], "by": who}, READ_PERM, False, who, audience, g, to)
+    if verb == "voice":
+        text = str(body.get("text") or "").strip()[:300]
+        if not text:
+            return {"$axf": dm.RESULT_FRAME, "ok": False, "code": "invalid", "message": "voice needs text", "say": "I didn't hear anything."}
+        return guarded({"verb": "drag.voice", "text": text, "by": who}, WRITE_PERM, True, who, audience, g, to)
     if verb not in (*WRITE_VERBS, "preview"):
         return {"$axf": dm.RESULT_FRAME, "ok": False, "code": "invalid", "message": f"verb must be hosts, zones, move, add, remove or preview, not {verb}"}
     try:
@@ -149,6 +155,15 @@ def router_for(auth: Any) -> APIRouter:
     @r.post("/remove")
     async def remove(request: Request) -> JSONResponse:
         return await write(request, "remove")
+
+    @r.post("/voice")
+    async def voice(request: Request) -> JSONResponse:
+        try:
+            body = await request.json()
+        except Exception:  # noqa: BLE001
+            body = {}
+        audience, by, grants = who(request, (body or {}).get("by") if isinstance(body, dict) else None)
+        return answer(await run_in_threadpool(command, "voice", body if isinstance(body, dict) else {}, by, audience, grants))
 
     @r.post("/preview")
     async def preview(request: Request) -> JSONResponse:
