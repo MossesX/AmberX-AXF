@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:08:50.374Z",
+ "updatedAt": "2026-11-17T18:10:12.522Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -174760,9 +174760,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:08:39.671Z",
-   "updatedAt": "2026-11-17T18:08:41.611Z",
+   "updatedAt": "2026-11-17T18:10:10.178Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 18 steps (4 Fable).",
+     "at": "2026-11-17T18:10:10.178Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -174777,7 +174782,415 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Define the build-columns@1 registry: one list of every build column (row #, date/time created, updated, model used, account used, steps done/total, status, priority, profile, agent, branch, PR, cost, estimate, origin source). Each column gets an id, label, value getter, sort type and default-hidden flag. Record each grid's columns that are visible today as its default view; every new column starts hidden.",
+     "model": "Fable",
+     "why": "New shared schema and contract that every build grid across apps reads",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/build-columns.json",
+      "framework/core/build-columns.mjs",
+      "framework/schemas/asset-types.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e01hz32",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add a column-visibility engine for the framework DataGrid. It works per grid id, starts from the default view, stores the visible/hidden lists in settings (axf.grid.<id>.columns), and offers toggle, reset and list(visible, hidden). It merges per key so last save wins.",
+     "model": "Fable",
+     "why": "Engine internals that change how every grid works across apps",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/grid-columns.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e02xryo",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add a row-number and session-order engine. Every row gets a stable number (1, 2, 3…) from the saved order and keeps it when moved. A session-only order overlay (moveToTop(selected), moveTo, clear) lives in memory and sessionStorage only, never in settings, so the saved order comes back after the console closes.",
+     "model": "Fable",
+     "why": "Cross-app grid behaviour contract (numbering plus session-only ordering)",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/grid-order.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e03atzx",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s4",
+     "text": "Write fixtures and the spec for grid-columns and grid-order: framework/spec/fixtures/grid-columns.json, generated with gen-fixtures. Add a GRID-COLUMNS section to the spec and record the Android twin as a deferred gap in PORTING.md (Android is on hold).",
+     "model": "Fable",
+     "why": "Conformance contract for the new engines",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/grid-columns.json",
+      "framework/spec/PORTING.md",
+      "framework/spec/GRID-COLUMNS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e04ogde",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s5",
+     "text": "In the DataGrid header right-click menu, add a Columns submenu with two groups: Visible (a check mark on each) and Hidden (a red no-entry cross on each). Clicking one moves it to the other list, live. Use framework context-menu items and icon tokens only, with no hard-coded colours.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/react/components/ChromeContext.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e051bsl",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s6",
+     "text": "Draw the Row # column in DataGrid from grid-order. Add a session-only 'Move selected to top' / 'Restore saved order' row context action with a small 'session order' indicator, and register data-axf-target addresses for the column menu and the row actions.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/react/components/gridOrder.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e06gl77",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s7",
+     "text": "Find every grid that lists build data (orchestrator tabs, pipeline, pending, build manager, gate/auto-lander, landing line, build notes, tests). Write the list with each grid's id and the columns visible today into a working inventory section of the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/",
+      "apps/console-web/plugins/gate/",
+      "apps/console-web/plugins/push-banner/",
+      "_claude/builds/reports/build-grids-full-column-set-date-time.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e07564x",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s8",
+     "text": "Server side: expose the missing build fields on the build rows the grids read. That means account used (from runs / claude-workers), model per run, steps done and total, created and updated date/time, and cost, as a read-only projection in the orchestrator routes and builds-store helpers.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "apps/console-web/plugins/build-orchestrator/server/routes.py",
+      "deploy/claude-workers.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e08b0ou",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s9",
+     "text": "Wire the Build orchestrator tab grids (all tabs plus the Pipeline Pending/Queue/Building grids) to build-columns@1 with their grid ids and today's columns as the defaults.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e09ztb0",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s10",
+     "text": "Wire the Gate / Auto-lander grids and the landing line grid to build-columns@1 with their defaults.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/",
+      "apps/console-web/plugins/push-banner/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e0a0r1g",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s11",
+     "text": "Wire the build notes, tests and Build manager / Codebase changes grids (and any others from the inventory) to build-columns@1 with their defaults.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/codebase-changes/web/",
+      "apps/console-web/plugins/build-orchestrator/web/",
+      "apps/console-web/src/views/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5e0bcicp",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s12",
+     "text": "REST API: GET/PUT /api/grids/<id>/columns (list, show, hide, toggle, reset) and GET/POST /api/grids/<id>/order (read row numbers and session order, move-top, restore), going through the settings registry. The session order applies only to the live console session.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/routes/grids.py",
+      "apps/console-web/server/main.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5f0cfzc9",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s13",
+     "text": "console-control: append the targets grid:<id>/columns, setting:axf.grid.<id>.columns and the grid:<id>/rows move-top and restore actions to control@1 (append only), with deep links for console_show/console_open that open the header Columns menu.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/control-registry.json",
+      "apps/console-web/src/console-control/",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5f0d3ihm",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s14",
+     "text": "MCP tools (grid_columns_list/set/toggle/reset, grid_rows_move_top/restore), CLI (axf grid columns list|show|hide|toggle|reset <grid> [col], axf grid rows top|restore) and voice actions (grid.columns.show, grid.columns.hide, grid.rows.top, grid.rows.restore), all calling the same REST.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py",
+      "framework/cli/axf.mjs",
+      "framework/cli/grid.mjs",
+      "apps/console-web/src/voice/actions.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5f0ef79a",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s15",
+     "text": "Docs and registry descriptions: help pages for the Columns menu and row numbering, a description for each new column, CLI header comments, and glossary entries so catalog --check passes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/help/",
+      "framework/core/build-columns.mjs",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5f0flqvz",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s16",
+     "text": "Tests: check-grid-columns.mts (defaults = today's visible, new columns hidden, toggle and reset, numbers stay put when rows move, session order not saved), a server test for the grids routes, and runs of check-console-control, check-theme, check-controls, check-chrome-assets and the fixtures.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-grid-columns.mts",
+      "apps/console-web/server/tests/test_grids.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5f0gnds1",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s17",
+     "text": "Re-bake the console from the framework (rebake.mjs) and build it. Take desktop and phone shots of the header Columns menu and the Row # column, then submit them to UI Review with 3 context-menu style options as assets (ui-choices@1) under plugins/build-orchestrator/assets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/console-web/plugins/build-orchestrator/assets/context-menu/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5f0htbly",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    },
+    {
+     "id": "s18",
+     "text": "Final: run the full check sweep, write the report _claude/builds/reports/build-grids-full-column-set-date-time.md (grids covered, columns, how each piece is reached by deep link, REST, MCP, CLI and voice), add the THREADS row, link the branch, and open the PR saying UI Review is waiting.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/build-grids-full-column-set-date-time.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl0cc5f0i62ko",
+     "createdAt": "2026-11-17T18:10:10.178Z"
+    }
+   ]
   }
  ]
 }
