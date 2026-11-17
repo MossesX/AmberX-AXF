@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7940,
- "updatedAt": "2026-11-17T21:09:22.143Z",
+ "rev": 7941,
+ "updatedAt": "2026-11-17T21:10:03.648Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275800,7 +275800,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275808,7 +275808,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:09:12.533Z",
+   "updatedAt": "2026-11-17T21:09:59.413Z",
    "builtAt": "",
    "notes": [
     {
@@ -275966,16 +275966,7 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-17T21:09:09.395Z",
-     "exit": 0,
-     "outcome": "returned",
-     "reason": "stopped",
-     "stepsLeft": 4,
-     "account": "",
-     "session": "",
-     "phase": "Phase 2"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-17T18:58:57.805Z",
      "by": "orchestrator",
@@ -275984,7 +275975,7 @@
      "note": "Split by Claude into 28 steps (7 Fable)."
     },
     "splitRequested": "",
-    "note": "Session stopped on its own with 4 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -276000,22 +275991,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:09:09.392Z",
-     "buildId": "rebuild-every-toolbar-page-specific",
-     "phase": "",
-     "step": "s25",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "2026-11-17T21:09:14.839Z",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -276642,12 +276617,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:09:59.413Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T18:58:57.805Z",
-     "updatedAt": "2026-11-17T18:58:57.805Z"
+     "updatedAt": "2026-11-17T21:09:59.690Z"
     },
     {
      "id": "s26",
