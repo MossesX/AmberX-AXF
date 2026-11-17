@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 18:12 UTC · `every-grid-select-highlight-all-rows` → archived, note (all) · console
 - 2026-11-17 18:12 UTC · `build-grids-full-column-set-date-time` → archived, note (all) · console
 - 2026-11-17 18:12 UTC · `context-menu-containers-show-hide-list` → archived, note (all) · console
 - 2026-11-17 18:12 UTC · `fix-pop-up-windows-don-t-close-x-only` → archived, note (all) · console
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:51 UTC · `rebuild-every-toolbar-page-specific` s3 done (all) · orchestrator
 - 2026-11-17 19:51 UTC · `terminal-main-tab-streaming-console-s` s1 done, → running (all) · orchestrator
 - 2026-11-17 19:54 UTC · `terminal-main-tab-streaming-console-s` s2 done (all) · orchestrator
+- 2026-11-17 19:55 UTC · `terminal-main-tab-streaming-console-s` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
