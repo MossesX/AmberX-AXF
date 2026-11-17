@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7499,
- "updatedAt": "2026-11-17T15:08:45.396Z",
+ "rev": 7500,
+ "updatedAt": "2026-11-17T15:08:53.849Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -215268,7 +215268,7 @@
    "pr": "#662",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-16T23:14:56.855Z",
+   "updatedAt": "2026-11-17T15:08:44.372Z",
    "builtAt": "",
    "notes": [
     {
@@ -215298,6 +215298,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:14:56.855Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:44.372Z"
     }
    ],
    "approvals": [],
@@ -215429,7 +215433,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -220670,7 +220674,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "#670",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-16T23:16:00.840Z",
+   "updatedAt": "2026-11-17T15:08:39.917Z",
    "builtAt": "",
    "notes": [
     {
@@ -220748,6 +220752,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T23:16:00.840Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:08:39.917Z"
     }
    ],
    "approvals": [
@@ -220888,7 +220896,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
