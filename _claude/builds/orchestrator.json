@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:12:44.259Z",
+ "updatedAt": "2026-11-17T15:13:04.223Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172809,7 +172809,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T15:12:12.190Z",
+   "updatedAt": "2026-11-17T15:12:46.173Z",
    "builtAt": "",
    "notes": [
     {
@@ -172831,6 +172831,10 @@
     {
      "text": "Dispatch gate: auto-lander-drag-rows-to-set-merge-order still has axf-auto-lander-drag-rows-to-set-merge-order--sully alive: not launched again, tracking that session.",
      "at": "2026-11-17T15:02:06.901Z"
+    },
+    {
+     "text": "Headless run axf-auto-lander-drag-rows-to-set-merge-order--sully: brief only · start 17.8K tokens ($0.12) · cost $6.40 · 65 turns · 6 tools, MCP none",
+     "at": "2026-11-17T15:12:46.173Z"
     }
    ],
    "approvals": [],
