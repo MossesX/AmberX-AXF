@@ -1,0 +1,414 @@
+{
+  "$axf": "orchestrator-demo-dry-run@1",
+  "at": "2026-11-17T21:11:56.962Z",
+  "gapMs": 300,
+  "pause": true,
+  "seconds": 58,
+  "realBuilds": 1022,
+  "realDemoNamed": 4,
+  "summary": {
+    "state": "done",
+    "total": 21,
+    "done": 21,
+    "pass": 21,
+    "fail": 0,
+    "skipped": 0,
+    "remaining": 0,
+    "current": "",
+    "failed": [],
+    "startedAt": "2026-11-17T21:10:59.421Z",
+    "endedAt": "2026-11-17T22:44:50.321Z",
+    "durationMs": 5630900,
+    "pause": true,
+    "minGapMs": 30000,
+    "acts": [
+      {
+        "actId": "pending-appears",
+        "title": "A new build appears in Pending",
+        "result": "pass",
+        "observed": "created demo-grid-q7s2f7 in Pending",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "status",
+            "text": "demo-grid-q7s2f7 pending",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline"
+      },
+      {
+        "actId": "queue",
+        "title": "The build is queued",
+        "result": "pass",
+        "observed": "demo-grid-q7s2f7 queued (held for the demo)",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "status",
+            "text": "demo-grid-q7s2f7 queued",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+      },
+      {
+        "actId": "launch",
+        "title": "The build is launched",
+        "result": "pass",
+        "observed": "demo-grid-q7s2f7 running on demo-fake-demo-grid-q7s2f7 (pid 3383381)",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "status",
+            "text": "demo-grid-q7s2f7 running",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+          },
+          {
+            "kind": "log",
+            "text": "fake session demo-fake-demo-grid-q7s2f7 pid 3383381",
+            "ref": ""
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+      },
+      {
+        "actId": "running-animation",
+        "title": "The running animation",
+        "result": "pass",
+        "observed": "demo-grid-q7s2f7: fake session alive, row animating",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "custom",
+            "text": "session-alive",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+      },
+      {
+        "actId": "tick-s1",
+        "title": "Step s1 is crossed off",
+        "result": "pass",
+        "observed": "demo-grid-q7s2f7 s1 crossed off (3 left)",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "step",
+            "text": "s1 done",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7/step:s1"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-grid-q7s2f7/step:s1"
+      },
+      {
+        "actId": "tick-s2",
+        "title": "Step s2 is crossed off",
+        "result": "pass",
+        "observed": "demo-grid-q7s2f7 s2 crossed off (2 left)",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "step",
+            "text": "s2 done",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7/step:s2"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-grid-q7s2f7/step:s2"
+      },
+      {
+        "actId": "tick-s3",
+        "title": "Step s3 is crossed off",
+        "result": "pass",
+        "observed": "demo-grid-q7s2f7 s3 crossed off (1 left)",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "step",
+            "text": "s3 done",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7/step:s3"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-grid-q7s2f7/step:s3"
+      },
+      {
+        "actId": "tick-s4",
+        "title": "Step s4 is crossed off",
+        "result": "pass",
+        "observed": "demo-grid-q7s2f7 s4 crossed off (0 left)",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "step",
+            "text": "s4 done",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7/step:s4"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-grid-q7s2f7/step:s4"
+      },
+      {
+        "actId": "crash-start",
+        "title": "A second build starts running",
+        "result": "pass",
+        "observed": "demo-crash-q7s2f7 running on demo-fake-demo-crash-q7s2f7, s1 crossed off",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "step",
+            "text": "s1 done",
+            "ref": "view:builds/tab:pipeline/row:demo-crash-q7s2f7/step:s1"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-crash-q7s2f7/step:s1"
+      },
+      {
+        "actId": "crash",
+        "title": "The session crashes",
+        "result": "pass",
+        "observed": "failed as meant: fake session killed: exit 143; the row still says Running",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "error",
+            "text": "exit 143 (SIGTERM)",
+            "ref": "view:builds/tab:pipeline/row:demo-crash-q7s2f7/step:s2"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-crash-q7s2f7/step:s2"
+      },
+      {
+        "actId": "watchdog-catches",
+        "title": "The watchdog catches it",
+        "result": "pass",
+        "observed": "exit-killed → retry (attempt 1)",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "note",
+            "text": "Watchdog fixed Demo: a session that crashes (step s2): session was killed (exit 143): step s2 reset, slot released, back in the Queue (retry 1 of 3).",
+            "ref": "view:builds/tab:pipeline/row:demo-crash-q7s2f7"
+          },
+          {
+            "kind": "status",
+            "text": "demo-crash-q7s2f7 queued",
+            "ref": "view:builds/tab:pipeline/row:demo-crash-q7s2f7"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-crash-q7s2f7"
+      },
+      {
+        "actId": "retry-to-queue",
+        "title": "The retry goes back to the Queue",
+        "result": "pass",
+        "observed": "demo-crash-q7s2f7 relaunched (retry 1), s2 and s3 crossed off",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "step",
+            "text": "s2 done",
+            "ref": "view:builds/tab:pipeline/row:demo-crash-q7s2f7/step:s2"
+          },
+          {
+            "kind": "step",
+            "text": "s3 done",
+            "ref": "view:builds/tab:pipeline/row:demo-crash-q7s2f7/step:s3"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-crash-q7s2f7"
+      },
+      {
+        "actId": "ci-red",
+        "title": "CI goes red on a demo branch",
+        "result": "pass",
+        "observed": "CI red on demo/demo-ci-q7s2f7; lander answered fix-session",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "status",
+            "text": "demo-ci-q7s2f7 fixing",
+            "ref": "view:builds/tab:pipeline/row:demo-ci-q7s2f7"
+          },
+          {
+            "kind": "log",
+            "text": "lander: fix-session (CI is red (demo-check): fixing red CI.)",
+            "ref": ""
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-ci-q7s2f7"
+      },
+      {
+        "actId": "auto-fix",
+        "title": "An auto-fix is filed and fixes it",
+        "result": "pass",
+        "observed": "fix session demo-fake-demo-ci-q7s2f7 fixed demo-check; CI green",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "step",
+            "text": "s2 done",
+            "ref": "view:builds/tab:pipeline/row:demo-ci-q7s2f7/step:s2"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-ci-q7s2f7/step:s2"
+      },
+      {
+        "actId": "merge-main",
+        "title": "Main moved on: merge-main",
+        "result": "pass",
+        "observed": "clash → lander merge-main",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "note",
+            "text": "lander: merge-main",
+            "ref": "view:builds/tab:pipeline/row:demo-ci-q7s2f7"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-ci-q7s2f7"
+      },
+      {
+        "actId": "land-dry",
+        "title": "It lands (dry run)",
+        "result": "pass",
+        "observed": "dry run: would merge demo-pr:demo-ci-q7s2f7 (demo/demo-ci-q7s2f7) into main; nothing merged",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "step",
+            "text": "s3 done",
+            "ref": "view:builds/tab:pipeline/row:demo-ci-q7s2f7/step:s3"
+          },
+          {
+            "kind": "log",
+            "text": "dry run: would merge demo-pr:demo-ci-q7s2f7 (demo/demo-ci-q7s2f7) into main; nothing merged",
+            "ref": ""
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-ci-q7s2f7/step:s3"
+      },
+      {
+        "actId": "die-retries",
+        "title": "A build fails every retry",
+        "result": "pass",
+        "observed": "3 tries, each exit 1",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "note",
+            "text": "Watchdog fixed Demo: a build that dies for good (step s2): session failed (exit 1): step s2 reset, slot released, back in the Queue (retry 1 of 3).",
+            "ref": "view:builds/tab:pipeline/row:demo-die-q7s2f7/step:s2"
+          },
+          {
+            "kind": "note",
+            "text": "Watchdog fixed Demo: a build that dies for good (step s2): session failed (exit 1): step s2 reset, slot released, back in the Queue (retry 2 of 3).",
+            "ref": "view:builds/tab:pipeline/row:demo-die-q7s2f7/step:s2"
+          },
+          {
+            "kind": "note",
+            "text": "Watchdog fixed Demo: a build that dies for good (step s2): session failed (exit 1): step s2 reset, slot released, back in the Queue (retry 3 of 3).",
+            "ref": "view:builds/tab:pipeline/row:demo-die-q7s2f7/step:s2"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-die-q7s2f7/step:s2"
+      },
+      {
+        "actId": "dies-for-good",
+        "title": "It dies for good: red row",
+        "result": "pass",
+        "observed": "failed as meant: watchdog give-up: What failed: step s2, exit 1 on every try. session failed (exit 1): retry 3 of 3 was the last one, giving up: back in Pending for Brett.",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "status",
+            "text": "demo-die-q7s2f7 failed",
+            "ref": "view:builds/tab:pipeline/row:demo-die-q7s2f7"
+          },
+          {
+            "kind": "note",
+            "text": "What failed: step s2, exit 1 on every try. session failed (exit 1): retry 3 of 3 was the last one, giving up: back in Pending for Brett.",
+            "ref": "view:builds/tab:pipeline/row:demo-die-q7s2f7"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-die-q7s2f7"
+      },
+      {
+        "actId": "break-alert",
+        "title": "The break alert and its dialog",
+        "result": "pass",
+        "observed": "alert \"[demo] Build failed: Demo: a build that dies for good\" raised; dialog dialog:build-orchestrator.live.broke/row:demo-die-q7s2f7",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "alert",
+            "text": "[demo] Build failed: Demo: a build that dies for good",
+            "ref": "orchestrator-demo:broke:demo-die-q7s2f7"
+          },
+          {
+            "kind": "custom",
+            "text": "break dialog",
+            "ref": "dialog:build-orchestrator.live.broke/row:demo-die-q7s2f7"
+          }
+        ],
+        "focus": "dialog:build-orchestrator.live.broke/row:demo-die-q7s2f7"
+      },
+      {
+        "actId": "stale-row-cleanup",
+        "title": "Stale rows are cleaned up",
+        "result": "pass",
+        "observed": "stale row found; removed demo-grid-q7s2f7",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "status",
+            "text": "demo-grid-q7s2f7 removed",
+            "ref": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+          }
+        ],
+        "focus": "view:builds/tab:pipeline/row:demo-grid-q7s2f7"
+      },
+      {
+        "actId": "phone-notify",
+        "title": "A notification reaches the phone",
+        "result": "pass",
+        "observed": "not sent: the console did not answer (the notice is recorded in the run only)",
+        "error": "",
+        "evidence": [
+          {
+            "kind": "alert",
+            "text": "[demo] Orchestrator demo: this is what a phone notification looks like",
+            "ref": "orchestrator-demo:notify:demo-run-20261117-q7s2f7"
+          }
+        ],
+        "focus": "view:alerts"
+      }
+    ]
+  },
+  "cleanup": {
+    "at": "2026-11-17T22:46:59.021Z",
+    "removed": [
+      "demo-crash-q7s2f7",
+      "demo-ci-q7s2f7",
+      "demo-die-q7s2f7"
+    ],
+    "branches": [
+      "demo/demo-ci-q7s2f7"
+    ],
+    "alerts": [
+      "orchestrator-demo:broke:demo-grid-q7s2f7",
+      "orchestrator-demo:broke:demo-crash-q7s2f7",
+      "orchestrator-demo:broke:demo-ci-q7s2f7",
+      "orchestrator-demo:broke:demo-die-q7s2f7",
+      "orchestrator-demo:notify:demo-run-20261117-q7s2f7"
+    ],
+    "sessions": [
+      "demo-grid-q7s2f7",
+      "demo-crash-q7s2f7",
+      "demo-ci-q7s2f7",
+      "demo-die-q7s2f7"
+    ],
+    "prefix": "demo-",
+    "errors": []
+  },
+  "fails": []
+}

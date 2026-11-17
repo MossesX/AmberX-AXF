@@ -12,10 +12,18 @@
  *   3. a toolbar that turns tap-to-confirm off in code (`data-axf-tap-confirm="off"`) records why in
  *      `data-axf-tap-confirm-reason="…"`; switching it off for a person is a setting, never code.
  *
- *   node framework/cli/check-toolbars.mjs [--json] [root…]   (default: every app's src + plugins, framework react/libs/templates)
+ *   4. every plugin page toolbar asset (`apps/<app>/plugins/<folder>/assets/toolbar/*.json`) is page-scoped
+ *      (`scope: view:<id>` or `plugin:<id>`, never the app frame) and every button is bound to an action ref
+ *      (`command:`, `handler:`, `control:` or `action:`); page-toolbar@1, build rebuild-every-toolbar-page-specific;
+ *   5. a plugin that draws a handwritten role="toolbar" ships a page-scoped toolbar asset for its page. The plugins
+ *      still without one are held in the ratchet framework/spec/toolbar-page-baseline.json, which only comes down
+ *      (`--write-baseline` after rebuilding one; a plugin that now has an asset but is still listed is a finding too).
+ *
+ *   node framework/cli/check-toolbars.mjs [--json] [--write-baseline] [root…]   (default: every app's src + plugins, framework react/libs/templates)
  * Exit 1 on any finding. Vendored code, baked framework copies (`src/axf`) and tests are skipped.
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { parseActionRef, parseToolbarScope } from '../core/engines/toolbar-rules.mjs';
 import { join, relative, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -98,6 +106,40 @@ export function checkSource(src) {
   return findings;
 }
 
+/* ---------------- page toolbar assets (rules 4 and 5) ---------------- */
+
+const BASELINE = join(ROOT, 'framework/spec/toolbar-page-baseline.json');
+const pluginDirs = () => APPS.flatMap((a) => {
+  const base = join(ROOT, 'apps', a, 'plugins');
+  try { return readdirSync(base).filter((n) => !n.startsWith('_') && !n.startsWith('.')).map((n) => ({ app: a, folder: n, dir: join(base, n) })).filter((p) => statSync(p.dir).isDirectory()); } catch { return []; }
+});
+
+/** Rule 4: one asset file → its findings (page scope, every button bound). */
+export function checkPageToolbarAsset(text) {
+  const out = [];
+  let a; try { a = JSON.parse(text); } catch (e) { return [{ line: 1, rule: 'asset', message: `not JSON: ${e.message}` }]; }
+  if (a?.type !== 'toolbar') return [{ line: 1, rule: 'asset', message: `type "${a?.type}" is not toolbar` }];
+  const scope = parseToolbarScope(a.data?.scope);
+  if (!scope || scope.kind === 'app') out.push({ line: 1, rule: 'page-scope', message: 'a plugin toolbar asset is page-scoped: scope "view:<id>" or "plugin:<id>"' });
+  for (const g of a.data?.groups ?? []) for (const it of g.items ?? []) {
+    if (!g.provider && !parseActionRef(it.action)) out.push({ line: 1, rule: 'unbound', message: `button ${g.id}/${it.id} is not bound to an action ref (command:, handler:, control: or action:)` });
+  }
+  return out;
+}
+
+/** Rule 5: the plugins drawing a handwritten toolbar with no page-scoped asset. */
+export function pluginsWithoutPageToolbar() {
+  const missing = [];
+  for (const p of pluginDirs()) {
+    const assets = join(p.dir, 'assets', 'toolbar');
+    const has = existsSync(assets) && readdirSync(assets).some((f) => { if (!f.endsWith('.json')) return false; try { const sc = parseToolbarScope(JSON.parse(readFileSync(join(assets, f), 'utf8')).data?.scope); return !!sc && sc.kind !== 'app'; } catch { return false; } });
+    if (has) continue;
+    const draws = walk(p.dir).some((f) => /role="toolbar"/.test(readFileSync(f, 'utf8')));
+    if (draws) missing.push(`${p.app}/${p.folder}`);
+  }
+  return missing.sort();
+}
+
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const all = [];
@@ -105,6 +147,19 @@ if (isMain) {
   for (const r of ROOTS) for (const f of walk(r)) {
     files++;
     for (const x of checkSource(readFileSync(f, 'utf8'))) all.push({ file: relative(ROOT, f), ...x });
+  }
+  if (!roots.length) {
+    for (const p of pluginDirs()) {
+      const d = join(p.dir, 'assets', 'toolbar');
+      if (!existsSync(d)) continue;
+      for (const f of readdirSync(d).filter((x) => x.endsWith('.json'))) { files++; for (const x of checkPageToolbarAsset(readFileSync(join(d, f), 'utf8'))) all.push({ file: relative(ROOT, join(d, f)), ...x }); }
+    }
+    const missing = pluginsWithoutPageToolbar();
+    if (args.includes('--write-baseline')) writeFileSync(BASELINE, `${JSON.stringify({ $comment: 'Plugins that draw a handwritten toolbar and ship no page-scoped toolbar asset yet (framework/cli/check-toolbars.mjs rule 5). Only comes down: rebuild one, then --write-baseline.', plugins: missing }, null, 2)}\n`);
+    let base = [];
+    try { base = JSON.parse(readFileSync(BASELINE, 'utf8')).plugins ?? []; } catch { /* no baseline: every one is a finding */ }
+    for (const m of missing) if (!base.includes(m)) all.push({ file: `apps/${m.replace('/', '/plugins/')}`, line: 0, rule: 'no-page-asset', message: 'draws a toolbar but ships no page-scoped toolbar asset (assets/toolbar/*.json with scope view:/plugin:)' });
+    for (const b of base) if (!missing.includes(b)) all.push({ file: relative(ROOT, BASELINE), line: 0, rule: 'baseline', message: `${b} has a page toolbar asset now: take it out of the baseline (--write-baseline)` });
   }
   if (json) console.log(JSON.stringify({ files, findings: all }, null, 2));
   else {

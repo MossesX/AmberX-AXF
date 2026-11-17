@@ -36,7 +36,7 @@ export function markedUrgent(b) {
 }
 export const effectivePriority = (b) => normPriority(b?.priority) || (markedUrgent(b) ? 'P0' : PRIORITY_DEFAULT);
 
-const FINISHED = ['complete', 'archived'];
+const FINISHED = ['complete', 'landed', 'archived'];
 const prNumber = (pr) => Number(/(\d+)\s*$/.exec(String(pr ?? ''))?.[1] ?? 0);
 const entryOf = (e, id) => e.build === id || e.name === id;
 

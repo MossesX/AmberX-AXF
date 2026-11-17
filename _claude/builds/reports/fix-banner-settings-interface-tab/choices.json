@@ -1,0 +1,157 @@
+{
+  "set": "chrome-banner-interface-tab",
+  "assetType": "settings",
+  "owner": "ui-review",
+  "options": [
+    {
+      "id": "all-in-one",
+      "label": "Interface = everything for this banner (built)",
+      "notes": "The Interface tab holds this banner's asset and every look and behaviour field in one scroll; Look / Behaviour / Asset stay as quick tabs. The settings window's own layout is the fold above the tabs. This is what the PR ships.",
+      "data": {
+        "for": "banner",
+        "header": "compact",
+        "search": false,
+        "descriptions": true,
+        "groups": [],
+        "levels": true,
+        "defaultLevel": "basic",
+        "layout": "tabs-top",
+        "tabs": [
+          {
+            "id": "look",
+            "label": "Look",
+            "icon": "palette",
+            "order": 10
+          },
+          {
+            "id": "behaviour",
+            "label": "Behaviour",
+            "icon": "sliders",
+            "order": 20
+          },
+          {
+            "id": "asset",
+            "label": "Asset",
+            "icon": "layers",
+            "order": 30
+          },
+          {
+            "id": "interface",
+            "label": "Interface",
+            "icon": "settings",
+            "order": 40
+          }
+        ],
+        "hide": [],
+        "levelOf": {
+          "look": "simple",
+          "behaviour": "basic",
+          "asset": "basic",
+          "interface": "basic"
+        }
+      },
+      "shots": [
+        "banner-interface-before-desktop.png",
+        "banner-interface-after-desktop.png",
+        "banner-interface-before-phone.png",
+        "banner-interface-after-phone.png"
+      ]
+    },
+    {
+      "id": "interface-first",
+      "label": "Interface first, no duplicate tabs",
+      "notes": "Opens on Interface (everything for this banner); Look and Behaviour tabs are hidden because Interface already covers them; Asset stays for the picker cards. Fewer tabs on the phone.",
+      "data": {
+        "for": "banner",
+        "header": "compact",
+        "search": false,
+        "descriptions": true,
+        "groups": [],
+        "levels": true,
+        "defaultLevel": "basic",
+        "layout": "tabs-top",
+        "tabs": [
+          {
+            "id": "interface",
+            "label": "Interface",
+            "icon": "settings",
+            "order": 5
+          },
+          {
+            "id": "asset",
+            "label": "Asset",
+            "icon": "layers",
+            "order": 30
+          },
+          {
+            "id": "look",
+            "label": "Look",
+            "icon": "palette",
+            "order": 10,
+            "hidden": true
+          },
+          {
+            "id": "behaviour",
+            "label": "Behaviour",
+            "icon": "sliders",
+            "order": 20,
+            "hidden": true
+          }
+        ],
+        "hide": [],
+        "levelOf": {
+          "interface": "simple",
+          "asset": "basic"
+        }
+      }
+    },
+    {
+      "id": "one-list",
+      "label": "One list, no tabs",
+      "notes": "No tab row at all: Look, Behaviour and Asset as sections in one scroll (the settings asset's list layout), Interface hidden since the list is the whole interface. Best for a quick phone pass.",
+      "data": {
+        "for": "banner",
+        "header": "compact",
+        "search": false,
+        "descriptions": true,
+        "groups": [],
+        "levels": true,
+        "defaultLevel": "basic",
+        "layout": "list",
+        "tabs": [
+          {
+            "id": "look",
+            "label": "Look",
+            "icon": "palette",
+            "order": 10
+          },
+          {
+            "id": "behaviour",
+            "label": "Behaviour",
+            "icon": "sliders",
+            "order": 20
+          },
+          {
+            "id": "asset",
+            "label": "Asset",
+            "icon": "layers",
+            "order": 30
+          },
+          {
+            "id": "interface",
+            "label": "Interface",
+            "icon": "settings",
+            "order": 40,
+            "hidden": true
+          }
+        ],
+        "hide": [],
+        "levelOf": {
+          "look": "simple",
+          "behaviour": "basic",
+          "asset": "basic"
+        }
+      }
+    }
+  ]
+}

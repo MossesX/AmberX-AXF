@@ -112,6 +112,7 @@ jobs:
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test-watchdog.mjs   # build watchdog: killed / failed / hung builds requeued and retried, cap, other account, idle slots, phone FYI  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-build-watchdog.mjs           # build-watchdog@1 decision table: killed 143 / exit 1 / OOM / stale heartbeat → reset + requeue (retry) until maxRetries → Pending + banner (give-up), usage limit / dead login → another account, live session left alone; recoveries[] on builds@1, schemas/build-watchdog.json current; fixtures/build-watchdog.json
+      - run: node framework/spec/check-live-demo.mjs               # demo-run@1 (guided live demo): state machine idle → overlay → focusing → captioned → running → waiting-next → cooldown → done / stopped, pause on = wait for Next then ≥30 s, pause off = ≥30 s, the gap never below 30 s, refused transitions by code, per-act results + summary fold; acts touch demo- builds only; schemas/live-demo.json current; fixtures/live-demo.json
       - run: node framework/spec/check-build-pipeline.mjs           # build-pipeline@1 exit transition: phase done → Queue (same place, no crash counted), crash → Queue until the limit → Pending, blocked upgrade → Pending, all done → landing; fixtures/build-pipeline-exit.json
       - run: node framework/spec/check-done-means-merged.mjs        # done-means-merged@1: built / complete refused without merge + green CI + verify, migration loses nothing, the retry ladder never repeats a failed strategy, escalation only after N different attempts
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
@@ -302,6 +303,9 @@ jobs:
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
             npx -y tsx framework/spec/check-tapconfirm.mts            # toolbar tap-to-confirm: touch arms then runs, mouse/pen/keyboard click once, re-arm, window, per-toolbar settings
+            npx -y tsx framework/spec/check-toolbar-actions.mts       # page-toolbar@1: migration with no visible change, scope + slot pick, state gating, overflow plans, invocations, API state; fixtures/toolbar-actions.json
+            npx -y tsx framework/spec/check-page-toolbars.mts         # every plugin page toolbar asset: page-scoped, every button bound and wired, drawn by its page, reachable by deep link, REST, MCP, CLI and voice
+            npx -y tsx framework/spec/check-page-toolbar-voice.mts    # the voice inventory (fixtures/page-toolbar-voice.json): "press <button> on the <toolbar> toolbar" reaches the same button as REST, MCP, CLI and control@1
             npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
@@ -350,6 +354,7 @@ jobs:
             npx -y tsx framework/spec/check-swarm.mts                  # agent swarm contracts (agent@1 … swarm-run@1): fixture replay, field-naming validators, model policy, schema snapshots, shipped roster, plugin uses the framework's
             npx -y tsx framework/spec/check-help.mts                   # help@1 + Help mode: registry, fixture replay (auto ids, index, intros, coverage, ratchet), validators agree, every shipped pack, runtime switch
             npx -y tsx framework/spec/check-help-mode.mts              # Help mode in the DOM (jsdom): switch, hover / long-press / badge tooltips, dismiss, No help yet, What is this?, intro once per screen
+            npx -y tsx framework/spec/check-chrome-interface-tab.mts   # a chrome Settings… Interface tab edits that chrome (axf.chrome.<type>.<id>), never the settings window (jsdom, every kind + grid tokens)
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
@@ -429,6 +434,10 @@ jobs:
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           for t in apps/console-web/plugins/[!_]*/test.py; do [ -f "$t" ] || continue; echo "== $t"; python "$t"; done
+      - name: Plugin page toolbar tests (every plugins/*/toolbar.test.mjs; found by glob)
+        run: |
+          set -e
+          for t in apps/console-web/plugins/[!_]*/toolbar.test.mjs; do [ -f "$t" ] || continue; echo "== $t"; node "$t"; done
       - name: Plugin pure-part self-tests (every plugins/*/test.mts; found by glob so removing a plugin never breaks CI)
         env:
           AXF_BUILD_PROFILE: all

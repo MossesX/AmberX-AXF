@@ -53,7 +53,7 @@ export function boardRows(behind = {}) {
   return loadStore().builds.filter((b) => (b.profiles ?? []).includes(p) && !b.deleted && BP.tabOf(b) && BP.tabOf(b) !== 'deleted').map((b) => {
     const steps = b.steps ?? []; const done = steps.filter((s) => s.done).length;
     return { id: b.id, title: b.title, status: b.status, tab: BP.tabOf(b), priority: effectivePriority(b), createdAt: b.createdAt ?? '', updatedAt: b.updatedAt ?? '',
-      steps: { done, total: steps.length }, pr: b.pr ?? '', branch: b.branch ?? '', held: BP.isHeld(b), ...(Number.isFinite(behind?.[b.id]) ? { behind: behind[b.id] } : {}) };
+      steps: { done, total: steps.length }, pr: b.pr ?? '', branch: b.branch ?? '', held: BP.isHeld(b), ...(b.demo === true ? { demo: true } : {}), ...(Number.isFinite(behind?.[b.id]) ? { behind: behind[b.id] } : {}) }; // demo-build@1: demo-only rows
   });
 }
 

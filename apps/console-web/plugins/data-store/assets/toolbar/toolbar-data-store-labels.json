@@ -1,0 +1,56 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-data-store-labels",
+  "name": "Data store: Icons + text",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icon and name on every button, overflow only when the bar runs out of room (ships as the default).",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-data-store",
+    "choice-option:labels"
+  ],
+  "data": {
+    "scope": "view:data-store",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "store",
+        "label": "Store",
+        "items": [
+          {
+            "id": "backup",
+            "icon": "save",
+            "label": "Back up now",
+            "action": "command:data-store/backup",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "verify",
+            "icon": "check-circle",
+            "label": "Verify backup",
+            "action": "command:data-store/verify",
+            "priority": 250
+          },
+          {
+            "id": "sync",
+            "icon": "refresh",
+            "label": "Sync tables",
+            "action": "command:data-store/sync-tables",
+            "confirm": "Sync every table from its source now?",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

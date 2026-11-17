@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "ui-review-queue",
+  "name": "UI Review",
+  "version": "1.0.0",
+  "description": "The UI Review queue toolbar: group the items, compare before and after, open the selected item's PR or its choices. Approve and Reject stay with the person (the bulk bar), never a toolbar command.",
+  "author": "AmberX AXF",
+  "tags": ["page", "ui-review", "review"],
+  "data": {
+    "scope": "view:ui-review",
+    "slot": "queue",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 2, "label": "More" },
+    "groups": [
+      {
+        "id": "view",
+        "label": "View",
+        "items": [
+          { "id": "group-by", "icon": "grid", "label": "Group by", "action": "handler:ui-review.group-by", "checked": "state:grouped", "badge": "state:groupByLabel", "priority": 300, "overflow": "never" },
+          { "id": "compare", "icon": "copy", "label": "Compare before/after", "action": "handler:ui-review.compare", "checked": "state:comparing", "enabledWhen": "shown>0", "priority": 250 }
+        ]
+      },
+      {
+        "id": "item",
+        "label": "Selected item",
+        "items": [
+          { "id": "pr", "icon": "github", "label": "Open PR", "action": "handler:ui-review.open-pr", "enabledWhen": ["selection.count=1", "selection.pr"], "priority": 200 },
+          { "id": "choices", "icon": "layers", "label": "Open choices", "action": "handler:ui-review.open-choices", "enabledWhen": ["selection.count=1", "selection.choices>0"], "badge": "state:selection.choices", "priority": 180 }
+        ]
+      }
+    ]
+  }
+}

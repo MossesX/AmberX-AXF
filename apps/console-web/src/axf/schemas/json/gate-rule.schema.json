@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/gate-rule.schema.json",
+  "title": "gate-rule@1 (gate-rules@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "kind",
+    "enabled",
+    "severity",
+    "owner"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "gate-rule@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,40}$"
+    },
+    "kind": {
+      "enum": [
+        "ci",
+        "tests",
+        "theme",
+        "controls",
+        "ui-review",
+        "clash",
+        "custom"
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "severity": {
+      "enum": [
+        "block",
+        "warn",
+        "info"
+      ],
+      "description": "block = the PR waits; warn = it lands and History says so; info = recorded only"
+    },
+    "owner": {
+      "enum": [
+        "console",
+        "axf-molly"
+      ],
+      "description": "who evaluates it: the console now, axf-molly once the container owns the gate"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 600
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "on": {
+          "enum": [
+            "head",
+            "queue-commit"
+          ],
+          "description": "ci: which commit the checks must be green on"
+        },
+        "redJoins": {
+          "type": "boolean",
+          "description": "ci: a red PR still joins a batch (the batch run is the gate)"
+        },
+        "noRunMin": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120,
+          "description": "ci: minutes with no run before the lander starts one"
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "tests: the commands run after generated files were resolved"
+        },
+        "check": {
+          "type": "string",
+          "description": "theme / controls / custom: the repo-relative check script"
+        },
+        "holdOn": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "waiting",
+              "changes",
+              "rejected",
+              "unknown"
+            ]
+          },
+          "description": "ui-review: the UI Review states that hold a PR"
+        },
+        "autoResolve": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "builds",
+              "union",
+              "union-json",
+              "generated"
+            ]
+          },
+          "description": "clash: conflict kinds the lander resolves itself"
+        },
+        "fileFix": {
+          "type": "boolean",
+          "description": "clash: a code conflict files a fix (agent job) instead of waiting"
+        },
+        "mode": {
+          "enum": [
+            "serial",
+            "batch",
+            "stack"
+          ],
+          "description": "merge-queue-only: how PRs land"
+        },
+        "autoLand": {
+          "type": "boolean",
+          "description": "merge-queue-only: the builds round (clean, merge main, push, open the PR) runs"
+        },
+        "directMerge": {
+          "type": "boolean",
+          "description": "merge-queue-only: false = nothing but the lander merges"
+        },
+        "maxAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "auto-lander: failures of one kind (clash, red-ci, land) on one build before it escalates"
+        },
+        "backoff": {
+          "type": "object",
+          "properties": {
+            "baseMin": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "factor": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "maxMin": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "description": "auto-lander: minutes before the next try after the n-th failure, min(maxMin, baseMin × factor^(n−1))"
+        },
+        "attemptTimeoutMin": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "auto-lander: a started attempt older than this counts as a timeout"
+        },
+        "mergeMain": {
+          "type": "boolean",
+          "description": "auto-lander: a clash merges main into the branch by itself"
+        },
+        "fixSessions": {
+          "type": "boolean",
+          "description": "auto-lander: red CI starts a fix session by itself"
+        },
+        "land": {
+          "type": "boolean",
+          "description": "auto-lander: green lands by itself"
+        },
+        "escalateTo": {
+          "enum": [
+            "banner",
+            "note",
+            "none"
+          ],
+          "description": "auto-lander: where maxAttempts reached is reported"
+        }
+      },
+      "additionalProperties": true
+    },
+    "source": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "today's setting or check this rule replaced (push banner config.json key, CI job)"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedBy": {
+      "type": "string",
+      "maxLength": 80
+    }
+  }
+}
