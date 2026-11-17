@@ -348,7 +348,7 @@ export function noAccountWhy(accounts, model) {
 export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
-  const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
+  const running = live.filter((b) => b.status === 'running' || b.status === 'waiting' || (b.status === 'fixing' && !!b.pipeline?.session)); // a retry run is a run (done-means-merged@1)
   const pending = live.filter((b) => b.status === 'pending' && !b.hidden);
   const acc = list(accounts).map((a) => ({ ...a }));
   let free = Math.max(0, Number(slots?.free) || 0);
@@ -578,6 +578,43 @@ export function recordFailure(b, f, { at = new Date().toISOString() } = {}) {
   return b;
 }
 const KIND_WORDS = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'it clashes with main', 'push-fail': 'the push failed', stalled: 'it stalled', 'fell-to-pending': 'it fell back to Pending' });
+
+// ------------------------------------------------------------------ retry runner (done-means-merged@1, s8)
+
+const STRATEGY_TEXT = Object.freeze({
+  retry: 'Run the same approach again: the failure looked transient. Pick up at the first open step.',
+  'merge-main': 'Merge origin/main into your branch first and resolve every conflict (keep both sides\' intent; regenerate generated files and fixtures rather than hand-merging them), push, then carry on.',
+  fix: {
+    targeted: 'Fix the failing checks first: reproduce each one locally, fix the cause (not the check), commit, push, and confirm it passes before anything else.',
+    regenerate: 'Regenerate what is generated before anything else: fixtures (`--write` on the spec checks), baked framework copies, catalogs and exports; commit, push, re-run the failing checks.',
+    'redo-step': 'Merge origin/main in, then redo the failing step from its text rather than patching the last attempt; commit, push, re-run its checks.',
+  },
+  'fresh-session': 'This is a fresh session after the earlier one failed: start by reading `git status`, `git log origin/main..HEAD` and the tail of the previous run log, then continue at the first open step. Do not repeat what the earlier attempt tried.',
+  'switch-model': 'The earlier attempts ran on another model and failed; take a different approach from theirs.',
+  'switch-account': 'The earlier attempts ran on another account and failed; the account may have been the problem, the code may not. Check the branch state first, then continue.',
+});
+const FAILURE_TEXT = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'the branch clashes with main', 'push-fail': 'the push or the PR failed', stalled: 'the session stalled (no sign of life)', 'fell-to-pending': 'the session stopped with steps left' });
+
+/** Does the auto-lander own this failure? A PR-side failure (clash, red CI) on a build with every step done is the lander's until it escalates. */
+export const landerOwns = (b, f, land = null) => !!f && ['clash', 'ci-red'].includes(f.kind) && allDone(b) && !!b.pr && !(land && (land.state === 'escalated' || land.escalation));
+
+/** The brief block a relaunch carries: what failed, every attempt so far, and what to do differently this time. */
+export function retryAddendum(d, f, attempts = []) {
+  const what = d.strategy === 'fix' ? STRATEGY_TEXT.fix[d.fixStrategy] ?? STRATEGY_TEXT.fix.targeted : STRATEGY_TEXT[d.strategy] ?? STRATEGY_TEXT.retry;
+  const tried = normAttempts(attempts).filter((a) => a.result !== 'skipped' && a.result !== 'started');
+  return [
+    `## Retry: attempt ${d.n} (done-means-merged@1)`,
+    `The last run failed: ${FAILURE_TEXT[f?.kind] ?? 'it failed'}${f?.step ? ` on ${f.step}` : ''}${f?.why ? ` (${f.why})` : ''}${f?.head ? ` at ${f.head.slice(0, 10)}` : ''}.`,
+    ...(tried.length ? ['Tried so far:', ...tried.map((a) => `- attempt ${a.n}: ${a.strategy}${a.fixStrategy ? `:${a.fixStrategy}` : ''}${a.model ? ` on ${a.model}` : ''}${a.account ? ` (${a.account})` : ''} → ${a.result}${a.note ? `: ${str(a.note, 200)}` : ''}`)] : []),
+    `This attempt: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''}. ${what}`,
+    'Never stop on a failure: fix it and keep going. If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on the next rung.',
+  ].join('\n');
+}
+/** The attempt@1 a relaunch opens. */
+export const attemptOf = (d, f, { at, account = '', model = '', session = '', pr = 0, head = '' } = {}) => ({
+  kind: f.kind, strategy: d.strategy, fixStrategy: d.fixStrategy || '', model: model || d.model || '', account: account || d.account || '', session, step: f.step || '', head: head || f.head || '', pr,
+  startedAt: at, endedAt: '', result: 'started', log: '', note: str(d.reason, 600), source: 'pipeline',
+});
 
 export const ALERT_SOURCE = 'pipeline';
 export const ALERT_LINK = '#/build-orchestrator';

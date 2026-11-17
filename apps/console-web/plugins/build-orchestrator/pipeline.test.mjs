@@ -528,14 +528,20 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(json(pipe('show', r.id, '--json')).build.status, 'queued');
     json(pipe('unqueue', r.id, '--json'));
   });
-  t('e2e session end: a crash requeues (run 2), a clean finish with every step done = complete', () => {
+  t('e2e session end: a crash is a failure the ladder retries (attempt 1, run 2), a clean finish with every step done = landing', () => {
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 1, at: new Date().toISOString() }) + '\n');
     let r = json(pipe('tick', '--json'));
     assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'requeued']]);
     assert.equal(find('alpha').pipeline.lastRun.exit, 1); assert.equal(find('alpha').pipeline.lastRun.outcome, 'requeued');
-    // the account it freed takes it again in the same tick: run 2
-    assert.deepEqual(r.launched.map((l) => l.id), ['alpha']); assert.equal(find('alpha').status, 'running'); assert.equal(find('alpha').pipeline.runs, 2);
-    assert.match(find('alpha').notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
+    // done-means-merged@1: the detector classifies the crash (status fixing) and the retry runner relaunches it in the same tick: run 2, attempt 1 = retry
+    assert.deepEqual(r.failures.map((x) => [x.id, x.failure.kind]), [['alpha', 'crash']]);
+    assert.deepEqual(r.retries.filter((x) => x.action === 'launched').map((x) => [x.id, x.strategy]), [['alpha', 'retry']]);
+    const a = find('alpha');
+    assert.equal(a.status, 'fixing'); assert.equal(a.pipeline.runs, 2); assert.equal(a.failure.kind, 'crash');
+    assert.deepEqual(a.attempts.map((x) => [x.n, x.kind, x.strategy, x.result]), [[1, 'crash', 'retry', 'started']]);
+    assert.match(readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'), /## Retry: attempt 1/);
+    assert.match(a.notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
+    assert.match(a.notes.map((x) => x.text).join('\n'), /Fixing: the session crashed/);
     // beta's session ticks its step and ends cleanly
     orch('act', 'step', 'beta', 's1', 'done');
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');
@@ -543,11 +549,23 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(['complete', 'built', 'landing', 'landed'].includes(find('beta').status), find('beta').status);
     assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
   });
-  t('e2e session end: a clean stop with steps left goes back to Pending for Brett', () => {
-    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 0, at: new Date().toISOString() }) + '\n');
-    const r = json(pipe('tick', '--json'));
+  t('e2e session end: a clean stop with steps left is fell-to-pending, retried; a session that asked Brett goes back to Pending', () => {
+    const end = (exit) => writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit, at: new Date(Date.now() + 1000).toISOString() }) + '\n');
+    end(0);
+    let r = json(pipe('tick', '--json'));
     assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
-    assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending/);
+    // done-means-merged@1: nobody asked Brett anything, so it is a failure the ladder answers, not a silent stop
+    assert.deepEqual(r.failures.map((x) => [x.id, x.failure.kind]), [['alpha', 'fell-to-pending']]);
+    let a = find('alpha');
+    assert.equal(a.status, 'fixing');
+    assert.deepEqual(a.attempts.map((x) => [x.kind, x.strategy, x.result]), [['crash', 'retry', 'failed'], ['fell-to-pending', 'retry', 'started']]);
+    // the retry run asks Brett (status waiting) and stops: a real wait, back in Pending, no retry
+    orch('act', 'status', 'alpha', 'waiting');
+    end(0);
+    r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
+    assert.deepEqual(r.failures, []);
+    assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending|needs Brett/);
   });
   t('e2e idle: nothing running with work in Pending raises the idle alert once, cleared when a build runs', () => {
     const st = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));
@@ -669,8 +687,12 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(json(pipe('tick', '--json')).launched.filter((l) => l.id === 'dup').length, 0, 'the next tick never launches it twice');
     // the session ends: the lock goes with it
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('dup').pipeline.session, name: 'dup', exit: 0, at: new Date().toISOString() }) + '\n');
-    json(pipe('tick', '--json'));
-    assert.ok(!existsSync(join(wtRoot, 'dup', '.axf-build.lock')), 'lock released at session end');
+    const rEnd = json(pipe('tick', '--json'));
+    // the old run's lock went with it; a clean stop with steps left is fell-to-pending, so the retry runner may have
+    // relaunched it in the same tick (done-means-merged@1): then the lock on file is the new run's, never the old one's
+    const relaunched = (rEnd.retries ?? []).some((x) => x.id === 'dup' && x.action === 'launched');
+    if (relaunched) assert.notEqual(JSON.parse(readFileSync(join(wtRoot, 'dup', '.axf-build.lock'), 'utf8')).beat, lk.beat, 'a fresh lock for the retry run');
+    else assert.ok(!existsSync(join(wtRoot, 'dup', '.axf-build.lock')), 'lock released at session end');
     if (find('dup').status === 'queued') json(pipe('unqueue', 'dup', '--json'));
   });
   t('e2e hold / release / archive / delete / restore, one and many at once (bulk select)', () => {
