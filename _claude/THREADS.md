@@ -820,15 +820,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:04 UTC · `auto-lander-status-tab-rest-mcp-settings` added (0 steps) (all) · console
-- 2026-11-17 00:04 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
-- 2026-11-17 00:05 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · builds-live
-- 2026-11-17 00:05 UTC · `stop-auto-lander-committing-tracking` → queued, note (all) · builds-live
-- 2026-11-17 00:05 UTC · `gate-auto-lander-tab-and-controls` added (0 steps) (all) · console
-- 2026-11-17 00:05 UTC · `gate-auto-lander-tab-and-controls` → queued, note (all) · console
-- 2026-11-17 00:06 UTC · `axf-data-postgres-real-tables-own` → pending, note (all) · cli
-- 2026-11-17 00:06 UTC · `axf-data-postgres-real-tables-own` → queued, note (all) · brett
-- 2026-11-17 00:06 UTC · `own-look-per-grid-and-tab-group` s8 done (all) · orchestrator
 - 2026-11-17 00:06 UTC · `grids-get-their-own-full-token-set` note (all) · orchestrator
 - 2026-11-17 00:07 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
 - 2026-11-17 00:07 UTC · `server-auto-lander-fixes-lands` s3 done (all) · orchestrator
@@ -1220,6 +1211,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 12:37 UTC · `orchestrator-stale-row-watchdog-vps` s6 done (all) · orchestrator
 - 2026-11-17 12:38 UTC · `stop-auto-lander-committing-tracking` → running, note (all) · pipeline
 - 2026-11-17 12:38 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
+- 2026-11-17 12:39 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` → built, PR #768, note (all) · reconciler
+- 2026-11-17 12:39 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → built, PR #776, note (all) · reconciler
+- 2026-11-17 12:39 UTC · `prompting-engine-control-panel-to-create` → built, PR #770, note (all) · reconciler
+- 2026-11-17 12:39 UTC · `land-per-instance-settings-picker` → built, branch claude/land-per-instance-settings-picker, PR #766, note (all) · reconciler
+- 2026-11-17 12:39 UTC · `data-container-axf-data-holds-all` → complete, merged, note (all) · reconciler
+- 2026-11-17 12:39 UTC · `axf-data-postgres-real-tables-own` → pending, merged, note (all) · reconciler
+- 2026-11-17 12:39 UTC · `every-plugin-screen-gets-a-settings-gear` → built, PR #767, note (all) · reconciler
+- 2026-11-17 12:39 UTC · `orchestrator-runs-long-builds-across` s21 done, note (all) · reconciler
+- 2026-11-17 12:39 UTC · `builds-keep-their-slot-across-phases` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
