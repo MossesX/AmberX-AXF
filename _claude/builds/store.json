@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8221,
- "updatedAt": "2026-11-17T22:35:54.289Z",
+ "rev": 8222,
+ "updatedAt": "2026-11-17T22:36:16.458Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -14511,7 +14511,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14521,7 +14521,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-22T22:32:28.215Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-1bs9zr4": "",
@@ -15539,7 +15539,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15549,7 +15549,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-23T12:30:10.672Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-1o1mgit": "",
@@ -17031,7 +17031,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17041,7 +17041,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-23T17:46:25.439Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-f7svy1": "",
@@ -17668,7 +17668,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17678,7 +17678,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-23T17:50:04.987Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-149z1fj": "",
@@ -18017,7 +18017,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18027,7 +18027,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-23T18:22:53.000Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-1gxxv25": "",
@@ -18587,7 +18587,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -18597,7 +18597,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-24T16:25:12.368Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-1avtnih": "",
@@ -21232,7 +21232,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21242,7 +21242,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-25T20:59:28.940Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-1qs3ui6": "",
@@ -22585,7 +22585,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22595,7 +22595,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-26T23:31:24.530Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-1aqos19": "",
@@ -22841,7 +22841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22851,7 +22851,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-26T22:28:29.624Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-1t8l542": "",
@@ -24109,7 +24109,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -24119,7 +24119,7 @@
     "source": "chat",
     "planId": "",
     "createdAt": "2026-10-27T17:16:22.917Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": false,
     "stepAt": {
      "st-zngkz0": "",
@@ -42441,7 +42441,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42451,7 +42451,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-10-31T09:07:21.792Z",
-    "builtAt": "",
+    "builtAt": "2026-11-10T04:39:20.621Z",
     "prefixSteps": true,
     "stepAt": {
      "st-7kfjae": "2026-10-31T09:07:21.792Z",
@@ -121058,6 +121058,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -128341,7 +128342,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128351,7 +128352,7 @@
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-08T19:10:13.866Z",
-    "builtAt": "",
+    "builtAt": "2026-11-09T04:30:30.691Z",
     "prefixSteps": false,
     "stepAt": {
      "st-mw883wk507uzgy": "2026-11-08T19:26:33.365Z",
@@ -134759,10 +134760,22 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-09T14:33:29.282Z",
+    "builtAt": "2026-11-09T16:39:28.294Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw9d2vbc02m4k8": "2026-11-09T14:33:29.283Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-09T14:33:29.283Z",
    "rearranged": false,
@@ -137007,10 +137020,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-09T17:52:45.295Z",
+    "builtAt": "2026-11-11T00:50:38.563Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mw9k7yqs0162wn": "2026-11-09T17:53:24.388Z",
+     "st-mw9k7yqs022ot6": "2026-11-09T17:53:24.388Z",
+     "st-mw9k7yqs03d1go": "2026-11-09T17:53:24.388Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-09T17:53:24.388Z",
    "rearranged": false,
@@ -142796,6 +142823,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -142954,10 +142982,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-10T03:10:30.744Z",
+    "builtAt": "2026-11-10T04:05:07.683Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwa46jfx01zr02": "2026-11-10T03:12:10.221Z",
+     "st-mwa46jfx021cai": "2026-11-10T03:12:10.221Z",
+     "st-mwa46jfx03b5jn": "2026-11-10T03:12:10.221Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-10T03:12:10.221Z",
    "rearranged": false,
@@ -145323,10 +145365,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-10T15:29:42.107Z",
+    "builtAt": "2026-11-10T16:26:07.261Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwaujv9t01w0kb": "2026-11-10T15:30:22.097Z",
+     "st-mwaujv9u020t73": "2026-11-10T15:30:22.097Z",
+     "st-mwaujv9u03omjr": "2026-11-10T15:30:22.097Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-10T15:30:22.097Z",
    "rearranged": false,
@@ -145638,7 +145694,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145648,7 +145704,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-10T15:33:40.111Z",
-    "builtAt": "",
+    "builtAt": "2026-11-12T10:35:49.272Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwaup22i01fc2y": "2026-11-10T15:34:24.186Z",
@@ -145803,7 +145859,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145813,7 +145869,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-10T15:36:52.351Z",
-    "builtAt": "",
+    "builtAt": "2026-11-12T10:35:49.272Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwauub0501qi2a": "2026-11-10T15:38:29.044Z",
@@ -146319,7 +146375,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146329,7 +146385,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-10T15:40:27.752Z",
-    "builtAt": "",
+    "builtAt": "2026-11-12T10:35:49.272Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwauy6oa017907": "2026-11-10T15:41:30.058Z",
@@ -150696,10 +150752,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-10T16:43:57.553Z",
+    "builtAt": "2026-11-10T17:22:07.151Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwax9j8i04lzx8": "2026-11-10T16:46:18.786Z",
+     "st-mwax9j8i05lsev": "2026-11-10T16:46:18.786Z",
+     "st-mwax9j8i06xygq": "2026-11-10T16:46:18.786Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-10T16:46:18.786Z",
    "rearranged": false,
@@ -156315,10 +156385,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-10T20:43:36.267Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwb5rlfw01r2zp": "2026-11-10T20:44:18.380Z",
+     "st-mwb5rlfw0240vb": "2026-11-10T20:44:18.380Z",
+     "st-mwb5rlfw03tnr2": "2026-11-10T20:44:18.380Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-10T20:44:18.380Z",
    "rearranged": false,
@@ -160608,7 +160692,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -160618,7 +160702,7 @@
     "source": "molly-sign-in-once",
     "planId": "",
     "createdAt": "2026-11-10T22:09:27.000Z",
-    "builtAt": "",
+    "builtAt": "2026-11-15T01:28:08.024Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwb8ur2o01mtz3": "2026-11-10T22:10:44.496Z",
@@ -162793,10 +162877,25 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-11T23:25:41.956Z",
+    "builtAt": "2026-11-12T03:11:10.213Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwcqz04g05tk1a": "2026-11-11T23:25:41.957Z",
+     "st-mwcqz04g06yulr": "2026-11-11T23:25:41.957Z",
+     "st-mwcqz04g07yje9": "2026-11-11T23:25:41.957Z",
+     "st-mwcqz04g08hvst": "2026-11-11T23:25:41.957Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-11T23:25:41.957Z",
    "rearranged": false,
@@ -163476,7 +163575,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163486,7 +163585,7 @@
     "source": "push-banner",
     "planId": "",
     "createdAt": "2026-11-12T01:46:10.127Z",
-    "builtAt": "",
+    "builtAt": "2026-11-15T00:19:08.976Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwcw14ii012kx8": "2026-11-12T01:47:19.194Z",
@@ -165967,10 +166066,20 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "shipped",
+    "planId": "",
+    "createdAt": "2026-10-23T11:41:00.284Z",
+    "builtAt": "2026-10-23T11:41:00.284Z",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
    "queue": null,
    "defaultAt": "",
    "rearranged": false,
@@ -166209,7 +166318,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -166846,7 +166955,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167000,7 +167109,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167075,7 +167184,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167150,7 +167259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167225,7 +167334,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167379,7 +167488,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167454,7 +167563,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167529,7 +167638,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167604,7 +167713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167679,7 +167788,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167754,7 +167863,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167829,7 +167938,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167904,7 +168013,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -167979,7 +168088,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168133,7 +168242,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168366,7 +168475,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168441,7 +168550,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168516,7 +168625,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -168670,7 +168779,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169061,7 +169170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169136,7 +169245,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169369,7 +169478,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169444,7 +169553,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169519,7 +169628,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169594,7 +169703,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169669,7 +169778,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169744,7 +169853,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169819,7 +169928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169894,7 +170003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -169969,7 +170078,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170044,7 +170153,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170119,7 +170228,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170194,7 +170303,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170269,7 +170378,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170344,7 +170453,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170419,7 +170528,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170494,7 +170603,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170648,7 +170757,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170802,7 +170911,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170877,7 +170986,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -170952,7 +171061,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171027,7 +171136,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171102,7 +171211,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171177,7 +171286,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171252,7 +171361,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171327,7 +171436,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171402,7 +171511,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171477,7 +171586,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171631,7 +171740,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171706,7 +171815,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171781,7 +171890,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171856,7 +171965,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -171931,7 +172040,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172006,7 +172115,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172081,7 +172190,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172156,7 +172265,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172231,7 +172340,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172306,7 +172415,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172381,7 +172490,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172535,7 +172644,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172610,7 +172719,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172685,7 +172794,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172839,7 +172948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172914,7 +173023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172989,7 +173098,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173064,7 +173173,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173139,7 +173248,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173451,7 +173560,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174706,10 +174815,23 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-12T15:33:08.904Z",
+    "builtAt": "2026-11-13T00:50:28.107Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwdpj5k003waoq": "2026-11-12T15:33:08.905Z",
+     "st-mwdpj5k0042bdf": "2026-11-12T15:33:08.905Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-12T15:33:08.905Z",
    "rearranged": false,
@@ -174971,10 +175093,27 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-12T17:35:35.216Z",
+    "builtAt": "2026-11-12T18:56:38.976Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwdtwlwi0777ir": "2026-11-12T17:35:35.217Z",
+     "st-mwdtwlwi080dhz": "2026-11-12T17:35:35.217Z",
+     "st-mwdtwlwi09k0w9": "2026-11-12T17:35:35.217Z",
+     "st-mwdtwlwi0av264": "2026-11-12T17:35:35.217Z",
+     "st-mwdtwlwi0b6xan": "2026-11-12T17:35:35.217Z",
+     "st-mwdtwlwi0ck8qz": "2026-11-12T17:35:35.217Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-12T17:35:35.217Z",
    "rearranged": false,
@@ -175559,10 +175698,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-12T18:33:10.932Z",
+    "builtAt": "2026-11-12T19:00:10.432Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwdw0btm019l31": "2026-11-12T18:34:28.186Z",
+     "st-mwdw0btm02a2ii": "2026-11-12T18:34:28.186Z",
+     "st-mwdw0btm032mu5": "2026-11-12T18:34:28.186Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-12T18:34:28.186Z",
    "rearranged": false,
@@ -176744,10 +176897,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-12T21:49:00.405Z",
+    "builtAt": "2026-11-13T02:06:04.112Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwe2yicr04foup": "2026-11-12T21:49:00.406Z",
+     "st-mwe2yicr05bqi9": "2026-11-12T21:49:00.406Z",
+     "st-mwe2yicr06pm25": "2026-11-12T21:49:00.406Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-12T21:49:00.406Z",
    "rearranged": false,
@@ -178112,10 +178279,25 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-12T23:14:47.128Z",
+    "builtAt": "2026-11-13T11:03:51.335Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwe63aae052gwu": "2026-11-12T23:16:42.326Z",
+     "st-mwe63aaf06jjoo": "2026-11-12T23:16:42.326Z",
+     "st-mwe63aaf07oyt5": "2026-11-12T23:16:42.326Z",
+     "st-mwe63aaf08z2hm": "2026-11-12T23:16:42.326Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-12T23:16:42.326Z",
    "rearranged": false,
@@ -179174,7 +179356,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179526,10 +179708,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T00:40:38.452Z",
+    "builtAt": "2026-11-13T03:37:05.912Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwe94qjs0652id": "2026-11-13T00:41:48.903Z",
+     "st-mwe94qjs07t6jx": "2026-11-13T00:41:48.903Z",
+     "st-mwe94qjs0844sf": "2026-11-13T00:41:48.903Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T00:41:48.903Z",
    "rearranged": false,
@@ -179752,10 +179948,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T00:42:24.765Z",
+    "builtAt": "2026-11-13T01:55:36.584Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwe96umi01wpje": "2026-11-13T00:43:27.498Z",
+     "st-mwe96umi02yplm": "2026-11-13T00:43:27.498Z",
+     "st-mwe96umi033k6u": "2026-11-13T00:43:27.498Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T00:43:27.498Z",
    "rearranged": false,
@@ -179964,7 +180174,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182318,10 +182528,52 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T07:12:21.823Z",
+    "builtAt": "2026-11-13T12:35:19.912Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwen6bti01z4e6": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti022b0n": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti031ak0": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti04atiy": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0553ir": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti065pdn": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti072uoo": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti08q8ii": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti091zk2": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0a6quh": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0bald7": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0cf0e6": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0dgybm": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0eeg92": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0fcc12": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0goc5q": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0hniqk": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0iczpm": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0j54as": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0khb2z": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0l8lxu": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0mj65o": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0nid0f": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0o2iot": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0pavwt": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0qm6by": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0rk6h0": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0ss5d0": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0tv8cn": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0ue2y9": "2026-11-13T07:14:57.750Z",
+     "st-mwen6bti0vfhvg": "2026-11-13T07:14:57.750Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T07:14:57.750Z",
    "rearranged": false,
@@ -183053,10 +183305,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T10:41:19.479Z",
+    "builtAt": "2026-11-13T11:08:46.725Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mweuoty703d878": "2026-11-13T10:45:18.367Z",
+     "st-mweuoty704s4np": "2026-11-13T10:45:18.367Z",
+     "st-mweuoty705wnq8": "2026-11-13T10:45:18.367Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T10:45:18.367Z",
    "rearranged": false,
@@ -192929,7 +193195,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192939,7 +193205,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-13T10:35:03.675Z",
-    "builtAt": "",
+    "builtAt": "2026-11-16T13:24:07.032Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mweuedan01jn9v": "2026-11-13T10:37:10.223Z",
@@ -196842,7 +197108,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196852,7 +197118,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-12T02:04:11.564Z",
-    "builtAt": "",
+    "builtAt": "2026-11-14T23:12:56.322Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwcwmtvl04pde1": "2026-11-12T02:04:11.565Z",
@@ -203152,10 +203418,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T17:46:43.480Z",
+    "builtAt": "2026-11-13T18:09:55.996Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwf9s99m0121d4": "2026-11-13T17:47:52.425Z",
+     "st-mwf9s99m02e381": "2026-11-13T17:47:52.425Z",
+     "st-mwf9s99m03cl5j": "2026-11-13T17:47:52.425Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T17:47:52.425Z",
    "rearranged": false,
@@ -203348,10 +203628,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T17:51:25.212Z",
+    "builtAt": "2026-11-13T18:12:28.097Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwf9z4kg01jnfw": "2026-11-13T17:53:12.928Z",
+     "st-mwf9z4kg02pe6m": "2026-11-13T17:53:12.928Z",
+     "st-mwf9z4kg03e1yh": "2026-11-13T17:53:12.928Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T17:53:12.928Z",
    "rearranged": false,
@@ -203939,7 +204233,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -203949,10 +204243,11 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-13T18:03:04.047Z",
-    "builtAt": "",
+    "builtAt": "2026-11-15T00:09:27.527Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfadptp01qij0": "2026-11-13T18:04:33.661Z",
+     "st-mwjlqd0y01f3pc": "2026-11-16T18:33:23.861Z",
      "st-mwfadptp02hghz": "2026-11-13T18:04:33.661Z",
      "st-mwfadptp03etkt": "2026-11-13T18:04:33.661Z"
     }
@@ -206664,10 +206959,25 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T18:26:12.039Z",
+    "builtAt": "2026-11-13T18:55:46.655Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwfb7y7t01rnqg": "2026-11-13T18:28:04.217Z",
+     "st-mwfb7y7t02xkfs": "2026-11-13T18:28:04.217Z",
+     "st-mwfb7y7t039h8u": "2026-11-13T18:28:04.217Z",
+     "st-mwfb7y7t04czdq": "2026-11-13T18:28:04.217Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T18:28:04.217Z",
    "rearranged": false,
@@ -208600,7 +208910,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208610,7 +208920,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-13T18:41:19.067Z",
-    "builtAt": "",
+    "builtAt": "2026-11-17T22:25:15.677Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfbtbsm013k4k": "2026-11-13T18:44:41.589Z",
@@ -210999,6 +211309,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -212647,10 +212958,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T19:37:14.557Z",
+    "builtAt": "2026-11-13T19:56:25.055Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwfdqmys01hugg": "2026-11-13T19:38:35.332Z",
+     "st-mwfdqmys02ibv8": "2026-11-13T19:38:35.332Z",
+     "st-mwfdqmys03xi4y": "2026-11-13T19:38:35.332Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T19:38:35.332Z",
    "rearranged": false,
@@ -215969,10 +216294,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T20:07:27.626Z",
+    "builtAt": "2026-11-13T20:31:16.091Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwfetm3301r551": "2026-11-13T20:08:53.774Z",
+     "st-mwfetm3302vgif": "2026-11-13T20:08:53.774Z",
+     "st-mwfetm33035pws": "2026-11-13T20:08:53.774Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T20:08:53.774Z",
    "rearranged": false,
@@ -216211,10 +216550,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T20:08:02.821Z",
+    "builtAt": "2026-11-14T23:20:31.439Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwfeusgl04i1yw": "2026-11-13T20:09:48.693Z",
+     "st-mwfeusgl05ifaz": "2026-11-13T20:09:48.693Z",
+     "st-mwfeusgl064gdm": "2026-11-13T20:09:48.693Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T20:09:48.693Z",
    "rearranged": false,
@@ -218440,7 +218793,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -218450,7 +218803,7 @@
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-13T20:53:50.393Z",
-    "builtAt": "",
+    "builtAt": "2026-11-14T23:37:45.133Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwfh6b5v01xt2m": "2026-11-13T21:14:45.379Z",
@@ -218591,10 +218944,22 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Fable",
+    "status": "complete",
+    "estimate": "",
+    "source": "auto-land",
+    "planId": "",
+    "createdAt": "2026-11-13T21:13:28.338Z",
+    "builtAt": "2026-11-13T21:27:16.800Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwfhmdio01b2aw": "2026-11-13T21:27:14.676Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T21:27:14.676Z",
    "rearranged": false,
@@ -219657,10 +220022,40 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-13T23:39:26.785Z",
+    "builtAt": "2026-11-14T23:33:56.379Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwfmham201lnoa": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham202bqmv": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham2030u7e": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham204q2qd": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham205wzox": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham206jzc5": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham2075wop": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20856wa": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham209fn6m": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20ag61f": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20bqnxc": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20crgqr": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20dqa61": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20eenmx": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20fzmyg": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20gcbcv": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20h9sd6": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20ioz2v": "2026-11-13T23:43:15.961Z",
+     "st-mwfmham20jkb15": "2026-11-13T23:43:15.961Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T23:43:15.961Z",
    "rearranged": false,
@@ -223311,6 +223706,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -231746,10 +232142,30 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "land-finish-auto-land-live-clear-backlog",
+    "planId": "",
+    "createdAt": "2026-11-14T23:10:56.028Z",
+    "builtAt": "2026-11-14T23:44:33.747Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwh0wsze01rao1": "2026-11-14T23:15:00.410Z",
+     "st-mwh0wszf02qd98": "2026-11-14T23:15:00.410Z",
+     "st-mwh0wszf0396rw": "2026-11-14T23:15:00.410Z",
+     "st-mwh0wszf040ndf": "2026-11-14T23:15:00.410Z",
+     "st-mwh0wszf05xrjp": "2026-11-14T23:15:00.410Z",
+     "st-mwh0wszf066k0v": "2026-11-14T23:15:00.410Z",
+     "st-mwh0wszf07j8d0": "2026-11-14T23:15:00.410Z",
+     "st-mwh0wszf080y6g": "2026-11-14T23:15:00.410Z",
+     "st-mwh0wszf096f4y": "2026-11-14T23:15:00.410Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-14T23:15:00.410Z",
    "rearranged": false,
@@ -233868,10 +234284,31 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "land-finish-auto-land-live-clear-backlog",
+    "planId": "",
+    "createdAt": "2026-11-15T00:06:57.847Z",
+    "builtAt": "2026-11-15T00:44:20.954Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwh2zxm70b0maf": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70c2yyf": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70d2uzz": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70e8xaz": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70f8r5z": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70g6lh4": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70hjdax": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70iniji": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70jpep4": "2026-11-15T00:13:25.615Z",
+     "st-mwh2zxm70kr82h": "2026-11-15T00:13:25.615Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-15T00:13:25.615Z",
    "rearranged": false,
@@ -245034,7 +245471,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245109,7 +245546,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245184,7 +245621,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245259,7 +245696,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245334,7 +245771,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245409,7 +245846,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245484,7 +245921,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245638,7 +246075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245713,7 +246150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271385,7 +271822,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "complete",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -271813,13 +272250,13 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-17T22:31:27.444Z",
+     "at": "2026-11-17T22:35:27.023Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+     "session": "axf-rebuild-fresh-main-phone-connect-small--rhonda",
      "phase": "Phase 2"
     }
    },
@@ -272520,12 +272957,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 117,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "complete",
+    "status": "pending",
     "estimate": "",
     "source": "console",
     "planId": "",
