@@ -43,6 +43,9 @@
  *                               then writes manifest + gradle + App.kt + a generated <Name>Setup.kt
  *   axf control <op> <target> …  control@1 (framework/spec/CONTROL.md): tokens, AmberX items/lists, plans, builds
  *   axf token <set> <op> …       axf token layout set navWidth 200 · axf token theme reset accent · axf token slots set color-theme <id>
+ *   axf look list|get|set|reset|undo|keys <kind> <id> [key=value…] [--app <app>]
+ *                               one grid's / tab row's own look (instance-look@1): axf look set grid builds.rows rowBg=surface2 textSize=sm
+ *                               · axf look reset tab-group settings.main (one undo) · kind tab-group | grid (framework/cli/instance-look.mjs)
  *   axf note|todo|task|list|plan|build <op|verb> …   axf todo add "Buy milk" · axf todo done <id> · axf build step <id> s3
  *   axf pass grant [minutes] [--scope theme|style|layout|tokens]   timed veto pass, everything by default (Brett approves once)
  *                               (needs a plugin providing service:control@1, the Token control plugin; axf control help)  <!-- axf-plugin:token-control -->
@@ -83,6 +86,11 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
+// instance-look@1: one grid's / tab row's own look (framework/cli/instance-look.mjs; the same library as the theme-manager routes)
+if (cmd === 'look') {
+  const { main } = await import('./instance-look.mjs');
+  process.exit(main(rest));
+}
 if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice'].includes(rest[0] ?? '')) {
   const { main } = await import('./console-control.mjs');
   process.exit(await main(rest));
@@ -116,7 +124,7 @@ if (cmd === 'voice') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'look']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
@@ -395,7 +403,7 @@ try {
       break;
     }
     default:
-      console.log(`AmberX AXF ${FRAMEWORK_VERSION}\n\nCommands: init, validate, list, new-asset, schemas, plugins, <plugin> <command>`);
+      console.log(`AmberX AXF ${FRAMEWORK_VERSION}\n\nCommands: init, validate, list, new-asset, schemas, look, plugins, <plugin> <command>`);
   }
 } catch (e) {
   console.error(c.bad(`✗ ${e.message}`));
