@@ -78,11 +78,13 @@ check(core.regenFor('changes/2026/11/x.json') === null && core.regenFor('framewo
   check(core.mergeJson3(undefined, { k: 1 }, { k: 2 }, 'ours').k === 1 && core.mergeJson3(undefined, [1, 2], [2, 3]).join('') === '123', 'no base: prefer picks a scalar, plain lists union');
 }
 const sp = core.strayPlan(' M _claude/builds/store.json\n?? .brief.md\n?? auto-land.jsonl\n?? _claude/dup.md\n M framework/core/a.ts\n?? notes.txt\n M changes/2026/11/c.json\n M _claude/shared/x.md', (p) => p === '_claude/dup.md' || p === '_claude/shared/x.md');
-check(sp.commit.join() === '_claude/builds/store.json,changes/2026/11/c.json', 'synced data the build wrote is committed on its branch');
-check(sp.skip.join() === '.brief.md,auto-land.jsonl', '.brief.md and top-level jsonl/logs are skipped');
+check(sp.commit.join() === 'changes/2026/11/c.json', 'synced data the build wrote is committed on its branch');
+check(sp.skip.join() === '_claude/builds/store.json,.brief.md,auto-land.jsonl', '.brief.md, top-level jsonl/logs and the builds store builds-live keeps on main are skipped');
 check(sp.archive.join() === '_claude/dup.md' && sp.restore.join() === '_claude/shared/x.md', 'copies of hub files are backed up (untracked moved, tracked put back)');
 check(sp.code.join() === 'framework/core/a.ts' && sp.keep.join() === 'notes.txt', 'uncommitted code is reported, other untracked files left alone');
-check(core.strayPlan(' M _claude/builds/journal/2026-11.jsonl').commit.length === 1, 'a journal deep in _claude/ is data, not a scratch log');
+check(core.strayPlan(' M _claude/builds/journal/2026-11.jsonl').skip.length === 1, 'a builds journal is builds-live\'s (on main), not committed on a branch');
+check(core.strayPlan(' M _claude/builds/orchestrator.json\n M _claude/builds/origins.json').commit.length === 0, 'orchestrator.json and origins.json are never committed on a branch (GitHub would see a conflict)');
+check(core.strayPlan(' M _claude/memory/notes.jsonl').commit.length === 1, 'other data deep in _claude/ is still committed');
 
 const B = (id, o = {}) => ({ id, title: id, branch: `claude/${id}`, status: 'built', steps: [{ id: 's1', done: true }], notes: [], ...o });
 check(core.isCandidate(B('a')) && core.isCandidate(B('b', { status: 'running' })), 'built, or every step done = a candidate');
