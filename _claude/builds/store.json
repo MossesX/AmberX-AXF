@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7844,
- "updatedAt": "2026-11-17T20:39:28.907Z",
+ "rev": 7845,
+ "updatedAt": "2026-11-17T20:39:41.394Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268143,7 +268143,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -268151,7 +268151,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T20:39:21.542Z",
+   "updatedAt": "2026-11-17T20:39:30.427Z",
    "builtAt": "",
    "notes": [
     {
@@ -268193,6 +268193,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-17T20:38:05.883Z"
+    },
+    {
+     "text": "Started run 2 on hulu0241 (Fable, Phase 1): axf-rebuild-fresh-main-phone-connect-small--rhonda.",
+     "at": "2026-11-17T20:39:30.427Z"
     }
    ],
    "approvals": [],
@@ -268213,12 +268217,12 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-rebuild-fresh-main-phone-connect-small--rhonda",
     "slot": "",
     "model": "Fable",
-    "phase": "",
-    "launchedAt": "2026-11-17T16:55:15.937Z",
-    "runs": 1,
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T20:39:27.512Z",
+    "runs": 2,
     "crashes": 0,
     "lastRun": {
      "at": "2026-11-17T17:05:09.307Z",
@@ -268240,7 +268244,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T16:55:15.937Z",
+    "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -268249,7 +268253,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T16:55:15.937Z",
+    "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -268935,7 +268939,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
