@@ -381,7 +381,7 @@ def _al_answer(r: dict[str, Any]) -> JSONResponse:
     return JSONResponse(r, status_code=200 if r.get("ok") else STATUS.get(str(r.get("code")), 500))
 
 
-async def _al_by(request: Request) -> tuple[dict[str, Any], str]:
+async def _al_body(request: Request) -> tuple[dict[str, Any], str]:
     body = await _body(request)
     return body, str(body.get("by") or _who(request))[:80]
 
@@ -402,35 +402,35 @@ async def auto_lander_build(build: str) -> JSONResponse:
 @router.post("/auto-lander/run")
 async def auto_lander_run(request: Request) -> JSONResponse:
     """Ask the service for a tick now (it runs within a minute)."""
-    _, by = await _al_by(request)
+    _, by = await _al_body(request)
     return _al_answer(await run_in_threadpool(al_run, ["run", "--request", "--by", by]))
 
 
 @router.post("/auto-lander/retry/{build}")
 async def auto_lander_retry(build: str, request: Request) -> JSONResponse:
     """Reset a build's attempts and escalation; the next tick tries again."""
-    _, by = await _al_by(request)
+    _, by = await _al_body(request)
     return _al_answer(await run_in_threadpool(al_run, ["retry", build, "--by", by]))
 
 
 @router.post("/auto-lander/fix/{build}")
 async def auto_lander_fix(build: str, request: Request) -> JSONResponse:
     """Reset a build and start a fix session for it on the next tick (the escalation item's Fix)."""
-    _, by = await _al_by(request)
+    _, by = await _al_body(request)
     return _al_answer(await run_in_threadpool(al_run, ["fix", build, "--by", by]))
 
 
 @router.post("/auto-lander/pause")
 async def auto_lander_pause(request: Request) -> JSONResponse:
     """Pause the server auto-lander: nothing new is merged, fixed or landed until resumed."""
-    _, by = await _al_by(request)
+    _, by = await _al_body(request)
     return _al_answer(await run_in_threadpool(al_run, ["pause", "--by", by]))
 
 
 @router.post("/auto-lander/resume")
 async def auto_lander_resume(request: Request) -> JSONResponse:
     """Resume the server auto-lander."""
-    _, by = await _al_by(request)
+    _, by = await _al_body(request)
     return _al_answer(await run_in_threadpool(al_run, ["resume", "--by", by]))
 
 
@@ -443,7 +443,7 @@ async def auto_lander_settings_get() -> JSONResponse:
 @router.post("/auto-lander/settings")
 async def auto_lander_settings_set(request: Request) -> JSONResponse:
     """Change auto-lander settings: {key: value, …} (or {key, value}); every key is checked before anything is saved."""
-    body, by = await _al_by(request)
+    body, by = await _al_body(request)
     pairs = {body["key"]: body.get("value")} if isinstance(body.get("key"), str) else {k: v for k, v in body.items() if k in AL_SETTINGS}
     if not pairs:
         return _al_answer({"ok": False, "code": "invalid", "message": f"send one or more of {', '.join(AL_SETTINGS)}"})

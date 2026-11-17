@@ -209,6 +209,7 @@
       },
       {
         "id": "auto-lander-settings-set",
+        "input": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "maxAttempts": {"type": "integer", "minimum": 1, "maximum": 10}, "backoffBaseMin": {"type": "number", "exclusiveMinimum": 0}, "backoffFactor": {"type": "number", "exclusiveMinimum": 0}, "backoffMaxMin": {"type": "number", "exclusiveMinimum": 0}, "attemptTimeoutMin": {"type": "number", "exclusiveMinimum": 0}, "pushOnEscalation": {"type": "boolean"}, "key": {"type": "string", "description": "one setting by name (with value)"}, "value": {"description": "the value for key"}}, "additionalProperties": false},
         "route": "POST /auto-lander/settings",
         "title": "Server auto-lander: change settings",
         "description": "Change server auto-lander settings ({key: value, …} or {key, value}): enabled, maxAttempts (1-10), backoffBaseMin, backoffFactor, backoffMaxMin, attemptTimeoutMin, pushOnEscalation. Every key is checked first."
