@@ -826,10 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:08 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
-- 2026-11-17 15:08 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
-- 2026-11-17 15:08 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
-- 2026-11-17 15:08 UTC · `re-sync-stuck-branches-lander-can-push` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `server-gate-one-session-per-build-no` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `ui-review-filter-and-search-by-pr` note (all) · orchestrator
@@ -1226,6 +1222,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:33 UTC · `right-click-running-build-pop-open` added (0 steps) (all) · console
 - 2026-11-17 19:33 UTC · `rebuild-every-toolbar-page-specific` s1 done, → running (all) · orchestrator
 - 2026-11-17 19:33 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · console
+- 2026-11-17 19:33 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · console
+- 2026-11-17 19:33 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · foreign-write
+- 2026-11-17 19:33 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · Brett
+- 2026-11-17 19:33 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · Brett
 
 ## Token passes (log)
 
