@@ -815,9 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:24 UTC · `to-do-manager-fully-voice-mcp-controlled` → running, note (all) · pipeline
-- 2026-11-16 20:24 UTC · `to-do-manager-fully-voice-mcp-controlled` branch claude/to-do-manager-fully-voice-mcp-controlled (all) · pipeline
-- 2026-11-16 20:24 UTC · `fable-rebuild-to-do-manager-unlimited` added (0 steps) (all) · console
 - 2026-11-16 20:24 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · orchestrator
 - 2026-11-16 20:25 UTC · `fable-rebuild-plan-studio-cleared-out` added (0 steps) (all) · console
 - 2026-11-16 20:25 UTC · `fable-rebuild-plan-studio-cleared-out` → queued, note (all) · console
@@ -1215,6 +1212,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:06 UTC · `grids-get-their-own-full-token-set` note (all) · orchestrator
 - 2026-11-17 00:07 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
 - 2026-11-17 00:07 UTC · `server-auto-lander-fixes-lands` s3 done (all) · orchestrator
+- 2026-11-17 00:07 UTC · `stop-auto-lander-committing-tracking` → running, note (all) · pipeline
+- 2026-11-17 00:08 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
+- 2026-11-17 00:08 UTC · `stop-auto-lander-committing-tracking` branch claude/stop-auto-lander-committing-tracking (all) · pipeline
 
 ## Token passes (log)
 

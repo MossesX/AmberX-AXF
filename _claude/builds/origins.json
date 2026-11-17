@@ -7977,6 +7977,18 @@
    "from": "",
    "addenda": []
   },
+  "server-rule-done-means-merged-working": {
+   "said": "We asked you to build it. You should do whatever you have to do to build it, period. Why should we say build it and then it fails and you don't say anything and we find out days later?",
+   "at": "2026-11-17T00:08:19.686Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "server-watchdog-orchestrator-auto-recovers-stuck": {
    "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.",
    "at": "2026-11-13T11:45:00.916Z",

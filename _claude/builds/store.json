@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7123,
- "updatedAt": "2026-11-17T00:08:10.081Z",
+ "rev": 7124,
+ "updatedAt": "2026-11-17T00:08:33.762Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259001,15 +259001,15 @@
    "title": "Stop the auto-lander committing tracking files into builds",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (its step s24). Before landing, the auto-lander commits 'synced files left in the worktree (auto-land)' onto each build branch: _claude/builds/store.json, orchestrator.json, origins.json, journal jsonl. That commit turns CI red on every build (#733: 98f6c0d0 green, 41e3e2ac red). Stop committing orchestrator/build-tracking data into build branches; keep it on the hub/data store only; reset or ignore those files in worktrees. When the lander merges main into a build, take main's copy of tracking files and regenerate generated files (apps/console-web/scripts/control-inventory.mjs, tracker) instead of stopping on conflict. Journal files are ~70 MB on GitHub: move them out of git. Small and urgent. Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/stop-auto-lander-committing-tracking",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:07:46.622Z",
+   "updatedAt": "2026-11-17T00:08:00.727Z",
    "builtAt": "",
    "notes": [
     {
@@ -259019,6 +259019,14 @@
     {
      "text": "Split by Claude into 14 steps (1 Fable).",
      "at": "2026-11-17T00:07:26.389Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-stop-auto-lander-committing-tracking--gina.",
+     "at": "2026-11-17T00:07:56.089Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-stop-auto-lander-committing-tracking--gina, shared account login)",
+     "at": "2026-11-17T00:08:00.727Z"
     }
    ],
    "approvals": [],
@@ -259038,13 +259046,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T00:04:36.246Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-stop-auto-lander-committing-tracking--gina",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T00:07:51.523Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -259057,7 +259065,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T00:07:51.523Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -259066,7 +259074,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T00:07:51.523Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -259441,7 +259449,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
