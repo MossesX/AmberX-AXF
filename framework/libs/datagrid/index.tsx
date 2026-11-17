@@ -12,6 +12,7 @@ import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { registerZone, startDrag, type DropPos } from '../dnd';
+import { runDragMove, useDraggableHost } from '../../react/dragHost';
 import spec from './library.json';
 import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
@@ -82,6 +83,12 @@ export interface DataGridProps<R> {
    * `step:<row id>` directly under the enclosing scope (a build's steps inside its row: `…/row:<build>/step:s3`).
    */
   rowKind?: 'row' | 'step';
+  /**
+   * Column order (drag-move@1 `grid-column`): the host's own order and its writer. Without them the grid keeps the
+   * order per device in the setting `axf.grid.columns.<id>`, so every grid's columns can be moved by drag or by API.
+   */
+  columnOrder?: readonly string[];
+  onColumnOrder?: (ids: string[]) => void;
   /** drag: what moved where (row / group, before / after / inside a group) */
   onMove?: (item: { kind: 'row' | 'group'; id: string }, target: { kind: 'row' | 'group'; id: string }, pos: DropPos) => void;
   onTrash?: (item: { kind: 'row' | 'group'; id: string; label: string }) => void;
@@ -110,11 +117,23 @@ const flatRows = <R,>(gs: GridGroup<R>[]): R[] => gs.flatMap((g) => [...g.rows, 
 
 type Line<R> = { kind: 'group'; g: GridGroup<R>; depth: number } | { kind: 'row'; r: R; depth: number };
 
+/** The per-device column order of a grid (drag-move@1 `grid-column`), used when the host passes no `columnOrder`. */
+export const GRID_COLUMNS_KEY = (gridId: string) => `axf.grid.columns.${gridId}`;
+/** Columns in `order` (ids it names first, in that order; the rest after, as declared). */
+export function orderColumns<C extends { id: string }>(columns: readonly C[], order: readonly string[]): C[] {
+  const rank = new Map(order.map((id, i) => [id, i]));
+  return [...columns].map((c, i) => ({ c, i })).sort((a, b) => (rank.get(a.c.id) ?? order.length + a.i) - (rank.get(b.c.id) ?? order.length + b.i)).map((x) => x.c);
+}
+
 export function DataGrid<R>(p: DataGridProps<R>) {
   const rt = useRuntime();
   const zone = p.zone ?? `axf-grid:${p.id}`;
   const drag = config.drag && p.onMove ? config.drag : false;
-  const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
+  const colKey = GRID_COLUMNS_KEY(p.id);
+  const savedOrder = rt.settings.get(colKey);
+  const order = p.columnOrder ?? (Array.isArray(savedOrder) ? (savedOrder as unknown[]).filter((x): x is string => typeof x === 'string') : null);
+  const ordered = order?.length ? orderColumns(p.columns, order) : p.columns;
+  const cols = ordered.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
   useDatasetsRevision(); // row hooks registered later redraw the grid
   const tail = p.rowRef && anyRowHooks() ? 'minmax(calc(var(--fx-space) * 4), max-content)' : 'calc(var(--fx-space) * 4)';
   // component-tokens@1: this one grid's own token values (axf.tokens.instances → --fx-grid-* on the element) win over the skin's
@@ -149,9 +168,44 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     return registerZone(zone, {
       accepts: (d, t) => (d.kind === `${zone}:row` || d.kind === `${zone}:group`) && d.id !== t.split(':')[1],
       positions: (_d, t) => (t.startsWith('row:') ? ['before', 'after'] : ['before', 'inside', 'after']),
-      drop: (d, t, pos) => { const [kind, id] = t.split(':') as ['row' | 'group', string]; p.onMove!({ kind: d.kind.endsWith(':row') ? 'row' : 'group', id: d.id }, { kind, id }, pos); },
+      drop: (d, t, pos) => {
+        const [kind, id] = t.split(':') as ['row' | 'group', string];
+        // a row dropped before / after a row is the same drag-move@1 command the API sends; groups move directly
+        if (d.kind.endsWith(':row') && kind === 'row' && pos !== 'inside') void runDragMove(rt, { kind: 'grid-row', source: { container: p.id, id: d.id }, target: { container: p.id, zone: pos, ref: id }, by: 'pointer' });
+        else p.onMove!({ kind: d.kind.endsWith(':row') ? 'row' : 'group', id: d.id }, { kind, id }, pos);
+      },
     });
   }, [zone, drag, p.onMove]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // drag-move@1: the columns are a `grid-column` host (move; add / remove = show / hide where the grid has a column menu),
+  // the rows a `grid-row` host where the grid takes moves and is not sorted. Container = the grid id (`grid:<id>`).
+  const [, colTick] = useState(0);
+  useEffect(() => rt.settings.onChange(colKey, () => colTick((n) => n + 1)), [rt, colKey]);
+  const writeOrder = (ids: string[]) => { if (p.onColumnOrder) p.onColumnOrder(ids); else rt.settings.set(colKey, ids); };
+  useDraggableHost('grid-column', p.id, {
+    list: () => ({ label: `${p.label ?? p.id} columns`, items: cols.map((c) => ({ id: c.id, label: c.label, ...(c.fixed ? { locked: true } : {}) })), accepts: { add: !!(config.columnMenu && p.onToggleColumn), remove: !!(config.columnMenu && p.onToggleColumn) } }),
+    apply: (plan) => {
+      const next = plan.order[p.id];
+      if (plan.op === 'remove') return p.onToggleColumn!(plan.item.id, false);
+      const col = p.columns.find((c) => c.id.toLowerCase() === plan.item.id.toLowerCase());
+      if (!col) throw new Error(`${p.label ?? p.id} has no column ${plan.item.id} (${p.columns.map((c) => c.id).join(', ')})`);
+      if (plan.op === 'add') p.onToggleColumn!(col.id, true);
+      if (Array.isArray(next)) { const shown = next.map((id) => (id.toLowerCase() === col.id.toLowerCase() ? col.id : id)); writeOrder([...shown, ...ordered.map((c) => c.id).filter((id) => !shown.includes(id))]); }
+    },
+  });
+  const sorted = !!(config.sort && p.sort);
+  useDraggableHost('grid-row', p.id, {
+    enabled: !!drag,
+    list: () => ({ label: `${p.label ?? p.id} rows`, items: lines.filter((l): l is { kind: 'row'; r: R; depth: number } => l.kind === 'row').map((l) => ({ id: p.rowId(l.r), label: p.rowLabel?.(l.r) ?? p.rowId(l.r), ...(sorted ? { locked: true } : {}) })) }),
+    apply: (plan) => {
+      if (sorted) throw new Error(`${p.label ?? p.id} is sorted by ${p.sort!.col}; switch the sort off (Original order) to move rows`);
+      const next = plan.order[p.id]; if (!Array.isArray(next)) return;
+      const i = next.indexOf(plan.item.id);
+      const before = next[i + 1], after = next[i - 1];
+      if (before) p.onMove!({ kind: 'row', id: plan.item.id }, { kind: 'row', id: before }, 'before');
+      else if (after) p.onMove!({ kind: 'row', id: plan.item.id }, { kind: 'row', id: after }, 'after');
+    },
+  });
 
   const lines: Line<R>[] = [];
   const walk = (g: GridGroup<R>, depth: number) => {

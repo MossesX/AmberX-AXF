@@ -79,6 +79,34 @@ export function uniqueItemIds(entries: readonly string[]): string[] {
 }
 export function entryOfItemId(id: string): string { return id.replace(/~\d+$/, ''); }
 
+/** What a sortable list hands `useSortableListHost`: its items in order and how it writes a new order (and, optionally, takes items in or out). */
+export interface SortableListHost {
+  label?: string;
+  items: readonly { id: string; label?: string; locked?: boolean }[];
+  /** the new order of the whole list (ids); arrivals from another list are in it, departures are not */
+  onReorder: (ids: string[], plan: DragPlan) => unknown;
+  /** lists that may hand this one an item (container ids); default none */
+  acceptsFrom?: readonly string[] | '*';
+  add?: boolean;
+  remove?: boolean;
+  max?: number | null;
+  enabled?: boolean;
+}
+
+/**
+ * Any sortable list (a queue, a board column, a library shelf) as a `list-item` host in one line: the same command the
+ * pointer drop sends reorders it by API. A cross-list move calls both lists' onReorder with their new orders.
+ *
+ *   useSortableListHost('build-queue', { items: rows.map((r) => ({ id: r.id, label: r.title })), onReorder: (ids) => saveOrder(ids) });
+ */
+export function useSortableListHost(listId: string, host: SortableListHost): void {
+  useDraggableHost('list-item', listId, {
+    enabled: host.enabled,
+    list: () => ({ label: host.label ?? listId, items: host.items.map((i) => ({ id: i.id, ...(i.label ? { label: i.label } : {}), ...(i.locked ? { locked: true } : {}) })), accepts: { add: !!host.add, remove: !!host.remove, from: host.acceptsFrom === '*' ? '*' : [...(host.acceptsFrom ?? [])] }, ...(host.max !== undefined ? { max: host.max } : {}) }),
+    apply: (plan) => { const next = Object.entries(plan.order).find(([c]) => c.toLowerCase() === listId.toLowerCase())?.[1]; if (Array.isArray(next)) return host.onReorder(next, plan); },
+  });
+}
+
 /** The command a pointer drop builds: `source` leaves `container`, lands `zone` of `ref` (or at `index` on `side`). */
 export function dragCommand(kind: string, container: string, sourceId: string, target: { container?: string; zone?: DropZone; ref?: string; side?: string; index?: number }, by = 'pointer'): DragMoveCommand {
   const t: DragMoveCommand['target'] = { container: target.container ?? container, zone: target.zone ?? (target.ref !== undefined ? 'after' : target.side !== undefined ? 'side' : 'into') };
