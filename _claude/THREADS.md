@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `axhub-veto-countdown-setting-read-only` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `every-plugin-screen-gets-a-settings-gear` s21 done, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `settings-interface-gear-every-plugin` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `reset-all-button-every-asset-override` note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:34 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
 - 2026-11-17 23:34 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-17 23:34 UTC · `move-everything-axhub-web-console` s5 done (all) · orchestrator
+- 2026-11-17 23:34 UTC · `move-everything-axhub-web-console` s5 done (all) · foreign-write
+- 2026-11-17 23:34 UTC · `move-everything-axhub-web-console` s5 done (all) · foreign-write
 
 ## Token passes (log)
 
