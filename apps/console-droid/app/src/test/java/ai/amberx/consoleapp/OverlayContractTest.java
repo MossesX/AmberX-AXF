@@ -43,14 +43,14 @@ public class OverlayContractTest {
     }
 
     @Test public void bridgeMethodsAndEvents() {
-        assertEquals(Arrays.asList("overlay", "overlayState", "overlayConfigure", "overlayApprovals"), OverlayContract.METHODS);
+        assertEquals(Arrays.asList("overlay", "overlayState", "overlayConfigure", "overlayApprovals", "overlayItems"), OverlayContract.METHODS);
         assertEquals(Arrays.asList("overlay", "overlay.moved", "approvals.open", "permissions"), OverlayContract.EVENTS);
     }
 
     @Test public void settingsAreTheConsolesApprovalsBannerOnes() {
         assertEquals("approvals-banner.overlay.", OverlayContract.SETTING_PREFIX);
         assertEquals(OverlayContract.SETTING_PREFIX, OverlayRules.PREFIX);
-        assertEquals(Arrays.asList("on", "edge", "top", "size", "expand", "idleOpacity"), OverlayContract.SETTINGS);
+        assertEquals(Arrays.asList("on", "edge", "top", "size", "expand", "idleOpacity", "show"), OverlayContract.SETTINGS);
         assertEquals("approvals-banner.overlay.edge", OverlayContract.settingKey("edge"));
         // the defaults and ranges the rules clamp to
         OverlayRules.Config c = OverlayRules.config(null);
@@ -67,6 +67,8 @@ public class OverlayContractTest {
         for (String e : OverlayContract.EDGES) { m.put("edge", e); assertEquals(e, OverlayRules.config(m).edge); }
         for (String s : OverlayContract.SIZES) { m.put("size", s); assertEquals(s, OverlayRules.config(m).size); }
         for (String x : OverlayContract.EXPANDS) { m.put("expand", x); assertEquals(x, OverlayRules.config(m).expand); }
+        assertEquals(OverlayContract.SHOWS.get(0), OverlayRules.config(null).show);
+        for (String x : OverlayContract.SHOWS) { m.put("show", x); assertEquals(x, OverlayRules.config(m).show); }
     }
 
     @Test public void fourWaysInNameTheSameThing() {
@@ -90,7 +92,8 @@ public class OverlayContractTest {
     @Test public void stateJsonCarriesEveryKeyOnce() {
         OverlayRules.Config c = new OverlayRules.Config();
         String j = OverlayContract.stateJson(true, "approvals", 2, 1, 0, c);
-        assertEquals("{\"running\":true,\"state\":\"approvals\",\"waiting\":2,\"held\":1,\"dismissedAt\":0,\"on\":true,\"edge\":\"end\",\"top\":30,\"size\":\"small\",\"expand\":\"every\",\"idleOpacity\":85}", j);
+        assertEquals("{\"running\":true,\"state\":\"approvals\",\"waiting\":2,\"held\":1,\"dismissedAt\":0,\"on\":true,\"edge\":\"end\",\"top\":30,\"size\":\"small\",\"expand\":\"every\",\"idleOpacity\":85,\"show\":\"next\",\"label\":\"\"}", j);
+        assertTrue(OverlayContract.stateJson(true, "toolbar", 1, 1, 0, c, "Runs in \"x\"").endsWith("\"label\":\"Runs in \\\"x\\\"\"}"));
         for (String k : OverlayContract.STATE_KEYS) {
             String key = "\"" + k + "\":";
             assertTrue(k, j.contains(key));

@@ -40,7 +40,7 @@ console then); `collapse` and `dismiss` do nothing.
 | MCP | `console_action` `native.overlay:<verb>`; `console_control` `state panel:phone-app`; `console_open` target `approvals.view` |
 | CLI | `axf console action native.overlay:<verb>`; `axf console control state panel:phone-app`; over USB: `adb shell am start-foreground-service -n ai.amberx.consoleapp/.OverlayService -a ai.amberx.consoleapp.OVERLAY --es verb <verb>` |
 | Voice (AmberX) | "expand the overlay", "open approvals", "hide the bar": the same `native.overlay:<verb>` action |
-| The page | `window.axfNative.call('overlay', verb)`, `call('overlayState')`, `call('overlayConfigure', json)`, `call('overlayApprovals', count, held, firstTitle)`; events `on('overlay' \| 'overlay.moved' \| 'approvals.open' \| 'permissions', fn)` |
+| The page | `window.axfNative.call('overlay', verb)`, `call('overlayState')`, `call('overlayConfigure', json)`, `call('overlayApprovals', count, held, firstTitle)`, `call('overlayItems', json)`; events `on('overlay' \| 'overlay.moved' \| 'approvals.open' \| 'permissions', fn)` |
 | Deep links | `axf-console://open/approvals.view` (the approvals list in the app); a console URL with `?axf-overlay=expand\|collapse` (axHub's `amberx.open_url`) is a verb, not a page |
 
 Outside the app (a desktop browser) the actions answer that the Android console app is not running this page.
@@ -49,7 +49,8 @@ Outside the app (a desktop browser) the actions answer that the Android console 
 
 ```json
 {"running":true,"state":"toolbar","waiting":2,"held":0,"dismissedAt":0,
- "on":true,"edge":"end","top":30,"size":"small","expand":"every","idleOpacity":85}
+ "on":true,"edge":"end","top":30,"size":"small","expand":"every","idleOpacity":85,
+ "show":"next","label":"Runs in 1:05 · +1"}
 ```
 
 `overlayState()` wraps it as `{ok, overlay, canDraw}`; `canDraw` is the "Display over other apps" permission.
@@ -69,6 +70,18 @@ them to the shell with `overlayConfigure` whenever they change, and a drag hands
 | `size` | `small`, `medium`, `large` | `small` |
 | `expand` | what pops the bar: `every`, `held`, `never` | `every` |
 | `idleOpacity` | 40–100, toolbar opacity while nothing waits | `85` |
+| `show` | what the toolbar says while something waits: `next` (the next held command's countdown), `count` | `next` |
+
+## What waits, one by one (`overlayItems`)
+
+The approvals banner hands the shell every waiting item whenever the list changes:
+`[{"id":"held:abc","kind":"held","title":"Deploy","runsAt":1763400000000,"shelved":false}, {"id":"approval:x","kind":"approval","title":"Restart nginx","runsAt":0,"shelved":false}]`
+(`runsAt` epoch ms, 0 for approvals and shelved commands). The shell sorts them (running countdowns soonest first, then
+shelved, then approvals), shows the toolbar label (`show`), the bar's line with the first item's title and countdown
+("Deploy — 1 more · Runs in 1:05 unless you stop it", re-rendered once a second while a countdown runs), and pops the
+bar only for an id it hasn't shown yet: one Brett dismissed or already saw keeps the toolbar small. Once items arrive
+they replace `overlayApprovals`' counts. Rules: `OverlayRules.order / toolbarLabel / countdown / afterItems / forget`
+(JUnit `OverlayItemsTest`); console side `overlayItems()` in `plugins/approvals-banner/web/overlay.ts`.
 
 ## Permission flow: "Display over other apps"
 

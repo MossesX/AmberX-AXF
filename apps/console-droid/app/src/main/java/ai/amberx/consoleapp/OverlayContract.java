@@ -63,7 +63,15 @@ final class OverlayContract {
     static final String M_CONFIGURE = "overlayConfigure";
     /** {@code overlayApprovals(count, held, firstTitle)}: what waits. */
     static final String M_APPROVALS = "overlayApprovals";
-    static final List<String> METHODS = Arrays.asList(M_VERB, M_STATE, M_CONFIGURE, M_APPROVALS);
+    /**
+     * {@code overlayItems(json)}: what waits, one by one ({@code [{id, kind: "held"|"approval", title, runsAt, shelved}]},
+     * {@code runsAt} epoch ms): the per-item countdowns, the toolbar label, and "seen" items that don't pop the bar
+     * again. When the page sends items they replace {@link #M_APPROVALS}' counts.
+     */
+    static final String M_ITEMS = "overlayItems";
+    static final List<String> METHODS = Arrays.asList(M_VERB, M_STATE, M_CONFIGURE, M_APPROVALS, M_ITEMS);
+    /** An item's kinds: a held command (veto@1, runs by itself when its countdown ends) or an approval. */
+    static final String HELD_KIND = "held", APPROVAL_KIND = "approval";
 
     // ---- events (window 'axf-native', detail.type) ------------------------------------------------------------------
 
@@ -80,8 +88,10 @@ final class OverlayContract {
     // ---- settings (the console's own: Settings → Plugins → Approvals banner) ---------------------------------------
 
     static final String SETTING_PREFIX = "approvals-banner.overlay.";
-    static final String S_ON = "on", S_EDGE = "edge", S_TOP = "top", S_SIZE = "size", S_EXPAND = "expand", S_IDLE_OPACITY = "idleOpacity";
-    static final List<String> SETTINGS = Arrays.asList(S_ON, S_EDGE, S_TOP, S_SIZE, S_EXPAND, S_IDLE_OPACITY);
+    static final String S_ON = "on", S_EDGE = "edge", S_TOP = "top", S_SIZE = "size", S_EXPAND = "expand", S_IDLE_OPACITY = "idleOpacity", S_SHOW = "show";
+    static final List<String> SETTINGS = Arrays.asList(S_ON, S_EDGE, S_TOP, S_SIZE, S_EXPAND, S_IDLE_OPACITY, S_SHOW);
+    /** What the toolbar says while something waits: the next held command's countdown, or how many wait. */
+    static final List<String> SHOWS = Arrays.asList("next", "count");
     static final List<String> EDGES = Arrays.asList("end", "start");
     static final List<String> SIZES = Arrays.asList("small", "medium", "large");
     /** What pops the approval bar: every approval, held commands only, never. */
@@ -129,16 +139,33 @@ final class OverlayContract {
 
     // ---- the state every API reads -------------------------------------------------------------------------------
 
-    static final List<String> STATE_KEYS = Arrays.asList("running", "state", "waiting", "held", "dismissedAt", S_ON, S_EDGE, S_TOP, S_SIZE, S_EXPAND, S_IDLE_OPACITY);
+    static final List<String> STATE_KEYS = Arrays.asList("running", "state", "waiting", "held", "dismissedAt", S_ON, S_EDGE, S_TOP, S_SIZE, S_EXPAND, S_IDLE_OPACITY, S_SHOW, "label");
 
     /**
-     * {"running":true,"state":"toolbar","waiting":2,"held":0,"dismissedAt":0,"on":true,"edge":"end","top":30,"size":"small","expand":"every","idleOpacity":85}
+     * {"running":true,"state":"toolbar","waiting":2,"held":0,"dismissedAt":0,"on":true,"edge":"end","top":30,"size":"small","expand":"every","idleOpacity":85,"show":"next","label":"2 waiting"}
      * The {@link #EV_STATE} event's data, and {@code overlay} in {@link #M_STATE}'s answer.
      */
     static String stateJson(boolean running, String state, int waiting, int held, int dismissedAt, OverlayRules.Config c) {
+        return stateJson(running, state, waiting, held, dismissedAt, c, "");
+    }
+
+    /** As above, with the toolbar's label ({@link OverlayRules#toolbarLabel}). */
+    static String stateJson(boolean running, String state, int waiting, int held, int dismissedAt, OverlayRules.Config c, String label) {
         String s = STATES.contains(state) ? state : TOOLBAR;
         return "{\"running\":" + running + ",\"state\":\"" + s + "\",\"waiting\":" + Math.max(0, waiting) + ",\"held\":" + Math.max(0, held)
             + ",\"dismissedAt\":" + Math.max(0, dismissedAt) + ",\"on\":" + c.on + ",\"edge\":\"" + c.edge + "\",\"top\":" + c.top
-            + ",\"size\":\"" + c.size + "\",\"expand\":\"" + c.expand + "\",\"idleOpacity\":" + c.idleOpacity + "}";
+            + ",\"size\":\"" + c.size + "\",\"expand\":\"" + c.expand + "\",\"idleOpacity\":" + c.idleOpacity
+            + ",\"show\":\"" + c.show + "\",\"label\":" + quote(label) + "}";
+    }
+
+    /** A JSON string literal. */
+    static String quote(String v) {
+        StringBuilder b = new StringBuilder("\"");
+        for (char ch : (v == null ? "" : v).toCharArray()) {
+            if (ch == '"' || ch == '\\') b.append('\\').append(ch);
+            else if (ch < 0x20) b.append(String.format(Locale.ROOT, "\\u%04x", (int) ch));
+            else b.append(ch);
+        }
+        return b.append('"').toString();
     }
 }

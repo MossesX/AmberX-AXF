@@ -1,7 +1,11 @@
 package ai.amberx.consoleapp;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The floating toolbar's pure rules (ported from AmberX's {@code ApprovalOverlayRules} / {@code OverlayPageRules}).
@@ -33,6 +37,8 @@ final class OverlayRules {
         String expand = "every";
         /** Toolbar opacity while nothing waits, percent, 40–100. */
         int idleOpacity = 85;
+        /** What the toolbar says while something waits: "next" (the next held command's countdown) or "count". */
+        String show = "next";
     }
 
     static final String PREFIX = OverlayContract.SETTING_PREFIX;
@@ -48,6 +54,7 @@ final class OverlayRules {
         if ((v = get(raw, "size")) != null) { String s = String.valueOf(v).toLowerCase(Locale.ROOT); c.size = s.equals("medium") || s.equals("large") ? s : "small"; }
         if ((v = get(raw, "expand")) != null) { String s = String.valueOf(v); c.expand = s.equals("held") || s.equals("never") ? s : "every"; }
         if ((v = get(raw, "idleOpacity")) != null) c.idleOpacity = clamp(num(v, c.idleOpacity), 40, 100);
+        if ((v = get(raw, "show")) != null) c.show = "count".equals(String.valueOf(v)) ? "count" : "next";
         return c;
     }
 
@@ -150,5 +157,121 @@ final class OverlayRules {
             case "dismiss": return EXPANDED.equals(now) ? EXPANDED : TOOLBAR;
             default: return now;
         }
+    }
+
+    // ---- items: what waits, one by one (ported from AmberX's ApprovalOverlayRules, overlay-toolbar-v2) ------------
+
+    /** One thing waiting: a held command (runs at {@link #runsAt} unless stopped) or an approval (waits until decided). */
+    static final class Item {
+        final String id, kind, title;
+        /** Epoch ms when a held command runs; 0 for an approval or a shelved command. */
+        final long runsAt;
+        final boolean shelved;
+
+        Item(String id, String kind, String title, long runsAt, boolean shelved) {
+            this.id = id == null ? "" : id;
+            this.kind = OverlayContract.HELD_KIND.equals(kind) ? OverlayContract.HELD_KIND : OverlayContract.APPROVAL_KIND;
+            this.title = title == null ? "" : title.trim();
+            this.runsAt = shelved || !OverlayContract.HELD_KIND.equals(kind) ? 0 : Math.max(0, runsAt);
+            this.shelved = shelved;
+        }
+
+        boolean held() { return OverlayContract.HELD_KIND.equals(kind); }
+        boolean timed() { return held() && !shelved && runsAt > 0; }
+    }
+
+    /** An item from the page's JSON object (keys {@code id, kind, title, runsAt, shelved}); null without an id. */
+    static Item item(Map<String, Object> m) {
+        if (m == null) return null;
+        Object id = m.get("id");
+        if (id == null || String.valueOf(id).trim().isEmpty()) return null;
+        Object runs = m.get("runsAt");
+        long at = runs instanceof Number ? ((Number) runs).longValue() : 0;
+        if (!(runs instanceof Number) && runs != null) { try { at = Long.parseLong(String.valueOf(runs).trim()); } catch (Exception ignored) {} }
+        Object t = m.get("title");
+        return new Item(String.valueOf(id), String.valueOf(m.get("kind")), t == null ? "" : String.valueOf(t), at, bool(m.get("shelved") == null ? false : m.get("shelved"), false));
+    }
+
+    /** Everything waiting, soonest first: running held commands by time left, then shelved ones, then approvals in feed order. */
+    static List<Item> order(Collection<Item> in) {
+        List<Item> timed = new ArrayList<>(), rest = new ArrayList<>(), approvals = new ArrayList<>();
+        if (in != null) for (Item i : in) {
+            if (i == null) continue;
+            (i.timed() ? timed : i.held() ? rest : approvals).add(i);
+        }
+        timed.sort((a, b) -> Long.compare(a.runsAt, b.runsAt));
+        timed.addAll(rest);
+        timed.addAll(approvals);
+        return timed;
+    }
+
+    static int heldCount(List<Item> items) {
+        int n = 0;
+        for (Item i : items) if (i.held()) n++;
+        return n;
+    }
+
+    static int secondsLeft(long runsAt, long now) { return (int) Math.max(0, Math.ceil((runsAt - now) / 1000.0)); }
+
+    static String clock(int seconds) { return (seconds / 60) + ":" + String.format(Locale.ROOT, "%02d", seconds % 60); }
+
+    /** The toolbar's label while something waits ("Runs in 1:05 · +2" / "3 waiting"); empty when nothing waits. */
+    static String toolbarLabel(Config c, List<Item> items, long now) {
+        if (items == null || items.isEmpty()) return "";
+        Item first = items.get(0);
+        if ("next".equals(c.show) && first.timed()) return "Runs in " + clock(secondsLeft(first.runsAt, now)) + (items.size() > 1 ? " · +" + (items.size() - 1) : "");
+        return items.size() + " waiting";
+    }
+
+    /** The approval bar's countdown line for one item. */
+    static String countdown(Item i, long now) {
+        if (!i.held()) return "Waiting for your approval";
+        if (i.shelved || i.runsAt <= 0) return "Shelved: waits for you";
+        int left = secondsLeft(i.runsAt, now);
+        return left <= 0 ? "Running now" : "Runs in " + clock(left) + " unless you stop it";
+    }
+
+    /** True while a held command counts down: the toolbar and bar re-render once a second. */
+    static boolean ticking(List<Item> items) {
+        for (Item i : items) if (i.timed()) return true;
+        return false;
+    }
+
+    /** True when an item counts toward popping the approval bar under the {@code expand} setting. */
+    static boolean opensFor(Config c, Item i) {
+        if ("never".equals(c.expand)) return false;
+        return !"held".equals(c.expand) || i.held();
+    }
+
+    /**
+     * The bar pops for something that wasn't there before ({@code seen}: ids already shown or dismissed) and that the
+     * setting lets through; items Brett already folded away keep the toolbar small.
+     */
+    static boolean popsFor(Config c, List<Item> items, Set<String> seen) {
+        for (Item i : items) if (!seen.contains(i.id) && opensFor(c, i)) return true;
+        return false;
+    }
+
+    /** The state after an items update: like {@link #afterApprovals} but per item, so only an unseen one pops the bar. */
+    static String afterItems(String now, Config c, List<Item> items, Set<String> seen) {
+        if (EXPANDED.equals(now)) return EXPANDED;
+        if (items.isEmpty()) return TOOLBAR;
+        if (APPROVALS.equals(now)) return APPROVALS; // already open: stays open while anything waits
+        return popsFor(c, items, seen) ? APPROVALS : TOOLBAR;
+    }
+
+    /** Drops ids from {@code seen} that no longer wait, so a later call with the same id pops the bar again. */
+    static void forget(Set<String> seen, List<Item> items) {
+        Set<String> live = new java.util.HashSet<>();
+        for (Item i : items) live.add(i.id);
+        seen.retainAll(live);
+    }
+
+    /** The approval bar's line for the items: the first one's title and countdown, then how many more. */
+    static String barText(List<Item> items, long now) {
+        if (items == null || items.isEmpty()) return "";
+        Item first = items.get(0);
+        String head = barText(items.size(), first.title);
+        return first.held() ? head + " · " + countdown(first, now) : head;
     }
 }

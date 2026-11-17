@@ -13,7 +13,7 @@ export const OPEN_PARAM = 'axf-open';
 
 /** The overlay settings the shell reads (the console's own settings, Settings → Plugins → Approvals banner). */
 export const OVERLAY_SETTING_PREFIX = 'approvals-banner.overlay.';
-export const OVERLAY_SETTINGS = ['on', 'edge', 'top', 'size', 'expand', 'idleOpacity'];
+export const OVERLAY_SETTINGS = ['on', 'edge', 'top', 'size', 'expand', 'idleOpacity', 'show'];
 
 /** The counter the overlay's approvals badge follows (toolbar items show it as `badge: approvals.waiting`). */
 export const WAITING_BADGE = 'approvals.waiting';

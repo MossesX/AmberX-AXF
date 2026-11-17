@@ -152,6 +152,22 @@ final class NativeBridge {
         return ok(null);
     }
 
+    /** What waits, one by one: {@code [{id, kind: "held"|"approval", title, runsAt (epoch ms), shelved}]} ({@link OverlayContract#M_ITEMS}). */
+    @JavascriptInterface public String overlayItems(String json) {
+        if (!allowed()) return DENIED;
+        try {
+            org.json.JSONArray a = new org.json.JSONArray(json == null ? "[]" : json);
+            java.util.List<OverlayRules.Item> list = new java.util.ArrayList<>();
+            for (int i = 0; i < a.length(); i++) {
+                JSONObject o = a.optJSONObject(i);
+                OverlayRules.Item it = o == null ? null : OverlayRules.item(map(o));
+                if (it != null) list.add(it);
+            }
+            ui.post(() -> OverlayService.items(list));
+            return ok("\"items\":" + list.size());
+        } catch (Exception e) { return fail("bad overlay items: " + e.getMessage()); }
+    }
+
     // ---- theme ----
     /** The page's live --fx-* tokens, for the native toolbar's look ({"--fx-surface":"#1a1a1a",…}). */
     @JavascriptInterface public String theme(String json) {

@@ -34,6 +34,8 @@ export interface AxfNativeHost {
   openUrl(url: string, where: string): string; wake(): string;
   overlay(verb: string): string; overlayState(): string; overlayConfigure(json: string): string;
   overlayApprovals(count: number, held: number, firstTitle: string): string;
+  /** What waits, one by one (overlay@1 `overlayItems`): `[{id, kind, title, runsAt, shelved}]`; a shell before part 2 lacks it. */
+  overlayItems?(json: string): string;
   theme(json: string): string; insets(): string; insetsHandled(handled: boolean): string;
   recorder?(verb: string): string; update?(verb: string): string;
 }

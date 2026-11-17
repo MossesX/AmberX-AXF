@@ -12,7 +12,9 @@ import android.content.pm.ServiceInfo;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -21,7 +23,11 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The floating toolbar over every app (Brett, Nov 13 2026: "keep it floating on top"), ported from AmberX's
@@ -51,10 +57,18 @@ public class OverlayService extends Service {
     /** How many approvals waited when the bar was dismissed: it stays closed until a new one arrives. */
     static int dismissedAt;
     static String firstTitle = "";
+    /** What waits, one by one, once the page sends items ({@code overlayItems}); soonest first. */
+    static List<OverlayRules.Item> items = new ArrayList<>();
+    static boolean itemsFromPage;
+    /** Ids already shown in the bar or dismissed: they don't pop it again. */
+    static final Set<String> seen = new HashSet<>();
 
     private WindowManager wm;
     private LinearLayout toolbar;
-    private TextView consoleBtn, badge, bar, link, dismiss;
+    private TextView consoleBtn, badge, label, bar, link, dismiss;
+    /** Re-renders the countdowns once a second while a held command counts down. */
+    private final Handler tick = new Handler(Looper.getMainLooper());
+    private final Runnable ticker = () -> { render(); scheduleTick(); };
     private WindowManager.LayoutParams lp;
     private FrameLayout full;
     private WindowManager.LayoutParams fullLp;
@@ -84,7 +98,7 @@ public class OverlayService extends Service {
                 return;
             }
         }
-        if (OverlayContract.DISMISS.equals(verb)) dismissedAt = waiting;
+        if (OverlayContract.DISMISS.equals(verb)) { dismissedAt = waiting; markSeen(); }
         if (OverlayContract.APPROVALS_VERB.equals(verb)) {
             // in the running console the list opens without a reload (the page runs approvals.view on this event);
             // anywhere else (offline page, another site) the deep link loads the console on the approvals page
@@ -99,13 +113,14 @@ public class OverlayService extends Service {
         config = OverlayRules.config(raw);
         SharedPreferences.Editor e = c.getSharedPreferences("overlay", MODE_PRIVATE).edit();
         e.putBoolean("on", config.on).putString("edge", config.edge).putInt("top", config.top).putString("size", config.size)
-            .putString("expand", config.expand).putInt("idleOpacity", config.idleOpacity).apply();
+            .putString("expand", config.expand).putInt("idleOpacity", config.idleOpacity).putString("show", config.show).apply();
         if (!config.on) { stop(c); return; }
         if (running == null) startIfWanted(c); else running.restyle();
     }
 
     /** The page's approvals: how many wait, how many are held commands, the first one's title. */
     static void approvals(int count, int heldCount, String title) {
+        if (itemsFromPage) return; // the page sends items: they carry the counts, the titles and the countdowns
         waiting = Math.max(0, count);
         held = Math.max(0, heldCount);
         firstTitle = title == null ? "" : title;
@@ -113,9 +128,29 @@ public class OverlayService extends Service {
         if (running != null) running.show(OverlayRules.afterApprovals(state, config, waiting, held, dismissedAt));
     }
 
+    /** The page's items ({@code overlayItems}): counts, titles and countdowns; only an unseen item pops the bar. */
+    static void items(List<OverlayRules.Item> in) {
+        items = OverlayRules.order(in);
+        itemsFromPage = true;
+        waiting = items.size();
+        held = OverlayRules.heldCount(items);
+        firstTitle = items.isEmpty() ? "" : items.get(0).title;
+        OverlayRules.forget(seen, items);
+        dismissedAt = OverlayRules.dismissedAfter(dismissedAt, waiting);
+        if (running != null) running.show(OverlayRules.afterItems(state, config, items, seen));
+    }
+
+    static void markSeen() { for (OverlayRules.Item i : items) seen.add(i.id); }
+
+    /** The toolbar's label: the next countdown or how many wait (from the counts when the page sent no items). */
+    static String label() {
+        if (itemsFromPage) return OverlayRules.toolbarLabel(config, items, System.currentTimeMillis());
+        return waiting > 0 ? waiting + " waiting" : "";
+    }
+
     /** The overlay's state for every API ({@link OverlayContract#stateJson}: the {@code overlay} event, {@code overlayState()}, {@code native.state}). */
     static String stateJson() {
-        return OverlayContract.stateJson(running != null, state, waiting, held, dismissedAt, config);
+        return OverlayContract.stateJson(running != null, state, waiting, held, dismissedAt, config, label());
     }
 
     static void loadConfig(Context c) {
@@ -126,6 +161,7 @@ public class OverlayService extends Service {
         config.size = p.getString("size", "small");
         config.expand = p.getString("expand", "every");
         config.idleOpacity = p.getInt("idleOpacity", 85);
+        config.show = p.getString("show", "next");
     }
 
     // ---- the service ---------------------------------------------------------------------------------------------
@@ -160,6 +196,7 @@ public class OverlayService extends Service {
 
     @Override
     public void onDestroy() {
+        tick.removeCallbacks(ticker);
         closeFull();
         if (toolbar != null && toolbar.isAttachedToWindow()) wm.removeViewImmediate(toolbar);
         running = null;
@@ -183,6 +220,7 @@ public class OverlayService extends Service {
         toolbar.setContentDescription(getString(R.string.overlay_toolbar));
         consoleBtn = button(getString(R.string.overlay_console), v -> verb(this, "toggle"));
         badge = button("", v -> verb(this, "approvals"));
+        label = button("", v -> verb(this, "approvals"));
         bar = button("", v -> verb(this, "approvals"));
         link = button(getString(R.string.overlay_open_approvals), v -> verb(this, "approvals"));
         link.setPaintFlags(link.getPaintFlags() | android.graphics.Paint.UNDERLINE_TEXT_FLAG);
@@ -190,6 +228,7 @@ public class OverlayService extends Service {
         dismiss.setContentDescription(getString(R.string.overlay_dismiss));
         toolbar.addView(consoleBtn);
         toolbar.addView(badge);
+        toolbar.addView(label);
         toolbar.addView(bar);
         toolbar.addView(link);
         toolbar.addView(dismiss);
@@ -220,7 +259,7 @@ public class OverlayService extends Service {
         bgd.setCornerRadius(dp(ShellTheme.radiusDp * 2));
         toolbar.setBackground(bgd);
         toolbar.setPadding(pad / 2, pad / 2, pad / 2, pad / 2);
-        for (TextView t : new TextView[] { consoleBtn, badge, bar, link, dismiss }) {
+        for (TextView t : new TextView[] { consoleBtn, badge, label, bar, link, dismiss }) {
             t.setTextSize(TypedValue.COMPLEX_UNIT_SP, ShellTheme.textSp * scale);
             t.setTextColor(ShellTheme.fg);
             t.setPadding(pad, pad / 2, pad, pad / 2);
@@ -244,19 +283,37 @@ public class OverlayService extends Service {
     /** Moves to a state: toolbar, toolbar + approval bar, or the full-screen console with the toolbar docked. */
     void show(String next) {
         state = next == null ? OverlayRules.TOOLBAR : next;
-        String b = OverlayRules.badge(waiting);
-        badge.setText(b);
-        badge.setVisibility(b.isEmpty() ? View.GONE : View.VISIBLE);
-        badge.setContentDescription(getString(R.string.overlay_open_approvals));
-        boolean barOn = OverlayRules.APPROVALS.equals(state);
-        bar.setText(barOn ? OverlayRules.barText(waiting, firstTitle) : "");
-        bar.setContentDescription(getString(R.string.overlay_open_approvals));
-        for (View v : new View[] { bar, link, dismiss }) v.setVisibility(barOn ? View.VISIBLE : View.GONE);
+        if (OverlayRules.APPROVALS.equals(state)) markSeen(); // shown once: it doesn't pop the bar again
+        render();
+        scheduleTick();
         consoleBtn.setText(OverlayRules.EXPANDED.equals(state) ? getString(R.string.overlay_collapse) : getString(R.string.overlay_console));
         if (OverlayRules.EXPANDED.equals(state)) openFull(); else closeFull();
         restyle();
         NativeBridge.emit("overlay", stateJson());
         ContentUpdate.visibility(); // expanded = the console is on screen
+    }
+
+    /** The badge, the toolbar label and the bar's line (the countdowns): run on every change and once a second. */
+    private void render() {
+        long now = System.currentTimeMillis();
+        String b = OverlayRules.badge(waiting);
+        badge.setText(b);
+        badge.setVisibility(b.isEmpty() ? View.GONE : View.VISIBLE);
+        badge.setContentDescription(getString(R.string.overlay_open_approvals));
+        boolean barOn = OverlayRules.APPROVALS.equals(state);
+        String l = label();
+        label.setText(l);
+        // the label shows on the small toolbar; with the bar open the bar says it
+        label.setVisibility(!l.isEmpty() && OverlayRules.TOOLBAR.equals(state) ? View.VISIBLE : View.GONE);
+        label.setContentDescription(getString(R.string.overlay_open_approvals));
+        bar.setText(!barOn ? "" : itemsFromPage ? OverlayRules.barText(items, now) : OverlayRules.barText(waiting, firstTitle));
+        bar.setContentDescription(getString(R.string.overlay_open_approvals));
+        for (View v : new View[] { bar, link, dismiss }) v.setVisibility(barOn ? View.VISIBLE : View.GONE);
+    }
+
+    private void scheduleTick() {
+        tick.removeCallbacks(ticker);
+        if (!OverlayRules.EXPANDED.equals(state) && OverlayRules.ticking(items)) tick.postDelayed(ticker, 1000);
     }
 
     /** The full-screen console window: the app's WebView, the toolbar docked top-left inside the safe area. */
@@ -320,7 +377,7 @@ public class OverlayService extends Service {
                     if (!moved) return false;
                     int w = getResources().getDisplayMetrics().widthPixels, h = getResources().getDisplayMetrics().heightPixels;
                     Map<String, Object> m = new java.util.HashMap<>();
-                    m.put("on", config.on); m.put("size", config.size); m.put("expand", config.expand); m.put("idleOpacity", config.idleOpacity);
+                    m.put("on", config.on); m.put("size", config.size); m.put("expand", config.expand); m.put("idleOpacity", config.idleOpacity); m.put("show", config.show);
                     m.put("edge", OverlayRules.edgeAfterDrag(Math.round(e.getRawX()), w));
                     m.put("top", OverlayRules.topAfterDrag(lp.y, h));
                     configure(OverlayService.this, m);
