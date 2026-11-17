@@ -50,6 +50,7 @@ import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
 import { adoptStore, adoptedChanges, journalDir, journalMax, journalMode, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
+import { publishChanges } from './build-live-channel.mjs';
 import { readManifest } from './shipped-files.mjs';
 import { normRunEnd } from '../core/build-pipeline.mjs';
 
@@ -352,7 +353,10 @@ function toConsole(files) {
     // build-hook@1: these builds changed in this checkout, not in the console's; their events go to the console's outbox
     // (its Shipped features sync delivers them), or the ledger never hears of ticks, PRs and manifests made in a worktree
     const hooks = join(root, '.axf-console', 'build-hooks');
-    if (existsSync(hooks)) emitChangesTo(hooks, adoptedChanges(theirs, next), { at: new Date().toISOString(), by: 'builds-live' });
+    const adopted = adoptedChanges(theirs, next); const at = new Date().toISOString();
+    if (existsSync(hooks)) emitChangesTo(hooks, adopted, { at, by: 'builds-live' });
+    // build-live@1: and on the console's live channel, so its grids move now (the console tails the channel)
+    publishChanges(adopted, { at, by: 'builds-live', root });
     writeFileSync(join(root, STORE_REL), consoleOnly ? storeText(store) : files[STORE_REL]);
     for (const x of orchestratorExports(consoleOnly ? store : main)) if (existsSync(join(root, x.rel)) || x.builds) writeFileSync(join(root, x.rel), x.text);
     for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${JOURNAL_REL}/`)) {
