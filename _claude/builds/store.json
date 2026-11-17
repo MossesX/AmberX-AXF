@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7537,
- "updatedAt": "2026-11-17T16:53:27.543Z",
+ "rev": 7538,
+ "updatedAt": "2026-11-17T16:53:35.772Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266656,16 +266656,22 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T16:53:25.340Z",
+   "updatedAt": "2026-11-17T16:53:28.616Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T16:53:28.616Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -266680,6 +266686,30 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-17T16:53:28.041Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -266689,7 +266719,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
