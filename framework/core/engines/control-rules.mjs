@@ -134,6 +134,11 @@ export const CONTROL_TARGETS = {
     acts: { open: {}, set: { key: 'string', value: 'any' }, enable: {}, disable: { options: 'object' } },
     actEffect: { open: 'navigate', set: 'write', enable: 'write', disable: 'write' },
     doc: `Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. ${CONSOLE_DELIVERY}` },
+  // plugin-settings@1 + settings-reset@1 (Nov 17 2026): every owner's own settings interface and its reset confirm
+  'console.settingsinterfaces': { domain: 'console', label: 'Settings interfaces and reset', ops: ['list', 'get', 'act'], paths: 'host', select: { limit: 'number' },
+    acts: { open: {}, 'reset.ask': { includeAssets: 'boolean' }, reset: { includeAssets: 'boolean', dryRun: 'boolean', confirm: 'string' }, undo: {} },
+    actEffect: { open: 'navigate', 'reset.ask': 'navigate', reset: 'write', undo: 'write' },
+    doc: `Each settings interface has one owner: the console (path console) or one plugin (path = its id, folder or name). get = the resolved interface (its own settings/plugin-<id> asset or the generated default, never the console's), its current values and its changed assets (GET /api/settings/interfaces/<owner>); act open opens it (settings:plugin/<id>, its own window); reset.ask opens the confirm dialog (dialog:settings-reset?scope=<id>); reset clears it (POST /api/settings/reset: input {includeAssets, dryRun}; without a confirm token it answers the plan, the changed-assets table, and the token, then the same call with input.confirm runs it); undo puts the last reset back. ${CONSOLE_DELIVERY}` },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 

@@ -501,7 +501,7 @@ def plugin_settings_state(ref: str, is_enabled: Any = None) -> dict[str, Any]:
               enabled=plugin_enabled(p, is_enabled),
               tab={"address": tab, "id": p.get("settingsTabId")} if tab else None,
               gear=p.get("settingsGear"), view=p.get("view"), settings=settings,
-              open={"action": f"plugin.settings.open:{p.get('folder')}", "address": tab} if tab else None,
+              open={"action": f"plugin.settings.open:{p.get('folder')}", "address": f"settings:plugin/{p['id']}", "window": True},
               can=["open", "state", "plugin.enable", "plugin.disable"] + (["set"] if settings else []))
 
 # ---------------------------------------------------------------------- voice (twin of core/engines/console-control-voice.mjs)

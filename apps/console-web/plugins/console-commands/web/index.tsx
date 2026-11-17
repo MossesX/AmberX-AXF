@@ -29,6 +29,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { executeControl, describeAnswer } from '@console/control/executor';
 import { appMenu } from './menu';
+import { settingsInterfaceReport, settingsResetReport } from '@console/axf/libs/settings';
 import './console-commands.css';
 import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
@@ -124,7 +125,14 @@ function fieldsOf(rt: AxfRuntime) {
 /** What this console has: its search index's screens and dialogs, every settings tab (with its parent) and single setting, every action. */
 function catalogOf(rt: AxfRuntime) {
   const tabs = rt.settings.listTabs().map((t) => ({ kind: 'settings-tab', label: t.label, icon: t.icon, keywords: [t.description ?? '', t.parent ? `${t.parent} sub-tab` : ''], parent: t.parent, focus: { kind: 'setting', tab: t.id } }));
-  const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs, ...fieldsOf(rt)];
+  // plugin-settings@1 deep links: every plugin's own settings window (console_settings / console_open settings
+  // `plugin/<id>` = settings:plugin/<id>) and the reset confirm dialog (console_dialog `settings-reset`, arg = the scope)
+  const own = [...new Set(rt.settings.listTabs().map((t) => t.plugin).filter((p): p is string => !!p))].map((p) => {
+    const t = rt.settings.listTabs().find((x) => x.plugin === p);
+    return { kind: 'settings-tab', label: `${t?.label ?? p} (its own settings)`, icon: t?.icon, keywords: ['plugin settings', p], focus: { kind: 'setting', tab: `plugin/${p}` } };
+  });
+  const reset = { kind: 'dialog', label: 'Reset settings', icon: 'refresh', keywords: ['reset', 'restore', 'defaults', 'settings-reset'], focus: { id: 'settings-reset' } };
+  const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs, ...own, reset, ...fieldsOf(rt)];
   return consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
 }
 
@@ -151,6 +159,9 @@ async function reloadPage(hard: boolean): Promise<void> {
   location.reload();
 }
 
+/** Data the last message answers with (a settings read), sent as the ack's result. */
+let replyData: Record<string, unknown> | null = null;
+
 /** Run one message; → [ok, what happened]. */
 function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [boolean, string] {
   const errors = consoleMessageErrors(m);
@@ -168,12 +179,25 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
         const ran = rt.dispatch(`${act}:${encodeURIComponent(m.focus)}`);
         return [opened && ran, ran ? `opened ${label} on ${m.focus}` : `opened ${label}; focusing "${m.focus}" didn't run here`];
       }
+      if (m.kind === 'dialog' && /^settings-reset(\?|$)/.test(m.target!)) {
+        const scope = m.arg || new URLSearchParams(m.target!.split('?')[1] ?? '').get('scope') || 'console';
+        return [rt.dispatch(`settings.reset.ask:${scope}`), `opened Reset settings for ${scope}`];
+      }
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
+      if (m.target!.startsWith('plugin/')) return [rt.dispatch(`settings.plugin:${m.target!.slice(7)}`), `opened ${m.label ?? m.target}`];
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
       return [true, `opened ${m.label ?? m.target} settings`];
     case 'run':
       // the catalog already leaves these out; a stale catalog or a crafted message stops here
       if (rt.actions.list().some((a) => a.meta.personOnly === true && a.id === m.spec!.split(':')[0])) return [false, `${m.label ?? m.spec} needs Brett's own tap`];
+      // the settings API's reads answer with data (the ack's result): settings.interface:<owner>, settings.reset.plan:<scope>[:assets]
+      if (m.spec!.startsWith('settings.interface:') || m.spec!.startsWith('settings.reset.plan:')) {
+        const [act, a = 'console', b = ''] = m.spec!.split(':');
+        const data = act === 'settings.interface' ? settingsInterfaceReport(rt, a) : settingsResetReport(rt, a, b === 'assets' || b === 'true');
+        if (!data) return [false, `nothing called “${a}” has settings here`];
+        replyData = data as Record<string, unknown>;
+        return [true, act === 'settings.interface' ? `read ${a}'s settings interface` : `planned a reset of ${a}: ${(data as { summary?: string }).summary ?? ''}`];
+      }
       if (m.spec!.startsWith('settings.set:')) {
         // say why a value is refused in the answer, not only in a toast on Brett's screen
         const [, key = '', ...rest] = m.spec!.split(':');
@@ -293,10 +317,12 @@ function ConsoleCommandsClient() {
           return;
         }
         let res: [boolean, string];
+        replyData = null;
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
+        const data = replyData;
         markDone(m.id, res);
         if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
-        const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
+        const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], ...(data ? { result: data } : {}), here: hereOf(rt), ...where() }).catch(() => undefined);
         if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
       },
       // a deploy restarts the server: come back within seconds, not after a minute of back-off

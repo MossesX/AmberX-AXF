@@ -60,6 +60,12 @@
       "set": "write",
       "enable": "write",
       "disable": "write"
+    },
+    "console.settingsinterfaces": {
+      "open": "navigate",
+      "reset.ask": "navigate",
+      "reset": "write",
+      "undo": "write"
     }
   },
   "domains": [
@@ -3178,6 +3184,38 @@
         "disable": "write"
       },
       "doc": "Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+    },
+    "console.settingsinterfaces": {
+      "domain": "console",
+      "label": "Settings interfaces and reset",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "limit": "number"
+      },
+      "acts": {
+        "open": {},
+        "reset.ask": {
+          "includeAssets": "boolean"
+        },
+        "reset": {
+          "includeAssets": "boolean",
+          "dryRun": "boolean",
+          "confirm": "string"
+        },
+        "undo": {}
+      },
+      "actEffect": {
+        "open": "navigate",
+        "reset.ask": "navigate",
+        "reset": "write",
+        "undo": "write"
+      },
+      "doc": "Each settings interface has one owner: the console (path console) or one plugin (path = its id, folder or name). get = the resolved interface (its own settings/plugin-<id> asset or the generated default, never the console's), its current values and its changed assets (GET /api/settings/interfaces/<owner>); act open opens it (settings:plugin/<id>, its own window); reset.ask opens the confirm dialog (dialog:settings-reset?scope=<id>); reset clears it (POST /api/settings/reset: input {includeAssets, dryRun}; without a confirm token it answers the plan, the changed-assets table, and the token, then the same call with input.confirm runs it); undo puts the last reset back. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     }
   },
   "aliases": {
@@ -3264,7 +3302,8 @@
               "tokens.nav",
               "console.control",
               "tokens.instances",
-              "console.pluginsettings"
+              "console.pluginsettings",
+              "console.settingsinterfaces"
             ],
             "description": "what to control"
           },
@@ -3321,7 +3360,8 @@
               "tokens.nav",
               "console.control",
               "tokens.instances",
-              "console.pluginsettings"
+              "console.pluginsettings",
+              "console.settingsinterfaces"
             ],
             "description": "what to control"
           },
@@ -3379,7 +3419,8 @@
               "tokens.nav",
               "console.control",
               "tokens.instances",
-              "console.pluginsettings"
+              "console.pluginsettings",
+              "console.settingsinterfaces"
             ],
             "description": "what to control"
           },
@@ -3444,7 +3485,8 @@
               "tokens.nav",
               "console.control",
               "tokens.instances",
-              "console.pluginsettings"
+              "console.pluginsettings",
+              "console.settingsinterfaces"
             ],
             "description": "what to control"
           },
@@ -3509,7 +3551,8 @@
               "tokens.nav",
               "console.control",
               "tokens.instances",
-              "console.pluginsettings"
+              "console.pluginsettings",
+              "console.settingsinterfaces"
             ],
             "description": "what to control"
           },
@@ -3574,7 +3617,8 @@
               "tokens.nav",
               "console.control",
               "tokens.instances",
-              "console.pluginsettings"
+              "console.pluginsettings",
+              "console.settingsinterfaces"
             ],
             "description": "what to control"
           },
@@ -3643,7 +3687,8 @@
               "tokens.nav",
               "console.control",
               "tokens.instances",
-              "console.pluginsettings"
+              "console.pluginsettings",
+              "console.settingsinterfaces"
             ],
             "description": "what to control"
           },
@@ -3777,7 +3822,8 @@
       "tokens.nav",
       "console.control",
       "tokens.instances",
-      "console.pluginsettings"
+      "console.pluginsettings",
+      "console.settingsinterfaces"
     ]
   },
   "schema": {
@@ -3831,7 +3877,8 @@
           "tokens.nav",
           "console.control",
           "tokens.instances",
-          "console.pluginsettings"
+          "console.pluginsettings",
+          "console.settingsinterfaces"
         ]
       },
       "path": {
@@ -5140,6 +5187,40 @@
               "type": "object"
             }
           }
+        },
+        "paths": "host"
+      },
+      "console.settingsinterfaces": {
+        "description": "Each settings interface has one owner: the console (path console) or one plugin (path = its id, folder or name). get = the resolved interface (its own settings/plugin-<id> asset or the generated default, never the console's), its current values and its changed assets (GET /api/settings/interfaces/<owner>); act open opens it (settings:plugin/<id>, its own window); reset.ask opens the confirm dialog (dialog:settings-reset?scope=<id>); reset clears it (POST /api/settings/reset: input {includeAssets, dryRun}; without a confirm token it answers the plan, the changed-assets table, and the token, then the same call with input.confirm runs it); undo puts the last reset back. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "limit": {
+            "type": "number"
+          }
+        },
+        "acts": {
+          "open": {},
+          "reset.ask": {
+            "includeAssets": {
+              "type": "boolean"
+            }
+          },
+          "reset": {
+            "includeAssets": {
+              "type": "boolean"
+            },
+            "dryRun": {
+              "type": "boolean"
+            },
+            "confirm": {
+              "type": "string"
+            }
+          },
+          "undo": {}
         },
         "paths": "host"
       }

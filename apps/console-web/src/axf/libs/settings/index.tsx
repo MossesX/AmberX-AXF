@@ -21,7 +21,7 @@ import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
 import { ChangedAssetsTable, changedAssetRows } from './changed';
 import { askReset, lastReset, registerResetActions, ResetDialogBody, undoSettingsReset } from './reset';
-export { askReset, lastReset, planReset, runSettingsReset, undoSettingsReset, SETTINGS_RESET_ASK, SETTINGS_RESET_RUN, SETTINGS_RESET_UNDO, SETTINGS_RESET_UNDO_KEY } from './reset';
+export { askReset, lastReset, planReset, settingsInterfaceReport, settingsResetReport, runSettingsReset, undoSettingsReset, SETTINGS_INTERFACE_READ, SETTINGS_RESET_ASK, SETTINGS_RESET_PLAN, SETTINGS_RESET_RUN, SETTINGS_RESET_UNDO, SETTINGS_RESET_UNDO_KEY } from './reset';
 import { RESET_CONFIRM_DIALOG, setResetTableRenderer } from '../../react/components/ResetConfirmDialog';
 export { ChangedAssetsTable, changedAssetRows, resetStateOf } from './changed';
 import { PLUGIN_SETTINGS_ACTION, PLUGIN_SETTINGS_DIALOG, PluginSettingsWindow, pluginOfSettingsTab, setPluginSettingsRenderer, useSettingsUiOverride } from '../../react/components/PluginSettingsWindow';

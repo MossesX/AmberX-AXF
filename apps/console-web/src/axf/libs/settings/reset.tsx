@@ -22,7 +22,8 @@
  */
 import { useCallback } from 'react';
 import { ResetConfirmDialog, RESET_CONFIRM_DIALOG } from '../../react/components/ResetConfirmDialog';
-import { parseResetScope, planSettingsReset, resetScopeKey, type ResetPlan, type ResetScope } from '../../core/engines/settings-reset';
+import { keyOwner, parseResetScope, planSettingsReset, resetScopeKey, type ResetPlan, type ResetScope, type ResetState } from '../../core/engines/settings-reset';
+import { parseSettingsOwner, pluginSettingsGroups, resolveSettingsInterface, settingsOwnerKey } from '../../core/engines/plugin-settings';
 import type { AxfRuntime, SettingValue } from '../../core';
 import { useRuntime } from '../../react';
 import { resetStateOf } from './changed';
@@ -30,6 +31,8 @@ import { resetStateOf } from './changed';
 export const SETTINGS_RESET_ASK = 'settings.reset.ask';
 export const SETTINGS_RESET_RUN = 'settings.reset';
 export const SETTINGS_RESET_UNDO = 'settings.reset.undo';
+export const SETTINGS_RESET_PLAN = 'settings.reset.plan';
+export const SETTINGS_INTERFACE_READ = 'settings.interface';
 /** The last reset's cleared values (one undo). */
 export const SETTINGS_RESET_UNDO_KEY = 'axf.settings.reset.undo';
 
@@ -114,5 +117,40 @@ export function registerResetActions(rt: AxfRuntime): void {
     if (!s) { rt.toast(`Nothing called “${scope}” to reset.`, 'warning', 'Settings'); return; }
     runSettingsReset(rt, s, assets === 'assets' || assets === 'true');
   }, { label: 'Reset settings (confirmed)', params: true, effect: 'destructive' });
+  // reads: in the UI they show what they read; through the console API the open console answers with the data
+  rt.actions.register(SETTINGS_INTERFACE_READ, ([owner]) => { const o = parseSettingsOwner(owner ?? ''); if (o?.kind === 'plugin') rt.dispatch(`settings.plugin:${o.id}`); else rt.dispatch('app.settings'); }, { label: 'Read a settings interface (owner: console or a plugin id)', params: true, effect: 'read' });
+  rt.actions.register(SETTINGS_RESET_PLAN, ([scope, assets]) => askReset(rt, scope || 'console', { includeAssets: assets === 'assets' }), { label: 'What a settings reset would change (dry run)', params: true, effect: 'read' });
   rt.actions.register(SETTINGS_RESET_UNDO, () => { if (!undoSettingsReset(rt)) rt.toast('There is no reset to undo.', 'info', 'Settings'); }, { label: 'Undo the last settings reset', effect: 'write' });
+}
+
+/* ---------------- reads for the API (REST, MCP, CLI, voice: the open console answers them) ---------------- */
+
+/** One owner's interface as the API reads it: the resolved interface, its current values and its changed assets. */
+export function settingsInterfaceReport(rt: AxfRuntime, ownerRef: string): Record<string, unknown> | null {
+  const owner = parseSettingsOwner(ownerRef);
+  if (!owner) return null;
+  const state = resetStateOf(rt);
+  const assets = rt.registry.list('settings');
+  const resolved = resolveSettingsInterface(owner, { assets, appPick: rt.assetOrNull('settings')?.id ?? null, tabs: state.tabs ?? [], groups: state.groups ?? [] });
+  const scope: ResetScope = owner.kind === 'app' ? { kind: 'console' } : { kind: 'plugin', id: owner.id };
+  const plan = planSettingsReset(scope, true, state);
+  const groups = owner.kind === 'plugin' ? pluginSettingsGroups(owner.id, state.tabs, state.groups) : (state.groups ?? []).filter((g) => !keyOwnerOf(g, state));
+  const values: Record<string, SettingValue> = {};
+  for (const g of groups) for (const s of g.settings) if (s.kind !== 'secret' && s.kind !== 'action') values[s.key] = rt.settings.get(s.key);
+  return {
+    $axf: 'settings-interface@1', owner: settingsOwnerKey(owner), id: resolved.id, source: resolved.source, interface: resolved.ui,
+    opens: owner.kind === 'plugin' ? `settings:plugin/${owner.id}` : 'view:settings', values,
+    changedAssets: plan.assets, settingsToReset: plan.settings, summary: plan.summary, undo: lastReset(rt)?.at ?? null,
+  };
+}
+
+/** Is this group a plugin's? (its keys belong to a plugin) */
+function keyOwnerOf(g: { settings: { key: string }[] }, state: ResetState): boolean {
+  return g.settings.some((s) => keyOwner(s.key, state) !== null);
+}
+
+/** The plan as the API reads it (dry run). */
+export function settingsResetReport(rt: AxfRuntime, scopeRef: string, includeAssets: boolean): ResetPlan | null {
+  const s = parseResetScope(scopeRef);
+  return s ? planReset(rt, s, includeAssets) : null;
 }

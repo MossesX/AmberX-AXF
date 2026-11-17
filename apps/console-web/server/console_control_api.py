@@ -55,6 +55,10 @@ _rate_lock = threading.Lock()
 _audit_lock = threading.Lock()
 
 
+# Actions whose press only opens a window or a dialog (plugin-settings@1, settings-reset@1): navigation, never a veto.
+NAVIGATE_FUNCTIONS = frozenset({"function:plugin.settings.open", "function:settings.plugin", "function:settings.reset.ask", "function:settings.reset.plan", "function:settings.interface"})
+
+
 def policy_of(cmd: dict[str, Any]) -> dict[str, Any]:
     """The axHub policy tag of a command (CONTROL.md → Recommended axHub policy): reads and navigation `allow` (never a
     veto countdown), writes `veto`, destructive presses `confirm`, deciding presses `person` (never by command)."""
@@ -68,6 +72,8 @@ def policy_of(cmd: dict[str, Any]) -> dict[str, Any]:
             tag = "person"
         elif bool(spec and spec.get("destructive")) or bool(cc.DESTRUCTIVE_RE.search(word)):
             tag, destructive = "confirm", True
+        elif str(cmd.get("address") or "") in NAVIGATE_FUNCTIONS:
+            tag, effect = "allow", "navigate"  # pressing it only opens something (a settings window, a confirm dialog)
     return {"tag": tag, "effect": effect, "readOnly": effect in ("read", "navigate"), "destructive": destructive, "requires": requires}
 
 
@@ -421,15 +427,14 @@ def router_for(auth: Any) -> APIRouter:
 
     @r.post("/plugins/{ref}/settings/open")
     async def plugin_settings_open(request: Request, ref: str) -> JSONResponse:
-        """Open Settings → Plugins → <plugin> in the open console (the same as pressing its gear)."""
+        """Open the plugin's own settings window in the open console (the same as pressing its gear; plugin-settings@1:
+        never the console's Settings at Plugins → <plugin>)."""
         try:
             st = await run_in_threadpool(cc.plugin_settings_state, ref)
         except cc.ControlError as e:
             return fail(e)
-        if not st.get("tab"):
-            return fail(cc.ControlError("not_found", f"{st.get('label')} has no settings sub-tab"))
         b = await _body(request)
-        return await from_body(request, {**b, "verb": "open", "address": st["tab"]["address"]})
+        return await from_body(request, {**b, "verb": "press", "address": "function:plugin.settings.open", "value": st.get("folder") or st.get("plugin")})
 
     @r.post("/plugins/{ref}/settings/set")
     async def plugin_settings_set(request: Request, ref: str) -> JSONResponse:
