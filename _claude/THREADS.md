@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:27 UTC · `banner-widget-shapes-plus-change-icon` s10 done, s11 done (all) · foreign-write
-- 2026-11-17 22:27 UTC · `rebuild-fresh-main-phone-connect-small` s26 done, note (all) · foreign-write
-- 2026-11-17 22:27 UTC · `rebuild-every-toolbar-page-specific` → landed, note (all) · foreign-write
 - 2026-11-17 22:27 UTC · `flagship-professional-skin-covering-2` s6 done, note (all) · foreign-write
 - 2026-11-17 22:27 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · foreign-write
 - 2026-11-17 22:27 UTC · `dispatcher-split-builds-evenly-across` added (0 steps) (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:46 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
 - 2026-11-17 22:46 UTC · `one-true-source-for-every-setting` added (100 steps) (all) · foreign-write
 - 2026-11-17 22:46 UTC · `vps-sets-every-build-status-manifest` added (30 steps) (all) · foreign-write
+- 2026-11-17 22:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-17 22:47 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-17 22:47 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
 
 ## Token passes (log)
 
