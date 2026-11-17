@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:26 UTC · `terminal-main-tab-streaming-console-s` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `land-pr-730-reset-all-button-far-right` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `settings-fix-part-2-blank-toolbars` added (0 steps) (all) · builds-live
 - 2026-11-17 22:26 UTC · `console-app-part-2-native-floating` → landed, note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:45 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
 - 2026-11-17 22:45 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-17 22:45 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
+- 2026-11-17 22:45 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 
 ## Token passes (log)
 
