@@ -819,7 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:36 UTC · `land-project-create-mcp-resolve-clash` → running, note (all) · pipeline
 - 2026-11-16 23:36 UTC · `land-project-create-mcp-resolve-clash` branch claude/land-project-create-mcp-resolve-clash (all) · pipeline
 - 2026-11-16 23:37 UTC · `icon-packs-with-drag-drop-pack-designer` s8 done (all) · orchestrator
 - 2026-11-16 23:37 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
@@ -1219,6 +1218,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 04:09 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s14 done (all) · orchestrator
 - 2026-11-17 04:10 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s19 done (all) · orchestrator
 - 2026-11-17 04:10 UTC · `builds-keep-their-slot-across-phases` s3 done (all) · orchestrator
+- 2026-11-17 04:10 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` s14 done (all) · foreign-write
 
 ## Token passes (log)
 
