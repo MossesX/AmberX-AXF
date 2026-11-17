@@ -5,6 +5,7 @@ import { createAxf, type AxfManifest } from './axf/core';
 import { AxfProvider } from './axf/react';
 import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
+import { registerPluginSettingsActions } from './pluginSettingsActions';
 import { App } from './App';
 import './axf/ui/axf.css';
 import './console.css';
@@ -18,13 +19,16 @@ installFetchShare();
 const sharedAssets = import.meta.glob('./axf/assets/**/*.json', { eager: true, import: 'default' });
 const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });
 const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager: true, import: 'default' });
-const assetModules = { ...sharedAssets, ...ownAssets, ...overrideAssets };
+// Plugin Home cards (card@1 at plugins/<folder>/assets/card/*.json; the VPS writes missing ones, build rule home-card).
+const pluginCards = import.meta.glob(['../plugins/*/assets/card/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
+const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...overrideAssets };
 
 const axf = createAxf({
   manifest: manifest as AxfManifest,
   assets: Object.values(assetModules),
 });
 registerActions(axf);
+registerPluginSettingsActions(axf);
 
 // One-time move to the new default toolbar for browsers that saved their choices before saves recorded the
 // app's defaults (newer saves carry them, and the runtime adopts a changed default by itself).

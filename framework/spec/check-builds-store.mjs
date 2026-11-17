@@ -5,6 +5,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import * as c from '../plan/builds-store-core.mjs';
 import * as m from '../plan/builds-merge-core.mjs';
 
@@ -68,6 +70,39 @@ t('items only in git history come back archived, off the Pending list', () => {
   assert.equal(report.recovered.length, 1);
 });
 t('an unknown orchestrator status is kept as a note', () => assert.ok(M.builds.find((x) => x.id === 'odd').notes.some((x) => x.text.includes('"bogus"'))));
+// ------------------------------------------------------------------ build-watchdog@1: recoveries[] on a build
+const recovery = { at: '2026-11-16T12:00:00.000Z', buildId: 'shared', phase: 'Phase 1', step: 's2', cause: 'exit-killed', exit: 143, action: 'retry', attempt: 1, account: 'hulu0241', notified: '', session: 'axf-shared--a', note: 'killed (exit 143): back in the Queue (retry 1 of 3).' };
+t('a build without recoveries loads unchanged: no key invented, nothing to migrate', () => {
+  assert.ok(M.builds.every((b) => !('recoveries' in b)));
+  assert.ok(!('recoveries' in c.normBuild({ id: 'r0', title: 'R0', recoveries: [] })));
+  assert.ok(!('recoveries' in c.normBuild({ id: 'r1', title: 'R1', recoveries: [{ action: 'none' }, { at: 'bad', action: 'retry' }] })));
+});
+t('normBuild keeps recoveries in shape and normalizeStore round-trips them', () => {
+  const b = c.normBuild({ id: 'r2', title: 'R2', status: 'queued', recoveries: [recovery] });
+  assert.deepEqual(b.recoveries, [recovery]);
+  const s = c.normalizeStore({ ...M, builds: [...M.builds, b] });
+  assert.deepEqual(s.builds.find((x) => x.id === 'r2').recoveries, [recovery]);
+  assert.deepEqual(c.normalizeStore(JSON.parse(JSON.stringify(s))).builds.find((x) => x.id === 'r2').recoveries, [recovery]);
+  assert.deepEqual(c.validateStore(s).errors, []);
+});
+t('recoveries are sorted oldest first and capped at the newest 50', () => {
+  const many = Array.from({ length: 60 }, (_, i) => ({ ...recovery, at: `2026-11-16T${String(10 + Math.floor(i / 60)).padStart(2, '0')}:${String(i).padStart(2, '0')}:00.000Z`, attempt: i }));
+  const b = c.normBuild({ id: 'r3', title: 'R3', recoveries: [...many].reverse() });
+  assert.equal(b.recoveries.length, 50); assert.equal(b.recoveries[0].attempt, 10); assert.equal(b.recoveries[49].attempt, 59);
+});
+t('validateStore names a bad recovery', () => {
+  const bad = JSON.parse(JSON.stringify(M)); bad.builds[0].recoveries = [{ ...recovery, action: 'explode' }]; bad.builds[1].recoveries = []; bad.builds[2].recoveries = [{ ...recovery, cause: 'gremlins' }];
+  const e = c.validateStore(bad).errors.map((x) => x.path);
+  assert.ok(e.some((p) => p.endsWith('.recoveries[0]')), e.join(', ')); assert.ok(e.some((p) => p.endsWith('(' + bad.builds[1].id + ').recoveries'))); assert.ok(e.some((p) => p.endsWith('.recoveries[0].cause')));
+});
+t('a recovery write changes the record (rev bump) and the orchestrator projection → absorb keeps it', () => {
+  const before = c.normalizeStore(JSON.parse(JSON.stringify(M))); const after = c.normalizeStore(JSON.parse(JSON.stringify(M)));
+  const b = after.builds.find((x) => x.id === 'shared'); b.recoveries = [recovery]; b.status = 'queued';
+  const ch = c.diffStores(before, after, at); assert.deepEqual(ch.map((x) => x.id), ['shared']); assert.equal(ch[0].after.rev, before.builds.find((x) => x.id === 'shared').rev + 1);
+  const back = c.absorbOrchestrator(after, 'all', c.projectOrchestrator(after, 'all'), { now: at });
+  assert.deepEqual(back.builds.find((x) => x.id === 'shared').recoveries, [recovery]);
+});
+
 t('verifyNothingLost passes on the migrated store', () => { const v = c.verifyNothingLost(sources, M); assert.ok(v.length > 10); assert.deepEqual(v.filter((x) => !x.ok), []); });
 t('verifyNothingLost catches a lost step', () => {
   const broken = JSON.parse(JSON.stringify(M)); const b = broken.builds.find((x) => x.id === 'p-only'); b.steps = b.steps.slice(1); b.copies = []; b.defaultSteps = [];
@@ -239,7 +274,7 @@ t('a step is ticked at once from the Builds page (never drafted), and the build 
   let b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, false); assert.equal(b.status, 'running');
   assert.equal(orchView().builds.find((x) => x.id === 'from-cli').steps[0].done, false);
   io.withStore((s) => c.applyNow(s, 'all', [{ op: 'step-done', build: 'from-cli', uid: uid(), done: true }]).store, { by: 'test', action: 'tick' });
-  b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, true); assert.equal(b.status, 'complete'); assert.ok(b.steps[0].doneAt);
+  b = io.loadStore().builds.find((x) => x.id === 'from-cli'); assert.equal(b.steps[0].done, true); assert.equal(b.status, 'landing'); assert.ok(b.steps[0].doneAt); // done-means-merged@1: every step done = landing until merged
   assert.throws(() => c.addDraftOp(io.loadStore(), 'all', { op: 'step-done', build: 'from-cli', uid: uid() }), /unknown draft op/);
   assert.throws(() => c.applyNow(io.loadStore(), 'all', [{ op: 'step-done', build: 'from-cli', uid: 'nope' }]), /no step/);
 });
@@ -341,6 +376,39 @@ t('builds-store migrateStepDepsNow writes one journalled stamp; a second run wri
   const lines = readdirSync(io.journalDir()).flatMap((f) => readFileSync(join(io.journalDir(), f), 'utf8').trim().split('\n')).map((l) => JSON.parse(l));
   assert.equal(lines.filter((l) => l.action === 'migrate-step-deps').length, 1);
   const r2 = io.migrateStepDepsNow('test'); assert.equal(r2.report.stamped, false); assert.equal(r2.rev, r1.rev);
+});
+
+// builds-journal@1: the real journal lives on the hub, so CI reads the fixture journal (framework/spec/fixtures-journal)
+// through AXF_BUILDS_JOURNAL in a child process (this one is pinned to a test store); no 70 MB part is needed
+t('history reads the journal home (fixture journal through AXF_BUILDS_JOURNAL)', () => {
+  const env = { ...process.env, AXF_BUILDS_JOURNAL: fileURLToPath(new URL('./fixtures-journal', import.meta.url)), AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0' };
+  delete env.AXF_BUILDS_STORE;
+  const code = `const io = await import(${JSON.stringify(new URL('../cli/builds-store.mjs', import.meta.url).href)}); console.log(JSON.stringify({ mode: io.journalMode(), dir: io.journalDir(), h: io.journalOf('journal-fixture').map((x) => x.rev) }));`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { env, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const o = JSON.parse(r.stdout.trim().split('\n').pop());
+  assert.equal(o.mode, 'explicit'); assert.ok(o.dir.endsWith('fixtures-journal')); assert.deepEqual(o.h, [1, 2]);
+});
+
+// builds-journal@1 relocation: a write goes to the journal home (here an explicit folder; the hub's <data root>/builds/journal
+// works the same), never the repo; history reads it back; the pointer and verify see a changed sealed part
+t('a journal write lands in the home, history reads it back, verify catches a changed sealed part', () => {
+  const home = mkdtempSync(join(tmpdir(), 'axf-journal-home-')); const data = mkdtempSync(join(tmpdir(), 'axf-journal-data-'));
+  const env = { ...process.env, AXF_BUILDS_JOURNAL: home, AXF_DATA_DIR: data, AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0' };
+  delete env.AXF_BUILDS_STORE;
+  const mod = JSON.stringify(new URL('../cli/builds-store.mjs', import.meta.url).href);
+  const code = `const io = await import(${mod}); const c = await import(${JSON.stringify(new URL('../plan/builds-store-core.mjs', import.meta.url).href)});
+    io.withStore((s) => { s.builds.push(c.normBuild({ id: 'journal-move', title: 'Journal move', profile: 'all', steps: [{ id: 's1', title: 'one' }] })); return s; }, { by: 'test', action: 'write' });
+    const fs = await import('node:fs'); const files = fs.readdirSync(io.journalDir()).filter((f) => f.endsWith('.jsonl'));
+    const p = io.journalPointer(io.journalDir()); const ok = io.verifyJournal(p, io.journalDir()).ok;
+    const k = Object.keys(p.parts)[0]; const sealed = { ...p, parts: { [k]: { ...p.parts[k], sealed: true, sha256: 'x' } } };
+    console.log(JSON.stringify({ mode: io.journalMode(), dir: io.journalDir(), files, h: io.journalOf('journal-move').length, ok, bad: io.verifyJournal(sealed, io.journalDir()).failed.length }));`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { env, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const o = JSON.parse(r.stdout.trim().split('\n').pop());
+  assert.equal(o.mode, 'explicit'); assert.equal(o.dir, home); assert.ok(o.files.length === 1, `files ${o.files}`);
+  assert.equal(o.h, 1); assert.equal(o.ok, true); assert.equal(o.bad, 1);
+  assert.ok(readdirSync(join(data, '_claude/builds')).every((f) => f !== 'journal'), 'nothing journalled next to the store');
 });
 
 console.log(`builds-store: ${n} checks passed`);

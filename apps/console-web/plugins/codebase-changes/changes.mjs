@@ -77,15 +77,44 @@ async function persistChangesDir() {
     return root ? join(root, 'changes') : null;
   } catch { return null; }
 }
-function dirBackend(root, label) {
+function dirBackend(root, label, files = null) {
   const s = new DirStore(root, { shared: sharedTree(root) });
   return {
     label, root,
     async get(id) { return s.get(id); },
-    async put(e) { return s.put(e); },
+    async put(e) {
+      const out = await s.put(e);
+      // data-store@1 shadow: the shared changes folder is mirrored to axf-data (a failure is a drift line, never an error)
+      if (files) { const p = join(root, relPathOf(out.id)); const key = files.keyFor(p); if (key && files.modeOf(key) === 'shadow') { try { await files.remoteStore()?.update(key, () => out, { create: true }); } catch (err) { files.logDrift('write', key, 'write-failed', null, null, `${err.code || 'error'}: ${err.message}`); } } }
+      return out;
+    },
     async list() { return s.all(); },
   };
 }
+
+/* axf-data (data-store@1, namespace `changes`): changes/<YYYY>/<MM>/<id>.json. Used once the namespace is cut over, so
+ * a session writes its entry with the console down; AXF_DATA_URL + AXF_DATA_TOKEN (conf/env/<service>.env). */
+export function dataStoreBackend(store, label = 'axf-data') {
+  const key = (id) => `changes/${relPathOf(id)}`;
+  return {
+    label, dataStore: true,
+    async get(id) { const r = await store.get(key(id)); return r ? r.data : null; },
+    async put(e) {
+      const { entry, errors } = normalize(e);
+      if (!entry) throw Object.assign(new Error(errors.join('; ')), { status: 400 });
+      await store.update(key(entry.id), () => entry, { create: true });
+      return entry;
+    },
+    async list() {
+      const paths = []; let after = '';
+      for (;;) { const l = await store.list('changes', { after }); paths.push(...l.items.map((i) => i.path).filter((p) => /^\d{4}\/\d{2}\/chg-[^/]+\.json$/.test(p))); if (!l.next) break; after = l.next; }
+      const out = [];
+      for (const p of paths.sort().reverse().slice(0, 60)) { const r = await store.get(`changes/${p}`); if (r?.data?.id) out.push(r.data); }
+      return out;
+    },
+  };
+}
+const dataFiles = () => import(join(REPO, 'framework/core/data-files.mjs')).catch(() => null);
 const BUILD_PATCH = ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing', 'resume'];
 function apiBackend(base, token) {
   const u0 = new URL(base);
@@ -181,7 +210,15 @@ const relPathOf = (id) => relPath(id).split(/[\\/]/).join('/');
 export async function pickBackend(flags = {}, env = process.env) {
   if (flags.dir || env.AXF_CHANGES_DIR) return dirBackend(resolve(String(flags.dir || env.AXF_CHANGES_DIR)), 'folder');
   const shared = await persistChangesDir();
-  if (shared) return dirBackend(shared, 'shared data folder (axHub)');
+  const files = await dataFiles();
+  if (files) {
+    // cutover: the changes log is on axf-data; reachable from any session with AXF_DATA_URL, console up or down
+    const probe = files.keyFor(join(shared || join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data', 'changes'), '2026', '01', 'chg-probe.json'));
+    const mode = probe ? files.modeOf(probe) : 'local';
+    const store = files.remoteStore(env);
+    if ((mode === 'cutover' || env.AXF_CHANGES_DATA === '1') && store) return dataStoreBackend(store);
+  }
+  if (shared) return dirBackend(shared, 'shared data folder (axHub)', files);
   const ht = env.AXF_CHANGES_HUB === 'off' ? '' : hubToken(env);
   if (ht) return hubBackend(env.AXHUB_URL || DEFAULT_HUB, ht);
   if (env.AXF_TOKEN) return apiBackend(env.AXF_CONSOLE_URL || DEFAULT_CONSOLE, env.AXF_TOKEN);

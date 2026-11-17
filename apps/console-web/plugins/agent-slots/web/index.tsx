@@ -116,7 +116,7 @@ function QueuePanel() {
           {status.queue.length ? (
             <ol className="axp-slots__list" aria-label="Waiting for a slot">
               {status.queue.map((q) => (
-                <li key={q.id} className="axp-slots__row">
+                <li key={q.id} data-axf-target={`row:queued-${q.id}`} className="axp-slots__row">
                   <span className="axp-slots__pos" aria-label={`Position ${q.position}`}>#{q.position}</span>
                   <span className="axp-slots__name"><b>{q.name}</b><span className="fx-small fx-muted">{q.kind === 'swarm' ? 'swarm job' : 'headless session'}{q.by ? ` · ${q.by}` : ''} · waiting {ago(q.enqueuedAt)}</span></span>
                   <PriorityTag build={q.build || q.name} fallback={<Chip tone={LEVEL_TONE[q.priority]}>{LEVEL_LABEL[q.priority] ?? q.priority}</Chip>} />
@@ -132,7 +132,7 @@ function QueuePanel() {
             <details className="axp-slots__running" open>
               <summary className="fx-small">Holding a slot ({running.length})</summary>
               <ul className="axp-slots__list">
-                {running.map((r) => <li key={r.id} className="axp-slots__row"><span className="axp-slots__name"><b>{r.name}</b><span className="fx-small fx-muted">{r.kind === 'legacy' ? 'started before the cap' : r.kind} · {r.session || r.state} · {ago(r.startedAt)}</span></span><PriorityTag build={r.build || r.name} fallback={<Chip tone={LEVEL_TONE[r.priority]}>{LEVEL_LABEL[r.priority] ?? r.priority}</Chip>} /></li>)}
+                {running.map((r) => <li key={r.id} data-axf-target={`row:running-${r.id}`} className="axp-slots__row"><span className="axp-slots__name"><b>{r.name}</b><span className="fx-small fx-muted">{r.kind === 'legacy' ? 'started before the cap' : r.kind} · {r.session || r.state} · {ago(r.startedAt)}</span></span><PriorityTag build={r.build || r.name} fallback={<Chip tone={LEVEL_TONE[r.priority]}>{LEVEL_LABEL[r.priority] ?? r.priority}</Chip>} /></li>)}
               </ul>
             </details>
           )}

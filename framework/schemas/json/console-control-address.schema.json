@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/console-control-address.schema.json",
+  "title": "AmberX AXF console-control address (console-control@1)",
+  "description": "Generated from framework/core/engines/console-control-rules.mjs. One address for anything the console shows: text or object form.",
+  "anyOf": [
+    {
+      "type": "string",
+      "pattern": "^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}(/(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):[^/]{1,160}){0,7}$",
+      "description": "Text form: kind:id segments joined by /, outermost first (view:builds/tab:pipeline/grid:queue/row:<id>)."
+    },
+    {
+      "type": "object",
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "id"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "view",
+                  "tab",
+                  "subtab",
+                  "setting",
+                  "button",
+                  "function",
+                  "plugin",
+                  "grid",
+                  "row",
+                  "step",
+                  "panel",
+                  "scroll"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "segment": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "view",
+            "tab",
+            "subtab",
+            "setting",
+            "button",
+            "function",
+            "plugin",
+            "grid",
+            "row",
+            "step",
+            "panel",
+            "scroll"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        }
+      }
+    }
+  }
+}

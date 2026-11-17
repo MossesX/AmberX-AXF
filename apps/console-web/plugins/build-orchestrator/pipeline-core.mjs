@@ -33,10 +33,10 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { CLAIM_TTL_MS, DEFAULT_MAX_RUNS, STATUS_AFTER, claimLive, dependsOn as resolvedDeps, explicitAfter, fileClashes, isHeld, isParallelStep, readySteps, releaseStep, stepFiles, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { CLAIM_TTL_MS, claimLive, DEFAULT_MAX_RUNS, dependsOn as resolvedDeps, explicitAfter, fileClashes, isHeld, isParallelStep, nextModel, nextStatusOnExit, normAttempts, normFailure, openSteps, outcomeLine, outcomeOf, queueOrder, readySteps, releaseStep, STATUS_AFTER, stepFiles } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
-import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
+import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
 export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
@@ -247,6 +247,43 @@ export function healthOf({ status = null, out = '', error = '' } = {}) {
   return { signedIn: null, credits: null, fable: null, error: line };
 }
 
+/**
+ * A run that stopped on an OAuth / sign-in failure: the failing line from the end of its log, '' = none. Only the last
+ * lines are read, and only Claude Code's own error wording counts, so a build that merely talks about tokens never
+ * matches. A usage limit or an empty credit balance is not a sign-in failure.
+ */
+export const RUN_AUTH_RE = /OAuth token (has )?(expired|revoked)|OAuth (authentication|error|refresh)[^\n]{0,40}(fail|invalid|expired|revoked)|authentication_error|Failed to authenticate|Invalid API key|Please run \/login|not logged in|invalid[_ ]grant|refresh token[^\n]{0,30}(invalid|expired|revoked|not found)|API Error: 401|invalid x-api-key/i;
+export function authFailureOf(text, { lines = 25 } = {}) {
+  const tail = str(text, 400000).split('\n').slice(-lines);
+  for (let i = tail.length - 1; i >= 0; i--) {
+    const l = tail[i].replace(/\x1b\[[0-9;]*m/g, '').trim();
+    if (l && RUN_AUTH_RE.test(l)) return str(l, 200);
+  }
+  return '';
+}
+
+/**
+ * The reason a run stopped, from the end of its log: the last line that reads as an error or a refusal ("Error",
+ * "refused", "Not started", "failed", "exit"…), else the last non-empty line before the launcher's own footer. ''
+ * when there is no log.
+ */
+export function lastReasonOf(text, { lines = 40 } = {}) {
+  const tail = str(text, 400000).split('\n').slice(-lines).map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean)
+    .filter((l) => !/^── finished \(exit \d+\)/.test(l) && !/^#/.test(l));
+  for (let i = tail.length - 1; i >= 0; i--) if (/\b(error|refused|not started|failed|fatal|panic|cannot|can't|killed|denied|timed? ?out|no such|exception)\b/i.test(tail[i])) return str(tail[i], 300);
+  return str(tail.at(-1) || '', 300);
+}
+
+/**
+ * A build held after a sign-in failure goes back to the Queue once: when a health answer newer than the failure says
+ * its account signs in again. `wait` = { account, at, requeued }, `health` = that account's last health record.
+ */
+export function authRecovered(wait, health) {
+  if (!wait || wait.requeued || !health || health.signedIn !== true || health.skipped) return false;
+  const t = Date.parse(health.at || ''); const f = Date.parse(wait.at || '');
+  return Number.isFinite(t) && Number.isFinite(f) && t > f;
+}
+
 /** One line for the health of every account: "4 accounts: 3 ok, 1 can't sign in". */
 export function healthSummary(rows) {
   const r = list(rows);
@@ -311,7 +348,7 @@ export function noAccountWhy(accounts, model) {
 export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
-  const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
+  const running = live.filter((b) => b.status === 'running' || b.status === 'waiting' || (b.status === 'fixing' && !!b.pipeline?.session)); // a retry run is a run (done-means-merged@1)
   const pending = live.filter((b) => b.status === 'pending' && !b.hidden);
   const acc = list(accounts).map((a) => ({ ...a }));
   let free = Math.max(0, Number(slots?.free) || 0);
@@ -345,16 +382,62 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
 
 // ------------------------------------------------------------------ session end
 
-/** A run ended: the build's new status, its lastRun record and a note line. */
-export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
+/**
+ * The phase a run was launched for: the one the dispatcher recorded (pipeline.phase), else the last phase holding a
+ * step ticked during the run (records from before phases were recorded). Null when nothing says.
+ */
+export function launchedPhase(b, ps = orchPhases({ ...b, steps: list(b?.steps) })) {
+  const p = b?.pipeline ?? {};
+  const since = Date.parse(p.launchedAt || '') || 0;
+  const touched = (ph) => ph.steps.some((s) => s.done && (Date.parse(s.doneAt || '') || 0) >= since);
+  if (p.phase) { const named = ps.filter((x) => x.name === p.phase); if (named.length) return named.find(touched) ?? named[0]; }
+  return [...ps].reverse().find(touched) ?? null;
+}
+
+/**
+ * A run ended: the build's new status, the reason, its lastRun record, the pipeline patch and a note line.
+ * Phase done = the launched phase has no open step left, or the next open step is on another model than the run
+ * started on (a session never runs the next model's steps). The crash limit counts crashes only (pipeline.crashes).
+ */
+export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString(), needsBrett = false } = {}, settings = normSettings()) {
   const stepsLeft = openSteps(b).length;
   const runs = (b.pipeline?.runs ?? 0) || 1;
-  const phaseSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
-  const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch }, settings.maxRuns);
-  const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '' };
-  let status = STATUS_AFTER[outcome];
-  if (outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
-  return { outcome, status, run, note: outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run) };
+  const ps = orchPhases({ ...b, steps: list(b.steps) });
+  const launched = stepsLeft ? launchedPhase(b, ps) : null;
+  const modelSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
+  const phaseDone = stepsLeft > 0 && (!!launched?.done || modelSwitch);
+  const upgradeBlocked = stepsLeft > 0 && !!orchNextUp({ ...b, steps: list(b.steps) }).needsApproval;
+  const asked = !!needsBrett || b.status === 'waiting';
+  const r = nextStatusOnExit({ exit, stepsLeft, runs, crashes: Number.isInteger(b.pipeline?.crashes) ? b.pipeline.crashes : undefined, phaseDone, upgradeBlocked, needsBrett: asked }, settings.maxRuns);
+  const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome: r.outcome, reason: r.reason, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '', phase: launched?.name ?? b.pipeline?.phase ?? '' };
+  let status = r.status;
+  if (r.outcome === 'finished') status = b.mergedAt ? 'landed' : 'landing'; // done-means-merged@1: never built; complete only once verified
+  const note = outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run);
+  // the patch never touches queuedAt: a requeued build keeps its place in the Queue
+  const patch = { lastRun: run, crashes: r.crashes, session: '', slot: '', note: r.outcome === 'finished' ? '' : note };
+  return { outcome: r.outcome, status, reason: r.reason, run, crashes: r.crashes, keepQueue: r.keepQueue, patch, note };
+}
+
+/**
+ * A Pending build parked by the old exit rule: its last run ended clean (exit 0, outcome returned, no reason or
+ * 'stopped') with steps left, yet the phase it ran is done (or the next open step is on another model), and the next
+ * phase needs nobody (no upgrade waiting for approval). Returns { id, phase, next, why } or null. requeue-stuck moves it
+ * back to the Queue; needs-brett and upgrade-blocked builds are left where they are.
+ */
+export function stuckAfterPhase(b) {
+  if (!b || b.status !== 'pending' || b.deleted || b.hidden) return null;
+  const p = b.pipeline ?? {}; const lr = p.lastRun;
+  if (!lr || lr.outcome !== 'returned' || lr.exit !== 0 || (lr.reason && lr.reason !== 'stopped')) return null;
+  const steps = list(b.steps);
+  if (!openSteps({ steps }).length) return null;
+  const rec = { ...b, steps, pipeline: { ...p, phase: lr.phase || p.phase || '' } };
+  const ps = orchPhases(rec);
+  const launched = launchedPhase(rec, ps);
+  const modelSwitch = !!p.model && nextModel(rec) !== p.model;
+  if (!launched?.done && !modelSwitch) return null;
+  if (orchNextUp(rec).needsApproval) return null;
+  const phase = launched?.name || lr.phase || p.phase || '';
+  return { id: b.id, phase, next: nextModel(rec), why: `${phase ? `phase ${phase}` : 'its phase'} finished on ${lr.at ? lr.at.slice(0, 16).replace('T', ' ') : '?'} with ${openSteps(rec).length} step(s) left and nothing needing Brett` };
 }
 
 // ------------------------------------------------------------------ split
@@ -577,6 +660,119 @@ export function needsSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
 
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
+// ------------------------------------------------------------------ failure detector (done-means-merged@1)
+
+/** Statuses the detector looks at: anything the server still owes work on. */
+export const WATCHED = Object.freeze(['queued', 'running', 'waiting', 'fixing', 'landing', 'built']);
+/** Exit reasons that are a failure the ladder answers (the others wait for Brett or a login: not retried). */
+const END_KIND = Object.freeze({ crash: 'crash', 'crash-limit': 'fell-to-pending', stopped: 'fell-to-pending' });
+/** The auto-lander's block kinds (land.json reason.kind) → failure kinds. */
+const LAND_KIND = Object.freeze({ conflict: 'clash', ci: 'ci-red', push: 'push-fail', pr: 'push-fail' });
+const allDone = (b) => list(b?.steps).length > 0 && list(b.steps).every((x) => x?.done || x?.skip);
+const firstOpen = (b) => list(b?.steps).find((x) => !x?.done && !x?.skip)?.id ?? '';
+const minsSince = (t, now) => { const v = Date.parse(t || ''); return Number.isFinite(v) ? (now - v) / 60000 : Infinity; };
+
+/**
+ * Classify one build's failure this tick, pure → failure ({ kind, at, why, head, step, exit }) or null.
+ *   b        the build (builds@1)
+ *   ctx      { ended: endRun result for this build this tick ({ reason, exit, outcome, auth }) or null,
+ *              land: its land.json item ({ state, head, reason: { kind, text } }) or null,
+ *              beatAt: the newest sign of life (store write, launch, the run's log / stream file), ISO,
+ *              head: the branch head when known, now: ms, stalledAfterMin, pushGraceMin }
+ * Order: a run that just ended (crash, fell to Pending) → the PR side the lander reported (clash, red CI, push / PR
+ * refused) → a landing build with no PR (push-fail) → a running build with no sign of life (stalled).
+ * The same failure already open (same kind, same head) is not raised again.
+ */
+export function classifyFailure(b, { ended = null, land = null, beatAt = '', head = '', now = Date.now(), stalledAfterMin = 20, pushGraceMin = 15 } = {}) {
+  if (!b || b.deleted || !WATCHED.includes(b.status) && !(ended && b.status === 'pending')) return null;
+  const at = new Date(now).toISOString();
+  const open = normFailure(b.failure);
+  const mk = (kind, why, extra = {}) => {
+    const f = normFailure({ kind, at, why, head: extra.head ?? head, step: extra.step ?? firstOpen(b), exit: extra.exit ?? null });
+    return open && b.status === 'fixing' && open.kind === f.kind && open.head === f.head ? null : f;
+  };
+  if (ended && !ended.auth && END_KIND[ended.reason]) {
+    const kind = END_KIND[ended.reason];
+    const why = ended.reason === 'crash' ? `the session exited ${ended.exit ?? 'without an end event'}` : ended.reason === 'crash-limit' ? `it crashed ${ended.crashes ?? 'too many'} times and fell back to Pending` : 'the session stopped with steps left and nobody asked Brett anything';
+    return normFailure({ kind, at, why, head, step: firstOpen(b), exit: Number.isInteger(ended.exit) ? ended.exit : null });
+  }
+  if (land && land.reason && LAND_KIND[land.reason.kind]) {
+    return mk(LAND_KIND[land.reason.kind], str(land.reason.text, 300).replace(/^[^:]{1,120}: /, ''), { head: str(land.head, 64) || head, step: '' });
+  }
+  if ((b.status === 'landing' || b.status === 'built') && allDone(b) && !b.pr && minsSince(b.builtAt || b.updatedAt, now) >= pushGraceMin) {
+    return mk('push-fail', `every step is done but no PR reached GitHub after ${pushGraceMin} min`, { step: '' });
+  }
+  if ((b.status === 'running' || b.status === 'fixing') && b.pipeline?.session && minsSince(beatAt || b.updatedAt || b.pipeline?.launchedAt, now) >= stalledAfterMin) {
+    return mk('stalled', `no sign of life from ${b.pipeline.session} for ${Math.round(minsSince(beatAt || b.updatedAt || b.pipeline?.launchedAt, now))} min`);
+  }
+  return null;
+}
+
+/**
+ * Record a classified failure on a build, pure (mutates and returns `b`): the open failure, status fixing, the open
+ * attempt (if one is running) closed as failed, and a note. The ladder's answer (the next attempt) is appended by the
+ * retry runner in the same tick.
+ */
+export function recordFailure(b, f, { at = new Date().toISOString() } = {}) {
+  const attempts = normAttempts(b.attempts);
+  const open = attempts.find((a) => a.result === 'started');
+  if (open) { open.result = 'failed'; open.endedAt = at; open.note = str(`${open.note ? `${open.note} ` : ''}Failed: ${f.why}`, 600); }
+  b.attempts = attempts;
+  b.failure = f;
+  b.status = 'fixing';
+  b.builtAt = '';
+  b.notes = [...list(b.notes), { text: `Fixing: ${KIND_WORDS[f.kind] ?? f.kind}${f.step ? ` on ${f.step}` : ''} (${f.why}). The server retries on its ladder; nothing stops here.`, at }];
+  return b;
+}
+const KIND_WORDS = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'it clashes with main', 'push-fail': 'the push failed', stalled: 'it stalled', 'fell-to-pending': 'it fell back to Pending' });
+
+// ------------------------------------------------------------------ retry runner (done-means-merged@1, s8)
+
+const STRATEGY_TEXT = Object.freeze({
+  retry: 'Run the same approach again: the failure looked transient. Pick up at the first open step.',
+  'merge-main': 'Merge origin/main into your branch first and resolve every conflict (keep both sides\' intent; regenerate generated files and fixtures rather than hand-merging them), push, then carry on.',
+  fix: {
+    targeted: 'Fix the failing checks first: reproduce each one locally, fix the cause (not the check), commit, push, and confirm it passes before anything else.',
+    regenerate: 'Regenerate what is generated before anything else: fixtures (`--write` on the spec checks), baked framework copies, catalogs and exports; commit, push, re-run the failing checks.',
+    'redo-step': 'Merge origin/main in, then redo the failing step from its text rather than patching the last attempt; commit, push, re-run its checks.',
+  },
+  'fresh-session': 'This is a fresh session after the earlier one failed: start by reading `git status`, `git log origin/main..HEAD` and the tail of the previous run log, then continue at the first open step. Do not repeat what the earlier attempt tried.',
+  'switch-model': 'The earlier attempts ran on another model and failed; take a different approach from theirs.',
+  'switch-account': 'The earlier attempts ran on another account and failed; the account may have been the problem, the code may not. Check the branch state first, then continue.',
+});
+const FAILURE_TEXT = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'the branch clashes with main', 'push-fail': 'the push or the PR failed', stalled: 'the session stalled (no sign of life)', 'fell-to-pending': 'the session stopped with steps left' });
+
+/**
+ * Does the auto-lander own this failure? A PR-side failure (clash, red CI) on a build with every step done is the
+ * lander's first: it merges main in and hands a fix agent once per head. It stops owning it once one of its tries for
+ * that kind failed or ran past the attempt timeout (or it escalated): then the build's ladder takes over with the
+ * lander's attempts counted (DONE-MEANS-MERGED.md: the lander's per-PR ladder sits inside the build's).
+ */
+export function landerOwns(b, f, land = null, { now = Date.now(), attemptTimeoutMin = 45 } = {}) {
+  if (!f || !['clash', 'ci-red'].includes(f.kind) || !allDone(b) || !b.pr) return false;
+  if (land && (land.state === 'escalated' || land.escalation)) return false;
+  const mine = normAttempts(b.attempts).filter((a) => a.source === 'auto-lander' && a.kind === f.kind);
+  return !mine.some((a) => a.result === 'failed' || a.result === 'timeout' || (a.result === 'started' && minsSince(a.startedAt, now) >= attemptTimeoutMin));
+}
+
+/** The brief block a relaunch carries: what failed, every attempt so far, and what to do differently this time. */
+export function retryAddendum(d, f, attempts = []) {
+  const what = d.strategy === 'fix' ? STRATEGY_TEXT.fix[d.fixStrategy] ?? STRATEGY_TEXT.fix.targeted : STRATEGY_TEXT[d.strategy] ?? STRATEGY_TEXT.retry;
+  const tried = normAttempts(attempts).filter((a) => a.result !== 'skipped' && a.result !== 'started');
+  return [
+    `## Retry: attempt ${d.n} (done-means-merged@1)`,
+    `The last run failed: ${FAILURE_TEXT[f?.kind] ?? 'it failed'}${f?.step ? ` on ${f.step}` : ''}${f?.why ? ` (${f.why})` : ''}${f?.head ? ` at ${f.head.slice(0, 10)}` : ''}.`,
+    ...(tried.length ? ['Tried so far:', ...tried.map((a) => `- attempt ${a.n}: ${a.strategy}${a.fixStrategy ? `:${a.fixStrategy}` : ''}${a.model ? ` on ${a.model}` : ''}${a.account ? ` (${a.account})` : ''} → ${a.result}${a.note ? `: ${str(a.note, 200)}` : ''}`)] : []),
+    `This attempt: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''}. ${what}`,
+    'Never stop on a failure: fix it and keep going. If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on the next rung.',
+  ].join('\n');
+}
+/** The attempt@1 a relaunch opens. */
+export const attemptOf = (d, f, { at, account = '', model = '', session = '', pr = 0, head = '' } = {}) => ({
+  kind: f.kind, strategy: d.strategy, fixStrategy: d.fixStrategy || '', model: model || d.model || '', account: account || d.account || '', session, step: f.step || '', head: head || f.head || '', pr,
+  startedAt: at, endedAt: '', result: 'started', log: '', note: str(d.reason, 600), source: 'pipeline',
+});
+
 export const ALERT_SOURCE = 'pipeline';
 export const ALERT_LINK = '#/build-orchestrator';
 /**
@@ -647,10 +843,19 @@ export function alertFor(kind, d = {}) {
     case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : d.kind === 'slots' ? 'Agent slots free while ready steps wait' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    // done-means-merged@1: the ladder ran out. One push per escalation (key per build + escalation time), with every try
+    case 'escalated': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:escalated:${d.id}:${d.at ?? ''}`, severity: 'error', title: `Build stuck, needs you: ${str(d.title, 120)}`,
+      body: str([d.why, list(d.tried).length ? `Tried: ${list(d.tried).join(', ')}.` : '', d.since ? `Failing since ${d.since}.` : '', 'Retry from the systems check banner or the build\'s Attempts tab.'].filter(Boolean).join('\n'), 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
+    case 'launch-failed': return { ...base, key: `pipeline:launch:${d.id}:${Date.now()}`, severity: 'error', title: `Couldn't start: ${str(d.title || d.id, 120)}`,
+      body: str([`Build ${d.id} was picked from the Queue and failed to start.`, ...list(d.reasons).map((x) => `${x.account || '?'}: ${str(x.error, 300)}`),
+        d.tries && d.maxTries ? (d.tries >= d.maxTries ? `${d.tries} failed starts this hour: it waits an hour before the next try.` : `It stays in the Queue and is tried again next tick (${d.tries}/${d.maxTries} failed starts this hour).`) : ''].filter(Boolean).join('\n'), 1500) };
+    case 'oauth': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'error', title: `Claude login failed: ${d.account || '?'} · ${str(d.title, 100)}`,
+      body: str(`${d.error || 'sign-in refused'}\n${d.id} is held in Pending. It goes back to the Queue by itself once ${d.account || 'the account'} signs in again (checked by the account health sweep${d.everyMin ? `, every ${d.everyMin} min` : ''}). To fix it now: Claude accounts → ${d.account || 'the account'} → Sign in.`, 1500) };
+    case 'oauth-ok': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'success', title: `Claude login works again: ${d.account || '?'}`, body: str(`${d.id} is back in the Queue (re-queued once, automatically).`, 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     case 'autoqueue': return { ...base, key: `pipeline:autoqueue:${str(list(d.ids).join(','), 200)}`, severity: 'info', title: `Auto-queued ${list(d.ids).length} Pending build${list(d.ids).length === 1 ? '' : 's'}: slots were free`, body: str(list(d.builds).map((b) => `${b.id}${b.priority ? ` (${b.priority})` : ''}${b.title ? `: ${b.title}` : ''}`).join('\n') || list(d.ids).join(', '), 1500), meta: { ...base.meta, build: str(list(d.ids)[0] ?? '', 120), builds: list(d.ids) } };
     case 'step-conflict': return { ...base, key: `pipeline:step-conflict:${d.id}:${d.step}`, severity: 'warning', title: `Step ${str(d.step, 40)} of ${str(d.id, 120)} could not merge back`, body: str(d.note, 1500), meta: { ...base.meta, step: str(d.step, 40) } };

@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { bundledPlugins, pluginFetch, PLUGINS_CHANGED, type BundledPlugin } from '@console/plugins';
 import { buildPluginInventory, DEPENDENCY_LABEL, PLUGIN_HEALTH_RANK, pluginRecord, type Conflict, type Dependency, type DependencyStatus, type Dependent, type InventoryContext, type LiveService, type PluginHealth, type PluginInventory, type PluginInventoryItem, type PluginRecord } from '@console/axf/core/engines/plugins';
 import { installedLibraryRecord } from '@console/axf/react/library';
+import { withDefaultSettingsTab } from '@console/PluginDefaultSettingsTab';
 
 export const FOLDER = 'plugin-manager';
 
@@ -58,7 +59,8 @@ export interface Inventory {
 }
 
 export function uiOf(p?: BundledPlugin): PluginUi {
-  const lib = p?.library;
+  // the console's default settings sub-tab (plugin.json settingsTab.default) counts as the plugin's own tab
+  const lib = p?.library && withDefaultSettingsTab(p.folder, p.manifest, p.library);
   if (!lib) return { views: [], dialogs: [], settingsTabs: [], settingsCount: 0, contextItems: 0 };
   return installedLibraryRecord(lib).ui!;
 }

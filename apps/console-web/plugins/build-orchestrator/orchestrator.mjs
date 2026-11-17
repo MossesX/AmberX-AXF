@@ -24,7 +24,10 @@
  * Brett. Approving one here works only when the caller is Brett: the console server (his signed-in click) or its
  * axHub-approved MCP tool set AXF_APPROVER + AXF_APPROVER_VIA, and nothing in the environment says the caller is a
  * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
+ *   … attempts <id>                   done-means-merged@1: every attempt, the open failure, the evidence, the ladder's next rung
+ *   … retry <id> [strategy] [--why w] Retry by hand: the ladder starts over (a strategy given runs at once, never above the pin)
  *   … where                           the tracker file in use
+ * Any <id> may be a build's alias (build-id@1): a build whose id is over 40 characters answers to a short one too.
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -36,6 +39,10 @@ import { approverFrom, upgradeLine, upgradePolicy } from '../../../../framework/
 import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs';
 import { readPolicy as readContextPolicy, rulesFor } from '../../../../framework/cli/headless-context.mjs';
 import { briefBudget } from '../../../../framework/core/headless-context.mjs';
+import * as BR from '../../../../framework/core/build-rules.mjs';
+
+/** The session's share of the build rules for one build (brief-blocks@1); null when the store can't be read. */
+function storeBlocks(b) { try { return BR.briefBlocks(BR.load().store, { id: b.id, title: b.title, text: b.detail || '' }); } catch { return null; } }
 
 loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
@@ -69,8 +76,15 @@ export function save(state, by = 'orchestrator') {
   withStore((s) => absorbOrchestrator(s, p, state, { by }), { by, action: 'orchestrator' });
 }
 /** One change: applied to the profile's view of the store and taken back into it, under the store lock (versioned). */
+/** A build's id from its id or alias (build-id@1: a build made before ids were capped answers to a short alias too). */
+export function resolveId(store, id) {
+  if (!id || store.builds.some((x) => x.id === id)) return id;
+  return store.builds.find((x) => x.alias === id)?.id ?? id;
+}
+
 export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   change = withApprover(change);
+  if (!legacy() && change?.id && change.action !== 'add') change = { ...change, id: resolveId(loadStore(), change.id) };
   if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
   let r;
@@ -105,9 +119,20 @@ function line(b, rules) {
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
-  const [cmd = 'list', ...rest] = args;
+  const [cmd = 'list', ...given] = args;
+  const rest = !legacy() && ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [resolveId(loadStore(), given[0]), ...given.slice(1)] : given;
   const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
+  // done-means-merged@1: the same calls as REST GET attempts/<id>, POST retry/<id>, the MCP commands and voice
+  if (cmd === 'attempts' || cmd === 'retry') {
+    const id = rest[0]; if (!id) throw new Error(`${cmd} <build>${cmd === 'retry' ? ' [strategy] [--why "…"]' : ''}`);
+    const pl = await import('./pipeline.mjs');
+    const real = resolveId(loadStore(), id);
+    if (cmd === 'attempts') { const b = (await import('../../../../framework/plan/builds-store-core.mjs')).findBuild(loadStore(), real); if (!b) throw new Error(`no build "${id}"`); const v = pl.attemptsView(b); return out({ ok: true, id: b.id, status: b.status, ...v }, `${b.id}: ${b.status} · ${v.attempts.length} attempt(s)${v.failure ? ` · fixing ${v.failure.kind}: ${v.failure.why}` : ''}${v.escalation ? ` · escalated: ${v.escalation.why}` : ''}\n${v.attempts.map((a) => `  ${a.n} ${a.kind} ${a.strategy}${a.fixStrategy ? `:${a.fixStrategy}` : ''} ${a.model || '-'} ${a.account || a.source} ${a.result}`).join('\n')}`); }
+    const wi = rest.indexOf('--why'); const strategy = rest[1] && !rest[1].startsWith('--') ? rest[1] : '';
+    const r = pl.retryBuild(real, { strategy, by: process.env.AXF_ACTOR || 'cli', why: wi >= 0 ? rest[wi + 1] || '' : '' });
+    return out({ ok: true, ...r }, `${r.id}: ${r.status}${r.strategy ? ` (${r.strategy})` : ''}${r.launch ? ` · ${r.launch.action}` : ' · the next tick relaunches it'}`);
+  }
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {
     const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
@@ -115,8 +140,11 @@ async function main(argv) {
     const n = core.nextUp(b, s.rules);
     return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: model UPGRADE ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1}). Stop here: request-upgrade ${b.id} ${n.phase.index}` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);
   }
-  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); let t = core.brief(b, s.rules);
-    if (!rest.includes('--no-rules')) { const r = rulesFor(t, { model: (core.nextUp(b, s.rules).phase?.model || '').toLowerCase(), name: b.id }); if (r.text) t = `${t}\n\n${r.text}`; }
+  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`);
+    // the session's rules come from the build rules store (build-rules@1), as at dispatch
+    const blocks = storeBlocks(b);
+    let t = core.brief(b, s.rules, { blocks });
+    if (!rest.includes('--no-rules')) { if (blocks?.blocks?.rules) t = `${t}\n\n${blocks.blocks.rules}`; else { const r = rulesFor(t, { model: (core.nextUp(b, s.rules).phase?.model || '').toLowerCase(), name: b.id }); if (r.text) t = `${t}\n\n${r.text}`; } }
     const budget = briefBudget(t, readContextPolicy()); if (!budget.ok) process.stderr.write(`orchestrator: ${budget.warning}\n`);
     return out({ ok: true, brief: t, budget }, t); }
   if (cmd === 'request-upgrade') {

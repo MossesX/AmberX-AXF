@@ -13,7 +13,9 @@
  * every step branch has merged back (a merged one is deleted), else it stays running with a note.
  *
  *   node framework/cli/builds-reconcile.mjs              dry run: what it would change (nothing written)
- *   … --apply                                           write the changes (live to main) and the report
+ *   … --apply                                           write the changes (live to main) and the report; Pending builds
+ *                                                       parked after a finished phase go back to the Queue (pipeline.mjs
+ *                                                       requeue-stuck; AXF_RECONCILE_REQUEUE=off skips it)
  *   … --brief                                           one line per change (session start)
  *   … --json                                            the report as JSON
  *
@@ -181,6 +183,17 @@ export function applyPlan(p, by = 'reconciler') {
   return { changes: r.changes };
 }
 
+/**
+ * Pending builds parked after a finished phase (the old exit rule) go back to the Queue: the build orchestrator's
+ * requeue-stuck (pipeline.mjs requeueStuck), dry run unless --apply. Null when the plugin isn't installed.
+ */
+async function requeueParked(apply) {
+  const f = join(REPO_ROOT, 'apps/console-web/plugins/build-orchestrator/pipeline.mjs');  // axf-plugin:build-orchestrator
+  if (process.env.AXF_RECONCILE_REQUEUE === 'off' || !existsSync(f)) return null;
+  try { const m = await import(f); const r = m.requeueStuck({ apply, by: 'reconciler' }); return { found: r.found, moved: r.moved }; }
+  catch (e) { return { found: [], moved: [], error: String(e.message ?? e).slice(0, 300) }; }
+}
+
 export async function reconcile({ apply = false, gh, repo } = {}) {
   const at = new Date().toISOString();
   install(); // the merge driver for builds files, once per clone
@@ -211,12 +224,14 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
     if (same) { Object.assign(same.set, c.set); same.why.push(...c.why); } else p.changes.push(c);
   }
   const applied = apply && (p.changes.length || p.stepResets.length) ? applyPlan(p) : { changes: [] };
+  const requeued = await requeueParked(apply);
   const profiles = [...new Set(builds.flatMap((b) => b.profiles))];
   const report = {
     $axf: 'builds-reconcile@1', at, repo: repo ?? repoName(), apply, error, pulled: pulled.ok ? (pulled.taken ?? []) : { error: pulled.error },
     profiles, prs: gathered.prs.length, branches: gathered.branches.length,
     changes: p.changes, suggestions: p.suggestions, orphans: p.orphans, live: liveStatus(), written: applied.changes.length,
     stepResets: p.stepResets, stepBranches: [...p.stepBranches.entries()].map(([id, list]) => ({ id, steps: list })),
+    requeued,
     running: alive ? builds.filter((b) => b.status === 'running' && alive.has(b.id)).map((b) => b.id) : null,
   };
   if (apply) { try { mkdirSync(dirname(reportFile()), { recursive: true }); writeFileSync(reportFile(), `${JSON.stringify(report, null, 1)}\n`); } catch { /* report only */ } }
@@ -231,6 +246,8 @@ function text(r, brief) {
   if (!brief) for (const s of r.suggestions) L.push(`check ${s.build ?? s.builds?.join('/') ?? ''}: ${s.why}`);
   if (r.orphans.prs.length) L.push(`orphan PRs (no build): ${r.orphans.prs.map((p) => `#${p.number}`).join(' ')}`);
   if (r.orphans.branches.length) L.push(`orphan branches (no PR, no build): ${r.orphans.branches.map((b) => b.branch).join(' ')}`);
+  for (const f of r.requeued?.found ?? []) L.push(`${r.apply && r.requeued.moved.includes(f.id) ? 'requeued' : 'would requeue'} ${f.id}: ${f.why}`);
+  if (r.requeued?.error) L.push(`requeue-stuck: ${r.requeued.error}`);
   if (r.live.queued) L.push(`live: ${r.live.queued} change(s) not on main yet${r.live.error ? ` (${r.live.error})` : ''}`);
   return L.join('\n') || `in sync: ${r.prs} PRs, ${r.branches} branches checked`;
 }

@@ -1,15 +1,15 @@
-"""Molly guide's server part (walkthrough@1, Oct 28 2026). Mounted at /api/plugins/molly-guide/ (console token required).
+"""Gizmo guide's server part (walkthrough@1, Oct 28 2026; Nov 13 2026: asks Gizmo, Molly is no longer an agent). Mounted at /api/plugins/molly-guide/ (console token required).
 
     POST /ask           {task, app?, page?} → {text, walkthrough?, tools, ms}
-                        One task for Molly through the capability service axf.agents@1 (run_task: her tools, memory, and
-                        every VPS command approved by Brett on axHub). A ```walkthrough``` block in her answer is taken
+                        One task for Gizmo through the capability service axf.agents@1 (run_task: her tools, memory, and
+                        every VPS command approved by Brett on axHub). A ```walkthrough``` block in his answer is taken
                         out, checked, kept, and returned; the rest is the spoken answer.
     GET  /walkthroughs  ?after=<seq> → {walkthroughs[]}  newest first (the console window polls it; AmberX's voice
-                        commands reach Molly through /ask, so a walkthrough she makes for AmberX opens in the console).
+                        commands reach Gizmo through /ask; the console opens such a walkthrough by itself only with its opt-in switch on).
 
     POST /amberx-walkthrough/rerecord   → {state, message}  re-record AmberX's walkthrough video: one veto call (vps.run
                         through Vinny, axf.vinny@1) that starts apps/amberx-droid/walkthrough/rebuild.sh on the VPS in the
-                        background; Brett can Deny it during the countdown. The button is in Settings → Plugins → Molly guide.
+                        background; Brett can Deny it during the countdown. The button is in Settings → Plugins → Gizmo guide.
     GET  /amberx-walkthrough/rerecord   → the last request's {state, message, at}
 
 Data: `walkthroughs.json` (last WALK_KEEP) in this plugin's own data folder; nothing else is written.
@@ -31,7 +31,8 @@ from fastapi import APIRouter, HTTPException
 router = APIRouter()
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_MOLLY_GUIDE_DIR", ROOT / ".axf-console" / "plugins" / "molly-guide"))
-AGENT = "molly"
+# Nov 3 2026 decision: Gizmo replaced agent Molly. The old add-on is only a fallback while Gizmo is switched off.
+AGENTS = ("gizmo", "molly")
 WALK_KEEP = 20
 _lock = threading.Lock()
 _WALK_RE = re.compile(r"```walkthrough\s*(\{.*?\})\s*```", re.S)
@@ -169,6 +170,14 @@ def rerecord(body: dict[str, Any] | None = None) -> dict[str, Any]:
     return dict(_rerecord)
 
 
+def pick_agent(svc: Any) -> str | None:
+    """The agent that answers: Gizmo, else the old Molly add-on if it is still installed; None when neither is."""
+    for a in AGENTS:
+        if svc.get_agent(a) is not None:
+            return a
+    return None
+
+
 @router.get("/walkthroughs")
 def walkthroughs(after: int = 0) -> dict[str, Any]:
     return {"walkthroughs": [w for w in _read() if int(w.get("seq", 0)) > after]}
@@ -183,13 +192,14 @@ def ask(body: dict[str, Any]) -> dict[str, Any]:
     page = re.sub(r"[^\w.:-]", "", str(body.get("page") or ""))[:80]
     svc = plugin_services.get("axf.agents@1")
     if svc is None:
-        raise HTTPException(503, "The Agent manager isn't on, so Molly can't answer.")
-    if svc.get_agent(AGENT) is None:
-        raise HTTPException(503, "Molly isn't installed or is switched off (Agent manager → Add-ons → Molly).")
+        raise HTTPException(503, "The Agent manager isn't on, so Gizmo can't answer.")
+    agent = pick_agent(svc)
+    if agent is None:
+        raise HTTPException(503, "Gizmo isn't installed or is switched off (Agent manager → Add-ons → Gizmo).")
     try:
-        r = svc.run_task(AGENT, f"[from {app}{', page ' + page if page else ''}] {task[:4000]}")
+        r = svc.run_task(agent, f"[from {app}{', page ' + page if page else ''}] {task[:4000]}")
     except Exception as e:  # noqa: BLE001 — the model or a tool failed: say so plainly
-        raise HTTPException(502, f"Molly couldn't finish: {str(e)[:300]}") from None
+        raise HTTPException(502, f"Gizmo couldn't finish: {str(e)[:300]}") from None
     text, wt = split_walkthrough(str(r.get("text", "")))
     out: dict[str, Any] = {"text": text or (wt["title"] if wt else ""), "tools": r.get("tools") or [], "ms": r.get("ms")}
     if wt:

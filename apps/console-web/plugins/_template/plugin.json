@@ -31,6 +31,7 @@
     ]
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "tokens": { "$axf": "token-registry@1", "uses": [], "defines": [] },
   "builtWith": { "model": "", "builtAt": "" },
   "help": "help.json",
   "opens": "main"

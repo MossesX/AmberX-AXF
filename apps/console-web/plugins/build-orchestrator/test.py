@@ -207,6 +207,35 @@ try:
         check("changed" in r and _calls[-1][2:4] == ["set", "maxRuns=3"], "POST /pipeline/settings: fill keys and pipeline keys in one call")
     finally:
         plugin_services.get = _real_get  # type: ignore[assignment]
+    # done-means-merged@1: GET attempts/<id>, POST retry/<id> {strategy?, why?}
+    srv.build_attempts("alpha")
+    check(_calls[-1][2:4] == ["attempts", "alpha"] and _calls[-1][-1] == "--json", "attempts: pipeline.mjs attempts <id> --json")
+    try:
+        srv.build_attempts("../x")
+        check(False, "attempts: a bad id is refused")
+    except srv.HTTPException as e:
+        check(e.status_code == 400, "attempts: a bad id is a 400")
+    try:
+        srv.build_attempts("no-such-build")
+        check(False, "attempts: an unknown build is a 404")
+    except srv.HTTPException as e:
+        check(e.status_code == 404, "attempts: an unknown build is a 404")
+    asyncio.run(srv.build_retry("alpha", _Req({}, True)))
+    cmd = _calls[-1]
+    check(cmd[2:4] == ["retry", "alpha"] and cmd[4] == "--by" and cmd[5] == "Brett" and "--why" not in cmd, "retry: no strategy, by Brett")
+    asyncio.run(srv.build_retry("alpha", _Req({"strategy": "fix:regenerate", "why": "fixtures drifted"})))
+    cmd = _calls[-1]
+    check(cmd[2:5] == ["retry", "alpha", "fix:regenerate"] and cmd[cmd.index("--why") + 1] == "fixtures drifted", "retry: a strategy and the reason reach the CLI")
+    for strategy in ("escalate", "fix", "rm -rf", "switch-model:Fable"):
+        try:
+            asyncio.run(srv.build_retry("alpha", _Req({"strategy": strategy})))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 400, f"retry: strategy {strategy!r} is refused (400)")
+    check(srv.escalated_probe([])["status"] == "ok", "builds-escalated: green with nothing escalated")
+    red = srv.escalated_probe([{"id": "alpha", "kind": "crash", "why": "every rung tried", "tried": ["retry", "fresh-session"], "since": "2026-11-17T00:00:00Z"}])
+    check(red["status"] == "error" and "alpha" in red["summary"] and "retry, fresh-session" in red["details"][0] and red["link"] == "row:alpha/tab:attempts", "builds-escalated: red with what broke, every try, since when, and the Attempts deep link")
 finally:
     srv.subprocess.run = _real_run
 
@@ -219,5 +248,37 @@ check(fx.resolve("build:Any-Build") == {"screen": "build-orchestrator", "focus":
 check(fx.resolve("console-commands-reliable") == {"screen": "build-orchestrator", "focus": "console-commands-reliable", "explicit": False}, "a bare build id from the store")
 check(fx.resolve("plan studio") is None and fx.resolve("no-such-build") is None and fx.resolve("build:") is None, "anything else is not a build")
 check(srv.plugin_services.get("console-focus@1") is not None, "provided as console-focus@1")
+
+# custom groups and custom tabs (Nov 13 2026): the routes run groups.mjs on a scratch store and pipeline dir
+import asyncio  # noqa: E402
+import os  # noqa: E402
+
+_gd = Path(tempfile.mkdtemp())
+(_gd / "store.json").write_text(json.dumps({"$axf": "builds@1", "rev": 1, "builds": [
+    {"id": "console-app-a", "title": "Console app A", "status": "pending", "profiles": ["all"], "steps": [{"id": "s1", "text": "x", "model": "Opus"}]}]}))
+_env = {"AXF_BUILDS_STORE": str(_gd / "store.json"), "AXF_PIPELINE_DIR": str(_gd / "pipe"), "AXF_BUILD_PROFILE": "all", "AXF_BUILDS_LIVE": "0",
+        "AXF_BUILD_HOOKS": "off", "AXF_SHIPPED": "off", "AXF_DATA_DIR": "off", "AXF_CREW_SAY": "off", "AXF_PIPELINE_CONSOLE": "off"}
+_saved = {k: os.environ.get(k) for k in _env}
+os.environ.update(_env)
+try:
+    made = asyncio.run(srv.groups_change(_Req({"op": "create", "name": "Console app", "tab": "pending", "rule": {"titleContains": "console app"}})))
+    check(made["group"]["id"] == "console-app" and made["group"]["total"] == 1, "POST groups create: a smart group with its own Pending tab")
+    check([t["id"] for t in srv.groups_tabs()["tabs"]] == ["group:console-app"], "GET groups/tabs: the custom Pending tab")
+    check(srv.groups_get("Console app")["group"]["counts"]["pending"] == 1, "GET groups/{group} by name: counts per state")
+    for body, want in (({"op": "explode"}, 400), ({"op": "delete", "group": "nope"}, 404)):
+        try:
+            asyncio.run(srv.groups_change(_Req(body)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"groups {body}: {want}")
+    done = asyncio.run(srv.groups_action("console-app", _Req({"action": "queue"})))
+    check(done["done"] == ["console-app-a"], "POST groups/{group}/action queue: the group's Pending build is queued")
+finally:
+    for k, v in _saved.items():
+        if v is None:
+            os.environ.pop(k, None)
+        else:
+            os.environ[k] = v
 
 print(f"build-orchestrator: {n} checks passed")

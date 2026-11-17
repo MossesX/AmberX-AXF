@@ -2,5 +2,5 @@
 import { existsSync } from 'node:fs';
 
 export async function onInstall(ctx) { ctx.log(`ready: ${ctx.dataDir}`); }
-export async function onUninstall(ctx) { ctx.log('removing the Molly guide's data'); }
+export async function onUninstall(ctx) { ctx.log('removing the Gizmo guide data'); }
 export async function checks(ctx) { return [{ id: 'data-folder', ok: existsSync(ctx.dataDir), detail: ctx.dataDir }]; }

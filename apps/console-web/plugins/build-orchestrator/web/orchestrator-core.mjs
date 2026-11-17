@@ -11,6 +11,7 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { isBuildId, namesOf, shortBuildId, slugWords, uniqueBuildId } from '../../../../../framework/core/build-id.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
 export const SCHEMA = 'orchestrator@1';
@@ -19,10 +20,10 @@ export const MODELS = ['Fable', 'Opus'];
  * `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR).
  * `queued` (Nov 8 2026) = in the Queue: Brett moved it from Pending, the dispatcher starts it when a slot is free.
  */
-export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
-export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
-/** Finished work: no steps left (built waits only on its PR). */
-export const isFinished = (status) => status === 'built' || status === 'complete';
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Building', waiting: 'Needs approval', fixing: 'Fixing', blocked: 'Blocked', failed: 'Failed', built: 'Landed (legacy)', landing: 'Landing', landed: 'Landed · merged, CI green', complete: 'Complete · verified', escalated: 'Escalated', archived: 'Archived' };
+/** Finished work: no steps left (landing waits only on its PR; done-means-merged@1). */
+export const isFinished = (status) => status === 'built' || status === 'landing' || status === 'landed' || status === 'complete';
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
@@ -71,7 +72,8 @@ const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
 /** A step still to do: not done and not skipped by the build's feature matrix. */
 const open = (s) => !s.done && !s.skip;
-const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
+/** A new build's id (build-id@1: at most 40 characters); the title is kept whole as the display name. */
+const slug = (t) => shortBuildId(str(t, 300));
 
 /** "45 min", "2 h", "1.5 d", "90" → minutes (a day = 8 working hours), null when unreadable. */
 export function estimateMinutes(e) {
@@ -221,11 +223,11 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
 
 /** Status the build should show, from its steps (explicit blocked/failed/archived stay). */
 export function derivedStatus(build, rules) {
-  if (['blocked', 'failed', 'archived'].includes(build.status)) return build.status;
+  if (['blocked', 'failed', 'archived', 'fixing', 'escalated', 'landed', 'complete'].includes(build.status)) return build.status; // done-means-merged@1: set with their records, never from the steps
   if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
-  if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.pr && !build.mergedAt ? 'built' : 'complete'; // built without ticking its steps
+  if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.mergedAt ? 'landed' : 'landing'; // built without ticking its steps
   const n = nextUp(build, rules);
-  if (n.done) return build.pr && !build.mergedAt ? 'built' : 'complete';
+  if (n.done) return build.mergedAt ? 'landed' : 'landing';
   if (n.needsApproval) return 'waiting';
   if (build.status === 'queued') return build.steps.some((s) => s.done) ? 'running' : 'queued'; // the Queue holds until a session ticks a step
   return build.steps.some((s) => s.done) || build.status === 'running' ? 'running' : 'pending';
@@ -249,7 +251,13 @@ export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
  * Brief for the next session: only the current phase (fewest tokens), the token rules, what to read first and how
  * to report. Paste it as the first message, or `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>`.
  */
-export function brief(build, rules = DEFAULT_RULES) {
+export function brief(build, rules = DEFAULT_RULES, { blocks = null } = {}) {
+  // blocks = brief-blocks@1 from the build rules store (the dispatcher and `orchestrator.mjs brief` pass it): its
+  // Checkpoints / Look / API lines are the only ones, so the Build rules tab decides what a session is told. The brief
+  // carries no rule text of its own; without blocks it has none of those lines.
+  const bl = blocks && blocks.blocks ? blocks.blocks : { checkpoints: '', look: '', api: '' };
+  // the store's phase-brief-scope rule says the default scope line; the line here stays only when the settings differ
+  const scopeInStore = Array.isArray(blocks?.picked) && blocks.picked.includes('phase-brief-scope') && rules.sameSession && !rules.subAgents;
   const n = nextUp(build, rules);
   if (n.done) return `Build "${build.title}" (${build.id}) is complete.`;
   const p = n.phase;
@@ -262,16 +270,16 @@ export function brief(build, rules = DEFAULT_RULES) {
     p.gate && p.kind === 'downgrade' ? `This phase downgrades ${p.from} → ${p.model}: fine, no approval needed (it is recorded when you tick its first step).` : '',
     p.upgrade && !n.needsApproval && !build.approvals.some((a) => a.phase === p.index && a.to === p.model) ? `This phase upgrades ${p.from} → ${p.model}: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.` : '',
     switchRule(),
-    `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${maxStep(rules)} min; read only the files listed; stop at the end of this phase.`,
-    `Checkpoints: ${CHECKPOINT_RULE}`,
-    `Look: ${ASSET_RULE}`,
-    `API: ${API_RULE}`,
+    scopeInStore ? `Steps ≤ ${maxStep(rules)} min.` : `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${maxStep(rules)} min; read only the files listed; stop at the end of this phase.`,
+    bl.checkpoints,
+    bl.look,
+    bl.api,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
-    `Tick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
+    `Tick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).`,
     'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
     'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name "…" --app … --screen … --group "<build name>" (UI Review → Screenshots; ui-review-item@1), never the review queue.',
   ];
@@ -304,20 +312,28 @@ export function apply(state, change) {
   const s = normalizeState(state);
   const c = change && typeof change === 'object' ? change : {};
   const log = [];
-  const find = () => { const b = s.builds.find((x) => x.id === c.id); if (!b) throw new Error(`no build "${c.id}"`); return b; };
+  const find = () => { const b = s.builds.find((x) => x.id === c.id) ?? s.builds.find((x) => namesOf(x).includes(c.id)); if (!b) throw new Error(`no build "${c.id}"`); return b; };
   const stepOf = (b) => { const st = b.steps.find((x) => x.id === c.step) ?? b.steps[Number(c.index)]; if (!st) throw new Error(`no step "${c.step ?? c.index}" in ${b.id}`); return st; };
   let b = null;
   switch (c.action) {
     case 'add': {
-      const id = slug(c.id || c.title); if (!str(c.title).trim()) throw new Error('a title is needed');
-      if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
+      if (!str(c.title).trim()) throw new Error('a title is needed');
+      const taken = new Set(s.builds.flatMap(namesOf));
+      // the same id or title again is refused; two titles that only meet once shortened get a suffix
+      const asked = slugWords(c.id || str(c.title, 300));
+      if (taken.has(asked)) throw new Error(`"${asked}" is already on the list`);
+      const id = c.id && isBuildId(asked) ? asked : uniqueBuildId(asked, taken);
       // origin = what Brett said that started it (build-origin@1); `said` is the shortcut for his verbatim words
       const origin = c.said !== undefined ? { ...(c.origin ?? {}), said: c.said, at: c.origin?.at || now() } : c.origin;
       b = normBuild({ ...c, id, origin, status: 'pending', createdAt: now() }); s.builds.push(b); log.push(`added ${id} (${b.steps.length} steps)${b.origin?.said ? ', with what Brett said' : ''}`); break;
     }
     case 'import': { // from a pending@1 item: its sub prompts become steps on the item's model
-      const it = c.item ?? {}; const id = slug(c.id || it.id || it.title);
-      if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
+      const it = c.item ?? {};
+      // already imported: the same pending item, or a build made before ids were capped (its full-length slug)
+      const was = s.builds.find((x) => (it.id && x.pendingId === it.id) || x.id === slugWords(c.id || it.id || it.title));
+      if (was) throw new Error(`"${was.id}" is already on the list`);
+      const taken = new Set(s.builds.flatMap(namesOf));
+      const id = c.id && isBuildId(c.id) && !taken.has(c.id) ? c.id : uniqueBuildId(c.id || it.id || it.title, taken);
       const model = MODELS.includes(it.model) ? it.model : 'Opus';
       b = normBuild({ id, title: it.title, detail: it.detail, source: 'pending', pendingId: it.id, steps: (it.subPrompts ?? []).map((p) => ({ text: p.text, estimate: p.estimate, model, done: p.done, doneAt: p.doneAt })) });
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;

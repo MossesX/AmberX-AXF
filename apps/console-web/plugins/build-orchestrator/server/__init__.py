@@ -364,6 +364,38 @@ def sees_probe(summary: dict[str, Any] | None = None, running: list[str] | None 
     return {"status": "ok", "summary": f"The console sees {total} build(s) ({run_store} running in the store, {len(running)} live in the Build manager).", "details": []}
 
 
+ESCALATED_ID = "builds-escalated"
+
+
+def escalated_probe(rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """done-means-merged@1: red while any build is escalated (the retry ladder ran out): what broke, every try, since when."""
+    if rows is None:
+        try:
+            r = _pipeline("escalated")
+        except Exception:  # noqa: BLE001 — the probe answers unknown, never throws
+            r = None
+        rows = r.get("escalated") if isinstance(r, dict) else None
+        if rows is None:
+            return {"status": "unknown", "summary": "Couldn't read the builds store.", "unreachable": True}
+    if not rows:
+        return {"status": "ok", "summary": "No build is stuck: every failure is being retried or is fixed."}
+    lines = [f"{x.get('id')}: {x.get('why') or x.get('kind')} Tried: {', '.join(x.get('tried') or []) or 'nothing'}. Since {x.get('since')}." for x in rows[:10]]
+    names = ", ".join(str(x.get("id")) for x in rows[:5]) + ("…" if len(rows) > 5 else "")
+    return {"status": "error", "summary": f"{len(rows)} build{'s' if len(rows) != 1 else ''} stuck after every retry: {names}. Press Retry to start the ladder over.",
+            "details": lines, "link": f"row:{rows[0].get('id')}/tab:attempts"}
+
+
+def _retry_escalated() -> dict[str, Any]:
+    try:
+        r = _pipeline("retry-all", "--by", "systems-check", "--why", "Retry from the systems check banner")
+    except Exception as e:  # noqa: BLE001
+        return {"state": "failed", "message": str(e)[:200]}
+    done = r.get("retried") if isinstance(r, dict) else None
+    if not isinstance(done, list):
+        return {"state": "failed", "message": str((r or {}).get("error") or "retry failed")[:200]}
+    return {"state": "done", "message": f"Retrying {len(done)} build(s): the ladder starts over."}
+
+
 _health_done = False
 
 
@@ -385,6 +417,14 @@ def ensure_health() -> bool:
                       "run": lambda: sees_probe(), "interval": 300,
                       "breaks": "Overview, Build queue and Plan (console and MCP) show 0 builds, so nobody sees what is running.",
                       "instructions": ["`node framework/cli/builds-store.mjs verify` on the VPS.", "`node framework/cli/builds-live.mjs sync` in /opt/axf brings main's store in."]}, FOLDER)
+        reg.register({"id": ESCALATED_ID, "label": "Builds that need you", "service": "builds", "order": 54, "severity": "error",
+                      "run": lambda: escalated_probe(), "interval": 60,
+                      "breaks": "A build Brett asked for is not being built: the server tried every retry and stopped.",
+                      "fix": {"type": "action", "label": "Retry"},
+                      "autoFix": {"label": "Retry", "run": _retry_escalated, "mode": "ask"},
+                      "links": [{"label": "Open the Build orchestrator", "href": "view:build-orchestrator"}],
+                      "instructions": ["`node apps/console-web/plugins/build-orchestrator/pipeline.mjs escalated` lists them with every try.",
+                                       "`… pipeline.mjs retry <build> [strategy]` retries one (the ladder starts over); `retry-all` retries every one."]}, FOLDER)
     except Exception:  # noqa: BLE001 — the orchestrator works without its health item
         return False
     _health_done = True
@@ -392,6 +432,97 @@ def ensure_health() -> bool:
 
 
 ensure_health()
+
+# ---- the stale-row watchdog (stale-row@1): its routes under /watchdog and its systems check item (server/watchdog.py)
+from . import watchdog as _watchdog  # noqa: E402
+
+router.include_router(_watchdog.router_for(FOLDER, brett_click))
+_watchdog.ensure_health(FOLDER)
+
+
+# The build watchdog (build-watchdog@1): its systems check items ('Build watchdog', 'Builds the watchdog gave up on')
+from . import recovery_watchdog as watchdog_mod  # noqa: E402
+
+watchdog_mod.ensure_health()
+
+
+def _watchdog(*args: str, who: str = "", timeout: int = 120) -> dict[str, Any]:
+    res = watchdog_mod.run_cli(*args, actor=who, timeout=timeout)
+    if res.get("ok") is False:
+        err = str(res.get("error") or "watchdog failed")
+        raise HTTPException(400 if "unknown setting" in err or "key=value" in err else 500, err[:400])
+    return res
+
+
+# REST (Brett, Nov 8 2026: "Everything comes with an API"): the same calls as the Watchdog tab, the watchdog_* MCP
+# commands, `axf watchdog …` and voice. In the console container (AXF_WATCHDOG_HOST=request) the host does the work:
+# scan answers with the host's last scan, run asks the host's cron for a pass (it runs within a minute).
+
+
+@router.get("/recovery-watchdog/status")
+def recovery_watchdog_status() -> dict[str, Any]:
+    """watchdog-status@1: on/off, cron, last pass + age (stale after 3 min), the host's last scan, recent fixes, gave-up builds."""
+    return {**_watchdog("status"), "host": watchdog_mod.on_host()}
+
+
+@router.get("/recovery-watchdog/scan")
+def recovery_watchdog_scan() -> dict[str, Any]:
+    """The dry run: every build marked running, what the probe saw, its cause and the planned action. Nothing changes."""
+    if watchdog_mod.on_host():
+        return {**_watchdog("scan"), "ok": True, "source": "live"}
+    st = _watchdog("status")
+    scan = st.get("lastScan") or {"at": "", "builds": []}
+    return {"ok": True, "source": "host-last-pass", "at": scan.get("at", ""), "builds": scan.get("builds", []), "stuck": [b for b in scan.get("builds", []) if b.get("stuck")],
+            "note": "The console can't see the VPS's processes: this is what the host's last watchdog pass saw."}
+
+
+@router.post("/recovery-watchdog/run")
+async def recovery_watchdog_run(request: Request) -> dict[str, Any]:
+    """One pass now ({build?} limits it to one build). On the host it runs here; from the container the host runs it."""
+    body = await _json_body(request)
+    build = _build_id(body["build"]) if body.get("build") else ""
+    who = brett_click(request) or "console"
+    if not watchdog_mod.on_host():
+        r = _watchdog("request", "--by", who, *(["--build", build] if build else []), who=who)
+        return {**r, "ok": True, "requested": True}
+    r = _watchdog("run", *(["--build", build] if build else []), who=who, timeout=300)
+    return {**r, "ok": True, "requested": False}
+
+
+@router.post("/recovery-watchdog/requeue")
+async def recovery_watchdog_requeue(request: Request) -> dict[str, Any]:
+    """Fix (requeue): builds the watchdog gave up on back to the Queue with a fresh retry count ({builds?: [id…]}; none = all)."""
+    body = await _json_body(request)
+    ids = [_build_id(x) for x in (body.get("builds") or [])]
+    who = brett_click(request) or "console"
+    return _watchdog("requeue", *ids, who=who)
+
+
+@router.get("/builds/{build_id}/recoveries")
+def build_recoveries(build_id: str) -> dict[str, Any]:
+    """One build's recoveries[] (watchdog-recovery@1, oldest first) and the retries it has used since its last progress."""
+    try:
+        return _watchdog("recoveries", _build_id(build_id))
+    except HTTPException as e:
+        if "no build" in str(e.detail):
+            raise HTTPException(404, str(e.detail)) from e
+        raise
+
+
+@router.get("/recovery-watchdog/settings")
+def recovery_watchdog_settings() -> dict[str, Any]:
+    """The Watchdog settings (Settings → Plugins → Build orchestrator → Watchdog): {settings, keys, defaults}."""
+    return _watchdog("settings")
+
+
+@router.put("/recovery-watchdog/settings")
+async def recovery_watchdog_settings_set(request: Request) -> dict[str, Any]:
+    """Save a patch of the Watchdog settings ({key: value}; unknown keys → 400). Hot: the next pass reads them."""
+    body = await _json_body(request)
+    if not body:
+        raise HTTPException(400, "send {key: value} (keys: enabled, intervalMin, staleMin, graceMin, maxRetries, retryOtherAccount, fyi, cooldownMin)")
+    who = brett_click(request) or "console"
+    return _watchdog("set", "--patch", json.dumps(body), "--by", who, who=who)
 
 
 
@@ -451,6 +582,19 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     if reason not in SELFCHECK_REASONS:
         reason = "on demand"
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/requeue-stuck")
+async def pipeline_requeue_stuck(request: Request) -> dict[str, Any]:
+    """{apply?: bool}: Pending builds whose last run finished its phase with steps left (parked by the old exit rule):
+    listed (dry run) or, with apply, moved back to the Queue at their place, journalled. Same function as the CLI
+    (pipeline.mjs requeue-stuck), the MCP tool, voice and builds-reconcile --apply."""
+    try:
+        body = await request.json()
+    except (ValueError, UnicodeDecodeError):
+        body = {}
+    apply = bool(isinstance(body, dict) and body.get("apply") is True)
+    return _pipeline("requeue-stuck", *(["--apply"] if apply else []), who=(brett_click(request) or "console")[:80])
 
 
 PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors", "archive", "deleted")
@@ -514,6 +658,32 @@ async def pipeline_action(request: Request) -> dict[str, Any]:
         raise HTTPException(400, "no build id given")
     why = str(body.get("why") or "")[:300]
     args = [action, *ids, "--by", (brett_click(request) or "console")[:80]]
+    if why.strip():
+        args += ["--why", why]
+    return _pipeline(*args)
+
+
+@router.get("/attempts/{build}")
+def build_attempts(build: str) -> dict[str, Any]:
+    """done-means-merged@1: every attempt on a build (strategy, model, account, result), the open failure, the merge +
+    CI + verify evidence, the escalation and what the retry ladder tries next (pipeline.mjs attempts)."""
+    return _pipeline("attempts", _build_id(build))
+
+
+RETRY_STRATEGIES = ("retry", "merge-main", "fix:targeted", "fix:regenerate", "fix:redo-step", "fresh-session", "switch-model", "switch-account")
+
+
+@router.post("/retry/{build}")
+async def build_retry(build: str, request: Request) -> dict[str, Any]:
+    """{strategy?, why?}: Retry by hand. The open failure's attempts so far are marked skipped (they stay in the log), the
+    escalation clears and the build is fixing again: the next tick relaunches it on the ladder's first rung, or at once
+    on the strategy given (never above the step's pinned model). A build with no failure goes back to the Queue."""
+    body = await _json_body(request)
+    strategy = str(body.get("strategy") or "").strip()
+    if strategy and strategy not in RETRY_STRATEGIES:
+        raise HTTPException(400, f"strategy is one of {', '.join(RETRY_STRATEGIES)}")
+    args = ["retry", _build_id(build), *([strategy] if strategy else []), "--by", (brett_click(request) or "console")[:80]]
+    why = str(body.get("why") or "")[:300]
     if why.strip():
         args += ["--why", why]
     return _pipeline(*args)
@@ -661,6 +831,95 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
     if route == "api" and not who:
         raise HTTPException(403, "sending a build to an API account is Brett's own click in the console (it bills per token)")
     return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
+
+
+# ---- custom groups and custom tabs (groups.mjs, build-groups@1; Brett, Nov 13 2026)
+GROUPS_CLI = CLI.parent / "groups.mjs"
+GROUP_OPS = ("create", "update", "move", "delete", "assign")
+GROUP_ACTIONS = ("queue", "land", "archive", "priority")
+
+
+def _behind() -> dict[str, int]:
+    """Commits behind main per build, as far as the merge queue knows (axf.merge-queue@1; empty when it is off)."""
+    svc = plugin_services.get("axf.merge-queue@1")
+    if svc is None:
+        return {}
+    out: dict[str, int] = {}
+    try:
+        q = svc.queue() or {}
+        rows = [*(q.get("items") or []), *(q.get("waiting") or []), *(q.get("kicked") or [])]
+    except Exception:  # noqa: BLE001 - no merge queue data means no "behind" numbers, never an error
+        return {}
+    for r in rows:
+        if isinstance(r, dict) and isinstance(r.get("build"), str) and isinstance(r.get("behind"), int):
+            out[r["build"]] = r["behind"]
+    return out
+
+
+def _groups(*args: str, body: dict[str, Any] | None = None, who: str = "") -> dict[str, Any]:
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if who:
+        env["AXF_ACTOR"] = who
+    payload = {"behind": _behind(), **(body or {})}
+    proc = subprocess.run(["node", str(GROUPS_CLI), *args, "--sources", "--json"], cwd=ROOT, capture_output=True, text=True,
+                          timeout=120, env=env, input=json.dumps(payload))
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        err = str(res.get("error") or "groups failed")
+        raise HTTPException(404 if err.startswith("no group") else 400 if proc.returncode == 2 else 500, err[:400])
+    return res
+
+
+@router.get("/groups")
+def groups_list() -> dict[str, Any]:
+    """Every custom group of the active project: name, colour, tab, sort, filter, rule, the builds in it sorted by state
+    (partial, pending, queued, running, failed, done, landed) and the count per state."""
+    return _groups("list")
+
+
+@router.get("/groups/tabs")
+def groups_tabs() -> dict[str, Any]:
+    """The groups pinned as tabs next to Pending, Queue, Active … and the builds each tab shows."""
+    return _groups("tabs")
+
+
+@router.get("/groups/{group}")
+def groups_get(group: str) -> dict[str, Any]:
+    """One group by id or name, its builds sorted the group's way."""
+    return _groups("show", group[:80])
+
+
+@router.post("/groups")
+async def groups_change(request: Request) -> dict[str, Any]:
+    """{op: create|update|move|delete|assign, …}: create {name, color?, tab?, sort?, filter?, rule?, builds?}; update
+    {group, name?, color?, tab?, sort?, filter?, rule?}; move {group, to: index|up|down|first|last}; delete {group};
+    assign {groups: [group…], builds: [id…], mode: add|remove|set}. Saved per project."""
+    body = await _json_body(request)
+    if body.get("op") not in GROUP_OPS:
+        raise HTTPException(400, f"op is one of {', '.join(GROUP_OPS)}")
+    return _groups("apply", body={"op": body}, who=(brett_click(request) or "console")[:80])
+
+
+@router.post("/groups/{group}/action")
+async def groups_action(group: str, request: Request) -> dict[str, Any]:
+    """{action: queue|land|archive|priority, priority?, why?}: one action on every build of the group it fits (queue =
+    its Pending builds, land = its Done builds go first in the merge queue, archive = all without a live session,
+    priority = all). {done, refused, skipped}."""
+    body = await _json_body(request)
+    action = str(body.get("action") or "")
+    if action not in GROUP_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(GROUP_ACTIONS)}")
+    args = ["act", group[:80], action]
+    if body.get("priority"):
+        args += ["--priority", str(body["priority"])[:10]]
+    if str(body.get("why") or "").strip():
+        args += ["--why", str(body["why"])[:300]]
+    who = (brett_click(request) or "console")[:80]
+    return _groups(*args, "--by", who, who=who)
 
 
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",

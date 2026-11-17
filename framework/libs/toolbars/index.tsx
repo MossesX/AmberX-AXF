@@ -22,6 +22,7 @@ import { SelectField, Note } from '../../react/components/Forms';
 import { Button } from '../../react/components/Controls';
 import { TAP_ARM_DEFAULT_MS, TAP_ARM_RANGE, TAP_KEYS, TAP_KINDS, TAP_KIND_LABELS, TAP_OVERRIDES, tapConfig, tapKindKey, type TapOverride } from '../../core/engines/tapconfirm';
 import { toolbarElementId } from '../../react/tapConfirm';
+import { CHROME_INSTANCE_INTERFACE_KEY, chromeInstanceSlug } from '../../core/engines/chrome-settings-rules.mjs';
 import './toolbars.css';
 
 export const TOOLBARS_ID = 'ai.amberx.axf.toolbars';
@@ -31,7 +32,8 @@ export const ALL_TOOLBARS_PANEL = 'toolbars.all';
 /** The settings key of one toolbar's tap-to-confirm override. */
 export const tapOverrideKey = (toolbarId: string) => `${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`;
 
-export interface ToolbarOnScreen { id: string; label: string; offInCode: string | null; count: number }
+/** `chrome` = the instance id its own chrome settings dialog uses (chrome-settings@1; the same one its context menu opens). */
+export interface ToolbarOnScreen { id: string; label: string; offInCode: string | null; count: number; chrome: string }
 
 /** Every toolbar on the page now, one row per settings id (several bars may share one id, e.g. a list of cards). */
 export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
@@ -42,7 +44,9 @@ export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
     const hit = out.get(id);
     if (hit) { hit.count++; continue; }
     const off = el.dataset.axfTapConfirm === 'off' ? el.dataset.axfTapConfirmReason || 'switched off in code' : null;
-    out.set(id, { id, label: el.getAttribute('aria-label') || id, offInCode: off, count: 1 });
+    const named = el.getAttribute('data-fx-ctx-target')?.startsWith('axf-ws-toolbar:') ? el.getAttribute('data-fx-ctx-payload') : null;
+    const chrome = named || chromeInstanceSlug(el.dataset.axfToolbar ?? el.dataset.axfToolbarAsset ?? el.getAttribute('aria-label')) || id;
+    out.set(id, { id, label: el.getAttribute('aria-label') || id, offInCode: off, count: 1, chrome });
   }
   return [...out.values()].sort((a, b) => a.label.localeCompare(b.label));
 }
@@ -67,8 +71,9 @@ function AllToolbarsPanel() {
         <div key={r.id} className="axf-toolbars__row">
           <div className="axf-toolbars__name">
             <strong>{r.label}</strong>
-            <span className="fx-small fx-muted">{r.id}{r.count > 1 ? ` · ${r.count} on screen` : ''} · tap-to-confirm {r.offInCode ? 'off' : tapConfig(get, r.id).enabled ? 'on' : 'off'}</span>
+            <span className="fx-small fx-muted">{r.id}{r.count > 1 ? ` · ${r.count} on screen` : ''} · tap-to-confirm {r.offInCode ? 'off' : tapConfig(get, r.id).enabled ? 'on' : 'off'} · settings interface {(get(CHROME_INSTANCE_INTERFACE_KEY('toolbar', r.chrome)) as string) || 'same as all'}</span>
           </div>
+          <Button size="sm" tone="neutral" icon="settings" onClick={() => rt.dispatch(`chrome.settings:toolbar:${r.chrome}`)}>Settings…</Button>
           {r.offInCode
             ? <span className="fx-small fx-muted">Off in code: {r.offInCode}</span>
             : <SelectField label="Tap-to-confirm" className="axf-toolbars__pick" value={(get(tapOverrideKey(r.id)) as string) || 'inherit'}

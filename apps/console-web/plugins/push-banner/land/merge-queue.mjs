@@ -33,7 +33,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
-import { ciOf, crewSay, mergeMain, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { ciOf, crewSay, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -51,9 +51,10 @@ export function readQueueConfig(s) {
   return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
 }
 export function queueControl(s, cmd, pr, opts = {}) {
-  const cur = (readQueue(s).items || []).map((x) => x.pr);
-  const head = opts.head ?? ((readQueue(s).items || []).find((x) => x.pr === Number(pr))?.head || (readQueue(s).waiting || []).find((x) => x.pr === Number(pr))?.head || '');
-  const d = q.applyQueueControl(readQueueControl(s), cmd, pr, { ...opts, head, current: cur });
+  const queue = readQueue(s);
+  const cur = (queue.items || []).map((x) => x.pr);
+  const head = opts.head ?? ((queue.items || []).find((x) => x.pr === Number(pr))?.head || (queue.waiting || []).find((x) => x.pr === Number(pr))?.head || '');
+  const d = q.applyQueueControl(readQueueControl(s), cmd, pr, { ...opts, head, current: cur, currentAt: queue.at || '' });
   writeJson(queueControlFile(s), d);
   return d;
 }
@@ -74,18 +75,11 @@ export function combine({ s, git, parent, head, message }) {
     if (m.code) {
       const left = lines(g(['diff', '--name-only', '--diff-filter=U']).out);
       if (!left.length) { g(['merge', '--abort']); return { error: `merge: ${(m.err || m.out).slice(-200)}` }; }
-      const plan = core.planConflicts(left);
-      if (plan.code.length) { g(['merge', '--abort']); return { conflicts: plan.code }; }
-      // the PR's builds files win here like auto-land's; main's copy is merged back in when the PR lands
-      for (const p of plan.builds) { if (g(['checkout', '--theirs', '--', p]).code === 0) g(['add', '--', p]); }
-      for (const p of plan.union) {
-        const stage = (n) => { const x = g(['show', `:${n}:${p}`]); return x.code ? '' : `${x.out}\n`; };
-        const f = (n, t) => { const x = join(dir, `${n}.txt`); writeFileSync(x, t); return x; };
-        const ours = f('ours', stage(2)); const base = f('base', stage(1)); const theirs = f('theirs', stage(3));
-        g(['merge-file', '--union', ours, base, theirs]); writeFileSync(join(wt, p), readFileSync(ours)); g(['add', '--', p]);
-      }
-      for (const p of plan.generated) { g(['checkout', '--ours', '--', p]); const cmd = core.regenFor(p); if (cmd) spawnSync(cmd[0], cmd.slice(1), { cwd: wt, timeout: 120000 }); g(['add', '--', p]); }
-      if (lines(g(['diff', '--name-only', '--diff-filter=U']).out).length) { g(['merge', '--abort']); return { conflicts: left }; }
+      // the parent (main, or the batch so far) is ours: generated files come from it and are regenerated; the PR's
+      // builds files win here like auto-land's; main's copy is merged back in when the PR lands
+      const res = resolveConflicts({ g, wt, dir, left, mainSide: 'ours', buildsSide: 'theirs' });
+      if (res.conflicts) { g(['merge', '--abort']); return { conflicts: res.conflicts }; }
+      if (res.error) { g(['merge', '--abort']); return { error: res.error.slice(-300) }; }
       const c = g([...drv, 'commit', '-q', '--no-edit']);
       if (c.code) { g(['merge', '--abort']); return { error: `commit: ${c.err.slice(-200)}` }; }
     }
@@ -522,7 +516,13 @@ export async function main(argv) {
   }
   if (['add', 'remove', 'move'].includes(cmd)) {
     const pr = rest[0]; if (!pr) throw new Error(`${cmd} <pr>${cmd === 'move' ? ' <index>' : ''}`);
-    const d = queueControl(s, cmd, pr, { why: opt('why'), to: cmd === 'move' ? Number(rest[1] ?? 0) : 0 });
+    // a removal holds until the PR gets a new commit: pin it to the head GitHub has now (--head <sha> overrides), not the
+    // queue's last state, which may be older (then the removal would lapse at once)
+    let head = typeof opt('head') === 'string' ? opt('head') : undefined;
+    if (cmd === 'remove' && !head) {
+      try { const gh = makeGitHub(s); head = (await gh('GET', `/repos/${s.slug}/pulls/${String(pr).replace(/^#/, '')}`))?.head?.sha || undefined; gh.save(); } catch { /* offline: the queue's last state */ }
+    }
+    const d = queueControl(s, cmd, pr, { why: opt('why'), to: cmd === 'move' ? Number(rest[1] ?? 0) : 0, ...(head ? { head } : {}) });
     return print({ ok: true, control: d }, `${cmd}: #${String(pr).replace(/^#/, '')}${cmd === 'move' ? ` to ${rest[1] ?? 0}` : ''} (takes effect at the next round, within 3 minutes)`);
   }
   if (cmd === 'settings') {

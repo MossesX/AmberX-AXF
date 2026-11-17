@@ -93,7 +93,8 @@ class Registry:
                                  "service": str(spec.get("service") or "health"), "breaks": str(spec.get("breaks") or BREAKS.get(cid, "")),
                                  "fix": spec.get("fix"), "links": list(spec.get("links") or []), "instructions": list(spec.get("instructions") or []),
                                  "interval": max(60, int(spec.get("interval") or INTERVAL_S)), "order": int(spec.get("order") or 80),
-                                 "owner": owner or str(spec.get("owner") or ""), "when": spec.get("when")}
+                                 "owner": owner or str(spec.get("owner") or ""), "when": spec.get("when"),
+                                 "push": spec.get("push") is not False}  # push: False = its owner sends its own push
         if spec.get("autoFix") is not None:
             self.add_autofix(cid, spec["autoFix"], owner)
         return cid
@@ -317,7 +318,7 @@ class Monitor:
                     if started:
                         changed = True
                         starts.append(started)
-                if it.get("status") == "error" and not m.get("pushed"):
+                if it.get("status") == "error" and not m.get("pushed") and self._pushes(cid):
                     m["pushed"] = True
                     m["pushedAt"] = now
                     changed = True
@@ -337,6 +338,11 @@ class Monitor:
             except Exception:  # noqa: BLE001
                 pass
         return items
+
+    def _pushes(self, cid: str) -> bool:
+        """Whether a red item pushes (a registered check may say push: False when its owner pushes itself)."""
+        c = (self.reg.checks().get(cid) if getattr(self, "reg", None) is not None else None) or {}
+        return c.get("push", True) is not False
 
     def _push(self, it: Item) -> None:
         since = time.strftime("%b %d %H:%M UTC", time.gmtime(int(it.get("since") or 0) / 1000))
