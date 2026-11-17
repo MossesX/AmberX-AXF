@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7926,
- "updatedAt": "2026-11-17T21:05:46.614Z",
+ "rev": 7927,
+ "updatedAt": "2026-11-17T21:05:54.095Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268180,7 +268180,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T20:59:20.122Z",
+   "updatedAt": "2026-11-17T21:05:39.672Z",
    "builtAt": "",
    "notes": [
     {
@@ -268256,6 +268256,10 @@
      "at": "2026-11-17T20:52:16.260Z"
     },
     {
+     "text": "Phase 1 (Fable) done: s3 schemas + data-store namespace phone, s4 engine + fixture, s5 check in CI. Main was red on three checks from other PRs (ci-scope switch, watchdog under done-means-merged, plan-studio-2 tokens): fixed in this PR so it can land. Next phase: the console plugin.",
+     "at": "2026-11-17T21:05:39.672Z"
+    },
+    {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--paulie is alive: kept running and tracking it.",
      "at": "2026-11-17T20:59:20.122Z"
     }
@@ -268278,7 +268282,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",

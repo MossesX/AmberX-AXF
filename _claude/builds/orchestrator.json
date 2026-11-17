@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:05:46.614Z",
+ "updatedAt": "2026-11-17T21:05:54.095Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175183,7 +175183,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T20:59:20.122Z",
+   "updatedAt": "2026-11-17T21:05:39.672Z",
    "builtAt": "",
    "notes": [
     {
@@ -175257,6 +175257,10 @@
     {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--paulie is alive: kept running and tracking it.",
      "at": "2026-11-17T20:52:16.260Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done: s3 schemas + data-store namespace phone, s4 engine + fixture, s5 check in CI. Main was red on three checks from other PRs (ci-scope switch, watchdog under done-means-merged, plan-studio-2 tokens): fixed in this PR so it can land. Next phase: the console plugin.",
+     "at": "2026-11-17T21:05:39.672Z"
     },
     {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--paulie is alive: kept running and tracking it.",
