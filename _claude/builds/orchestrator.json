@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:06:48.744Z",
+ "updatedAt": "2026-11-17T15:06:57.929Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123839,7 +123839,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -123847,8 +123847,8 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T15:05:01.182Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T15:06:54.532Z",
+   "builtAt": "2026-11-17T15:06:54.532Z",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
@@ -123881,6 +123881,10 @@
     {
      "text": "Headless run axf-server-watchdog-orchestrator-auto-recovers-stuck--gina: brief only · start 15.1K tokens ($0.05) · cost $20.76 · 256 turns · 6 tools, MCP none",
      "at": "2026-11-17T04:28:58.424Z"
+    },
+    {
+     "text": "Brett: land after server-rule-done-means-merged-working",
+     "at": "2026-11-17T15:06:54.532Z"
     }
    ],
    "approvals": [
@@ -169316,7 +169320,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -169324,7 +169328,7 @@
    "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T15:04:56.908Z",
+   "updatedAt": "2026-11-17T15:06:51.577Z",
    "builtAt": "",
    "notes": [
     {
@@ -169366,6 +169370,10 @@
     {
      "text": "Headless run axf-server-rule-done-means-merged-working--earl: brief only · start 17.7K tokens ($0.12) · cost $27.76 · 365 turns · 6 tools, MCP none",
      "at": "2026-11-17T04:16:42.077Z"
+    },
+    {
+     "text": "Brett: land after stop-auto-lander-committing-tracking",
+     "at": "2026-11-17T15:06:51.577Z"
     }
    ],
    "approvals": [
