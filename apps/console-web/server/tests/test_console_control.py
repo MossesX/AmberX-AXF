@@ -117,6 +117,7 @@ def test_state_and_no_console() -> None:
     assert r.status_code == 503 and r.json()["code"] == "unavailable" and r.json()["openUrl"]
     r = client.post(f"{U}/focus", json={"address": "view:settings"})
     assert r.status_code == 503 and "no console" in r.json()["message"]
+    assert r.json()["openUrl"].endswith("/?axf-target=view:settings"), f"the link opens the address, not the home screen: {r.json()['openUrl']}"
 
 
 def test_do_focus_scroll_search() -> None:
@@ -199,6 +200,8 @@ def test_voice() -> None:
     for phrase, cmd in fx["commands"].items():
         i = cc.voice_intent(phrase)
         assert cc.intent_command(i, "view:build-orchestrator/grid:builds/row:b1" if i.get("find") else None) == cmd, phrase
+    assert cc.voice_reply({"verb": "open"}, {"ok": False, "code": "unavailable", "message": "x", "openUrl": "https://c/"}) == fx["replies"]["noConsole"]
+    assert cc.voice_reply({"verb": "open"}, {"ok": False, "code": "unavailable", "message": "x", "openUrl": "https://c/?axf-target=view:gate", "wake": {"sent": True}}) == fx["replies"]["woke"]
     r = client.post(f"{U}/voice", json={"text": "scroll down"})
     assert r.status_code == 200 and r.json()["command"] == {"verb": "scroll", "scroll": {"dir": "down"}} and r.json()["say"].startswith("Scrolled")
     r = client.post(f"{U}/voice", json={"text": "what time is it"})

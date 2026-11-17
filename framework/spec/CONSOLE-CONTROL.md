@@ -167,5 +167,24 @@ table; writes carry `audit { by, reason, at }`. Failure: `{ $axf, ok: false, cod
 - Voice (AmberX): the assistant maps "scroll down", "press save", "open the pipeline tab", "show me step three of the running
   build", "turn the skins plugin off", "find <words>" to the same commands through `console_control`; a short address is enough.
 
+- Link (a page load): `https://console.amberxai.com/?axf-target=<address>` (or `#/?axf-target=<address>`) opens the
+  address once the console is up: a screen or tab is opened, a row or step is focused, the same as `console_show`. The
+  console retries until the screen it names has registered (lazy plugin chunks, a slow backend; up to 30 s) and every
+  tab it names is chosen, and holds it for a moment against late boot steps. The address is kept in the tab's
+  sessionStorage until it lands, so a reload or the axHub sign-in round trip (its wall returns to the full URL, query
+  included) still arrives. A link that can't land ends with a warning toast. `window.axfDeepLink` reports
+  `{address, done, answer}` (tests).
+- The address bar follows the console (Nov 16 2026): once the page has landed, every move between screens, tabs and
+  sub-tabs replaces the URL with `?axf-target=<where it is>` (no new history entries; the home screen keeps the bare
+  URL), and the tab's sessionStorage keeps that address with the open dialog and the main pane's scroll. A browser
+  refresh, the sign-in round trip and a remote `console_refresh` (soft or hard) come back to the same screen, tab,
+  dialog and scroll, never the home screen. A screen hosted by a popup (Settings) is addressed by the popup's content
+  (`view:settings/tab:settings.tabs=<tab>`). `window.axfConsoleHere()` gives the current address.
+  Code `apps/console-web/src/control/deepLink.ts`, test `scripts/deep-link.e2e.mjs`.
+- Opening a target the screen has not registered yet (a plugin tab arriving with its lazy chunk) waits up to 6 s for
+  it on that screen, so a remote open goes straight to the screen and tab without a second command.
+  On the phone, `amberx.open_url {url, newTab: true}` (or `where: "tab"`) opens the link in a browser tab of its own
+  instead of the overlay or the last tab AmberX opened.
+
 Delivery, mailbox, `recent` / `all`, acks, wake through AmberX and the `status` field are console-commands' (CONTROL.md →
 Console). A console acks a console-control command with its answer envelope, so the caller gets the state it asked for.

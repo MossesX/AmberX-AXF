@@ -378,6 +378,7 @@
     "disable": "Skins is off. Crew loses a feature.",
     "confirm": "That deletes something. Say it again with confirm, or do it on screen.",
     "noConsole": "No console is open. Open it and ask again.",
+    "woke": "No console was open. Opening it on your phone.",
     "failed": "Couldn't: needs Brett"
   }
 }

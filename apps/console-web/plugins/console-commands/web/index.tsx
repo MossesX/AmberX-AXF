@@ -28,6 +28,7 @@ import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { executeControl, describeAnswer } from '@console/control/executor';
+import { rememberHere, withDeepLink } from '@console/control/deepLink';
 import { appMenu } from './menu';
 import './console-commands.css';
 import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
@@ -137,9 +138,12 @@ function hashText(t: string): string {
 
 /**
  * Reloads this page: soft is a plain reload; hard clears the page's caches and service workers first, then reloads
- * past the HTTP cache with a one-time query value.
+ * past the HTTP cache with a one-time query value. Either way the page comes back where it was (screen, tabs, dialog,
+ * scroll): the address goes in `?axf-target=` and the tab's sessionStorage (src/control/deepLink.ts), never the home.
  */
-async function reloadPage(hard: boolean): Promise<void> {
+async function reloadPage(rt: AxfRuntime, hard: boolean): Promise<void> {
+  const here = rememberHere(rt);
+  try { history.replaceState(history.state, '', withDeepLink(location.href, here)); } catch { /* the stored copy still carries it */ }
   if (hard) {
     try { await Promise.all((await caches.keys()).map((k) => caches.delete(k))); } catch { /* no Cache API here */ }
     try { await Promise.all((await navigator.serviceWorker.getRegistrations()).map((r) => r.unregister())); } catch { /* none */ }
@@ -297,7 +301,7 @@ function ConsoleCommandsClient() {
         markDone(m.id, res);
         if (res[0] && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${m.delivery ? ongoing(res[1]) : res[1]}`, 'info', 'Console command');
         const acked = post('ack', { client: id, id: m.id, ok: res[0], message: res[1], here: hereOf(rt), ...where() }).catch(() => undefined);
-        if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(m.hard === true)); // the caller hears first, then the page goes
+        if (m.op === 'refresh' && res[0]) void acked.then(() => reloadPage(rt, m.hard === true)); // the caller hears first, then the page goes
       },
       // a deploy restarts the server: come back within seconds, not after a minute of back-off
       { maxDelayMs: 10_000, idleTimeoutMs: STREAM_IDLE_MS },

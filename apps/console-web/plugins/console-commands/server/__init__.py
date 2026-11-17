@@ -58,7 +58,7 @@ import time
 from collections import deque
 from pathlib import Path
 from typing import Any, Callable
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
@@ -376,6 +376,48 @@ def _fallback_clear() -> None:
         cx.resolve_alerts([FALLBACK_KEY])
     except Exception:  # noqa: BLE001
         pass
+
+
+def target_link(address: str | None) -> str:
+    """The console link that opens an address on load (`?axf-target=`, apps/console-web/src/control/deepLink.ts); the
+    bare console for none."""
+    a = str(address or "").strip()
+    return f"{CONSOLE_URL}/?axf-target={quote(a, safe=':/=._-')}" if a else CONSOLE_URL + "/"
+
+
+# console-control verbs that bring a screen forward: with no console open, AmberX is asked to open the link
+OPENING_VERBS = ("open", "focus")
+
+
+def _wake_to(link: str, audience: str) -> dict[str, Any]:
+    """No console open for an open / focus: ask AmberX to open `link` (the address's deep link) on the owner's phone, in
+    the background, under the same switch and once-per-WAKE_AGAIN_S rule as a queued command's wake. → what was done."""
+    st = settings()
+    if audience != OWNER or not st["wake"]:
+        return {"sent": False, "message": "waking through AmberX is off" if audience == OWNER else "only the owner's console is woken through AmberX"}
+    with _lock:
+        if _now() - _woke_at.get(audience, 0) < WAKE_AGAIN_S:
+            return {"sent": False, "message": "AmberX was asked to open the console a moment ago"}
+        _woke_at[audience] = _now()
+
+    def go() -> None:
+        try:
+            r = WAKER(link, st["browser"])
+        except Exception as e:  # noqa: BLE001 — the answer already went back; the alert below is the fallback
+            r = {"ok": False, "message": str(e)[:300]}
+        if not r.get("ok"):
+            with _lock:
+                _woke_at.pop(audience, None)
+        if not r.get("ok") or not (r.get("opened") or r.get("notified")):
+            try:
+                import console_context as cx
+                cx.raise_alert({"source": "console", "severity": "warning", "key": FALLBACK_KEY, "title": "Tap to open the Dev Console",
+                                "body": f"Amber wanted to show you something. {r.get('message') or ''}"[:300], "link": link, "meta": {"label": "Dev Console"}})
+            except Exception:  # noqa: BLE001
+                pass
+
+    threading.Thread(target=go, name="console-wake-link", daemon=True).start()
+    return {"sent": True, "link": link, "message": "AmberX was asked to open the console on that screen"}
 
 
 def _wake_later(entry: dict[str, Any], after: float | None = None) -> None:
@@ -720,11 +762,19 @@ def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: st
     with _lock:
         live = [c for c in _clients.values() if c["audience"] == audience and _ready(c) and _live(c, now)]
     live.sort(key=lambda c: (c.get("front", True) is False, -float(c.get("lastUsed") or 0)))
+    # the link opens the console on the command's address (?axf-target=), not on its home screen
     no_console = {"$axf": "console-control@1", "ok": False, "code": "unavailable", "because": "no console open",
-                  "message": "no console open: open the console (openUrl), then send the command again", "openUrl": CONSOLE_URL + "/"}
+                  "message": "no console open: open the console (openUrl), then send the command again", "openUrl": target_link(command.get("address"))}
+
+    def woken() -> dict[str, Any]:
+        """No console at all: an open / focus asks AmberX to open the link, so the screen shows up on Brett's phone."""
+        if command.get("verb") not in OPENING_VERBS or not command.get("address"):
+            return no_console
+        w = _wake_to(no_console["openUrl"], audience)
+        return {**no_console, "wake": w, "message": "no console open: AmberX was asked to open it on that screen" if w.get("sent") else no_console["message"]}
     if to == "all":
         if not live:
-            return no_console
+            return woken()
         acks = deliver([c["id"] for c in live], message, audience)
         results = [a.get("result") or {"ok": False, "code": "unavailable", "message": a.get("message") or "no answer", "client": a.get("client")} for a in acks]
         return {"$axf": "console-control@1", "ok": any(r.get("ok") for r in results), "verb": command.get("verb"), "results": results, "delivery": {"how": "all", "clients": [c["id"] for c in live]}}
@@ -737,7 +787,7 @@ def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: st
         order = [to]
     else:
         if not live:
-            return no_console
+            return woken()
         order = _turn_order(audience, live[0]["id"], str(live[0].get("app") or "console-web"))
     tried, acks = try_in_turn(order, message, audience)
     with _lock:

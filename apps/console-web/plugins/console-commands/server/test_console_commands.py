@@ -497,5 +497,27 @@ eq((awake_got[-1]["target"], awake_got[-1].get("focus"), j.get("focus")), ("buil
 j = svc.run({"op": "act", "target": "console.screens", "path": "build-orchestrator", "action": "open", "input": {"focus": "queue"}}, ["*"], "mcp")
 eq(awake_got[-1].get("focus"), "queue", "input.focus")
 
+# console_show with an address and no console open (Brett, Nov 16 2026: "You didn't open the orchestrator, you just
+# opened the main console"): the link lands on the address, and an open / focus asks AmberX to open that link
+with cc._lock:
+    cc._clients.clear()
+    cc._woke_at.clear()
+cc.WAKE_AGAIN_S = 45.0
+WOKEN.clear()
+j = cc.control({"verb": "focus", "address": "view:build-orchestrator", "by": "mcp"}, "mcp", cc.OWNER)
+eq((j["ok"], j["code"]), (False, "unavailable"), "no console: unavailable")
+eq(j["openUrl"], f"{cc.CONSOLE_URL}/?axf-target=view:build-orchestrator", "openUrl opens the orchestrator, not the console's home")
+ok(j["wake"]["sent"], f"AmberX is asked to open it ({j.get('wake')})")
+wait_for(lambda: bool(WOKEN))
+eq(WOKEN[-1][0], f"{cc.CONSOLE_URL}/?axf-target=view:build-orchestrator", "the wake opens the address's link")
+j = cc.control({"verb": "open", "address": "view:gate/tab:gate.tabs=auto-lander"}, "mcp", cc.OWNER)
+eq(j["openUrl"], f"{cc.CONSOLE_URL}/?axf-target=view:gate/tab:gate.tabs=auto-lander", "a tab address stays readable in the link")
+ok(not j["wake"]["sent"], "a second wake within WAKE_AGAIN_S is held back")
+j = cc.control({"verb": "state"}, "mcp", cc.OWNER)
+eq((j["openUrl"], "wake" in j), (f"{cc.CONSOLE_URL}/", False), "state with no address: the bare console, no wake")
+j = cc.control({"verb": "press", "address": "button:console.settings"}, "mcp", cc.OWNER)
+ok("wake" not in j and "axf-target=button" in j["openUrl"], "press never wakes; its link still opens near it")
+eq(cc.target_link("row:a b"), f"{cc.CONSOLE_URL}/?axf-target=row:a%20b", "spaces are escaped")
+
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

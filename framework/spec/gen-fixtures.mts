@@ -2523,6 +2523,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       disable: voiceReply({ verb: 'plugin.disable' }, { ok: true, effects: { loses: [{ name: 'Crew' }] } }, 'Skins'),
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
+      woke: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/?axf-target=view:gate', wake: { sent: true } }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
     },
   });

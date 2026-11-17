@@ -10,6 +10,7 @@ import { installControlExecutor } from './executor';
 import { installVoiceControl } from '../actions/voice-control';
 import { installConsoleControlActions } from '../actions/console-control';
 import { installSearchPalette } from './SearchPalette';
+import { installDeepLink } from './deepLink';
 
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
@@ -19,5 +20,7 @@ export function installConsoleControl(rt: AxfRuntime): () => void {
   const voice = installVoiceControl(rt);
   const verbs = installConsoleControlActions(rt);
   const palette = installSearchPalette(rt);
-  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); palette(); };
+  // ?axf-target=<address> on load: open that screen, tab, row or step once it has registered
+  const deepLink = installDeepLink(rt);
+  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); palette(); deepLink(); };
 }

@@ -64,6 +64,9 @@ export function controlState(rt: AxfRuntime): ControlStateSnapshot {
   };
 }
 
+/** How long a command waits for its target to register on the screen it opened (lazy plugin chunks). */
+const RENDER_WAIT_MS = 6_000;
+
 /** The verbs that can open the address's screen first when it is not rendered. */
 const OPENS_SCREEN = new Set(['open', 'focus', 'press', 'set', 'state', 'scroll', 'plugin.enable', 'plugin.disable']);
 
@@ -87,14 +90,18 @@ export async function executeControl(rt: AxfRuntime, raw: unknown): Promise<Cont
       for (const ms of [150, 400, 900]) { await nextFrame(); await wait(ms); res = await reg.run(cmd); if (res.ok || res.code !== CONSOLE_CONTROL_WIRE.NOT_FOUND) break; }
     }
   }
-  // not rendered yet: open the screen the inventory names, let it render, ask again (once)
+  // not rendered yet: open the screen the inventory names (unless it is already on show), then ask again until the
+  // target has registered: a plugin screen's tabs arrive with its lazy chunk, which takes seconds on a busy phone
   if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_FOUND && cmd.address && OPENS_SCREEN.has(cmd.verb)) {
     const view = inventoryViewOf(cmd.address);
-    if (view && view !== rt.getState().view) {
-      rt.navigate(view);
-      await nextFrame(); await nextFrame(); await wait(150);
-      res = await reg.run(cmd);
-      if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_FOUND) { await wait(400); res = await reg.run(cmd); }
+    if (view) {
+      if (view !== rt.getState().view) { rt.navigate(view); await nextFrame(); await nextFrame(); }
+      const until = Date.now() + RENDER_WAIT_MS;
+      for (let ms = 150; ; ms = Math.min(ms * 1.5, 800)) {
+        await wait(ms);
+        res = await reg.run(cmd);
+        if (res.ok || res.code !== CONSOLE_CONTROL_WIRE.NOT_FOUND || Date.now() > until || rt.getState().view !== view) break;
+      }
     }
   }
   // a screen, tab or panel has no focus of its own: bringing it into focus is opening it (with the highlight)
