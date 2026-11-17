@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T23:45:27.819Z",
+ "updatedAt": "2026-11-17T23:45:35.737Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10714,12 +10714,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:38:34.128Z",
-   "updatedAt": "2026-11-12T10:48:14.479Z",
+   "updatedAt": "2026-11-17T23:45:18.620Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 96 → 4 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:18.620Z"
     }
    ],
    "approvals": [],
@@ -16562,7 +16566,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-12T02:08:37.696Z",
+   "updatedAt": "2026-11-17T23:45:21.911Z",
    "builtAt": "",
    "notes": [
     {
@@ -16600,6 +16604,10 @@
     {
      "text": "Moved to the Archive from pending (console).",
      "at": "2026-11-12T02:08:37.696Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 10 → 5 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:21.911Z"
     }
    ],
    "approvals": [],
@@ -17760,7 +17768,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-16T23:21:50.093Z",
+   "updatedAt": "2026-11-17T23:45:24.486Z",
    "builtAt": "",
    "notes": [
     {
@@ -17790,6 +17798,10 @@
     {
      "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
      "at": "2026-11-16T23:21:50.093Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 6 → 3 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:24.486Z"
     }
    ],
    "approvals": [],
@@ -18992,12 +19004,16 @@
    "branch": "claude/md-chain-control",
    "pr": "#362",
    "createdAt": "2026-11-06T14:24:50.756Z",
-   "updatedAt": "2026-11-15T00:44:50.156Z",
+   "updatedAt": "2026-11-17T23:45:27.404Z",
    "builtAt": "2026-11-06T19:07:36.652Z",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 32 → 16 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:27.404Z"
     }
    ],
    "approvals": [],
@@ -22677,7 +22693,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T00:45:42.473Z",
-   "updatedAt": "2026-11-16T23:22:14.664Z",
+   "updatedAt": "2026-11-17T23:45:29.888Z",
    "builtAt": "",
    "notes": [
     {
@@ -22687,6 +22703,10 @@
     {
      "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
      "at": "2026-11-16T23:22:14.664Z"
+    },
+    {
+     "text": "Repeated steps collapsed: 4 → 2 (step-dedupe cleanup).",
+     "at": "2026-11-17T23:45:29.888Z"
     }
    ],
    "approvals": [],
