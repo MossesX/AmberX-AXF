@@ -4,6 +4,7 @@ import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
 import { installControlRegistry } from './controlTargets';
 import { installDragHosts } from './dragHost';
+import { DragPreviewLayer } from './components/DragPreview';
 import { installScrollControl } from './scrollControl';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
@@ -144,5 +145,6 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     return () => host.dispose();
   }, [runtime]);
 
-  return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;
+  // drag-move@1: the drop-zone preview a move by API draws (components/DragPreview.tsx); nothing shows until one is asked for
+  return <AxfContext.Provider value={runtime}>{children}<DragPreviewLayer /></AxfContext.Provider>;
 }

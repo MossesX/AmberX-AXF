@@ -699,6 +699,20 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-search-flash { animation: fx-search-flash 1.8s ease; border-radius: var(--fx-radius-sm); }
 [data-reduced-motion] .fx-search-flash { animation: none !important; outline: 3px solid var(--fx-accent); outline-offset: 2px; }
 
+/* ---------------- drag-move@1 drop-zone preview (react/components/DragPreview.tsx): drawn only when a move is previewed or
+   deep-linked by API (Follow Amber). The item is outlined, each place it may land gets a bar (before / after) or an outline
+   (into, a side); the chosen spot is solid. Colours, widths, radii and transparency are theme tokens. ---------------- */
+.fx-dragpv { position: fixed; inset: 0; z-index: 58; pointer-events: none; }
+.fx-dragpv__item, .fx-dragpv__zone { position: fixed; box-sizing: border-box; pointer-events: none; }
+.fx-dragpv__item { border: calc(var(--fx-border-w) * 2) solid var(--fx-focus); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); display: flex; align-items: flex-start; justify-content: flex-start; }
+.fx-dragpv__zone { border: var(--fx-border-w) dashed var(--fx-accent); border-radius: var(--fx-radius-sm); opacity: var(--fx-opacity-muted); }
+.fx-dragpv__zone.is-target { border-style: solid; border-width: calc(var(--fx-border-w) * 2); opacity: 1; background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-dragpv__zone.is-edge { border: 0; border-radius: var(--fx-radius-sm); background: var(--fx-accent); }
+.fx-dragpv__zone.is-start, .fx-dragpv__zone.is-end { width: calc(var(--fx-border-w) * 3); transform: translateX(-50%); }
+.fx-dragpv__zone.is-top, .fx-dragpv__zone.is-bottom { height: calc(var(--fx-border-w) * 3); transform: translateY(-50%); }
+.fx-dragpv__zone.is-edge.is-target { opacity: 1; box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent-text); }
+.fx-dragpv__label { margin: calc(var(--fx-dens-gap-md) * -1) 0 0 0; transform: translateY(-100%); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-accent); color: var(--fx-accent-text); font-size: var(--fx-type-root-xs); white-space: nowrap; }
+
 /* ---------------- console-control@1 (react/controlTargets.ts): a focused target is tinted through the theme's opacity tokens ---------------- */
 .fx-control-scope { display: contents; }
 @keyframes fx-control-focus {

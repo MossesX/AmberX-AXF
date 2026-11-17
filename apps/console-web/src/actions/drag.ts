@@ -17,6 +17,7 @@ import type { AxfRuntime } from '../axf/core';
 import { dragVoiceIntent, dragVoiceScore, type DragVoiceIntent } from '../axf/core/engines/drag-voice.mjs';
 import { DRAG_MOVE_CONTRACT, dragKind, dragKinds, dragMoveFailure, orderOf, type ContainerOrder, type DragHostSnapshot, type DragMoveResult, type DragTarget } from '../axf/core/engines/drag-move';
 import { dragLocate } from '../axf/react/dragHost';
+import { showDragPreview, verticalFlow, type DragPreviewMark } from '../axf/react/components/DragPreview';
 import { executeControl } from '../control/executor';
 
 export const DRAG_LIST_FRAME = 'drag-list@1';
@@ -181,6 +182,43 @@ export const dragPreviewHooks: {
   zones: ((rt: AxfRuntime, at: { kind: string; container: string; id: string | null; element: Element | null; targets: DragTarget[] }) => void) | null;
 } = { show: null, zones: null };
 
+/** The marker a drop target draws: a bar on the edge of its ref, else an outline of the container (or of the side). */
+function markOf(kind: string, t: { container: string; zone: string; ref?: string; side?: string }, target = false): DragPreviewMark | null {
+  if ((t.zone === 'before' || t.zone === 'after') && t.ref) {
+    const el = dragLocate(kind, t.container, t.ref);
+    if (!el) return null;
+    const v = verticalFlow(el);
+    return { element: el, edge: t.zone === 'before' ? (v ? 'top' : 'start') : (v ? 'bottom' : 'end'), target };
+  }
+  const host = dragLocate(kind, t.container, null);
+  const side = t.zone === 'side' && t.side && host ? host.querySelector(`[data-axf-arrange-side="${t.side}"], .is-${t.side}`) : null;
+  const el = side ?? host;
+  return el ? { element: el, target, ...(t.side ? { label: t.side } : {}) } : null;
+}
+
+/** Install the drop-zone preview: drag.show draws every zone, drag.preview draws the one landing spot (both by API only). */
+export function installDragPreview(): () => void {
+  dragPreviewHooks.zones = (_rt, at) => {
+    const marks = at.targets.map((t) => markOf(at.kind, t)).filter((m): m is DragPreviewMark => !!m);
+    showDragPreview({ item: at.element, marks, note: at.id ?? at.container });
+  };
+  dragPreviewHooks.show = (_rt, cmd, a) => {
+    if (!a.ok) return;
+    const src = cmd.source as { container?: string } | undefined;
+    const item = a.from ? dragLocate(a.kind, a.from.container, a.item.id) : src?.container ? dragLocate(a.kind, src.container, a.item.id) : null;
+    let mark: DragPreviewMark | null = null;
+    if (a.to) {
+      const order = a.order[a.to.container] ?? a.order[Object.keys(a.order).find((c) => same(c, a.to!.container)) ?? ''];
+      const list = Array.isArray(order) ? order : order && a.to.side ? order[a.to.side] ?? [] : [];
+      const i = list.findIndex((x) => same(x, a.item.id));
+      const next = i >= 0 ? list[i + 1] : undefined, prev = i > 0 ? list[i - 1] : undefined;
+      mark = next ? markOf(a.kind, { container: a.to.container, zone: 'before', ref: next }, true) : prev ? markOf(a.kind, { container: a.to.container, zone: 'after', ref: prev }, true) : markOf(a.kind, { container: a.to.container, zone: a.to.side ? 'side' : 'into', ...(a.to.side ? { side: a.to.side } : {}) }, true);
+    }
+    showDragPreview({ item, marks: mark ? [mark] : [], note: a.to ? `${a.item.id} → ${a.to.side ? `${a.to.side} ` : ''}#${a.to.index + 1}` : `remove ${a.item.id}` });
+  };
+  return () => { dragPreviewHooks.zones = null; dragPreviewHooks.show = null; };
+}
+
 /** Run one request. Never throws: a failure is the envelope. */
 export async function executeDrag(rt: AxfRuntime, req: DragRequest): Promise<DragAnswer> {
   try {
@@ -286,6 +324,7 @@ export function describeDrag(a: DragAnswer): string {
 
 /** The drag.* actions on the action bus (full-API action registry: label, params, module, effect). */
 export function installDragActions(rt: AxfRuntime): () => void {
+  const offPreview = installDragPreview();
   const offs = DRAG_VERBS.map((verb) => rt.actions.register(verb, (args) => {
     const req = dragActionRequest(verb, args);
     if (!req) { rt.toast(`${verb} needs ${verb === 'drag.zones' ? 'kind:container:item' : verb === 'drag.list' ? 'nothing, or kind[:container]' : 'a drag-move@1 JSON command'}`, 'warning', 'Drag'); return false; }
@@ -296,5 +335,5 @@ export function installDragActions(rt: AxfRuntime): () => void {
     });
     return true;
   }, { label: DRAG_ACTIONS[verb].label, params: true, module: 'console.drag', effect: DRAG_ACTIONS[verb].effect }));
-  return () => offs.forEach((off) => off());
+  return () => { offPreview(); offs.forEach((off) => off()); };
 }
