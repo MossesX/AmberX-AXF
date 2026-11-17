@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `land-project-duplicate-boilerplate` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `land-drive-live-console-first-resolve` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `land-rename-long-builds-resolve-clash` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `land-overlay-preview-ui-review-resolve` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` → fixing, note (all) · pipeline
 - 2026-11-17 20:54 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
 - 2026-11-17 20:54 UTC · `guided-live-demo-test-watch-orchestrator` s19 done (all) · orchestrator
+- 2026-11-17 20:54 UTC · `context-menus-plugin-one-true-source` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
