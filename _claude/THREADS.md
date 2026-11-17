@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `ui-review-gate-switch-default-off` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `fix-toolbar-settings-doing-nothing` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `merge-all-ready-buttons-server-side` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `account-order-hulu-moses-x-api-account` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:43 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · orchestrator
 - 2026-11-17 20:43 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · builds-live
 - 2026-11-17 20:44 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · orchestrator
+- 2026-11-17 20:44 UTC · `rebuild-every-toolbar-page-specific` → running, note (all) · pipeline
 
 ## Token passes (log)
 

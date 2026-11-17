@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7856,
- "updatedAt": "2026-11-17T20:44:22.971Z",
+ "rev": 7857,
+ "updatedAt": "2026-11-17T20:44:33.352Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275766,7 +275766,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275774,7 +275774,7 @@
    "pr": "#817",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T20:40:29.749Z",
+   "updatedAt": "2026-11-17T20:44:29.343Z",
    "builtAt": "",
    "notes": [
     {
@@ -275820,6 +275820,10 @@
     {
      "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s8): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T20:40:29.749Z"
+    },
+    {
+     "text": "Dispatch gate: rebuild-every-toolbar-page-specific still has axf-rebuild-every-toolbar-page-specific--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-17T20:44:29.343Z"
     }
    ],
    "approvals": [],
@@ -275840,7 +275844,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "",
+    "session": "axf-rebuild-every-toolbar-page-specific--gina",
     "slot": "",
     "model": "",
     "phase": "",
@@ -276628,7 +276632,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -280715,7 +280719,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T20:44:26.895Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -280836,7 +280846,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -280905,7 +280915,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T20:44:26.895Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -281030,7 +281046,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -281099,7 +281115,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T20:44:26.895Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -281224,7 +281246,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
