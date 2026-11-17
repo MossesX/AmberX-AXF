@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:34:27.930Z",
+ "updatedAt": "2026-11-17T20:34:38.141Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181238,6 +181238,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 18 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T20:34:18.133Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild every toolbar with page-specific buttons (Fable) (step s8): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:34:20.341Z"
     }
    ],
    "approvals": [],
