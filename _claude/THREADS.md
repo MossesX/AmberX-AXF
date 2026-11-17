@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:07 UTC · `server-rule-done-means-merged-working` merged, note (all) · reconciler
 - 2026-11-17 19:07 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-17 19:07 UTC · `every-plugin-screen-gets-a-settings-gear` → running (all) · auto-lander
 - 2026-11-17 19:07 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · auto-lander
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
 - 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 - 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
+- 2026-11-17 20:18 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
