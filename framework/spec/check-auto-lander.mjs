@@ -12,6 +12,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from '../core/auto-lander.mjs';
+import * as G from '../core/gate-rules.mjs';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const FIX = join(ROOT, 'framework/spec/fixtures/auto-lander.json');
@@ -247,6 +248,10 @@ t('validation names every bad field', () => {
 t('schemas/auto-lander.json + schemas/json/auto-lander-*.schema.json are current (run axf schemas)', () => {
   assert.ok(same(JSON.parse(rd('framework/schemas/auto-lander.json')), L.REGISTRY));
   for (const [name, s] of Object.entries(L.jsonSchemas())) assert.ok(same(JSON.parse(rd(`framework/schemas/json/${name}`)), s), name);
+});
+t('the auto-lander gate rule carries the engine defaults and reads back as the default policy', () => {
+  const { enabled, $axf, ...defaults } = L.normPolicy({});
+  assert.deepEqual(G.AUTO_LANDER_SETTINGS, defaults); const r = G.defaultRuleSet({ at: AT }).rules.find((x) => x.id === L.RULE_ID); assert.ok(r, 'gate-rules has the auto-lander rule'); assert.deepEqual(L.policyFromRules(G.defaultRuleSet({ at: AT })), L.normPolicy({}));
 });
 t('PORTING.md and AUTO-LANDER.md carry the contract', () => { assert.match(rd('framework/spec/PORTING.md'), /auto-lander@1/); assert.match(rd('framework/spec/AUTO-LANDER.md'), /decide\(build, prState, attempts, policy/); });
 console.log(`check-auto-lander: ${n} checks passed`);
