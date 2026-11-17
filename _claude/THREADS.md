@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:08 UTC · `orchestrator-runs-long-builds-across` s3 done (all) · orchestrator
 - 2026-11-17 00:11 UTC · `auto-lander-status-tab-rest-mcp-settings` note (all) · builds-live
 - 2026-11-17 00:11 UTC · `orchestrator-runs-long-builds-across` s4 done (all) · orchestrator
 - 2026-11-17 00:11 UTC · `orchestrator-runs-long-builds-across` note (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 12:50 UTC · `orchestrator-stale-row-watchdog-vps` s13 done (all) · orchestrator
 - 2026-11-17 12:50 UTC · `stop-auto-lander-committing-tracking` s15 done, → built (all) · orchestrator
 - 2026-11-17 12:50 UTC · `stop-auto-lander-committing-tracking` merged, note (all) · reconciler
+- 2026-11-17 12:51 UTC · `orchestrator-stale-row-watchdog-vps` s14 done (all) · orchestrator
 
 ## Token passes (log)
 
