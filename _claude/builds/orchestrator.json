@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:51:12.014Z",
+ "updatedAt": "2026-11-17T22:51:32.352Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -189611,7 +189611,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T22:50:42.200Z",
+   "updatedAt": "2026-11-17T22:51:22.412Z",
    "builtAt": "",
    "notes": [
     {
@@ -189677,6 +189677,10 @@
     {
      "text": "Started run 3 on mossesx-max- (Opus, Phase 2): axf-flagship-professional-skin-covering-2--earl.",
      "at": "2026-11-17T22:45:59.772Z"
+    },
+    {
+     "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T22:51:22.412Z"
     }
    ],
    "approvals": [

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8275,
- "updatedAt": "2026-11-17T22:51:12.014Z",
+ "rev": 8276,
+ "updatedAt": "2026-11-17T22:51:32.352Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -290451,7 +290451,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T22:50:42.200Z",
+   "updatedAt": "2026-11-17T22:51:22.412Z",
    "builtAt": "",
    "notes": [
     {
@@ -290517,6 +290517,10 @@
     {
      "text": "Started run 3 on mossesx-max- (Opus, Phase 2): axf-flagship-professional-skin-covering-2--earl.",
      "at": "2026-11-17T22:45:59.772Z"
+    },
+    {
+     "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T22:51:22.412Z"
     }
    ],
    "approvals": [
@@ -290546,7 +290550,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-flagship-professional-skin-covering-2--earl",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -291336,7 +291340,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
