@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7261,
- "updatedAt": "2026-11-17T03:35:31.474Z",
+ "rev": 7262,
+ "updatedAt": "2026-11-17T03:35:56.039Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206418,10 +206418,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
+     "at": "2026-11-17T03:35:20.230Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -206597,7 +206597,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208837,10 +208837,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
+     "at": "2026-11-17T03:35:20.230Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -208928,7 +208928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212764,10 +212764,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
+     "at": "2026-11-17T03:35:20.230Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -212855,7 +212855,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -223025,10 +223025,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-16T23:03:59.942Z",
+     "at": "2026-11-17T03:35:20.230Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -223619,7 +223619,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -256587,7 +256587,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T03:35:20.232Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -257375,7 +257381,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -260374,10 +260380,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T00:13:53.396Z",
+     "at": "2026-11-17T03:35:20.232Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -260843,7 +260849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
