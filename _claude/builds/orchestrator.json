@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:38:28.582Z",
+ "updatedAt": "2026-11-17T04:39:44.563Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -166742,7 +166742,7 @@
    "pr": "#774",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T04:33:51.545Z",
+   "updatedAt": "2026-11-17T04:39:42.631Z",
    "builtAt": "",
    "notes": [
     {
@@ -166788,6 +166788,10 @@
     {
      "text": "Absorbed fix-red-ci-blocked-builds-they-land (all 24 steps done, archived) and get-main-green-unblock-lander-land-axf (PR #723 merged; open s17 Postgres migration + s19 wrap-up folded in as s24/s25). Brett's words from both are addenda.",
      "at": "2026-11-17T03:34:38.594Z"
+    },
+    {
+     "text": "Postgres check (s24): Postgres holds 15992 keys in 48 namespaces; 44/47 source namespaces equal, the 3 that differ (sessions, plugins/activity, builds) are still local (not mirrored yet). builds table 985 rows = builds store. axf-data health green. Another actor started shadow moves at 04:30 UTC, so no cut-over from here; axf-data-postgres-real-tables-own owns the rest.",
+     "at": "2026-11-17T04:39:42.631Z"
     }
    ],
    "approvals": [
