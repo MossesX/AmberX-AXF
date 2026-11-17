@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:38:08.566Z",
+ "updatedAt": "2026-11-17T21:38:17.909Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -181489,9 +181489,10 @@
    "pendingId": "",
    "branch": "claude/rebuild-every-toolbar-page-specific",
    "pr": "#817",
+   "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T21:27:29.196Z",
+   "updatedAt": "2026-11-17T21:38:09.026Z",
    "builtAt": "",
    "notes": [
     {
@@ -181649,6 +181650,14 @@
     {
      "text": "Reconciler: PR #817 names s4, s5, s27, s28 done",
      "at": "2026-11-17T21:20:40.525Z"
+    },
+    {
+     "text": "Reconciler: PR #817 merged",
+     "at": "2026-11-17T21:38:09.026Z"
+    },
+    {
+     "text": "Refused pending → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T21:38:09.027Z"
     }
    ],
    "approvals": [
