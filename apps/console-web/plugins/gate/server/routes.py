@@ -50,6 +50,10 @@ ROOT = Path(__file__).resolve().parents[5]
 _spec = importlib.util.spec_from_file_location("axf_gate_health", PLUGIN_DIR / "health.py")
 health = importlib.util.module_from_spec(_spec)  # the plugin's health.py (pure checks and alert builders)
 _spec.loader.exec_module(health)  # type: ignore[union-attr]
+_spec_al = importlib.util.spec_from_file_location("axf_gate_auto_lander_health", Path(__file__).resolve().parent / "auto_lander_health.py")
+al_health = importlib.util.module_from_spec(_spec_al)  # the server auto-lander's systems-check item (pure)
+_spec_al.loader.exec_module(al_health)  # type: ignore[union-attr]
+AL_CLI = ROOT / "deploy" / "auto-lander" / "auto-lander.mjs"
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503, "failed": 502}
 MAX_BODY = 64 * 1024
 
@@ -65,6 +69,23 @@ def run(op: str, data: dict[str, Any] | None = None, timeout: int = 90) -> dict[
         return json.loads(lines[-1]) if lines else {"ok": False, "code": "failed", "message": p.stderr.strip()[-400:] or "no output"}
     except json.JSONDecodeError:
         return {"ok": False, "code": "failed", "message": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def al_run(args: list[str], timeout: int = 60) -> dict[str, Any]:
+    """One server auto-lander command (deploy/auto-lander/auto-lander.mjs <args> --json): { ok, … } or { ok: false, code, message }."""
+    if not AL_CLI.exists():
+        return {"ok": False, "code": "unavailable", "message": "the server auto-lander is not in this checkout (deploy/auto-lander/auto-lander.mjs)"}
+    try:
+        p = subprocess.run(["node", str(AL_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "code": "unavailable", "message": f"the auto-lander could not run: {str(e)[:200]}"}
+    if p.returncode != 0:
+        return {"ok": False, "code": "invalid" if p.returncode == 2 else "failed", "message": (p.stderr or p.stdout).strip()[-400:] or f"exit {p.returncode}"}
+    try:
+        r = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        return {"ok": False, "code": "failed", "message": p.stdout.strip()[-400:]}
+    return {"ok": True, **r} if isinstance(r, dict) else {"ok": True, "result": r}
 
 
 def answer(r: dict[str, Any]) -> JSONResponse:
@@ -172,7 +193,9 @@ def ensure_health() -> None:
             import plugin_services
         except ImportError:
             return
-        _health_on["done"] = health.ensure(plugin_services, _status_for_health)
+        lander = health.ensure(plugin_services, _status_for_health)
+        server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))
+        _health_on["done"] = lander and server
 
 
 async def _read(op: str, data: dict[str, Any]) -> JSONResponse:

@@ -114,13 +114,16 @@ export function pause({ by = 'cli' } = {}) { const c = readControl(); writeContr
 export function resume({ by = 'cli' } = {}) { const c = readControl(); writeControl({ ...c, paused: false, pausedBy: by, pausedAt: nowIso() }); return readControl(); }
 
 /** A hand reset: attempts skipped, escalation cleared; `fix` = a fix session is started on the next tick whatever CI says. */
-export function retry(build, { by = 'cli', fix = false, at = nowIso() } = {}) {
+export async function retry(build, { by = 'cli', fix = false, at = nowIso(), resolveEscalation = null } = {}) {
   if (!build) throw Object.assign(new Error('retry <build>'), { code: 'invalid' });
   const n = attempts.reset(build, { by, at });
   const st = readState(); const rec = st.builds.find((b) => b.build === build);
   if (rec) writeState(putBuild(st, { ...AL.resetEscalation(rec, { at, by }), attempts: attempts.list(build).slice(-AL.ATTEMPTS_MAX), state: 'waiting', escalation: null, reason: `Reset by ${by}: the lander tries again.` }, at));
   const c = readControl();
   writeControl({ ...c, resets: { ...c.resets, [build]: at }, fixNow: fix ? [...new Set([...c.fixNow, build])] : c.fixNow });
+  // the banner item clears on the next status read; the phone alert resolves now
+  const res = resolveEscalation || (await import('./escalate.mjs')).resolve;
+  try { await res({ build }); } catch { /* the alert resolves on the next landing */ }
   return { ok: true, build, reset: n, fix };
 }
 
@@ -152,6 +155,7 @@ export async function realDeps() {
     startCi: ({ branch }) => gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow}/dispatches`, { ref: branch }),
     escalate: esc?.escalate || (() => ({ ok: false, why: 'escalate.mjs not installed' })),
     resolveEscalation: esc?.resolve || (() => ({ ok: false })),
+    flushEscalations: esc?.flush || (() => ({ ok: true })),
   };
 }
 
@@ -261,6 +265,7 @@ export async function tick({ deps = null, dry = false, only = '', log = () => {}
         state = putBuild(state, nb, nowIso());
       } catch (e) { log(`${b.id}: ${e.message}`); }
     }
+    if (!dry) { try { await d.flushEscalations?.(); } catch (e) { log(`escalation push: ${e.message}`); } }
     if (ctx.fixed.length && !dry) { const c = readControl(); writeControl({ ...c, fixNow: c.fixNow.filter((x) => !ctx.fixed.includes(x)) }); }
     d.gh?.save?.();
     state = { ...state, at: nowIso(), current: '', queue, paused: false };
@@ -290,6 +295,10 @@ export function status({ at = nowIso() } = {}) {
     service: { up: age <= 3, lastTick: svc.lastTick || '', minutesSinceTick: Number.isFinite(age) ? Math.round(age * 10) / 10 : null, mode: svc.mode || '', paused: c.paused, pausedBy: c.pausedBy, pausedAt: c.pausedAt },
     current: st.current || '', queue: st.queue || [], policy: st.policy, settings: c.settings, builds,
     escalated: builds.filter((b) => b.state === 'escalated').map((b) => b.build),
+    escalations: builds.filter((b) => b.state === 'escalated').map((b) => {
+      const last = b.attempts.filter((x) => x.kind === b.escalation?.kind).slice(-1)[0];
+      return { build: b.build, pr: b.pr, kind: b.escalation?.kind || '', attempts: b.escalation?.attempts || 0, why: b.escalation?.why || b.reason, since: b.attempts.find((x) => x.kind === b.escalation?.kind)?.at || b.escalation?.at || b.since, at: b.escalation?.at || b.since, log: last?.log || '' };
+    }),
   };
 }
 
@@ -305,7 +314,7 @@ export async function main(argv) {
   if (cmd === 'tick' || cmd === 'run') { const r = await tick({ dry: a.includes('--dry-run'), only: opt('only'), log }); return say(r, r.skipped || `${r.builds.length} build(s) tracked${r.paused ? ' (paused)' : ''}`); }
   if (cmd === 'daemon') return daemon({ everySec: Number(opt('every')) || 60 });
   if (cmd === 'status') { const s = status(); return say(s, [`service: ${s.service.up ? 'up' : 'down'}${s.service.paused ? ' (paused)' : ''}, last tick ${s.service.lastTick || 'never'}`, `current: ${s.current || '—'}`, ...s.builds.map((b) => `${b.build}  ${b.state}  ${b.reason}`)].join('\n')); }
-  if (cmd === 'retry' || cmd === 'fix') { const r = retry(rest[0], { by, fix: cmd === 'fix' }); return say(r, `${r.build}: ${r.reset} attempt(s) reset${r.fix ? ', fix session on the next tick' : ''}`); }
+  if (cmd === 'retry' || cmd === 'fix') { const r = await retry(rest[0], { by, fix: cmd === 'fix' }); return say(r, `${r.build}: ${r.reset} attempt(s) reset${r.fix ? ', fix session on the next tick' : ''}`); }
   if (cmd === 'pause') { pause({ by }); return say({ ok: true, paused: true }, 'auto-lander paused'); }
   if (cmd === 'resume') { resume({ by }); return say({ ok: true, paused: false }, 'auto-lander resumed'); }
   if (cmd === 'settings') { const s = readControl().settings; return say({ ok: true, settings: s }, SETTING_KEYS.map((k) => `${k} = ${s[k]}`).join('\n')); }
