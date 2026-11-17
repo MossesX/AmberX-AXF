@@ -143,7 +143,7 @@ fi
 echo "started $ses in $(pwd)"
 `); chmodSync(launcher, 0o755);
   const env = { ...process.env, HOME: home, AXF_BUILDS_STORE: join(t2, 'store.json'), AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all', AXF_CREW_SAY: 'off',
-    AXF_PIPELINE_DIR: join(t2, 'pipeline'), AXF_SLOTS_DIR: join(t2, 'slots'), AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
+    AXF_PIPELINE_DIR: join(t2, 'pipeline'), AXF_SLOTS_DIR: join(t2, 'slots'), AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_BUILD_LIMIT: 'off', /* the host's live builds never count here */ AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: acc, AXF_CLAUDE_SEEN: join(workers, 'seen.json'), AXF_CLAUDE_WORKERS: workers, AXF_CLAUDE_HOME: join(t2, 'claude-home'), AXF_CLAUDE_GLOBAL: join(t2, 'claude.json'),
     AXF_CLAUDE_SETTINGS_FILE: settingsFile, AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: 'false', AXF_PIPELINE_WORKTREES: wt2, AXF_PIPELINE_REPO: r2, AXF_PIPELINE_CONSOLE: 'off',
     AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 3, idleAfterMin: 0, splitProvider: 'off' }) };

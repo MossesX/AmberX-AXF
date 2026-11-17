@@ -491,10 +491,12 @@ export function ensureWorktree(id, env = process.env) {
   if (existsSync(dir)) return { dir, made: false };
   if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') { mkdirSync(dir, { recursive: true }); return { dir, made: true }; }
   mkdirSync(worktreesRoot(env), { recursive: true });
-  git(REPO_ROOT, 'fetch', '-q', 'origin', 'main');
-  const base = git(REPO_ROOT, 'rev-parse', '--verify', '-q', 'origin/main').status === 0 ? 'origin/main' : 'HEAD';
-  let r = git(REPO_ROOT, 'worktree', 'add', '-B', `claude/${id}`, dir, base);
-  if (r.status !== 0 && /already checked out|already exists/.test(r.stderr)) r = git(REPO_ROOT, 'worktree', 'add', '--detach', dir, base);
+  // the repo the worktrees hang off: AXF_PIPELINE_REPO (a test's scratch repo) or this checkout, the same as step worktrees
+  const repo = repoRoot(env);
+  git(repo, 'fetch', '-q', 'origin', 'main');
+  const base = git(repo, 'rev-parse', '--verify', '-q', 'origin/main').status === 0 ? 'origin/main' : 'HEAD';
+  let r = git(repo, 'worktree', 'add', '-B', `claude/${id}`, dir, base);
+  if (r.status !== 0 && /already checked out|already exists/.test(r.stderr)) r = git(repo, 'worktree', 'add', '--detach', dir, base);
   if (r.status !== 0) throw new Error(`worktree for ${id}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
   linkModules(dir);
   return { dir, made: true };
