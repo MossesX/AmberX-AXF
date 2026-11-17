@@ -815,7 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 22:47 UTC · `rebuild-own-token-sets-every-grid-tab` note (all) · orchestrator
 - 2026-11-16 22:47 UTC · `rebuild-own-token-sets-every-grid-tab` note (all) · builds-live
 - 2026-11-16 22:48 UTC · `own-look-per-grid-and-tab-group` note (all) · orchestrator
 - 2026-11-16 22:48 UTC · `own-look-per-grid-and-tab-group` note (all) · builds-live
@@ -1215,6 +1214,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:28 UTC · `every-plugin-screen-gets-a-settings-gear` s8 done (all) · orchestrator
 - 2026-11-17 00:29 UTC · `stop-auto-lander-committing-tracking` s6 done (all) · orchestrator
 - 2026-11-17 00:29 UTC · `own-look-per-grid-and-tab-group` s15 done (all) · orchestrator
+- 2026-11-17 00:30 UTC · `stop-auto-lander-committing-tracking` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
