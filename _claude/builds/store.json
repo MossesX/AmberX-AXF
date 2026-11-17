@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7515,
- "updatedAt": "2026-11-17T15:11:49.925Z",
+ "rev": 7516,
+ "updatedAt": "2026-11-17T15:11:57.845Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202344,7 +202344,7 @@
    "pr": "#698",
    "priority": "P1",
    "createdAt": "2026-11-13T18:07:49.026Z",
-   "updatedAt": "2026-11-15T01:09:09.454Z",
+   "updatedAt": "2026-11-17T15:11:46.911Z",
    "builtAt": "2026-11-15T01:09:09.454Z",
    "notes": [
     {
@@ -202382,6 +202382,10 @@
     {
      "text": "Phase 2 done, PR #698. UI Review shots are in _claude/builds/reports/quick-settings-pinned-collapsible-pane/ and were not submitted because the headless session has no AXF_TOKEN. To submit: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --app console-web --screen settings --pr 698 --console --single-option '...'. The s1 asset-gate files conflict with main (runtime.ts, build-engine, PORTING, android.yml).",
      "at": "2026-11-15T01:08:48.744Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:46.911Z"
     }
    ],
    "approvals": [
@@ -202654,7 +202658,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224620,7 +224624,7 @@
    "pr": "#690",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-16T23:21:41.524Z",
+   "updatedAt": "2026-11-17T15:11:55.378Z",
    "builtAt": "",
    "notes": [
     {
@@ -224682,6 +224686,10 @@
     {
      "text": "Moved to the Archive from pending (cli): Brett: clear Pending.",
      "at": "2026-11-16T23:21:41.524Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:55.378Z"
     }
    ],
    "approvals": [
@@ -225536,7 +225544,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -234245,7 +234253,7 @@
    "pr": "#706",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-15T12:22:24.475Z",
+   "updatedAt": "2026-11-17T15:11:41.668Z",
    "builtAt": "2026-11-15T12:21:00.568Z",
    "notes": [
     {
@@ -234283,6 +234291,10 @@
     {
      "text": "Session axf-pending-tab-one-collapsed-row-per-2--paulie on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-15T12:22:24.475Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:41.668Z"
     }
    ],
    "approvals": [],
@@ -234705,7 +234717,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
