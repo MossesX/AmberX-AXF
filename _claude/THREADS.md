@@ -831,8 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:29 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-17 21:29 UTC · `land-pr-730-reset-all-button-far-right` s1 done (all) · orchestrator
 - 2026-11-17 21:29 UTC · `rebuild-fresh-main-hide-any-asset` s11 done (all) · orchestrator
 - 2026-11-17 21:29 UTC · `fix-banner-settings-interface-tab` s4 done (all) · orchestrator
 - 2026-11-17 21:29 UTC · `flagship-professional-skin-covering` added (0 steps) (all) · console
@@ -1231,6 +1229,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:30 UTC · `banner-widget-shapes-plus-change-icon` s13 done (all) · foreign-write
 - 2026-11-17 22:30 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
 - 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` s27 done (all) · foreign-write
+- 2026-11-17 22:30 UTC · `rebuild-fresh-main-phone-connect-small` s27 done (all) · orchestrator
+- 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 
 ## Token passes (log)
 

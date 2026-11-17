@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8206,
- "updatedAt": "2026-11-17T22:31:10.880Z",
+ "rev": 8207,
+ "updatedAt": "2026-11-17T22:31:22.192Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271389,7 +271389,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:30:56.532Z",
+   "updatedAt": "2026-11-17T22:31:10.285Z",
    "builtAt": "",
    "notes": [
     {
@@ -271715,6 +271715,10 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T22:26:17.698Z"
+    },
+    {
+     "text": "Phase 2 done (s6–s27 ticked). CI caveat: no CI run started on this branch after 21:34 UTC (GitHub queue, then the shared API limit ran out at 22:30), so apps/phone-connect (Kotlin) has not compiled in CI yet: the VPS has no Android SDK. If the first run is red on 'Build Phone Connect', the fix is in apps/phone-connect only. The earlier red run's real failures (plugins.mjs opens, token registry, command ids) are fixed; its AmberX failure was a Maven 429.",
+     "at": "2026-11-17T22:31:10.285Z"
     }
    ],
    "approvals": [
@@ -271806,7 +271810,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "hulu0241",
-     "notified": "2026-11-17T22:29:39.904Z",
+     "notified": "",
      "session": "",
      "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
