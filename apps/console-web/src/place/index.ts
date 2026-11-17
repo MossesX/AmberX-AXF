@@ -18,4 +18,9 @@ export function installPlace(rt: AxfRuntime): void {
   installScrollAndSelectionSteps();
   installPlaceSaving(rt);
   restoreOnLoad(rt);
+  // a hard `console.refresh` reloads past the HTTP cache with a one-time `?axf-refresh=`: drop it once loaded
+  try {
+    const u = new URL(location.href);
+    if (u.searchParams.has('axf-refresh')) { u.searchParams.delete('axf-refresh'); history.replaceState(history.state, '', u.toString()); }
+  } catch { /* no URL here */ }
 }
