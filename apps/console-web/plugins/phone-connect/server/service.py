@@ -232,6 +232,11 @@ def send(command: str, arguments: dict | None, by: dict, device_id: str = "", ap
     c = m["command"]
     if not S.feature_on(c["command"]):
         fail("denied", f"{S.FEATURES[S.FEATURE_OF[c['command']]]['label']} is switched off in Settings → Plugins → Phone Connect")
+    if c["command"] == "notify" and not (by.get("kind") == "service" and by.get("who") == "alerts"):
+        # every notification asks axf.notify@1 first (the alert hub already did for its own pushes)
+        gate = _notify_gate()
+        if gate is not None and not gate.allowed(c["arguments"]["notifyId"], "amberx"):
+            fail("denied", f"{c['arguments']['notifyId']} is switched off for the phone in Settings → Plugins → Notifications")
     e = E.dispatch_errors(c, d, at, origin=origin())
     if e:
         S.log({"at": at, "op": "command", "ok": False, "command": c["command"], "deviceId": d["deviceId"], "code": e["code"], "from": by})
@@ -405,6 +410,11 @@ def relay_decision(c: dict, r: dict, at: str) -> dict[str, Any]:
             out = {"ok": False, "code": "unexpected", "message": f"The relay failed ({type(e).__name__}). Nothing was decided."}
     S.log({"at": at, "op": "decision", "id": c["id"], "approvalId": tap["approvalId"], "decision": tap["decision"], "ok": bool(out.get("ok")), "code": out.get("code", "")})
     return out
+
+
+def _notify_gate() -> Any:
+    import plugin_services
+    return plugin_services.get("axf.notify@1")
 
 
 def _relay() -> Any:

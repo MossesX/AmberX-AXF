@@ -198,3 +198,14 @@ c = S.command(r["id"])
 check("an alert becomes a phone notification", (c["command"], c["arguments"]["kind"], c["arguments"]["priority"], c["arguments"]["notifyId"]), ("notify", "alert", "high", "builds.ci-red"))
 r = cap.push_alert({"source": "x", "severity": "warning", "title": "t"}, "", "https://elsewhere.test/")
 ok("a link outside the phone's policy is dropped, not refused", r["ok"] and "url" not in S.command(r["id"])["arguments"])
+
+
+class Gate:
+    def allowed(self, type_id, channel):
+        return type_id != "phone-connect.direct"
+
+
+plugin_services.provide("axf.notify@1", Gate(), folder="notify-control")
+check("a direct notification asks axf.notify@1 first", cl.post(f"{P}/notify", json={"title": "x"}, headers=SESSION).json()["error"]["code"], "denied")
+ok("the alert hub's own pushes were checked already", cap.push_alert({"source": "x", "severity": "error", "title": "t"}, "phone-connect.direct")["ok"])
+plugin_services.withdraw("notify-control")

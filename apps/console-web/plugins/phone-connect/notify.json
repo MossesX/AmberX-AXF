@@ -8,8 +8,8 @@
       "app": "console",
       "source": "Phone Connect",
       "description": "A notification a session, the CLI, MCP or a voice command sent straight to the phone (phone.notify).",
-      "enforced": "device",
-      "only": ["amberx"]
+      "match": { "source": "phone-connect", "keyPrefix": "phone-connect:direct:" },
+      "priority": "default"
     },
     {
       "id": "phone-connect.paired",
