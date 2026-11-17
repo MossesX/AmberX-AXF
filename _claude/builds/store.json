@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7971,
- "updatedAt": "2026-11-17T21:19:48.198Z",
+ "rev": 7972,
+ "updatedAt": "2026-11-17T21:20:09.322Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265906,7 +265906,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:18:06.950Z",
+   "updatedAt": "2026-11-17T21:20:04.988Z",
    "builtAt": "",
    "notes": [
     {
@@ -266196,12 +266196,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:20:04.988Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T14:51:42.630Z"
+     "updatedAt": "2026-11-17T21:20:05.803Z"
     },
     {
      "id": "s8",
@@ -266446,7 +266446,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -268424,17 +268424,7 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T21:06:34.794Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -276127,22 +276117,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:19:12.257Z",
-     "buildId": "rebuild-every-toolbar-page-specific",
-     "phase": "",
-     "step": "s27",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "2026-11-17T21:19:27.343Z",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -278373,62 +278347,8 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T20:29:29.227Z",
-     "exit": 143,
-     "signal": "TERM",
-     "kind": "stopped",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-guided-live-demo-test-watch-orchestrator--earl",
-     "phase": "Phase 2"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T20:16:06.062Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s4",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    },
-    {
-     "at": "2026-11-17T20:32:04.340Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s12",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3)."
-    },
-    {
-     "at": "2026-11-17T21:19:15.913Z",
-     "buildId": "guided-live-demo-test-watch-orchestrator",
-     "phase": "",
-     "step": "s23",
-     "cause": "exit-killed",
-     "exit": 143,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "2026-11-17T21:19:27.343Z",
-     "session": "",
-     "note": "session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
