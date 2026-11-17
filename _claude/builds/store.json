@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7506,
- "updatedAt": "2026-11-17T15:09:58.242Z",
+ "rev": 7507,
+ "updatedAt": "2026-11-17T15:10:18.599Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140483,7 +140483,7 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-17T15:08:32.347Z",
+   "updatedAt": "2026-11-17T15:10:02.856Z",
    "builtAt": "",
    "notes": [
     {
@@ -140537,6 +140537,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:32.347Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:02.856Z"
     }
    ],
    "approvals": [],
@@ -140671,7 +140675,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -197824,7 +197828,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-17T15:08:29.557Z",
+   "updatedAt": "2026-11-17T15:09:58.298Z",
    "builtAt": "",
    "notes": [
     {
@@ -197902,6 +197906,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:29.557Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:58.298Z"
     }
    ],
    "approvals": [],
@@ -198077,7 +198085,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -220694,7 +220702,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "#670",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-17T15:08:39.917Z",
+   "updatedAt": "2026-11-17T15:10:13.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -220776,6 +220784,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:39.917Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:13.809Z"
     }
    ],
    "approvals": [
@@ -220916,7 +220928,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222662,7 +222674,7 @@
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-17T15:08:35.255Z",
+   "updatedAt": "2026-11-17T15:10:10.275Z",
    "builtAt": "",
    "notes": [
     {
@@ -222688,6 +222700,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:35.255Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:10.275Z"
     }
    ],
    "approvals": [],
@@ -222819,7 +222835,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {

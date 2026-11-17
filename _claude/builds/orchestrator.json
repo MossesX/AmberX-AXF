@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:09:58.242Z",
+ "updatedAt": "2026-11-17T15:10:18.599Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92923,7 +92923,7 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-17T15:08:32.347Z",
+   "updatedAt": "2026-11-17T15:10:02.856Z",
    "builtAt": "",
    "notes": [
     {
@@ -92977,6 +92977,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:32.347Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:02.856Z"
     }
    ],
    "approvals": [],
@@ -111165,7 +111169,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-17T15:08:29.557Z",
+   "updatedAt": "2026-11-17T15:09:58.298Z",
    "builtAt": "",
    "notes": [
     {
@@ -111243,6 +111247,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:29.557Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:58.298Z"
     }
    ],
    "approvals": [],
@@ -140719,7 +140727,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "#670",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-17T15:08:39.917Z",
+   "updatedAt": "2026-11-17T15:10:13.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -140801,6 +140809,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:39.917Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:13.809Z"
     }
    ],
    "approvals": [
@@ -142702,7 +142714,7 @@
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-17T15:08:35.255Z",
+   "updatedAt": "2026-11-17T15:10:10.275Z",
    "builtAt": "",
    "notes": [
     {
@@ -142728,6 +142740,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:35.255Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:10.275Z"
     }
    ],
    "approvals": [],
