@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "claude-link-layout-cards",
+ "name": "claude-link-layout: Cards",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "One card per event: the facts on top, the summary in bigger text under them. Reads best on a phone; fewer events per screen.",
+ "tags": [
+  "ui-choice",
+  "choice-set:claude-link-layout",
+  "choice-option:cards"
+ ],
+ "data": {
+  "view": "cards",
+  "settingKey": "terminal.claudeLinkLayout",
+  "appliesTo": [
+   "terminal.claude-link"
+  ]
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "claude-link-layout-dense",
+ "name": "claude-link-layout: Dense rows",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "One line per event: time, kind chip, source, account / model, session, summary; tap a row to open its detail under it. Most events on screen; the default.",
+ "tags": [
+  "ui-choice",
+  "choice-set:claude-link-layout",
+  "choice-option:dense"
+ ],
+ "data": {
+  "view": "dense",
+  "settingKey": "terminal.claudeLinkLayout",
+  "appliesTo": [
+   "terminal.claude-link"
+  ]
+ }
+}
