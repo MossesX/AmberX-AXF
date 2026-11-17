@@ -14,7 +14,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup, type SettingsTab } from '../../core';
 import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
@@ -465,7 +465,9 @@ export function SettingsView() {
   // Every tab as the settings asset arranges it (order, labels, left out), then split into top tabs and sub-tabs.
   const level = useSettingsLevel(ui);
   const levelBar = useLevelBarOn();
-  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui).filter((t) => shownAtLevel(ui, t.id, level));
+  // A plugin's tabs are never rendered here (plugin-settings@1, Nov 17 2026): they stay registered under Plugins for
+  // discovery, and Settings → Plugins lists them; each opens the plugin's own PluginSettingsWindow.
+  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui).filter((t) => shownAtLevel(ui, t.id, level) && !pluginOfSettingsTab(rt, t.id));
   const byId = new Map(all.map((t) => [t.id, t]));
   const childrenOf = (id: string) => all.filter((t) => t.parent === id);
   const tabs = all.filter((t) => !t.parent || !byId.has(t.parent)).filter((t) => !(pluginLock && t.id === 'plugins' && !childrenOf('plugins').length));
@@ -865,6 +867,27 @@ function AllDialog() {
   );
 }
 
+/**
+ * Settings → Plugins: every plugin with settings, one row each, opening its own settings window (settings.plugin:<id>).
+ * Nothing of a plugin's renders inside the app's Settings.
+ */
+function PluginSettingsList() {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const byPlugin = new Map<string, SettingsTab[]>();
+  for (const t of rt.settings.listTabs()) {
+    const p = pluginOfSettingsTab(rt, t.id);
+    if (p) byPlugin.set(p, [...(byPlugin.get(p) ?? []), t]);
+  }
+  if (!byPlugin.size) return <p className="fx-muted axf-settings__hint" style={{ margin: 0 }}>No plugin has settings.</p>;
+  const rows = [...byPlugin.entries()].map(([id, tabs]) => ({ id, tab: tabs.find((t) => t.plugin === id) ?? tabs[0]! })).sort((a, b) => a.tab.label.localeCompare(b.tab.label));
+  return (
+    <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label="Plugin settings" data-axf-plugin-settings-list={rows.length} data-axf-not-nav="the list of plugins whose own settings open in their own window, not a navigation menu">
+      {rows.map(({ id, tab }) => <NavRow key={id} id={`plugin:${id}`} icon={tab.icon} label={tab.label} desc={tab.description ?? 'Its own settings window'} onClick={() => rt.dispatch(`settings.plugin:${id}`)} />)}
+    </nav>
+  );
+}
+
 /** The level toolbar inside a PluginSettingsWindow: the plugin's interface (useSettingsUi reads the override), the toolbar's own switch. */
 function PluginLevelBar() {
   const ui = useSettingsUi();
@@ -1219,6 +1242,7 @@ export const library: AxfWebLibrary = {
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
     { id: 'axf.appearance.changed', tab: 'appearance', title: 'Changed here', icon: 'list', order: 5, render: () => <ChangedAssetsPanel /> },
     { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
+    { id: 'axf.plugins.settings', tab: 'plugins', title: 'Plugin settings', icon: 'package', order: 40, render: () => <PluginSettingsList /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
