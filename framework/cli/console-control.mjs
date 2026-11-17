@@ -33,7 +33,7 @@ const CHROME_KINDS = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 
 export const chromeSettingAddress = (type, id, key) => `setting:chrome.${type}.${id}.${key}`;
 const VERBS = ['open', 'state', 'press', 'set', 'scroll', 'focus', 'search', 'list', 'plugin.enable', 'plugin.disable'];
 const SCROLL_DIRS = ['up', 'down', 'page-up', 'page-down', 'top', 'bottom', 'to'];
-const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by', 'set']);
+const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by', 'set', 'path']);
 
 /** argv → { words, flags }. */
 export function parseArgs(argv) {
