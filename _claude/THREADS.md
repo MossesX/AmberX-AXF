@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:09 UTC · `gate-rules-plugin-in-the-console` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `phone-connect-small-android-companion` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `shipped-features-open-button-views-each` note (all) · foreign-write
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:30 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
 - 2026-11-17 20:31 UTC · `rebuild-every-toolbar-page-specific` → pending (all) · Brett
 - 2026-11-17 20:32 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 20:32 UTC · `separate-settings-per-plugin-reset` s16 done (all) · orchestrator
 
 ## Token passes (log)
 
