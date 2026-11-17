@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "skin",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "The flagship professional skin: one product look for the console, axHub web and AmberX. Covers colours (light + dark), style, type, layout, every menu and chrome kind, banners and widgets, grids, dialogs, settings, motion, behaviour and hooks.",
+  "tags": [
+    "flagship",
+    "professional",
+    "skin",
+    "compact"
+  ],
+  "data": {
+    "layoutTheme": "axhub-console",
+    "colorTheme": "flagship-dark",
+    "colorThemes": {
+      "light": "flagship-light",
+      "dark": "flagship-dark"
+    },
+    "styleTheme": "flagship",
+    "behaviorTheme": "standard",
+    "assets": {
+      "typography": "flagship"
+    },
+    "preview": {
+      "caption": "Blue-black and amber, compact, quiet motion: one product across console, axHub and AmberX."
+    },
+    "iconPack": "amberx-outline"
+  }
+}

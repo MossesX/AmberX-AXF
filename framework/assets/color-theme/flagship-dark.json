@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "color-theme",
+  "id": "flagship-dark",
+  "name": "Flagship Dark",
+  "description": "The flagship skin, dark tone: deep blue-black surfaces in four even steps, a warm amber accent for the one action that matters, cool info and clear status colours. Contrast AA on every text pair.",
+  "tags": [
+    "dark",
+    "flagship",
+    "professional"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0b0d12",
+      "surface": "#11141b",
+      "surface2": "#171b24",
+      "surface3": "#20252f",
+      "text": "#e8ebf1",
+      "muted": "#929bab",
+      "border": "#262c38",
+      "accent": "#f2a93b",
+      "accentText": "#1a1204",
+      "accentSoft": "rgba(242,169,59,0.14)",
+      "danger": "#f0646f",
+      "success": "#3fc58a",
+      "warning": "#f2c14e",
+      "info": "#64a8ff",
+      "focus": "#f2a93b",
+      "shadow": "rgba(0,0,0,0.5)"
+    }
+  }
+}

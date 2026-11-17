@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "color-theme",
+  "id": "flagship-light",
+  "name": "Flagship Light",
+  "description": "The flagship skin, light tone: paper-white surfaces on a cool grey floor, the same amber accent deepened for contrast on white, and status colours tuned for light backgrounds.",
+  "tags": [
+    "light",
+    "flagship",
+    "professional"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f3f4f7",
+      "surface": "#ffffff",
+      "surface2": "#f8f9fb",
+      "surface3": "#e8eaf0",
+      "text": "#141821",
+      "muted": "#5d6676",
+      "border": "#d8dce4",
+      "accent": "#b86a00",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(184,106,0,0.1)",
+      "danger": "#c9303b",
+      "success": "#1d8a57",
+      "warning": "#a86a00",
+      "info": "#1f6fd1",
+      "focus": "#b86a00",
+      "shadow": "rgba(16,24,40,0.12)"
+    }
+  }
+}
