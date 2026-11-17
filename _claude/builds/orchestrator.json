@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:09:41.768Z",
+ "updatedAt": "2026-11-17T19:10:58.314Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124103,7 +124103,7 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T19:00:58.061Z",
+   "updatedAt": "2026-11-17T19:10:52.719Z",
    "builtAt": "",
    "notes": [
     {
@@ -124149,6 +124149,10 @@
     {
      "text": "PR #772 clashes with main after #780 (stale-row watchdog) landed: add/add conflicts in build-orchestrator watchdog.py, watchdog.mjs, server/__init__.py, plugin.json, web/index.tsx, orchestrator.css. Rebuild on Fable on top of current main, keeping all 21 done steps; fold this watchdog into #780's watchdog files instead of duplicating them, then land.",
      "at": "2026-11-17T19:00:42.112Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-049560ce → Complete: Its PR merged on main (PR #772 merged 2026-11-17T19:07:59Z (8f30a4cb2217); on main by squash 8f30a4cb2217; build server-watchdog-orchestrator-auto-recovers-stuck: running)",
+     "at": "2026-11-17T19:10:52.719Z"
     }
    ],
    "approvals": [
@@ -124691,7 +124695,7 @@
    "pr": "#574",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-16T23:50:04.988Z",
+   "updatedAt": "2026-11-17T19:10:52.719Z",
    "builtAt": "2026-11-13T13:23:41.684Z",
    "notes": [
     {
@@ -124741,6 +124745,14 @@
     {
      "text": "Superseded: PR #574 was closed unmerged on Nov 16 2026 and its branch is gone, so build-recovery@1 never reached main. Brett re-asked on Nov 13; build server-watchdog-orchestrator-auto-recovers-stuck (branch claude/server-watchdog-orchestrator-auto-recovers-stuck) carries it as build-watchdog@1: framework/core/build-watchdog.mjs, schemas/build-watchdog.json, recoveries[] on builds@1, fixtures + check-build-watchdog in CI.",
      "at": "2026-11-16T23:50:04.988Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261113-0b8d5125 → Remove: Its PR was closed without a merge (PR #574 closed; build auto-recover-stuck-builds: built; branch claude/auto-recover-stuck-builds deleted)",
+     "at": "2026-11-17T19:10:52.719Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261113-7fa47dbf → Remove: Its PR was closed without a merge (PR #574 closed; build auto-recover-stuck-builds: built; branch claude/auto-recover-stuck-builds deleted)",
+     "at": "2026-11-17T19:10:52.719Z"
     }
    ],
    "approvals": [
@@ -128782,7 +128794,7 @@
    "pr": "#635",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-17T00:41:53.705Z",
+   "updatedAt": "2026-11-17T19:10:52.719Z",
    "builtAt": "2026-11-13T19:09:27.501Z",
    "notes": [
     {
@@ -128836,6 +128848,10 @@
     {
      "text": "Marked built with PR #635, but that PR was closed unmerged on Nov 16 and its branch deleted: the decision-dialog plugin is not on main. Commits are still at refs/pull/635/head and merged cleanly against main in a dry run. The prompt engine (prompting-engine-control-panel-to-create) only uses it through axf.decisions@1 when present, so it is not blocked; re-land this build to get the pop-up dialog.",
      "at": "2026-11-17T00:41:53.705Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261113-89d7348e → Remove: Its PR was closed without a merge (PR #635 closed; build decision-dialog-ui-review-other: built; branch claude/decision-dialog-ui-review-other deleted)",
+     "at": "2026-11-17T19:10:52.719Z"
     }
    ],
    "approvals": [],
@@ -131721,7 +131737,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
+   "updatedAt": "2026-11-17T19:10:52.719Z",
    "builtAt": "",
    "notes": [
     {
@@ -131771,6 +131787,10 @@
     {
      "text": "Watchdog: Merge queue entry 750 → Remove: The build was cancelled (PR #750 open; not on main; build console-app-part-2-native-floating-2: archived)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 750 → Remove: The build was cancelled (PR #750 open; not on main; build console-app-part-2-native-floating-2: archived)",
+     "at": "2026-11-17T19:10:52.719Z"
     }
    ],
    "approvals": [],
@@ -170179,7 +170199,7 @@
    "mergedAt": "2026-11-17T19:06:28Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T19:07:15.016Z",
+   "updatedAt": "2026-11-17T19:10:52.719Z",
    "builtAt": "",
    "notes": [
     {
@@ -170233,6 +170253,10 @@
     {
      "text": "Reconciler: PR #771 merged",
      "at": "2026-11-17T19:07:15.016Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-yj8u501 → Complete: Its PR merged on main (PR #771 merged 2026-11-17T19:06:28Z (f549a7643afb); on main by squash f549a7643afb; build server-rule-done-means-merged-working: pending)",
+     "at": "2026-11-17T19:10:52.719Z"
     }
    ],
    "approvals": [

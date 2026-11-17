@@ -826,11 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · pipeline
-- 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` branch claude/move-server-side-console-parts-onto-vps (all) · pipeline
-- 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
-- 2026-11-17 12:29 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
-- 2026-11-17 12:29 UTC · `orchestrator-stale-row-watchdog-vps` → running, note (all) · pipeline
 - 2026-11-17 12:29 UTC · `orchestrator-stale-row-watchdog-vps` → running, note (all) · orchestrator
 - 2026-11-17 12:29 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
 - 2026-11-17 12:30 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · pipeline
@@ -1226,6 +1221,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:09 UTC · `notify-phone-when-queue-starts-building` added (0 steps) (all) · foreign-write
 - 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · orchestrator
 - 2026-11-17 19:09 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
+- 2026-11-17 19:10 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
+- 2026-11-17 19:10 UTC · `auto-recover-stuck-builds` note (all) · watchdog
+- 2026-11-17 19:10 UTC · `decision-dialog-ui-review-other` note (all) · watchdog
+- 2026-11-17 19:10 UTC · `console-app-part-2-native-floating-2` note (all) · watchdog
+- 2026-11-17 19:10 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
 
 ## Token passes (log)
 
