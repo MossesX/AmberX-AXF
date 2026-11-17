@@ -7782,6 +7782,18 @@
    "from": "",
    "addenda": []
   },
+  "rebuild-every-toolbar-page-specific": {
+   "said": "Everywhere there's a toolbar, rebuild the asset for that page/plugin with useful, integrated buttons made for it. Use Fable.",
+   "at": "2026-11-17T18:56:41.307Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "rebuild-fresh-main-collapsible-sections": {
    "said": "Why aren't these sections in my settings collapsible?",
    "at": "2026-11-17T18:25:05.725Z",
