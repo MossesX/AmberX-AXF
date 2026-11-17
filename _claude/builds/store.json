@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7935,
- "updatedAt": "2026-11-17T21:07:44.274Z",
+ "rev": 7936,
+ "updatedAt": "2026-11-17T21:07:52.137Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -279758,7 +279758,7 @@
    "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-17T21:01:32.193Z",
+   "updatedAt": "2026-11-17T21:07:45.194Z",
    "builtAt": "2026-11-17T21:01:32.194Z",
    "notes": [
     {
@@ -279830,7 +279830,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-17T21:07:45.194Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-terminal-main-tab-streaming-console-s--sully",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
@@ -280198,7 +280208,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
