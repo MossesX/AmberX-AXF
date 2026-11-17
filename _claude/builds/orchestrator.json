@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:44:09.209Z",
+ "updatedAt": "2026-11-17T21:44:19.951Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186253,10 +186253,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/icon-picker-every-banner-settings-widget",
-   "pr": "",
+   "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:42:19.988Z",
+   "updatedAt": "2026-11-17T21:44:07.855Z",
    "builtAt": "",
    "notes": [
     {
@@ -186290,6 +186290,10 @@
     {
      "text": "Headless run axf-icon-picker-every-banner-settings-widget--joey: brief only · start 17.7K tokens ($0.12) · cost $9.42 · 89 turns · 6 tools, MCP none",
      "at": "2026-11-17T21:42:19.988Z"
+    },
+    {
+     "text": "Reconciler: PR #820; PR #820 names s1, s2 done",
+     "at": "2026-11-17T21:44:07.855Z"
     }
    ],
    "approvals": [],
