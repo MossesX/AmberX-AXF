@@ -28,7 +28,9 @@
       "context-menu": "flagship",
       "app-menu": "flagship",
       "nav-menu": "flagship",
-      "nav-style": "flagship"
+      "nav-style": "flagship",
+      "tab-group": "flagship",
+      "toolbar": "flagship"
     },
     "preview": {
       "caption": "Blue-black and amber, compact, quiet motion: one product across console, axHub and AmberX."
@@ -41,6 +43,26 @@
         "app-menu": false,
         "toolbar": false,
         "nav-menu": false
+      }
+    },
+    "behavior": {
+      "tapConfirm": {
+        "armMs": 3000,
+        "toolbar": "on",
+        "tab-group": "on",
+        "nav-menu": "on",
+        "app-menu": "on",
+        "context-menu": "on",
+        "banner": "on"
+      },
+      "overflow": {
+        "tab-group": "more"
+      },
+      "sticky": {
+        "tab-group": true
+      },
+      "collapse": {
+        "toolbar": true
       }
     }
   }
