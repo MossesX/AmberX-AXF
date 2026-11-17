@@ -2420,5 +2420,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.hidden-assets": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-react",
+    "notes": "Build rebuild-fresh-main-hide-any-asset (Nov 17 2026; Brett: \"We're supposed to be able to hide toolbars and tab groups and all that and be able to see what's hidden.\"). Right-click → Hide on every tab group, toolbar, banner, nav, menu bar and widget (Undo toast); Assets menu: Hidden items… (count), Unhide all, Hide ▸; Settings → Appearance → Hidden and dialog axf.hidden-assets. State in app-look@1 own.hiddenAssets on axHub (rt.hide / unhide / unhideAll). REST /api/hidden-assets, MCP hidden_assets_list|hide|unhide|unhide_all, console actions chrome.hide|unhide|unhideAll|hidden, axf hidden …, voice (console + AmberX), deep links view:settings/tab:appearance#hidden and dialog:axf.hidden-assets. Checks: spec/check-hidden-assets.mts, server tests/test_hidden_assets.py. Kotlin twin deferred (PORTING.md)."
   }
 }
