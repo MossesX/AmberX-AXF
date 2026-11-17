@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7508,
- "updatedAt": "2026-11-17T15:10:35.651Z",
+ "rev": 7509,
+ "updatedAt": "2026-11-17T15:10:47.109Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205007,7 +205007,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-16T22:44:41.832Z",
+   "updatedAt": "2026-11-17T15:10:43.918Z",
    "builtAt": "",
    "notes": [
     {
@@ -205185,6 +205185,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: rebuild fresh on main.",
      "at": "2026-11-16T22:44:41.832Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:43.918Z"
     }
    ],
    "approvals": [
@@ -205594,7 +205598,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206754,7 +206758,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-16T19:26:34.432Z",
+   "updatedAt": "2026-11-17T15:10:39.119Z",
    "builtAt": "",
    "notes": [
     {
@@ -206828,6 +206832,10 @@
     {
      "text": "Session axf-console-app-part-3-native-bridge-mic--gina on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T19:43:04.738Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:39.119Z"
     }
    ],
    "approvals": [
@@ -207065,7 +207073,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -207107,7 +207115,7 @@
    "pr": "#640",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-16T22:53:09.377Z",
+   "updatedAt": "2026-11-17T15:10:35.613Z",
    "builtAt": "",
    "notes": [
     {
@@ -207137,6 +207145,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T22:53:09.377Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:10:35.613Z"
     }
    ],
    "approvals": [],
@@ -207356,7 +207368,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {

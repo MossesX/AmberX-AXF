@@ -821,9 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:41 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
-- 2026-11-17 00:42 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
-- 2026-11-17 00:42 UTC · `every-plugin-screen-gets-a-settings-gear` s18 done (all) · orchestrator
 - 2026-11-17 00:43 UTC · `land-per-instance-settings-picker` → running, note (all) · pipeline
 - 2026-11-17 00:43 UTC · `stop-auto-lander-committing-tracking` s12 done (all) · orchestrator
 - 2026-11-17 00:43 UTC · `orchestrator-stale-row-watchdog-vps` s2 done (all) · orchestrator
@@ -1221,6 +1218,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:10 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · orchestrator
 - 2026-11-17 15:10 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
+- 2026-11-17 15:10 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 
 ## Token passes (log)
 
