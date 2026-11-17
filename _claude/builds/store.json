@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7592,
- "updatedAt": "2026-11-17T18:43:18.709Z",
+ "rev": 7593,
+ "updatedAt": "2026-11-17T18:43:26.727Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -272474,10 +272474,16 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T18:43:16.825Z",
-   "updatedAt": "2026-11-17T18:43:16.825Z",
+   "updatedAt": "2026-11-17T18:43:23.739Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: name the Gate setting 'Skip CI on main after a merge' (checkbox), ON by default. Turning it off brings back the full run on main after each merge.",
+     "at": "2026-11-17T18:43:23.739Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -272501,7 +272507,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:43:18.709Z",
+ "updatedAt": "2026-11-17T18:43:26.727Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -178403,10 +178403,16 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T18:43:16.825Z",
-   "updatedAt": "2026-11-17T18:43:16.825Z",
+   "updatedAt": "2026-11-17T18:43:23.739Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett: name the Gate setting 'Skip CI on main after a merge' (checkbox), ON by default. Turning it off brings back the full run on main after each merge.",
+     "at": "2026-11-17T18:43:23.739Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
