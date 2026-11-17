@@ -1,6 +1,6 @@
 # axf-data on Postgres: real tables in its own container
 
-Build `axf-data-postgres-real-tables-own` · branch `claude/axf-data-postgres-real-tables-own` · Phase 1 (Fable) · follows
+Build `axf-data-postgres-real-tables-own` · branch `claude/axf-data-postgres-real-tables-own` · Phase 1 (Fable), Phase 2 (Opus) · follows
 `data-container-axf-data-holds-all` (PR #704, SQLite + blobs; this branch contains it and lands after it).
 
 Brett, Nov 15 2026: "Yeah, I want to migrate everything to a database in its own container. Land it, and then follow it
@@ -66,9 +66,13 @@ what the plugin reads; its three layout options are still in UI Review from #704
 | `node framework/spec/check-data-store.mjs` | 68 ok |
 | `python3 apps/console-web/server/test_data_store.py` · `apps/console-web/plugins/data-store/test.py` | all ok |
 | `node apps/console-web/scripts/control-inventory.mjs --check` · `node framework/cli/check-console-control.mjs` | ok |
+| Phase 2 (Nov 17), after merging data-container again (claude-settings device views through data-files): all of the above re-run | test_pg 20 ok, test_store 14 ok, check-data-store 68 ok, data_store / plugin / control inventory / console-control / claude-settings 93 ok |
 | CI: `.github/workflows/android.yml` engine job starts a postgres:16-alpine container and runs `test_pg.py` | added |
 
 ## Open
+
+- Running `test_pg.py` by hand with `AXF_DATA_PG_TOOLS="docker exec -i <c>"`: `AXF_DATA_PG_TOOLS_DSN` is the
+  container's own port (127.0.0.1:5432), not the mapped host port (noted in the test header).
 
 - **VPS install** after the merge: `sudo bash deploy/install-data.sh` (fresh: Postgres from the start), re-run the console
   installer, then migrate and shadow one namespace at a time (settings first, builds last) with `axf data mode`.
