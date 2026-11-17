@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7585,
- "updatedAt": "2026-11-17T18:33:55.345Z",
+ "rev": 7586,
+ "updatedAt": "2026-11-17T18:34:40.279Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -272324,6 +272324,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T18:33:45.985Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "grid-filter-plugin-one-filter-search",
+   "title": "Grid Filter plugin: one filter/search/sort dialog that ties to any grid, plus an All builds tab",
+   "category": "",
+   "detail": "New plugin 'Grid Filter': a small dialog with filters, search bar, sort by, group by and saved presets; its own settings. Every grid (and tab group / dataset) gets a Plugins tab in its settings where Grid Filter is tied to it. Opening the plugin lists every grid it's tied to. Right-click any grid > apply a filter preset: replaces whatever filter/sort/queue that grid had. A filter icon on each grid header (or right-click > Filter) opens the dialog for that grid. Orchestrator gets an 'All builds' tab showing every build, driven by this filter; 'Ready to merge (built, not merged)' ships as a saved preset (replaces the separate merge-queue view). Display only, landing stays with the orchestrator. Full API parity (deep link, state, REST, MCP, CLI, voice). Tests + UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:34:36.995Z",
+   "updatedAt": "2026-11-17T18:34:36.995Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We need a tab that shows every single one in the orchestrator, but just have filters. Make a plugin, a little dialogue with filters, search bar, sort by, all that stuff. It has its own settings, but it would also exist in any data set settings, any grid. Every grid will have in its settings a tab for plugins, and that plugin ties that dialogue to that grid. You can open the plugin and see all the grids it's tied to. If you right click on any grid, you can apply that, which will remove any filter or queue there and have the new one. You'll click a little filter or right click the grid and it will open the dialogue.",
+    "at": "2026-11-17T18:34:36.995Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 955
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
