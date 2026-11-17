@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7258,
- "updatedAt": "2026-11-17T03:34:22.384Z",
+ "rev": 7259,
+ "updatedAt": "2026-11-17T03:34:47.448Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -243373,7 +243373,7 @@
    "pr": "#726",
    "priority": "P0",
    "createdAt": "2026-11-16T16:29:28.078Z",
-   "updatedAt": "2026-11-16T22:53:41.846Z",
+   "updatedAt": "2026-11-17T03:34:11.720Z",
    "builtAt": "",
    "notes": [
     {
@@ -243439,6 +243439,10 @@
     {
      "text": "Moved to the Archive from built (cli): Brett: archive all >500 behind main.",
      "at": "2026-11-16T22:53:41.846Z"
+    },
+    {
+     "text": "Absorbed into server-auto-lander-fixes-lands (Nov 17 2026): Brett's words are addenda there; open steps folded in as its s24/s25. Nothing left to build here.",
+     "at": "2026-11-17T03:34:11.720Z"
     }
    ],
    "approvals": [],
@@ -244086,7 +244090,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -257977,7 +257981,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T03:33:25.913Z",
+   "updatedAt": "2026-11-17T03:33:55.656Z",
    "builtAt": "",
    "notes": [
     {
@@ -258034,6 +258038,13 @@
     "verbatim": true,
     "from": "",
     "addenda": [
+     {
+      "said": "We gotta migrate to Postgres to get this going, finish the migration for Postgres. Is the auto-lander fixed?",
+      "at": "2026-11-16T16:22:57.802Z",
+      "source": "console",
+      "by": "get-main-green-unblock-lander-land-axf",
+      "verbatim": true
+     },
      {
       "said": "Put fix main on more than one slot, they won't conflict.",
       "at": "2026-11-16T16:29:28.078Z",
@@ -258657,6 +258668,55 @@
      "rev": 1,
      "createdAt": "2026-11-16T23:24:34.880Z",
      "updatedAt": "2026-11-16T23:24:34.880Z"
+    },
+    {
+     "id": "s24",
+     "uid": "st-mwk51azb01ixm7",
+     "title": "",
+     "text": "Absorbed from get-main-green-unblock-lander-land-axf s17: run the Postgres migration on the VPS. Compare row counts per table with the source store, spot-check builds, changes and settings reads through the console API and MCP, and check the console health/systems-check item for Postgres. Record the before/after counts in this build's report and send Brett an FYI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/",
+      "_claude/builds/reports/server-auto-lander-fixes-lands.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T03:33:46.418Z",
+     "updatedAt": "2026-11-17T03:33:47.351Z"
+    },
+    {
+     "id": "s25",
+     "uid": "st-mwk51i5w010aak",
+     "title": "",
+     "text": "Absorbed from get-main-green-unblock-lander-land-axf s19: run the CI sweep checks again on main, confirm the auto-lander lands the rest one at a time, and put the axf-data + Postgres migration results and the lander status in this build's report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/server-auto-lander-fixes-lands.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T03:33:55.664Z",
+     "updatedAt": "2026-11-17T03:33:56.660Z"
     }
    ],
    "profiles": [
