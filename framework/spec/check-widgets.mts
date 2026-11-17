@@ -300,4 +300,12 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   ok(!rt.contributedContext('banner').some((e) => e.label === 'Shape'), 'widget menu: an unknown widget gets none');
 }
 
+// custom shape editor presets: every one is an outline the engine accepts, ids unique
+{
+  const { WIDGET_SHAPE_PRESETS, customPathClip } = await import('../core/engines/bannerwidgets');
+  ok(WIDGET_SHAPE_PRESETS.length >= 6, 'presets: at least six ready-made outlines');
+  eq(new Set(WIDGET_SHAPE_PRESETS.map((p) => p.id)).size, WIDGET_SHAPE_PRESETS.length, 'presets: ids unique');
+  for (const p of WIDGET_SHAPE_PRESETS) ok(customPathClip(p.path)?.startsWith('polygon(') === true, `preset ${p.id}: the engine accepts it`);
+}
+
 console.log(`check-widgets: ${checks} checks ok`);

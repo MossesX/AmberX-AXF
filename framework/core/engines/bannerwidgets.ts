@@ -293,6 +293,21 @@ export function flattenCustomPath(d: unknown): [number, number][] | null {
   return pts.map(([px, py]) => [round2(px), round2(py)]);
 }
 
+/**
+ * Ready-made custom outlines (the custom shape editor's preset list, `banner.widget:<w>:path=<d>`): each one is a path
+ * flattenCustomPath accepts (check-widgets proves it). Append-only: a preset id may be named by a saved choice or a script.
+ */
+export const WIDGET_SHAPE_PRESETS: readonly { id: string; label: string; path: string }[] = [
+  { id: 'diamond', label: 'Diamond', path: 'M50 0 L100 50 L50 100 L0 50 Z' },
+  { id: 'octagon', label: 'Octagon', path: 'M30 0 L70 0 L100 30 L100 70 L70 100 L30 100 L0 70 L0 30 Z' },
+  { id: 'triangle', label: 'Triangle', path: 'M50 0 L100 100 L0 100 Z' },
+  { id: 'shield', label: 'Shield', path: 'M50 0 L100 15 L100 50 Q100 85 50 100 Q0 85 0 50 L0 15 Z' },
+  { id: 'star', label: 'Star', path: 'M50 0 L61 35 L98 35 L68 57 L79 91 L50 70 L21 91 L32 57 L2 35 L39 35 Z' },
+  { id: 'tag', label: 'Tag', path: 'M0 0 L75 0 L100 50 L75 100 L0 100 Z' },
+  { id: 'squircle', label: 'Squircle', path: 'M50 0 C90 0 100 10 100 50 C100 90 90 100 50 100 C10 100 0 90 0 50 C0 10 10 0 50 0 Z' },
+  { id: 'leaf', label: 'Leaf', path: 'M0 100 C0 40 40 0 100 0 C100 60 60 100 0 100 Z' },
+];
+
 /** A custom path as a CSS clip (`polygon(x% y%, …)`), or null when the path is refused. */
 export function customPathClip(d: unknown): string | null {
   const pts = flattenCustomPath(d);

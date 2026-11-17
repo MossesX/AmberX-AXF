@@ -316,6 +316,13 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-widget-icon-picker__cell { display: flex; justify-content: center; border-radius: var(--fx-radius-sm); }
 .fx-widget-icon-picker__cell.is-on { background: var(--fx-accent-soft); box-shadow: inset 0 0 0 var(--fx-border-w) var(--fx-accent); }
 .fx-widget-icon-picker__actions { justify-content: flex-end; flex-wrap: wrap; }
+/* Custom shape editor (react/components/WidgetShapeEditor.tsx): the preview and preset swatches read the shape clip token */
+.fx-widget-shape-editor { min-width: 0; }
+.fx-widget-shape-editor__preview { display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: calc(var(--fx-row-h) * 2); block-size: calc(var(--fx-row-h) * 2); background: var(--fx-accent-soft); color: var(--fx-accent); clip-path: var(--fx-widget-shape-clip); }
+.fx-widget-shape-editor__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.fx-widget-shape-editor__presets { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); }
+.fx-widget-shape-editor__swatch { display: inline-block; flex: none; inline-size: calc(var(--fx-font-size) * 1.1); block-size: calc(var(--fx-font-size) * 1.1); margin-inline-end: var(--fx-dens-gap-sm); background: currentColor; clip-path: var(--fx-widget-shape-clip); }
+.fx-widget-shape-editor__actions { justify-content: flex-end; flex-wrap: wrap; }
 .fx-banner-widgets__fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 24), 1fr)); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
 :where([data-fx-tiny]) .fx-banner__side.is-left { justify-content: flex-start; } :where([data-fx-tiny]) .fx-banner__side .fx-widget-label, :where([data-fx-tiny]) .fx-banner__side .fx-widget-progress__label { display: none; }
 .fx-banner__side.is-center { justify-content: center; justify-content: safe center; }
