@@ -831,7 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:41 UTC · `toolbars-5-5-claude-accounts-glossary` added (0 steps) (all) · console
 - 2026-11-17 20:41 UTC · `toolbars-1-5-build-orchestrator-incl` → queued, note (all) · console
 - 2026-11-17 20:42 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · Brett
 - 2026-11-17 20:42 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · builds-live
@@ -1231,6 +1230,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:15 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 22:15 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 22:15 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 22:15 UTC · `fix-refreshing-console-jumps-back` s11 done, → landing (all) · orchestrator
 
 ## Token passes (log)
 

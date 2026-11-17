@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:15:40.134Z",
+ "updatedAt": "2026-11-17T22:15:48.069Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -188836,7 +188836,7 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -188844,8 +188844,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-17T22:14:08.555Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T22:15:44.447Z",
+   "builtAt": "2026-11-17T22:15:44.447Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -189126,8 +189126,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:15:44.447Z",
      "note": "",
      "uid": "st-mwl7sdev0bwa7c",
      "createdAt": "2026-11-17T21:38:35.623Z"

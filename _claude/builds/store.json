@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8160,
- "updatedAt": "2026-11-17T22:15:40.134Z",
+ "rev": 8161,
+ "updatedAt": "2026-11-17T22:15:48.069Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -285351,7 +285351,7 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -285359,8 +285359,8 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-17T22:14:08.555Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T22:15:44.447Z",
+   "builtAt": "2026-11-17T22:15:44.447Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -285709,12 +285709,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:15:44.447Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:38:35.623Z",
-     "updatedAt": "2026-11-17T21:38:35.623Z"
+     "updatedAt": "2026-11-17T22:15:44.809Z"
     }
    ],
    "profiles": [
@@ -285725,7 +285725,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
