@@ -820,8 +820,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:04 UTC · `orchestrator-runs-long-builds-across` s2 done (all) · orchestrator
-- 2026-11-17 00:04 UTC · `stop-auto-lander-committing-tracking` → queued, note (all) · console
 - 2026-11-17 00:04 UTC · `auto-lander-status-tab-rest-mcp-settings` added (0 steps) (all) · console
 - 2026-11-17 00:04 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
 - 2026-11-17 00:05 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · builds-live
@@ -1220,6 +1218,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 12:37 UTC · `stop-auto-lander-committing-tracking` → running (all) · mcp
 - 2026-11-17 12:37 UTC · `stop-auto-lander-committing-tracking` → queued (all) · mcp
 - 2026-11-17 12:37 UTC · `orchestrator-stale-row-watchdog-vps` s6 done (all) · orchestrator
+- 2026-11-17 12:38 UTC · `stop-auto-lander-committing-tracking` → running, note (all) · pipeline
+- 2026-11-17 12:38 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
 
 ## Token passes (log)
 
