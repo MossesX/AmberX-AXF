@@ -69,3 +69,11 @@ Cases `nav-menu:app` (drawn `NavMenu`), `app-menu:app` (drawn `MenuBar`) and `co
 reads; it draws only while open). Every Interface control writes only `axf.chrome.<kind>.app`; nav and menu bar
 redraw at once; the settings window is untouched. No code change needed past the s3 fix: all kinds shared the one
 `InterfacePicker`.
+
+## s8 — grids
+
+`lib-datagrid` has no chrome Settings… dialog, so it never had the bug: a grid's own look is its component-tokens@1
+set (`axf.tokens.instances`, family `grid`, keyed by the grid's id), edited through `InstanceTokensPanel` and the
+`chrome.token:grid:<id>:…` action. Case `grid:demo.grid`: Set writes only that grid's entry, the grid's CSS vars
+(`instanceTokenVars`) carry it at once, another grid and a tab row of the same id keep their values, and no settings
+window key moves. A right-click Settings… for grids is a separate feature, not part of this fix.

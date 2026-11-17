@@ -146,5 +146,43 @@ for (const c of CASES) {
   await act(async () => { reactRoot.unmount(); });
 }
 
-console.log(`${fail ? '✗' : '✓'} chrome Interface tab: ${ok} passed, ${fail} failed (${CASES.map((c) => `${c.type}:${c.instance}`).join(', ')})`);
+/*
+ * Grids (component-tokens@1): a data grid has no chrome Settings… dialog; its own look is its token set, edited by the
+ * instance tokens panel (family `grid`). Every edit must land in THAT grid's entry of `axf.tokens.instances`, reach that
+ * grid's CSS vars at once and leave every other grid, every tab row and the settings window alone.
+ */
+{
+  const { InstanceTokensPanel } = await import('../react/components/ChromeContext.tsx');
+  const ct = await import('../core/engines/component-tokens.mjs');
+  doc.body.innerHTML = '<div id="root"></div>';
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults, startView: 'home' } as never, assets, storageKey: 'test:interface-tab:grid' });
+  installChrome(rt);
+  rt.settings.set(ct.INSTANCE_TOKENS_KEY, ct.setInstanceToken(undefined, 'grid', 'other.grid', 'headerBg', 'accent') as never);
+  const reactRoot = createRoot(doc.getElementById('root')!);
+  await act(async () => { reactRoot.render(h(AxfProvider, { runtime: rt }, h(InstanceTokensPanel, { family: 'grid', instance: 'demo.grid' }))); });
+  const panel = doc.querySelector<HTMLElement>('[data-axf-instance-tokens="grid.demo.grid"]');
+  check(!!panel, 'grid:demo.grid: the token panel is for this grid');
+  const input = panel?.querySelector<HTMLInputElement>('input');
+  const before = rt.settings.savedValues();
+  const otherBefore = JSON.stringify(ct.instanceTokenValues(rt.settings.get(ct.INSTANCE_TOKENS_KEY), 'grid', 'other.grid'));
+  if (input) await act(async () => {
+    Object.getOwnPropertyDescriptor((W.HTMLInputElement as unknown as { prototype: object }).prototype, 'value')!.set!.call(input, 'surface2');
+    input.dispatchEvent(new (W.Event as typeof Event)('input', { bubbles: true }));
+    await sleep(2);
+  });
+  const set = [...(panel?.querySelectorAll<HTMLButtonElement>('button') ?? [])].find((b) => b.textContent?.trim() === 'Set');
+  if (set) await act(async () => { click(set); await sleep(2); });
+  const after = rt.settings.savedValues();
+  const changed = [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((k) => JSON.stringify(before[k]) !== JSON.stringify(after[k]));
+  check(changed.length === 1 && changed[0] === ct.INSTANCE_TOKENS_KEY, `grid:demo.grid: Set writes only ${ct.INSTANCE_TOKENS_KEY} (changed: ${changed.join(', ')})`);
+  const raw = rt.settings.get(ct.INSTANCE_TOKENS_KEY);
+  check(Object.keys(ct.instanceTokenValues(raw, 'grid', 'demo.grid')).length === 1, 'grid:demo.grid: the value is in this grid\'s own token set');
+  check(Object.keys(ct.instanceTokenVars(raw, 'grid', 'demo.grid')).length > 0, 'grid:demo.grid: the grid\'s CSS vars carry it at once');
+  check(JSON.stringify(ct.instanceTokenValues(raw, 'grid', 'other.grid')) === otherBefore, 'grid:demo.grid: another grid keeps its own values');
+  check(Object.keys(ct.instanceTokenValues(raw, 'tabs', 'demo.grid')).length === 0, 'grid:demo.grid: a tab row of the same id is untouched');
+  // (the settings windows' keys are covered by `changed`: only the grid token store moved)
+  await act(async () => { reactRoot.unmount(); });
+}
+
+console.log(`${fail ? '✗' : '✓'} chrome Interface tab: ${ok} passed, ${fail} failed (${CASES.map((c) => `${c.type}:${c.instance}`).join(', ')}, grid:demo.grid)`);
 process.exit(fail ? 1 : 0);
