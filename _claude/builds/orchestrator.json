@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:55:18.553Z",
+ "updatedAt": "2026-11-17T14:55:28.268Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171967,15 +171967,15 @@
    "title": "Edit UI mode: inline-edit anything, active only while Ctrl is held",
    "category": "",
    "detail": "Add an 'Edit UI' toggle (banner/toolbar button + setting). When it's on, holding Ctrl (long-press equivalent on phone) makes any element editable in place: labels/text, grid cells and row data where the data source allows writes, column headers, asset properties (toolbar, tab group, banner, widgets: size, colour, icon, order, hide). Releasing Ctrl ends editing; with Edit UI off, Ctrl does nothing special. Hovered element gets an outline; click edits inline; Enter/blur saves, Esc cancels; every change undoable. Edits save through the normal owner (asset system for looks, data API for data), never as one-off overrides. Works in console, axHub web and AmberX. Same toggle and edits via REST, MCP, CLI, voice. Coordinate with rebuild-fresh-main-hide-any-asset (hide/unhide should be one of the inline actions).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/edit-ui-mode-inline-edit-anything-active",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T14:55:16.148Z",
+   "updatedAt": "2026-11-17T14:55:25.758Z",
    "builtAt": "",
    "notes": [
     {
@@ -171989,6 +171989,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 3: claude-headless: refused: edit-ui-mode-inline-edit-anything-active: phase 1 is pinned to Opus 5.5. If it needs Fable 5.1, set its steps to Fable 5.1 in the Build orchestrator first (no approval needed right now: Fable upgrades need my approval is off), then launch.",
      "at": "2026-11-17T14:54:18.822Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-edit-ui-mode-inline-edit-anything-active--paulie.",
+     "at": "2026-11-17T14:55:22.208Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-edit-ui-mode-inline-edit-anything-active--paulie, shared account login)",
+     "at": "2026-11-17T14:55:25.758Z"
     }
    ],
    "approvals": [],
@@ -172267,25 +172275,6 @@
      "note": "",
      "uid": "st-mwktc9qt0csiy6",
      "createdAt": "2026-11-17T14:54:09.749Z"
-    },
-    {
-     "id": "s21",
-     "text": "Edit history panel: every Edit UI change ever made (stored server-side, survives reloads and sessions) listed with what changed, before/after, where, which app, when, who. Undo any single edit, undo everything back to a point, redo, filter by app/screen/asset, and Undo all. Undo works for every kind of edit (text, data, asset property, hide/unhide). Opens in the floating window; reachable via REST, MCP, CLI, voice.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwktdp7e01ewan",
-     "createdAt": "2026-11-17T14:55:16.149Z"
     },
     {
      "id": "s13",
