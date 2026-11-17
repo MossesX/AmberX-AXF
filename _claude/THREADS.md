@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 03:41 UTC · `icon-packs-with-drag-drop-pack-designer` → pending, note (all) · cli
 - 2026-11-17 03:41 UTC · `grid-token-set-colours-hover-selected` → pending, note (all) · cli
 - 2026-11-17 03:41 UTC · `skin-animations-animated-colour-swatches` → pending, note (all) · cli
 - 2026-11-17 03:42 UTC · `console-app-part-2-native-floating` → pending, note (all) · cli
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 18:43 UTC · `ci-run-only-what-changed-no-second-run` added (0 steps) (all) · console
 - 2026-11-17 18:43 UTC · `ci-run-only-what-changed-no-second-run` note (all) · mcp
 - 2026-11-17 18:44 UTC · `ci-run-only-what-changed-no-second-run` note (all) · mcp
+- 2026-11-17 18:44 UTC · `ci-run-only-what-changed-no-second-run` note (all) · orchestrator
 
 ## Token passes (log)
 
