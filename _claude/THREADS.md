@@ -829,53 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:45 UTC · `auto-lander-settings-log-placeholder` note (all) · orchestrator
-- 2026-11-17 19:45 UTC · `group-chat-audio-hear-agents-talk-while` → fixing, note (all) · pipeline
-- 2026-11-17 19:45 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
-- 2026-11-17 19:46 UTC · `separate-settings-per-plugin-reset` → queued, note (all) · pipeline
-- 2026-11-17 19:46 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 19:46 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
-- 2026-11-17 19:46 UTC · `console-app-part-2-native-floating` s6 done (all) · orchestrator
-- 2026-11-17 19:47 UTC · `guided-live-demo-test-watch-orchestrator` s1 done, → running (all) · orchestrator
-- 2026-11-17 19:47 UTC · `console-app-part-2-native-floating` s7 done, → landing (all) · orchestrator
-- 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` → running, note (all) · pipeline
-- 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
-- 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
-- 2026-11-17 19:47 UTC · `rebuild-every-toolbar-page-specific` s2 done (all) · orchestrator
-- 2026-11-17 19:49 UTC · `terminal-main-tab-streaming-console-s` → running, note (all) · pipeline
-- 2026-11-17 19:49 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
-- 2026-11-17 19:49 UTC · `terminal-main-tab-streaming-console-s` branch claude/terminal-main-tab-streaming-console-s (all) · pipeline
-- 2026-11-17 19:50 UTC · `skins-as-packages-of-slices-every-section-its-ow` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `full-api-cli-control-of-everything-plus-an-offli` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `open-any-website-by-voice-on-the-phone-optionall` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `amberx-build-notifications-for-every-stage-start` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `build-notifications-same-notification-per-build` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `merge-review-one-by-one-every-built-but-unmerged` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `main-gate-nothing-reaches-main-without-passing` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `all-banners-hide-when-empty` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `auto-recover-stuck-builds` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `ui-review-gate-switch-default-off` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `fix-toolbar-settings-doing-nothing` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `merge-all-ready-buttons-server-side` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `account-order-hulu-moses-x-api-account` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `assets-menu-hide-any-asset-visible` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `badge-shape-picker-banners-screen-pill` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `banners-page-focus-scroll-to-highlight` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `claude-badge-can-claude-build-green-when` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `pending-tab-one-collapsed-row-per-build` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `remove-console-s-own-notes-manager` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `remove-no-new-android-kotlin-work-rule` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `remove-ui-review-gate-no-screenshots` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `unlink-plan-studio-builds-delete-all` → archived, note (all) · watchdog
-- 2026-11-17 19:50 UTC · `prompting-engine-control-panel-to-create` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `land-project-duplicate-boilerplate` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `console-look-becomes-default-axhub-skin` → archived, note (all) · watchdog
 - 2026-11-17 19:50 UTC · `merge-main-land-server-gate-one-session` → archived, note (all) · watchdog
@@ -1229,6 +1182,53 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:21 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 21:21 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 - 2026-11-17 21:21 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
+- 2026-11-17 21:22 UTC · `rebuild-fresh-main-phone-connect-small` s8 done (all) · orchestrator
+- 2026-11-17 21:21 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
+- 2026-11-17 21:22 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 21:22 UTC · `rebuild-fresh-main-hide-any-asset` s8 done (all) · orchestrator
+- 2026-11-17 21:22 UTC · `rebuild-fresh-main-phone-connect-small` s8 done (all) · foreign-write
+- 2026-11-17 21:22 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
+- 2026-11-17 21:23 UTC · `rebuild-fresh-main-phone-connect-small` s9 done (all) · orchestrator
+- 2026-11-17 21:22 UTC · `icon-picker-every-banner-settings-widget` → running, note (all) · pipeline
+- 2026-11-17 21:23 UTC · `icon-picker-every-banner-settings-widget` branch claude/icon-picker-every-banner-settings-widget (all) · pipeline
+- 2026-11-17 21:23 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 21:23 UTC · `fix-banner-settings-interface-tab` added (0 steps) (all) · console
+- 2026-11-17 21:23 UTC · `fix-banner-settings-interface-tab` → queued, note (all) · console
+- 2026-11-17 21:24 UTC · `rebuild-fresh-main-hide-any-asset` s9 done (all) · orchestrator
+- 2026-11-17 21:24 UTC · `rebuild-fresh-main-phone-connect-small` s10 done (all) · orchestrator
+- 2026-11-17 21:24 UTC · `fix-banner-settings-interface-tab` note (all) · orchestrator
+- 2026-11-17 21:24 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:25 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:25 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` → running, note (all) · pipeline
+- 2026-11-17 21:25 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` branch claude/fix-banner-settings-interface-tab (all) · pipeline
+- 2026-11-17 21:25 UTC · `fix-banner-settings-interface-tab` note (all) · orchestrator
+- 2026-11-17 21:25 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
+- 2026-11-17 21:26 UTC · `rebuild-fresh-main-phone-connect-small` s11 done (all) · orchestrator
+- 2026-11-17 21:26 UTC · `fix-banner-settings-interface-tab` → running, note (all) · pipeline
+- 2026-11-17 21:26 UTC · `land-pr-730-reset-all-button-far-right` added (0 steps) (all) · console
+- 2026-11-17 21:26 UTC · `land-pr-730-reset-all-button-far-right` → queued, note (all) · console
+- 2026-11-17 21:26 UTC · `rebuild-fresh-main-hide-any-asset` s10 done (all) · orchestrator
+- 2026-11-17 21:26 UTC · `fix-banner-settings-interface-tab` s1 done, → running (all) · orchestrator
+- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
+- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:27 UTC · `rebuild-every-toolbar-page-specific` → landing (all) · mcp
+- 2026-11-17 21:27 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
+- 2026-11-17 21:27 UTC · `rebuild-fresh-main-phone-connect-small` s12 done (all) · orchestrator
+- 2026-11-17 21:28 UTC · `fix-banner-settings-interface-tab` s2 done (all) · orchestrator
+- 2026-11-17 21:27 UTC · `land-pr-730-reset-all-button-far-right` → running, note (all) · pipeline
+- 2026-11-17 21:28 UTC · `land-pr-730-reset-all-button-far-right` branch claude/land-pr-730-reset-all-button-far-right (all) · pipeline
+- 2026-11-17 21:28 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
+- 2026-11-17 21:28 UTC · `icon-picker-every-banner-settings-widget` note (all) · mcp
+- 2026-11-17 21:29 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:29 UTC · `fix-banner-settings-interface-tab` s3 done (all) · orchestrator
+- 2026-11-17 21:29 UTC · `icon-picker-every-banner-settings-widget` note (all) · mcp
+- 2026-11-17 21:29 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:29 UTC · `land-pr-730-reset-all-button-far-right` s1 done (all) · orchestrator
+- 2026-11-17 21:29 UTC · `rebuild-fresh-main-hide-any-asset` s11 done (all) · orchestrator
 
 ## Token passes (log)
 
