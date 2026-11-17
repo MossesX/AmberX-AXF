@@ -8,11 +8,13 @@ import { restoreOnLoad } from './placeRestore';
 import { installScrollAndSelectionSteps } from './placeScroll';
 import { installPullRefreshSave } from './pullRefresh';
 import { installScrollLockGuard, releaseScrollLock } from './scrollLock';
+import { installPlaceApi } from './placeApi';
 
 export * from './placeState';
 export * from './placeRestore';
 export { installPullRefreshSave, PULL_SAVE_DISTANCE } from './pullRefresh';
 export { installScrollLockGuard, releaseScrollLock, type ScrollLockRelease } from './scrollLock';
+export { installPlaceApi, placeApiState, restoreSavedPlace, PLACE_PANEL_ADDRESS, PLACE_RESTORE_ACTION, PLACE_GET_ACTION } from './placeApi';
 
 let installed = false;
 
@@ -23,6 +25,7 @@ export function installPlace(rt: AxfRuntime): void {
   installPlaceSaving(rt);
   installPullRefreshSave();
   installScrollLockGuard(rt);
+  installPlaceApi(rt);
   const run = restoreOnLoad(rt);
   // when the restore ends (put back, cancelled by a tap, timed out), nothing may be left holding the page still
   void run?.finished.then(() => releaseScrollLock(rt));

@@ -18,6 +18,9 @@ export const VOICE_FRAME: 'console-control-voice@1';
 /** The words the skin lock phrases search for: the setting's label. */
 export const HUB_SKIN_SETTING: string;
 export const HUB_SKIN_OVERRIDE_SETTING: string;
+/** The function that puts the console's saved place back (console-place@1). */
+export const PLACE_RESTORE_ADDRESS: string;
+export const PLACE_RESTORE_RE: RegExp;
 export function cleanPhrase(text: unknown): string;
 export function voiceIntent(text: unknown): VoiceIntent | null;
 export function intentAddress(intent: VoiceIntent, hit?: string | null): string;
