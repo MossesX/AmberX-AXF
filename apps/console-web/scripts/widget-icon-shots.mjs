@@ -51,13 +51,14 @@ try {
     const act = (action, value) => run({ verb: 'press', address: `function:${action}`, ...(value ? { value } : {}) });
     const shot = async (name) => { await sleep(1200); process.stderr.write(`shot ${name} ${device}\n`); const f = join(OUT, `${name}-${device}.png`); await page.screenshot({ path: f }); shots.push(f); };
     await run({ verb: 'open', address: 'view:settings' });
+    await sleep(1500);
     // every widget the console resolved, drawn as text = before
     const ids = await page.evaluate(() => [...document.querySelectorAll('[data-axf-widget-icon-id]')].map((e) => e.getAttribute('data-axf-widget-icon-id')));
     const banner = await page.evaluate(() => [...document.querySelectorAll('[data-axf-banner-item]')].map((e) => `banner:${e.getAttribute('data-axf-banner-item')}`));
     const all = [...new Set([...banner, ...ids.filter((i) => i.startsWith('settings:tab:'))])].filter(Boolean).slice(0, 24);
     process.stderr.write(`${device}: ${all.length} widgets\n`);
     // straight through the action bus (one command each would highlight every target)
-    const modes = (mode) => page.evaluate(({ list, m }) => { for (const id of list) window.axfConsoleControl({ verb: 'press', address: 'function:widget.mode', value: `${id}:${m}`, options: { highlight: false } }); }, { list: all, m: mode });
+    const modes = (mode) => page.evaluate(async ({ list, m }) => { for (const id of list) await window.axfConsoleControl({ verb: 'press', address: 'function:widget.mode', value: `${id}:${m}` }); }, { list: all, m: mode });
     await modes('text');
     await shot('settings-before');
     await modes('auto');
@@ -66,7 +67,7 @@ try {
       await act('widget.icons.layout', layout);
       const opened = await act('widget.icons', 'settings:tab:appearance');
       if (process.env.CI_SHOTS_DEBUG) console.error(JSON.stringify(opened).slice(0, 400));
-      await page.locator('[data-axf-icon-picker]').first().waitFor({ timeout: 10_000 });
+      await page.locator('[data-axf-icon-picker]').first().waitFor({ timeout: 8_000 }).catch(() => process.stderr.write(`picker ${layout} ${device}: not visible\n`));
       await shot(`picker-${layout}`);
       await page.keyboard.press('Escape');
       await sleep(300);

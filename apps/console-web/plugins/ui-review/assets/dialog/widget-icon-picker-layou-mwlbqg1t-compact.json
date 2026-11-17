@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "widget-icon-picker-layou-mwlbqg1t-compact",
+ "name": "widget-icon-picker-layou-mwlbqg1t: Compact popover (small sheet)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A narrow picker with tight tiles and a short scroll, for picking from the right-click menu without covering the screen. On a phone it matches the grid (the screen is already narrower than its cap). widget.icons.layout:compact.",
+ "tags": [
+  "ui-choice",
+  "choice-set:widget-icon-picker-layou-mwlbqg1t",
+  "choice-option:compact"
+ ],
+ "data": {
+  "variant": "sheet",
+  "width": 360,
+  "backdrop": "none",
+  "animation": "fade",
+  "header": "plain",
+  "closeOnBackdrop": true
+ }
+}

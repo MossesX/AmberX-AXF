@@ -1,0 +1,22 @@
+{
+ "$axf": "asset@1",
+ "type": "dialog",
+ "id": "widget-icon-picker-layou-mwlbqg1t-grid",
+ "name": "widget-icon-picker-layou-mwlbqg1t: Grid (centred dialog)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Every icon as a tile in a grid, a section per source (framework, then each pack). Fastest to scan by shape. Default today (axf.widget.icons.layout = grid).",
+ "tags": [
+  "ui-choice",
+  "choice-set:widget-icon-picker-layou-mwlbqg1t",
+  "choice-option:grid"
+ ],
+ "data": {
+  "variant": "modal",
+  "width": 560,
+  "backdrop": "blur",
+  "animation": "scale",
+  "header": "accent-bar",
+  "closeOnBackdrop": true
+ }
+}
