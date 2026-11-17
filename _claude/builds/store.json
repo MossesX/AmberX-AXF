@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7840,
- "updatedAt": "2026-11-17T20:38:10.948Z",
+ "rev": 7841,
+ "updatedAt": "2026-11-17T20:38:19.510Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -278091,7 +278091,7 @@
      "action": "retry",
      "attempt": 1,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T20:38:11.678Z",
      "session": "",
      "note": "session was killed (exit 143): step s14 reset, slot released, back in the Queue (retry 1 of 3)."
     }
@@ -278700,7 +278700,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
