@@ -80,7 +80,8 @@ final class Insets {
         apply();
     }
 
-    private static int[] now() {
+    /** The insets of the window the page is in (or the last one read), {top, right, bottom, left} px. */
+    static int[] now() {
         int[] i = currentRoot == null ? null : perRoot.get(currentRoot);
         return i == null ? new int[4] : i;
     }
@@ -89,12 +90,12 @@ final class Insets {
     static void apply() {
         int[] i = now();
         safeTopPx = i[0];
-        int top = i[0] + dockPx;
         if (currentRoot != null) {
-            if (pageHandles) currentRoot.setPadding(0, dockPx, 0, 0); // the docked toolbar's strip is the shell's
-            else currentRoot.setPadding(i[3], top, i[1], i[2]);
+            int[] p = SafeArea.rootPadding(i, dockPx, pageHandles); // the docked toolbar's strip is the shell's
+            currentRoot.setPadding(p[0], p[1], p[2], p[3]);
         }
         push();
+        if (OverlayService.running != null) OverlayService.running.restyle(); // the toolbar follows rotation and cutouts
     }
 
     /** The insets in CSS px: {"top":24,"right":0,"bottom":16,"left":0,"dock":0,"pageHandles":true}. */
@@ -112,7 +113,7 @@ final class Insets {
      */
     static void push() {
         if (!ShellRules.bridgeAllowed(NativeBridge.currentUrl)) return;
-        int[] i = pageHandles ? now() : new int[4];
+        int[] i = SafeArea.pageInsets(now(), dockPx, pageHandles);
         WebHost.js(InsetsCss.script(css(i[0]), css(i[1]), css(i[2]), css(i[3])));
         NativeBridge.emit("insets", json());
     }

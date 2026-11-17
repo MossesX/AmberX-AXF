@@ -100,9 +100,15 @@ the permission missing, the same explanation is offered once; after that only an
 
 ## Safe areas
 
-The toolbar is never placed above the status bar or the camera cutout (`OverlayRules.topPx` clamps to
-`Insets.safeTopPx`); the expanded window draws edge to edge and `Insets` pads the console clear of the status bar,
-cutout, navigation bar and keyboard, plus the docked toolbar's strip (`--fx-safe-*`, `insets` event).
+`SafeArea` (pure, JUnit `SafeAreaTest`) places everything from the screen's insets {top, right, bottom, left}: status
+bar and cutout, navigation bar, keyboard, on whichever side Android puts them.
+
+- **The floating toolbar** keeps clear of a side cutout or navigation bar in landscape (`toolbarX`), and its height
+  stays between the status bar / camera and the navigation bar or keyboard (`toolbarY`, drags too: `clampY`). The
+  toolbar window reads the screen's insets itself (`WindowMetrics`) and moves back inside on rotation.
+- **The expanded console**: the docked toolbar sits in the safe top-left corner (`dock`); the shell owns the top strip
+  (status bar + toolbar) and the page gets the other three sides as `--fx-safe-*` (`rootPadding` / `pageInsets`), so no
+  side is padded twice or not at all. Before the page pads itself, the shell pads all four sides.
 
 ## What part 1 built and what part 2 adds
 

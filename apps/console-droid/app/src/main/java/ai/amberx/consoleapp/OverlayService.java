@@ -271,13 +271,42 @@ public class OverlayService extends Service {
         badge.setTextColor(ShellTheme.onAccent);
         bar.setTextColor(ShellTheme.fg);
         link.setTextColor(ShellTheme.accent);
-        int screenH = getResources().getDisplayMetrics().heightPixels;
+        int[] ins = screenInsets();
+        int screenH = screenHeight();
         lp.gravity = Gravity.TOP | ("start".equals(config.edge) ? Gravity.START : Gravity.END);
-        lp.x = 0;
-        lp.y = OverlayRules.topPx(config.top, screenH, Insets.safeTopPx);
+        lp.x = SafeArea.toolbarX(config.edge, ins); // clear of a side cutout or navigation bar (landscape)
+        lp.y = SafeArea.toolbarY(config.top, screenH, toolbar.getHeight(), ins);
+        if (toolbar.getParent() == full && full != null) {
+            int[] d = SafeArea.dock(ins); // docked top-left inside the safe area
+            FrameLayout.LayoutParams dl = (FrameLayout.LayoutParams) toolbar.getLayoutParams();
+            if (dl != null && (dl.leftMargin != d[0] || dl.topMargin != d[1])) { dl.leftMargin = d[0]; dl.topMargin = d[1]; toolbar.setLayoutParams(dl); }
+        }
         toolbar.setAlpha(OverlayRules.opacity(config, waiting) / 100f);
         if (toolbar.isAttachedToWindow() && !OverlayRules.EXPANDED.equals(state)) wm.updateViewLayout(toolbar, lp);
         if (full != null) full.setBackgroundColor(ShellTheme.bg);
+    }
+
+    /** The screen's insets {top, right, bottom, left} px for the toolbar window (it has no insets listener of its own). */
+    private int[] screenInsets() {
+        if (Build.VERSION.SDK_INT >= 30) {
+            android.graphics.Insets i = wm.getCurrentWindowMetrics().getWindowInsets()
+                .getInsets(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout() | android.view.WindowInsets.Type.ime());
+            return new int[] { i.top, i.right, i.bottom, i.left };
+        }
+        int[] last = Insets.now();
+        return new int[] { Math.max(last[0], Insets.safeTopPx), last[1], last[2], last[3] };
+    }
+
+    /** The whole screen's height (the overlay window may cover the bars). */
+    private int screenHeight() {
+        if (Build.VERSION.SDK_INT >= 30) return wm.getCurrentWindowMetrics().getBounds().height();
+        return getResources().getDisplayMetrics().heightPixels;
+    }
+
+    /** Rotation, a fold, a new cutout side: the toolbar moves back inside the safe area. */
+    @Override public void onConfigurationChanged(android.content.res.Configuration c) {
+        super.onConfigurationChanged(c);
+        restyle();
     }
 
     /** Moves to a state: toolbar, toolbar + approval bar, or the full-screen console with the toolbar docked. */
@@ -371,11 +400,11 @@ public class OverlayService extends Service {
                 case MotionEvent.ACTION_DOWN: downX = e.getRawX(); downY = e.getRawY(); startY = lp.y; moved = false; return false;
                 case MotionEvent.ACTION_MOVE:
                     if (Math.abs(e.getRawY() - downY) > dp(6) || Math.abs(e.getRawX() - downX) > dp(6)) moved = true;
-                    if (moved) { lp.y = Math.max(Insets.safeTopPx, startY + Math.round(e.getRawY() - downY)); wm.updateViewLayout(toolbar, lp); }
+                    if (moved) { lp.y = SafeArea.clampY(startY + Math.round(e.getRawY() - downY), screenHeight(), toolbar.getHeight(), screenInsets()); wm.updateViewLayout(toolbar, lp); }
                     return moved;
                 case MotionEvent.ACTION_UP:
                     if (!moved) return false;
-                    int w = getResources().getDisplayMetrics().widthPixels, h = getResources().getDisplayMetrics().heightPixels;
+                    int w = getResources().getDisplayMetrics().widthPixels, h = screenHeight();
                     Map<String, Object> m = new java.util.HashMap<>();
                     m.put("on", config.on); m.put("size", config.size); m.put("expand", config.expand); m.put("idleOpacity", config.idleOpacity); m.put("show", config.show);
                     m.put("edge", OverlayRules.edgeAfterDrag(Math.round(e.getRawX()), w));
