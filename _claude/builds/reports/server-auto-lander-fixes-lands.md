@@ -83,3 +83,14 @@ Checked on the VPS on Nov 17 2026 at about 04:40 UTC. Read-only: another actor s
 - Systems check: `axf-data` is green ("axf-data is up; last backup 1.2 h ago, verified").
 - What's left: the move goes namespace by namespace (`data-mode.mjs shadow|cutover <ns>`, quiet window 30 min). Build
   `axf-data-postgres-real-tables-own` owns it and its s3 is still open.
+
+## Main CI and the lander (s25, from get-main-green-unblock-lander-land-axf)
+Checked Nov 17 2026, about 04:45 UTC.
+- **Main is green.** The last 4 pushes (765ca6b51, 7015af4b8, 92dc0cf86, ec2a35d78) all passed "Android framework +
+  console" and "Build and publish site". axf-data (#704) and axf-data Postgres (#713) are on main.
+- **The merge queue is landing.** 3 PRs are testing (#769, #768, #766). #774 (this build) waits for its PR checks.
+  #767, #765 and #764 are red: until this PR is on main and the timer is installed, nothing fixes them by itself.
+- **The server auto-lander starts when this PR lands.** The next console install or nightly deploy installs
+  `axf-auto-lander.timer` (`install-console.sh` → `axf_auto_lander_install`). Its first ticks pick up the red PRs (fix
+  sessions) and the clashing ones (main merged in), and send the green ones to the merge queue one at a time. Until the
+  timer ticks, the systems check item `gate-auto-lander` is red ("hasn't ticked"), so a missed install shows up.
