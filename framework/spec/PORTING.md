@@ -376,3 +376,22 @@ Android app renders them.
 Build stop-auto-lander-committing-tracking adds `framework/core/tracking-paths.mjs` (tracking-paths@1: the files a build
 branch never commits) and the builds journal's hub home (builds-journal@1). Build tooling only (lander, CI, CLI): no
 Kotlin twin, none needed; the baked copies ride along unused.
+
+## Deferred: run-indicator@1 (Nov 17 2026)
+
+Build `live-build-status-real-time-grids-15` (Fable; Brett: "Every running job in any grid has a spinning or animated
+icon, and building rows flash slowly; configure the animation, flash, pulse, colors. When it stops it goes red, a pink
+background") registers the optional slot type **run-indicator** (`framework/schemas/asset-types.json`, before
+`uac-policy`; `core/types.ts` `RunIndicatorData`): the row animation while running (`flash | pulse | glow | spin |
+none`), the icon and its motion (`spin | pulse | bounce | blink | none`), the running / broke / stale / done tones as
+colour-theme token ids, `speed` over the theme motion token, `durationMs`, `intensity`, `brokeAnimation` and the
+`reducedMotion` fallback (`still | tint | off`), with `skin: { by: slot }`. The engine
+`core/engines/run-indicator.ts` compiles the asset into `--fx-run-*` tokens (opacity and colour-mix only, never a fixed
+colour); starters `framework/assets/run-indicator/pulse` (default), `flash` and `glow`; JSON Schema
+`schemas/json/run-indicator.schema.json`; fixture `spec/fixtures/run-indicator.json`. The Build manager grids, the
+Watchdog panel and Home cards read the tokens through the build-live@1 state (`spec/BUILD-LIVE.md`).
+**Android twin deferred (no new Android or Kotlin work, Android port on hold, Brett Oct 21 2026):** the Kotlin
+registry gains `AssetTypes.RUN_INDICATOR` (the spec-driven validator reads the new entry from the same
+`asset-types.json` as it is), a `RunIndicatorEngine.kt` replaying `spec/fixtures/run-indicator.json` into Compose
+`Axf.colors` tints and `infiniteRepeatable` animations with the same durations, and AmberX's build grid rows reading
+them from the folded build-live@1 state.

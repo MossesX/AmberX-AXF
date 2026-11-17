@@ -8595,6 +8595,76 @@
             }
           }
         },
+        "run-indicator": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Run indicator (Themes)",
+          "properties": {
+            "mode": {
+              "$ref": "#/$defs/mode"
+            },
+            "groups": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "pick": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "asset": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                },
+                "fields": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mode": {
+                      "$ref": "#/$defs/mode"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "animation": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "icon": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "tones.running": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "tones.broke": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "tones": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "speed": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "intensity": {
+                          "$ref": "#/$defs/mode"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "extras": {
           "type": "object",
           "additionalProperties": false,
