@@ -100,3 +100,28 @@ Each instance's Interface settings are console-control@1 targets, the same keys 
 
 Targets are derived (`addDerivedTargets` in controlTargets.ts): each kind's `app` instance, every instance with saved
 settings, the tab rows on screen, and any instance a command names (so a row not on screen is still reachable).
+
+## s11 — re-bake
+
+Took main's `apps/console-web/src/axf` + `axf.lock.json`, then `rebake.mjs apply apps/console-web`. It refused at
+first: main's baked `ui/axf.css` was byte-identical to `framework/ui/axf.css` but its lock hash was stale, so the
+re-bake ran with `--force` (nothing lost). Console `tsc --noEmit` and `npm run build` pass.
+
+## s12 — shots and UI Review
+
+`apps/console-web/scripts/chrome-interface-shots.mjs` (vite preview of dist/, Playwright, APIs offline) opens each
+instance's Settings → Interface through the deep link, shoots, presses one control on the tab, shoots again:
+
+| Kind | Control pressed | Result |
+|---|---|---|
+| Banner (`banner:app`) | Surface → Accent | the banner across the top turns accent; the dialog keeps its look |
+| Toolbar (`toolbar:app`) | Buttons → Icons + labels | the app toolbar shows labels |
+| Tab group (`tab-group:settings.tabs`) | Show → Icons | `setting:chrome.tab-group.settings.tabs.display` reads `icons` |
+
+Pictures in `fix-banner-settings-interface-tab/` next to this report, and in UI Review → Screenshots (group "Fix:
+banner settings Interface tab changes the banner, not the settings window"). UI Review item `r-20261117-c12zx01`
+carries 3 choices (settings assets in `plugins/ui-review/assets/settings/chrome-banner-interface-tab-*`):
+all-in-one (built), interface-first (Look / Behaviour tabs hidden), one-list (list layout, no tabs).
+
+Found on the way: the deep link opened the dialog on Look when the dialog host reused the panel; the panel now
+follows a new `tab` prop as well as its first one.
