@@ -815,8 +815,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 20:43 UTC · `banner-widget-shapes-more-than-circle` s25 done (all) · orchestrator
-- 2026-11-16 20:44 UTC · `banner-widget-shapes-more-than-circle` s24 done (all) · foreign-write
 - 2026-11-16 20:44 UTC · `banner-widget-shapes-more-than-circle` s26 done (all) · orchestrator
 - 2026-11-16 20:46 UTC · `banner-widget-shapes-more-than-circle` s27 done, → built (all) · orchestrator
 - 2026-11-16 20:46 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
@@ -1215,6 +1213,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 00:20 UTC · `own-look-per-grid-and-tab-group` note (all) · pipeline
 - 2026-11-17 00:20 UTC · `stop-auto-lander-committing-tracking` note (all) · pipeline
 - 2026-11-17 00:20 UTC · `own-look-per-grid-and-tab-group` s13 done (all) · orchestrator
+- 2026-11-17 00:05 UTC · `every-plugin-screen-gets-a-settings-gear` s4 done (all) · orchestrator
+- 2026-11-17 00:06 UTC · `every-plugin-screen-gets-a-settings-gear` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
