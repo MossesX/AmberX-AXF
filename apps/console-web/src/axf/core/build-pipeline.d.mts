@@ -47,6 +47,11 @@ export function releaseSlot(slot: unknown, o?: { at?: string; by?: string; why?:
 export function releaseOnStatus(status: string): SlotRelease | '';
 export function slotAfterExit(slot: unknown, result: ExitResult, o?: { status?: string; at?: string; by?: string }): SlotHold;
 export function migrateSlots(builds: BuildLike[], now?: string): Array<{ id: string; slot: SlotHold }>;
+export function holders<T extends BuildLike>(builds: T[]): T[];
+export function handoffs<T extends BuildLike>(builds: T[]): T[];
+export function freeSlots(builds: BuildLike[], max: number): number;
+/** Dispatch order: hand-off builds first, then Queue builds up to the free slots; a queued build never starts while a hand-off waits. */
+export function pickNext<T extends BuildLike & { id: string; createdAt?: string }>(builds: T[], o?: { max?: number; priorityOf?: (b: T) => string }): { order: string[]; handoff: string[]; holders: string[]; free: number; waits: Array<{ id: string; why: string; held?: boolean; handoff?: boolean }> };
 export function stateOf(b: BuildLike): '' | PipelineState;
 export function isHandoff(b: BuildLike): boolean;
 export function canReleaseSlot(b: BuildLike): boolean;

@@ -283,6 +283,44 @@ export function queueOrder(builds, priorityOf = () => 'P2') {
   return [...builds].filter((b) => b.status === 'queued').sort((a, b) => rank(priorityOf(a)) - rank(priorityOf(b)) || str(a.pipeline?.queuedAt).localeCompare(str(b.pipeline?.queuedAt)) || str(a.createdAt).localeCompare(str(b.createdAt)));
 }
 
+// ------------------------------------------------------------------ dispatch order (the slot hold)
+
+/** Every live build that holds a slot: running, waiting, in hand-off, landing, or parked in Pending with its hold. */
+export const holders = (builds) => (Array.isArray(builds) ? builds : []).filter((b) => holdsSlot(b) && !['complete', 'failed', 'archived'].includes(b.status));
+/** Holders waiting for their next session (phase-handoff), oldest hold first, then Queue order. */
+export const handoffs = (builds) => holders(builds).filter(isHandoff).sort((a, b) => str(a.pipeline?.slot?.since).localeCompare(str(b.pipeline?.slot?.since)) || str(a.pipeline?.queuedAt).localeCompare(str(b.pipeline?.queuedAt)) || str(a.createdAt).localeCompare(str(b.createdAt)));
+/** Slots free for new builds: the cap minus every held slot (live or between phases), never below 0. */
+export const freeSlots = (builds, max) => Math.max(0, (Number.isInteger(max) && max > 0 ? max : 0) - holders(builds).length);
+
+/**
+ * What may start a session this tick, in order (pure). In: the live builds, `max` (the agent-slot cap), `priorityOf`.
+ * Out: { order, handoff, holders, free, waits }:
+ *   order    build ids to launch, in order: every hand-off build first (it owns a slot already and takes none of the free
+ *            ones), then Queue builds (queueOrder: priority, then queuedAt) up to `free`
+ *   handoff  the hand-off builds' ids; holders = every held slot's build id; free = freeSlots()
+ *   waits    [{ id, why }] queued builds that stay put: a hand-off is waiting (Brett, Nov 17 2026: the running builds
+ *            finish before the rest go), On hold, nothing to run, or no free slot
+ * A queued build never starts while a hand-off build waits for its next phase, whatever the free count says.
+ */
+export function pickNext(builds, { max = 0, priorityOf = () => 'P2' } = {}) {
+  const live = (Array.isArray(builds) ? builds : []).filter((b) => b && !b.deleted);
+  const held = holders(live);
+  const hand = handoffs(live);
+  const free = freeSlots(live, max);
+  const order = hand.map((b) => b.id);
+  const waits = [];
+  let room = free;
+  for (const b of queueOrder(live, priorityOf)) {
+    if (holdsSlot(b)) continue; // a hand-off build: already in order
+    if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline?.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
+    if (!openSteps(b).length) { waits.push({ id: b.id, why: (b.steps ?? []).length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
+    if (hand.length) { waits.push({ id: b.id, why: `waiting: ${hand.length} running build${hand.length === 1 ? '' : 's'} finish${hand.length === 1 ? 'es' : ''} first (phase hand-off: ${hand.map((h) => h.id).join(', ')})`, handoff: true }); continue; }
+    if (room <= 0) { waits.push({ id: b.id, why: `no free slot (${held.length}/${max || '?'} held)` }); continue; }
+    room -= 1; order.push(b.id);
+  }
+  return { order, handoff: hand.map((b) => b.id), holders: held.map((b) => b.id), free, waits };
+}
+
 /** The steps still to do (not done, not skipped). */
 export const openSteps = (b) => (b?.steps ?? []).filter((s) => !s.done && !s.skip);
 /** The model the next open step runs on ('' when nothing is left). */
