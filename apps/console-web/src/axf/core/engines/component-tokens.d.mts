@@ -1,5 +1,5 @@
 // Types for component-tokens.mjs (component-tokens@1: the grid and tab-group token families).
-export type ComponentTokenFamily = 'grid' | 'tabs';
+export type ComponentTokenFamily = 'grid' | 'tabs' | 'widget';
 export type ComponentTokenKind = 'colour' | 'length' | 'shadow' | 'opacity' | 'number';
 export type ComponentTokenLevel = 'basic' | 'pro' | 'advanced';
 export interface ComponentToken { key: string; kind: ComponentTokenKind; default: string; level: ComponentTokenLevel; description: string }

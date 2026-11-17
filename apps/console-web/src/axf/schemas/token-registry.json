@@ -1,7 +1,7 @@
 {
   "$axf": "token-registry@1",
   "version": 1,
-  "updatedAt": "2026-11-15",
+  "updatedAt": "2026-11-17",
   "tokens": [
     {
       "id": "--fx-accent",
@@ -5751,6 +5751,104 @@
         "target": "tokens.theme",
         "path": "warning"
       }
+    },
+    {
+      "id": "--fx-widget-icon",
+      "element": "banner",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Banner widget (widget-shape@1): the icon it draws, `own` or `<icon pack id>/<glyph>` (an icon override that resolved).",
+      "default": "own",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-widget-shape-circle",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: widget shape circle.",
+      "default": "50%",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-widget-shape-clip",
+      "element": "banner",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Banner widget (widget-shape@1): the clip-path of its icon-shaped body, `none` or a percent polygon (hexagon, custom outline).",
+      "default": "none",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-widget-shape-pill",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: widget shape pill.",
+      "default": "999px",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-widget-shape-radius",
+      "element": "banner",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Banner widget (widget-shape@1): the corner radius of its icon-shaped body (circle 50%, square 0, rounded the theme's medium radius, pill 999px).",
+      "default": "50%",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-widget-shape-rounded",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: widget shape rounded.",
+      "default": "var(--fx-radius-md)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-widget-shape-square",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: widget shape square.",
+      "default": "0",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
     },
     {
       "id": "--fx-win-handle",

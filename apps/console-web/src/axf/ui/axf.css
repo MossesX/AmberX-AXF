@@ -121,6 +121,11 @@
   --fx-tab-chips-active-bg: var(--fx-accent-soft);
   --fx-tab-chips-active-border: var(--fx-accent);
   --fx-tab-opacity: 1;
+  /* Widget shape (--fx-widget-*): The outlines a banner / toolbar widget can take (widget-shape@1): circle, rounded and pill radii; square is 0, hexagon and custom clip instead. */
+  --fx-widget-shape-circle: 50%;
+  --fx-widget-shape-rounded: var(--fx-radius-md);
+  --fx-widget-shape-pill: 999px;
+  --fx-widget-shape-square: 0;
   /* component-tokens@1 end */
 }
 
@@ -272,6 +277,20 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 [data-fx-wsize]:has(> .fx-banner__pop):not([data-fx-narrow] *) { max-width: none !important; } /* a pop-out needs room beside its widget: the size cap would squash the widget and spill it over the neighbours. Not on a phone: there the room isn't there and the wider item would push every widget into the More menu */
 [data-fx-wshow='icon'] :where(.fx-widget-status > span:last-child:not(.fx-widget-status__dot), .fx-widget-counter__label, .fx-widget-button > span, .fx-widget-theme > span, .fx-banner__badge-label), [data-fx-wshow='icon'] .fx-widget-link:has(svg) > span { display: none; }
 [data-fx-wshow='text'] :where(.fx-widget-status__dot, .fx-widget-counter > svg, .fx-widget-button > svg, .fx-widget-link > svg, .fx-widget-theme > svg) { display: none; }
+/* widget-shape@1 (core/engines/bannerwidgets.ts): the outline an icon-shaped widget body is clipped to, on banner items and
+   toolbar widget slots alike. Defaults = circle, the look every such body had (--fx-widget-shape-circle, 50% on a square
+   body = the old 999px). The radius each shape stands for is the component-tokens@1 widget family (:root block above, a
+   style theme's data.widget.*); the host's own Widget shape (customize) overrides the defaults here, and a widget's own
+   pick or hint overrides both through the same tokens inline on its item. A shape only clips and rounds the body: the
+   body keeps its box, so an attached widget never draws over or clips a neighbour whatever its shape (attached things snap). */
+:is(.fx-banner__item, .fx-toolbar__widget) { --fx-widget-shape-radius: var(--fx-widget-shape-circle); --fx-widget-shape-clip: none; --fx-widget-icon: own; }
+.fx-banner__item > .fx-banner__badge:where(.is-icon, .is-dot), .fx-banner__item[data-fx-wsize='icon'] > .fx-widget-theme,
+:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-shaped] > :not(.fx-banner__pop) { border-radius: var(--fx-widget-shape-radius); clip-path: var(--fx-widget-shape-clip); }
+/* the outline-drawn shapes get room so the clip never bites the glyph: a pill grows its ends, a hexagon or custom outline its sides */
+:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-shaped][data-fx-wshape='pill'] > :not(.fx-banner__pop) { padding-inline: var(--fx-dens-gap-md); }
+:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-shaped]:where([data-fx-wshape='hexagon'], [data-fx-wshape='custom']) > :not(.fx-banner__pop) { padding-inline: var(--fx-dens-gap-sm); }
+/* a clipped body would cut its own focus ring: draw it inside */
+:is(.fx-banner__item, .fx-toolbar__widget)[data-fx-shaped]:where([data-fx-wshape='hexagon'], [data-fx-wshape='custom']) > :not(.fx-banner__pop):focus-visible { outline-offset: calc(var(--fx-border-w) * -3); }
 .fx-banner__more-btn { position: relative; }
 .fx-banner__more { position: fixed; z-index: 70; display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-md); min-width: calc(var(--fx-space) * 20); max-width: calc(100vw - var(--fx-space) * 2); max-height: 70vh; overflow-y: auto; padding: var(--fx-dens-gap-lg); font-size: var(--fx-type-root-sm); }
 .fx-banner__more-item { display: flex; align-items: center; min-height: var(--fx-row-h); max-width: 100%; }
@@ -288,6 +307,24 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner-widgets__check { min-width: 0; }
 .fx-banner-widgets__grip { display: inline-flex; flex: none; padding: var(--fx-dens-gap-sm); color: var(--fx-muted); cursor: grab; touch-action: none; }
 .fx-banner-widgets__wide { grid-column: 1 / -1; }
+/* Change icon… (react/components/WidgetIconPicker.tsx): the icon picker for one banner widget */
+.fx-widget-icon-picker { min-width: 0; }
+.fx-widget-icon-picker__preview { padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); }
+.fx-widget-icon-picker__glyph { display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: calc(var(--fx-row-h) * 1.2); block-size: calc(var(--fx-row-h) * 1.2); border-radius: var(--fx-widget-shape-circle); background: var(--fx-surface); }
+.fx-widget-icon-picker__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.fx-widget-icon-picker__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-row-h) * 1.1), 1fr)); gap: var(--fx-dens-gap-sm); max-block-size: calc(var(--fx-row-h) * 8); overflow-y: auto; padding: var(--fx-dens-gap-xs); }
+.fx-widget-icon-picker__cell { display: flex; justify-content: center; border-radius: var(--fx-radius-sm); }
+.fx-widget-icon-picker__cell.is-on { background: var(--fx-accent-soft); box-shadow: inset 0 0 0 var(--fx-border-w) var(--fx-accent); }
+.fx-widget-icon-picker__actions { justify-content: flex-end; flex-wrap: wrap; }
+/* Custom shape editor (react/components/WidgetShapeEditor.tsx): the preview and preset swatches read the shape clip token */
+.fx-widget-shape-editor { min-width: 0; }
+.fx-widget-shape-editor__preview { display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: calc(var(--fx-row-h) * 2); block-size: calc(var(--fx-row-h) * 2); background: var(--fx-accent-soft); color: var(--fx-accent); clip-path: var(--fx-widget-shape-clip); }
+.fx-widget-shape-editor__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.fx-widget-shape-editor__presets { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); }
+.fx-widget-shape-editor__swatch { display: inline-block; flex: none; inline-size: calc(var(--fx-font-size) * 1.1); block-size: calc(var(--fx-font-size) * 1.1); margin-inline-end: var(--fx-dens-gap-sm); background: currentColor; clip-path: var(--fx-widget-shape-clip); }
+.fx-widget-shape-editor__actions { justify-content: flex-end; flex-wrap: wrap; }
+/* Banners settings → Widget shape and icon (react/components/BannerWidgetShapeRows.tsx): the row's glyph in the widget's shape */
+.fx-banner-shape-rows__glyph { display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: calc(var(--fx-row-h) * 0.7); block-size: calc(var(--fx-row-h) * 0.7); background: var(--fx-surface2); border-radius: var(--fx-widget-shape-radius); clip-path: var(--fx-widget-shape-clip); }
 .fx-banner-widgets__fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 24), 1fr)); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
 :where([data-fx-tiny]) .fx-banner__side.is-left { justify-content: flex-start; } :where([data-fx-tiny]) .fx-banner__side .fx-widget-label, :where([data-fx-tiny]) .fx-banner__side .fx-widget-progress__label { display: none; }
 .fx-banner__side.is-center { justify-content: center; justify-content: safe center; }

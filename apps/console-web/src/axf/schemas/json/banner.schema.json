@@ -1,4 +1,90 @@
 {
+  "$defs": {
+    "widgetHint": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "size": {
+          "enum": [
+            "icon",
+            "compact",
+            "normal",
+            "wide"
+          ]
+        },
+        "show": {
+          "enum": [
+            "auto",
+            "both",
+            "icon",
+            "text",
+            "number"
+          ]
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9
+        },
+        "hideWhenEmpty": {
+          "type": "boolean"
+        },
+        "overflow": {
+          "type": "boolean"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "shape": {
+          "enum": [
+            "circle",
+            "square",
+            "rounded",
+            "pill",
+            "hexagon",
+            "custom"
+          ],
+          "description": "The outline the widget is clipped to (default circle)."
+        },
+        "customPath": {
+          "type": "string",
+          "maxLength": 400,
+          "description": "SVG path in a 0..100 square (commands M L H V C S Q T Z), shape custom only."
+        },
+        "iconOverride": {
+          "type": "object",
+          "required": [
+            "pack",
+            "id"
+          ],
+          "properties": {
+            "pack": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Draw this glyph of this icon pack instead of the widget's own icon."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "axf/banner.schema.json",
   "title": "AmberX AXF Banner asset",
@@ -56,7 +142,53 @@
             "text"
           ]
         },
-        "attach": {}
+        "attach": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "id",
+              "at"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "clock",
+                  "search-bar",
+                  "action-button",
+                  "logo",
+                  "label",
+                  "status",
+                  "counter",
+                  "progress",
+                  "avatar",
+                  "link",
+                  "theme-switch",
+                  "spacer",
+                  "divider",
+                  "badge"
+                ]
+              },
+              "id": {
+                "type": "string"
+              },
+              "at": {
+                "enum": [
+                  "left",
+                  "center",
+                  "right"
+                ]
+              },
+              "order": {
+                "type": "number"
+              },
+              "widget": {
+                "$ref": "#/$defs/widgetHint"
+              }
+            }
+          }
+        }
       }
     }
   }

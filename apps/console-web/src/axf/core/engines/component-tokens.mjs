@@ -7,6 +7,7 @@
  * selected row or an active tab on its own. This file is the ONE schema of the two component token families:
  *
  *   grid  →  --fx-grid-<token>   every grid / table (framework .fx-table, lib-datagrid .axf-grid)
+ *   widget → --fx-widget-<token> the radius each widget shape (widget-shape@1) compiles to
  *   tabs  →  --fx-tab-<token>    every tab row (page tabs .fx-tabs, the TabGroup control, window tab bars)
  *
  * Every token has a kind, a plain-English description, a level (basic / pro / advanced, for the experience-level views
@@ -165,6 +166,19 @@ export const COMPONENT_TOKEN_FAMILIES = {
       t('chipsActiveBg', 'colour', 'var(--fx-accent-soft)', 'pro', 'Background of the active chip.'),
       t('chipsActiveBorder', 'colour', 'var(--fx-accent)', 'pro', 'Border of the active chip.'),
       t('opacity', 'opacity', '1', 'basic', 'Transparency of the tab row\'s backgrounds (1 = opaque).'),
+    ],
+  },
+  // widget-shape@1: the corner radius each widget shape compiles to (engines/bannerwidgets.ts WIDGET_SHAPE_RADIUS reads
+  // these, so a style theme or one widget's instance overrides retune a shape without touching the engine)
+  widget: {
+    label: 'Widget shape',
+    prefix: '--fx-widget-',
+    doc: 'The outlines a banner / toolbar widget can take (widget-shape@1): circle, rounded and pill radii; square is 0, hexagon and custom clip instead.',
+    tokens: [
+      t('shapeCircle', 'length', '50%', 'basic', 'Corner radius of a circle widget (50% = round on a square body).'),
+      t('shapeRounded', 'length', 'var(--fx-radius-md)', 'basic', 'Corner radius of a rounded widget.'),
+      t('shapePill', 'length', '999px', 'pro', 'Corner radius of a pill widget (fully rounded ends).'),
+      t('shapeSquare', 'length', '0', 'advanced', 'Corner radius of a square widget.'),
     ],
   },
 };

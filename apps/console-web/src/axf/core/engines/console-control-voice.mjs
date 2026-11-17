@@ -87,6 +87,11 @@ export function voiceIntent(text) {
     return { verb: 'set', find: { q: HUB_SKIN_OVERRIDE_SETTING, kinds: ['setting'] }, value: m[1] === 'override' };
   }
 
+  // banner widget shape and icon (widget-shape@1): "make the clock a hexagon", "change the clock icon", "reset the clock widget"
+  if ((m = /^(?:make|turn) (?:the )?(.+?)(?: widget)? (?:a |an |into a |into an )?(circle|square|rounded|pill|hexagon)(?: shape| shaped)?$/.exec(p))) return { verb: 'set', find: { q: `${strip(m[1])} shape`, kinds: ['setting'] }, value: m[2] };
+  if ((m = /^change (?:the )?(.+?)(?: widget)?(?:'s| s)? icon$/.exec(p))) return { verb: 'press', find: { q: `${strip(m[1])} change icon`, kinds: ['function'] } };
+  if ((m = /^(?:reset|put back) (?:the )?(.+?) widget(?: to default)?$/.exec(p))) return { verb: 'press', find: { q: `${strip(m[1])} back to default`, kinds: ['function'] } };
+
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };
   if ((m = /^(?:turn|switch) (?:the )?(.+?) (on|off)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2] === 'on' };

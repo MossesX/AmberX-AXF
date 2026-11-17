@@ -3,9 +3,19 @@
  * an icon pack (icon-pack@1) that has a glyph of that name, the pack's glyph is drawn instead, in the pack's own
  * style (stroke / fill / duotone); names the pack lacks keep the framework icon, so a partial pack is fine.
  */
-import { useSyncExternalStore } from 'react';
+import { createContext, useContext, useSyncExternalStore, type ReactNode } from 'react';
 import { useOptionalRuntime } from '../AxfProvider';
 import { glyphSvg } from '../../core/engines/brand';
+import { WIDGET_ICON_OWN } from '../../core/engines/bannerwidgets';
+
+/**
+ * widget-shape@1 icon override: `<pack>/<glyph>` drawn by every Icon underneath in place of its own name, `own` = no override.
+ * The banner puts a widget's resolved icon token here (rt.bannerWidgetShape(key).icon), so a widget's renderer needs no change.
+ */
+const IconOverrideContext = createContext<string>(WIDGET_ICON_OWN);
+export function IconOverride({ icon, children }: { icon: string; children: ReactNode }) {
+  return <IconOverrideContext.Provider value={icon}>{children}</IconOverrideContext.Provider>;
+}
 
 const PATHS: Record<string, string> = {
   home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
@@ -95,7 +105,15 @@ const noStore = { subscribe: () => () => {}, get: () => null };
 export function Icon({ name, size = 16, className }: { name?: string; size?: number; className?: string }) {
   const rt = useOptionalRuntime();
   useSyncExternalStore(rt ? rt.subscribe : noStore.subscribe, rt ? rt.getState : noStore.get, rt ? rt.getState : noStore.get);
+  const over = useContext(IconOverrideContext);
   if (!name) return null;
+  // an override names a pack and a glyph that the runtime already checked exist; a missing one keeps the widget's own icon
+  if (over !== WIDGET_ICON_OWN && rt) {
+    const slash = over.indexOf('/');
+    const hit = slash > 0 ? rt.packGlyph(over.slice(0, slash), over.slice(slash + 1)) : null;
+    const svg = hit ? glyphSvg(hit.pack, over.slice(slash + 1), size) : null;
+    if (svg) return <span className={`fx-icon fx-icon--pack ${className ?? ''}`} style={{ width: size, height: size }} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
+  }
   const packed = rt?.brandGlyph(name);
   if (packed) {
     const svg = glyphSvg(packed.pack, name, size);

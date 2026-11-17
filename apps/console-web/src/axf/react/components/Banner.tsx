@@ -13,7 +13,7 @@ import type { BadgeData, ClockData, CounterData, StatusData } from '../../core/t
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
-import { Icon } from './Icon';
+import { Icon, IconOverride } from './Icon';
 import { BannerMore, bannerItemAttrs, useBannerOverflow } from './BannerWidgets';
 import { Tap, WidgetView } from './Widgets';
 import { controlSlug } from '../controlTargets';
@@ -85,10 +85,13 @@ export function BannerWidgetBody({ type, id }: { type: string; id: string }) {
   const asset = rt.registry.get(type as never, id) as { data: unknown } | undefined;
   if (!asset) return null;
   const { show } = rt.bannerWidgetView(`${type}:${id}`);
-  if (type === 'badge') return <BannerBadge data={asset.data as BadgeData} id={id} />;
-  if (show === 'number' && (type === 'status' || type === 'counter')) return <WidgetNumber type={type} data={asset.data as StatusData} />;
-  // icon only: a status has no icon, its dot is what's left
-  return <WidgetView type={type} id={id} host="banner" patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;
+  // widget-shape@1: the resolved icon override reaches every Icon the widget draws
+  const { icon } = rt.bannerWidgetShape(`${type}:${id}`);
+  const body = type === 'badge' ? <BannerBadge data={asset.data as BadgeData} id={id} />
+    : show === 'number' && (type === 'status' || type === 'counter') ? <WidgetNumber type={type} data={asset.data as StatusData} />
+    // icon only: a status has no icon, its dot is what's left
+    : <WidgetView type={type} id={id} host="banner" patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;
+  return <IconOverride icon={icon}>{body}</IconOverride>;
 }
 
 function Attached({ a }: { a: PlacedAttachment }) {

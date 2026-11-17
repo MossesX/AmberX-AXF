@@ -315,6 +315,37 @@
       ]
     },
     {
+      "key": "widgetShape",
+      "label": "Widget shape",
+      "group": "Shape",
+      "kind": "choice",
+      "default": "circle",
+      "options": [
+        "circle",
+        "square",
+        "rounded",
+        "pill",
+        "hexagon"
+      ],
+      "types": [
+        "banner",
+        "toolbar",
+        "clock",
+        "search-bar",
+        "action-button",
+        "logo",
+        "label",
+        "status",
+        "counter",
+        "progress",
+        "avatar",
+        "link",
+        "theme-switch",
+        "spacer",
+        "divider"
+      ]
+    },
+    {
       "key": "borderWidth",
       "label": "Border width",
       "group": "Shape",
@@ -555,7 +586,8 @@
     },
     "toolbar": {
       "root": ".fx-toolbar",
-      "item": ".fx-toolbtn"
+      "item": ".fx-toolbtn",
+      "widget": ".fx-toolbar__widget"
     },
     "nav-menu": {
       "root": ".fx-nav",
@@ -571,7 +603,8 @@
     },
     "banner": {
       "root": ".fx-banner",
-      "item": ".fx-banner__item"
+      "item": ".fx-banner__item",
+      "widget": ".fx-banner__item"
     },
     "dialog": {
       "root": ".fx-dialog"
