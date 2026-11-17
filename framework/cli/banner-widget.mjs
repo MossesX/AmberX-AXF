@@ -10,20 +10,21 @@
  *   axf banner widget shape <widget> <circle|square|rounded|pill|hexagon>
  *   axf banner widget shape <widget> --path "<svg>"      a custom outline: one closed SVG path in a 0..100 square (M L H V C S Q T Z)
  *   axf banner widget icon <widget> <pack>/<glyph>|own   another icon pack's glyph, or its own icon back
- *   axf banner widget reset <widget>                     every choice of that widget back to default
+ *   axf banner widget reset <widget> [--confirm]         every choice of that widget back to default (without --confirm
+ *                                                        the console answers confirmation_required, exit 3)
  *   axf banner widget open [<widget>] [settings|shape|icon]
  *                                                        deep link: the Banners settings, the custom shape editor or the
  *                                                        Change icon picker in the open console
  *   --reason "…" · --to recent|all|<client> · --json · --remote <url>
  *
- * Exit codes as `axf console`: 0 ok · 1 failed · 2 usage · 4 no console open (openUrl printed).
+ * Exit codes as `axf console`: 0 ok · 1 failed · 2 usage · 3 confirmation_required · 4 no console open (openUrl printed).
  */
 import { pathToFileURL } from 'node:url';
 import { exitCode, parseArgs, send } from './console-control.mjs';
 
 export const BANNER_WIDGET_SUBCOMMANDS = ['list', 'get', 'shape', 'icon', 'reset', 'open'];
 const SHAPES = ['circle', 'square', 'rounded', 'pill', 'hexagon'];
-const USAGE = `usage: axf banner widget list | get <widget> | shape <widget> <${SHAPES.join('|')}> | shape <widget> --path "<svg>" | icon <widget> <pack>/<glyph>|own | reset <widget> | open [<widget>] [settings|shape|icon]`;
+const USAGE = `usage: axf banner widget list | get <widget> | shape <widget> <${SHAPES.join('|')}> | shape <widget> --path "<svg>" | icon <widget> <pack>/<glyph>|own | reset <widget> [--confirm] | open [<widget>] [settings|shape|icon]`;
 
 /** argv (after `banner widget`) → { method, path, body? } on /api/console-control. */
 export function toRequest(argv) {
@@ -41,7 +42,7 @@ export function toRequest(argv) {
       break;
     }
     case 'icon': if (widget && arg) return { method: 'POST', path: `${at(widget)}/icon`, body: { icon: arg, ...extra } }; break;
-    case 'reset': if (widget) return { method: 'POST', path: `${at(widget)}/reset`, body: { ...extra } }; break;
+    case 'reset': if (widget) return { method: 'POST', path: `${at(widget)}/reset`, body: { ...(flags.confirm ? { confirm: true } : {}), ...extra } }; break;
     case 'open': {
       const what = ['settings', 'shape', 'icon'].includes(widget) ? widget : arg ?? 'settings';
       const w = ['settings', 'shape', 'icon'].includes(widget) ? '' : widget ?? '';

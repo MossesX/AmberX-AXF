@@ -355,9 +355,10 @@ def banner_widgets(by: str = "api", audience: str = OWNER, grants: set[str] | No
     return {"ok": True, "$axf": "banner-widgets@1", "client": r.get("client"), "widgets": rows, "open": cc.BANNERS_SETTINGS_ADDRESS, "shapes": list(cc.BANNER_WIDGET_SHAPES)}
 
 
-def banner_widget_command(widget: str, what: str, value: Any = None, by: str = "api", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent", reason: str = "") -> dict[str, Any]:
+def banner_widget_command(widget: str, what: str, value: Any = None, by: str = "api", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent", reason: str = "", confirm: bool = False) -> dict[str, Any]:
     """One change to one banner widget, the same for REST, MCP, the CLI and voice: what = shape (value = a shape name, or
-    {path}), path (value = an SVG outline), icon (value = <pack>/<glyph> | own), reset, or open (value = settings | shape | icon)."""
+    {path}), path (value = an SVG outline), icon (value = <pack>/<glyph> | own), reset, or open (value = settings | shape | icon).
+    reset is a resetting press: the console guards answer confirmation_required until it is sent with confirm."""
     try:
         if widget and ":" not in widget:
             found = banner_widgets(by, audience, grants, widget)
@@ -379,7 +380,7 @@ def banner_widget_command(widget: str, what: str, value: Any = None, by: str = "
             raise cc.ControlError("invalid", "what is shape, path, icon, reset or open", field="what")
     except cc.ControlError as e:
         return e.envelope()
-    return command({**body, **({"reason": reason} if reason else {}), "to": to}, by, audience, grants)
+    return command({**body, **({"reason": reason} if reason else {}), **({"confirm": True} if confirm and what == "reset" else {}), "to": to}, by, audience, grants)
 
 
 def _kinds(v: str | None) -> list[str] | None:
@@ -488,11 +489,11 @@ def router_for(auth: Any) -> APIRouter:
 
     @r.post("/banner-widgets/{widget}/{what}")
     async def banner_widget_set(request: Request, widget: str, what: str) -> JSONResponse:
-        """what = shape {shape | path}, path {path}, icon {icon: <pack>/<glyph> | own}, reset {}, open {what: settings | shape | icon}; reason?, to?."""
+        """what = shape {shape | path}, path {path}, icon {icon: <pack>/<glyph> | own}, reset {confirm}, open {what: settings | shape | icon}; reason?, to?."""
         b = await _body(request)
         audience, name = audience_of(request)
         value: Any = {"path": b["path"]} if what == "shape" and b.get("path") else b.get("shape") if what == "shape" else b.get("path") if what == "path" else b.get("icon") if what == "icon" else b.get("what") if what == "open" else None
-        return answer(await run_in_threadpool(banner_widget_command, widget, what, value, str(b.get("by") or name)[:80], audience, grants_of(request), str(b.get("to") or "recent"), str(b.get("reason") or "")))
+        return answer(await run_in_threadpool(banner_widget_command, widget, what, value, str(b.get("by") or name)[:80], audience, grants_of(request), str(b.get("to") or "recent"), str(b.get("reason") or ""), bool(b.get("confirm"))))
 
     @r.get("/plugins/{ref}/settings")
     async def plugin_settings(request: Request, ref: str, live: int = 0) -> JSONResponse:

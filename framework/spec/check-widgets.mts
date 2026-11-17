@@ -314,4 +314,20 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   for (const p of WIDGET_SHAPE_PRESETS) ok(customPathClip(p.path)?.startsWith('polygon(') === true, `preset ${p.id}: the engine accepts it`);
 }
 
+// migration renders as before: a widget saved before widget-shape@1 (no shape) draws a circle with nothing inline,
+// so its item looks exactly as it did (no data-fx-shaped, no token style; the host's default circle token stands)
+{
+  const { widgetShapeAttrs } = await import('../react/components/widgetShape');
+  const assets = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:widget-migrate' });
+  const old = rt.bannerWidgetShape('clock:digital-12h');
+  eq([old.shape, old.explicit], ['circle', false], 'migration: an old widget is a circle, not a choice');
+  const a = widgetShapeAttrs(old);
+  eq([a.attrs['data-fx-shaped'], Object.keys(a.style).length], [undefined, 0], 'migration: nothing inline, the item renders as before');
+  rt.dispatch('banner.widget:clock:digital-12h:hexagon');
+  const now = widgetShapeAttrs(rt.bannerWidgetShape('clock:digital-12h'));
+  eq([now.attrs['data-fx-shaped'], now.attrs['data-fx-wshape'], Object.keys(now.style).sort()], ['', 'hexagon', ['--fx-widget-icon', '--fx-widget-shape-clip', '--fx-widget-shape-radius']], 'a chosen shape: shaped item with the three tokens inline');
+}
+
 console.log(`check-widgets: ${checks} checks ok`);

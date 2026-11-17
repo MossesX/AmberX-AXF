@@ -1126,7 +1126,7 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
             else:
                 v = body.get("value")
                 field = {"shape": "path" if isinstance(v, dict) else "shape", "path": "path", "icon": "icon", "open": "what"}.get(what)
-                payload = {**({field: v["path"] if isinstance(v, dict) else v} if field and v not in (None, "") else {}), **{k: body[k] for k in ("reason", "to", "by") if body.get(k)}}
+                payload = {**({field: v["path"] if isinstance(v, dict) else v} if field and v not in (None, "") else {}), **{k: body[k] for k in ("reason", "to", "by", "confirm") if body.get(k)}}
                 req = urllib.request.Request(f"{base}/banner-widgets/{w}/{what}", data=json.dumps(payload).encode(), method="POST", headers={"content-type": "application/json", **auth})
         else:
             req = urllib.request.Request(f"{base}/do", data=json.dumps(body).encode(), method="POST", headers={"content-type": "application/json", **auth})
@@ -1156,7 +1156,7 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
             by = str(body.get("by") or "mcp")
             if not body.get("what"):
                 return api.banner_widgets(by, widget=str(body.get("widget") or ""))
-            return api.banner_widget_command(str(body.get("widget") or ""), str(body["what"]), body.get("value"), by, to=str(body.get("to") or "recent"), reason=str(body.get("reason") or ""))
+            return api.banner_widget_command(str(body.get("widget") or ""), str(body["what"]), body.get("value"), by, to=str(body.get("to") or "recent"), reason=str(body.get("reason") or ""), confirm=bool(body.get("confirm")))
         return api.command(body, str(body.get("by") or "mcp"))
 
     return run
@@ -1253,18 +1253,19 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         return await go({"verb": "state", "address": address, "to": to})
 
     @mcp.tool(annotations=WRITE)
-    async def console_control_banner_widget(widget: str = "", shape: str = "", path: str = "", icon: str = "", reset: bool = False, open: str = "", reason: str = "", to: str = "recent") -> dict[str, Any]:
+    async def console_control_banner_widget(widget: str = "", shape: str = "", path: str = "", icon: str = "", reset: bool = False, confirm: bool = False, open: str = "", reason: str = "", to: str = "recent") -> dict[str, Any]:
         """Banner widget shape and icon (widget-shape@1). No arguments: every banner widget with its shape, icon, custom
         outline and the addresses that change them. widget=<type>:<id> (clock:digital-12h; a type, id or label works too)
         alone: that widget. With shape=circle|square|rounded|pill|hexagon, or path=<SVG outline in a 0..100 square> for a
-        custom shape; icon=<icon pack>/<glyph> or own; reset=true (every choice of that widget back to default);
+        custom shape; icon=<icon pack>/<glyph> or own; reset=true (every choice of that widget back to default: answers
+        confirmation_required until it is sent again with confirm=true);
         open=settings|shape|icon (deep link: the Banners settings, the custom shape editor, the Change icon picker).
         Same as GET/POST /api/console-control/banner-widgets[/<widget>/<shape|path|icon|reset|open>], the console actions
         banner.widget.shape|icon|reset, `axf banner widget …` and voice ("make the clock a hexagon")."""
         what, value = ("reset", None) if reset else ("path", path) if path else ("shape", shape) if shape else ("icon", icon) if icon else ("open", open) if open else ("", None)
         if what and not widget:
             raise ToolError("invalid: name the widget (widget=<type>:<id>; call with no arguments to list them)")
-        return await go({"verb": "banner-widgets", "widget": widget, "what": what, "value": value, "reason": reason, "to": to})
+        return await go({"verb": "banner-widgets", "widget": widget, "what": what, "value": value, "reason": reason, "to": to, "confirm": confirm})
 
     @mcp.tool(annotations=WRITE)
     async def console_control_plugin_settings(plugin: str, open: bool = False, set: dict[str, Any] | None = None, enabled: bool | None = None, reason: str = "", to: str = "recent") -> dict[str, Any]:
