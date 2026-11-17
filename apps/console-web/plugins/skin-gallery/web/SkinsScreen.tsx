@@ -6,7 +6,8 @@
  * Deep links: #/skin-gallery?skin=&scope=&view=phone, or console_open … focus skin/<id> | scope/<scope> | preview/<id>?view=phone.
  */
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, SkinScope, useRuntime } from '@console/axf/react';
+import { Button, Chip, SkinScope, Swatches, useRuntime } from '@console/axf/react';
+import { skinSwatches } from '@console/axf/core';
 import { followAt, getActingApp, listScopes, listSkins, PLUGIN_ID, readState, scopeLabel, setActingApp, type ScopeView, type SkinRow } from './api';
 import { getLink, linkFromHash, subscribeLink } from './link';
 import { kindOf, ScopePicker, scopeOf, type Kind } from './ScopePicker';
@@ -63,6 +64,8 @@ export function SkinsScreen() {
   };
   const pickApp = (a: string) => { setActingApp(a); setApp(a); };
   const current = skins.find((s) => s.id === picked);
+  // each card's palette row (engines/swatches.ts); it waves on hover / tap through data-fx-swatch-host
+  const swatches = (colorTheme = '') => skinSwatches((rt.registry.get('color-theme', colorTheme)?.data as { tokens?: Record<string, string> } | undefined)?.tokens);
   const inForceName = view?.inForce.id ? skins.find((s) => s.id === view.inForce.id)?.name ?? view.inForce.id : 'No skin';
 
   return (
@@ -78,7 +81,8 @@ export function SkinsScreen() {
       <div className={`axp-skin-gallery__body is-${layout}`}>
         <div className="axp-skin-gallery__grid" role="listbox" aria-label="Skins" data-help="skin-gallery.grid">
           {skins.map((s) => (
-            <Button key={s.id} tone="quiet" className={`axp-skin-gallery__card${s.id === picked ? ' is-picked' : ''}`} role="option" aria-selected={s.id === picked} title={s.description} data-skin={s.id} onClick={() => setPicked(s.id === picked ? '' : s.id)}>
+            <Button key={s.id} tone="quiet" className={`axp-skin-gallery__card${s.id === picked ? ' is-picked' : ''}`} role="option" aria-selected={s.id === picked} title={s.description} data-skin={s.id} data-fx-swatch-host="" onClick={() => setPicked(s.id === picked ? '' : s.id)}>
+              {(() => { const c = swatches(s.colorTheme); return c.length ? <Swatches joined className="axp-skin-gallery__swatches" colors={c} label={`${s.name} colours`} /> : null; })()}
               <strong className="axp-skin-gallery__line">{s.name}</strong>
               <span className="fx-muted axp-skin-gallery__line">{s.kind === 'design-package' ? 'Design package' : s.iconPack ? `Icons: ${s.iconPack}` : 'Skin'}</span>
               <span className="fx-muted axp-skin-gallery__line">Covers {s.coverage?.covered ?? 0} of {s.coverage?.total ?? 0} asset types{s.parts.length ? ` · styles ${s.parts.length} part(s)` : ''}</span>

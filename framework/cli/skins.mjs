@@ -140,11 +140,13 @@ export function writeDefaultSkin(skin, by = 'skins-cli') {
   renameSync(tmp, f);
   chownLike(f);
 }
+/** The colour theme a skin or design package paints with (its swatch row in the galleries). */
+const colorThemeOf = (a) => a?.data?.colorTheme ?? a?.data?.['color-theme'] ?? a?.colorTheme ?? '';
 export const skinRows = () => [
-  ...defaultSkins().map((a) => ({ id: a.id, name: `${a.name} (${a.app})`, kind: 'skin', description: a.description ?? '', iconPack: '', parts: [], protected: true, app: a.app })),
-  ...assetsOf('skin').map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}) })),
-  ...assetsOf('design-package').map((a) => ({ id: a.id, name: a.name, kind: 'design-package', description: a.description ?? '', iconPack: '', parts: [] })),
-  ...madeSkins().map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}), madeBy: 'ai', app: a.app })),
+  ...defaultSkins().map((a) => ({ id: a.id, name: `${a.name} (${a.app})`, kind: 'skin', description: a.description ?? '', iconPack: '', parts: [], colorTheme: colorThemeOf(a), protected: true, app: a.app })),
+  ...assetsOf('skin').map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}), colorTheme: colorThemeOf(a) })),
+  ...assetsOf('design-package').map((a) => ({ id: a.id, name: a.name, kind: 'design-package', description: a.description ?? '', iconPack: '', parts: [], colorTheme: colorThemeOf(a) })),
+  ...madeSkins().map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}), colorTheme: colorThemeOf(a), madeBy: 'ai', app: a.app })),
 ];
 
 /** The three themes an app's look falls back to when its saved slots name none: the default design package's. */

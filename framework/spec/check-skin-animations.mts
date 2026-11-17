@@ -103,4 +103,10 @@ const block = css.slice(css.indexOf('/* Skin animations'));
 ok(block.includes('prefers-reduced-motion') && block.includes("[data-fx-motion='reduced']"), 'reduced motion stops the animations');
 for (const m of block.matchAll(/animation:[^;]*;/g)) ok(!/\d+m?s\b/.test(m[0].replace(/var\([^)]*\)/g, '')), `animation reads duration tokens: ${m[0]}`);
 
+// both skin galleries draw each skin's palette as an animated swatch row (Settings → Appearance picker, Skins plugin)
+const gallery = readFileSync(join(ROOT, 'apps/console-web/plugins/skin-gallery/web/SkinsScreen.tsx'), 'utf8');
+ok(gallery.includes('<Swatches') && gallery.includes('data-fx-swatch-host'), 'Skins plugin cards show animated swatches');
+const { skinRows } = await import('../cli/skins.mjs');
+ok(skinRows().every((r: { colorTheme?: unknown }) => typeof r.colorTheme === 'string'), 'every skin row names its colour theme');
+
 console.log(`check-skin-animations: ${n} checks passed`);

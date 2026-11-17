@@ -24,3 +24,4 @@
 .axp-skin-gallery__card { justify-content: flex-start; }
 .axp-skin-gallery__line { display: block; }
 .axp-skin-gallery__body.is-list .axp-skin-gallery__line { display: inline; margin-inline-end: var(--fx-dens-gap-md); }
+.axp-skin-gallery__swatches { width: 100%; }
