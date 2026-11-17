@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7588,
- "updatedAt": "2026-11-17T18:35:24.957Z",
+ "rev": 7589,
+ "updatedAt": "2026-11-17T18:35:33.459Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271869,7 +271869,7 @@
    "title": "Merge queue view: every build that's fully built and ready to merge but not merged yet (display only)",
    "category": "",
    "detail": "Bring back a Merge queue tab, display only: it lists every build/PR that is completely built and ready to merge but not merged yet, in the order the orchestrator will land them, with CI state, commits behind main, and why it's waiting. It does NOT merge anything: landing stays with the orchestrator/lander. Rows use the shared grid (row numbers, columns menu). Full API parity (deep link, state read, MCP, CLI, voice). Tests + UI Review.",
-   "status": "archived",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -271877,7 +271877,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:32:41.029Z",
-   "updatedAt": "2026-11-17T18:34:41.344Z",
+   "updatedAt": "2026-11-17T18:35:31.115Z",
    "builtAt": "",
    "notes": [
     {
@@ -271887,6 +271887,10 @@
     {
      "text": "Moved to the Archive from pending (console): Folded into Grid Filter plugin as the 'Ready to merge' preset.",
      "at": "2026-11-17T18:34:41.344Z"
+    },
+    {
+     "text": "Back from the Archive as pending (console).",
+     "at": "2026-11-17T18:35:31.115Z"
     }
    ],
    "approvals": [],
@@ -272322,7 +272326,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -272391,7 +272395,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T18:35:24.910Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -272434,7 +272444,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
