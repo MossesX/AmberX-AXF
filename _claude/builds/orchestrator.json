@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:48:00.166Z",
+ "updatedAt": "2026-11-17T14:49:00.967Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171236,12 +171236,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T14:47:52.260Z",
+   "updatedAt": "2026-11-17T14:48:58.684Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T14:47:52.260Z"
+    },
+    {
+     "text": "Split by Claude into 12 steps (3 Fable).",
+     "at": "2026-11-17T14:48:58.684Z"
     }
    ],
    "approvals": [],
@@ -171258,7 +171262,277 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find the floating settings window that #628 (all-settings-interfaces-open-floating) added: run git show on the #628 merge to get its open function and route. Then list every chrome entry point that still opens settings in the main area: right-click and long-press Settings… on banner, nav menu, toolbar, tab group and menu bar; the axf.chrome.settings dialog; and plugin settings gears reached from those menus. Write the list to _claude/builds/reports/settings-opened-banners-nav-menu.md (inventory section).",
+     "model": "Fable",
+     "why": "This decides one cross-app GUI rule for how chrome settings open, so the model is chosen before any code changes",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx",
+      "framework/react",
+      "apps/console-web/src",
+      "_claude/builds/reports/settings-opened-banners-nav-menu.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq401tjwn",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add one framework entry point, openSettingsFloating(target), that every settings opener calls. It wraps the #628 floating window: takes a chrome kind + id or a plugin settings tab, focuses an already open window instead of adding a second one, and on phone uses the same floating or sheet behaviour #628 defines. Export it from framework/react and write a short contract note in framework/spec (Android twin recorded as a deferred gap in PORTING.md).",
+     "model": "Fable",
+     "why": "New shared framework contract that changes how settings open in every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/settingsFloating.ts",
+      "framework/react/index.ts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq402ake3",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s3",
+     "text": "Route the axf.chrome.settings dialog through openSettingsFloating in ChromeContext.tsx so Settings… from banner, nav menu, toolbar, tab group and menu bar opens in the floating window, not the main content area. Keep the settings asset rendering (settings/chrome-<type>, extends chain) as it is.",
+     "model": "Fable",
+     "why": "Changes the shared chrome context menu behaviour every app on the framework uses",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq4039an6",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s4",
+     "text": "Check the live console runs a build that includes #628: compare the deployed commit or version from the console's version endpoint (or docker inspect on axf-console through the build sandbox) with the #628 merge commit. If it is behind, redeploy with axf console refresh (or the deploy route as a veto call). Write the result to the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "deploy/console-nightly.mjs",
+      "_claude/builds/reports/settings-opened-banners-nav-menu.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq404fmve",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s5",
+     "text": "Point the console's own openers at openSettingsFloating: the banner settings (Banners → per-banner tab, right-click Banner settings), the nav menu settings, and the toolbar settings and Toolbar editor launch from the Toolbars plugin context menu.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src",
+      "apps/console-web/plugins/toolbars"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq405auis",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s6",
+     "text": "Point every plugin settings gear reached from chrome menus (plugin badges, banner widgets, the Plugin Manager's Open settings) at openSettingsFloating with the plugin's Settings → Plugins sub-tab as target. Remove any navigate-to-view:settings fallback that puts it in the main area.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src",
+      "apps/console-web/plugins/plugin-manager"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq406il24",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s7",
+     "text": "Re-bake the framework into the console and the other shared-asset apps (rebake.mjs) so the baked src/axf copies carry the new opener. Run check-toolbars, check-chrome-assets and check-theme.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/src/axf",
+      "apps/console-web/axf.lock.json",
+      "framework/cli/rebake.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq407iq8u",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s8",
+     "text": "API part: add a console action, settings.open {target: banner|nav|toolbar|tab-group|menubar|plugin, id}, that opens the floating settings window. Add a deep link for console_show / console_open (window:settings/<kind>:<id>), registered as a console-control target, plus a state read for which settings window is open and for what. Keep control@1 registry entries append-only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src",
+      "framework/spec/CONSOLE-CONTROL.md",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq408by7y",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s9",
+     "text": "Make the same action reachable the same way from REST (/api/console-control), MCP (console_control_* / plugin commands), the CLI (axf console settings open <kind> <id>) and AmberX voice (phrase 'open <kind> settings'), and add the help entry.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server",
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/help"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq4097wzg",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s10",
+     "text": "Tests: add a framework test that each chrome kind's Settings… calls openSettingsFloating and never navigates the main view. Add a console test that each entry point (banner, nav, toolbar, tab group, plugin gear) opens the floating window at desktop and phone viewport sizes. Add one API test that REST, MCP, CLI and voice all open the same window.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-settings-floating.mts",
+      "apps/console-web/scripts",
+      "apps/console-web/server/tests"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq50az4nr",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s11",
+     "text": "Take desktop and phone screenshots of each entry point opening the floating window (vite preview with mocked /api/me) and submit them to UI Review with at least 3 options, or --single-option with the reason (behaviour fix that reuses #628's window). Group: build id + time.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq50bt3a7",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    },
+    {
+     "id": "s12",
+     "text": "Finish: run all checks (check-toolbars, check-chrome-assets, check-console-control, check-theme, rebake status, the new tests). Complete the report _claude/builds/reports/settings-opened-banners-nav-menu.md: before/after, deploy check result, how each entry point is reached through UI, REST, MCP, CLI and voice. Update the THREADS row, push the branch, open the PR with the API section and the UI Review note, and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/settings-opened-banners-nav-menu.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt5lq50chl1c",
+     "createdAt": "2026-11-17T14:48:58.684Z"
+    }
+   ]
   }
  ]
 }
