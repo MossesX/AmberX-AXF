@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8261,
- "updatedAt": "2026-11-17T22:47:52.487Z",
+ "rev": 8262,
+ "updatedAt": "2026-11-17T22:48:03.816Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288605,7 +288605,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T22:47:36.665Z"
+     "updatedAt": "2026-11-17T22:47:41.399Z"
     },
     {
      "id": "s11",
@@ -290447,7 +290447,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T22:45:59.772Z",
+   "updatedAt": "2026-11-17T22:47:43.903Z",
    "builtAt": "",
    "notes": [
     {
@@ -290515,7 +290515,16 @@
      "at": "2026-11-17T22:45:59.772Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T22:47:43.903Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "build a skin with Fable Ultra Code, really sick professional skin that covers everything: context menus, app menus, navigation menus, animations, colors, behavior, hooks, everything. Show me where the data sets go, the layouts, every single thing. Professional. One app: axHub, console, AmberX all as one app.",
@@ -290532,13 +290541,13 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-flagship-professional-skin-covering-2--earl",
+    "account": "hulu0241",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-17T22:45:56.991Z",
-    "runs": 3,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T21:58:22.524Z",
+    "runs": 2,
     "crashes": 2,
     "lastRun": {
      "at": "2026-11-17T22:44:09.502Z",
@@ -290558,9 +290567,9 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
-    "dispatchedAt": "2026-11-17T22:45:56.991Z",
+    "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -290569,7 +290578,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T22:45:56.991Z",
+    "pickedAt": "2026-11-17T21:58:22.524Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
@@ -290851,12 +290860,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:47:43.903Z",
      "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-17T22:44:30.480Z",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T22:44:30.504Z"
+     "updatedAt": "2026-11-17T22:47:44.937Z"
     },
     {
      "id": "s11",
@@ -291323,7 +291332,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
