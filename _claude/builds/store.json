@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7876,
- "updatedAt": "2026-11-17T20:52:12.513Z",
+ "rev": 7877,
+ "updatedAt": "2026-11-17T20:52:23.009Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268148,7 +268148,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T20:51:21.176Z",
+   "updatedAt": "2026-11-17T20:52:16.260Z",
    "builtAt": "",
    "notes": [
     {
@@ -268218,6 +268218,10 @@
     {
      "text": "Claude account: hulu0241 (axf-rebuild-fresh-main-phone-connect-small--paulie, shared account login)",
      "at": "2026-11-17T20:47:29.734Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--paulie is alive: kept running and tracking it.",
+     "at": "2026-11-17T20:52:16.260Z"
     }
    ],
    "approvals": [],
@@ -268238,7 +268242,7 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -268960,7 +268964,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
