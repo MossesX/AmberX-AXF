@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:05:17.761Z",
+ "updatedAt": "2026-11-17T00:05:42.441Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122528,7 +122528,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T00:04:13.250Z",
+   "updatedAt": "2026-11-17T00:04:54.401Z",
    "builtAt": "",
    "notes": [
     {
@@ -122546,6 +122546,10 @@
     {
      "text": "Claude account: hulu0241 (axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie, shared account login)",
      "at": "2026-11-16T23:39:33.452Z"
+    },
+    {
+     "text": "Headless run axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie: brief only · start 17.8K tokens ($0.12) · cost $8.00 · 58 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:04:54.401Z"
     }
    ],
    "approvals": [],
@@ -167409,21 +167413,58 @@
    "title": "Stop the auto-lander committing tracking files into builds",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (its step s24). Before landing, the auto-lander commits 'synced files left in the worktree (auto-land)' onto each build branch: _claude/builds/store.json, orchestrator.json, origins.json, journal jsonl. That commit turns CI red on every build (#733: 98f6c0d0 green, 41e3e2ac red). Stop committing orchestrator/build-tracking data into build branches; keep it on the hub/data store only; reset or ignore those files in worktrees. When the lander merges main into a build, take main's copy of tracking files and regenerate generated files (apps/console-web/scripts/control-inventory.mjs, tracker) instead of stopping on conflict. Journal files are ~70 MB on GitHub: move them out of git. Small and urgent. Land through the orchestrator.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-17T00:04:33.299Z",
+   "updatedAt": "2026-11-17T00:04:37.222Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T00:04:37.222Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Put that up into multiple slots.",
+    "at": "2026-11-17T00:04:33.299Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "auto-lander-status-tab-rest-mcp-settings",
+   "title": "Auto-lander status tab, REST, MCP and settings",
+   "category": "",
+   "detail": "Split out of server-auto-lander-fixes-lands (its steps s15-s18), built in parallel with it. REST routes in the gate plugin: GET /api/plugins/gate/auto-lander (service up, current build, queue, per-build state and attempts), POST run/retry/pause/resume/settings. Same actions on MCP, CLI 'axf gate auto-lander', AmberX voice, console-control addresses. Gate > Auto-lander tab: service status, current build, grid of builds with state, attempts, last result, keep ALL existing columns plus commits behind main, Retry/Pause/Fix buttons. Settings under Settings > Plugins > Gate (enabled, maxAttempts, backoff, push on escalation). Read the auto-lander@1 contract from the main build's branch claude/server-auto-lander-fixes-lands once it exists; stub against it otherwise. Land through the orchestrator.",
    "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
-   "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:04:33.299Z",
+   "createdAt": "2026-11-17T00:04:44.153Z",
+   "updatedAt": "2026-11-17T00:04:44.153Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "Put that up into multiple slots.",
-    "at": "2026-11-17T00:04:33.299Z",
+    "at": "2026-11-17T00:04:44.153Z",
     "source": "",
     "session": "",
     "link": "",
