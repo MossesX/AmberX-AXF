@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8101,
- "updatedAt": "2026-11-17T21:54:22.640Z",
+ "rev": 8102,
+ "updatedAt": "2026-11-17T21:54:32.525Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -284347,15 +284347,15 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/flagship-professional-skin-covering-2",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T21:54:17.465Z",
+   "updatedAt": "2026-11-17T21:54:29.197Z",
    "builtAt": "",
    "notes": [
     {
@@ -284381,6 +284381,14 @@
     {
      "text": "Brett: this skin rebuilds the whole app look: where drop-down menus open, menu placement, tab bar placement, layouts, everything (toolbar contents still excluded). EVERYTHING must be token-driven: no hard-coded look, position or behaviour values anywhere; every placement, size, colour and motion comes from skin/asset tokens. Very important.",
      "at": "2026-11-17T21:47:42.266Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-flagship-professional-skin-covering-2--sully.",
+     "at": "2026-11-17T21:54:22.829Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-flagship-professional-skin-covering-2--sully, shared account login)",
+     "at": "2026-11-17T21:54:29.197Z"
     }
    ],
    "approvals": [],
@@ -284400,13 +284408,13 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-flagship-professional-skin-covering-2--sully",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-17T21:54:21.885Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -284419,7 +284427,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T21:54:21.885Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -284428,7 +284436,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T21:54:21.885Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -285156,7 +285164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
