@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `server-every-failed-merge-alerts-brett` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `show-commits-behind-main-every-build` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `tap-to-confirm-follows-label-visibility` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `unlink-plan-studio-builds-delete-all` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:51 UTC · `guided-live-demo-test-watch-orchestrator` s18 done (all) · orchestrator
 - 2026-11-17 20:51 UTC · `separate-settings-per-plugin-reset` s17 done (all) · orchestrator
 - 2026-11-17 20:52 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 20:53 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
