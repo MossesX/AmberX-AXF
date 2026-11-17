@@ -1,0 +1,113 @@
+{
+ "$axf": "builds-journal@1",
+ "home": "hub",
+ "dir": "builds/journal",
+ "updatedAt": "2026-11-17T00:35:23.048Z",
+ "storeRev": 7182,
+ "parts": {
+  "2026-10": {
+   "bytes": 1166996,
+   "lines": 5,
+   "sha256": "9e14a51aac6be4ea31b5d72f95c0008fa53c56f10559ce0d0c1c43dd090412b1",
+   "sealed": true,
+   "firstAt": "2026-10-31T23:41:16.120Z",
+   "lastAt": "2026-10-31T23:45:10.702Z"
+  },
+  "2026-11": {
+   "bytes": 104853402,
+   "lines": 2489,
+   "sha256": "ece66aefdf4c767063e027ec74e3fbaa965269fcb8c77f77a60e617bd706acd2",
+   "sealed": true,
+   "firstAt": "2026-11-01T00:01:36.051Z",
+   "lastAt": "2026-11-09T02:55:10.115Z"
+  },
+  "2026-11-p10": {
+   "bytes": 63816835,
+   "lines": 21,
+   "sha256": "2798eebebeae92111bd9e165029ee9f2dbad5e4a60e1adf1398248295fc8bbd6",
+   "sealed": true,
+   "firstAt": "2026-11-16T14:07:58.177Z",
+   "lastAt": "2026-11-16T14:10:45.336Z"
+  },
+  "2026-11-p11": {
+   "bytes": 83545660,
+   "lines": 364,
+   "sha256": "9715b77249b82430c8f777e3e090c9527640ac1d01c33236aa2e124306714624",
+   "sealed": true,
+   "firstAt": "2026-11-16T14:10:51.946Z",
+   "lastAt": "2026-11-16T19:08:07.737Z"
+  },
+  "2026-11-p12": {
+   "bytes": 55336820,
+   "lines": 805,
+   "sha256": "e7cf6553cd3b7d24106051452d69910332d7a43d82d3e6b623544e6863160ff3",
+   "sealed": false,
+   "firstAt": "2026-11-16T19:08:21.685Z",
+   "lastAt": "2026-11-17T00:33:06.304Z"
+  },
+  "2026-11-p2": {
+   "bytes": 83391236,
+   "lines": 675,
+   "sha256": "825671406dd9f5616d78045d1d726e4fddd95014d0f43581808178b3c2039e67",
+   "sealed": true,
+   "firstAt": "2026-11-06T17:33:09.181Z",
+   "lastAt": "2026-11-09T00:48:38.808Z"
+  },
+  "2026-11-p3": {
+   "bytes": 83819196,
+   "lines": 1599,
+   "sha256": "8bcfb82d96c6b740a620e4484255a9c212c34a72604701b4b86eda33ae7592b4",
+   "sealed": true,
+   "firstAt": "2026-11-09T00:48:59.357Z",
+   "lastAt": "2026-11-10T17:57:04.894Z"
+  },
+  "2026-11-p4": {
+   "bytes": 83784264,
+   "lines": 657,
+   "sha256": "dcb0daa3c14e1e9768e7c17aa8fe7c3b1ce55c353470a333374ca670da87a989",
+   "sealed": true,
+   "firstAt": "2026-11-10T17:57:10.727Z",
+   "lastAt": "2026-11-10T23:26:31.303Z"
+  },
+  "2026-11-p5": {
+   "bytes": 78287224,
+   "lines": 1073,
+   "sha256": "904ed6495018010aefe64c7d76daa74b0ac3e22145ad0850b2a8063abb9903ee",
+   "sealed": true,
+   "firstAt": "2026-11-10T23:25:28.935Z",
+   "lastAt": "2026-11-13T10:45:01.510Z"
+  },
+  "2026-11-p6": {
+   "bytes": 83885609,
+   "lines": 1469,
+   "sha256": "3af0534588f1c7d1a40dbc8ff139ef2420a09fb5b44db374db0aecbf48a5f8fd",
+   "sealed": true,
+   "firstAt": "2026-11-12T03:34:09.306Z",
+   "lastAt": "2026-11-13T12:19:54.538Z"
+  },
+  "2026-11-p7": {
+   "bytes": 83541220,
+   "lines": 1547,
+   "sha256": "96c1c1967712821fd72420a09ceb2338f6865596e47152fe4835e31e8a2b5d67",
+   "sealed": true,
+   "firstAt": "2026-11-13T12:20:33.961Z",
+   "lastAt": "2026-11-14T17:48:43.166Z"
+  },
+  "2026-11-p8": {
+   "bytes": 83864284,
+   "lines": 1387,
+   "sha256": "4a00bf8683e54537dcdc751ed9e4249930cb77679931d148136faaf30ea5f351",
+   "sealed": true,
+   "firstAt": "2026-11-14T17:49:32.244Z",
+   "lastAt": "2026-11-15T11:57:21.462Z"
+  },
+  "2026-11-p9": {
+   "bytes": 71077980,
+   "lines": 524,
+   "sha256": "73c6ef23ac7684b4d9fdbac9c3635733b41b67fb33c0b5d6709f4721fb87b319",
+   "sealed": true,
+   "firstAt": "2026-11-15T11:57:36.047Z",
+   "lastAt": "2026-11-16T14:08:17.598Z"
+  }
+ }
+}
