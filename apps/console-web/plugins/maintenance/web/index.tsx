@@ -12,9 +12,13 @@
  *   `maintenance.profiles`): every profile's open builds, copied trackers and plans get a verdict, reason and proof; Brett
  *   unticks what he wants kept and applies. One undo per run. Deep (AI) by default when a model is there, else Basic.
  *
+ * - Docker cache (the page's Docker cache section, action `maintenance.docker-cache`): Clear Docker cache runs on the
+ *   VPS host through the host runner (engine/hostd.py, systemd), restarting Docker only when it is stuck. The page
+ *   follows the job from what the runner wrote, so it shows the result even after Docker restarted the console.
+ *
  * Server health uses no AI: plain reads of what the host engine measured.
  */
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Button, Checkbox, Chip, Container, Gauge, Icon, Note, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
@@ -34,7 +38,11 @@ interface Job { id: JobId; label: string; safe: boolean; icon: string; what: str
 interface Pct { pct: number | null; usedGb?: number | null; freeGb?: number | null; totalGb?: number | null }
 interface Summary { level: string; swapFull: boolean; hostPart: boolean; stale: boolean; disk: Pct; memory: Pct; swap: Pct; load: Record<string, number | null>; reclaimableGb: number | null; safeReclaimableGb: number | null; at?: string }
 interface Run { id: string; at: string; by: string; kind: string; jobs: JobId[]; count: number; bytes: number; state: 'waiting' | 'done' | 'partial' | 'failed' | 'dropped'; hub: { error?: string; held?: boolean; job?: string }; result?: { done: number; skipped: number; failed: number; freed: number; diskAfter?: { pct: number } } }
-interface Status { summary: Summary; hostPart: boolean; stale: boolean; note?: string; lastRun: Run | null; hub: boolean }
+interface Runner { reachable: boolean; error?: string; docker?: { alive: boolean; info?: string }; running?: Record<string, string>; lastSeen?: string; installCommand?: string }
+interface HostStep { at: string; step: string; ok: boolean; detail: string }
+interface HostJob { id: string; kind: string; by: string; at: string; endedAt?: string; state: 'running' | 'done' | 'failed'; error?: string; joined?: boolean; progress?: HostStep[]; result?: { ok: boolean; restarted: boolean; freed: number; steps: HostStep[]; error?: string; diskAfter?: { pct: number } } }
+interface DockerCache { job: HostJob | null; buildCache?: { size: number; reclaimable: number } | null; images?: { count: number; size: number; reclaimable: number } | null; available: boolean; measuredAt?: string }
+interface Status { summary: Summary; hostPart: boolean; stale: boolean; note?: string; lastRun: Run | null; hub: boolean; runner?: Runner }
 interface Snapshot { biggest: { kind: string; label: string; path: string; size: number; reclaimable?: number }[]; builds: { count: number; size: number; items: { name: string; path: string; size: number; state: string; why: string }[] }; docker: { available: boolean; images?: { count: number; size: number; reclaimable: number }; volumes?: { count: number; size: number }; buildCache?: { size: number; reclaimable: number }; containers?: { count: number; active: number } }; ageS?: number | null }
 interface PreviewJob { label: string; safe: boolean; what: string; items: Item[]; kept: Kept[]; count: number; bytes: number; error?: string | null }
 interface Preview { jobs: Record<string, PreviewJob>; count: number; bytes: number; at?: string; stale?: boolean }
@@ -60,6 +68,10 @@ const ago = (iso?: string) => {
 const LEVEL_TONE: Record<string, 'success' | 'warning' | 'danger' | undefined> = { ok: 'success', warning: 'warning', error: 'danger', critical: 'danger' };
 const RUN_TONE: Record<Run['state'], 'success' | 'warning' | 'danger' | 'accent' | undefined> = { waiting: 'accent', done: 'success', partial: 'warning', failed: 'danger', dropped: undefined };
 const RUN_LABEL: Record<Run['state'], string> = { waiting: 'Waiting for approval', done: 'Done', partial: 'Done with skips', failed: 'Not sent', dropped: 'Denied or expired' };
+const JOB_TONE: Record<HostJob['state'], 'success' | 'danger' | 'accent'> = { running: 'accent', done: 'success', failed: 'danger' };
+const JOB_LABEL: Record<HostJob['state'], string> = { running: 'Running', done: 'Done', failed: 'Failed' };
+const STEP_LABEL: Record<string, string> = { check: 'Docker check', restart: 'Restart Docker', 'docker-up': 'Docker back up', 'build-cache': 'Build cache', 'dangling-images': 'Dangling images' };
+const JOB_POLL_MS = 3_000;
 
 /* ---------------- one shared poll of status ---------------- */
 
@@ -204,6 +216,81 @@ function CleanUp({ status, onSent }: { status: Status | null; onSent: () => void
               </ul>
             </details>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Clear Docker cache: runs on the VPS host through the host runner, restarting Docker only when it is stuck. */
+function DockerCacheCard({ runner, onDone }: { runner?: Runner; onDone: () => void }) {
+  const rt = useRuntime();
+  const [state, setState] = useState<DockerCache | null>(null);
+  const [restart, setRestart] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const running = state?.job?.state === 'running';
+  useEffect(() => {
+    let live = true;
+    const load = () => api.call<DockerCache>('docker-cache').then((d) => { if (live) setState(d); }, () => { /* console restarting with Docker: try again */ });
+    void load();
+    // while a job runs the page polls fast; the job keeps going on the host even when Docker restarts the console
+    const t = setInterval(() => { if (running || document.visibilityState === 'visible') void load(); }, running ? JOB_POLL_MS : POLL_MS);
+    return () => { live = false; clearInterval(t); };
+  }, [running]);
+  const wasRunning = useRef(false);
+  useEffect(() => {
+    if (wasRunning.current && state?.job && state.job.state !== 'running') {
+      const r = state.job.result;
+      if (state.job.state === 'done') rt.toast(`Docker cache cleared: freed ${human(r?.freed)}${r?.restarted ? ' (Docker was restarted)' : ''}.`, 'success');
+      else rt.toast(`Clearing the Docker cache failed: ${state.job.error ?? 'see the steps'}`, 'danger');
+      onDone();
+    }
+    wasRunning.current = running;
+  }, [state?.job?.state]); // eslint-disable-line react-hooks/exhaustive-deps
+  const clear = async () => {
+    setBusy(true);
+    try { setState(await api.post<DockerCache>('docker-cache', { restart })); } catch (e) { rt.toast((e as Error).message, 'danger'); } finally { setBusy(false); }
+  };
+  const job = state?.job;
+  const steps = job?.result?.steps ?? job?.progress ?? [];
+  const up = runner?.reachable;
+  return (
+    <div className="fx-stack">
+      <p className="fx-small fx-muted" style={{ margin: 0 }}>
+        Empties the Docker build cache and removes dangling images, on the VPS itself. If Docker is stuck or a prune fails, it restarts Docker and tries again: every container restarts with it and the console comes back by itself. Volumes, tagged images and anything in use are never removed.
+      </p>
+      <div className="axp-maintenance__jobhead">
+        <span className="fx-small">
+          Build cache <b>{human(state?.buildCache?.size)}</b> · dangling images <b>{human(state?.images?.reclaimable)}</b>
+          {state?.measuredAt ? <span className="fx-muted"> · measured {ago(state.measuredAt)}</span> : null}
+        </span>
+        <Chip tone={up ? 'success' : 'warning'}>{up ? 'Host runner up' : 'Host runner not answering'}</Chip>
+        {up && <Chip tone={runner?.docker?.alive ? 'success' : 'danger'}>{runner?.docker?.alive ? 'Docker answers' : 'Docker stuck'}</Chip>}
+      </div>
+      {runner && !up && <Note tone="warning">The host runner on the VPS isn't answering{runner.lastSeen ? ` (last seen ${ago(runner.lastSeen)})` : ''}, so this can't run from here. Auto fix on the systems check row Maintenance host runner installs it, or run <span className="fx-mono">{runner.installCommand}</span> as root.</Note>}
+      <div className="axp-maintenance__acts">
+        <Checkbox label="Restart Docker if it's stuck" checked={restart} onChange={setRestart} disabled={running} />
+        <Button id="maintenance-docker-cache" icon="trash" tone="danger" disabled={!up || running || busy} busy={busy || running}
+          confirm={restart ? 'Clear the Docker cache? If Docker is stuck it is restarted, and every container (this console too) restarts with it.' : 'Clear the Docker cache? Docker is not restarted.'}
+          onClick={() => void clear()}>Clear Docker cache</Button>
+      </div>
+      {job && (
+        <div className="axp-maintenance__preview" data-axf-target={`row:docker-cache-${job.id}`}>
+          <div className="axp-maintenance__jobhead">
+            <span className="fx-small"><b>{ago(job.at)}</b> <span className="fx-muted">by {job.by}{job.result ? ` · freed ${human(job.result.freed)}${job.result.restarted ? ' · Docker restarted' : ''}${job.result.diskAfter ? ` · disk now ${job.result.diskAfter.pct}%` : ''}` : ''}</span></span>
+            <Chip tone={JOB_TONE[job.state]}>{JOB_LABEL[job.state]}</Chip>
+          </div>
+          {job.error && <span className="fx-small" role="alert"><Icon name="alert" size={14} /> {job.error}</span>}
+          {steps.length > 0 && (
+            <ul className="axp-maintenance__list" aria-label="Steps">
+              {steps.map((st, i) => (
+                <li key={`${st.step}-${i}`} className="axp-maintenance__row">
+                  <span className="axp-maintenance__name"><b className="fx-small">{STEP_LABEL[st.step] ?? st.step}</b><span className="fx-small fx-muted">{st.detail}</span></span>
+                  <Chip tone={st.ok ? 'success' : 'danger'}>{st.ok ? 'ok' : 'failed'}</Chip>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </div>
@@ -383,6 +470,7 @@ function MaintenanceView() {
       <Container title="Biggest space users" icon="chart"><SpaceUsers snapshot={snapshot} /></Container>
       <Container title={`Build worktrees${snapshot ? ` · ${snapshot.builds.count} · ${human(snapshot.builds.size)}` : ''}`} icon="branch" collapsible defaultOpen={false}><Worktrees snapshot={snapshot} /></Container>
       <Container title="Clean-up" icon="trash"><CleanUp status={status} onSent={() => { void loadStatus(); setTick((t) => t + 1); }} /></Container>
+      <Container title="Docker cache" icon="box"><DockerCacheCard runner={status?.runner} onDone={() => { void loadStatus(); setTick((t) => t + 1); }} /></Container>
       <Container title="Runs" icon="clock"><Runs tick={tick} /></Container>
       <Container title="Build profiles" icon="layers"><ProfileCleanUp /></Container>
     </div>
@@ -427,7 +515,7 @@ function StatusPanel() {
   if (!status) return <p className="fx-small fx-muted">Loading…</p>;
   return (
     <div className="fx-stack">
-      <p className="fx-small" style={{ margin: 0 }}>Host part: <b>{status.hostPart ? (status.stale ? 'silent for over 30 min' : 'reporting') : 'not installed'}</b> · axHub: <b>{status.hub ? 'connected' : 'not connected (runs go through the systems check)'}</b></p>
+      <p className="fx-small" style={{ margin: 0 }}>Host part: <b>{status.hostPart ? (status.stale ? 'silent for over 30 min' : 'reporting') : 'not installed'}</b> · host runner: <b>{status.runner?.reachable ? 'up' : 'not answering'}</b> · axHub: <b>{status.hub ? 'connected' : 'not connected (runs go through the systems check)'}</b></p>
       {status.lastRun && <p className="fx-small fx-muted" style={{ margin: 0 }}>Last run: {RUN_LABEL[status.lastRun.state]}, {ago(status.lastRun.at)} ({status.lastRun.jobs.join(', ')}).</p>}
     </div>
   );
@@ -436,8 +524,8 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.maintenance',
   label: 'Maintenance',
-  version: '0.2.0',
-  builtWith: { model: 'opus', builtAt: '2026-11-04' },
+  version: '0.3.0',
+  builtWith: { model: 'opus', builtAt: '2026-11-17' },
   appMenu,
   views: { maintenance: { title: 'Maintenance', icon: 'monitor', render: () => <MaintenanceView /> } },
   nav: { label: 'Plugins', items: [{ id: 'maintenance', label: 'Maintenance', icon: 'monitor', view: 'maintenance' }] },
@@ -493,6 +581,8 @@ export const plugin: AxfWebLibrary = {
     { id: 'maintenance.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
+    // opens the Docker cache section; the clear itself is the button there, which asks first (it may restart Docker)
+    rt.actions.register('maintenance.docker-cache', () => rt.navigate('maintenance'), { label: 'Clear Docker cache (opens Maintenance)' });
     rt.actions.register('maintenance.profiles', async () => {
       const plan = await api.post<PcPlan>('profiles/preview', {});
       bumpRuns();

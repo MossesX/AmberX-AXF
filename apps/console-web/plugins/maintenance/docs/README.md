@@ -12,6 +12,23 @@ Settings are in **Settings → Plugins → Maintenance**.
 - Every build worktree in `/root/axf-builds` and `/home/axfbuild/wt-*`, its size and whether it can go.
 - Each clean-up job, how many items it would take and how much space that frees.
 
+## Clear Docker cache
+
+Maintenance → **Docker cache** → **Clear Docker cache** empties the Docker build cache (all of it) and removes dangling
+images, on the VPS itself through the host runner. It asks first.
+
+- Docker is restarted **only when it has to be**: the daemon doesn't answer, or a prune fails or hangs. After the
+  restart the prune runs once more. Untick **Restart Docker if it's stuck** to never restart.
+- A Docker restart restarts every container, this console too. The job keeps running on the host; the page shows its
+  steps and result (freed space, whether Docker was restarted, disk after) once the console is back.
+- Never removed: volumes, tagged images, anything a container uses.
+
+Reached the same four ways: REST `POST /api/control/maintenance/docker-cache` (`{"restart": false}` to never restart;
+it asks for the confirm token first), MCP `maintenance_docker-cache`, CLI `axf maintenance docker-cache`, voice
+("clear the Docker cache"). Read the state with `docker-cache-status` (`job` = an id, else the latest). Deep link:
+`view:maintenance`, button `button:maintenance-docker-cache`. On the VPS without the console:
+`python3 apps/console-web/plugins/maintenance/engine/hostd.py call docker-cache`.
+
 ## Clean-up jobs
 
 | Job | Safe for nightly | What it removes |
@@ -103,7 +120,12 @@ Every route is a plugin command (`forFramework: true`, so Molly gets voice comma
 | `run` | command | send a clean-up to axHub for approval |
 | `runs` | read | runs and results |
 | `settings` / `set-settings` | read / command | the settings |
-| `check` | command | check health now |
+| `check` | command | check health now (and measure again on the host) |
+| `host` | read | host runner: answers or not, Docker's state, running jobs, last heartbeat |
+| `host-jobs` | read | host runner jobs (`kind`: docker-cache, docker-restart, snapshot) |
+| `docker-cache-status` | read | the latest (or one) Docker cache job, its steps and result, build cache size |
+| `docker-cache` | command (confirm) | clear the Docker cache on the host; restarts Docker if stuck (`restart: false` never) |
+| `docker-restart` | command (confirm) | restart Docker on the host |
 | `profiles-preview` | command | audit every build profile, save a preview (`mode`: auto, basic, deep) |
 | `profiles-preview-read` | read | read a saved preview |
 | `profiles-apply` | command | apply a preview (`run`, `skip` = keys to leave) |
@@ -112,24 +134,41 @@ Every route is a plugin command (`forFramework: true`, so Molly gets voice comma
 
 REST `/api/control/maintenance/<command>`, MCP `maintenance_<command>`, CLI `axf maintenance <command>`.
 
-## Host part
+## Host part: the host runner
 
-`deploy/host.sh up` (run by `deploy/install-console.sh`) installs `/etc/cron.d/axf-maintenance`, which runs
-`python3 engine/maint.py snapshot` every 10 minutes at low priority. It writes to the plugin's data folder
-(`.axf-console/plugins/maintenance/`) in the checkout the console already mounts. Without it, the page shows
-only disk, memory, swap and load.
+The plugin's actions run on the VPS host, outside every container, through the host runner
+`engine/hostd.py` (maintenance-host@1), a systemd service `axf-maintenance.service` that runs as root and does not
+depend on docker.service. So it keeps working while the console or Docker is down, and it is what restarts Docker.
 
-On the VPS you can also run the engine yourself:
+- `deploy/host.sh up` (run by `deploy/install-console.sh`) writes and (re)starts the unit and removes the old cron line.
+  Without systemd it falls back to the old measuring cron (no actions). `host.sh down` removes it, `host.sh status`
+  shows it.
+- It measures every 10 minutes at low priority into the plugin's data folder (`.axf-console/plugins/maintenance/`),
+  which the console reads from the checkout it already mounts.
+- The console only calls it, over the Unix socket `host/hostd.sock` in that folder (root only), one JSON line each way
+  (`server/host.py`). Every action is a job written to `host/jobs/<id>.json` as it goes, and the runner writes a
+  heartbeat to `host/runner.json` every 30 s, so the console shows a job's result even after it restarted.
+- Ops: `ping`, `status`, `snapshot`, `docker-cache`, `docker-restart`, `job`, `jobs`.
+- Approved clean-up runs still go only through axHub's held `vps.run` (`maint.py run <id> --sha …`), never the runner.
+- Systems check row **Maintenance host runner**: warns when it doesn't answer or Docker is stuck; **Auto fix** sends
+  `deploy/host.sh up` to axHub for approval.
+- The service removes its own unit once the plugin folder is gone.
+
+On the VPS you can also run things yourself:
 
 ```bash
+python3 apps/console-web/plugins/maintenance/engine/hostd.py call ping
+python3 apps/console-web/plugins/maintenance/engine/hostd.py call docker-cache --json '{"restart": false}'
 python3 apps/console-web/plugins/maintenance/engine/maint.py snapshot
 python3 apps/console-web/plugins/maintenance/engine/maint.py preview --jobs docker,logs
 ```
 
+`hostd.py call` asks the running service; when it isn't running, it runs the op right there and waits.
+
 ## Uninstall
 
-`node apps/console-web/plugins/maintenance/uninstall.mjs --all`. The cron line deletes its own file on the
-next tick once the plugin folder is gone.
+`node apps/console-web/plugins/maintenance/uninstall.mjs --all`. The host runner removes its own systemd unit
+(and an old cron line deletes its own file) once the plugin folder is gone.
 
 ## Tests
 

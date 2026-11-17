@@ -3,7 +3,7 @@
   "type": "help",
   "id": "maintenance-help",
   "name": "Maintenance help",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Help mode entries for the Maintenance plugin (help@1).",
   "author": "Brett",
   "tags": [
@@ -21,7 +21,7 @@
       {
         "target": "check-now",
         "title": "Check now",
-        "text": "Checks server health again straight away: alert levels, swap and the nightly run. The host part re-measures everything every 10 minutes."
+        "text": "Checks server health again straight away (alert levels, swap, the nightly run) and asks the host runner on the VPS to measure everything again now. It also measures by itself every 10 minutes."
       },
       {
         "target": "preview",
@@ -67,6 +67,11 @@
         "target": "open",
         "title": "Open",
         "text": "Opens a saved build profile clean-up preview so you can untick items and apply it."
+      },
+      {
+        "target": "maintenance-docker-cache",
+        "title": "Clear Docker cache",
+        "text": "Empties the Docker build cache and removes dangling images on the VPS, through the host runner (outside the console). If Docker is stuck or a prune fails, it restarts Docker and tries again; every container, this console too, restarts with it and comes back by itself. Untick Restart Docker if it's stuck to never restart. Volumes, tagged images and anything in use are never removed."
       }
     ],
     "intros": [

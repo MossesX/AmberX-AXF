@@ -34,6 +34,7 @@ from fastapi import APIRouter, HTTPException, Request
 import console_context as cx
 import plugin_services
 
+from . import host
 from . import hub
 from . import profiles as pc
 
@@ -58,6 +59,7 @@ maint = _load_engine()
 router = APIRouter()
 HEALTH_CAP = "axf.health@1"
 HEALTH_ID = "maintenance-server-health"
+RUNNER_HEALTH_ID = "maintenance-host-runner"
 ALERT_SOURCE = "maintenance"
 DISK_KEY, SWAP_KEY = "maintenance:disk", "maintenance:swap"
 HOST_ROOT = os.environ.get("AXF_MAINT_HOST_ROOT", "/opt/axf")  # the same checkout, as the VPS host sees it
@@ -218,20 +220,7 @@ def start_run(jobs: list[str], only: list[str] | None = None, by: str = "console
         maint.write_json(_runs_dir("plans") / f"{run_id}.json", p)
         command = f"python3 {HOST_ROOT}/apps/console-web/plugins/{FOLDER}/engine/maint.py run {run_id} --sha {p['sha']}"
         title = f"{'Nightly clean-up' if kind == 'nightly' else 'Server clean-up'}: free about {maint.human(p['bytes'])}"
-        try:
-            if hub.connected():
-                h = hub.hold(command, title, _describe(p))
-            else:
-                reg = plugin_services.get(HEALTH_CAP)
-                vps_run = getattr(reg, "vps_run", None) if reg is not None else None
-                if not vps_run:
-                    raise hub.HubError("axHub isn't connected (no AXHUB_TOKEN) and the systems check can't reach the VPS")
-                r = vps_run(command)
-                h = {"via": "axf.health", "state": r.get("state"), "message": r.get("message"), **({"job": r["jobId"]} if r.get("jobId") else {})}
-                if r.get("state") == "failed":
-                    h["error"] = r.get("message") or "the VPS command failed"
-        except hub.HubError as e:
-            h = {"error": str(e)}
+        h = _send_host(command, title, _describe(p))
         held = _held()
         held[run_id] = {**h, "at": maint.now_iso()}
         maint.write_json(data_dir() / "held.json", dict(list(held.items())[-200:]))
@@ -241,6 +230,90 @@ def start_run(jobs: list[str], only: list[str] | None = None, by: str = "console
     if h.get("error"):
         raise HTTPException(502, f"Couldn't send the run to axHub: {h['error']}")
     return out
+
+
+# ------------------------------------------------------------------ the host runner
+
+HOST_UP_COMMAND = f"bash {HOST_ROOT}/apps/console-web/plugins/{FOLDER}/deploy/host.sh up"
+
+
+def runner_state() -> dict[str, Any]:
+    """Whether the host runner answers, Docker's state as it sees it, and its last heartbeat when it doesn't answer."""
+    try:
+        st = host.call(data_dir(), "status")
+        return {"reachable": True, "docker": st.get("docker"), "running": st.get("running") or {}, "startedAt": st.get("startedAt"),
+                "lastSnapshot": st.get("lastSnapshot"), "version": st.get("version")}
+    except host.HostError as e:
+        hb = host.last_heartbeat(data_dir())
+        age = _age_s(hb) if hb else None
+        return {"reachable": False, "error": str(e), "lastSeen": (hb or {}).get("at"), "lastSeenS": int(age) if age is not None else None,
+                "installCommand": HOST_UP_COMMAND}
+
+
+def _host_job(op: str, by: str, **args: Any) -> dict[str, Any]:
+    try:
+        r = host.call(data_dir(), op, by=by[:40], **args)
+    except host.HostError as e:
+        raise HTTPException(503, f"The host runner on the VPS isn't answering: {e}. It installs with deploy/install-console.sh "
+                                 f"(or: {HOST_UP_COMMAND}); Auto fix on the systems check row Maintenance host runner does it for you.") from None
+    job = r.get("job") or {}
+    cx.log("maintenance", f"host runner: {op} {'joined running job' if job.get('joined') else 'started'} {job.get('id')} (by {by})")
+    return job
+
+
+def docker_cache_state(job_id: str | None = None) -> dict[str, Any]:
+    """The Docker cache clear: a job by id, else the latest, read from what the runner wrote (works while it is busy)."""
+    d = data_dir()
+    job = host.job_on_disk(d, job_id) if job_id else next(iter(host.jobs_on_disk(d, "docker-cache", 1)), None)
+    snap = maint.read_json(d / "snapshot.json") or {}
+    dk = snap.get("docker") or {}
+    return {"job": job, "buildCache": dk.get("buildCache"), "images": dk.get("images"), "available": dk.get("available", False),
+            "measuredAt": snap.get("at")}
+
+
+def _runner_probe() -> dict[str, Any]:
+    r = runner_state()
+    if r["reachable"]:
+        dk = r.get("docker") or {}
+        if not dk.get("alive"):
+            return {"status": "warn", "summary": "Docker isn't answering on the VPS.",
+                    "details": [f"The host runner is up; docker info says: {dk.get('info') or 'no reply'}.",
+                                "Maintenance → Clear Docker cache restarts it, or POST /api/control/maintenance/docker-restart."]}
+        return {"status": "ok", "summary": "The host runner is up and Docker answers.", "details": []}
+    seen = f" Last seen {int((r.get('lastSeenS') or 0) / 60)} min ago." if r.get("lastSeen") else " It has never reported."
+    return {"status": "warn", "summary": "The Maintenance host runner on the VPS isn't answering.",
+            "details": [f"{r.get('error')}.{seen}",
+                        "Without it, Clear Docker cache and Restart Docker can't run, and the server isn't measured.",
+                        f"Fix: {HOST_UP_COMMAND} (as root on the VPS)."]}
+
+
+def _send_host(command: str, title: str, description: str) -> dict[str, Any]:
+    """One held axHub call (or the systems check's VPS route) for a host command → hub state; error inside on failure."""
+    try:
+        if hub.connected():
+            return hub.hold(command, title, description)
+        reg = plugin_services.get(HEALTH_CAP)
+        vps_run = getattr(reg, "vps_run", None) if reg is not None else None
+        if not vps_run:
+            raise hub.HubError("axHub isn't connected (no AXHUB_TOKEN) and the systems check can't reach the VPS")
+        r = vps_run(command)
+        h = {"via": "axf.health", "state": r.get("state"), "message": r.get("message"), **({"job": r["jobId"]} if r.get("jobId") else {})}
+        if r.get("state") == "failed":
+            h["error"] = r.get("message") or "the VPS command failed"
+        return h
+    except hub.HubError as e:
+        return {"error": str(e)}
+
+
+def _runner_autofix() -> dict[str, Any]:
+    h = _send_host(HOST_UP_COMMAND, "Install and start the Maintenance host runner",
+                   "Runs the Maintenance plugin's deploy/host.sh up as root on the VPS: writes and starts the systemd service "
+                   "axf-maintenance.service, which measures the server and runs Clear Docker cache and Restart Docker on the "
+                   "host, outside the console container. Nothing is removed.")
+    if h.get("error"):
+        return {"state": "failed", "message": h["error"]}
+    return {"state": "started", "message": "Sent: approve it on axHub and the host runner starts.", "waitS": 10 * 60,
+            **({"jobId": h["job"]} if h.get("job") else {}), "link": "view:maintenance"}
 
 
 # ------------------------------------------------------------------ alerts, nightly, health
@@ -356,6 +429,13 @@ def ensure_health() -> bool:
                       "instructions": ["Maintenance → preview a clean-up, then approve it on axHub.",
                                        "Auto fix sends the safe clean-up (dangling images and build cache, old logs, /tmp leftovers, stuck Created containers) for approval."],
                       "autoFix": {"label": "Run the safe clean-up", "run": autofix}}, FOLDER)
+        reg.register({"id": RUNNER_HEALTH_ID, "label": "Maintenance host runner", "service": "vps", "order": 38, "interval": 5 * 60,
+                      "run": _runner_probe,
+                      "breaks": "Clear Docker cache, Restart Docker and the server measurements run on the VPS host through it; "
+                                "without it they can't run from the console.",
+                      "links": [{"label": "Open Maintenance", "href": "view:maintenance"}],
+                      "instructions": [f"As root on the VPS: {HOST_UP_COMMAND}", "Auto fix sends that command to axHub for your approval."],
+                      "autoFix": {"label": "Install and start the host runner", "run": _runner_autofix}}, FOLDER)
     except Exception:  # noqa: BLE001 — the plugin works without its row
         return False
     _health_done = True
@@ -402,7 +482,8 @@ def get_status() -> dict[str, Any]:
     snap = snapshot()
     runs = list_runs(5)
     return {"summary": summary(snap), "levels": levels(snap), "settings": settings(), "hostPart": snap.get("hostPart"),
-            "stale": snap.get("stale"), "note": snap.get("note"), "lastRun": runs[0] if runs else None, "hub": hub.connected()}
+            "stale": snap.get("stale"), "note": snap.get("note"), "lastRun": runs[0] if runs else None, "hub": hub.connected(),
+            "runner": runner_state()}
 
 
 @router.get("/summary")
@@ -471,7 +552,56 @@ async def put_settings(request: Request) -> dict[str, Any]:
 
 @router.post("/check")
 def post_check() -> dict[str, Any]:
-    return tick()
+    out = tick()
+    try:  # and measure again on the host now (the runner answers at once; the snapshot lands in a few seconds)
+        out["measure"] = (host.call(data_dir(), "snapshot", by="check").get("job") or {}).get("id")
+    except host.HostError as e:
+        out["measure"] = None
+        out["runner"] = str(e)
+    return out
+
+
+# ------------------------------------------------------------------ host runner routes
+
+@router.get("/host")
+def get_host() -> dict[str, Any]:
+    return runner_state()
+
+
+@router.get("/host/jobs")
+def get_host_jobs(kind: str | None = None) -> dict[str, Any]:
+    return {"jobs": host.jobs_on_disk(data_dir(), kind, 20)}
+
+
+@router.get("/docker-cache")
+def get_docker_cache(job: str | None = None) -> dict[str, Any]:
+    out = docker_cache_state(job)
+    if job and not out["job"]:
+        raise HTTPException(404, f"no Docker cache job {job}")
+    return out
+
+
+@router.post("/docker-cache")
+async def post_docker_cache(request: Request) -> dict[str, Any]:
+    """Clear the Docker build cache and dangling images on the host; restart Docker if it is stuck (restart: false to never)."""
+    try:
+        b = await _body(request)
+    except HTTPException:
+        b = {}
+    restart = b.get("restart", True) is not False
+    job = _host_job("docker-cache", str(b.get("by") or "console"), restart=restart)
+    return {**docker_cache_state(job.get("id")), "started": not job.get("joined")}
+
+
+@router.post("/docker-restart")
+async def post_docker_restart(request: Request) -> dict[str, Any]:
+    """Restart Docker on the host (every container restarts; the console comes back by itself)."""
+    try:
+        b = await _body(request)
+    except HTTPException:
+        b = {}
+    job = _host_job("docker-restart", str(b.get("by") or "console"))
+    return {"job": job, "started": not job.get("joined")}
 
 
 # ------------------------------------------------------------------ clean up build profiles
