@@ -2966,6 +2966,18 @@
    "from": "",
    "addenda": []
   },
+  "edit-ui-mode-inline-edit-anything-active": {
+   "said": "I need a way to inline edit anything. We need an Edit UI. When Edit UI is on, it only works when I'm also holding down Control.",
+   "at": "2026-11-17T14:52:56.126Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "element-inspector": {
    "said": "Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
    "at": "2026-10-30",
