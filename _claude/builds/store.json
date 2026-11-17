@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8283,
- "updatedAt": "2026-11-17T22:53:40.940Z",
+ "rev": 8284,
+ "updatedAt": "2026-11-17T22:53:56.718Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -290447,7 +290447,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T22:52:29.285Z",
+   "updatedAt": "2026-11-17T22:53:41.271Z",
    "builtAt": "",
    "notes": [
     {
@@ -290546,7 +290546,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "axf-flagship-professional-skin-covering-2--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -291016,12 +291016,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:53:41.271Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T21:34:10.438Z"
+     "updatedAt": "2026-11-17T22:53:41.922Z"
     },
     {
      "id": "s17",
