@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:11 UTC · `live-hot-refresh-every-grid-list-re` s1 done, → running (all) · orchestrator
 - 2026-11-17 15:11 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · orchestrator
 - 2026-11-17 15:11 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
 - 2026-11-17 15:11 UTC · `themed-native-controls-plugin` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` → running, note (all) · pipeline
 - 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
 - 2026-11-17 19:47 UTC · `separate-settings-per-plugin-reset` note (all) · orchestrator
+- 2026-11-17 19:47 UTC · `rebuild-every-toolbar-page-specific` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
