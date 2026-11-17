@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7145,
- "updatedAt": "2026-11-17T00:16:43.982Z",
+ "rev": 7146,
+ "updatedAt": "2026-11-17T00:17:07.483Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -251318,7 +251318,7 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T00:16:13.741Z",
+   "updatedAt": "2026-11-17T00:16:53.180Z",
    "builtAt": "",
    "notes": [
     {
@@ -251405,7 +251405,7 @@
     "queuedAt": "2026-11-16T22:44:25.286Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-own-look-per-grid-and-tab-group--lenny",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "",
@@ -251721,12 +251721,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T00:16:53.180Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-16T22:48:13.206Z",
-     "updatedAt": "2026-11-16T22:48:13.206Z"
+     "updatedAt": "2026-11-17T00:16:53.677Z"
     },
     {
      "id": "s12",
