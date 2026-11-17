@@ -659,3 +659,87 @@ def toolbar_button_address(ref: str, button: str) -> str:
     if not b:
         raise ControlError("invalid", "press needs the button id (see the toolbar's state)", field="button")
     return f"{toolbar_address(ref)}/button:{b}"
+
+
+# ---------------------------------------------------------------------- banner widget shape and icon (widget-shape@1; build banner-widget-shapes-plus-change-icon)
+#
+# Every banner widget's shape, icon and custom outline are console-control targets the open console derives from state
+# (framework/react/components/widgetShape.ts): setting:banner.widget.<widget>.shape|icon|path and
+# function:banner.widget.<widget>.reset|change-icon|custom-shape. These helpers turn a REST / MCP / CLI / voice request
+# into those addresses, so every transport sends the same console-control command and the console runs the same
+# banner.widget action as the right-click menu and the Banners settings.
+
+BANNER_WIDGET_PREFIX = "banner.widget."
+BANNER_WIDGET_SHAPES = ("circle", "square", "rounded", "pill", "hexagon", "custom")
+BANNER_WIDGET_FIELDS = ("shape", "icon", "path")
+BANNER_WIDGET_FUNCTIONS = ("reset", "change-icon", "custom-shape")
+BANNER_WIDGET_OPEN = {"settings": "setting", "shape": "custom-shape", "icon": "change-icon"}
+#: Settings → Plugins → Banners (the one Banners settings interface: its Widget shape and icon section)
+BANNERS_SETTINGS_ADDRESS = "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=banners"
+_BANNER_WIDGET_RE = re.compile(r"^[a-z0-9-]{1,40}:[A-Za-z0-9._-]{1,120}$")
+
+
+def banner_widget_ref(ref: str) -> str:
+    """A widget key `<type>:<id>` (clock:digital-12h), checked; a bare name (clock) is resolved against the list first."""
+    ref = str(ref or "").strip()
+    if not _BANNER_WIDGET_RE.match(ref):
+        raise ControlError("invalid", "a banner widget is named by its key <type>:<id>, e.g. clock:digital-12h (GET /api/console-control/banner-widgets lists them)", field="widget")
+    return ref
+
+
+def banner_widget_address(widget: str, what: str) -> str:
+    """setting:banner.widget.<widget>.<shape|icon|path> or function:banner.widget.<widget>.<reset|change-icon|custom-shape>."""
+    w = banner_widget_ref(widget)
+    if what in BANNER_WIDGET_FIELDS:
+        return f"setting:{BANNER_WIDGET_PREFIX}{w}.{what}"
+    if what in BANNER_WIDGET_FUNCTIONS:
+        return f"function:{BANNER_WIDGET_PREFIX}{w}.{what}"
+    raise ControlError("invalid", f"a banner widget has {', '.join(BANNER_WIDGET_FIELDS + BANNER_WIDGET_FUNCTIONS)} (not {what!r})", field="what")
+
+
+def banner_widget_shape_command(widget: str, shape: str = "", path: str = "") -> dict[str, Any]:
+    """The console-control command that sets one widget's shape: a named shape, or a custom outline (path)."""
+    shape, path = str(shape or "").strip().lower(), str(path or "").strip()
+    if path:
+        if len(path) > 400:
+            raise ControlError("invalid", "a custom outline is at most 400 characters", field="path")
+        return {"verb": "set", "address": banner_widget_address(widget, "path"), "value": path}
+    if shape not in BANNER_WIDGET_SHAPES or shape == "custom":
+        raise ControlError("invalid", f"shape is one of {', '.join(s for s in BANNER_WIDGET_SHAPES if s != 'custom')}, or send path=<svg outline> for a custom shape", field="shape")
+    return {"verb": "set", "address": banner_widget_address(widget, "shape"), "value": shape}
+
+
+def banner_widget_icon_command(widget: str, icon: str) -> dict[str, Any]:
+    """`<icon pack>/<glyph>` or `own` (its own icon back)."""
+    icon = str(icon or "").strip() or "own"
+    if icon != "own" and not re.match(r"^[a-z0-9][a-z0-9-]{1,47}/[a-z0-9][a-z0-9._-]{0,63}$", icon):
+        raise ControlError("invalid", "icon is <icon pack id>/<glyph name> (e.g. amberx-outline/bell) or own", field="icon")
+    return {"verb": "set", "address": banner_widget_address(widget, "icon"), "value": icon}
+
+
+def banner_widget_open_address(widget: str = "", what: str = "settings") -> str:
+    """The deep link console_show / console_open take: the Banners settings section, or one widget's dialog."""
+    if not widget or what == "settings":
+        return BANNERS_SETTINGS_ADDRESS if not widget else banner_widget_address(widget, "shape")
+    if what not in BANNER_WIDGET_OPEN:
+        raise ControlError("invalid", f"open takes {', '.join(BANNER_WIDGET_OPEN)}", field="what")
+    return banner_widget_address(widget, BANNER_WIDGET_OPEN[what])
+
+
+def banner_widgets_from_targets(targets: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The live target list → one row per widget: {widget, label, shape, icon, path, addresses}."""
+    rows: dict[str, dict[str, Any]] = {}
+    head = f"setting:{BANNER_WIDGET_PREFIX}"
+    for t in targets or []:
+        a = str(t.get("address") or "")
+        if not a.startswith(head):
+            continue
+        key, _, field = a[len(head):].rpartition(".")
+        if field not in BANNER_WIDGET_FIELDS or not key:
+            continue
+        row = rows.setdefault(key, {"widget": key, "label": str(t.get("label") or "").split(" · ")[0], "addresses": {}})
+        row[field] = t.get("value", "" if field == "path" else None)
+        row["addresses"][field] = a
+    for key, row in rows.items():
+        row["addresses"].update({f: f"function:{BANNER_WIDGET_PREFIX}{key}.{f}" for f in BANNER_WIDGET_FUNCTIONS})
+    return sorted(rows.values(), key=lambda r: r["widget"])
