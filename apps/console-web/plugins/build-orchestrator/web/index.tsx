@@ -140,6 +140,6 @@ export const plugin: AxfWebLibrary = {
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
-  settingsPanels: [{ id: 'build-orchestrator.step-groups', tab: 'build-orchestrator', title: 'Step groups', icon: 'git-branch', order: 20, render: () => <StepGroupsSettings /> },
+  settingsPanels: [{ id: 'build-orchestrator.step-groups', tab: 'build-orchestrator', title: 'Step groups', icon: 'layers', order: 20, render: () => <StepGroupsSettings /> },
     { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

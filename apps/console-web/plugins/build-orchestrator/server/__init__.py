@@ -650,6 +650,46 @@ async def step_groups_settings_set(request: Request) -> dict[str, Any]:
     return _pipeline("groups", "settings", *pairs, who=_who(request))
 
 
+def _group_id(v: Any) -> str:
+    s = str(v or "").strip()
+    if not GROUP_ID_RE.match(s):
+        raise HTTPException(400, "not a group id (g1, g2 …)")
+    return s
+
+
+@router.get("/step-groups/{build}")
+def step_groups_get(build: str) -> dict[str, Any]:
+    """One build's step groups: each group's state (waiting and what on), steps done/total, slot, account, branch, merge order."""
+    return _pipeline("groups", "list", _build_id(build))
+
+
+@router.post("/step-groups/{build}/plan")
+async def step_groups_plan(build: str, request: Request) -> dict[str, Any]:
+    """Work out (or redo) the build's groups from its steps' files and dependsOn (only before any group runs)."""
+    return _pipeline("groups", "plan", _build_id(build), who=_who(request))
+
+
+@router.post("/step-groups/{build}/ungroup")
+async def step_groups_ungroup(build: str, request: Request) -> dict[str, Any]:
+    """Run the build as one sequential session again (only before any group runs or merges)."""
+    return _pipeline("groups", "ungroup", _build_id(build), who=_who(request))
+
+
+@router.post("/step-groups/{build}/{group}/{action}")
+async def step_groups_action(build: str, group: str, action: str, request: Request) -> dict[str, Any]:
+    """start (now) | rerun | merge (now) | reorder {to: up|down|first|last|index} | fix (Fix with Claude on a merge conflict)."""
+    if action not in ("start", "rerun", "merge", "reorder", "fix"):
+        raise HTTPException(404, "action is start, rerun, merge, reorder or fix")
+    extra: list[str] = []
+    if action == "reorder":
+        body = await _json_body(request)
+        to = str(body.get("to", "up"))
+        if not re.match(r"^(up|down|first|last|\d{1,2})$", to):
+            raise HTTPException(400, "to is up, down, first, last or a position")
+        extra = [to]
+    return _pipeline("groups", action, _build_id(build), _group_id(group), *extra, who=_who(request))
+
+
 @router.post("/pipeline/route")
 async def pipeline_route(request: Request) -> dict[str, Any]:
     """{id, route: api|subscription|auto}: the per-build override. api = only API-key accounts (billed per token, under

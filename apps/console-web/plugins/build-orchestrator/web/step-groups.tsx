@@ -94,3 +94,51 @@ export function GroupsPanel({ build, groups, actions }: { build: string; groups:
     </section>
   );
 }
+
+// ------------------------------------------------------------------ group actions (the same calls as REST, MCP, CLI and voice)
+
+/** POST step-groups/<build>/<group>/<action> (or step-groups/<build>/<action> for plan / ungroup), with a toast. */
+export function useGroupActions(after?: () => void) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState('');
+  const call = (path: string, body: Record<string, unknown>, done: string) => {
+    setBusy(path);
+    return groupsApi.post<{ ok: boolean; error?: string }>(`step-groups/${path}`, body)
+      .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(done, 'success'); after?.(); })
+      .catch((e: Error) => rt.toast(e.message, 'danger')).finally(() => setBusy(''));
+  };
+  return { busy, call };
+}
+
+/** The buttons of one group row: what its state allows. Merge now and Ungroup ask first. */
+export function GroupButtons({ build, g, count, busy, call }: { build: string; g: GroupRow; count: number; busy: string; call: (path: string, body: Record<string, unknown>, done: string) => Promise<void> }) {
+  const at = `${encodeURIComponent(build)}/${g.id}`;
+  const off = !!busy;
+  const open = g.steps.done < g.steps.total;
+  const fixed = g.state === 'merged' || g.state === 'merging';
+  return (
+    <>
+      {(g.state === 'planned' || g.state === 'ready') && !g.waitingOn.length && open && <Button size="sm" tone="primary" icon="play" disabled={off} title="Start this group's next session now instead of on the next tick" onClick={() => void call(`${at}/start`, {}, `${build} ${g.id} started`)}>Start now</Button>}
+      {g.state === 'failed' && open && <Button size="sm" icon="refresh" disabled={off} title="Back in the queue with its crash count cleared" onClick={() => void call(`${at}/rerun`, {}, `${build} ${g.id} back in the queue`)}>Re-run</Button>}
+      {g.state === 'ready-to-merge' && <Button size="sm" tone="success" icon="check-circle" disabled={off} confirm={`Merge ${g.id} onto the build branch now, out of its turn?`} title="Merge it onto the build branch now" onClick={() => void call(`${at}/merge`, {}, `${build} ${g.id} merged`)}>Merge now</Button>}
+      {g.state === 'conflict' && !g.session && <Button size="sm" tone="danger" icon="zap" disabled={off} title="A session merges the build branch into this group's branch, resolves it and the next tick merges again" onClick={() => void call(`${at}/fix`, {}, `Fix with Claude started on ${build} ${g.id}`)}>Fix with Claude</Button>}
+      {!fixed && count > 1 && <Button size="sm" tone="quiet" icon="chevron-up" disabled={off || g.mergeOrder === 0} title="Merge earlier" onClick={() => void call(`${at}/reorder`, { to: 'up' }, `${g.id} moved up`)}>Up</Button>}
+      {!fixed && count > 1 && <Button size="sm" tone="quiet" icon="chevron-down" disabled={off || g.mergeOrder === count - 1} title="Merge later" onClick={() => void call(`${at}/reorder`, { to: 'down' }, `${g.id} moved down`)}>Down</Button>}
+    </>
+  );
+}
+
+/** The Groups panel with its actions, and Ungroup for the whole build. */
+export function GroupsWithActions({ build, groups, reload }: { build: string; groups: GroupRow[]; reload?: () => void }) {
+  const { busy, call } = useGroupActions(reload);
+  const canUngroup = groups.every((g) => g.state === 'planned' || g.state === 'ready' || g.state === 'failed');
+  return (
+    <div className="fx-stack">
+      <GroupsPanel build={build} groups={groups} actions={(g) => <GroupButtons build={build} g={g} count={groups.length} busy={busy} call={call} />} />
+      <div className="fx-row fx-row--wrap">
+        <Button size="sm" icon="layers" disabled={!!busy || !canUngroup} title="Work the groups out again from the steps' files" onClick={() => void call(`${encodeURIComponent(build)}/plan`, {}, `${build}: groups planned again`)}>Plan again</Button>
+        <Button size="sm" tone="danger" icon="list" disabled={!!busy || !canUngroup} confirm={`Run ${build} as one sequential session? Its step groups are removed.`} title={canUngroup ? 'Run it as one sequential session' : 'A group has run or merged: its work lives on its own branch'} onClick={() => void call(`${encodeURIComponent(build)}/ungroup`, {}, `${build} runs as one sequential session`)}>Ungroup (run sequential)</Button>
+      </div>
+    </div>
+  );
+}

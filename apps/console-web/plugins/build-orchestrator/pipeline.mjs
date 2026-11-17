@@ -488,7 +488,8 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
   // re-split; pure, and written only when the plan splits, so a build that stays one group costs nothing per tick
   out.grouped = [];
   for (const b of live(loadStore())) {
-    if (!groupsPlannable(b) || (b.groups ?? []).length || P.needsSplit(b, rules)) continue;
+    // a build whose steps name a group with no groups[] was ungrouped (or grouped by hand): never re-planned by itself
+    if (!groupsPlannable(b) || (b.groups ?? []).length || (b.steps ?? []).some((x) => x.group) || P.needsSplit(b, rules)) continue;
     const plan = P.groupPlan(b, settings);
     if (!plan.split || plan.error) continue;
     try { const r = planBuildGroups(b.id, { by: 'orchestrator', settings }); if (r.written) { out.grouped.push({ id: b.id, groups: r.groups.length }); crewSay('orchestrator', 'done', `${b.id} runs as ${r.groups.length} step groups in parallel slots: ${r.reason}.`, { ref: b.id }); } }
@@ -987,6 +988,99 @@ export function groupsOfBuild(id) {
   return { id: b.id, title: b.title, status: b.status, branch: SG.buildBranchOf(b), ...P.groupRows(b), mergeQueue: SG.mergeQueue(b) };
 }
 
+// ------------------------------------------------------------------ group actions (UI, REST, MCP, CLI, voice: all call these)
+
+const refuse = (m) => Object.assign(new Error(m), { code: 2 });
+const groupOf = (id, gid) => {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw refuse(`no build "${id}"`);
+  if (!BP.isSplit(b)) throw refuse(`${b.id} is not split into step groups (plan them first: groups plan ${b.id})`);
+  const g = BP.groupsOf(b).find((x) => x.id === gid); if (!g) throw refuse(`${b.id} has no group "${gid}" (it has ${BP.groupsOf(b).map((x) => x.id).join(', ')})`);
+  return { b, g };
+};
+
+/** Work out (or redo) a build's step groups now: planBuildGroups, written. */
+export const planGroupsNow = (id, { by = process.env.AXF_ACTOR || 'console' } = {}) => planBuildGroups(id, { by });
+
+/**
+ * Start now: the group's next session starts this minute instead of on the next tick, through the dispatcher's own
+ * launch (dispatchGroup: account pick for the group's model, dispatch token, build lock, agent slots). Refused while it
+ * waits on a group that is not merged, runs already, or has no open step. The build goes to running with it.
+ */
+export function startGroupNow(id, gid, { env = process.env, by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const { b, g } = groupOf(id, gid);
+  if (!['planned', 'ready'].includes(g.state)) throw refuse(`${b.id}/${gid} is ${BP.GROUP_STATE_LABEL[g.state] ?? g.state}: only a planned or ready group starts`);
+  const waits = P.groupWaitsOn(b, g); if (waits.length) throw refuse(`${b.id}/${gid} waits for ${waits.join(', ')} to merge`);
+  if (!P.groupOpenSteps(b, g).length) throw refuse(`${b.id}/${gid} has no open step`);
+  if (!['queued', 'running'].includes(b.status)) throw refuse(`${b.id} is ${b.status}: queue it first (only a Queued build takes a slot)`);
+  const store = loadStore(); const settings = loadSettings(); const accounts = accountsNow(store, settings);
+  const model = P.groupModel(b, g); const r = P.routeFor(b, accounts, model, settings);
+  if (!r.account) throw refuse(`no account can take ${b.id}/${gid} (${model}) now: ${r.why}`);
+  const state = loadState(); state.groupRuns = state.groupRuns ?? {}; state.launchFails = state.launchFails ?? {};
+  const launched = []; const failed = []; const waitsOut = [];
+  const n = orch.nextUp(P.groupView(b, g), rulesOf(store));
+  dispatchGroup({ id: b.id, group: gid, account: r.account, model, phase: n.phase?.name ?? '', kind: r.kind, rule: r.rule, why: r.why }, { store, accounts, settings, rules: rulesOf(store), env, state, alert: () => {}, launched, failed, waits: waitsOut, hourAgo: Date.now() - 3600e3 });
+  saveState({ ...loadState(), groupRuns: state.groupRuns, launchFails: state.launchFails });
+  logLine({ event: 'group-start-now', build: b.id, group: gid, by, launched: launched.length });
+  if (failed.length) throw Object.assign(new Error(`${b.id}/${gid} did not start: ${str(failed[0].error, 300)}`), { code: 1 });
+  if (waitsOut.length) throw refuse(`${b.id}/${gid}: ${waitsOut[0].why}`);
+  return { id: b.id, group: gid, account: launched[0]?.account ?? r.account, model, session: launched[0]?.session ?? '' };
+}
+
+/** Re-run: a failed (or stopped) group goes back to the queue with its crash count cleared; the next tick starts it. */
+export function rerunGroup(id, gid, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const { b, g } = groupOf(id, gid);
+  if (!['failed', 'ready', 'planned'].includes(g.state)) throw refuse(`${b.id}/${gid} is ${BP.GROUP_STATE_LABEL[g.state] ?? g.state}: only a failed, ready or planned group re-runs`);
+  if (!P.groupOpenSteps(b, g).length) throw refuse(`${b.id}/${gid} has every step done: Merge now instead`);
+  const key = groupKey(b.id, gid); const st = loadState(); st.groupRuns = st.groupRuns ?? {};
+  st.groupRuns[key] = { ...(st.groupRuns[key] ?? {}), crashes: 0 }; if (st.launchFails) delete st.launchFails[key]; saveState(st);
+  SG.updateGroup(b.id, gid, { state: 'ready', note: `re-run by ${by}: back in the queue` }, { by, action: 'pipeline:group-rerun' });
+  if (b.status === 'failed') setPipeline(b.id, {}, { status: 'running', note: `Group ${gid} re-run by ${by}.`, action: 'pipeline:group-rerun' });
+  logLine({ event: 'group-rerun', build: b.id, group: gid, by });
+  return { id: b.id, group: gid, state: 'ready' };
+}
+
+/** Merge now: a group with every step done merges at once, out of its turn when need be; the last merge lands the build. */
+export function mergeGroupNow(id, gid, { env = process.env, by = process.env.AXF_ACTOR || 'console', alert = () => {} } = {}) {
+  const { b } = groupOf(id, gid);
+  const r = SG.mergeGroup(b.id, gid, { env, by, force: true });
+  if (!r.merged) alert('group-conflict', { id: b.id, title: b.title, group: gid, files: r.conflict, note: r.note });
+  const after = storeCore.findBuild(loadStore(), b.id);
+  const landed = BP.groupsOf(after).every((x) => x.state === 'merged') ? landSplitBuild(b.id, { env }) : null;
+  logLine({ event: 'group-merge-now', build: b.id, group: gid, by, merged: r.merged });
+  return { ...r, landed };
+}
+
+/**
+ * Move a group in the merge order: up | down | first | last | a 0-based index. Never before a group it depends on (it
+ * needs that group's work) and never across a merged group (those are on the build branch already).
+ */
+export function reorderGroup(id, gid, to, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const { b, g } = groupOf(id, gid);
+  if (g.state === 'merged' || g.state === 'merging') throw refuse(`${b.id}/${gid} is ${BP.GROUP_STATE_LABEL[g.state]}: its place is fixed`);
+  const order = BP.groupsOf(b).map((x) => x.id); const i = order.indexOf(gid);
+  const firstFree = BP.groupsOf(b).findIndex((x) => x.state !== 'merged' && x.state !== 'merging');
+  const j = to === 'up' ? i - 1 : to === 'down' ? i + 1 : to === 'first' ? firstFree : to === 'last' ? order.length - 1 : Number(to);
+  if (!Number.isInteger(j) || j < 0 || j >= order.length) throw refuse(`move ${gid} up, down, first, last or to 0…${order.length - 1}`);
+  if (j < firstFree) throw refuse(`${gid} can't merge before ${order[j]}: it is merged already`);
+  order.splice(i, 1); order.splice(j, 0, gid);
+  const pos = new Map(order.map((x, k) => [x, k]));
+  for (const x of BP.groupsOf(b)) for (const d of x.dependsOn) if (pos.get(d) > pos.get(x.id)) throw refuse(`${x.id} depends on ${d}: ${d} has to merge first`);
+  withStore((s) => { const rec = storeCore.findBuild(s, b.id); for (const x of rec.groups) x.mergeOrder = pos.get(x.id) ?? x.mergeOrder; rec.groups = BP.normGroups(rec.groups); rec.updatedAt = nowIso(); return s; }, { by, action: 'pipeline:group-reorder', note: `${b.id}: merge order ${order.join(', ')}` });
+  logLine({ event: 'group-reorder', build: b.id, group: gid, to, order, by });
+  return { id: b.id, group: gid, mergeOrder: order };
+}
+
+/** Ungroup: run the build as one sequential session again (groups removed, every step back in the one implicit group). Only before any group runs or merges. */
+export function ungroupBuild(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw refuse(`no build "${id}"`);
+  if (!BP.isSplit(b)) return { id: b.id, ungrouped: false, note: `${b.id} runs as one sequential group already` };
+  const busy = BP.groupsOf(b).filter((g) => BP.GROUP_LIVE_STATES.includes(g.state) || g.state === 'merged' || g.state === 'ready-to-merge');
+  if (busy.length) throw refuse(`${b.id} can't be ungrouped: ${busy.map((g) => `${g.id} is ${BP.GROUP_STATE_LABEL[g.state]}`).join(', ')} (its work lives on its own branch)`);
+  withStore((s) => { const rec = storeCore.findBuild(s, b.id); delete rec.groups; for (const x of rec.steps) x.group = BP.IMPLICIT_GROUP; rec.notes.push({ text: `Ungrouped by ${by}: runs as one sequential session (Plan groups splits it again).`, at: nowIso() }); rec.updatedAt = nowIso(); return s; }, { by, action: 'pipeline:ungroup', note: b.id });
+  logLine({ event: 'ungroup', build: b.id, by });
+  return { id: b.id, ungrouped: true, note: `${b.id} runs as one sequential session` };
+}
+
 /** `pipeline.mjs groups …`: the step groups of a build (step-groups@1). */
 function groupsCli(rest, { out }) {
   const [sub = 'list', id, gid] = rest;
@@ -1000,9 +1094,18 @@ function groupsCli(rest, { out }) {
   }
   if (sub === 'conflicts') { const c = groupConflicts(); return out({ ok: true, conflicts: c }, c.map((x) => `${x.id}/${x.group}: ${x.note}`).join('\n') || 'no group in merge conflict'); }
   if (sub === 'list') { const r = groupsOfBuild(need(id, 'build')); return out({ ok: true, ...r }, [r.line, ...r.groups.map((g) => `  ${g.id.padEnd(4)} ${g.label.padEnd(18)} ${g.steps.done}/${g.steps.total} · merge #${g.mergeOrder + 1}${g.account ? ` · ${g.account}` : ''}${g.branch ? ` · ${g.branch}` : ''}`)].join('\n')); }
-  if (sub === 'merge') { const r = gid ? SG.mergeGroup(need(id, 'build'), gid, { force: true }) : SG.mergeReady(need(id, 'build')); if (!gid && r.allMerged) landSplitBuild(r.id); return out({ ok: true, ...r }, gid ? r.note : `${r.id}: merged ${r.merged.join(', ') || 'nothing'}${r.conflict ? ` · conflict in ${r.conflict.group}: ${r.conflict.note}` : ''}`); }
+  if (sub === 'merge') {
+    if (gid) { const r = mergeGroupNow(need(id, 'build'), gid, { alert: (k, d) => { try { makeConsole()('POST', '/api/alerts', P.alertFor(k, d)); } catch { /* the banner check sees it too */ } } }); return out({ ok: true, ...r }, `${r.note}${r.landed ? ' · every group merged: built' : ''}`); }
+    const r = SG.mergeReady(need(id, 'build')); if (r.allMerged) landSplitBuild(r.id);
+    return out({ ok: true, ...r }, `${r.id}: merged ${r.merged.join(', ') || 'nothing'}${r.conflict ? ` · conflict in ${r.conflict.group}: ${r.conflict.note}` : ''}`);
+  }
+  if (sub === 'plan') { const r = planGroupsNow(need(id, 'build')); return out({ ok: true, ...r }, `${r.id}: ${r.reason}${r.written ? ' (saved)' : ''}`); }
+  if (sub === 'start') { const r = startGroupNow(need(id, 'build'), need(gid, 'group')); return out({ ok: true, ...r }, `${r.id}/${r.group}: started on ${r.account} (${r.model})${r.session ? ` · ${r.session}` : ''}`); }
+  if (sub === 'rerun') { const r = rerunGroup(need(id, 'build'), need(gid, 'group')); return out({ ok: true, ...r }, `${r.id}/${r.group}: back in the queue`); }
+  if (sub === 'reorder') { const r = reorderGroup(need(id, 'build'), need(gid, 'group'), rest[3] ?? 'up'); return out({ ok: true, ...r }, `${r.id}: merge order ${r.mergeOrder.join(' → ')}`); }
+  if (sub === 'ungroup') { const r = ungroupBuild(need(id, 'build')); return out({ ok: true, ...r }, r.note); }
   if (sub === 'fix') { const r = fixGroupConflict(need(id, 'build'), need(gid, 'group')); return out({ ok: true, ...r }, `${r.id}/${r.group}: Fix with Claude started on ${r.account} (${r.session || 'queued'})`); }
-  throw Object.assign(new Error(`groups ${sub}: list | conflicts | merge | fix`), { code: 2 });
+  throw Object.assign(new Error(`groups ${sub}: list | plan | start | rerun | merge | reorder | ungroup | fix | conflicts | settings`), { code: 2 });
 }
 
 /**
