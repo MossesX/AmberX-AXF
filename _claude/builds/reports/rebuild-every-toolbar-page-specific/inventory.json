@@ -17,7 +17,9 @@
     "dynamicId": 17,
     "noButtons": 12,
     "buttons": 342,
-    "duplicateIds": 7
+    "duplicateIds": 7,
+    "rebuilt": 59,
+    "pageToolbarAssets": 19
   },
   "duplicateIds": [
     "app",
@@ -39,7 +41,8 @@
       "file": "apps/console-web/src/PluginSettingsGear.tsx",
       "line": 76,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "home-cards",
@@ -82,7 +85,8 @@
           "gated": "!shown.length",
           "handler": "() => homeLayout.apply({ op: 'hideAll' })"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "plan-filters",
@@ -118,7 +122,8 @@
           "tag": "button",
           "handler": "() => setMode(m)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "filter-toolbar",
@@ -131,7 +136,8 @@
       "file": "apps/console-web/plugins/basic-filter/web/ui.tsx",
       "line": 86,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "rule-actions",
@@ -156,7 +162,8 @@
           "label": "Remove rule",
           "handler": "onRemove"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "filter-and-sort",
@@ -193,7 +200,8 @@
           "label": "Clear filters",
           "handler": "resetFilters"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "watchdog-actions",
@@ -231,7 +239,16 @@
           "gated": "!!busy",
           "handler": "() => void reload()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "attempts",
@@ -264,7 +281,16 @@
           "gated": "busy",
           "handler": "() => onRetry('fresh-session')"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "groups-new-group",
@@ -286,7 +312,16 @@
           "gated": "!name.trim() || busy === 'groups",
           "handler": "() => void change({ op: 'create', name: name.trim(), tab: 'pending' }, `Group \"${name.trim()}\" made, with its own Pending tab`).then((r) => "
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "groups-selected-builds",
@@ -323,7 +358,16 @@
           "label": "Clear",
           "handler": "() => setSel(new Set())"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "settings",
@@ -372,7 +416,16 @@
           "destructive": true,
           "handler": "() => void change({ op: 'delete', group: g.id }, `${g.name}: deleted (its builds stay)`).then(onDeleted)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "show-states",
@@ -393,7 +446,16 @@
           "label": "s",
           "gated": "saving"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "smart-rule",
@@ -424,7 +486,16 @@
           "gated": "saving",
           "handler": "() => { setTitle(''); setBehind(''); setDays(''); void upd({ rule: null }, 'rule cleared'); }"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "group-actions",
@@ -474,7 +545,16 @@
           "gated": "busy === 'action' || !prio || !g.total",
           "handler": "() => void act('priority', { priority: prio }).then(report)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "bulk-actions",
@@ -504,7 +584,16 @@
           "gated": "!ids.length || busy === 'bulk",
           "handler": "() => void runAction(a, ids)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "show",
@@ -535,7 +624,16 @@
           "label": "only",
           "handler": "() => setFilter('')"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "watchdog-actions",
@@ -570,7 +668,16 @@
           "tag": "Segmented",
           "label": "Layout"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "build-orchestrator-pipeline",
+            "toolbar": "build-orchestrator.pipeline"
+          }
+        ]
+      }
     },
     {
       "id": "builds-view",
@@ -594,7 +701,8 @@
           "tag": "Segmented",
           "label": "Show"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "steps-selection",
@@ -642,7 +750,8 @@
           "gated": "scopedBuild ? !scopedBuild.rearranged : !rearranged.length",
           "handler": "() => setDialog({ kind: 'restore', id: scopedBuild?.id ?? null })"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "filter-the-grid",
@@ -669,7 +778,8 @@
           "gated": "!open.size",
           "handler": "() => setOpen(new Set())"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "files",
@@ -690,7 +800,8 @@
           "label": "Refresh",
           "handler": "() => void load()"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "file",
@@ -725,7 +836,8 @@
           "label": "Reload",
           "handler": "() => void load()"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "look-roller",
@@ -768,7 +880,8 @@
           "label": "Back to the app's look",
           "handler": "() => resetLook(defaults)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "context-chain",
@@ -807,7 +920,16 @@
           "gated": "done",
           "handler": "allDone"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "terminal-sessions",
+            "toolbar": "terminal.sessions"
+          }
+        ]
+      }
     },
     {
       "id": "terminal-commands",
@@ -906,7 +1028,16 @@
           "title": "Hide this toolbar (right-click a tab to show it again)",
           "handler": "() => setToolbar(false)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "terminal-sessions",
+            "toolbar": "terminal.sessions"
+          }
+        ]
+      }
     },
     {
       "id": "extra-keys",
@@ -938,7 +1069,16 @@
           "title": "Paste",
           "handler": "() => void pasteFromClipboard(false)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "terminal-sessions",
+            "toolbar": "terminal.sessions"
+          }
+        ]
+      }
     },
     {
       "id": "find-sessions",
@@ -962,7 +1102,16 @@
           "title": "Sort",
           "handler": "() => patch({ sort: prefs.sort === 'started' ? 'recent' : prefs.sort === 'recent' ? 'name' : 'started' })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "terminal-sessions",
+            "toolbar": "terminal.sessions"
+          }
+        ]
+      }
     },
     {
       "id": "actions-search",
@@ -983,7 +1132,8 @@
           "label": "Filter",
           "handler": "() => rt.openDialog(FILTER_DIALOG)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "data-store-backups",
@@ -1012,7 +1162,16 @@
           "gated": "!s.reachable || !last",
           "handler": "() => void run('verify')"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "data-store",
+            "toolbar": "data-store"
+          }
+        ]
+      }
     },
     {
       "id": "data-store-mode",
@@ -1058,7 +1217,16 @@
           "gated": "mode !== 'shadow",
           "handler": "() => void go('local')"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "data-store",
+            "toolbar": "data-store"
+          }
+        ]
+      }
     },
     {
       "id": "pitch-actions",
@@ -1110,7 +1278,8 @@
           "destructive": true,
           "handler": "() => void run('Delete', async () => { await deleteDemo(demo.id); onDeleted(); })"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "step",
@@ -1157,7 +1326,8 @@
           "destructive": true,
           "handler": "onRemove"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "record-by-doing",
@@ -1193,7 +1363,8 @@
           "gated": "recording || !events.length",
           "handler": "makeSteps"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "timeline-actions",
@@ -1230,7 +1401,8 @@
           "gated": "!dirty",
           "handler": "() => setDraft(demo.data.steps)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "saved-pitches-tools",
@@ -1251,7 +1423,8 @@
           "label": "Refresh",
           "handler": "() => void loadDemos(true)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "show",
@@ -1270,7 +1443,8 @@
           "tag": "Segmented",
           "label": "Show"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "gate-auto-lander",
@@ -1323,7 +1497,16 @@
           "gated": "!s",
           "handler": "() => void pause()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "gate",
+            "toolbar": "gate"
+          }
+        ]
+      }
     },
     {
       "id": "gate-build-rule",
@@ -1359,7 +1542,16 @@
           "destructive": true,
           "handler": "() => void remove()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "gate",
+            "toolbar": "gate"
+          }
+        ]
+      }
     },
     {
       "id": "actions",
@@ -1381,7 +1573,16 @@
           "label": "Edit",
           "handler": "onEdit"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "gate",
+            "toolbar": "gate"
+          }
+        ]
+      }
     },
     {
       "id": "gate-build-rules",
@@ -1402,7 +1603,16 @@
           "label": "Add a rule",
           "handler": "() => rt.openDialog(BUILD_RULE_DIALOG, { id: '', onSaved: onChanged })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "gate",
+            "toolbar": "gate"
+          }
+        ]
+      }
     },
     {
       "id": "gate-build-rules-run",
@@ -1430,7 +1640,16 @@
           "label": "Run now",
           "handler": "() => void run(false)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "gate",
+            "toolbar": "gate"
+          }
+        ]
+      }
     },
     {
       "id": "gate-history",
@@ -1449,7 +1668,16 @@
           "tag": "Segmented",
           "label": "label=\"Show\" value= options= onChange= />"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "gate",
+            "toolbar": "gate"
+          }
+        ]
+      }
     },
     {
       "id": "gate-lander",
@@ -1491,7 +1719,16 @@
           "label": "Pause",
           "handler": "() => void pause()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "gate",
+            "toolbar": "gate"
+          }
+        ]
+      }
     },
     {
       "id": "gate-rules",
@@ -1520,7 +1757,16 @@
           "destructive": true,
           "handler": "() => void reset()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "gate",
+            "toolbar": "gate"
+          }
+        ]
+      }
     },
     {
       "id": "chapter-actions",
@@ -1565,7 +1811,16 @@
           "destructive": true,
           "handler": "() => onChange({ op: 'remove-chapter', chapter: c.id })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "item",
@@ -1619,7 +1874,16 @@
           "destructive": true,
           "handler": "() => onChange({ op: 'remove-item', chapter: c.id, index: j })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "book-builder",
@@ -1647,7 +1911,16 @@
           "label": "Refresh",
           "handler": "() => void loadDemos(true)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "book-actions",
@@ -1690,7 +1963,16 @@
           "destructive": true,
           "handler": "() => void deleteAsset('book', book.id).then(() => { setBookId(''); setBook(null); })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "step",
@@ -1737,7 +2019,16 @@
           "destructive": true,
           "handler": "onRemove"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "demonstration-actions",
@@ -1796,7 +2087,16 @@
           "destructive": true,
           "handler": "() => void run('Delete', async () => { await deleteAsset('demonstration', draft.id); onDeleted(); })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "clip-actions",
@@ -1833,7 +2133,16 @@
           "destructive": true,
           "handler": "() => void deleteAsset('clip', clip.id).then(onDeleted)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "tab-clip-clip-list-tools-demonstration-list-tools",
@@ -1875,7 +2184,16 @@
           "label": "Refresh",
           "handler": "() => void loadDemos(true)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "entry-actions",
@@ -1944,7 +2262,16 @@
           "icon": "copy",
           "handler": "() => { void navigator.clipboard?.writeText(entry.id); setCopied(true); setTimeout(() => setCopied(false), 1500); }"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "index-tools",
@@ -1972,7 +2299,16 @@
           "label": "Collapse all",
           "handler": "() => setOpen(new Set())"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "demonstration-player",
@@ -2016,7 +2352,16 @@
           "label": "Stop",
           "handler": "stop"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "glossary-index",
+            "toolbar": "glossary-index"
+          }
+        ]
+      }
     },
     {
       "id": "markdown",
@@ -2043,7 +2388,8 @@
           "label": "t.label",
           "handler": "() => apply(t.run)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "note",
@@ -2086,7 +2432,8 @@
           "gated": "busy || editing",
           "handler": "remove"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "catalog-view-and-filters",
@@ -2112,7 +2459,16 @@
           "label": "Look again (new plugins and apps appear by themselves)",
           "handler": "load"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "plan-studio-plans",
+            "toolbar": "plan-studio"
+          }
+        ]
+      }
     },
     {
       "id": "plan",
@@ -2148,7 +2504,16 @@
           "gated": "!dirty && !isNew",
           "handler": "() => void save()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "plan-studio-plans",
+            "toolbar": "plan-studio"
+          }
+        ]
+      }
     },
     {
       "id": "view-filter-and-sort",
@@ -2195,7 +2560,16 @@
           "label": "Clear filters",
           "handler": "() => setF({})"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "plan-studio-plans",
+            "toolbar": "plan-studio"
+          }
+        ]
+      }
     },
     {
       "id": "bulk-actions",
@@ -2223,7 +2597,16 @@
           "label": "Clear",
           "handler": "() => setSel(new Set())"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "plan-studio-plans",
+            "toolbar": "plan-studio"
+          }
+        ]
+      }
     },
     {
       "id": "categories",
@@ -2278,7 +2661,16 @@
           "destructive": true,
           "handler": "() => op({ op: 'remove', path: sel })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "plan-studio-plans",
+            "toolbar": "plan-studio"
+          }
+        ]
+      }
     },
     {
       "id": "tree-tools",
@@ -2297,7 +2689,8 @@
           "tag": "Switch",
           "label": "Show done"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "plan-studio-2-0-actions",
@@ -2359,7 +2752,8 @@
           "label": "Reload",
           "handler": "() => void reload()"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "item-actions",
@@ -2409,7 +2803,8 @@
           "destructive": true,
           "handler": "() => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0'))"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "say-a-command",
@@ -2437,7 +2832,8 @@
           "icon": "listening ? 'pause' : 'mic",
           "handler": "() => void talk()"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "plugin-commands",
@@ -2463,7 +2859,8 @@
           "label": "Refresh",
           "handler": "() => void load()"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "plugin-list",
@@ -2489,7 +2886,16 @@
           "gated": "p.loading",
           "handler": "() => void p.reload()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "plugin-manager",
+            "toolbar": "plugin-manager"
+          }
+        ]
+      }
     },
     {
       "id": "plugins-menu",
@@ -2521,7 +2927,8 @@
           "label": "This browser's own settings",
           "handler": "() => choose(FOLDER)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "merge-queue",
@@ -2586,7 +2993,16 @@
           "gated": "busy",
           "handler": "() => setSure(true)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "push-banner-merge-queue",
+            "toolbar": "push-banner.merge-queue"
+          }
+        ]
+      }
     },
     {
       "id": "kicked-out",
@@ -2609,7 +3025,16 @@
           "gated": "q.busy === w.pr",
           "handler": "() => void command('add', { pr: w.pr }, `#${w.pr} is back in the queue.`)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "push-banner-merge-queue",
+            "toolbar": "push-banner.merge-queue"
+          }
+        ]
+      }
     },
     {
       "id": "not-queued",
@@ -2631,7 +3056,16 @@
           "gated": "q.busy === w.pr",
           "handler": "() => void command('add', { pr: w.pr }, `#${w.pr} is back in the queue.`)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "push-banner-merge-queue",
+            "toolbar": "push-banner.merge-queue"
+          }
+        ]
+      }
     },
     {
       "id": "merge-queue",
@@ -2659,7 +3093,16 @@
           "title": "Show the merge queue on Home",
           "handler": "() => rt.openDialog('home-card', { draft: cardFromDrop({ plugin: FOLDER, command: 'mergequeue-list', title: 'Merge queue' }) })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "push-banner-merge-queue",
+            "toolbar": "push-banner.merge-queue"
+          }
+        ]
+      }
     },
     {
       "id": "session-check-in",
@@ -2672,7 +3115,8 @@
       "file": "apps/console-web/plugins/session-checkin/web/index.tsx",
       "line": 102,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "shipped-features-filters",
@@ -2729,7 +3173,16 @@
           "label": "Clear filters",
           "handler": "() => set({ ...L.DEFAULT_VIEW, by: view.by, sort: view.sort, expanded: view.expanded })"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "shipped-features",
+            "toolbar": "shipped-features"
+          }
+        ]
+      }
     },
     {
       "id": "shipped-features-actions",
@@ -2768,7 +3221,16 @@
           "title": "The rows you see, as a Markdown table",
           "handler": "() => exportAs('md')"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "shipped-features",
+            "toolbar": "shipped-features"
+          }
+        ]
+      }
     },
     {
       "id": "shipped-features-view",
@@ -2787,7 +3249,16 @@
           "tag": "Segmented",
           "label": "View by"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "shipped-features",
+            "toolbar": "shipped-features"
+          }
+        ]
+      }
     },
     {
       "id": "token-registry",
@@ -2813,7 +3284,8 @@
           "label": "Skin editor",
           "handler": "() => rt.navigate('skin-editor')"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "sample-toolbar",
@@ -2851,7 +3323,8 @@
           "icon": "more",
           "label": "More"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "skin-editor",
@@ -2903,7 +3376,8 @@
           "title": "Browse every token in the system",
           "handler": "() => rt.navigate('token-registry')"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "token-level",
@@ -2922,7 +3396,8 @@
           "tag": "Segmented",
           "label": "Level"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "skin-actions",
@@ -2969,7 +3444,8 @@
           "gated": "!view?.canUndo",
           "handler": "() => void act('undo', undoLast)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "skin-quick-actions",
@@ -2998,7 +3474,8 @@
           "gated": "!here?.canUndo",
           "handler": "() => void run('undo', undoLast)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "preview-size",
@@ -3017,7 +3494,8 @@
           "tag": "Segmented",
           "label": "Preview size"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "theme-editor",
@@ -3066,7 +3544,8 @@
           "gated": "!dirty.length",
           "handler": "revert"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "roll",
@@ -3119,7 +3598,16 @@
           "gated": "!changed.length",
           "handler": "() => setPins([{ name: `Favourite ${pins.length + 1}`, at: Date.now(), snap: snapshot() }, ...pins].slice(0, 12))"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "theme-manager",
+            "toolbar": "theme-manager"
+          }
+        ]
+      }
     },
     {
       "id": "token-tree",
@@ -3132,7 +3620,16 @@
       "file": "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx",
       "line": 194,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "theme-manager",
+            "toolbar": "theme-manager"
+          }
+        ]
+      }
     },
     {
       "id": "saved-themes",
@@ -3145,7 +3642,16 @@
       "file": "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx",
       "line": 335,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "theme-manager",
+            "toolbar": "theme-manager"
+          }
+        ]
+      }
     },
     {
       "id": "to-do",
@@ -3177,7 +3683,8 @@
           "label": "showFilters ? 'Hide filters' : 'Filters",
           "handler": "() => setShowFilters(!showFilters)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "selected-entries",
@@ -3205,7 +3712,8 @@
           "label": "Clear the selection",
           "handler": "clear"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "b-title",
@@ -3229,7 +3737,20 @@
           "icon": "more",
           "label": "More"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "ui-review-queue",
+            "toolbar": "ui-review.queue"
+          },
+          {
+            "asset": "ui-review-shots",
+            "toolbar": "ui-review.shots"
+          }
+        ]
+      }
     },
     {
       "id": "group",
@@ -3281,7 +3802,20 @@
           "destructive": true,
           "handler": "() => void act.remove(g)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "ui-review-queue",
+            "toolbar": "ui-review.queue"
+          },
+          {
+            "asset": "ui-review-shots",
+            "toolbar": "ui-review.shots"
+          }
+        ]
+      }
     },
     {
       "id": "screenshot-groups-search-and-view",
@@ -3315,7 +3849,20 @@
           "label": "Reload screenshots",
           "handler": "() => void load()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "ui-review-queue",
+            "toolbar": "ui-review.queue"
+          },
+          {
+            "asset": "ui-review-shots",
+            "toolbar": "ui-review.shots"
+          }
+        ]
+      }
     },
     {
       "id": "screenshots-filter-and-view",
@@ -3349,7 +3896,20 @@
           "label": "Reload screenshots",
           "handler": "() => void load()"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "ui-review-queue",
+            "toolbar": "ui-review.queue"
+          },
+          {
+            "asset": "ui-review-shots",
+            "toolbar": "ui-review.shots"
+          }
+        ]
+      }
     },
     {
       "id": "selected",
@@ -3393,7 +3953,20 @@
           "label": "Clear the selection",
           "handler": "onClear"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "ui-review-queue",
+            "toolbar": "ui-review.queue"
+          },
+          {
+            "asset": "ui-review-shots",
+            "toolbar": "ui-review.shots"
+          }
+        ]
+      }
     },
     {
       "id": "filter-and-view",
@@ -3406,7 +3979,20 @@
       "file": "apps/console-web/plugins/ui-review/web/ui.tsx",
       "line": 281,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "ui-review-queue",
+            "toolbar": "ui-review.queue"
+          },
+          {
+            "asset": "ui-review-shots",
+            "toolbar": "ui-review.shots"
+          }
+        ]
+      }
     },
     {
       "id": "history-filter",
@@ -3431,7 +4017,16 @@
           "label": "Refresh",
           "handler": "() => void load(mode)"
         }
-      ]
+      ],
+      "rebuilt": {
+        "at": "rebuild-every-toolbar-page-specific",
+        "pageToolbars": [
+          {
+            "asset": "wake-listener",
+            "toolbar": "wake-listener"
+          }
+        ]
+      }
     },
     {
       "id": "what-s-shipped",
@@ -3449,7 +4044,8 @@
           "tag": "Segmented",
           "label": "Group"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "assistant",
@@ -3478,7 +4074,8 @@
           "destructive": true,
           "handler": "() => abort.current?.abort()"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "message",
@@ -3500,7 +4097,8 @@
           "gated": "!draft.trim() || !!live",
           "handler": "send"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "save-settings",
@@ -3545,7 +4143,8 @@
           "label": "Re-read",
           "handler": "reload"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "label",
@@ -3558,7 +4157,8 @@
       "file": "apps/molly/plugins/expenses/web/screens.tsx",
       "line": 24,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "label",
@@ -3572,7 +4172,8 @@
       "line": 82,
       "contextTarget": "TOOLBAR_CTX",
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "command-filters",
@@ -3584,7 +4185,8 @@
       "file": "apps/amberx-droid/src/plugins/commands/web/index.tsx",
       "line": 459,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "note-actions",
@@ -3611,7 +4213,8 @@
           "label": "it.starred ? 'Unstar' : 'Star",
           "handler": "() => void tryDo(rt, (st) => updateItem(st, it.id, { starred: !it.starred }))"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "banner-widgets",
@@ -3623,7 +4226,8 @@
       "line": 59,
       "contextTarget": "banner",
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "app",
@@ -3642,7 +4246,8 @@
           "target": "button:toolbar.unfold",
           "handler": "() => fold(false)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "app",
@@ -3662,7 +4267,8 @@
           "target": "button:toolbar.fold",
           "handler": "() => fold(true)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "tb-id",
@@ -3674,7 +4280,8 @@
       "line": 236,
       "contextTarget": "toolbar",
       "assetDriven": true,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "watch-live",
@@ -3707,7 +4314,8 @@
           "label": "Close",
           "handler": "onClose"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "output-channels",
@@ -3753,7 +4361,8 @@
           "target": "button:terminal.clear",
           "handler": "() => term.clear()"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "window",
@@ -3801,7 +4410,8 @@
           "title": "w.mode === 'grid' ? 'View as tree' : 'View as grid",
           "handler": "() => wm.setMode(w.id, w.mode === 'grid' ? 'tree' : 'grid')"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "minimized-window",
@@ -3831,7 +4441,8 @@
           "title": "Close",
           "handler": "() => wm.close(w.id)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "inspector",
@@ -3926,7 +4537,8 @@
           "destructive": true,
           "handler": "revertAll"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "mcp-server",
@@ -3945,7 +4557,8 @@
           "gated": "busy || !sid",
           "handler": "connect"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "plugin-look",
@@ -3969,7 +4582,8 @@
           "gated": "!n",
           "handler": "() => { if (!sure) { setSure(true); return; } setSure(false); save(resetTokens(look)); }"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "skin-config",
@@ -3999,7 +4613,8 @@
           "gated": "busy",
           "handler": "() => run(svc.reset(app))"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "settings-level",
@@ -4026,7 +4641,8 @@
           "label": "Level toolbar menu",
           "handler": "(e) => openMenu(e.currentTarget)"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "level-editor",
@@ -4073,7 +4689,8 @@
           "gated": "!hasOwn",
           "handler": "reset"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "tree-search",
@@ -4084,7 +4701,8 @@
       "file": "framework/libs/tree/index.tsx",
       "line": 129,
       "assetDriven": false,
-      "buttons": []
+      "buttons": [],
+      "rebuilt": null
     },
     {
       "id": "tree-filters",
@@ -4101,7 +4719,8 @@
           "tag": "button",
           "handler": "c.onToggle"
         }
-      ]
+      ],
+      "rebuilt": null
     },
     {
       "id": "tb-name",
@@ -4129,7 +4748,8 @@
           "label": "folded ? `Unfold …` : `Fold …",
           "handler": "() => fold(!folded)"
         }
-      ]
+      ],
+      "rebuilt": null
     }
   ],
   "pages": {
@@ -6975,5 +7595,237 @@
         }
       ]
     }
-  }
+  },
+  "pageToolbars": [
+    {
+      "asset": "agent-swarm",
+      "toolbar": "agent-swarm",
+      "file": "apps/console-web/plugins/agent-swarm/assets/toolbar/agent-swarm.json",
+      "buttons": [
+        "hire",
+        "run",
+        "types",
+        "pause",
+        "card",
+        "budget"
+      ]
+    },
+    {
+      "asset": "build-orchestrator-pipeline",
+      "toolbar": "build-orchestrator.pipeline",
+      "file": "apps/console-web/plugins/build-orchestrator/assets/toolbar/build-orchestrator-pipeline.json",
+      "buttons": [
+        "queue",
+        "split",
+        "priority",
+        "fable",
+        "said",
+        "pr",
+        "relaunch",
+        "status"
+      ]
+    },
+    {
+      "asset": "chat-viewer",
+      "toolbar": "chat-viewer",
+      "file": "apps/console-web/plugins/chat-viewer/assets/toolbar/chat-viewer.json",
+      "buttons": [
+        "sync",
+        "search",
+        "export"
+      ]
+    },
+    {
+      "asset": "claude-accounts",
+      "toolbar": "claude-accounts",
+      "file": "apps/console-web/plugins/claude-accounts/assets/toolbar/claude-accounts.json",
+      "buttons": [
+        "switch",
+        "check",
+        "refresh",
+        "routing",
+        "workers",
+        "runs"
+      ]
+    },
+    {
+      "asset": "codebase-changes",
+      "toolbar": "codebase-changes",
+      "file": "apps/console-web/plugins/codebase-changes/assets/toolbar/codebase-changes.json",
+      "buttons": [
+        "live",
+        "resume",
+        "branch",
+        "areas"
+      ]
+    },
+    {
+      "asset": "terminal-sessions",
+      "toolbar": "terminal.sessions",
+      "file": "apps/console-web/plugins/console-terminal/assets/toolbar/terminal-sessions.json",
+      "buttons": [
+        "new",
+        "split",
+        "jump",
+        "mirror",
+        "copy",
+        "clear",
+        "claude"
+      ]
+    },
+    {
+      "asset": "data-store",
+      "toolbar": "data-store",
+      "file": "apps/console-web/plugins/data-store/assets/toolbar/data-store.json",
+      "buttons": [
+        "backup",
+        "verify",
+        "sync"
+      ]
+    },
+    {
+      "asset": "gate",
+      "toolbar": "gate",
+      "file": "apps/console-web/plugins/gate/assets/toolbar/gate.json",
+      "buttons": [
+        "land-now",
+        "pause",
+        "resume",
+        "auto",
+        "build-rules",
+        "history",
+        "reset"
+      ]
+    },
+    {
+      "asset": "glossary-index",
+      "toolbar": "glossary-index",
+      "file": "apps/console-web/plugins/glossary-index/assets/toolbar/glossary-index.json",
+      "buttons": [
+        "search",
+        "undescribed",
+        "drafts",
+        "rebuild",
+        "demo"
+      ]
+    },
+    {
+      "asset": "notify-control",
+      "toolbar": "notify-control",
+      "file": "apps/console-web/plugins/notify-control/assets/toolbar/notify-control.json",
+      "buttons": [
+        "read",
+        "plugin",
+        "settings"
+      ]
+    },
+    {
+      "asset": "plan-studio-plans",
+      "toolbar": "plan-studio",
+      "file": "apps/console-web/plugins/plan-studio/assets/toolbar/plan-studio-plans.json",
+      "buttons": [
+        "new",
+        "search",
+        "park",
+        "build",
+        "category",
+        "media"
+      ]
+    },
+    {
+      "asset": "plugin-manager",
+      "toolbar": "plugin-manager",
+      "file": "apps/console-web/plugins/plugin-manager/assets/toolbar/plugin-manager.json",
+      "buttons": [
+        "toggle",
+        "settings",
+        "logs",
+        "deps",
+        "clashes",
+        "install",
+        "update"
+      ]
+    },
+    {
+      "asset": "push-banner-merge-queue",
+      "toolbar": "push-banner.merge-queue",
+      "file": "apps/console-web/plugins/push-banner/assets/toolbar/push-banner-merge-queue.json",
+      "buttons": [
+        "add",
+        "up",
+        "down",
+        "remove",
+        "run",
+        "ci",
+        "red"
+      ]
+    },
+    {
+      "asset": "shipped-features",
+      "toolbar": "shipped-features",
+      "file": "apps/console-web/plugins/shipped-features/assets/toolbar/shipped-features.json",
+      "buttons": [
+        "sync",
+        "import",
+        "backfill"
+      ]
+    },
+    {
+      "asset": "systems-check",
+      "toolbar": "systems-check",
+      "file": "apps/console-web/plugins/systems-check/assets/toolbar/systems-check.json",
+      "buttons": [
+        "run",
+        "fix-all",
+        "mute",
+        "source"
+      ]
+    },
+    {
+      "asset": "theme-manager",
+      "toolbar": "theme-manager",
+      "file": "apps/console-web/plugins/theme-manager/assets/toolbar/theme-manager.json",
+      "buttons": [
+        "use",
+        "back",
+        "preview",
+        "scope",
+        "pick",
+        "restore"
+      ]
+    },
+    {
+      "asset": "ui-review-queue",
+      "toolbar": "ui-review.queue",
+      "file": "apps/console-web/plugins/ui-review/assets/toolbar/ui-review-queue.json",
+      "buttons": [
+        "group-by",
+        "compare",
+        "pr",
+        "choices"
+      ]
+    },
+    {
+      "asset": "ui-review-shots",
+      "toolbar": "ui-review.shots",
+      "file": "apps/console-web/plugins/ui-review/assets/toolbar/ui-review-shots.json",
+      "buttons": [
+        "send",
+        "group-by",
+        "compare",
+        "rename"
+      ]
+    },
+    {
+      "asset": "wake-listener",
+      "toolbar": "wake-listener",
+      "file": "apps/console-web/plugins/wake-listener/assets/toolbar/wake-listener.json",
+      "buttons": [
+        "on",
+        "off",
+        "claude-on",
+        "claude-off"
+      ]
+    }
+  ]
 }
