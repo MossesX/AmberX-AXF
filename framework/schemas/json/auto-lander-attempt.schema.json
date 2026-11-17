@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/auto-lander-attempt.schema.json",
+  "title": "auto-lander-attempt@1 (auto-lander@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "build",
+    "kind",
+    "n",
+    "result",
+    "at"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "auto-lander-attempt@1"
+    },
+    "build": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "kind": {
+      "enum": [
+        "clash",
+        "red-ci",
+        "land"
+      ],
+      "description": "clash = merge main in; red-ci = a fix session; land = merge the PR"
+    },
+    "n": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "the attempt number for this build and kind, 1-based, dense"
+    },
+    "account": {
+      "type": "string",
+      "maxLength": 80,
+      "description": "the Claude account or API key that did it"
+    },
+    "session": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "branch": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "head": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "pr": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "result": {
+      "enum": [
+        "started",
+        "ok",
+        "failed",
+        "timeout",
+        "skipped"
+      ],
+      "description": "timeout = started and older than attemptTimeoutMin; skipped never counts as a failure"
+    },
+    "log": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "an excerpt of the output"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endedAt": {
+      "type": "string",
+      "description": "an ISO date-time, or empty"
+    }
+  }
+}

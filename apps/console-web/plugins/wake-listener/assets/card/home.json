@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "wake-listener-home",
+  "name": "Wake listener",
+  "version": "1.0.0",
+  "description": "Wake listener on Home: The wake listener's settings (on, wake phrases, engine, timings, replies, indicator, Claude mode and its timeout).",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Wake listener",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "wake-listener",
+      "command": "settings"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

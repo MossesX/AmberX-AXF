@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PageToolbar, Segmented, TabGroup, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
-import { api, call, fmtDay, KEYS, putPlan, reload, savePlan, setPart, statusInfo, useBusy, useStudio } from './api';
+import { api, call, fmtDay, KEYS, putPlan, reload, savePlan, setPart, statusInfo, turnIntoBuild, useBusy, useStudio } from './api';
 import { CommandBox, VoicePanel } from './ai';
 import { PlanEditor } from './editor';
 import { CatalogTab } from './catalog';
@@ -115,7 +115,7 @@ export function PlanStudioPage() {
         <NewPlanButton onNew={(p) => setOpen({ plan: p, isNew: true })} />
       </div>
       {voice && <VoicePanel plan={null} onClose={() => setVoice(false)} onOpen={openId} />}
-      {tab === 'plans' && <PlansTab onOpen={(p) => setOpen({ plan: p, isNew: false })} />}
+      {tab === 'plans' && <PlansTab onOpen={(p) => setOpen({ plan: p, isNew: false })} onNew={(p) => setOpen({ plan: p, isNew: true })} />}
       {tab === 'catalog' && <CatalogTab onPlan={(p) => setOpen({ plan: p, isNew: !state.plans.some((x) => x.id === p.id) })} />}
       {tab === 'categories' && <CategoriesTab />}
       {!state.onHub && <p className="fx-muted axp-plan-studio__hint"><Icon name="info" size={11} /> Plans are kept in {state.store} on this machine. On the console server they live in the hub's shared data, where claude.ai and VPS sessions read and write them.</p>}
@@ -143,7 +143,7 @@ export function NewPlanButton({ onNew }: { onNew: (p: Plan) => void }) {
 
 /* ---------------------------------------------------------------- Plans tab */
 
-function PlansTab({ onOpen }: { onOpen: (p: Plan) => void }) {
+function PlansTab({ onOpen, onNew }: { onOpen: (p: Plan) => void; onNew: (p: Plan) => void }) {
   const rt = useRuntime();
   const { state } = useStudio();
   const [layout, setLayout] = useState<Layout>(() => setting(rt, KEYS.layout, 'grid') as Layout);
@@ -169,6 +169,37 @@ function PlansTab({ onOpen }: { onOpen: (p: Plan) => void }) {
     const blob = new Blob([r.text], { type: format === 'md' ? 'text/markdown' : 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `plans.${format}`; a.click(); URL.revokeObjectURL(a.href);
   });
+  // the Plans toolbar (page-toolbar@1, assets/toolbar/plan-studio-plans.json): the same plans.mjs ops as the bulk bar
+  const [searching, setSearching] = useState(false);
+  const picked = plans.filter((p) => sel.has(p.id));
+  const one = picked.length === 1 ? picked[0] : undefined;
+  usePublishPageState('plan-studio', { tab: 'plans', searching: searching || !!f.q, shown: shown.length, selection: { count: picked.length, ids: picked.map((p) => p.id), id: one?.id ?? '', steps: one?.steps.length ?? 0 } });
+  useToolbarHandlers('plan-studio', {
+    'plan-studio.new': () => { onNew(pc.normalize({ title: '', status: 'draft' })); return { new: true }; },
+    'plan-studio.search': () => { setSearching(true); const el = document.querySelector<HTMLInputElement>('.axp-plan-studio__search input'); el?.focus(); el?.select(); return { q: f.q ?? '' }; },
+    'plan-studio.park': async () => { await call('bulk', { ids: picked.map((p) => p.id), change: { status: 'parked' } }); await reload(); rt.toast(`${picked.length} plan${picked.length === 1 ? '' : 's'} parked`, 'success'); return { parked: picked.map((p) => p.id) }; },
+    'plan-studio.build': async () => {
+      if (!one) return null;
+      const r = await turnIntoBuild(one.id, one.profile || '', false);
+      if (!r.ok) throw new Error(r.error);
+      await reload(); rt.toast(`Build ${r.build?.id} added to the orchestrator`, 'success');
+      return { build: r.build?.id ?? '' };
+    },
+    'plan-studio.move-category': () => {
+      const into = window.prompt(`Move ${picked.length} plan${picked.length === 1 ? '' : 's'} to category (A > B; empty = uncategorized)`, one?.category ?? '');
+      if (into === null) return null;
+      doBulk({ category: into.trim() });
+      return { category: into.trim() };
+    },
+    'plan-studio.attach-media': () => {
+      if (!one) return null;
+      onOpen(one);
+      let tries = 0;
+      const go = () => { const el = document.getElementById('axp-ps-files'); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.querySelector<HTMLInputElement>('input[type="file"]')?.click(); } else if (++tries < 40) setTimeout(go, 50); };
+      go();
+      return { plan: one.id };
+    },
+  });
   const importFile = (file: File | undefined) => file && run(async () => { const text = await file.text(); const r = await call<{ imported: string[] }>('import', { text }); await reload(); rt.toast(`Imported ${r.imported.length} plan${r.imported.length === 1 ? '' : 's'} (parked unless they say)`, 'success'); });
 
   return (
@@ -179,6 +210,7 @@ function PlansTab({ onOpen }: { onOpen: (p: Plan) => void }) {
         {pc.STATUSES.filter((s) => all.statuses[s.id]).map((s) => <span key={s.id}><b>{c.statuses[s.id] ?? 0}</b> {s.label.toLowerCase()}</span>)}
         <span><b>{pc.fmtMinutes(c.left) || '0 min'}</b> left</span><span><b>{pc.fmtCost(c.cost) || '$0'}</b> est.</span>
       </div>
+      <PageToolbar view="plan-studio" />
       <div className="axp-plan-studio__tools" role="toolbar" aria-label="View, filter and sort">
         <label className="fx-search axp-plan-studio__search"><Icon name="search" size={13} /><input type="search" value={f.q ?? ''} onChange={(e) => setF({ ...f, q: e.target.value })} placeholder="Search every field…" aria-label="Search plans" /></label>
         <Segmented size="sm" label="Layout" value={layout} onChange={setLayout} options={LAYOUTS.map((l) => ({ value: l.value, label: l.label }))} />

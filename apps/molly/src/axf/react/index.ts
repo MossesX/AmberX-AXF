@@ -11,6 +11,9 @@ export { Icon, ICON_NAMES } from './components/Icon';
 export { MenuList, MenuSub, MenuScroll } from './components/MenuList';
 export { useMenuFit, fitMenuEl, menuViewBox, focusMenuItem, installMenuFit } from './components/menuFit';
 export { MenuBar, Toolbar, AssetToolbar, NavMenu, StatusBar, mergeNavSections } from './components/Chrome';
+// page-toolbar@1: a toolbar drawn from a page toolbar asset through the engine (core/engines/toolbar-actions.ts)
+export { PageToolbar, PageToolbarButton, type PageToolbarProps } from './components/Toolbar';
+export { usePageToolbar, usePageState, usePublishPageState, publishPageState, pageStateOf, pageStateViews, useToolbarHandlers, registerToolbarHandler, toolbarHandlerIds, toolbarHandlerOf, toolbarDispatchers, setToolbarCommandRunner, toolbarCommandRunner, setToolbarConfirmer, useScopeView, pluginOfView, registerLiveToolbar, liveToolbars, liveToolbar, onLiveToolbars, type PageToolbarHook, type ToolbarHandler, type ToolbarCommandRunner, type ToolbarConfirmer } from './pageToolbar';
 export { NavTree } from './components/NavTree';
 export { NavStyleSettings, NavStyleGroup, NavStylePreview, useNavStyle, setNavStyleField, NAV_STYLE_GROUP_IDS, NAV_STYLE_GROUP_TITLES, NAV_STYLE_GROUP_ICONS, type NavStyleGroupId, type NavStyleItem } from './components/NavStyleSettings';
 export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY, registerMenuRowDetails, menuRowOpen, type MenuRowDetails } from './components/AppMenu';
@@ -53,5 +56,7 @@ export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, tapSurfaceOf
 export { TapConfirmChoice } from './components/TapConfirmChoice';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
+export { ControlRegistry, ControlScope, controlRegistry, composeAddress, controlSlug, escapeSelector, installControlRegistry, settingTargetDef, targetKindLabel, useControlScope, useControlTarget, useControlTargets, useViewTargets, CONTROL_ACTION, CONTROL_ACTIONS, CONTROL_HIGHLIGHT_CLASS, CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR, SETTINGS_VIEW_ADDRESS, SETTINGS_TAB_ROW, SETTINGS_SUBTAB_ROW, MAIN_SCROLL_ADDRESS, type ControlTargetDef, type ControlScroller, type ControlSearcher } from './controlTargets';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
 export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, AssetsWithEdits, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
+export { installScrollControl, useScrollContainer, runScroll, scrollStateOf, scrollContainerOf, activeScrollContainer, mainScrollElement, scrollAddressOf, domScroller, isScrollable, lineHeightIn, offsetWithin, SCROLL_CONTAINER_ATTR, SCROLL_LINE_TOKEN, MAIN_SCROLL_ID } from './scrollControl';

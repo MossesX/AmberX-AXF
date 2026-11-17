@@ -52,10 +52,11 @@ view:plan-studio/function:plan-studio.focus
 | `step` | one step of a build (or of any row that has steps) | the step id (`s3`) |
 | `panel` | a titled card / section / settings group or panel | the anchor id (`settings-group:axf.display`) |
 | `scroll` | a scroll container by name (the main pane is `scroll:main`) | the container's id |
+| `toolbar` | a page toolbar (page-toolbar@1, `framework/core/engines/toolbar-actions.ts`); its buttons sit under it: `toolbar:gate.auto-lander/button:run` | the toolbar's settings id (`<scope id>[.<slot>]`: `gate`, `gate.auto-lander`; the frame toolbar is `app`) |
 
 Rules:
 
-- A segment is `kind:id`; `kind` is one of the twelve above (`CONSOLE_CONTROL_KINDS`, append-only); `id` is 1 to 160 characters,
+- A segment is `kind:id`; `kind` is one of the thirteen above (`CONSOLE_CONTROL_KINDS`, append-only; `toolbar` appended Nov 17 2026); `id` is 1 to 160 characters,
   any character but `/` (a `/` inside an id is written `%2F`, a literal `%` as `%25`; `formatAddress` encodes, `parseAddress` decodes).
 - Order is outermost first and each kind may follow only its parents (`CONSOLE_CONTROL_PARENTS`): `row` under `grid`, `step` under
   `row` or `grid`, `grid` also under `row` (a grid inside a row's detail), `subtab` under `tab` (or a deeper `subtab`), everything else under `view` or at the top. The reference parser refuses the wrong order
@@ -166,6 +167,13 @@ table; writes carry `audit { by, reason, at }`. Failure: `{ $axf, ok: false, cod
   `axf console scroll down`, `axf console plugin.disable plugin:skins`.
 - Voice (AmberX): the assistant maps "scroll down", "press save", "open the pipeline tab", "show me step three of the running
   build", "turn the skins plugin off", "find <words>" to the same commands through `console_control`; a short address is enough.
+- Page toolbars (page-toolbar@1, Nov 17 2026): every toolbar a page draws from a toolbar asset is `toolbar:<settings id>` and each
+  of its buttons `toolbar:<settings id>/button:<id>`; `state` on the toolbar answers its look and every button (enabled, visible,
+  pressed, badge, action, inMore), `press` on a button runs it through the same engine the click uses (a destructive button needs
+  `confirm`). Shortcuts: REST `GET /api/console-control/toolbars[?view=]`, `GET …/toolbars/<id>`, `POST …/toolbars/<id>/press
+  {button, value?, confirm?}`; MCP `console_control_toolbar {toolbar?, button?, value?, confirm?, open?, view?}`; control@1 target
+  `console.toolbars` (list / get / act press | open); CLI `axf console toolbar list [--view v] | get <id> | press <id> <button> [--confirm]`;
+  voice "press run now on the auto-lander toolbar", "what's on the gate rules toolbar".
 
 Delivery, mailbox, `recent` / `all`, acks, wake through AmberX and the `status` field are console-commands' (CONTROL.md →
 Console). A console acks a console-control command with its answer envelope, so the caller gets the state it asked for.

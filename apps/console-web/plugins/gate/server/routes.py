@@ -17,6 +17,13 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   POST lander/land-now {pr, confirm?}   two-step: puts the PR at the head of the line in the current mode
   POST lander/pause {why?} · POST lander/resume
   GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?}
+  Server auto-lander (auto-lander@1, framework/spec/AUTO-LANDER.md; deploy/auto-lander/auto-lander.mjs):
+  GET  auto-lander                      service up, current build, queue, per-build state and attempts, escalations
+  GET  auto-lander/builds/<build>       one build's record and attempt log
+  POST auto-lander/run                  ask the service for a tick now
+  POST auto-lander/retry/<build> · POST auto-lander/fix/<build>   reset (fix = and start a fix session)
+  POST auto-lander/pause · POST auto-lander/resume
+  GET  auto-lander/settings · POST auto-lander/settings {key: value…}
   Build rules (build-rules@1, framework/spec/BUILD-RULES.md; build-rules-api.mjs):
   GET  build-rules [?doer&kind&phase&enabled&q]   the store with each rule's last run
   POST build-rules {rule | id, title, text, doer, kind, phase, …}   add a rule
@@ -50,6 +57,10 @@ ROOT = Path(__file__).resolve().parents[5]
 _spec = importlib.util.spec_from_file_location("axf_gate_health", PLUGIN_DIR / "health.py")
 health = importlib.util.module_from_spec(_spec)  # the plugin's health.py (pure checks and alert builders)
 _spec.loader.exec_module(health)  # type: ignore[union-attr]
+_spec_al = importlib.util.spec_from_file_location("axf_gate_auto_lander_health", Path(__file__).resolve().parent / "auto_lander_health.py")
+al_health = importlib.util.module_from_spec(_spec_al)  # the server auto-lander's systems-check item (pure)
+_spec_al.loader.exec_module(al_health)  # type: ignore[union-attr]
+AL_CLI = ROOT / "deploy" / "auto-lander" / "auto-lander.mjs"
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503, "failed": 502}
 MAX_BODY = 64 * 1024
 
@@ -65,6 +76,23 @@ def run(op: str, data: dict[str, Any] | None = None, timeout: int = 90) -> dict[
         return json.loads(lines[-1]) if lines else {"ok": False, "code": "failed", "message": p.stderr.strip()[-400:] or "no output"}
     except json.JSONDecodeError:
         return {"ok": False, "code": "failed", "message": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def al_run(args: list[str], timeout: int = 60) -> dict[str, Any]:
+    """One server auto-lander command (deploy/auto-lander/auto-lander.mjs <args> --json): { ok, … } or { ok: false, code, message }."""
+    if not AL_CLI.exists():
+        return {"ok": False, "code": "unavailable", "message": "the server auto-lander is not in this checkout (deploy/auto-lander/auto-lander.mjs)"}
+    try:
+        p = subprocess.run(["node", str(AL_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "code": "unavailable", "message": f"the auto-lander could not run: {str(e)[:200]}"}
+    if p.returncode != 0:
+        return {"ok": False, "code": "invalid" if p.returncode == 2 else "failed", "message": (p.stderr or p.stdout).strip()[-400:] or f"exit {p.returncode}"}
+    try:
+        r = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        return {"ok": False, "code": "failed", "message": p.stdout.strip()[-400:]}
+    return {"ok": True, **r} if isinstance(r, dict) else {"ok": True, "result": r}
 
 
 def answer(r: dict[str, Any]) -> JSONResponse:
@@ -172,7 +200,9 @@ def ensure_health() -> None:
             import plugin_services
         except ImportError:
             return
-        _health_on["done"] = health.ensure(plugin_services, _status_for_health)
+        lander = health.ensure(plugin_services, _status_for_health)
+        server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))
+        _health_on["done"] = lander and server
 
 
 async def _read(op: str, data: dict[str, Any]) -> JSONResponse:
@@ -338,6 +368,95 @@ async def build_rules_toggle(rule_id: str, request: Request) -> JSONResponse:
 async def build_rules_delete(rule_id: str, request: Request) -> JSONResponse:
     """Delete a build rule; the first call answers confirmation_required with a token, the second sends confirm."""
     return await _write("build_rules_delete", request, {"id": rule_id})
+
+
+# ---------------------------------------------------------------------- the server auto-lander (auto-lander@1)
+# deploy/auto-lander/auto-lander.mjs runs on the VPS (systemd timer, every minute); these routes read its state and
+# send it commands through the same CLI the MCP tools (gate-auto-lander_*), `axf gate auto-lander …` and voice use.
+
+AL_SETTINGS = ("enabled", "maxAttempts", "backoffBaseMin", "backoffFactor", "backoffMaxMin", "attemptTimeoutMin", "pushOnEscalation")
+
+
+def _al_answer(r: dict[str, Any]) -> JSONResponse:
+    return JSONResponse(r, status_code=200 if r.get("ok") else STATUS.get(str(r.get("code")), 500))
+
+
+async def _al_body(request: Request) -> tuple[dict[str, Any], str]:
+    body = await _body(request)
+    return body, str(body.get("by") or _who(request))[:80]
+
+
+@router.get("/auto-lander")
+async def auto_lander_status() -> JSONResponse:
+    """The server auto-lander: service up, current build, queue, per-build state and attempt counts, escalations, settings."""
+    ensure_health()
+    return _al_answer(await run_in_threadpool(al_run, ["status"]))
+
+
+@router.get("/auto-lander/builds/{build}")
+async def auto_lander_build(build: str) -> JSONResponse:
+    """One build in the auto-lander: its record and every attempt (the attempt log)."""
+    return _al_answer(await run_in_threadpool(al_run, ["show", build]))
+
+
+@router.post("/auto-lander/run")
+async def auto_lander_run(request: Request) -> JSONResponse:
+    """Ask the service for a tick now (it runs within a minute)."""
+    _, by = await _al_body(request)
+    return _al_answer(await run_in_threadpool(al_run, ["run", "--request", "--by", by]))
+
+
+@router.post("/auto-lander/retry/{build}")
+async def auto_lander_retry(build: str, request: Request) -> JSONResponse:
+    """Reset a build's attempts and escalation; the next tick tries again."""
+    _, by = await _al_body(request)
+    return _al_answer(await run_in_threadpool(al_run, ["retry", build, "--by", by]))
+
+
+@router.post("/auto-lander/fix/{build}")
+async def auto_lander_fix(build: str, request: Request) -> JSONResponse:
+    """Reset a build and start a fix session for it on the next tick (the escalation item's Fix)."""
+    _, by = await _al_body(request)
+    return _al_answer(await run_in_threadpool(al_run, ["fix", build, "--by", by]))
+
+
+@router.post("/auto-lander/pause")
+async def auto_lander_pause(request: Request) -> JSONResponse:
+    """Pause the server auto-lander: nothing new is merged, fixed or landed until resumed."""
+    _, by = await _al_body(request)
+    return _al_answer(await run_in_threadpool(al_run, ["pause", "--by", by]))
+
+
+@router.post("/auto-lander/resume")
+async def auto_lander_resume(request: Request) -> JSONResponse:
+    """Resume the server auto-lander."""
+    _, by = await _al_body(request)
+    return _al_answer(await run_in_threadpool(al_run, ["resume", "--by", by]))
+
+
+@router.get("/auto-lander/settings")
+async def auto_lander_settings_get() -> JSONResponse:
+    """The auto-lander's settings: enabled, maxAttempts, backoffBaseMin/Factor/MaxMin, attemptTimeoutMin, pushOnEscalation."""
+    return _al_answer(await run_in_threadpool(al_run, ["settings"]))
+
+
+@router.post("/auto-lander/settings")
+async def auto_lander_settings_set(request: Request) -> JSONResponse:
+    """Change auto-lander settings: {key: value, …} (or {key, value}); every key is checked before anything is saved."""
+    body, by = await _al_body(request)
+    pairs = {body["key"]: body.get("value")} if isinstance(body.get("key"), str) else {k: v for k, v in body.items() if k in AL_SETTINGS}
+    if not pairs:
+        return _al_answer({"ok": False, "code": "invalid", "message": f"send one or more of {', '.join(AL_SETTINGS)}"})
+    bad = [k for k in pairs if k not in AL_SETTINGS]
+    if bad:
+        return _al_answer({"ok": False, "code": "invalid", "message": f"unknown setting {bad[0]} ({', '.join(AL_SETTINGS)})"})
+    r: dict[str, Any] = {"ok": True}
+    for k, v in pairs.items():
+        val = ("on" if v else "off") if isinstance(v, bool) else str(v)
+        r = await run_in_threadpool(al_run, ["set", k, val, "--by", by])
+        if not r.get("ok"):
+            return _al_answer(r)
+    return _al_answer(r)
 
 
 @router.get("/settings")

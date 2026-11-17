@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon, IconButton, Segmented, SelectField, Slider, TextField, usePortalRoot, useRuntime } from '@console/axf/react';
+import { Button, Icon, IconButton, PageToolbar, Segmented, SelectField, Slider, TextField, usePortalRoot, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi, pluginFetch } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -113,10 +113,13 @@ interface Acts { copy: (s: Screenshot) => Promise<void>; promote: (xs: Screensho
 type Mode = 'grid' | 'thumbs';
 
 /** One group's header: back, name + time + count, and its actions (rename, merge, select + move, delete). */
-function GroupHead({ g, groups, picked, selecting, onBack, onSelecting, onPick, act }: {
+function GroupHead({ g, groups, picked, selecting, onBack, onSelecting, onPick, act, renameAsk = 0 }: {
   g: GroupRow; groups: GroupRow[]; picked: string[]; selecting: boolean; onBack: () => void; onSelecting: (v: boolean) => void; onPick: (ids: string[]) => void; act: GroupActs;
+  /** bumped by the toolbar's Rename group: opens the rename tool */
+  renameAsk?: number;
 }) {
   const [tool, setTool] = useState<'' | 'rename' | 'merge'>('');
+  useEffect(() => { if (renameAsk) setTool('rename'); }, [renameAsk]);
   const [name, setName] = useState(g.name);
   const [into, setInto] = useState('');
   const [moveTo, setMoveTo] = useState('');
@@ -254,6 +257,19 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
       } catch (e) { rt.toast((e as Error).message, 'danger'); }
     },
   };
+  // the Screenshots toolbar (page-toolbar@1, assets/toolbar/ui-review-shots.json)
+  const [renameAsk, setRenameAsk] = useState(0);
+  const pairs = rows.filter((x) => x.pair && sc.pairOf(everything, x));
+  usePublishPageState('ui-review', {
+    tab: 'shots', picked: picked.length, group: cur?.id ?? '', pairs: pairs.length, comparing: !!viewing && viewing.ids.length === 2,
+    shotGroupLabel: sc.GROUPS.find((g) => g.id === by)?.label ?? '',
+  });
+  useToolbarHandlers('ui-review', {
+    'ui-review.send-to-review': async () => { const xs = everything.filter((x) => picked.includes(x.id)); await act.promote(xs); setPicked([]); return { sent: xs.length }; },
+    'ui-review.shots-group-by': () => { const i = sc.GROUPS.findIndex((g) => g.id === by); const next = sc.GROUPS[(i + 1) % sc.GROUPS.length]!.id; setBy(next); return { by: next }; },
+    'ui-review.shots-compare': () => { const p = pairs[0] ? sc.pairOf(everything, pairs[0]) : null; if (p) setViewing({ ids: [p.before.id, p.after.id], i: 1 }); return p ? { before: p.before.id, after: p.after.id } : null; },
+    'ui-review.rename-group': () => { if (cur) setRenameAsk((n) => n + 1); return cur ? { group: cur.id, name: cur.name } : null; },
+  });
   const upload = async (files: FileList | null) => {
     const list = Array.from(files ?? []).filter((f) => /^image\/(png|jpe?g|webp)$/.test(f.type) || /\.(png|jpe?g|webp)$/i.test(f.name));
     if (!list.length) { if (files?.length) rt.toast('Pick PNG, JPEG or WebP pictures', 'warning'); return; }
@@ -300,6 +316,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
     return (
       <div className="fx-stack axp-ui-review__shots">
         {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
+        <PageToolbar view="ui-review" slot="shots" />
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Screenshot groups: search and view">
           <input className="fx-input axp-ui-review__search" value={gq} onChange={(e) => setGq(e.target.value)} placeholder="Search groups: name, date (Oct 31, 2026-10-31), app, source…" aria-label="Search groups" />
           <Segmented<Mode> size="sm" label="Layout" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid', icon: 'list' }, { value: 'thumbs', label: 'Thumbnails', icon: 'grid' }]} />
@@ -345,7 +362,8 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
   return (
     <div className="fx-stack axp-ui-review__shots">
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
-      <GroupHead g={cur} groups={groupRows} picked={picked} selecting={selecting} onBack={() => openGroup(null)} onSelecting={setSelecting} onPick={setPicked} act={gact} />
+      <PageToolbar view="ui-review" slot="shots" />
+      <GroupHead g={cur} groups={groupRows} picked={picked} selecting={selecting} onBack={() => openGroup(null)} onSelecting={setSelecting} onPick={setPicked} act={gact} renameAsk={renameAsk} />
       <div className="axp-ui-review__bar" role="toolbar" aria-label="Screenshots: filter and view">
         <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, screen, session, #PR…" aria-label="Search screenshots" />
         {apps.length > 0 && <select className="fx-input axp-ui-review__sel" value={app} onChange={(e) => setApp(e.target.value)} aria-label="App"><option value="">Every app</option>{apps.map((a) => <option key={a} value={a}>{a}</option>)}</select>}

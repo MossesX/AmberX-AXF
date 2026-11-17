@@ -25,6 +25,12 @@
  *   … pull                                                    take main's newer builds into this checkout
  *   … sync                                                    flush, send builds newer here than on main, then pull (session start)
  *   … link <build> [--branch b] [--pr n|url] [--merged [iso]]  set a build's branch / PR / merged (live)
+ *         [--sha <merge commit>] [--ci success|failure|running] [--ci-run url] [--verified check|playwright|deploy|hand]
+ *                                                            done-means-merged@1 evidence: landed needs merged + sha + CI
+ *                                                            success, complete also the verify (the store refuses without)
+ *   … run-end <build> --exit n [--signal TERM] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]
+ *                                                             record how a session ended on the build (pipeline.runEnd, live):
+ *                                                             the headless wrapper calls it as claude exits (watchdog evidence)
  *   … install                                                 git merge driver for the builds files (this clone)
  *   … merge-driver <base> <ours> <theirs> <path>              (git calls it) newer-wins merge of a builds file
  *   … heal <branch>                                           merge main into a branch whose PR conflicts only in builds files
@@ -42,13 +48,26 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, adoptedChanges, journalDir, journalMax, journalMode, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
+import { normRunEnd } from '../core/build-pipeline.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
 const JOURNAL_REL = '_claude/builds/journal';
+/**
+ * builds-journal@1: the journal's home is the hub data store, not main. With the hub (or an explicit folder) as home,
+ * or once main's pointer (_claude/builds/journal.json) says `home: 'hub'`, no journal line goes to main and none is
+ * pulled from it; a test store (AXF_BUILDS_STORE) and a spool before the migration keep the old path.
+ */
+export const JOURNAL_POINTER_REL = '_claude/builds/journal.json';
+const journalOffMain = (base) => {
+  const m = journalMode();
+  if (m === 'hub' || m === 'explicit') return true;
+  if (m === 'test') return false;
+  try { return JSON.parse(show(base, JOURNAL_POINTER_REL) ?? '{}').home === 'hub'; } catch { return false; }
+};
 const ORIGINS_REL = '_claude/builds/origins.json'; // = builds-store ORIGINS_REL (build-origin@1 sidecar)
 const SHIPPED_DIR_REL = '_claude/builds/shipped'; // shipped-manifest@1 sidecars (framework/cli/shipped-files.mjs)
 const THREADS_REL = '_claude/THREADS.md';
@@ -215,8 +234,8 @@ export function publish(entries, { journalExtra = {} } = {}) {
     const months = new Map();
     for (const e of entries) { const m = String(e.at ?? now).slice(0, 7); if (!months.has(m)) months.set(m, []); months.get(m).push(JSON.stringify(e)); }
     for (const [m, lines] of Object.entries(journalExtra)) { if (!months.has(m)) months.set(m, []); months.get(m).unshift(...lines); }
-    const sizes = journalSizes(base);
-    for (const [m, lines] of months) { const text = lines.join('\n'); const rel = `${JOURNAL_REL}/${merge.journalPart(m, sizes, Buffer.byteLength(text), journalMax())}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', text); }
+    const sizes = journalOffMain(base) ? null : journalSizes(base);
+    if (sizes) for (const [m, lines] of months) { const text = lines.join('\n'); const rel = `${JOURNAL_REL}/${merge.journalPart(m, sizes, Buffer.byteLength(text), journalMax())}.jsonl`; files[rel] = merge.mergeJournalText(show(base, rel) ?? '', text); }
     const threadLines = entries.flatMap((e) => merge.changeLines({ ...e, builds: (e.builds ?? []).filter((b) => !skipped.includes(b.id)) }));
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
@@ -305,7 +324,8 @@ export function pullFrom(files) {
   const localOnly = merge.mergeStores(main, local).taken;
   const next = localOnly.length ? store : main;
   const journals = {};
-  for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${JOURNAL_REL}/`)) {
+  const offMain = ['hub', 'explicit'].includes(journalMode());
+  for (const [rel, t] of Object.entries(files)) if (!offMain && rel.startsWith(`${JOURNAL_REL}/`)) {
     const m = rel.slice(JOURNAL_REL.length + 1, -'.jsonl'.length);
     let mine = ''; try { mine = readFileSync(join(journalDir(), `${m}.jsonl`), 'utf8'); } catch { /* new month */ }
     journals[m] = merge.mergeJournalText(t, mine);
@@ -362,7 +382,7 @@ export function syncAll() {
   const journalExtra = {};
   const mainKeys = Object.keys(journalSizes(rev));
   const onMain = new Map();   // month → every line main holds in any part of that month
-  for (const key of localJournalMonths()) {
+  for (const key of journalOffMain(rev) ? [] : localJournalMonths()) {
     const m = key.slice(0, 7);
     if (!onMain.has(m)) onMain.set(m, new Set(mainKeys.filter((k) => k.slice(0, 7) === m).flatMap((k) => (show(rev, `${JOURNAL_REL}/${k}.jsonl`) ?? '').split('\n'))));
     let mine = ''; try { mine = readFileSync(join(journalDir(), `${key}.jsonl`), 'utf8'); } catch { continue; }
@@ -398,7 +418,7 @@ export function pullMain() {
 // ------------------------------------------------------------------ link (s2)
 
 /** Set a build's branch / PR / merged time in whatever profile it is in; status follows (built ↔ complete). */
-export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-live') {
+export function linkBuild(id, { branch: br, pr, mergedAt, landed } = {}, by = 'builds-live') {
   let found = null;
   const r = withStore((s) => {
     const b = core.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
@@ -406,11 +426,36 @@ export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-li
     if (typeof br === 'string' && br) b.branch = br;
     if (pr !== undefined && pr !== null && String(pr)) b.pr = normPr(pr);
     if (typeof mergedAt === 'string') b.mergedAt = mergedAt;
+    // done-means-merged@1 evidence: the merge commit, CI on it, the verify (landed / complete need them; the store guard refuses without)
+    if (landed && typeof landed === 'object') {
+      const prN = Number(String(b.pr || '').replace(/\D/g, '')) || 0;
+      b.landed = { ...(b.landed ?? {}), ...Object.fromEntries(Object.entries(landed).filter(([, v]) => v !== undefined && v !== '')), pr: prN || b.landed?.pr || 0, mergedAt: b.mergedAt || b.landed?.mergedAt || '' };
+      if (landed.ci && !landed.ciAt) b.landed.ciAt = new Date().toISOString();
+      if (landed.verifyHow && !landed.verifiedAt) b.landed.verifiedAt = new Date().toISOString();
+    }
     b.updatedAt = new Date().toISOString();
     merge.settleStatus(b, b.updatedAt);
     return s;
   }, { by, action: 'link', note: id });
-  return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes };
+  return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes, refused: r.refused ?? [] };
+}
+/**
+ * How a session ended, on the build's run record (pipeline.runEnd; build-pipeline@1): exit code, signal, exit kind, the
+ * account stop (usage | auth), account, session, phase, time. Written the moment claude exits so a killed (143) or failed
+ * (1) run leaves evidence the watchdog (build-watchdog@1) reads even when nothing after it runs. Live like every write.
+ */
+export function recordRunEnd(id, end = {}, by = 'claude-headless') {
+  const rec = normRunEnd({ at: new Date().toISOString(), ...end });
+  if (!rec) throw new Error('run-end needs a time');
+  let found = null;
+  const r = withStore((s) => {
+    const b = core.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
+    found = b;
+    b.pipeline = { ...(b.pipeline ?? {}), runEnd: rec };
+    b.updatedAt = rec.at;
+    return s;
+  }, { by, action: 'run-end', note: `${id}: exit ${rec.exit ?? '?'}${rec.signal ? ` (SIG${rec.signal})` : ''}${rec.kind ? ` ${rec.kind}` : ''}${rec.limit ? ` ${rec.limit}` : ''}${rec.account ? ` on ${rec.account}` : ''}` });
+  return { build: r.store.builds.find((b) => b.id === found.id), runEnd: rec, changes: r.changes };
 }
 /** "#245", "245" and a PR URL all become "#245" (the form the orchestrator shows); other text is kept. */
 export function normPr(pr) {
@@ -485,8 +530,17 @@ async function main(argv) {
   if (cmd === 'link') {
     const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('link <build> [--branch b] [--pr n] [--merged [iso]]');
     const merged = opt('merged');
-    const r = linkBuild(id, { branch: typeof opt('branch') === 'string' ? opt('branch') : undefined, pr: typeof opt('pr') === 'string' ? opt('pr') : undefined, mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined });
-    return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt } }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}`);
+    const sv = (k) => (typeof opt(k) === 'string' ? opt(k) : undefined);
+    const landed = sv('sha') || sv('ci') || sv('verified') ? { sha: sv('sha'), ci: sv('ci'), ciRun: sv('ci-run'), verifyHow: sv('verified'), verifyLog: sv('verify-log') } : undefined;
+    const r = linkBuild(id, { branch: sv('branch'), pr: sv('pr'), mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined, landed });
+    const refused = r.refused?.find((x) => x.id === r.build.id);
+    return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt, landed: r.build.landed ?? null }, ...(refused ? { refused } : {}) }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}${refused ? `\nrefused ${refused.from} → ${refused.to}: ${refused.why}` : ''}`);
+  }
+  if (cmd === 'run-end') {
+    const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('run-end <build> --exit n [--signal s] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]');
+    const s = (n) => (typeof opt(n) === 'string' ? opt(n) : '');
+    const r = recordRunEnd(id, { exit: s('exit'), signal: s('signal'), kind: s('kind'), limit: s('limit'), account: s('account'), session: s('session'), phase: s('phase') });
+    return out({ ok: true, build: r.build.id, runEnd: r.runEnd }, `${r.build.id}: run ended exit ${r.runEnd.exit ?? '?'}${r.runEnd.signal ? ` (SIG${r.runEnd.signal})` : ''}${r.runEnd.kind ? ` · ${r.runEnd.kind}` : ''}${r.runEnd.limit ? ` · ${r.runEnd.limit}` : ''}`);
   }
   if (cmd === 'install') { const r = install(); return out(r, r.ok ? `merge driver ${DRIVER} registered` : 'git config failed'); }
   if (cmd === 'merge-driver') {

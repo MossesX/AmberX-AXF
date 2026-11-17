@@ -34,6 +34,10 @@ export * from './engines/demo-rules.mjs';
 // card@1 + home-layout@1 as one namespace (its names would clash with agent-card's and layout's); import the engine directly for single names.
 export * as cardRules from './engines/card-rules.mjs';
 export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from './engines/card-rules.mjs';
+// page-toolbar@1 (toolbar assets bound to a page, buttons bound to action refs): rules shared with the build engine
+export * from './engines/toolbar-rules.mjs';
+export * from './engines/toolbar-migrate.mjs';
+export * from './engines/toolbar-actions';
 export * from './engines/help';
 export * from './engines/appearance';
 export * from './engines/banner';
@@ -58,3 +62,4 @@ export * from './engines/plugins';
 export * from './library';
 export * from './engines/work';
 export * from './engines/placement';
+export * from './engines/console-control';

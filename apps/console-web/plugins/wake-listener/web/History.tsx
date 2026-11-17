@@ -5,7 +5,7 @@
  * CLI `listener.mjs history --mode …`). Deep link: action `wake-listener.history:<mode>` opens this filtered.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Chip, Segmented } from '@console/axf/react';
+import { PageToolbar, Button, Chip, Segmented } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 import { FALLBACK_LABEL, FOLDER, type HistoryEntry } from '../core.mjs';
 
@@ -39,6 +39,7 @@ export function HistoryPanel() {
   useEffect(() => { void load(mode); const t = setInterval(() => void load(mode), 10_000); return () => clearInterval(t); }, [mode, load]);
   return (
     <div className="axp-wake-listener" data-axf-target="wake-listener.history">
+      <PageToolbar view="wake-listener" />
       <div className="axp-wake-listener__row" role="toolbar" aria-label="History filter">
         <span data-axf-target="wake-listener.history.mode">
           <Segmented<ModeFilter | 'all'> value={mode || 'all'} onChange={(v) => { const m = (v === 'all' ? '' : v) as ModeFilter; wanted = m; setMode(m); }} options={FILTERS} label="Filter by mode" size="sm" /> 

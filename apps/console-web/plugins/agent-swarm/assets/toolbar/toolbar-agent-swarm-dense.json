@@ -1,0 +1,91 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-agent-swarm-dense",
+  "name": "Breakroom: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-agent-swarm",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:agent-swarm",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "jobs",
+        "label": "Jobs",
+        "items": [
+          {
+            "id": "hire",
+            "icon": "user",
+            "label": "Hire",
+            "action": "handler:agent-swarm.hire",
+            "badge": "state:unowned",
+            "enabledWhen": "unowned>0",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "run",
+            "icon": "play",
+            "label": "Run job",
+            "action": "handler:agent-swarm.run-job",
+            "priority": 280
+          },
+          {
+            "id": "types",
+            "icon": "clock",
+            "label": "Job types",
+            "action": "handler:agent-swarm.job-types",
+            "checked": "state:onJobTypes",
+            "badge": "state:jobTypes",
+            "priority": 200
+          }
+        ]
+      },
+      {
+        "id": "agent",
+        "label": "Selected agent",
+        "items": [
+          {
+            "id": "pause",
+            "icon": "pause",
+            "label": "Pause agent",
+            "action": "handler:agent-swarm.pause",
+            "checked": "state:agent.paused",
+            "enabledWhen": "agent.id",
+            "confirm": "Take this agent off duty (no new jobs until it's back on)?",
+            "priority": 260
+          },
+          {
+            "id": "card",
+            "icon": "star",
+            "label": "Agent card",
+            "action": "handler:agent-swarm.card",
+            "enabledWhen": "agent.id",
+            "priority": 220
+          },
+          {
+            "id": "budget",
+            "icon": "chart",
+            "label": "Budget",
+            "action": "handler:agent-swarm.budget",
+            "badge": "state:spend",
+            "priority": 180
+          }
+        ]
+      }
+    ]
+  }
+}

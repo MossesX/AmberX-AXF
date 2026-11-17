@@ -129,6 +129,16 @@ export const CONTROL_TARGETS = {
     doc: `console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "plugin:<id>"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. ${CONSOLE_DELIVERY}` },
   // component-tokens@1 (core/engines/component-tokens.mjs): one grid's or one tab row's own token values, on top of the style theme's grid.* / tabs.*
   [INSTANCE_TOKENS_TARGET]: { domain: 'tokens', label: 'Per-instance component tokens', ops: ['list', 'get', 'set', 'reset', 'act'], paths: 'pattern', pathShape: '<grid|tabs>.<instance>[.<token>]', value: 'field', acts: { 'restore-previous': {}, 'restore-hub': {} }, doc: 'component-tokens@1: the grid / tab-group tokens one instance overrides (a tab row by its TabGroup id, a grid by its DataGrid id): set <family>.<instance>.<token> value; reset <family>.<instance>[.<token>]; act <family>.<instance> restore-previous (back to the values before the last edit) | restore-hub (drop every override so the instance follows the shared axHub look). Stored in the one setting axf.tokens.instances, shared through the axHub look.' },
+  // build every-plugin-screen-gets-a-settings-gear (Nov 16 2026): one plugin's Settings → Plugins sub-tab and the gear on its screen
+  'console.pluginsettings': { domain: 'console', label: 'Plugin settings (sub-tab and gear)', ops: ['list', 'get', 'act'], paths: 'host', select: { limit: 'number' },
+    acts: { open: {}, set: { key: 'string', value: 'any' }, enable: {}, disable: { options: 'object' } },
+    actEffect: { open: 'navigate', set: 'write', enable: 'write', disable: 'write' },
+    doc: `Every console plugin's settings: path = the plugin (id, folder or name). get = its Settings → Plugins sub-tab address, the settings gear on its screen (view:<screen>/button:settings-gear), on/off and every setting in the tab (GET /api/console-control/plugins/<id>/settings); act open opens that sub-tab (the same as pressing the gear, console action plugin.settings.open:<plugin>), set changes one setting (input {key, value}), enable / disable turn the plugin on or off. ${CONSOLE_DELIVERY}` },
+  // build rebuild-every-toolbar-page-specific (Nov 17 2026): every page toolbar (page-toolbar@1) and its buttons, by settings id
+  'console.toolbars': { domain: 'console', label: 'Page toolbars (buttons by settings id)', ops: ['list', 'get', 'act'], paths: 'host', select: { limit: 'number', view: 'string' },
+    acts: { press: { button: 'string', value: 'any' }, open: {} },
+    actEffect: { press: 'write', open: 'navigate' },
+    doc: `Every toolbar the open console shows (page-toolbar@1, console-control toolbar:<settings id>): list = the toolbars on screen (select.view narrows to one page), get = one toolbar's state (path = its settings id, e.g. gate.auto-lander: look, buttons with enabled / visible / pressed / badge / action / inMore). act press runs one button (input.button = its id; a destructive button needs a confirm token: the first call answers confirmation_required), act open brings the toolbar onto the screen. The same as GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press, console_control_toolbar and axf console toolbar list|get|press.` },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -382,7 +392,7 @@ export const controlFailure = (code, message, extra = {}) => ({ $axf: CONTROL_FR
 
 /* ================================================================== projections: schema, MCP tools, REST routes, CLI */
 
-const schemaOf = (decl) => (decl === 'object' ? { type: 'object' } : decl === 'object[]' ? { type: 'array', items: { type: 'object' } } : decl === 'string[]' ? { type: 'array', items: { type: 'string' } } : decl === 'string|null' ? { type: ['string', 'null'] } : decl.startsWith('enum:') ? { enum: decl.slice(5).split(',') } : { type: decl });
+const schemaOf = (decl) => (decl === 'any' ? {} : decl === 'object' ? { type: 'object' } : decl === 'object[]' ? { type: 'array', items: { type: 'object' } } : decl === 'string[]' ? { type: 'array', items: { type: 'string' } } : decl === 'string|null' ? { type: ['string', 'null'] } : decl.startsWith('enum:') ? { enum: decl.slice(5).split(',') } : { type: decl });
 
 /** JSON Schema of a control@1 command (editors, the API's request body, the MCP tools' inputs). */
 export function controlSchema() {
