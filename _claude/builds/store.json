@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7925,
- "updatedAt": "2026-11-17T21:05:36.535Z",
+ "rev": 7926,
+ "updatedAt": "2026-11-17T21:05:46.614Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275973,7 +275973,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T21:05:32.329Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -276695,7 +276695,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -278211,7 +278211,7 @@
      "action": "retry",
      "attempt": 2,
      "account": "",
-     "notified": "",
+     "notified": "2026-11-17T21:05:32.329Z",
      "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
      "note": "session was killed (exit 143): step s21 reset, slot released, back in the Queue (retry 2 of 3)."
     }
@@ -278820,7 +278820,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
