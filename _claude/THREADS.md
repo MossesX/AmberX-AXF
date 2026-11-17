@@ -830,13 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:56 UTC · `settings-interface-gear-every-plugin` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `alert-every-time-build-falls-back-to` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `auto-lander-grid-one-row-per-build` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `every-settings-interface-gets` note (all) · watchdog
-- 2026-11-17 19:56 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `own-look-per-grid-and-tab-group` note (all) · watchdog
 - 2026-11-17 19:56 UTC · `maintenance-plugin-clear-docker-cache` note (all) · watchdog
 - 2026-11-17 19:57 UTC · `rebuild-every-toolbar-page-specific` s4 done (all) · orchestrator
@@ -1230,6 +1223,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:40 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 21:41 UTC · `rebuild-fresh-main-phone-connect-small` s17 done (all) · orchestrator
 - 2026-11-17 21:41 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
+- 2026-11-17 21:40 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:40 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
+- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
 
 ## Token passes (log)
 
