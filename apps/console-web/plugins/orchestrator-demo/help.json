@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "orchestrator-demo-help",
+  "name": "Orchestrator demo help",
+  "version": "0.1.0",
+  "description": "The orchestrator-demo plugin's Help mode entries (help@1). Stub written by the gate fixer help-stub.",
+  "author": "AmberX AXF (gate fixer help-stub)",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:orchestrator-demo",
+    "entries": [
+      {
+        "target": "view:orchestrator-demo",
+        "title": "Orchestrator demo",
+        "text": "Guided live demo of the Build orchestrator (demo-run@1): a start overlay (Continue, Pause between steps, Stop), then a scripted tour against throwaway demo-* builds: queue, launch, steps crossed off one at a time, a deliberate crash caught by the watchdog and retried, red CI with an auto-fix, merge-",
+        "kind": "screen",
+        "draft": true
+      }
+    ]
+  }
+}
