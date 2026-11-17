@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `vps-sends-shipped-features-every-merge` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `phone-connect-small-android-companion` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `shipped-features-open-button-views-each` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:53 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
 - 2026-11-17 23:53 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
 - 2026-11-17 23:53 UTC · `fix-launcher-crash-duplicate-steps-brief` s6 done, s7 done, s8 done, note (all) · foreign-write
+- 2026-11-17 23:53 UTC · `move-everything-axhub-web-console` s7 done (all) · foreign-write
 
 ## Token passes (log)
 
