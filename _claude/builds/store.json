@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8342,
- "updatedAt": "2026-11-17T23:08:37.129Z",
+ "rev": 8343,
+ "updatedAt": "2026-11-17T23:09:39.566Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208858,6 +208858,10 @@
     {
      "text": "Refused pending → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T22:32:58.259Z"
+    },
+    {
+     "text": "Refused pending → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T23:09:33.634Z"
     }
    ],
    "approvals": [
@@ -284801,7 +284805,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "built",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -284835,6 +284839,10 @@
     {
      "text": "Headless run axf-terminal-main-tab-streaming-console-s--sully: brief only · start 19.6K tokens ($0.07) · cost $34.93 · 260 turns · 6 tools, MCP none",
      "at": "2026-11-17T21:07:49.775Z"
+    },
+    {
+     "text": "Refused landing → built (asked by builds-live): built needs the PR merged to main: mergedAt is empty. Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T23:09:33.634Z"
     }
    ],
    "approvals": [],
