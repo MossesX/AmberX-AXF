@@ -1,0 +1,26 @@
+/* Hub plugin: layout only, every size, gap and colour from the asset tokens; the chips, buttons, tab rows and grids are
+   the framework's. Prefix axp-hub-admin (plugin naming rule, THEMING.md). */
+
+/* The approvals grid (axHub decision 109: who asked and what): the title gives way first (one line, ellipsis); the tool
+   chip and the decide buttons never shrink. */
+.axp-hub-admin-what { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-hub-admin-what__title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-hub-admin-what__tool { flex: 0 0 auto; font-size: var(--fx-type-root-xs); }
+.axp-hub-admin-who { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Deny / Approve (and Shelve on a held call): one pair in equal columns so both are the same size whatever their words;
+   big targets from the theme's spacing that never shrink. Colours are the buttons' tones. */
+.axp-hub-admin-pair { display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--fx-dens-gap-xl); flex: 0 0 auto; }
+.axp-hub-admin-pair > .fx-btn { min-height: max(var(--fx-row-h), calc(var(--fx-space) * 4), 2rem); min-width: calc(var(--fx-space) * 10); justify-content: center; white-space: nowrap; }
+.axp-hub-admin-pair > .fx-btn.is-picked { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * 2); }
+:where([data-fx-narrow]) .axp-hub-admin-pair > .fx-btn { min-height: max(calc(var(--fx-space) * 5.5), 2.75rem); }
+
+/* The countdown of a held call: tabular digits, warning colour, danger when under the warning window. */
+.axp-hub-admin-count { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; color: var(--fx-warning); }
+.axp-hub-admin-count.is-urgent { color: var(--fx-danger); }
+
+/* The status row under the page head: how the screen reads the hub and through which session. */
+.axp-hub-admin-status { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+
+/* An open row's detail panel sits a step in from the row. */
+.axp-hub-admin-detail { padding-inline-start: var(--fx-dens-gap-xl); }

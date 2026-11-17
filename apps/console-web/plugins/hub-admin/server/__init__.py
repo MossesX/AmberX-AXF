@@ -451,6 +451,7 @@ async def read_screen(request: Request, sid: str, row: str | None = None) -> dic
             raise HTTPException(404, f"{sid} rows have no detail read")
         out = await run_in_threadpool(reader, s, table, row)
     out.setdefault("screen", sid)
+    out.setdefault("hub", hub_base())
     out.setdefault("shape", screen["state"]["shape"] if row is None else (screen.get("rows", {}).get("read") or screen["state"])["shape"])
     if row is not None:
         out.setdefault("row", row)

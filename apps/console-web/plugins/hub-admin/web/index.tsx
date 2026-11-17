@@ -14,10 +14,11 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import table from '@console/axf/schemas/hub-console.json';
 import { homeScreen, screensOf, type HubConsoleTable, type HubScreen } from '@console/axf/core/hub-console.mjs';
 import { appMenu } from './menu';
+import { FOLDER, VIEW } from './ids';
+import { ApprovalsScreen } from './approvals';
+import './hub-admin.css';
 
-/** The folder name under plugins/ — this plugin's server routes live at /api/plugins/<FOLDER>/. */
-export const FOLDER = 'hub-admin';
-export const VIEW = 'hub';
+export { FOLDER, VIEW };
 export const TABLE = table as HubConsoleTable;
 export const SCREENS = screensOf(TABLE);
 
@@ -61,7 +62,9 @@ function ScreenPlaceholder({ screen }: { screen: HubScreen }) {
 }
 
 /** The screen renderers, filled in as the screens land; a screen without one shows its placeholder. */
-export const SCREEN_RENDERERS: Partial<Record<string, (screen: HubScreen) => JSX.Element>> = {};
+export const SCREEN_RENDERERS: Partial<Record<string, (screen: HubScreen) => JSX.Element>> = {
+  approvals: (screen) => <ApprovalsScreen screen={screen} />,
+};
 
 export function HubPage() {
   const [active, setActive] = useState<string>(homeScreen(TABLE)?.id ?? SCREENS[0]!.id);
