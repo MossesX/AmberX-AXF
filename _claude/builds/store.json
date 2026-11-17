@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7851,
- "updatedAt": "2026-11-17T20:41:40.893Z",
+ "rev": 7852,
+ "updatedAt": "2026-11-17T20:41:49.434Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -280458,7 +280458,7 @@
    "title": "Toolbars 1/5: Build orchestrator (incl. merge queue), Gate & rules, Terminal",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Build orchestrator pages (Pipeline/Pending/Queue, with merge-queue buttons folded in), Gate & rules, Terminal/sessions. API targets + one test. No Molly/AmberX/axHub web/Expenses. Land when done.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -280466,12 +280466,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:40:52.564Z",
+   "updatedAt": "2026-11-17T20:41:44.908Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-17T20:40:52.564Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T20:41:44.908Z"
     }
    ],
    "approvals": [],
@@ -280489,8 +280493,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-17T20:41:43.770Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -280639,7 +280643,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

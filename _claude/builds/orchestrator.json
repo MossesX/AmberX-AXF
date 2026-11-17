@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:41:40.893Z",
+ "updatedAt": "2026-11-17T20:41:49.434Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -184897,7 +184897,7 @@
    "title": "Toolbars 1/5: Build orchestrator (incl. merge queue), Gate & rules, Terminal",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Build orchestrator pages (Pipeline/Pending/Queue, with merge-queue buttons folded in), Gate & rules, Terminal/sessions. API targets + one test. No Molly/AmberX/axHub web/Expenses. Land when done.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184905,12 +184905,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:40:52.564Z",
+   "updatedAt": "2026-11-17T20:41:44.908Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-17T20:40:52.564Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T20:41:44.908Z"
     }
    ],
    "approvals": [],
