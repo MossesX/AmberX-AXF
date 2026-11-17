@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7985,
- "updatedAt": "2026-11-17T21:23:35.354Z",
+ "rev": 7986,
+ "updatedAt": "2026-11-17T21:23:48.226Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -282348,6 +282348,85 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T21:21:51.104Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-banner-settings-interface-tab",
+   "title": "Fix: banner settings Interface tab changes the banner, not the settings window",
+   "category": "",
+   "detail": "In the banner's settings, the Interface tab currently changes the look of the settings window itself. Point every control in that tab at the banner it belongs to, so changes apply to the banner live. Check every other asset's settings Interface tab (toolbars, tab groups, nav, grids) for the same bug and fix them too. Console only, small, land when done.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-17T21:23:34.872Z",
+   "updatedAt": "2026-11-17T21:23:45.087Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T21:23:45.087Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "why does the settings interface tab of the banner change just the interface of the settings itself? what's the point of that",
+    "at": "2026-11-17T21:23:34.872Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-17T21:23:44.114Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 975
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
