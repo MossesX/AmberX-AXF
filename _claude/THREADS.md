@@ -832,17 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `claude-badge-can-claude-build-green-when` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `collapse-auto-collapse-buttons-every-tab` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `fix-merge-conflicts-pr-557-professional` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `focus-every-screen-console-open-console` → landing, note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `github-client-plugin-see-control-every` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `merges-are-only-merged-once-github` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `new-project-wizard-name-linked-repo` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `orchestrator-checks-shipped-features` → landing, note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `pending-tab-one-collapsed-row-per-build` → landing, note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `plugin-review-map-what-each-plugin-does` note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `professional-skins-rebuild-whole-app` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `remove-console-s-own-notes-manager` → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `remove-no-new-android-kotlin-work-rule` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `remove-ui-review-gate-no-screenshots` note (all) · foreign-write
@@ -1232,6 +1221,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:28 UTC · `move-server-side-console-parts-onto-vps` note (all) · watchdog
 - 2026-11-17 23:28 UTC · `active-tab-add-stop-button-per-running` note (all) · orchestrator
 - 2026-11-17 23:28 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
+- 2026-11-17 23:29 UTC · `console-app-part-2-native-floating` → complete, note (all) · foreign-write
+- 2026-11-17 23:29 UTC · `banner-widget-shapes-plus-change-icon` s17 done, s18 done, s19 done, → complete, note (all) · foreign-write
+- 2026-11-17 23:29 UTC · `move-server-side-console-parts-onto-vps` s3 done, s4 done, s5 done, note (all) · foreign-write
+- 2026-11-17 23:29 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 23:29 UTC · `icon-picker-every-banner-settings-widget` s11 done, note (all) · foreign-write
+- 2026-11-17 23:29 UTC · `flagship-professional-skin-covering-2` s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s21 done, s22 done, s23 done, s24 done, s25 done, note (all) · foreign-write
+- 2026-11-17 23:29 UTC · `move-everything-axhub-web-console` s1 done, s2 done, s3 done, s4 done (all) · foreign-write
+- 2026-11-17 23:29 UTC · `api-fully-drives-every-field-type-forms` added (1350 steps) (all) · foreign-write
+- 2026-11-17 23:29 UTC · `fix-launcher-crash-duplicate-steps-brief` added (128 steps) (all) · foreign-write
+- 2026-11-17 23:29 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
+- 2026-11-17 23:29 UTC · `active-tab-stop-button-grid-alignment` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
