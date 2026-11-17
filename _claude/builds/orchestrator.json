@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T00:09:25.142Z",
+ "updatedAt": "2026-11-17T00:09:41.369Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134681,7 +134681,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:29.839Z",
-   "updatedAt": "2026-11-17T00:08:55.976Z",
+   "updatedAt": "2026-11-17T00:09:22.947Z",
    "builtAt": "",
    "notes": [
     {
@@ -134699,6 +134699,10 @@
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-grid-token-set-colours-hover-selected--joey.",
      "at": "2026-11-16T23:59:31.717Z"
+    },
+    {
+     "text": "Headless run axf-grid-token-set-colours-hover-selected--joey: brief only · start 18.1K tokens ($0.13) · cost $2.53 · 19 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:09:22.947Z"
     },
     {
      "text": "s1: the grid token family was already on main (component-tokens@1, 32 tokens, style theme + tokens.style + per-instance Restore previous / Restore from axHub, CI check, Token Control). This step landed the unmerged rest from the archived branch: filter chip tokens, focusedBg, disabledText (39 grid tokens now). Duplicate build grids-get-their-own-full-token-set marked complete. Report in _claude/builds/reports/.",
