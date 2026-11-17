@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "data-store-home",
+  "name": "Data store",
+  "version": "1.0.0",
+  "description": "Data store on Home: Data store state.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Data store",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "data-store",
+      "command": "state"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

@@ -94,6 +94,7 @@ export function lightCommands(files, { exists = () => false, list = () => [] } =
     'node framework/cli/tracker.mjs --check',
     'node framework/cli/project.mjs validate --all',
     'node framework/cli/builds-store.mjs verify',
+    'node framework/cli/check-tracking-files.mjs',
     'node framework/cli/check-theme.mjs',
     'node framework/cli/check-controls.mjs',
     'node framework/cli/check-toolbars.mjs',

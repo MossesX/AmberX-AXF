@@ -38,7 +38,7 @@ for (const c of fixture.transition) {
   if (WRITE) c.out = got; else eq(got, c.out, `transition: ${c.name}`);
   ok(BP.EXIT_REASONS.includes(got.reason), `transition: ${c.name}: reason ${got.reason} is in EXIT_REASONS`);
   ok(got.keepQueue === (got.status === 'queued'), `transition: ${c.name}: keepQueue follows the Queue`);
-  ok(['built', 'queued', 'pending'].includes(got.status), `transition: ${c.name}: never a status off the table`);
+  ok(['landing', 'queued', 'pending'].includes(got.status), `transition: ${c.name}: never a status off the table (all done = landing, done-means-merged@1)`);
 }
 // a clean phase end is never a crash, whatever the run count; a crash always adds one
 for (let runs = 1; runs <= 6; runs++) {

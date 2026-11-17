@@ -36,3 +36,21 @@ catalog bundle as `console-droid.apk`).
   `listener.stop` and `listener.status` in the bridge's `tools` list and a `listener` event (`plugins/wake-listener/web/engine.ts`).
   `NativeBridge` doesn't carry them, so the plugin reports no native backend and stays on Web Speech. The bridge reads
   both call styles (answer at once or a promise), so adding the tools needs no console change.
+
+## Four slots at the same time
+
+Brett, Nov 13 2026: "split the console wrapper so it runs on four slots at the same time". The console app is four
+builds that run side by side, each on its own branch and session, and land in any order:
+
+| Part | Build | Owns | PR |
+| --- | --- | --- | --- |
+| 1 | `console-android-app-thin-webview-wrapper` | The shell: `ConsoleActivity`, `WebHost`, `ShellRules`, `NativeBridge`, `Perms`, `Insets`, `ContentUpdate`, `DeviceLink`, the console's `src/native/` | #637, carried by part 2 |
+| 2 | `console-app-part-2-native-floating` | The floating toolbar and approvals bar (`overlay@1`): `OverlayContract`, `OverlayRules`, `OverlayService`, `OverlayPermission`, `SafeArea`; the approvals banner's `overlayItems` | this build (part 1 merged in) |
+| 3 | `console-app-part-3-native-bridge-mic` | The native bridge for the mic and the wake listener | #791 (land) |
+| 4 | `console-app-part-4-console-side-safe` | The console side: `--fx-safe-*` in `framework/ui/axf.css`, the server's app routes, wrapper support in the console | #792 (land) |
+
+Kept apart on purpose: parts 1–2 are the Java module plus the bridge glue, part 3 the mic path, part 4 the console's
+own CSS and server. A trial merge of this branch with parts 3 and 4 (Nov 17 2026) merges every source file cleanly;
+the only overlaps are generated or synced data (`src/control/inventory.json`, `framework/catalog/*.json`,
+`framework/plan/plan.json`, `tracker.json`), which the lander regenerates. Whichever lands first, the others merge
+main and land after it with nothing to redo.

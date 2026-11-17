@@ -153,12 +153,12 @@ export function idlePlan(builds, alive, { now = new Date().toISOString(), graceM
     // plan epics take their status from the plan (builds-store-core syncs it), so they are left to it
     if (b.deleted || b.status !== 'running' || skip.includes(b.id) || b.kind === 'epic' || str(b.planRef)) continue;
     const change = (status, why) => out.push({ id: b.id, set: { status }, steps: [], stepNotes: {}, why: [why] });
-    if (str(b.mergedAt)) { change('complete', `PR ${prNumber(b.pr) ? prRef(prNumber(b.pr)) : b.pr} merged: complete`); continue; }
+    if (str(b.mergedAt)) { change('landed', `PR ${prNumber(b.pr) ? prRef(prNumber(b.pr)) : b.pr} merged: landed (complete once verified)`); continue; }
     if (alive.has(b.id)) continue;
     const touched = Date.parse(str(b.updatedAt));
     if (Number.isFinite(touched) && t - touched < graceMin * 60000) continue;
     const steps = (b.steps ?? []).filter((x) => !x.skip);
-    if (steps.length && steps.every((x) => x.done)) change(str(b.pr) ? 'built' : 'complete', 'no live process and every step done');
+    if (steps.length && steps.every((x) => x.done)) change('landing', 'no live process and every step done: the auto-lander lands it');
     else change('pending', 'paused: no live session or process runs it (worktree kept); was running');
   }
   return out;

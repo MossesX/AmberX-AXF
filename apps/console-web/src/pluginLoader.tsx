@@ -22,6 +22,7 @@ import type { AxfRuntime } from './axf/core';
 import type { ActionMeta } from './axf/core/engines/actions';
 import type { AxfWebLibrary } from './axf/react/library';
 import { Button, Note } from './axf/react';
+import { PluginViewHost } from './PluginSettingsGear';
 import { authHeaders } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
 import { CORE_PLUGINS, evictions, importOnce, isChunkLoadError, KNOWN_BANNERS, idlePicks, LAZY_DEFAULTS, modeOf, normalizeLazyConfig, startupList, touch, type LazyConfig, type LazyMode, type StartReason, type UsageStat } from './lazyEngine';
@@ -573,13 +574,27 @@ function Shown({ folder, children }: { folder: string; children?: ReactNode }) {
   return <>{children}</>;
 }
 
-/** Wrap a library's pages, dialogs, tabs and settings panels so opening one counts as a use of its plugin; slots and banners only mark it on screen. */
-export function countingUses(folder: string, lib: AxfWebLibrary): AxfWebLibrary {
+/** How the host draws a plugin's screens: its name and whether its screens carry the settings gear (plugin.json). */
+export interface PluginHostInfo { name?: string; settingsGear?: boolean; defaultTab?: boolean }
+
+/** The Settings → Plugins sub-tab a plugin's gear opens: its first settings tab, else the default tab (id = folder). */
+export function pluginSettingsTab(folder: string, lib: AxfWebLibrary, host: PluginHostInfo = {}): string | undefined {
+  return lib.settingsTabs?.[0]?.id ?? (host.defaultTab ? folder : undefined);
+}
+
+/**
+ * Wrap a library's pages, dialogs, tabs and settings panels so opening one counts as a use of its plugin; slots and
+ * banners only mark it on screen. Every page also gets the host row with the settings gear (PluginViewHost), once,
+ * unless plugin.json says `settingsGear: false`.
+ */
+export function countingUses(folder: string, lib: AxfWebLibrary, host: PluginHostInfo = {}): AxfWebLibrary {
   const wrap = (n: ReactNode) => createElement(Used, { folder }, n);
   const shown = (n: ReactNode) => createElement(Shown, { folder }, n);
+  const tab = host.settingsGear === false ? undefined : pluginSettingsTab(folder, lib, host);
+  const page = (n: ReactNode) => wrap(tab ? createElement(PluginViewHost, { folder, name: host.name ?? lib.label ?? folder, tab }, n) : n);
   return {
     ...lib,
-    ...(lib.views ? { views: Object.fromEntries(Object.entries(lib.views).map(([k, v]) => [k, { ...v, render: () => wrap(v.render()) }])) } : {}),
+    ...(lib.views ? { views: Object.fromEntries(Object.entries(lib.views).map(([k, v]) => [k, { ...v, render: () => page(v.render()) }])) } : {}),
     ...(lib.dialogs ? { dialogs: Object.fromEntries(Object.entries(lib.dialogs).map(([k, d]) => [k, { ...d, render: (p: Record<string, unknown>, close: () => void) => wrap(d.render(p, close)) }])) } : {}),
     ...(lib.tabs ? { tabs: Object.fromEntries(Object.entries(lib.tabs).map(([k, r]) => [k, (t: Parameters<typeof r>[0]) => wrap(r(t))])) } : {}),
     ...(lib.settingsPanels ? { settingsPanels: lib.settingsPanels.map((p) => ({ ...p, render: () => wrap(p.render() as ReactNode) })) } : {}),

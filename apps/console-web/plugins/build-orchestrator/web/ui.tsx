@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { StatusChip } from './attempts';
 import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
@@ -10,6 +11,7 @@ import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type G
 import { PipelineTab, type PipelineView } from './pipeline';
 import { GroupTab, GroupsBoard } from './groups';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
+import { RecoveriesList, WatchdogTab } from './watchdog';
 import './orchestrator.css';
 
 /*
@@ -46,7 +48,7 @@ export const TABS = [
   { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
   { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
   { id: 'archive', label: 'Archive', icon: 'package' }, { id: 'deleted', label: 'Deleted', icon: 'trash' }, { id: 'groups', label: 'Groups', icon: 'folder' },
-  { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
+  { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'watchdog', label: 'Watchdog', icon: 'shield' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
 ] as const;
 /** A custom tab is a group pinned next to a stage tab (groups.tsx): `group:<group id>`. */
 export type Tab = (typeof TABS)[number]['id'] | `group:${string}`;
@@ -119,6 +121,7 @@ export function OrchestratorPage() {
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
       {tab === 'approvals' && <ApprovalsTab state={state} busy={busy} act={act} />}
       {tab === 'rules' && <RulesTab rules={state.rules} busy={busy} act={act} />}
+      {tab === 'watchdog' && <WatchdogTab focus={consoleApi.readLocal<string>('orch-watchdog-build', '')} />}
     </div>
   );
 }
@@ -496,7 +499,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 9)', render: (b) => <PriorityTag build={b.id} /> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
-      render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },
+      render: (b) => <span title={(core.STATUS_LABEL as Record<string, string>)[b.status]}><StatusChip status={b.status} /></span> },
     { id: 'next', label: 'Next', width: 'calc(var(--fx-font-size) * 6)', sortable: true, sortValue: (b) => core.nextUp(b, rules).step?.model ?? 'zz',
       render: (b) => { const n = core.nextUp(b, rules); return n.done ? <span className="fx-muted">—</span> : n.needsApproval ? <span className="oc-flag" title="The next phase upgrades the model: only you can approve it">your OK → {n.phase?.model}</span> : n.step ? <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model} {n.step.id}</span> : <span className="fx-muted">—</span>; } },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 3.5)', align: 'end', sortable: true, sortValue: (b) => core.progress(b).total,
@@ -528,6 +531,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
             <div className="oc-detail">
               <BuildOrigin origin={b.origin} showEmpty />
               <StepGrid b={b} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />
+              <RecoveriesList id={b.id} />
               <BuildCard b={b} rules={rules} busy={busy} act={act} embedded />
             </div>
           )} />
