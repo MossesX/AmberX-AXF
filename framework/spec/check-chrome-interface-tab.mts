@@ -37,6 +37,7 @@ const { createElement: h, act } = React;
 const { createRoot } = await import('react-dom/client');
 const { AxfRuntime } = await import('../core/runtime.ts');
 const { AxfProvider } = await import('../react/AxfProvider.tsx');
+const { Banner } = await import('../react/components/Banner.tsx');
 const { chromeDialogs, CHROME_SETTINGS_DIALOG, chromeSettingsUi, installChrome } = await import('../react/components/ChromeContext.tsx');
 const cs = await import('../core/engines/chrome-settings-rules.mjs');
 
@@ -52,9 +53,13 @@ const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
 
 type ChromeType = (typeof cs.CHROME_TYPES)[number];
 /** What the instance renders with right now (the data its component draws from). */
-type Case = { type: ChromeType; instance: string; rendered: (rt: InstanceType<typeof AxfRuntime>) => unknown };
+type Case = {
+  type: ChromeType; instance: string; rendered: (rt: InstanceType<typeof AxfRuntime>) => unknown;
+  /** The instance itself, drawn beside the dialog, and what of it shows a look change (its markup + the root tokens). */
+  draw?: () => unknown; seen?: () => string;
+};
 export const CASES: Case[] = [
-  { type: 'banner', instance: 'app', rendered: (rt) => rt.banner({ all: true }).data },
+  { type: 'banner', instance: 'app', rendered: (rt) => rt.banner({ all: true }).data, draw: () => h(Banner), seen: () => `${doc.querySelector('.fx-banner')?.outerHTML.slice(0, 400) ?? ''}|${doc.documentElement.getAttribute('style') ?? ''}` },
 ];
 
 const settingsWindowKeys = (type: string) => [cs.CHROME_SETTINGS_PICK_KEY(type), cs.CHROME_SETTINGS_PATCH_KEY(type)];
@@ -66,7 +71,8 @@ for (const c of CASES) {
   const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults, startView: 'home' } as never, assets, storageKey: `test:interface-tab:${name}` });
   installChrome(rt);
   const reactRoot = createRoot(doc.getElementById('root')!);
-  await act(async () => { reactRoot.render(h(AxfProvider, { runtime: rt }, chromeDialogs[CHROME_SETTINGS_DIALOG]!.render({ type: c.type, instance: c.instance }) as never)); });
+  await act(async () => { reactRoot.render(h(AxfProvider, { runtime: rt }, h('div', null, c.draw?.() ?? null, chromeDialogs[CHROME_SETTINGS_DIALOG]!.render({ type: c.type, instance: c.instance }) as never))); });
+  if (c.seen) check(c.seen().length > 1, `${name}: the ${c.type} itself is drawn`);
   await act(async () => { await sleep(10); });
 
   const tab = [...doc.querySelectorAll<HTMLElement>('[role="tab"]')].find((t) => /Interface/.test(t.textContent ?? ''));
@@ -89,6 +95,8 @@ for (const c of CASES) {
     if (!el) break;
     const before = rt.settings.savedValues();
     const shownBefore = JSON.stringify(c.rendered(rt));
+    const seenBefore = c.seen?.() ?? '';
+    const lookBefore = cs.normalizeInstanceOverride(c.type, rt.settings.get(cs.CHROME_INSTANCE_KEY(c.type, c.instance)));
     await act(async () => { click(el); await sleep(2); });
     const after = rt.settings.savedValues();
     const changed = [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((k) => JSON.stringify(before[k]) !== JSON.stringify(after[k]));
@@ -97,6 +105,9 @@ for (const c of CASES) {
     if (changed.some((k) => ownsKey(c.type, c.instance, k))) {
       wrote++;
       if (changed.includes(cs.CHROME_INSTANCE_KEY(c.type, c.instance))) check(JSON.stringify(c.rendered(rt)) !== shownBefore, `${name}: control ${i} shows on the ${c.type} at once`);
+      const lookAfter = cs.normalizeInstanceOverride(c.type, rt.settings.get(cs.CHROME_INSTANCE_KEY(c.type, c.instance)));
+      const lookChanged = cs.CHROME_FIELDS[c.type].filter((f) => f.group === 'look' && lookBefore[f.key] !== lookAfter[f.key]).map((f) => f.key);
+      if (c.seen && lookChanged.length) check(c.seen() !== seenBefore, `${name}: ${lookChanged.join(', ')} restyles the drawn ${c.type} live`);
     }
   }
   check(wrote > 0, `${name}: the Interface tab changes ${cs.CHROME_INSTANCE_KEY(c.type, c.instance)}`);
