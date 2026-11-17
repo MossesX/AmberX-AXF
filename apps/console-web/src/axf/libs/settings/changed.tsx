@@ -44,7 +44,8 @@ export function resetStateOf(rt: AxfRuntime): ResetState {
   }
   const look = rt.appLook() as unknown as AppLookLike | null;
   return {
-    values: rt.settings.savedValues(), tabs, groups, look, active, defaults,
+    // the last reset's undo record is the reset's own bookkeeping, never a row
+    values: Object.fromEntries(Object.entries(rt.settings.savedValues()).filter(([k]) => k !== 'axf.settings.reset.undo')), tabs, groups, look, active, defaults,
     nameOf: (type, id) => rt.registry.list(type as AssetType).find((a) => a.id === id)?.name,
   };
 }
