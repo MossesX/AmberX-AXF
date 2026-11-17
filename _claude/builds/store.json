@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7477,
- "updatedAt": "2026-11-17T15:02:09.053Z",
+ "rev": 7488,
+ "updatedAt": "2026-11-17T15:06:48.744Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182944,7 +182944,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -182953,8 +182953,8 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T04:28:58.424Z",
-   "builtAt": "2026-11-17T04:28:58.424Z",
+   "updatedAt": "2026-11-17T15:05:01.182Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
@@ -183584,7 +183584,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -259704,7 +259704,7 @@
    "mergedAt": "2026-11-17T12:49:44Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T13:33:06.424Z",
+   "updatedAt": "2026-11-17T15:06:45.684Z",
    "builtAt": "2026-11-17T12:50:05.006Z",
    "notes": [
     {
@@ -259774,6 +259774,10 @@
     {
      "text": "Session axf-stop-auto-lander-committing-tracking--lenny on hulu0241 ended (exit 0); the build was already complete.",
      "at": "2026-11-17T13:33:06.424Z"
+    },
+    {
+     "text": "Brett: land after server-auto-lander-fixes-lands",
+     "at": "2026-11-17T15:06:45.684Z"
     }
    ],
    "approvals": [
@@ -260242,7 +260246,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -261242,7 +261246,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "built",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -261250,8 +261254,8 @@
    "pr": "#771",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-17T04:16:42.077Z",
-   "builtAt": "2026-11-17T04:16:42.077Z",
+   "updatedAt": "2026-11-17T15:04:56.908Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -261354,6 +261358,28 @@
     "heldWhy": ""
    },
    "steps": [
+    {
+     "id": "s17",
+     "uid": "st-mwktpvmt01j9r7",
+     "title": "",
+     "text": "Merge origin/main into this branch (PR #771). Conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres: data-files, DataStoreError, StoreConflict; keep main's store path and put this build's done-means-merged rules on top) and apps/console-web/src/control/inventory.json (take main's, regenerate). Tests green, push, merge the PR directly (merge queue is off). Brett: VPS/auto-lander PRs land first.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T15:04:44.374Z",
+     "updatedAt": "2026-11-17T15:04:44.645Z"
+    },
     {
      "id": "s1",
      "uid": "st-mwjxw6550w3qw6",
@@ -261762,7 +261788,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -263643,7 +263669,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-17T14:53:22.043Z",
+   "updatedAt": "2026-11-17T15:03:09.520Z",
    "builtAt": "",
    "notes": [
     {
@@ -263684,13 +263710,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T14:47:51.627Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-settings-opened-banners-nav-menu--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T14:49:11.708Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -263703,7 +263729,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T14:49:11.708Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -263712,7 +263738,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T14:49:11.708Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -263764,12 +263790,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:03:09.520Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:48:58.684Z",
-     "updatedAt": "2026-11-17T14:48:58.684Z"
+     "updatedAt": "2026-11-17T15:03:09.889Z"
     },
     {
      "id": "s3",
@@ -264056,7 +264082,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T15:01:41.246Z",
+   "updatedAt": "2026-11-17T15:04:37.972Z",
    "builtAt": "",
    "notes": [
     {
@@ -264223,12 +264249,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:04:37.972Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T14:51:42.630Z"
+     "updatedAt": "2026-11-17T15:04:38.541Z"
     },
     {
      "id": "s5",
@@ -264550,7 +264576,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -264574,7 +264600,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T15:00:52.986Z",
+   "updatedAt": "2026-11-17T15:05:13.887Z",
    "builtAt": "",
    "notes": [
     {
@@ -264717,12 +264743,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:04:27.441Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:54:09.749Z",
-     "updatedAt": "2026-11-17T14:54:09.749Z"
+     "updatedAt": "2026-11-17T15:04:27.769Z"
     },
     {
      "id": "s4",
@@ -264741,12 +264767,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:05:13.887Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:54:09.749Z",
-     "updatedAt": "2026-11-17T14:54:09.749Z"
+     "updatedAt": "2026-11-17T15:05:14.447Z"
     },
     {
      "id": "s5",
@@ -265181,7 +265207,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -265205,7 +265231,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-17T15:02:06.901Z",
+   "updatedAt": "2026-11-17T15:05:22.381Z",
    "builtAt": "",
    "notes": [
     {
@@ -265247,7 +265273,7 @@
     "queuedAt": "2026-11-17T14:59:47.027Z",
     "queuedBy": "console",
     "account": "",
-    "session": "axf-auto-lander-drag-rows-to-set-merge-order--sully",
+    "session": "",
     "slot": "",
     "model": "",
     "phase": "",
@@ -265266,13 +265292,7 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": {
-     "model": "Fable",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-17T15:00:58.892Z",
-     "why": "subscription account hulu0241"
-    },
+    "planned": null,
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -265299,12 +265319,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T15:05:22.381Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T15:00:55.483Z",
-     "updatedAt": "2026-11-17T15:00:55.483Z"
+     "updatedAt": "2026-11-17T15:05:22.866Z"
     },
     {
      "id": "s2",
@@ -265670,6 +265690,85 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T15:00:55.483Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "live-hot-refresh-every-grid-list-re",
+   "title": "Live hot refresh: every grid and list re-renders instantly when its data changes",
+   "category": "",
+   "detail": "Every grid, list and table in the console (Auto-lander, orchestrator tabs, Pending, Plan Studio, UI Review, etc.) updates live without a reload whenever its data changes: server pushes change events (SSE/WebSocket from the data store / axf-data change feed), the framework DataGrid subscribes and re-renders only changed rows, keeping scroll, selection, sort, filters and open dialogs. Local actions (drag and drop, reorder, edit, archive) re-render instantly (optimistic) and reconcile with the server. Changes made from REST/MCP/CLI/voice or by the VPS lander show up live too. Reconnects automatically. Add a live indicator. Framework-level so every app gets it.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T15:05:47.233Z",
+   "updatedAt": "2026-11-17T15:05:51.332Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T15:05:51.332Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why don't I get a hot refresh every time shit changes in the grid? Anytime something changes, like a drag and drop or something, it has to hot render.",
+    "at": "2026-11-17T15:05:47.233Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-17T15:05:50.410Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 943
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
