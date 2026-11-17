@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7974,
- "updatedAt": "2026-11-17T21:20:47.926Z",
+ "rev": 7975,
+ "updatedAt": "2026-11-17T21:21:04.183Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -281900,7 +281900,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -281908,9 +281908,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:20:33.403Z",
+   "updatedAt": "2026-11-17T21:20:56.847Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T21:20:56.847Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -281925,6 +281930,30 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-17T21:20:55.826Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -281934,7 +281963,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
