@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:55 UTC · `console-app-part-2-native-floating` note (all) · foreign-write
-- 2026-11-17 22:55 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
 - 2026-11-17 22:56 UTC · `rebuild-fresh-main-phone-connect-small` → landing, note (all) · Brett
 - 2026-11-17 22:56 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 22:56 UTC · `banner-widget-shapes-plus-change-icon` s17 done (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:10 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 23:12 UTC · `move-everything-axhub-web-console` s4 done (all) · foreign-write
 - 2026-11-17 23:14 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
+- 2026-11-17 23:14 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
+- 2026-11-17 23:14 UTC · `move-everything-axhub-web-console` s4 done (all) · foreign-write
 
 ## Token passes (log)
 
