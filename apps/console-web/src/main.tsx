@@ -21,7 +21,10 @@ const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 
 const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager: true, import: 'default' });
 // Plugin Home cards (card@1 at plugins/<folder>/assets/card/*.json; the VPS writes missing ones, build rule home-card).
 const pluginCards = import.meta.glob(['../plugins/*/assets/card/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
-const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...overrideAssets };
+// Page toolbars (page-toolbar@1 at plugins/<folder>/assets/toolbar/*.json, scoped to the plugin's page; build
+// rebuild-every-toolbar-page-specific): each plugin page draws its own through <PageToolbar>.
+const pluginToolbars = import.meta.glob(['../plugins/*/assets/toolbar/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
+const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...pluginToolbars, ...overrideAssets };
 
 const axf = createAxf({
   manifest: manifest as AxfManifest,
