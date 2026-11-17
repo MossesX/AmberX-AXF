@@ -831,7 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:47 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
 - 2026-11-17 20:47 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
 - 2026-11-17 20:47 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 - 2026-11-17 20:48 UTC · `guided-live-demo-test-watch-orchestrator` s16 done (all) · orchestrator
@@ -1231,6 +1230,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:20 UTC · `banner-widget-shapes-plus-change-icon` note (all) · reconciler
 - 2026-11-17 22:20 UTC · `rebuild-fresh-main-hide-any-asset` PR #824, note (all) · reconciler
 - 2026-11-17 22:20 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
+- 2026-11-17 22:21 UTC · `icon-picker-every-banner-settings-widget` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
