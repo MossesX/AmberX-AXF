@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:42:48.318Z",
+ "updatedAt": "2026-11-17T20:43:39.362Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -185044,9 +185044,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:40:33.480Z",
-   "updatedAt": "2026-11-17T20:40:36.245Z",
+   "updatedAt": "2026-11-17T20:43:36.610Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 4 steps (0 Fable).",
+     "at": "2026-11-17T20:43:36.610Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -185061,7 +185066,104 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Merge main so the page-toolbar foundation from rebuild-every-toolbar-page-specific is in this branch. Stop if it has not landed. Then add page toolbar assets for Settings (the Simple/Basic/Developer/Administrator level picker plus Show all and Level editor) and for Appearance / Theme manager (Use skin, Back to skin, Restore to default, Choose from every asset). Each button is bound to an action that already exists. Each toolbar has role=\"toolbar\", an aria-label and a settings id, and is registered as a control@1 / console-control target appended at the end of the registry (deep link view:settings/toolbar:settings-page and view:settings/tab:appearance/toolbar:appearance-page, with readable state). Re-bake the console's src/axf.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/assets/toolbar/",
+      "apps/console-web/src/",
+      "apps/console-web/plugins/theme-manager/",
+      "framework/libs/settings/",
+      "framework/schemas/control-registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl5tnvm05ckwt",
+     "createdAt": "2026-11-17T20:43:36.610Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add a Systems check page toolbar asset: Run all checks, Auto-fix all, Filter (red/amber/all) and Open check settings, each bound to an existing systems-check action. Add a Notifications page toolbar asset: Mute all / Unmute, Mark all read, Filter by plugin and Open notify-control settings, each bound to an existing notify-control action. Register both as console-control targets with deep links and readable state (view:systems-check/toolbar:systems-check-page, view:settings/tab:plugins/notify-control/toolbar:notifications-page). Do not change the visual tokens.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/assets/toolbar/",
+      "apps/console-web/plugins/systems-check/",
+      "apps/console-web/plugins/notify-control/",
+      "framework/schemas/control-registry.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl5tnvm062ax4",
+     "createdAt": "2026-11-17T20:43:36.610Z"
+    },
+    {
+     "id": "s3",
+     "text": "API parity for all four toolbars. Each toolbar button's action can be called through REST /api/console-control, the console_control_* MCP tools, `axf console press <target>` and AmberX voice, all through the same address. Settings (visible, tap-confirm, order) can be read and set through the same paths. Add one test, apps/console-web/scripts/check-page-toolbars-3.mjs. It checks that every button in the four assets resolves to a registered action, that every toolbar has role/aria-label/settings id, and that every deep link opens. Add the test to CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/",
+      "apps/console-web/scripts/check-page-toolbars-3.mjs",
+      ".github/workflows/android.yml",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl5tnvm073v07",
+     "createdAt": "2026-11-17T20:43:36.610Z"
+    },
+    {
+     "id": "s4",
+     "text": "Run the checks: check-toolbars.mjs, check-theme.mjs, check-controls.mjs, check-console-control.mjs, check-chrome-assets.mjs, the new check-page-toolbars-3.mjs and the console typecheck/build. Take desktop and phone shots of the four pages and submit them to UI Review with at least 3 options. Write the report at _claude/builds/reports/toolbars-3-5-settings-appearance-systems.md; it says how each toolbar is reached through deep link, REST, MCP, CLI and voice. Add the THREADS row, push branch claude/toolbars-3-5-settings-appearance-systems, open the PR, link it with builds-live.mjs and add it to the merge queue to land.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/toolbars-3-5-settings-appearance-systems.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/ui-review/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwl5tnvm084j68",
+     "createdAt": "2026-11-17T20:43:36.610Z"
+    }
+   ]
   },
   {
    "id": "toolbars-2-5-plan-studio-ui-review",
