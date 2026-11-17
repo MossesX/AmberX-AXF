@@ -30,7 +30,11 @@ export async function notifyRun(run, { post, enabled = true } = {}) {
   const a = alertOf(run);
   if (!a) return { sent: false, why: 'nothing cleaned' };
   if (!enabled) return { sent: false, why: 'notify is off' };
-  const send = post ?? (await import('../pipeline.mjs')).makeConsole();
-  const r = send('POST', '/api/alerts', a);
+  // inside the console container (a Run now from the console): the console's own API on this machine
+  const inConsole = process.env.AXF_WATCHDOG_IN_CONSOLE === '1' && process.env.AXF_TOKEN;
+  const send = post ?? (inConsole ? null : (await import('../pipeline.mjs')).makeConsole());
+  const r = send ? send('POST', '/api/alerts', a) : await fetch(`http://127.0.0.1:${process.env.AXF_CONSOLE_PORT || 7090}/api/alerts`, {
+    method: 'POST', headers: { Authorization: `Bearer ${process.env.AXF_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(a), signal: AbortSignal.timeout(20000),
+  }).then((x) => (x.ok ? x.json() : null)).catch(() => null);
   return r ? { sent: true, key: a.key } : { sent: false, why: 'the console did not answer' };
 }
