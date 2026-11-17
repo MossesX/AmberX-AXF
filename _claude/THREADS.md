@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:11 UTC · `themed-native-controls-plugin` note (all) · orchestrator
 - 2026-11-17 15:12 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 - 2026-11-17 15:12 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-17 15:12 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:47 UTC · `rebuild-every-toolbar-page-specific` s2 done (all) · orchestrator
 - 2026-11-17 19:49 UTC · `terminal-main-tab-streaming-console-s` → running, note (all) · pipeline
 - 2026-11-17 19:49 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
+- 2026-11-17 19:49 UTC · `terminal-main-tab-streaming-console-s` branch claude/terminal-main-tab-streaming-console-s (all) · pipeline
 
 ## Token passes (log)
 
