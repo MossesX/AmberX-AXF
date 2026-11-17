@@ -12,6 +12,7 @@ import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navsty
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
+import { toolbarErrors, toolbarItemSchema, toolbarSchemaProperties } from '../core/engines/toolbar-rules.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
@@ -196,6 +197,8 @@ export function validateAsset(raw) {
   errors.push(...jobTypeErrors(raw.type, raw.data));
   // card@1: ONE validator shared with core (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, raw.data));
+  // page-toolbar@1: ONE validator shared with core (core/engines/toolbar-rules.mjs); both toolbar shapes
+  errors.push(...toolbarErrors(raw.type, raw.data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with core (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, raw.data));
   // brand types (logo-mark, animated-logo, icon-pack, branding): ONE validator shared with core (core/engines/brand-rules.mjs)
@@ -876,11 +879,13 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
+    // page-toolbar@1: scope, groups (items through $defs.toolbarItem) and overflow
+    if (type === 'toolbar') Object.assign(props, toolbarSchemaProperties());
     if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
     // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
     const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
     if (type === 'skin') Object.assign(props, skinSchemaProperties());
-    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
+    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : type === 'toolbar' ? { toolbarItem: toolbarItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
       $schema: 'https://json-schema.org/draft/2020-12/schema',

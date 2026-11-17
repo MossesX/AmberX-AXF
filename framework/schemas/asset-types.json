@@ -280,6 +280,11 @@
           "flat",
           "raised",
           "glass"
+        ],
+        "overflow": [
+          "auto",
+          "never",
+          "always"
         ]
       },
       "optional_fields": {
@@ -288,13 +293,28 @@
         "surface": "flat (default) | raised | glass",
         "divider": "boolean, default true — rule between item groups",
         "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
-        "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0",
+        "groups[].items[].badge": "string — a runtime counter name (runtime.setBadge, e.g. `alerts.unread`), counter:<name>, or state:<key> (a number or short text from the page state); shown as a small badge on the button, hidden at 0",
         "widgets": "[{type, id, at: start|end, order?}] — widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
         "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)",
         "groups[].provider": "string — live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
         "groups[].max": "number 1–24, default 8 — cap on provider buttons",
         "groups[].label": "string — group name for screen readers",
-        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)"
+        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked) | state:<key> (the page state)",
+        "scope": "string — app (default: the frame toolbar) | view:<view id> | plugin:<plugin id>: the page this toolbar is made for; the page renders it through usePageToolbar(viewId) and the engine resolves its buttons against that page's functions and state",
+        "overflow": "auto (default) | never | always, or { when, keep?: number (items that always stay on the bar), label?: string (default More) } — what happens when the bar is too narrow: auto folds the lowest-priority items into a More menu, never folds nothing (the bar scrolls), always keeps only `keep` items on the bar",
+        "groups[].items[].action": "string — the button's function: a console action id (as before), action:<id>, command:<plugin>/<command> (plugin-commands@1: the same call as REST / MCP / CLI), control:<address> (a console-control@1 target pressed or opened) or handler:<id> (a handler the page registers with registerToolbarHandler)",
+        "groups[].items[].args": "object — arguments passed with the action ref (a command's input, an action's params)",
+        "groups[].items[].enabledWhen": "when — the button is enabled only while every term holds over the page state (key, !key, key=value, key!=value, key>n, key<n; up to 8 terms)",
+        "groups[].items[].visibleWhen": "when — the button is drawn only while every term holds (same grammar)",
+        "groups[].items[].destructive": "boolean — drawn in the danger tone; pressing it through the API (console-control press) needs confirm",
+        "groups[].items[].confirm": "true | string — ask before running: the default question, or the question itself (up to 200 characters)",
+        "groups[].items[].priority": "number 0–1000, default 100 — overflow order: lower goes into More first",
+        "groups[].items[].overflow": "auto (default) | never (always on the bar) | always (only in More)",
+        "groups[].items[].shortcut": "string — keyboard shortcut shown in the tip (reserved for the shortcut engine)",
+        "groups[].enabledWhen": "when — gates the whole group",
+        "groups[].visibleWhen": "when — shows or hides the whole group",
+        "groups[].priority": "number — default priority for the group's items",
+        "groups[].overflow": "auto | never | always — default for the group's items"
       },
       "hideable": true,
       "widgets": {
@@ -303,6 +323,71 @@
           "start",
           "end"
         ]
+      },
+      "description": "page-toolbar@1 (rules core/engines/toolbar-rules.mjs): a toolbar asset can be bound to one page or plugin (data.scope: view:<id> | plugin:<id>; absent or app = the frame toolbar, the old shape) and each button to a real function of that page through an action ref (action:<id>, command:<plugin>/<command>, control:<address>, handler:<id>; a bare id is a console action as before), gated by the page's state (enabledWhen / visibleWhen), with a badge from a counter or the page state, a destructive flag, an optional confirm, a priority and an overflow rule. Old toolbar assets stay valid and draw the same; toolbar-migrate.mjs lifts them onto the new shape.",
+      "pageToolbar": {
+        "_doc": "page-toolbar@1 — every list is append-only. scope binds the asset to a page (view:<view id>) or a plugin (plugin:<plugin id>); the frame toolbar is app. An item's action is an action ref: <kind>:<id> with kind one of actionKinds, else a console action id (the old shape; nav:home, settings.open:x, swap:layout:next keep working). enabledWhen / visibleWhen are a when term or a list of terms that must all hold over the page state the page provides (dotted keys): key, !key, key=value, key!=value, key>n, key<n. badge is a counter name (old), counter:<name> or state:<key>. checked adds state:<key> to the app-menu bindings. priority (default 100) orders the overflow: lower goes into More first; overflow auto | never | always on the toolbar, a group or an item. destructive draws the danger tone and makes the API press need confirm; confirm asks first (true = the default question, or the question). Every toolbar and button is a console-control target (toolbar:<settings id>, toolbar:<settings id>/button:<item id>).",
+        "contract": "page-toolbar@1",
+        "scopeKinds": [
+          "app",
+          "view",
+          "plugin"
+        ],
+        "actionKinds": [
+          "action",
+          "command",
+          "control",
+          "handler"
+        ],
+        "badgeKinds": [
+          "counter",
+          "state"
+        ],
+        "checkedKinds": [
+          "setting",
+          "counter",
+          "slot",
+          "hidden",
+          "state"
+        ],
+        "overflow": [
+          "auto",
+          "never",
+          "always"
+        ],
+        "whenOperators": [
+          "!=",
+          ">=",
+          "<=",
+          "=",
+          ">",
+          "<"
+        ],
+        "limits": {
+          "whenTerms": 8,
+          "keyLength": 80,
+          "confirmLength": 200,
+          "groups": 24,
+          "items": 48,
+          "priority": [
+            0,
+            1000
+          ]
+        },
+        "defaults": {
+          "scope": "app",
+          "priority": 100,
+          "overflow": {
+            "when": "auto",
+            "keep": 0,
+            "label": "More"
+          },
+          "confirmText": "Are you sure?"
+        },
+        "controlTargets": {
+          "toolbar": "toolbar:<settings id>",
+          "button": "toolbar:<settings id>/button:<item id>"
+        }
       }
     },
     "nav-menu": {
