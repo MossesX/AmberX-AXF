@@ -307,6 +307,15 @@ html[data-axf-strip='on'] .fx-main__inner { padding: 0; margin: 0; max-width: no
 .fx-banner-widgets__check { min-width: 0; }
 .fx-banner-widgets__grip { display: inline-flex; flex: none; padding: var(--fx-dens-gap-sm); color: var(--fx-muted); cursor: grab; touch-action: none; }
 .fx-banner-widgets__wide { grid-column: 1 / -1; }
+/* Change icon… (react/components/WidgetIconPicker.tsx): the icon picker for one banner widget */
+.fx-widget-icon-picker { min-width: 0; }
+.fx-widget-icon-picker__preview { padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); }
+.fx-widget-icon-picker__glyph { display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: calc(var(--fx-row-h) * 1.2); block-size: calc(var(--fx-row-h) * 1.2); border-radius: var(--fx-widget-shape-circle); background: var(--fx-surface); }
+.fx-widget-icon-picker__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.fx-widget-icon-picker__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-row-h) * 1.1), 1fr)); gap: var(--fx-dens-gap-sm); max-block-size: calc(var(--fx-row-h) * 8); overflow-y: auto; padding: var(--fx-dens-gap-xs); }
+.fx-widget-icon-picker__cell { display: flex; justify-content: center; border-radius: var(--fx-radius-sm); }
+.fx-widget-icon-picker__cell.is-on { background: var(--fx-accent-soft); box-shadow: inset 0 0 0 var(--fx-border-w) var(--fx-accent); }
+.fx-widget-icon-picker__actions { justify-content: flex-end; flex-wrap: wrap; }
 .fx-banner-widgets__fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 24), 1fr)); gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
 :where([data-fx-tiny]) .fx-banner__side.is-left { justify-content: flex-start; } :where([data-fx-tiny]) .fx-banner__side .fx-widget-label, :where([data-fx-tiny]) .fx-banner__side .fx-widget-progress__label { display: none; }
 .fx-banner__side.is-center { justify-content: center; justify-content: safe center; }
