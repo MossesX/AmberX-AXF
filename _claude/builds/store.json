@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8208,
- "updatedAt": "2026-11-17T22:31:33.101Z",
+ "rev": 8209,
+ "updatedAt": "2026-11-17T22:31:44.912Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271389,7 +271389,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:31:10.285Z",
+   "updatedAt": "2026-11-17T22:31:25.486Z",
    "builtAt": "",
    "notes": [
     {
@@ -271717,6 +271717,14 @@
      "at": "2026-11-17T22:26:17.698Z"
     },
     {
+     "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T22:31:18.883Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T22:31:25.486Z"
+    },
+    {
      "text": "Phase 2 done (s6–s27 ticked). CI caveat: no CI run started on this branch after 21:34 UTC (GitHub queue, then the shared API limit ran out at 22:30), so apps/phone-connect (Kotlin) has not compiled in CI yet: the VPS has no Android SDK. If the first run is red on 'Build Phone Connect', the fix is in apps/phone-connect only. The earlier red run's real failures (plugins.mjs opens, token registry, command ids) are fixed; its AmberX failure was a Maven 429.",
      "at": "2026-11-17T22:31:10.285Z"
     }
@@ -271756,11 +271764,11 @@
     "runs": 2,
     "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T22:26:04.719Z",
+     "at": "2026-11-17T22:31:14.943Z",
      "exit": 0,
      "outcome": "requeued",
      "reason": "phase-done",
-     "stepsLeft": 2,
+     "stepsLeft": 1,
      "account": "hulu0241",
      "session": "",
      "phase": "Phase 1"
@@ -271773,7 +271781,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on hulu0241 finished phase Phase 1 with 2 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
@@ -271802,6 +271810,20 @@
    "recoveries": [
     {
      "at": "2026-11-17T22:26:04.716Z",
+     "buildId": "rebuild-fresh-main-phone-connect-small",
+     "phase": "Phase 1",
+     "step": "s15",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "hulu0241",
+     "notified": "2026-11-17T22:29:39.904Z",
+     "session": "",
+     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T22:31:14.936Z",
      "buildId": "rebuild-fresh-main-phone-connect-small",
      "phase": "Phase 1",
      "step": "s15",
@@ -272496,7 +272518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
