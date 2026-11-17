@@ -18,7 +18,7 @@ export const LEVELS: Record<string, Level> = {
   'profile.name': 'basic', 'profile.model': 'basic', 'profile.connection': 'basic', 'profile.color': 'basic',
   lineHeight: 'developer', scrollback: 'developer', padding: 'developer', bell: 'developer', cursorBlink: 'developer', mouseDefault: 'developer', moshDefault: 'developer',
   persistTabs: 'basic', splitDefault: 'basic', chainSpeed: 'simple', showChain: 'basic', sessionsNav: 'simple', newSession: 'simple',
-  claudeLinkAutoScroll: 'simple', claudeLinkKinds: 'basic', claudeLinkDetail: 'basic', claudeLinkBuffer: 'developer',
+  claudeLinkAutoScroll: 'simple', claudeLinkLayout: 'simple', claudeLinkKinds: 'basic', claudeLinkDetail: 'basic', claudeLinkBuffer: 'developer',
   'profile.permissionMode': 'developer', 'profile.flags': 'developer', 'profile.cwd': 'developer', 'profile.prompt': 'developer', 'profile.icon': 'developer',
 };
 
@@ -162,6 +162,7 @@ export function ClaudeLinkPanel() {
   const flip = (k: string) => save({ claudeLinkKinds: kinds.includes(k) ? kinds.filter((x) => x !== k) : [...kinds, k] });
   return (
     <div className="fx-stack axp-terminal-settings">
+      <L k="claudeLinkLayout"><SelectField label="Layout" value={s.claudeLinkLayout ?? 'dense'} options={[{ value: 'dense', label: 'Dense rows (one line each)' }, { value: 'cards', label: 'Cards (one card each, easier on a phone)' }, { value: 'split', label: 'Split (list, and the picked event\u2019s detail beside it)' }]} onChange={(v) => save({ claudeLinkLayout: v as Settings['claudeLinkLayout'] })} /></L>
       <L k="claudeLinkAutoScroll"><Switch label="Follow new events (auto-scroll)" hint="Off = the tab opens paused; scrolling up always pauses, the “N new” button jumps back" checked={s.claudeLinkAutoScroll !== false} onChange={(v) => save({ claudeLinkAutoScroll: v })} /></L>
       <L k="claudeLinkDetail"><Switch label="Rows open with their detail shown" checked={!!s.claudeLinkDetail} onChange={(v) => { save({ claudeLinkDetail: v }); setDefaults({ detailDefault: v }); }} /></L>
       <L k="claudeLinkKinds">

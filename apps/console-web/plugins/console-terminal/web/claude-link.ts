@@ -50,8 +50,10 @@ function ensure() {
   es.addEventListener('view', (m) => { try { set({ view: JSON.parse((m as MessageEvent).data) as LinkView }); } catch { /* ignore */ } });
   es.onopen = () => set({ conn: 'live' });
   es.onerror = () => {
-    set({ conn: 'down' });
-    if (es && es.readyState === EventSource.CLOSED) { es = null; if (!retry) retry = setTimeout(() => { retry = null; if (subs.size) ensure(); }, 5000); }
+    // a dropped stream reconnects by itself (retry 3 s): only say Disconnected when it is still down a moment later
+    const was = es;
+    setTimeout(() => { if (es === was && es?.readyState !== EventSource.OPEN) set({ conn: 'down' }); }, 4000);
+    if (es && es.readyState === EventSource.CLOSED) { es = null; set({ conn: 'down' }); if (!retry) retry = setTimeout(() => { retry = null; if (subs.size) ensure(); }, 5000); }
   };
 }
 /** Nobody watching for a minute: close the stream (it opens again with the next subscriber, resuming after our newest). */

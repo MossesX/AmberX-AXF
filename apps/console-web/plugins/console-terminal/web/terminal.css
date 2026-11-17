@@ -259,25 +259,42 @@
 /* Claude link tab (ClaudeLinkTab.tsx): the pinned first tab, the console's connection to Claude and axHub live */
 .axp-cl { position: absolute; inset: 0; display: flex; flex-direction: column; min-height: 0; background: var(--fx-surface) }
 .axp-cl[hidden] { display: none }
-.axp-cl__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
-.axp-cl__kinds { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.axp-cl__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-3xl); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-3xl); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+.axp-cl__kinds { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xl); min-width: 0 }
 .axp-cl__q { flex: 0 1 calc(var(--fx-space) * 28); min-width: calc(var(--fx-space) * 16) }
-.axp-cl__list { flex: 1; min-height: 0; overflow-y: auto; padding: var(--fx-dens-gap-xs) 0; font-size: var(--fx-type-root-sm); overscroll-behavior: contain }
+.axp-cl__list { flex: 1; min-height: 0; overflow-y: auto; padding: var(--fx-dens-gap-xl) 0; font-size: var(--fx-type-root-sm); overscroll-behavior: contain }
 .axp-cl__row { border-bottom: var(--fx-border-w) solid var(--fx-border) }
 .axp-cl__row.is-warn { box-shadow: inset var(--fx-border-w) 0 0 var(--fx-warning) }
 .axp-cl__row.is-error { box-shadow: inset var(--fx-border-w) 0 0 var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
-.axp-cl__line { display: flex; align-items: baseline; gap: var(--fx-dens-gap-md); width: 100%; min-width: 0; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); text-align: start; cursor: pointer }
-.axp-cl__line:disabled { cursor: default }
+.axp-cl__line { display: flex; align-items: baseline; gap: var(--fx-dens-gap-3xl); width: 100%; min-width: 0; padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-3xl); text-align: start; cursor: pointer }
+.axp-cl__line.is-plain { cursor: default }
 .axp-cl__time { flex: none; color: var(--fx-muted); font-variant-numeric: tabular-nums; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs) }
 .axp-cl__kind { flex: none }
 .axp-cl__source { flex: none; color: var(--fx-muted); font-size: var(--fx-type-root-xs) }
 .axp-cl__who { flex: none; color: var(--fx-accent); font-size: var(--fx-type-root-xs) }
 .axp-cl__summary { flex: 1; min-width: 0; overflow-wrap: anywhere; color: var(--fx-text) }
-.axp-cl__session { margin-inline-end: var(--fx-dens-gap-xs); color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs) }
-.axp-cl__detail { margin: 0 var(--fx-dens-gap-md) var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); max-height: calc(var(--fx-space) * 60); overflow: auto; border-radius: var(--fx-radius-sm); background: var(--fx-surface2); color: var(--fx-text); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); white-space: pre-wrap; overflow-wrap: anywhere }
-.axp-cl__empty { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-2xl); color: var(--fx-muted); text-align: center }
-.axp-cl__jump { position: absolute; inset-inline-end: var(--fx-dens-gap-xl); inset-block-end: var(--fx-dens-gap-xl); box-shadow: var(--fx-shadow-md) }
+.axp-cl__session { flex: none; color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs) }
+.axp-cl__detail { margin: 0 var(--fx-dens-gap-3xl) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-3xl); max-height: calc(var(--fx-space) * 60); overflow: auto; border-radius: var(--fx-radius-sm); background: var(--fx-surface2); color: var(--fx-text); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-cl__empty { display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-3xl); padding: calc(var(--fx-space) * 6); color: var(--fx-muted); text-align: center }
+.axp-cl__jump { position: absolute; inset-inline-end: calc(var(--fx-space) * 4); inset-block-end: calc(var(--fx-space) * 4); box-shadow: var(--fx-shadow-md) }
 .axp-wt__tab.is-pinned .axp-wt__close { display: none }
 :where([data-fx-narrow]) .axp-cl__line { flex-wrap: wrap }
 :where([data-fx-narrow]) .axp-cl__summary { flex-basis: 100% }
 :where([data-fx-narrow]) .axp-cl__q { flex-basis: 100% }
+/* Claude link layouts (setting claudeLinkLayout; UI Review choice set claude-link-layout) */
+.axp-cl__body { position: relative; flex: 1; min-height: 0; display: flex }
+.axp-cl__body > .axp-cl__list { flex: 1; min-width: 0 }
+.axp-cl--cards .axp-cl__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-3xl); padding: var(--fx-dens-gap-3xl) }
+.axp-cl--cards .axp-cl__row { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); box-shadow: var(--fx-shadow-sm) }
+.axp-cl--cards .axp-cl__line { flex-wrap: wrap; row-gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-3xl) }
+.axp-cl--cards .axp-cl__summary { flex-basis: 100%; order: 9; font-size: var(--fx-type-root-md) }
+.axp-cl--split .axp-cl__row.is-picked { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-cl__side { flex: 0 0 40%; min-width: 0; overflow: auto; display: flex; flex-direction: column; gap: var(--fx-dens-gap-3xl); padding: var(--fx-dens-gap-3xl); border-inline-start: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); font-size: var(--fx-type-root-sm) }
+.axp-cl__side .axp-cl__detail { margin: 0; max-height: none }
+.axp-cl__side-head { display: flex; align-items: center; gap: var(--fx-dens-gap-3xl) }
+.axp-cl__facts { display: grid; grid-template-columns: auto 1fr; gap: var(--fx-dens-gap-xl) var(--fx-dens-gap-3xl); margin: 0 }
+.axp-cl__facts > div { display: contents }
+.axp-cl__facts dt { color: var(--fx-muted) }
+.axp-cl__facts dd { margin: 0; overflow-wrap: anywhere; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs) }
+:where([data-fx-narrow]) .axp-cl--split .axp-cl__body { flex-direction: column }
+:where([data-fx-narrow]) .axp-cl__side { flex: 0 0 45%; border-inline-start: 0; border-block-start: var(--fx-border-w) solid var(--fx-border) }

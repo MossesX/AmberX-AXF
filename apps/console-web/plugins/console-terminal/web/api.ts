@@ -43,7 +43,7 @@ export interface Settings {
   // sessions nav (Nov 3 2026)
   sessionsNav: boolean;
   // Claude link tab (Nov 17 2026): ring size, kinds shown by default ([] = all), auto-scroll, rows open with their detail
-  claudeLinkBuffer: number; claudeLinkKinds: string[]; claudeLinkAutoScroll: boolean; claudeLinkDetail: boolean;
+  claudeLinkBuffer: number; claudeLinkKinds: string[]; claudeLinkAutoScroll: boolean; claudeLinkDetail: boolean; claudeLinkLayout: 'dense' | 'cards' | 'split';
 }
 /** A Claude Code profile: how a Claude Code tab starts (Oct 28 2026). */
 export interface ClaudeProfile { id: string; name: string; model: string; permissionMode: string; flags: string[]; cwd: string; prompt: string; icon: string; color: string; connection: string }
