@@ -831,31 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:18 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:18 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · pipeline
-- 2026-11-17 20:18 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
-- 2026-11-17 20:18 UTC · `guided-live-demo-test-watch-orchestrator` s4 done, → running (all) · orchestrator
-- 2026-11-17 20:19 UTC · `terminal-main-tab-streaming-console-s` s11 done (all) · orchestrator
-- 2026-11-17 20:20 UTC · `separate-settings-per-plugin-reset` s10 done (all) · orchestrator
-- 2026-11-17 20:20 UTC · `guided-live-demo-test-watch-orchestrator` s5 done (all) · orchestrator
-- 2026-11-17 20:21 UTC · `separate-settings-per-plugin-reset` s11 done (all) · orchestrator
-- 2026-11-17 20:21 UTC · `guided-live-demo-test-watch-orchestrator` s6 done (all) · orchestrator
-- 2026-11-17 20:22 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:22 UTC · `live-build-status-real-time-grids-15` s6 done (all) · orchestrator
-- 2026-11-17 20:22 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · pipeline
-- 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` s7 done (all) · orchestrator
-- 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-17 20:23 UTC · `guided-live-demo-test-watch-orchestrator` s8 done (all) · orchestrator
-- 2026-11-17 20:24 UTC · `guided-live-demo-test-watch-orchestrator` s8 done (all) · foreign-write
-- 2026-11-17 20:24 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · pipeline
-- 2026-11-17 20:24 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-17 20:25 UTC · `separate-settings-per-plugin-reset` s12 done (all) · orchestrator
-- 2026-11-17 20:25 UTC · `separate-settings-per-plugin-reset` s13 done (all) · orchestrator
-- 2026-11-17 20:25 UTC · `guided-live-demo-test-watch-orchestrator` s9 done (all) · orchestrator
-- 2026-11-17 20:26 UTC · `live-build-status-real-time-grids-15` s7 done (all) · orchestrator
-- 2026-11-17 20:26 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
-- 2026-11-17 20:26 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 - 2026-11-17 20:26 UTC · `guided-live-demo-test-watch-orchestrator` s9 done, → running (all) · foreign-write
 - 2026-11-17 20:26 UTC · `context-menus-plugin-one-true-source` s9 done, → running (all) · orchestrator
 - 2026-11-17 20:26 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
@@ -1231,6 +1206,31 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:52 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 - 2026-11-17 21:53 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
 - 2026-11-17 21:53 UTC · `fix-refreshing-console-jumps-back` s4 done (all) · orchestrator
+- 2026-11-17 21:54 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` → running, note (all) · pipeline
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` branch claude/flagship-professional-skin-covering-2 (all) · pipeline
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-17 21:54 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
+- 2026-11-17 21:55 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 21:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 21:55 UTC · `reset-all-button-every-asset-override` note (all) · watchdog
+- 2026-11-17 21:56 UTC · `fix-refreshing-console-jumps-back` s5 done (all) · orchestrator
+- 2026-11-17 21:57 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
+- 2026-11-17 21:58 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 21:58 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:58 UTC · `flagship-professional-skin-covering-2` → running, note (all) · pipeline
+- 2026-11-17 21:58 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-17 21:58 UTC · `remove-amberx-app-code-once-phone` added (7 steps) (all) · orchestrator
+- 2026-11-17 21:58 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 21:58 UTC · `rebuild-fresh-main-phone-connect-small` s24 done (all) · orchestrator
+- 2026-11-17 21:59 UTC · `fix-refreshing-console-jumps-back` s6 done (all) · orchestrator
+- 2026-11-17 21:59 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:59 UTC · `rebuild-fresh-main-phone-connect-small` s25 done (all) · orchestrator
+- 2026-11-17 22:00 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 22:00 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 22:00 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 22:00 UTC · `guided-live-demo-test-watch-orchestrator` s23 done (all) · orchestrator
+- 2026-11-17 22:00 UTC · `fix-refreshing-console-jumps-back` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
