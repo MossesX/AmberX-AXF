@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8349,
- "updatedAt": "2026-11-17T23:14:27.977Z",
+ "rev": 8350,
+ "updatedAt": "2026-11-17T23:14:35.382Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -294976,7 +294976,7 @@
      "action": "retry",
      "attempt": 2,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-17T23:14:15.298Z",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 2 of 3)."
     }
@@ -295704,7 +295704,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
