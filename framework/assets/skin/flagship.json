@@ -31,7 +31,11 @@
       "nav-style": "flagship",
       "tab-group": "flagship",
       "toolbar": "flagship",
-      "banner": "flagship"
+      "banner": "flagship",
+      "dialog": "flagship",
+      "popup": "flagship",
+      "container": "flagship",
+      "settings": "flagship"
     },
     "preview": {
       "caption": "Blue-black and amber, compact, quiet motion: one product across console, axHub and AmberX."
@@ -192,6 +196,31 @@
       "divider": {
         "borderColor": "border"
       }
+    },
+    "grid": {
+      "density": "compact",
+      "rows": 1,
+      "header": "bold",
+      "zebra": false,
+      "lines": "rows",
+      "sticky": true
+    },
+    "dialog": {
+      "variant": "modal",
+      "backdrop": "blur",
+      "animation": "scale",
+      "header": "plain",
+      "closeOnBackdrop": true,
+      "width": 560
+    },
+    "settings": {
+      "page": "flagship",
+      "tab-group": "chrome-tab-group",
+      "toolbar": "chrome-toolbar",
+      "banner": "chrome-banner",
+      "nav-menu": "chrome-nav-menu",
+      "app-menu": "chrome-app-menu",
+      "context-menu": "chrome-context-menu"
     }
   }
 }
