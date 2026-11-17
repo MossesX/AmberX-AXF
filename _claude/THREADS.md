@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:18 UTC · `rebuild-every-context-menu-toolbar-nav` added (0 steps) (all) · console
 - 2026-11-17 19:19 UTC · `every-plugin-screen-gets-a-settings-gear` → pending, note (all) · pipeline
 - 2026-11-17 19:19 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · watchdog
 - 2026-11-17 19:20 UTC · `pass-approval-hook-deep-link-amberx-notification` s10 done, → landing (all) · orchestrator
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:01 UTC · `rebuild-every-toolbar-page-specific` → pending, note (all) · pipeline
 - 2026-11-17 21:01 UTC · `terminal-main-tab-streaming-console-s` PR #819 (all) · builds-live
 - 2026-11-17 21:01 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-17 21:01 UTC · `terminal-main-tab-streaming-console-s` s14 done, → landing (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:01:39.401Z",
+ "updatedAt": "2026-11-17T21:01:48.657Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -184457,7 +184457,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184465,8 +184465,8 @@
    "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-17T21:01:28.423Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T21:01:32.193Z",
+   "builtAt": "2026-11-17T21:01:32.194Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -184812,8 +184812,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:01:32.193Z",
      "note": "",
      "uid": "st-mwl3q09y0s2zt3",
      "createdAt": "2026-11-17T19:44:46.822Z"

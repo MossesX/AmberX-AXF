@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7915,
- "updatedAt": "2026-11-17T21:01:39.401Z",
+ "rev": 7916,
+ "updatedAt": "2026-11-17T21:01:48.657Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -279703,7 +279703,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -279711,8 +279711,8 @@
    "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-17T21:01:28.423Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-17T21:01:32.193Z",
+   "builtAt": "2026-11-17T21:01:32.194Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -280135,12 +280135,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:01:32.193Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T19:44:46.822Z",
-     "updatedAt": "2026-11-17T19:44:46.822Z"
+     "updatedAt": "2026-11-17T21:01:32.705Z"
     }
    ],
    "profiles": [
@@ -280151,7 +280151,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
