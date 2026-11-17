@@ -1794,6 +1794,18 @@ app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 import console_control_api  # noqa: E402
 
 app.include_router(console_control_api.router_for(auth))
+# ---- Host services (host-service@1, framework/spec/HOST-SERVICES.md): /api/host-services/* (host_services_routes.py)
+import host_services_routes  # noqa: E402
+
+app.include_router(host_services_routes.router_for(auth))
+
+
+async def _host_error(_request: Request, exc: Exception) -> JSONResponse:
+    """host-error@1 answers carry the frame itself as the body (REST, MCP and the UI read the same code)."""
+    return JSONResponse(exc.frame(), status_code=exc.status_code)  # type: ignore[attr-defined]
+
+
+app.add_exception_handler(host_services.HostServiceError, _host_error)
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch)
 
 
