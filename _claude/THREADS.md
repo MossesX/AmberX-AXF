@@ -830,10 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:01 UTC · `terminal-main-tab-streaming-console-s` s6 done (all) · orchestrator
-- 2026-11-17 20:02 UTC · `live-build-status-real-time-grids-15` s3 done (all) · orchestrator
-- 2026-11-17 20:02 UTC · `separate-settings-per-plugin-reset` s6 done (all) · orchestrator
-- 2026-11-17 20:04 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 - 2026-11-17 20:04 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 - 2026-11-17 20:06 UTC · `separate-settings-per-plugin-reset` s7 done (all) · orchestrator
 - 2026-11-17 20:07 UTC · `live-build-status-real-time-grids-15` s4 done (all) · orchestrator
@@ -1230,6 +1226,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
 - 2026-11-17 21:44 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-17 21:44 UTC · `icon-picker-every-banner-settings-widget` PR #820, note (all) · reconciler
+- 2026-11-17 21:44 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 21:44 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-17 21:44 UTC · `icon-picker-every-banner-settings-widget` → queued, note (all) · pipeline
+- 2026-11-17 21:44 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
 
 ## Token passes (log)
 

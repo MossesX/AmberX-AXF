@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T21:44:19.951Z",
+ "updatedAt": "2026-11-17T21:44:28.827Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -175260,7 +175260,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T21:44:05.881Z",
+   "updatedAt": "2026-11-17T21:44:11.602Z",
    "builtAt": "",
    "notes": [
     {
@@ -175466,6 +175466,14 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 9 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T21:44:05.881Z"
+    },
+    {
+     "text": "Self-check: rebuild-fresh-main-phone-connect-small had no session on record but axf-rebuild-fresh-main-phone-connect-small--earl is alive: kept running and tracking it.",
+     "at": "2026-11-17T21:44:08.585Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:44:11.602Z"
     }
    ],
    "approvals": [
@@ -186256,7 +186264,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T21:44:07.855Z",
+   "updatedAt": "2026-11-17T21:44:20.310Z",
    "builtAt": "",
    "notes": [
     {
@@ -186290,6 +186298,14 @@
     {
      "text": "Headless run axf-icon-picker-every-banner-settings-widget--joey: brief only · start 17.7K tokens ($0.12) · cost $9.42 · 89 turns · 6 tools, MCP none",
      "at": "2026-11-17T21:42:19.988Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 10 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-17T21:44:14.970Z"
+    },
+    {
+     "text": "Watchdog fixed Icon picker for every banner and settings widget (step s3): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T21:44:20.310Z"
     },
     {
      "text": "Reconciler: PR #820; PR #820 names s1, s2 done",
