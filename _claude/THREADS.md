@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:58 UTC · `orchestrator-settings-collapsible-split` s9 done, → landing, note (all) · foreign-write
-- 2026-11-17 22:58 UTC · `console-app-part-2-native-floating` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → complete, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `land-project-duplicate-boilerplate` → landing, note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `land-drive-live-console-first-resolve` note (all) · foreign-write
 - 2026-11-17 22:58 UTC · `land-rename-long-builds-resolve-clash` note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:31 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-17 23:31 UTC · `icon-picker-every-banner-settings-widget` s12 done, → landing (all) · orchestrator
 - 2026-11-17 23:32 UTC · `icon-picker-every-banner-settings-widget` s12 done, → complete (all) · foreign-write
+- 2026-11-17 23:32 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
+- 2026-11-17 23:32 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 
 ## Token passes (log)
 
