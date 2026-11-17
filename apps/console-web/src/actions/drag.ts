@@ -325,6 +325,8 @@ export function describeDrag(a: DragAnswer): string {
 /** The drag.* actions on the action bus (full-API action registry: label, params, module, effect). */
 export function installDragActions(rt: AxfRuntime): () => void {
   const offPreview = installDragPreview();
+  // the same executor the relay calls, for the e2e smoke and the devtools console: window.axfDrag({ verb: 'drag.move', command })
+  if (typeof window !== 'undefined') (window as unknown as { axfDrag?: (req: DragRequest) => Promise<DragAnswer> }).axfDrag = (req) => executeDrag(rt, { ...req, by: req.by ?? 'devtools' });
   const offs = DRAG_VERBS.map((verb) => rt.actions.register(verb, (args) => {
     const req = dragActionRequest(verb, args);
     if (!req) { rt.toast(`${verb} needs ${verb === 'drag.zones' ? 'kind:container:item' : verb === 'drag.list' ? 'nothing, or kind[:container]' : 'a drag-move@1 JSON command'}`, 'warning', 'Drag'); return false; }
