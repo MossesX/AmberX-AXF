@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:51 UTC · `rebuild-every-toolbar-page-specific` s3 done (all) · orchestrator
 - 2026-11-17 19:51 UTC · `terminal-main-tab-streaming-console-s` s1 done, → running (all) · orchestrator
 - 2026-11-17 19:54 UTC · `terminal-main-tab-streaming-console-s` s2 done (all) · orchestrator
 - 2026-11-17 19:55 UTC · `terminal-main-tab-streaming-console-s` s3 done (all) · orchestrator
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:34 UTC · `icon-picker-every-banner-settings-widget` s1 done, → running (all) · orchestrator
 - 2026-11-17 21:34 UTC · `fix-banner-settings-interface-tab` s9 done (all) · orchestrator
 - 2026-11-17 21:35 UTC · `console-app-part-2-native-floating` note (all) · watchdog
+- 2026-11-17 21:35 UTC · `console-app-part-2-native-floating` note (all) · builds-live
 
 ## Token passes (log)
 
