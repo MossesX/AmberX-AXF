@@ -94,7 +94,7 @@ export function knownPlugins(tabs: readonly SettingsTab[] = []): string[] {
  */
 export function keyOwner(key: string, state: Pick<ResetState, 'groups' | 'tabs'>): string | null {
   const look = PLUGIN_LOOK.exec(key);
-  if (look) return look[1];
+  if (look) return look[1] ?? null;
   const plugins = knownPlugins(state.tabs);
   for (const id of plugins) {
     if (pluginSettingsGroups(id, state.tabs, state.groups).some((g) => g.settings.some((s) => s.key === key))) return id;
@@ -186,7 +186,7 @@ export function changedAssets(state: ResetState): ChangedAssetRow[] {
   for (const [key, v] of Object.entries(state.values)) {
     if (v === null || v === undefined || key === APP_LOOK_SETTING_KEY) continue;
     const pl = PLUGIN_LOOK.exec(key);
-    if (pl) { rows.push({ kind: 'plugin-look', type: key, label: `${words(pl[1])} look`, current: 'overridden', default: 'theme', scope: `plugin:${pl[1]}` }); continue; }
+    if (pl) { rows.push({ kind: 'plugin-look', type: key, label: `${words(pl[1] ?? '')} look`, current: 'overridden', default: 'theme', scope: `plugin:${pl[1] ?? ''}` }); continue; }
     if (LOOK_KEY_PATTERNS.some((p) => p.test(key))) rows.push({ kind: 'look-setting', type: key, label: key, current: typeof v === 'string' ? v : JSON.stringify(v), default: 'default', scope: 'console' });
   }
   const kinds = Object.keys(KIND_LABEL);

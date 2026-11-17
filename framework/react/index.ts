@@ -25,6 +25,7 @@ export { HelpLayer, HelpModeButton, HelpPanel, HelpIntroCard, useHelpMode, descr
 export { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './components/Brand';
 export { InterfaceScope, usePortalRoot, useScopeId } from './components/InterfaceScope';
 export { SkinScope } from './components/SkinScope';
+export { PluginSettingsWindow, PLUGIN_SETTINGS_ACTION, PLUGIN_SETTINGS_DIALOG, SettingsUiProvider, pluginSettingsTarget, resolvePluginSettings, setPluginSettingsRenderer, usePluginSettingsInterface, useSettingsUiOverride, type PluginSettingsRenderer, type PluginSettingsWindowProps } from './components/PluginSettingsWindow';
 export { Swatches, SwatchFan, type SwatchesProps, type SwatchFanProps } from './components/Swatches';
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';

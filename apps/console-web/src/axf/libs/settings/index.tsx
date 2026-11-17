@@ -19,6 +19,7 @@ import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettin
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
+import { PLUGIN_SETTINGS_ACTION, PLUGIN_SETTINGS_DIALOG, PluginSettingsWindow, setPluginSettingsRenderer, useSettingsUiOverride } from '../../react/components/PluginSettingsWindow';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
@@ -75,9 +76,11 @@ function useSettingsLevel(ui: SettingsUi): SettingsLevel {
 function useSettingsUi(): SettingsUi {
   const rt = useRuntime();
   useAxfState();
+  // inside a PluginSettingsWindow every body renders through the plugin's own interface (plugin-settings@1), never the app's
+  const own = useSettingsUiOverride();
   const a = rt.assetOrNull('settings');
   const visible = useSettingValue(SETTINGS_VISIBLE_KEY);
-  return useMemo(() => withSettingsVisible(normalizeSettingsUi(a?.data), visible), [a, visible]);
+  return useMemo(() => withSettingsVisible(own ?? normalizeSettingsUi(a?.data), visible), [own, a, visible]);
 }
 
 /* ---------------- level toolbar (Brett, Oct 28 2026: on every settings interface, default on, hideable) ---------------- */
@@ -846,6 +849,13 @@ function AllDialog() {
   );
 }
 
+/** The level toolbar inside a PluginSettingsWindow: the plugin's interface (useSettingsUi reads the override), the toolbar's own switch. */
+function PluginLevelBar() {
+  const ui = useSettingsUi();
+  const level = useSettingsLevel(ui);
+  return useLevelBarOn() ? <SettingsLevelBar level={level} /> : null;
+}
+
 function TabDialog({ id }: { id: string }) {
   const rt = useRuntime();
   const tab = rt.settings.getTab(id);
@@ -998,7 +1008,7 @@ const CSS = `
 .axf-settings__listitem .axf-settings__hint{margin-left:var(--fx-dens-gap-xl)}
 .axf-settings__title,.axf-settings__tabtitle{margin:0}
 .axf-settings__search{max-width:420px}
-.axf-settings__levelbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface2)}
+.axf-settings__levelbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:color-mix(in srgb, var(--fx-surface2) calc(var(--fx-opacity-panel) * 100%), transparent)}
 .axf-settings__levelbar>*{min-width:0}
 .axf-settings__levelhint{flex:1 1 160px}
 .axf-settings__levelbar-actions{display:inline-flex;align-items:center;gap:var(--fx-dens-gap-md);margin-left:auto}
@@ -1013,7 +1023,7 @@ const CSS = `
 /* ---- compact settings (Oct 30 2026, Brett: short lists you tap into, dropdowns, tight spacing) ---- */
 .axf-settings{gap:var(--fx-dens-gap-2xl)!important}
 .axf-settings__title{font-size:var(--fx-type-scale-xl)}
-.axf-settings__navlist{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface);overflow:hidden;min-width:0}
+.axf-settings__navlist{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-panel) * 100%), transparent);overflow:hidden;min-width:0}
 .axf-settings__nav{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl);min-width:0;color:var(--fx-text)}
 .axf-settings__nav+.axf-settings__nav{border-top:var(--fx-border-w) solid var(--fx-border)}
 .axf-settings__nav:hover{background:var(--fx-surface2)}
@@ -1036,7 +1046,7 @@ const CSS = `
 .axf-settings__gtoggle{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--fx-dens-gap-lg);font-size:var(--fx-type-scale-xs);font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--fx-muted);padding:var(--fx-dens-gap-xs)}
 .axf-settings__gtoggle:hover{color:var(--fx-text)}
 .axf-settings__gtitle{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.axf-settings__gbody{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface);min-width:0}
+.axf-settings__gbody{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-panel) * 100%), transparent);min-width:0}
 .axf-settings__nest>.axf-settings__gbody{border:0;background:transparent;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__nested{display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__gbody>.axf-settings__desc{margin:0;padding:var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl) 0;font-size:var(--fx-type-scale-sm)}
@@ -1084,6 +1094,7 @@ export const library: AxfWebLibrary = {
   register(rt) {
     injectStyles();
     setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} all />);
+    setPluginSettingsRenderer({ tab: (id) => <TabContent id={id} />, levelBar: () => <PluginLevelBar /> });
     syncSettingsAsset(rt);
     applyDisplay(rt);
     applyAppLook(rt);
@@ -1106,6 +1117,8 @@ export const library: AxfWebLibrary = {
       }
     };
     rt.actions.register('app.settings', () => openSettings(undefined), { label: 'Settings' });
+    // One plugin's own settings interface (plugin-settings@1, Nov 17 2026): its own window, never the app's Settings.
+    rt.actions.register(PLUGIN_SETTINGS_ACTION, ([plugin, tab]) => { if (plugin) rt.openDialog(PLUGIN_SETTINGS_DIALOG, { plugin, ...(tab ? { tab } : {}) }); }, { label: 'Open a plugin’s own settings', params: true });
     // The level toolbar's own menu and actions (Brett, Oct 28 2026: default on, hideable from its menu or the setting).
     rt.actions.register('settings.levelbar', ([v]) => rt.settings.set(SETTINGS_LEVEL_BAR_KEY, v === 'on' ? true : v === 'off' ? false : rt.settings.get(SETTINGS_LEVEL_BAR_KEY) === false), { label: 'Show or hide the settings level toolbar', params: true });
     rt.actions.register('settings.level', ([l]) => { const lv = settingsLevel(settingsUi(rt), l); if (l) rt.settings.set(SETTINGS_LEVEL_KEY, lv); }, { label: 'Pick the settings level', params: true });
@@ -1145,6 +1158,7 @@ export const library: AxfWebLibrary = {
   dialogs: {
     [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, surface: 'glass', size: 'wide', render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
     [ALL_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, surface: 'glass', size: 'wide', render: () => <AllDialog /> },
+    [PLUGIN_SETTINGS_DIALOG]: { title: 'Plugin settings', icon: 'package', searchable: false, surface: 'glass', size: 'wide', render: (p: Record<string, unknown>) => <PluginSettingsWindow key={String(p.plugin ?? '')} plugin={String(p.plugin ?? '')} {...(p.tab ? { tab: String(p.tab) } : {})} /> },
     [SKIN_DIALOG]: { title: 'Choose a skin', icon: 'palette', searchable: false, render: () => <SkinPickerDialog /> },
     [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },

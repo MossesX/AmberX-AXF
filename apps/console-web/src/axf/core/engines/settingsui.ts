@@ -50,6 +50,8 @@ export type SettingsVisible = Partial<Record<SettingsLevel, SettingsVisibleSet>>
 
 export type SettingsLayout = 'tabs-top' | 'tabs-side' | 'list';
 export type SettingsHeader = 'full' | 'compact' | 'none';
+/** plugin-settings@1 (Nov 17 2026, spec/PLUGIN-SETTINGS.md): who an interface belongs to. Resolution lives in engines/plugin-settings.ts. */
+export type SettingsScope = 'app' | 'plugin' | 'chrome';
 
 export interface SettingsUiTab { id: string; label?: string; icon?: string; order?: number; description?: string; parent?: string; hidden?: boolean }
 export interface SettingsUiGroup { id: string; label: string; icon?: string; tab: string; order?: number; description?: string; settings: SettingSpec[]; level?: SettingsLevel; collapsible?: boolean; collapsed?: boolean }
@@ -79,15 +81,23 @@ export interface SettingsUi {
   levelOf: Record<string, SettingsLevel>;
   /** per-level visible sets on top of the rank rule (the interface's own; a user's saved sets merge over them) */
   visible: SettingsVisible;
+  /** plugin-settings@1: app (the app's own page), plugin (one plugin's, with `owner`) or chrome (chrome-settings@1, with `for`).
+   *  Left out in the asset = app, or chrome when `for` is set (settingsScopeOf). */
+  scope: SettingsScope;
+  /** plugin-settings@1: the plugin id this interface belongs to (scope plugin only) */
+  owner?: string;
+  /** chrome-settings@1: the chrome type this interface is for (scope chrome only) */
+  for?: string;
 }
 
 export const SETTINGS_LAYOUTS: readonly SettingsLayout[] = ['tabs-top', 'tabs-side', 'list'];
 export const SETTINGS_HEADERS: readonly SettingsHeader[] = ['full', 'compact', 'none'];
+export const SETTINGS_SCOPES: readonly SettingsScope[] = ['app', 'plugin', 'chrome'];
 /** Kinds an asset may declare: data only (no secrets, no asset slots, no actions or custom renderers). */
 export const ASSET_SETTING_KINDS: readonly SettingKind[] = ['toggle', 'text', 'number', 'slider', 'choice', 'multi_choice', 'color', 'link', 'section'];
 export const SETTINGS_UI_LIMITS = { tabs: 40, hide: 200, groups: 40, settings: 60, options: 50, text: 200, id: 120 } as const;
 
-export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {}, visible: {} };
+export const SETTINGS_UI_DEFAULTS: SettingsUi = { layout: 'tabs-top', header: 'full', search: false, descriptions: true, tabs: [], hide: [], groups: [], levels: false, defaultLevel: 'basic', levelOf: {}, visible: {}, scope: 'app' };
 /** The level the settings page shows (per browser, like every setting). Older saved names are migrated on read. */
 export const SETTINGS_LEVEL_KEY = 'axf.settings.level';
 /** The user's own visible sets (JSON of SettingsVisible), merged over the interface's; the level editor writes it. */
@@ -179,10 +189,27 @@ function groupOf(raw: unknown): SettingsUiGroup | null {
 
 const uniqueBy = <T>(list: T[], key: (x: T) => string): T[] => { const s = new Set<string>(); return list.filter((x) => !s.has(key(x)) && !!s.add(key(x))); };
 
+/** Plugin ids as plugin.json has them (same rule as libs/plugintheme `validPluginId`). */
+const PLUGIN_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
+
+/**
+ * plugin-settings@1: the scope an asset's data means. Named wins when it is one of SETTINGS_SCOPES; `for` alone = chrome;
+ * `owner` alone = plugin; nothing = app. An owner that is not a plugin id is dropped (a plugin interface with no owner
+ * is still a plugin interface, it just belongs to nobody: resolveSettingsInterface never picks it).
+ */
+export function settingsScopeOf(raw: unknown): { scope: SettingsScope; owner?: string; for?: string } {
+  const d = isObj(raw) ? raw : {};
+  const owner = typeof d.owner === 'string' && PLUGIN_ID.test(d.owner) ? d.owner : undefined;
+  const chrome = id(d.for) ?? undefined;
+  const scope: SettingsScope = SETTINGS_SCOPES.includes(d.scope as SettingsScope) ? (d.scope as SettingsScope) : chrome ? 'chrome' : owner ? 'plugin' : 'app';
+  return { scope, ...(scope === 'plugin' && owner ? { owner } : {}), ...(scope === 'chrome' && chrome ? { for: chrome } : {}) };
+}
+
 /** Any settings asset data (or nothing) → a complete interface description. Unknown values fall back, bad entries drop. */
 export function normalizeSettingsUi(raw: unknown): SettingsUi {
   const d = isObj(raw) ? raw : {};
   return {
+    ...settingsScopeOf(d),
     layout: pick(d.layout, SETTINGS_LAYOUTS, SETTINGS_UI_DEFAULTS.layout),
     header: pick(d.header, SETTINGS_HEADERS, SETTINGS_UI_DEFAULTS.header),
     search: bool(d.search, SETTINGS_UI_DEFAULTS.search),
@@ -300,6 +327,10 @@ export function settingsUiErrors(raw: unknown): string[] {
   if ('hide' in raw && !Array.isArray(raw.hide)) errors.push('data.hide must be a list');
   if ('groups' in raw && !Array.isArray(raw.groups)) errors.push('data.groups must be a list');
   if ('toolbar' in raw && !n.toolbar) errors.push('data.toolbar must be a toolbar asset id');
+  if ('scope' in raw && !SETTINGS_SCOPES.includes(raw.scope as SettingsScope)) errors.push(`data.scope must be one of: ${SETTINGS_SCOPES.join(', ')}`);
+  if ('owner' in raw && !n.owner) errors.push(n.scope === 'plugin' ? 'data.owner must be a plugin id' : `data.owner is only for scope plugin (this interface is scope ${n.scope})`);
+  if (n.scope === 'plugin' && !n.owner) errors.push('data.owner (the plugin id) is required when scope is plugin');
+  if ('for' in raw && !n.for) errors.push(n.scope === 'chrome' ? 'data.for must be a chrome type' : `data.for is only for scope chrome (this interface is scope ${n.scope})`);
   if (count('tabs') !== n.tabs.length) errors.push(`data.tabs: ${count('tabs') - n.tabs.length} entr${count('tabs') - n.tabs.length === 1 ? 'y' : 'ies'} dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.tabs})`);
   if (count('hide') !== n.hide.length) errors.push(`data.hide: ${count('hide') - n.hide.length} entr${count('hide') - n.hide.length === 1 ? 'y' : 'ies'} dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.hide})`);
   if (count('groups') !== n.groups.length) errors.push(`data.groups: ${count('groups') - n.groups.length} group(s) dropped (needs id, label, tab and at least one valid setting)`);
