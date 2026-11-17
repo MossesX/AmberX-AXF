@@ -173,7 +173,7 @@ export async function run(opts = {}) {
   try {
     const p = await plan({ ...opts, settings });
     Object.assign(rec, { tables: p.tables, rows: p.verdicts.length, keep: p.keep, planned: p.changes.length, facts: p.facts });
-    const applied = dry ? p.changes.map((v) => ({ ...v, applied: false, why: 'dry run' })) : await applyChanges(p, { by, at: rec.at });
+    const applied = dry ? p.changes.map((v) => ({ ...v, applied: false, why: 'dry run' })) : await applyChanges(p, { by, at: rec.at, ...(opts.applyCtx ?? {}) });
     rec.changes = applied.map((v) => ({ table: v.table, kind: v.row.kind, id: v.row.id, build: v.row.build, pr: v.row.pr, action: v.action, reason: v.reason, applied: !!v.applied, why: v.why ?? '', line: v.line }));
     rec.cleaned = applied.filter((v) => v.applied).length;
     if (!dry && rec.cleaned) {
