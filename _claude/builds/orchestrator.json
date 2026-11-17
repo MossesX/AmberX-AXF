@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T15:11:11.246Z",
+ "updatedAt": "2026-11-17T15:11:20.818Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -159546,7 +159546,7 @@
    "pr": "#722",
    "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-16T17:20:54.142Z",
+   "updatedAt": "2026-11-17T15:11:16.616Z",
    "builtAt": "2026-11-16T17:11:44.616Z",
    "notes": [
     {
@@ -159576,6 +159576,10 @@
     {
      "text": "Reconciler: PR #722",
      "at": "2026-11-16T17:20:54.142Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:16.616Z"
     }
    ],
    "approvals": [],
@@ -160558,7 +160562,7 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-16T20:50:14.801Z",
+   "updatedAt": "2026-11-17T15:11:13.156Z",
    "builtAt": "2026-11-16T20:49:51.102Z",
    "notes": [
     {
@@ -160640,6 +160644,10 @@
     {
      "text": "Headless run axf-settings-interface-gear-every-plugin--sully: brief only · start 19.2K tokens ($0.07) · cost $26.28 · 341 turns · 6 tools, MCP none",
      "at": "2026-11-16T20:50:14.801Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:11:13.156Z"
     }
    ],
    "approvals": [
