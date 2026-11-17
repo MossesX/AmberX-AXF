@@ -97,7 +97,9 @@ function baseDataOf(rt: AxfRuntime, type: ChromeType, instance: string): Record<
     const own = typeof pick === 'string' && pick ? rt.registry.get('tab-group', pick) : null;
     return (own?.data as unknown as Record<string, unknown>) ?? (rt.assetOrNull('tab-group')?.data as unknown as Record<string, unknown>) ?? null;
   }
-  return (rt.assetOrNull(type as AssetType)?.data as Record<string, unknown>) ?? null;
+  // a page toolbar is its own instance named by its asset id: it renders that asset, so its fields compare with it
+  const page = type === 'toolbar' && instance !== CHROME_APP_INSTANCE ? rt.registry.get('toolbar', instance) : null;
+  return (page?.data as unknown as Record<string, unknown>) ?? (rt.assetOrNull(type as AssetType)?.data as Record<string, unknown>) ?? null;
 }
 
 /** Set one field for an instance (dropping the override when it equals the asset's own value). */

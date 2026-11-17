@@ -38,6 +38,10 @@ const { createRoot } = await import('react-dom/client');
 const { AxfRuntime } = await import('../core/runtime.ts');
 const { AxfProvider } = await import('../react/AxfProvider.tsx');
 const { Banner } = await import('../react/components/Banner.tsx');
+const { Toolbar, AssetToolbar } = await import('../react/components/Chrome.tsx');
+const views = { home: { title: 'Home', icon: 'home', render: () => h('p', null, 'home') } };
+/** The drawn chrome's markup plus the root tokens the runtime compiled: what a look change must move. */
+const seenOf = (sel: string) => () => `${[...doc.querySelectorAll(sel)].map((e) => e.outerHTML.slice(0, 600)).join('')}|${doc.documentElement.getAttribute('style') ?? ''}|${[...doc.documentElement.attributes].map((a) => `${a.name}=${a.value}`).join(' ')}`;
 const { chromeDialogs, CHROME_SETTINGS_DIALOG, chromeSettingsUi, installChrome } = await import('../react/components/ChromeContext.tsx');
 const cs = await import('../core/engines/chrome-settings-rules.mjs');
 
@@ -59,7 +63,9 @@ type Case = {
   draw?: () => unknown; seen?: () => string;
 };
 export const CASES: Case[] = [
-  { type: 'banner', instance: 'app', rendered: (rt) => rt.banner({ all: true }).data, draw: () => h(Banner), seen: () => `${doc.querySelector('.fx-banner')?.outerHTML.slice(0, 400) ?? ''}|${doc.documentElement.getAttribute('style') ?? ''}` },
+  { type: 'banner', instance: 'app', rendered: (rt) => rt.banner({ all: true }).data, draw: () => h(Banner), seen: seenOf('.fx-banner') },
+  { type: 'toolbar', instance: 'app', rendered: (rt) => rt.chromeData('toolbar'), draw: () => h(Toolbar, { views }), seen: seenOf('[role="toolbar"]') },
+  { type: 'toolbar', instance: 'data-grid-tools', rendered: (rt) => rt.chromeData('toolbar', 'data-grid-tools', rt.registry.get('toolbar', 'data-grid-tools')!.data), draw: () => h(AssetToolbar, { id: 'data-grid-tools' }), seen: seenOf('.fx-toolbar-scope') },
 ];
 
 const settingsWindowKeys = (type: string) => [cs.CHROME_SETTINGS_PICK_KEY(type), cs.CHROME_SETTINGS_PATCH_KEY(type)];

@@ -34,3 +34,24 @@ and re-renders the provider. The Look / Behaviour tabs already write the instanc
 (look + behaviour, `axf.chrome.<type>.<id>`) and its asset pick (`.asset` for tab groups, the app slot otherwise).
 The settings-window controls move out of the tab into a clearly labelled "This settings window" section beside the
 existing "Settings interface for this one" picker, so they stay reachable but never pose as the banner's interface.
+
+## s2–s4 — banner
+
+- `framework/spec/check-chrome-interface-tab.mts` (jsdom) renders the real `axf.chrome.settings` dialog next to the
+  chrome itself, opens Interface and presses every choice and switch on it. Before the fix: 5 failures (no controls
+  for the banner). After: every press writes only `axf.chrome.banner.app`, the banner's data and drawn markup change at
+  once, and the settings window's keys and resolved layout stay as they were.
+- Fix: `InstanceInterfaceTab` (the instance's asset + every field, grouped Look / Behaviour, Reset) replaces
+  `InterfacePicker` in the tab; the settings-window picker is `SettingsWindowPicker`, a fold above the tabs titled
+  "This settings window (every banner)…".
+- `Banner` subscribes to `axf.chrome.banner.app` (useBannerOverrides) on top of the runtime's settings bump; the
+  app instance's key is already in `styleSettingsKey()`, so the tokens recompile in the same render.
+
+## s5 — toolbars
+
+The hotfix `claude/hotfix-toolbar-settings-still-change` (PR #673, landed Nov 14) made every toolbar renderer read
+its override; its own diff past main is only its report. The Interface tab bug was the shared `InterfacePicker`, so
+the s3 fix covers toolbars. Cases added: the app toolbar (`axf.chrome.toolbar.app`) and a page toolbar
+(`axf.chrome.toolbar.data-grid-tools`, drawn by `AssetToolbar`). Found on the way: `baseDataOf` compared a page
+toolbar's fields with the app toolbar asset, so a value equal to the app toolbar's was dropped instead of saved;
+it now compares with the page toolbar's own asset.
