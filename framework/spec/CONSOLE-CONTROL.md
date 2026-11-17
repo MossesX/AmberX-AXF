@@ -128,6 +128,15 @@ needs `useControlTarget` (or the `data-axf-target="<address>"` attribute, which 
 A snapshot of the registry (`{ $axf: 'console-control-targets@1', view, targets: [...] }`) is what the engine resolves against,
 what the console reports to the server (as catalog items of kind `target`), and what `list` answers.
 
+Derived targets come from state rather than mounted elements (`addDerivedTargets`): the chrome instance settings, then every
+banner widget's shape and icon (widget-shape@1, `framework/react/components/widgetShape.ts`, appended after them):
+`setting:banner.widget.<widget>.shape` (circle | square | rounded | pill | hexagon), `setting:banner.widget.<widget>.icon`
+(`<icon pack>/<glyph>` or `own`), `setting:banner.widget.<widget>.path` (a custom SVG outline), `function:banner.widget.<widget>.reset`,
+`function:banner.widget.<widget>.change-icon` and `.custom-shape` (open the dialogs, which register as
+`panel:axf.banner.widget-icon` and `panel:axf.banner.widget-shape` while open), and `function:banner.widget.shape-menu` (the
+right-click Shape ▸ submenu, pressed with `<widget>:<shape>`). `<widget>` is the banner widget key `<type>:<id>`, e.g.
+`setting:banner.widget.clock:digital-12h.shape`.
+
 ### Scroll maths
 
 `ScrollState` is `{ container, top, left, height, extent, atTop, atBottom, fraction }`: `height` is the visible height, `extent`

@@ -42,8 +42,8 @@ export function WidgetIconPicker({ widgetKey }: { widgetKey: string }) {
   const shape = rt.bannerWidgetShape(w.key);
   const pick = (glyph: string) => rt.dispatch(`banner.widget:${w.key}:icon=${packId}/${glyph}`);
   return (
-    <ControlScope address={`dialog:${WIDGET_ICON_DIALOG}`}>
-      <div className="fx-stack fx-widget-icon-picker" data-axf-target={`dialog:${WIDGET_ICON_DIALOG}`} data-fx-widget={w.key}>
+    <ControlScope address={`panel:${WIDGET_ICON_DIALOG}`}>
+      <div className="fx-stack fx-widget-icon-picker" data-axf-target={`panel:${WIDGET_ICON_DIALOG}`} data-fx-widget={w.key}>
         <div className="fx-row fx-widget-icon-picker__preview" aria-live="polite">
           <span className="fx-widget-icon-picker__glyph"><IconOverride icon={shape.icon}><Icon name={w.icon ?? 'box'} size={24} /></IconOverride></span>
           <span className="fx-stack">

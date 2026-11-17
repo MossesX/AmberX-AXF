@@ -30,8 +30,8 @@ export function WidgetShapeEditor({ widgetKey }: { widgetKey: string }) {
   const shape = rt.bannerWidgetShape(w.key);
   const preview = (d: string) => ({ [BANNER_WIDGET_SHAPE_TOKENS.clip]: customPathClip(d) ?? 'none' }) as Record<string, string>;
   return (
-    <ControlScope address={`dialog:${WIDGET_SHAPE_DIALOG}`}>
-      <div className="fx-stack fx-widget-shape-editor" data-axf-target={`dialog:${WIDGET_SHAPE_DIALOG}`} data-fx-widget={w.key}>
+    <ControlScope address={`panel:${WIDGET_SHAPE_DIALOG}`}>
+      <div className="fx-stack fx-widget-shape-editor" data-axf-target={`panel:${WIDGET_SHAPE_DIALOG}`} data-fx-widget={w.key}>
         <div className="fx-row fx-widget-shape-editor__head">
           <span className="fx-widget-shape-editor__preview" style={preview(path)} aria-label={clip ? 'Preview of the outline' : 'No preview: the outline is refused'} role="img">
             <IconOverride icon={shape.icon}><Icon name={w.icon ?? 'box'} size={24} /></IconOverride>
