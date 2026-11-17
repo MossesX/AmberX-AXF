@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8136,
- "updatedAt": "2026-11-17T22:07:12.670Z",
+ "rev": 8137,
+ "updatedAt": "2026-11-17T22:07:24.401Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -278387,7 +278387,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T22:07:09.967Z",
+   "updatedAt": "2026-11-17T22:07:12.386Z",
    "builtAt": "",
    "notes": [
     {
@@ -278625,6 +278625,10 @@
     {
      "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-17T22:07:09.967Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T22:07:12.386Z"
     }
    ],
    "approvals": [
@@ -278695,6 +278699,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-17T22:07:08.683Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s23",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-17T22:07:14.301Z",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -279299,7 +279319,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

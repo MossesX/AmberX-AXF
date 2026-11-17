@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 20:34 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · pipeline
 - 2026-11-17 20:34 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 - 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` → queued, note (all) · pipeline
 - 2026-11-17 20:34 UTC · `rebuild-every-toolbar-page-specific` PR #817 (all) · builds-live
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:05 UTC · `banner-widget-shapes-plus-change-icon` note (all) · orchestrator
 - 2026-11-17 22:05 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · pipeline
 - 2026-11-17 22:07 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · pipeline
+- 2026-11-17 22:07 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 
 ## Token passes (log)
 
