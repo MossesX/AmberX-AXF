@@ -8,6 +8,8 @@
  * Records:
  *   gate-rule@1      one rule: id, kind (ci | tests | theme | controls | ui-review | clash | custom), enabled, settings,
  *                    severity (block | warn | info), owner (console now, axf-molly once the container owns the gate)
+ *                    The `auto-lander` rule (kind custom, severity info) is the server's policy for what happens when a PR
+ *                    cannot land: its settings are auto-lander-policy@1 (framework/core/auto-lander.mjs, AUTO-LANDER.md).
  *   gate-rule-set@1  the rule set document: rev, at, rules (unique ids), where it was migrated from
  *   lander-state@1   what the Auto-lander tab, `lander.status` and voice read: status, paused, mode, the PR landing now,
  *                    the last runs, and every waiting PR with the rule that holds it and the reason in plain words
@@ -207,6 +209,13 @@ function settingsSchema() {
       mode: { enum: LANDER_MODES, description: 'merge-queue-only: how PRs land' },
       autoLand: { type: 'boolean', description: 'merge-queue-only: the builds round (clean, merge main, push, open the PR) runs' },
       directMerge: { type: 'boolean', description: 'merge-queue-only: false = nothing but the lander merges' },
+      maxAttempts: { type: 'integer', minimum: 1, maximum: 10, description: 'auto-lander: failures of one kind (clash, red-ci, land) on one build before it escalates' },
+      backoff: { type: 'object', properties: { baseMin: { type: 'number', exclusiveMinimum: 0 }, factor: { type: 'number', exclusiveMinimum: 0 }, maxMin: { type: 'number', exclusiveMinimum: 0 } }, description: 'auto-lander: minutes before the next try after the n-th failure, min(maxMin, baseMin × factor^(n−1))' },
+      attemptTimeoutMin: { type: 'number', exclusiveMinimum: 0, description: 'auto-lander: a started attempt older than this counts as a timeout' },
+      mergeMain: { type: 'boolean', description: 'auto-lander: a clash merges main into the branch by itself' },
+      fixSessions: { type: 'boolean', description: 'auto-lander: red CI starts a fix session by itself' },
+      land: { type: 'boolean', description: 'auto-lander: green lands by itself' },
+      escalateTo: { enum: ['banner', 'note', 'none'], description: 'auto-lander: where maxAttempts reached is reported' },
     },
     additionalProperties: true,
   };
@@ -264,6 +273,9 @@ export function jsonSchemas() {
 
 // ------------------------------------------------------------------ the default rule set
 
+/** The auto-lander rule's settings (auto-lander-policy@1); kept in step with auto-lander.mjs POLICY_DEFAULTS by check-auto-lander. */
+export const AUTO_LANDER_SETTINGS = Object.freeze({ maxAttempts: 3, backoff: Object.freeze({ baseMin: 5, factor: 3, maxMin: 60 }), attemptTimeoutMin: 45, mergeMain: true, fixSessions: true, land: true, escalateTo: 'banner' });
+
 /** The tests the lander runs after generated files were resolved (framework/spec/generated-files.json → tests). */
 export const DEFAULT_TESTS = Object.freeze([['node', 'apps/console-web/scripts/control-inventory.mjs', '--check'], ['node', 'framework/spec/check-project-fixtures.mjs']]);
 
@@ -282,11 +294,26 @@ export const DEFAULT_RULES = Object.freeze([
   { id: 'toolbars', kind: 'controls', enabled: true, severity: 'block', owner: 'console', title: 'Toolbars', description: 'Every toolbar has role="toolbar" and an aria-label; tab rows are the framework TabGroup (check-toolbars).', settings: { check: 'framework/cli/check-toolbars.mjs' }, source: 'CI job check-toolbars' },
   { id: 'ui-review', kind: 'ui-review', enabled: true, severity: 'block', owner: 'console', title: 'UI Review', description: "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.", settings: { holdOn: ['waiting', 'changes', 'rejected', 'unknown'] }, source: 'config.json landWaitUi; push-banner ui-hold (ui-review@1)' },
   { id: 'clash', kind: 'clash', enabled: true, severity: 'block', owner: 'console', title: 'No code clash with main', description: 'Builds, union and generated files are resolved by the lander; a code conflict files a fix and the PR waits for it.', settings: { autoResolve: ['builds', 'union', 'union-json', 'generated'], fileFix: true }, source: 'land-core.planConflicts / classifyPath' },
+  // Brett (Nov 16 2026): "We need the auto lander to bang shit out on its own. It needs to automatically fix it. We need a server
+  // rule to do that. Make the server do it automatically without the console." The policy the VPS runner obeys with or
+  // without the console; its settings are auto-lander-policy@1 (the same defaults as auto-lander.mjs POLICY_DEFAULTS).
+  { id: 'auto-lander', kind: 'custom', enabled: true, severity: 'info', owner: 'console', title: 'Auto-lander fixes and lands', description: 'The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.', settings: { ...AUTO_LANDER_SETTINGS }, source: 'config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags' },
 ]);
 
 /** The default rule set document. */
 export function defaultRuleSet({ at = new Date().toISOString(), owner = 'console' } = {}) {
   return normRuleSet({ $axf: SET_FRAME, rev: 1, at, rules: DEFAULT_RULES.map((r) => ({ ...r, owner, settings: JSON.parse(JSON.stringify(r.settings)) })) }, at);
+}
+
+/**
+ * A saved rule set with every default rule it lacks appended (by id), so a rule added later (auto-lander, Nov 16 2026) joins
+ * a store written before it existed. Nothing in the saved set changes; the set is returned as is when nothing is missing.
+ */
+export function joinDefaults(set, { at = new Date().toISOString() } = {}) {
+  const s = normRuleSet(set, at);
+  const have = new Set(s.rules.map((r) => r.id));
+  const missing = defaultRuleSet({ at }).rules.filter((r) => !have.has(r.id)).map((r) => ({ ...r, updatedAt: at, updatedBy: 'defaults' }));
+  return missing.length ? { ...s, rules: [...s.rules, ...missing].slice(0, RULES_MAX), joinedDefaults: missing.map((r) => r.id) } : s;
 }
 
 // ------------------------------------------------------------------ migration from today's lander settings
@@ -304,7 +331,7 @@ export function landerSettingsFrom(config = {}) {
 }
 
 /** The config.json keys the migration reads. */
-export const MIGRATED_KEYS = Object.freeze(['autoLand', 'landWaitUi', 'mergeQueue', 'queueMode', 'queueDepth', 'batchSize', 'autoLander.enabled', 'autoLander.mode']);
+export const MIGRATED_KEYS = Object.freeze(['autoLand', 'landWaitUi', 'mergeQueue', 'queueMode', 'queueDepth', 'batchSize', 'autoLander.enabled', 'autoLander.mode', 'autoLander.maxAttempts', 'autoLander.backoffMin', 'autoLander.fix']);
 
 /**
  * Today's push banner config.json → a gate-rule-set@1: the default set with `enabled` and `settings` taken from the keys
@@ -320,6 +347,13 @@ export function migrate(config = {}, { at = new Date().toISOString(), by = 'migr
     if (r.id === 'merge-queue-only') r.settings = { ...r.settings, mode: l.mode, autoLand: l.autoLand, depth: l.depth, batchSize: l.batchSize };
     if (r.id === 'ci-green') r.settings = { ...r.settings, on: l.mode === 'serial' ? 'head' : 'queue-commit', redJoins: l.mode === 'batch' };
     if (r.id === 'ui-review') r.enabled = l.waitUi;
+    if (r.id === 'auto-lander') {
+      // the lander's own switch is the rule's switch; the old mode flags (autoLand, autoMerge) never turn fixing off
+      if (a.enabled === false) r.enabled = false;
+      const maxAttempts = Number.isInteger(a.maxAttempts) ? Math.min(10, Math.max(1, a.maxAttempts)) : r.settings.maxAttempts;
+      const baseMin = typeof a.backoffMin === 'number' && a.backoffMin > 0 ? a.backoffMin : r.settings.backoff.baseMin;
+      r.settings = { ...r.settings, maxAttempts, backoff: { ...r.settings.backoff, baseMin }, fixSessions: a.fix === false ? false : r.settings.fixSessions };
+    }
     if (present.length) { r.updatedAt = at; r.updatedBy = by; }
   }
   return { ...set, updatedBy: by, migratedFrom: { frame: 'push-banner-config@1', at, keys: present } };
@@ -401,6 +435,7 @@ export function evaluateRule(rule, snapshot) {
       return V('pass', 'It merges cleanly with main.');
     }
     default: {
+      if (r.id === 'auto-lander') return V('pass', 'The server fixes and lands it on its own (auto-lander@1).');
       if (r.id === 'merge-queue-only' || st.directMerge === false) {
         if (s.draft) return V('fail', 'it is a draft.');
         if (s.fork) return V('fail', 'it comes from a fork.');
