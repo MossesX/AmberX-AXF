@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:54:19.731Z",
+ "updatedAt": "2026-11-17T22:54:38.297Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77980,6 +77980,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -94680,6 +94681,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -133492,6 +133494,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -142146,6 +142149,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -189599,7 +189603,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -189607,7 +189611,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T22:53:41.271Z",
+   "updatedAt": "2026-11-17T22:54:16.354Z",
    "builtAt": "",
    "notes": [
     {
@@ -189677,6 +189681,10 @@
     {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T22:51:22.412Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s17): session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T22:54:16.354Z"
     }
    ],
    "approvals": [
@@ -190082,7 +190090,7 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-17T22:54:16.354Z",
      "uid": "st-mwl7mosm0ht4mm",
      "createdAt": "2026-11-17T21:34:10.438Z"
     },
@@ -212209,7 +212217,7 @@
   },
   {
    "id": "api-fully-drives-every-field-type-forms",
-   "title": "API fully drives every field: type into forms, not just press buttons",
+   "title": "Voice drives the whole app: your mouth is the mouse (Fable sweep)",
    "category": "",
    "detail": "Brett: the API must fully control the entire app. Found in a live demo: Plan Studio 2.0 'plan-studio-2.new' and 'new-inside' only open a blank Plan item dialog; the text passed as args never fills Title/Note, and there is no console-control command to set a dialog field (title, note, kind, priority, model, checkbox, any input). Fix at the framework level: every input, textarea, select, switch and checkbox in every console dialog and screen gets a console-control address (field:<dialog>/<name>) with set/get, and a dialog submit/save. Action args that name a value (new:<title>) must fill the form and save. Plan Studio 2.0 first (new, new-inside, rename with text, note, priority, model), then sweep all plugins. CI check: fails on any form control without a settable address. Same through REST, MCP, CLI and voice. Test: create a nested plan with titles, notes and ticked checkboxes entirely through the API and verify it on screen.",
    "status": "queued",
@@ -212220,7 +212228,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T22:53:07.696Z",
-   "updatedAt": "2026-11-17T22:53:28.604Z",
+   "updatedAt": "2026-11-17T22:54:31.097Z",
    "builtAt": "",
    "notes": [
     {
@@ -212234,6 +212242,10 @@
     {
      "text": "Brett: run this on Fable as a sweep of the WHOLE console, but only after move-everything-axhub-web-console (axHub + AmberX moved into the console) has landed. On hold until then.",
      "at": "2026-11-17T22:53:28.604Z"
+    },
+    {
+     "text": "Brett, full scope (Fable): the WHOLE app, every single piece, controllable by voice through the API, 'as if your mouth is a mouse'. Must include: scroll the screen and any pane; scroll tables and grids; select a row, multi-select rows, select all/none; right-click / open the context menu on any element or row; pick a context menu item by its spoken label; open submenus and pick submenu items; type into and read every field (inputs, notes, selects, switches, checkboxes, sliders); save/cancel/close dialogs; drag and drop, resize, reorder; hover-only and long-press actions; tabs, toolbars, banners, nav and app menus. Every result reports what actually changed on screen, not just 'delivered'. Same through REST, MCP, CLI and voice. CI check fails on any UI element with no voice/API address. Run after the axHub + AmberX move lands.",
+     "at": "2026-11-17T22:54:31.097Z"
     }
    ],
    "approvals": [],

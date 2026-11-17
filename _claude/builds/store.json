@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8286,
- "updatedAt": "2026-11-17T22:54:19.731Z",
+ "rev": 8287,
+ "updatedAt": "2026-11-17T22:54:38.297Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -290443,7 +290443,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -290451,7 +290451,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T22:53:41.271Z",
+   "updatedAt": "2026-11-17T22:54:16.354Z",
    "builtAt": "",
    "notes": [
     {
@@ -290521,6 +290521,10 @@
     {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T22:51:22.412Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s17): session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T22:54:16.354Z"
     }
    ],
    "approvals": [
@@ -290550,19 +290554,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "axf-flagship-professional-skin-covering-2--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T21:58:22.524Z",
     "runs": 2,
-    "crashes": 2,
+    "crashes": 3,
     "lastRun": {
-     "at": "2026-11-17T22:44:09.502Z",
+     "at": "2026-11-17T22:54:14.803Z",
      "exit": 129,
      "outcome": "requeued",
      "reason": "crash",
-     "stepsLeft": 19,
+     "stepsLeft": 12,
      "account": "hulu0241",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "phase": "Phase 1"
@@ -290575,7 +290579,7 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
@@ -290615,6 +290619,20 @@
      "notified": "2026-11-17T22:44:32.474Z",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "note": "session on hulu0241 failed (exit 129): step s10 reset, slot released, back in the Queue (retry 1 of 3)."
+    },
+    {
+     "at": "2026-11-17T22:54:14.803Z",
+     "buildId": "flagship-professional-skin-covering-2",
+     "phase": "Phase 1",
+     "step": "s17",
+     "cause": "exit-failed",
+     "exit": 129,
+     "action": "retry",
+     "attempt": 1,
+     "account": "hulu0241",
+     "notified": "2026-11-17T22:54:18.677Z",
+     "session": "axf-flagship-professional-skin-covering-2--earl",
+     "note": "session on hulu0241 failed (exit 129): step s17 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -291047,10 +291065,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-17T22:54:16.354Z",
+     "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T21:34:10.438Z"
+     "updatedAt": "2026-11-17T22:54:16.355Z"
     },
     {
      "id": "s18",
@@ -291340,7 +291358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -320741,7 +320759,7 @@
   },
   {
    "id": "api-fully-drives-every-field-type-forms",
-   "title": "API fully drives every field: type into forms, not just press buttons",
+   "title": "Voice drives the whole app: your mouth is the mouse (Fable sweep)",
    "category": "",
    "detail": "Brett: the API must fully control the entire app. Found in a live demo: Plan Studio 2.0 'plan-studio-2.new' and 'new-inside' only open a blank Plan item dialog; the text passed as args never fills Title/Note, and there is no console-control command to set a dialog field (title, note, kind, priority, model, checkbox, any input). Fix at the framework level: every input, textarea, select, switch and checkbox in every console dialog and screen gets a console-control address (field:<dialog>/<name>) with set/get, and a dialog submit/save. Action args that name a value (new:<title>) must fill the form and save. Plan Studio 2.0 first (new, new-inside, rename with text, note, priority, model), then sweep all plugins. CI check: fails on any form control without a settable address. Same through REST, MCP, CLI and voice. Test: create a nested plan with titles, notes and ticked checkboxes entirely through the API and verify it on screen.",
    "status": "queued",
@@ -320752,7 +320770,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T22:53:07.696Z",
-   "updatedAt": "2026-11-17T22:53:28.604Z",
+   "updatedAt": "2026-11-17T22:54:31.097Z",
    "builtAt": "",
    "notes": [
     {
@@ -320766,6 +320784,10 @@
     {
      "text": "Brett: run this on Fable as a sweep of the WHOLE console, but only after move-everything-axhub-web-console (axHub + AmberX moved into the console) has landed. On hold until then.",
      "at": "2026-11-17T22:53:28.604Z"
+    },
+    {
+     "text": "Brett, full scope (Fable): the WHOLE app, every single piece, controllable by voice through the API, 'as if your mouth is a mouse'. Must include: scroll the screen and any pane; scroll tables and grids; select a row, multi-select rows, select all/none; right-click / open the context menu on any element or row; pick a context menu item by its spoken label; open submenus and pick submenu items; type into and read every field (inputs, notes, selects, switches, checkboxes, sliders); save/cancel/close dialogs; drag and drop, resize, reorder; hover-only and long-press actions; tabs, toolbars, banners, nav and app menus. Every result reports what actually changed on screen, not just 'delivered'. Same through REST, MCP, CLI and voice. CI check fails on any UI element with no voice/API address. Run after the axHub + AmberX move lands.",
+     "at": "2026-11-17T22:54:31.097Z"
     }
    ],
    "approvals": [],
@@ -320815,7 +320837,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
