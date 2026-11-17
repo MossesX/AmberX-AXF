@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · foreign-write
 - 2026-11-17 23:04 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` note (all) · pipeline
 - 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
 - 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` → fixing, note (all) · pipeline
+- 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
 
 ## Token passes (log)
 
