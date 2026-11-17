@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7559,
- "updatedAt": "2026-11-17T18:10:31.627Z",
+ "rev": 7560,
+ "updatedAt": "2026-11-17T18:10:55.382Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268567,6 +268567,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-column-alignment-every-grid-table",
+   "title": "Fix column alignment in every grid and table (Orchestrator, Lander, everywhere)",
+   "category": "",
+   "detail": "Headers and cells don't line up across the console's grids/tables. Audit every DataGrid and table (Build orchestrator tabs, Auto-lander/Gate, landing line, Plan Studio, UI Review, etc.), fix the shared DataGrid so header and cell widths come from one column definition (same grid template), handle hidden columns, expand/indent, and phone widths. Add a CI/visual check that header and cell column edges match. Screenshots before/after to UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:10:52.360Z",
+   "updatedAt": "2026-11-17T18:10:52.360Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Check all the grids and tables in Orchestrator and Lander and everywhere, to line up the columns. All the columns are fucked up.",
+    "at": "2026-11-17T18:10:52.360Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 949
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
