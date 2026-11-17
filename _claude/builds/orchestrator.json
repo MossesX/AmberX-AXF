@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T19:50:42.588Z",
+ "updatedAt": "2026-11-17T19:50:58.758Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109444,7 +109444,7 @@
    "pr": "#493",
    "priority": "P0",
    "createdAt": "2026-11-11T01:11:27.164Z",
-   "updatedAt": "2026-11-17T19:50:36.284Z",
+   "updatedAt": "2026-11-17T19:50:40.458Z",
    "builtAt": "",
    "notes": [
     {
@@ -109474,6 +109474,10 @@
     {
      "text": "Watchdog: Pending build skins-in-the-asset-store-skin-browser-skin-edito → Remove: Its PR was closed without a merge (PR #493 closed; build skins-in-the-asset-store-skin-browser-skin-edito: pending; branch claude/skins-in-the-asset-store-skin-browser-skin-edito deleted) (pending → archived)",
      "at": "2026-11-17T19:50:36.284Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261111-d2c1b1bb → Remove: Its PR was closed without a merge (PR #493 closed; build skins-in-the-asset-store-skin-browser-skin-edito: pending; branch claude/skins-in-the-asset-store-skin-browser-skin-edito deleted)",
+     "at": "2026-11-17T19:50:40.458Z"
     }
    ],
    "approvals": [],
