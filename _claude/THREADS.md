@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:26 UTC · `blueprint-notes-tasks` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `pass-approval-hook-deep-link-amberx-notification` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `orchestrator-settings-collapsible-split` → landing (all) · builds-live
 - 2026-11-17 22:26 UTC · `console-app-part-2-native-floating` note (all) · builds-live
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:42 UTC · `move-everything-axhub-web-console` added (31 steps) (all) · foreign-write
 - 2026-11-17 22:42 UTC · `auto-lander-never-wait-missing-ui-review` added (51 steps) (all) · foreign-write
 - 2026-11-17 22:42 UTC · `one-true-source-for-every-setting` added (20 steps) (all) · foreign-write
+- 2026-11-17 22:44 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
 
 ## Token passes (log)
 
