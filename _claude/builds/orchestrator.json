@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:10:49.405Z",
+ "updatedAt": "2026-11-17T22:11:06.214Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168129,7 +168129,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T22:10:44.643Z",
+   "updatedAt": "2026-11-17T22:10:56.691Z",
    "builtAt": "",
    "notes": [
     {
@@ -168191,6 +168191,14 @@
     {
      "text": "Watchdog fixed Banner widget shapes plus change icon (step s5): its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T22:09:09.958Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-banner-widget-shapes-plus-change-icon--paulie.",
+     "at": "2026-11-17T22:10:54.314Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-banner-widget-shapes-plus-change-icon--paulie, shared account login)",
+     "at": "2026-11-17T22:10:56.691Z"
     },
     {
      "text": "Brief only: brief is 24428 characters (~6107 tokens), over the 24000-character budget: trim it to what this job needs",
@@ -173447,7 +173455,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T22:10:33.186Z",
+   "updatedAt": "2026-11-17T22:10:49.636Z",
    "builtAt": "2026-11-17T22:10:18.088Z",
    "notes": [
     {
@@ -173497,6 +173505,10 @@
     {
      "text": "s15: UI Review item r-20261117-ufl9j01 (three Hidden-list options) and 8 screenshots were saved in this worktree's local UI Review store, not the live console: this session has no AXF_TOKEN / AXF_CONSOLE_URL. The three option assets ship in the PR (apps/console-web/plugins/theme-manager/assets/dialog/hidden-list-three-ways-*), and the shots are in _claude/builds/reports/rebuild-fresh-main-hide-any-asset/. To put the item in Brett's queue: re-run review.mjs submit --console with the same choices from a session that has the token.",
      "at": "2026-11-17T22:03:00.455Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--lenny: brief only · start 17.8K tokens ($0.06) · cost $19.77 · 290 turns · 6 tools, MCP none",
+     "at": "2026-11-17T22:10:49.636Z"
     }
    ],
    "approvals": [

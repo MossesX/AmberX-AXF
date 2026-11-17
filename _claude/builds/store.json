@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8149,
- "updatedAt": "2026-11-17T22:10:49.405Z",
+ "rev": 8150,
+ "updatedAt": "2026-11-17T22:11:06.214Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259447,7 +259447,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T22:10:44.643Z",
+   "updatedAt": "2026-11-17T22:10:56.691Z",
    "builtAt": "",
    "notes": [
     {
@@ -259511,6 +259511,14 @@
      "at": "2026-11-17T22:09:09.958Z"
     },
     {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-banner-widget-shapes-plus-change-icon--paulie.",
+     "at": "2026-11-17T22:10:54.314Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-banner-widget-shapes-plus-change-icon--paulie, shared account login)",
+     "at": "2026-11-17T22:10:56.691Z"
+    },
+    {
      "text": "Brief only: brief is 24428 characters (~6107 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T22:10:44.642Z"
     }
@@ -259532,13 +259540,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T22:59:53.814Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-banner-widget-shapes-plus-change-icon--paulie",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-17T22:10:38.850Z",
+    "runs": 1,
     "crashes": 2,
     "lastRun": {
      "at": "2026-11-17T22:09:09.103Z",
@@ -259558,9 +259566,9 @@
      "note": "Split by Claude into 19 steps (4 Fable)."
     },
     "splitRequested": "",
-    "note": "its tmux session is gone: step s5 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-17T22:10:38.850Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -259569,7 +259577,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-17T22:10:38.850Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -260082,7 +260090,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -266035,7 +266043,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T22:10:33.186Z",
+   "updatedAt": "2026-11-17T22:10:49.636Z",
    "builtAt": "2026-11-17T22:10:18.088Z",
    "notes": [
     {
@@ -266085,6 +266093,10 @@
     {
      "text": "s15: UI Review item r-20261117-ufl9j01 (three Hidden-list options) and 8 screenshots were saved in this worktree's local UI Review store, not the live console: this session has no AXF_TOKEN / AXF_CONSOLE_URL. The three option assets ship in the PR (apps/console-web/plugins/theme-manager/assets/dialog/hidden-list-three-ways-*), and the shots are in _claude/builds/reports/rebuild-fresh-main-hide-any-asset/. To put the item in Brett's queue: re-run review.mjs submit --console with the same choices from a session that has the token.",
      "at": "2026-11-17T22:03:00.455Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-hide-any-asset--lenny: brief only · start 17.8K tokens ($0.06) · cost $19.77 · 290 turns · 6 tools, MCP none",
+     "at": "2026-11-17T22:10:49.636Z"
     }
    ],
    "approvals": [
@@ -266153,17 +266165,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T22:10:33.186Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-hide-any-asset--lenny",
-     "phase": "Phase 2"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
