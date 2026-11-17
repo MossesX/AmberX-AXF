@@ -28,6 +28,7 @@ import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { executeControl, describeAnswer } from '@console/control/executor';
+import { describeDrag, executeDrag, isDragRequest } from '@console/actions/drag';
 import { appMenu } from './menu';
 import './console-commands.css';
 import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
@@ -283,6 +284,17 @@ function ConsoleCommandsClient() {
         // inside a host, bring this console's frame to the front first, so Brett sees the command happen
         if (host && !rt.inFront()) rt.bringToFront(`${who(m.by)}: ${m.label ?? m.target ?? m.op}`);
         // a console-control@1 command: the executor answers with its result and the live state (screen, tabs, scroll, focus)
+        // a drag-move@1 request (REST /api/drag/*, console_drag_* MCP tools, axf drag) rides the same op: the drag executor answers
+        const dragReq = m.op === 'control' && isDragRequest(m.command) ? m.command : null;
+        if (dragReq) {
+          void executeDrag(rt, { ...dragReq, by: dragReq.by ?? m.by }).then((answer) => {
+            const line = describeDrag(answer);
+            markDone(m.id, [answer.ok, line]);
+            if (answer.ok && dragReq.verb !== 'drag.list' && dragReq.verb !== 'drag.zones' && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${line}`, 'info', 'Drag');
+            void post('ack', { client: id, id: m.id, ok: answer.ok, message: line, result: answer, here: hereOf(rt), ...where() }).catch(() => undefined);
+          });
+          return;
+        }
         if (m.op === 'control') {
           void executeControl(rt, m.command).then((answer) => {
             const line = describeAnswer(answer);
