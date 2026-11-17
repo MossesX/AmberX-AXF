@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7227,
- "updatedAt": "2026-11-17T00:49:01.730Z",
+ "rev": 7228,
+ "updatedAt": "2026-11-17T00:49:26.947Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259226,7 +259226,7 @@
    "pr": "#765",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:48:43.806Z",
+   "updatedAt": "2026-11-17T00:49:24.334Z",
    "builtAt": "2026-11-17T00:48:43.807Z",
    "notes": [
     {
@@ -259264,6 +259264,10 @@
     {
      "text": "Started run 2 on hulu0241 (Opus, Phase 2): axf-stop-auto-lander-committing-tracking--lenny.",
      "at": "2026-11-17T00:19:50.282Z"
+    },
+    {
+     "text": "Headless run axf-stop-auto-lander-committing-tracking--lenny: brief only · start 13.5K tokens ($0.04) · cost $8.11 · 143 turns · 6 tools, MCP none",
+     "at": "2026-11-17T00:49:24.334Z"
     }
    ],
    "approvals": [
@@ -259695,7 +259699,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
