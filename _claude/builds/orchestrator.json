@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:30:18.526Z",
+ "updatedAt": "2026-11-17T22:30:32.961Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -190961,16 +190961,21 @@
    "title": "Move everything from axHub web into the console",
    "category": "",
    "detail": "Bring every axHub web page and option into the Dev Console as console screens/plugins: approvals (incl. log, passes, veto/countdown), users, account, apps/connectors and services, handoff, auth admin, and their settings. Same API reach (REST, MCP, CLI, voice). The console becomes the only UI; axHub stays as the backend/MCP hub only. Then retire the axHub web UI. Works together with Phone Connect (replaces the AmberX phone app) and remove-amberx-app-code-once-phone. Token-driven, console only. Plan in Plan Studio first.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "move-everything-axhub-web-console",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:28:32.914Z",
-   "updatedAt": "2026-11-17T22:28:32.914Z",
+   "updatedAt": "2026-11-17T22:30:18.968Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T22:30:18.968Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

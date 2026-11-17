@@ -831,8 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:28 UTC · `land-pr-730-reset-all-button-far-right` branch claude/land-pr-730-reset-all-button-far-right (all) · pipeline
-- 2026-11-17 21:28 UTC · `land-pr-730-reset-all-button-far-right` note (all) · orchestrator
 - 2026-11-17 21:28 UTC · `icon-picker-every-banner-settings-widget` note (all) · mcp
 - 2026-11-17 21:29 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-17 21:29 UTC · `fix-banner-settings-interface-tab` s3 done (all) · orchestrator
@@ -1231,6 +1229,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` → running, note (all) · pipeline
 - 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` note (all) · orchestrator
 - 2026-11-17 22:29 UTC · `settings-fix-part-2-blank-toolbars` branch claude/settings-fix-part-2-blank-toolbars (all) · pipeline
+- 2026-11-17 22:30 UTC · `settings-fix-part-2-blank-toolbars` → running, branch claude/settings-fix-part-2-blank-toolbars (all) · builds-live
+- 2026-11-17 22:30 UTC · `move-everything-axhub-web-console` → queued, note (all) · builds-live
 
 ## Token passes (log)
 
