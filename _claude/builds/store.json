@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7979,
- "updatedAt": "2026-11-17T21:22:09.536Z",
+ "rev": 7980,
+ "updatedAt": "2026-11-17T21:22:17.867Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268368,6 +268368,10 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s8): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T21:21:12.720Z"
+    },
+    {
+     "text": "Dispatch gate: rebuild-fresh-main-phone-connect-small still has axf-rebuild-fresh-main-phone-connect-small--earl alive: not launched again, tracking that session.",
+     "at": "2026-11-17T21:22:03.745Z"
     }
    ],
    "approvals": [
@@ -269129,7 +269133,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -278107,7 +278111,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -278115,7 +278119,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T21:21:16.941Z",
+   "updatedAt": "2026-11-17T21:21:59.181Z",
    "builtAt": "",
    "notes": [
     {
@@ -278309,6 +278313,10 @@
     {
      "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s23): session was killed (exit 143): step s23 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T21:21:16.941Z"
+    },
+    {
+     "text": "Dispatch gate: guided-live-demo-test-watch-orchestrator still has axf-guided-live-demo-test-watch-orchestrator--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-17T21:21:59.181Z"
     }
    ],
    "approvals": [
@@ -278338,7 +278346,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "",
+    "session": "axf-guided-live-demo-test-watch-orchestrator--joey",
     "slot": "",
     "model": "",
     "phase": "",
@@ -278999,7 +279007,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -281995,7 +282003,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-17T21:21:56.045Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -282316,7 +282330,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
