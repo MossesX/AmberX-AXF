@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:09 UTC · `molly-native-expenses` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · foreign-write
 - 2026-11-17 19:09 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · foreign-write
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · pipeline
 - 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` s7 done (all) · orchestrator
 - 2026-11-17 20:22 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
+- 2026-11-17 20:23 UTC · `guided-live-demo-test-watch-orchestrator` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
