@@ -832,15 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:41 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:42 UTC · `banner-widget-shapes-plus-change-icon` → queued, note (all) · watchdog
-- 2026-11-17 21:42 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
-- 2026-11-17 21:42 UTC · `icon-picker-every-banner-settings-widget` note (all) · orchestrator
-- 2026-11-17 21:42 UTC · `rebuild-fresh-main-phone-connect-small` s18 done (all) · orchestrator
-- 2026-11-17 21:42 UTC · `fix-banner-settings-interface-tab` note (all) · mcp
-- 2026-11-17 21:43 UTC · `rebuild-fresh-main-phone-connect-small` s19 done (all) · orchestrator
-- 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` → running, note (all) · pipeline
 - 2026-11-17 21:43 UTC · `rebuild-fresh-main-phone-connect-small` s19 done (all) · foreign-write
 - 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` note (all) · orchestrator
 - 2026-11-17 21:43 UTC · `fix-refreshing-console-jumps-back` branch claude/fix-refreshing-console-jumps-back (all) · pipeline
@@ -1232,6 +1223,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:39 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-17 22:40 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-17 22:40 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-17 22:40 UTC · `banner-widget-shapes-plus-change-icon` s13 done, s14 done, s15 done, s16 done (all) · foreign-write
+- 2026-11-17 22:40 UTC · `rebuild-fresh-main-phone-connect-small` s15 done, s27 done, → complete, note (all) · foreign-write
+- 2026-11-17 22:40 UTC · `icon-picker-every-banner-settings-widget` s9 done (all) · foreign-write
+- 2026-11-17 22:40 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
+- 2026-11-17 22:40 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 22:40 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:40 UTC · `move-everything-axhub-web-console` added (155 steps) (all) · foreign-write
+- 2026-11-17 22:40 UTC · `auto-lander-never-wait-missing-ui-review` added (34 steps) (all) · foreign-write
+- 2026-11-17 22:40 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
