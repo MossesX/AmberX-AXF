@@ -5769,6 +5769,18 @@
     }
    ]
   },
+  "notify-phone-when-queue-starts-building": {
+   "said": "From now on, when the queue gets sent to build, I want a notification.",
+   "at": "2026-11-17T19:09:13.799Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ollama-model-pick-mistral-small-24b-q4-default-m": {
    "said": "Pick the model. I got 64 gigs now.",
    "at": "2026-11-10T17:50:42.350Z",
