@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:39 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 - 2026-11-17 19:39 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · builds-live
 - 2026-11-17 19:39 UTC · `separate-settings-per-plugin-reset` s2 done (all) · orchestrator
 - 2026-11-17 19:40 UTC · `separate-settings-per-plugin-reset` s2 done (all) · foreign-write
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:17 UTC · `rebuild-every-toolbar-page-specific` → running, note (all) · orchestrator
 - 2026-11-17 21:18 UTC · `rebuild-fresh-main-hide-any-asset` s6 done, → running (all) · orchestrator
 - 2026-11-17 21:18 UTC · `guided-live-demo-test-watch-orchestrator` s22 done (all) · orchestrator
+- 2026-11-17 21:19 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
