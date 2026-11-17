@@ -830,7 +830,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:56 UTC · `github-client-plugin-see-control-every` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `merges-are-only-merged-once-github` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `new-project-wizard-name-linked-repo` → archived, note (all) · watchdog
 - 2026-11-17 19:56 UTC · `orchestrator-checks-shipped-features` → archived, note (all) · watchdog
@@ -1230,6 +1229,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 21:36 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 21:36 UTC · `land-pr-730-reset-all-button-far-right` s3 done (all) · orchestrator
 - 2026-11-17 21:36 UTC · `land-pr-730-reset-all-button-far-right` s4 done (all) · orchestrator
+- 2026-11-17 21:36 UTC · `rebuild-fresh-main-hide-any-asset` s13 done (all) · orchestrator
 
 ## Token passes (log)
 

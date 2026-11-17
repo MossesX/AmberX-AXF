@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8039,
- "updatedAt": "2026-11-17T21:36:41.540Z",
+ "rev": 8040,
+ "updatedAt": "2026-11-17T21:36:48.905Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265926,7 +265926,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:32:23.496Z",
+   "updatedAt": "2026-11-17T21:36:28.245Z",
    "builtAt": "",
    "notes": [
     {
@@ -266372,12 +266372,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T21:36:28.245Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T14:51:42.630Z"
+     "updatedAt": "2026-11-17T21:36:29.603Z"
     },
     {
      "id": "s14",
@@ -266466,7 +266466,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -268492,34 +268492,8 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-17T21:06:34.794Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--paulie",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-17T21:36:07.428Z",
-     "buildId": "rebuild-fresh-main-phone-connect-small",
-     "phase": "Phase 1",
-     "step": "s14",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "hulu0241",
-     "notified": "2026-11-17T21:36:18.460Z",
-     "session": "",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
