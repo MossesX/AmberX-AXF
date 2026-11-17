@@ -829,7 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `remove-console-s-own-notes-manager` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `remove-no-new-android-kotlin-work-rule` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `remove-ui-review-gate-no-screenshots` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `server-every-failed-merge-alerts-brett` → fixing, note (all) · pipeline
@@ -1229,6 +1228,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:51 UTC · `rebuild-fresh-main-phone-connect-small` s3 done, → running (all) · orchestrator
 - 2026-11-17 20:51 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 20:51 UTC · `guided-live-demo-test-watch-orchestrator` → queued, note (all) · watchdog
+- 2026-11-17 20:51 UTC · `guided-live-demo-test-watch-orchestrator` s18 done (all) · orchestrator
 
 ## Token passes (log)
 
