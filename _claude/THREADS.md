@@ -821,7 +821,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 00:37 UTC · `every-plugin-screen-gets-a-settings-gear` s12 done (all) · orchestrator
 - 2026-11-17 00:37 UTC · `prompting-engine-control-panel-to-create` s2 done (all) · orchestrator
 - 2026-11-17 00:37 UTC · `every-plugin-screen-gets-a-settings-gear` s13 done (all) · orchestrator
 - 2026-11-17 00:38 UTC · `every-plugin-screen-gets-a-settings-gear` s14 done (all) · orchestrator
@@ -1221,6 +1220,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 15:08 UTC · `edit-ui-mode-inline-edit-anything-active` s5 done (all) · orchestrator
 - 2026-11-17 15:08 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
+- 2026-11-17 15:09 UTC · `fix-console-deep-links-open-page-lands` note (all) · orchestrator
 
 ## Token passes (log)
 
