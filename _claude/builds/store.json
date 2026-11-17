@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7562,
- "updatedAt": "2026-11-17T18:11:17.135Z",
+ "rev": 7563,
+ "updatedAt": "2026-11-17T18:11:57.654Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268622,6 +268622,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "grids-layout-control-voice-controlled",
+   "title": "Grids & layout control: voice-controlled grids, full column set, Containers menu, IDE layout, aligned columns, X closes pop-ups",
+   "category": "",
+   "detail": "ONE build combining five (Brett: make them all one build). All on Fable.\nA) Every grid, new and existing: select/highlight WHOLE rows by any condition (keyword, date built, commits/PRs behind main, status, model...), multi-select adds rather than replaces; bulk move highlighted rows to top/bottom/position N/another tab (session-only order); voice scroll up/down in steps; click/right-click 'here/this row/that button'; edit grid colours by voice. Settings in Settings > Plugins > Console control. Fix console_control_focus select:true to add to selection.\nB) Every grid showing build info (Orchestrator, Lander/Gate, notes, tests...): full column set (date and time, model used, account used, steps done/total, more); current visible columns = default, the rest hidden; row number column 1,2,3 that a row keeps when moved. Header right-click > Columns submenu: Visible (check marks) and Hidden (red no-entry crosses), click toggles.\nC) Context menu 'Containers': Visible/Hidden lists of every pane (dataset bar etc.), toggle show/hide. Global 'IDE layout' item right above Settings on every full-screen main UI: IDE-style layout, every container a tab group, drag one into another to tab it, reset on every container and floating window.\nD) Line up header and cell columns in every grid/table (one column definition, hidden columns, indent, phone); CI check.\nE) Pop-up windows: X closes (not minimize).\nFull API parity for everything (voice, REST, MCP, CLI, console-control). Tests + UI Review.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T18:11:55.610Z",
+   "updatedAt": "2026-11-17T18:11:55.610Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make them all one build.",
+    "at": "2026-11-17T18:11:55.610Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 950
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
