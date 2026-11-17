@@ -245,6 +245,16 @@ def _decode(data: str) -> bytes:
     return raw
 
 
+def _prompt_event(event: str, payload: dict) -> None:
+    """The prompt engine's ui-review.* events (axf.prompt-engine@1 emit: fire and don't wait; nothing when it is off)."""
+    eng = plugin_services.get("axf.prompt-engine@1")
+    if eng is not None and hasattr(eng, "emit"):
+        try:
+            eng.emit("ui-review", event, payload, by="ui-review")
+        except Exception:  # noqa: BLE001 — a prompt rule never stops a review
+            pass
+
+
 def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> dict:
     """Add one item. shots: (file name, device or '', bytes). Fields may also list shots already in place (src)."""
     """Every field is checked against ui-review-item@1 before a picture is written; refused = SchemaError naming them.
@@ -287,6 +297,9 @@ def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> d
         _save_items(doc)
         snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
     notify.ready(snapshot, g)  # outside the lock: AmberX shows it, a tap opens this group
+    _prompt_event("ui-review.submitted", {"item": {"id": item["id"], "name": item.get("title", ""), "group": g.get("name", ""), "app": item.get("app", ""), "screen": item.get("screen", ""),
+                                                   "build": item.get("build", ""), "kind": item.get("kind", ""), "options": len((item.get("choices") or {}).get("options") or []) if isinstance(item.get("choices"), dict) else 0,
+                                                   "shots": len(item.get("shots") or [])}})
     return stored
 
 
@@ -311,6 +324,9 @@ def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "bre
         snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
     notify.decided(snapshot, [str(it.get("group") or "") for it in decided])
     after_decide(decided)  # Ask changes on a predicted look → the build gets the comment
+    past = {"approve": "approved", "changes": "changes", "reject": "rejected", "reopen": "reopened"}.get(decision, decision)
+    for it in decided:
+        _prompt_event("ui-review.decided", {"item": {"id": it.get("id", ""), "name": it.get("title", "")}, "decision": past, "comment": comment, "by": by})
     return {"changed": changed, "missing": [x for x in ids if x not in changed], "at": at}
 
 

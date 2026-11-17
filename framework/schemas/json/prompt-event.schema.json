@@ -1,0 +1,429 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/prompt-event.schema.json",
+  "title": "prompt-event@1: a rule of the prompting engine (trigger → conditions → limits → ask → actions per answer)",
+  "type": "object",
+  "required": [
+    "id",
+    "trigger"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": {
+      "const": "prompt-event@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "trigger": {
+      "type": "object",
+      "required": [
+        "event"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+        },
+        "event": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+        },
+        "filter": {
+          "type": "object"
+        }
+      }
+    },
+    "when": {
+      "anyOf": [
+        {
+          "$id": "#condition",
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "field",
+                "op"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "op": {
+                  "enum": [
+                    "eq",
+                    "ne",
+                    "in",
+                    "nin",
+                    "contains",
+                    "startsWith",
+                    "endsWith",
+                    "matches",
+                    "gt",
+                    "gte",
+                    "lt",
+                    "lte",
+                    "exists",
+                    "missing",
+                    "truthy",
+                    "falsy"
+                  ]
+                },
+                "value": {}
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "all"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "all": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#condition"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "any"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "any": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#condition"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "not"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "not": {
+                  "$ref": "#condition"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cooldownSec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dedupeKey": {
+          "type": "string"
+        },
+        "dedupeSec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxPerHour": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retries": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "retryDelaySec": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "ask": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "none",
+            "approve",
+            "veto",
+            "pick",
+            "text"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "options": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "countdownSec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "dialog",
+              "push",
+              "email",
+              "sms",
+              "call"
+            ]
+          }
+        },
+        "defaultOption": {
+          "type": "string"
+        }
+      }
+    },
+    "on": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "approve": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+              },
+              "input": {
+                "type": "object"
+              },
+              "title": {
+                "type": "string"
+              },
+              "continueOnError": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "deny": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+              },
+              "input": {
+                "type": "object"
+              },
+              "title": {
+                "type": "string"
+              },
+              "continueOnError": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "timeout": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+              },
+              "input": {
+                "type": "object"
+              },
+              "title": {
+                "type": "string"
+              },
+              "continueOnError": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "later": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+              },
+              "input": {
+                "type": "object"
+              },
+              "title": {
+                "type": "string"
+              },
+              "continueOnError": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "text": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+              },
+              "input": {
+                "type": "object"
+              },
+              "title": {
+                "type": "string"
+              },
+              "continueOnError": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "fire": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+              },
+              "input": {
+                "type": "object"
+              },
+              "title": {
+                "type": "string"
+              },
+              "continueOnError": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "pick": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "action"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+                },
+                "input": {
+                  "type": "object"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "continueOnError": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "template": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "by": {
+      "type": "string"
+    }
+  }
+}

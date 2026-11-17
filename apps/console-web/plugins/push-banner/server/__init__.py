@@ -87,6 +87,7 @@ from urllib.parse import quote
 from fastapi import APIRouter, Body, HTTPException, Request
 
 import console_context as cx
+import plugin_services
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, storage
 
@@ -192,6 +193,22 @@ def failed_key(body: Any) -> str:
     n, b = body.get("number"), body.get("branch")
     key = f"{body['repo']}:#{n}" if isinstance(n, int) and not isinstance(n, bool) and n > 0 else f"{body['repo']}:{b}" if valid_branch(b) else ""
     return key if key and valid_hidden(key) else ""
+
+
+
+def _prompt_event(task: dict[str, Any]) -> None:
+    """A merge / pull failure as the prompt engine's merge.clash or merge.ci-failed (axf.prompt-engine@1 emit, fire and
+    don't wait; nothing when the engine is off). Never raises."""
+    try:
+        f = str(task.get("failure") or "").lower()
+        event = "merge.clash" if "conflict" in f else "merge.ci-failed" if "ci failed" in f else ""
+        eng = plugin_services.get("axf.prompt-engine@1")
+        if not event or eng is None or not hasattr(eng, "emit"):
+            return
+        payload: dict[str, Any] = {"pr": task.get("number") or 0, "repo": task.get("repo", ""), "branch": task.get("branch", ""), "failure": task.get("failure", ""), "action": task.get("action", "")}
+        eng.emit("merge-queue", event, payload, by="push-banner")
+    except Exception:  # noqa: BLE001
+        pass
 
 
 class Pushes:
@@ -1164,6 +1181,7 @@ class Pushes:
 
     def _hand(self, task: dict[str, Any]) -> str:
         """Hand a failure to headless Claude Code when the setting is on; the words appended to the error. Never raises."""
+        _prompt_event(task)
         if not task.get("branch") or task["branch"] == task.get("base"):
             return ""  # forks and the default branch are never handed over
         try:
