@@ -49,7 +49,7 @@ decides and never writes to the hub.** `console` channel actions touch only the 
 | Reach | Read | Row read | Action |
 | --- | --- | --- | --- |
 | deep link | `view:hub/tab:hub.tabs=s` | `…/grid:hub.s/row:r` | `…[/grid:hub.s/row:r]/button:a` |
-| REST | `GET /api/plugins/hub-admin/s` | `GET …/s/r` | `POST …/s[/r]/a` (`DELETE …/s/r` when `effect: destructive` and `row`) |
+| REST | `GET /api/plugins/hub-admin/s` | `GET …/s/r` | `POST …/s[/r]/a` (`DELETE …/s/r` when the action carries `method: DELETE`: it removes the row itself) |
 | MCP | `state.tool` | `rows.read.tool` | `action.tool` (fixed in the table or `hub_<s>_<a>`), none for `person` |
 | CLI | `axf hub s` | `axf hub s r` | `axf hub s a [r] [--confirm]`, none for `person` |
 | voice | `hub.s` | `hub.s` | `hub.s.<camelCase a>`, none for `person` |
@@ -157,6 +157,7 @@ One view group **Hub** on the console nav, one TabGroup row `hub.tabs`:
 
 | Console address | Screen | Replaces |
 | --- | --- | --- |
+| `view:hub/tab:hub.tabs=overview` | Hub (session, waiting count, relay state, sign in / out) | `#/hub` |
 | `view:hub/tab:hub.tabs=approvals` | Approvals (live, countdown, decide) | `#/approvals`, `#/approvals/<id>` (row detail + `row:<id>`) |
 | `view:hub/tab:hub.tabs=log` | Approval log (DataGrid, filters) | `#/approvals/log` |
 | `view:hub/tab:hub.tabs=passes` | Passes and veto (passes, go pass, countdown, No wait read-only) | `#/passes`, `#/go-pass`, policy veto seconds |

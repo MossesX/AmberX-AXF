@@ -3,6 +3,7 @@
   "note": "The route table every axHub web page lands on in the Dev Console. Data, not code: the hub-admin plugin draws its nav and tabs from it, the console server mounts its reads and actions from it, the parity check walks it, the CLI and voice name things from it. Validated by framework/core/hub-console.mjs; spec framework/spec/HUB-CONSOLE.md.",
   "view": "hub",
   "tabRow": "hub.tabs",
+  "home": "approvals",
   "plugin": "hub-admin",
   "settingsSubtab": "hub",
   "hub": {
@@ -139,7 +140,7 @@
         { "id": "enable", "label": "Enable", "who": "command", "effect": "write", "row": true, "hub": "POST /auth/api/users/{id} {action: enable}", "tool": "hub_users_enable" },
         { "id": "disable", "label": "Disable", "who": "confirm", "effect": "destructive", "row": true, "hub": "POST /auth/api/users/{id} {action: disable}", "tool": "hub_users_disable" },
         { "id": "signout", "label": "Sign out everywhere", "who": "confirm", "effect": "write", "row": true, "hub": "POST /auth/api/users/{id} {action: signout}", "tool": "hub_users_signout" },
-        { "id": "delete", "label": "Delete", "who": "confirm", "effect": "destructive", "row": true, "hub": "POST /auth/api/users/{id} {action: delete, sure: true}", "tool": "hub_users_delete" }
+        { "id": "delete", "label": "Delete", "who": "confirm", "effect": "destructive", "row": true, "method": "DELETE", "hub": "POST /auth/api/users/{id} {action: delete, sure: true}", "tool": "hub_users_delete" }
       ],
       "settings": []
     },
@@ -178,7 +179,7 @@
         { "id": "policy", "label": "Set a tool's policy", "who": "confirm", "effect": "write", "row": true, "hub": "PUT /auth/api/policy {changes: [{service, tool, policy, vetoSeconds}], reason}", "tool": "hub_policy_set", "input": ["service", "tool", "policy", "vetoSeconds", "reason"] },
         { "id": "add", "label": "Add a connector", "who": "confirm", "effect": "write", "hub": null, "missing": { "why": "axHub configures services in its own CLI (axhub services add); no JSON route yet.", "proposed": "POST /auth/api/services {namespace, type, config}", "cli": "axhub services add <namespace> --type <type>" }, "tool": "hub_connector_add" },
         { "id": "reconnect", "label": "Reconnect", "who": "confirm", "effect": "write", "row": true, "hub": null, "missing": { "why": "No reconnect route on the hub yet.", "proposed": "POST /auth/api/services/{namespace}/reconnect", "cli": "axhub services refresh <namespace>" }, "tool": "hub_connector_reconnect" },
-        { "id": "remove", "label": "Remove", "who": "confirm", "effect": "destructive", "row": true, "hub": null, "missing": { "why": "No remove route on the hub yet.", "proposed": "DELETE /auth/api/services/{namespace}", "cli": "axhub services remove <namespace>" }, "tool": "hub_connector_remove" }
+        { "id": "remove", "label": "Remove", "who": "confirm", "effect": "destructive", "row": true, "method": "DELETE", "hub": null, "missing": { "why": "No remove route on the hub yet.", "proposed": "DELETE /auth/api/services/{namespace}", "cli": "axhub services remove <namespace>" }, "tool": "hub_connector_remove" }
       ],
       "health": { "id": "hub-connectors", "label": "Connector keys", "what": "A connector whose token the hub reports dead, expired or under-scoped (toolsStale, enabled with no tools, describe_service error)" },
       "settings": [
@@ -200,7 +201,7 @@
       "actions": [
         { "id": "send", "label": "Send to a session (copy / open) and mark sent", "who": "command", "effect": "write", "row": true, "hub": "POST /auth/api/handoff/{id}/sent", "tool": "hub_handoff_send" },
         { "id": "accept", "label": "Accept on this device", "who": "command", "effect": "write", "row": true, "hub": null, "missing": { "why": "Device-to-device handoff waits on the hub protocol (AXPP).", "proposed": "POST /auth/api/handoff/{id}/accept {device}" }, "tool": "hub_handoff_accept" },
-        { "id": "clear", "label": "Clear", "who": "confirm", "effect": "destructive", "row": true, "hub": null, "missing": { "why": "No delete route for a handoff run yet.", "proposed": "DELETE /auth/api/handoff/{id}" }, "tool": "hub_handoff_clear" }
+        { "id": "clear", "label": "Clear", "who": "confirm", "effect": "destructive", "row": true, "method": "DELETE", "hub": null, "missing": { "why": "No delete route for a handoff run yet.", "proposed": "DELETE /auth/api/handoff/{id}" }, "tool": "hub_handoff_clear" }
       ],
       "settings": []
     },
@@ -215,7 +216,7 @@
       "rows": { "grid": "hub.tokens", "idField": "id", "path": "tokens" },
       "actions": [
         { "id": "token-create", "label": "Create an API token (shown once)", "who": "person", "effect": "write", "hub": null, "missing": { "why": "No token admin route on the hub yet; the secret is shown once and never stored in the console.", "proposed": "POST /auth/api/auth/tokens {label, scopes[], expiresInDays}" } },
-        { "id": "token-revoke", "label": "Revoke a token", "who": "confirm", "effect": "destructive", "row": true, "hub": null, "missing": { "why": "No token admin route on the hub yet.", "proposed": "DELETE /auth/api/auth/tokens/{id}" }, "tool": "hub_auth_token_revoke" },
+        { "id": "token-revoke", "label": "Revoke a token", "who": "confirm", "effect": "destructive", "row": true, "method": "DELETE", "hub": null, "missing": { "why": "No token admin route on the hub yet.", "proposed": "DELETE /auth/api/auth/tokens/{id}" }, "tool": "hub_auth_token_revoke" },
         { "id": "client-add", "label": "Add an OAuth client", "who": "confirm", "effect": "write", "hub": null, "missing": { "why": "OAuth clients are configured on the hub itself today.", "proposed": "POST /auth/api/auth/clients {name, redirectUris[]}" }, "tool": "hub_auth_client_add" },
         { "id": "client-remove", "label": "Remove an OAuth client", "who": "confirm", "effect": "destructive", "hub": null, "missing": { "why": "OAuth clients are configured on the hub itself today.", "proposed": "DELETE /auth/api/auth/clients/{id}" }, "tool": "hub_auth_client_remove" }
       ],
