@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:07 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
 - 2026-11-17 19:07 UTC · `fable-rebuild-plan-studio-cleared-out` → complete, merged, note (all) · reconciler
 - 2026-11-17 19:07 UTC · `server-auto-lander-fixes-lands` → complete, merged, note (all) · reconciler
 - 2026-11-17 19:07 UTC · `server-rule-done-means-merged-working` merged, note (all) · reconciler
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:16 UTC · `live-build-status-real-time-grids-15` → running, note (all) · pipeline
 - 2026-11-17 20:16 UTC · `live-build-status-real-time-grids-15` → running, note (all) · orchestrator
 - 2026-11-17 20:16 UTC · `live-build-status-real-time-grids-15` note (all) · orchestrator
+- 2026-11-17 20:17 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · pipeline
 
 ## Token passes (log)
 
