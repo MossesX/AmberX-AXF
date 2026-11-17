@@ -389,8 +389,27 @@ def rotate(d: dict, token: str, at: str = "") -> dict[str, Any]:
 
 
 def relay_decision(c: dict, r: dict, at: str) -> dict[str, Any]:
-    """Filled in by the approvals relay (s9)."""
-    return {"ok": False, "code": "unavailable", "message": "the approvals relay is not wired yet"}
+    """Brett tapped approve / deny / shelve on the phone (personOnly already checked by the engine): hand it to the
+    approvals relay (approvals-relay@1, the approvals banner), which decides with the console's owner sign-in."""
+    relay = _relay()
+    d = S.device(c["deviceId"]) or {}
+    owner = (d.get("owner") or {}).get("who", "") if isinstance(d.get("owner"), dict) else ""
+    tap = {"kind": "phone-tap", "auth": "device", "by": r["by"], "deviceId": c["deviceId"], "owner": owner,
+           "approvalId": c["arguments"]["approvalId"], "prompt": c["arguments"].get("kind", "approval"), "decision": r["data"]["decision"]}
+    if relay is None:
+        out = {"ok": False, "code": "unavailable", "message": "The approvals banner is off, so the console can't pass your tap on. Open the approval on axHub."}
+    else:
+        try:
+            out = relay.decide_from_phone_tap(tap)
+        except Exception as e:  # noqa: BLE001
+            out = {"ok": False, "code": "unexpected", "message": f"The relay failed ({type(e).__name__}). Nothing was decided."}
+    S.log({"at": at, "op": "decision", "id": c["id"], "approvalId": tap["approvalId"], "decision": tap["decision"], "ok": bool(out.get("ok")), "code": out.get("code", "")})
+    return out
+
+
+def _relay() -> Any:
+    import plugin_services
+    return plugin_services.get("approvals-relay@1")
 
 
 def _resolve_offline(d: dict) -> None:

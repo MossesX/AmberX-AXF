@@ -1,6 +1,7 @@
 """Server part of the Phone Connect self-test (run by test.py, which supplies check / ok / E / FX / TMP)."""
 # ruff: noqa: F821 — check, ok, E, FX, TMP come from test.py
 import importlib.util
+import os
 import sys
 import types
 from pathlib import Path
@@ -131,3 +132,62 @@ with cl.websocket_connect(f"{P}/device/ws", headers={"authorization": f"Bearer {
     check("ws delivers the call", (call["id"], call["payload"]["tool"]), (r["id"], "browser.open"))
     ws.send_json({"protocol": "axpp@1", "kind": "result", "correlationId": r["id"], "payload": {}})
     check("ws takes the result", ws.receive_json()["status"], "done")
+
+# ---- s9 approvals relay (personOnly)
+
+AID = "7a1b2c3d-4e5f-4a6b-8c7d-0e1f2a3b4c5d"
+TAP = "9f8e7d6c-5b4a-4f3e-8d2c-1b0a9f8e7d6c"
+relayed: list = []
+
+
+class FakeRelay:
+    def decide_from_phone_tap(self, tap):
+        relayed.append(tap)
+        return {"ok": True, "via": "phone", "action": "approve"}
+
+
+plugin_services.provide("approvals-relay@1", FakeRelay(), folder="approvals-banner")
+
+
+def prompt(kind="approval", actions=None):
+    args = {"approvalId": AID, "kind": kind, "summary": "vps.run: restart traefik"}
+    if actions:
+        args["actions"] = actions
+    r = svc.send("approval", args, {"kind": "service", "who": "approvals-banner", "via": "hub"})
+    cl.get(f"{P}/device/next", headers=DEVH)
+    return r["id"]
+
+
+cid = prompt()
+r = cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": cid, "payload": {"decision": "approve"}}, headers=DEVH)
+check("a decision without Brett's tap is dropped", (r.status_code, r.json()["error"]["code"]), (403, "denied"))
+check("nothing relayed", relayed, [])
+check("the prompt stays open", S.command(cid)["status"], "sent")
+r = cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": cid, "payload": {"decision": "shelve"}, "by": {"kind": "person", "tap": TAP}}, headers=DEVH)
+check("an action the prompt didn't offer is dropped", r.json()["error"]["code"], "denied")
+r = cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": cid, "payload": {"decision": "approve"}, "by": {"kind": "person", "tap": TAP}}, headers=DEVH).json()
+ok("Brett's tap over the device token is relayed", r["ok"] and r["relay"]["ok"] and len(relayed) == 1)
+check("the relay gets a verified phone tap", {k: relayed[0][k] for k in ("kind", "auth", "approvalId", "prompt", "decision", "owner")},
+      {"kind": "phone-tap", "auth": "device", "approvalId": AID, "prompt": "approval", "decision": "approve", "owner": "brett"})
+cid = prompt()
+r = cl.post(f"{P}/command", json={"command": "approval", "arguments": {"approvalId": AID, "kind": "approval"}, "decision": "approve"}, headers=PERSON).json()
+ok("a decision field on the console's command route is ignored (only shows a prompt)", r["ok"] and len(relayed) == 1)
+# no route anywhere decides: the router has no decide / approve / deny path, and the console token can't post a result
+paths = [getattr(rt, "path", "") for rt in pc.router.routes]
+ok("no console route decides", not any(w in p for p in paths for w in ("decide", "approve", "deny", "shelve")))
+r = cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": cid, "payload": {"decision": "approve"}, "by": {"kind": "person", "tap": TAP}}, headers={**SESSION, "x-axpp": "axpp@1", "authorization": "Bearer axf-console-token"})
+check("the console token is not a device token", r.json()["error"]["code"], "denied")
+check("still one relayed decision", len(relayed), 1)
+
+# the approvals banner's side refuses anything that isn't a verified phone tap
+_ab = importlib.util.spec_from_file_location("approvals_banner_for_phone", HERE.parent / "approvals-banner/server/__init__.py")
+ab = importlib.util.module_from_spec(_ab)
+_ab.loader.exec_module(ab)
+good = {"kind": "phone-tap", "auth": "device", "by": {"kind": "person", "tap": TAP}, "approvalId": AID, "prompt": "veto", "decision": "deny", "owner": "brett"}
+check("relay: a verified tap passes the shape check", ab.phone_tap_errors(good), "")
+ok("relay: a session-made tap is refused", ab.phone_tap_errors({**good, "auth": "session"}) != "")
+ok("relay: no tap uuid is refused", ab.phone_tap_errors({**good, "by": {"kind": "person"}}) != "")
+ok("relay: a device-made decision is refused", ab.phone_tap_errors({**good, "by": {"kind": "device"}}) != "")
+check("relay: refused taps are never sent to the hub", ab.PhoneTapRelay().decide_from_phone_tap({**good, "auth": "token"})["code"], "denied")
+os.environ.pop("AXF_HUB_RELAY_USER", None)
+check("relay: without the owner sign-in nothing is decided", ab.PhoneTapRelay().decide_from_phone_tap(good)["code"], "no_credential")

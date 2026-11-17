@@ -26,7 +26,8 @@
   "enabledByDefault": true,
   "optional": [
     "service:axf.notify@1",
-    "service:axf.health@1"
+    "service:axf.health@1",
+    "service:approvals-relay@1"
   ],
   "banner": false,
   "tabable": false,
