@@ -10,11 +10,15 @@
  *                    severity (block | warn | info), owner (console now, axf-molly once the container owns the gate)
  *   gate-rule-set@1  the rule set document: rev, at, rules (unique ids), where it was migrated from
  *   lander-state@1   what the Auto-lander tab, `lander.status` and voice read: status, paused, mode, the PR landing now,
- *                    the last runs, and every waiting PR with the rule that holds it and the reason in plain words
+ *                    the last runs, every waiting PR with the rule that holds it and the reason in plain words, and the
+ *                    `order` block (land-order@1, framework/core/land-order.mjs): the order they land in, Brett's when he
+ *                    set one, the default sort otherwise
  *
  * The push banner's lander (land-core.blockReason, merge-queue-core.notReady) keeps its own words until the gate plugin's
  * store adapter becomes the one writer; `migrate` maps today's config.json keys onto this rule set so nothing is lost.
  */
+
+import { ORDER_FRAME, SOURCES as ORDER_SOURCES, MOVES as ORDER_MOVES, ITEMS_MAX as ORDER_MAX, normOrder, orderErrors, jsonSchema as orderJsonSchema } from './land-order.mjs';
 
 export const SCHEMA = 'gate-rules@1';
 export const RULE_FRAME = 'gate-rule@1';
@@ -153,6 +157,7 @@ export function normLanderState(s, at = new Date().toISOString()) {
     lastRuns: (Array.isArray(x.lastRuns) ? x.lastRuns : []).slice(-RUNS_MAX).map(normRun),
     waiting: (Array.isArray(x.waiting) ? x.waiting : []).slice(0, WAITING_MAX).map(normWaiting),
     landedRecently: (Array.isArray(x.landedRecently) ? x.landedRecently : []).map(pr).filter(Boolean).slice(-20),
+    ...(x.order && typeof x.order === 'object' ? { order: normOrder(x.order, at) } : {}),
     ...(x.error ? { error: str(x.error, 400) } : {}),
   };
 }
@@ -173,6 +178,15 @@ export function landerStateErrors(s) {
   if (!Array.isArray(x.waiting)) out.push('waiting is a list');
   else x.waiting.forEach((w, i) => { const y = obj(w); if (!pr(y.pr)) out.push(`waiting[${i}].pr is a PR number`); if (!WAITING_STATES.includes(y.state)) out.push(`waiting[${i}].state is one of ${WAITING_STATES.join(', ')}`); if (!str(y.reason)) out.push(`waiting[${i}].reason says in plain words why it waits`); if (y.rule && !ID_RE.test(String(y.rule))) out.push(`waiting[${i}].rule is a rule id`); });
   if (x.landing !== null && x.landing !== undefined && !pr(obj(x.landing).pr)) out.push('landing is null or names a PR');
+  if (x.order !== undefined) {
+    for (const e of orderErrors(x.order)) out.push(`order: ${e}`);
+    // every waiting PR is in the order and the order names no PR that is not waiting or landing: the two never drift
+    // (a build whose PR is not open yet may sit in the order as build-<id>; it has no waiting row until the PR opens)
+    const known = new Set([...(Array.isArray(x.waiting) ? x.waiting : []).map((w) => `pr-${obj(w).pr}`), ...(pr(obj(x.landing).pr) ? [`pr-${x.landing.pr}`] : [])]);
+    const listed = new Set((Array.isArray(obj(x.order).items) ? x.order.items : []).map((it) => obj(it).id));
+    for (const id of known) if (!listed.has(id)) out.push(`order misses ${id}`);
+    for (const id of listed) if (id.startsWith('pr-') && !known.has(id)) out.push(`order names ${id}, which is not waiting or landing`);
+  }
   return out;
 }
 
@@ -180,10 +194,11 @@ export function landerStateErrors(s) {
 
 /** The snapshot framework/schemas/gate-rules.json carries, for Python readers and ports. */
 export const REGISTRY = Object.freeze({
-  schema: SCHEMA, version: VERSION, rule: RULE_FRAME, set: SET_FRAME, state: STATE_FRAME, run: RUN_FRAME,
+  schema: SCHEMA, version: VERSION, rule: RULE_FRAME, set: SET_FRAME, state: STATE_FRAME, run: RUN_FRAME, order: ORDER_FRAME,
   kinds: KINDS, severities: SEVERITIES, owners: OWNERS, landerStatuses: LANDER_STATUSES, landerModes: LANDER_MODES,
   waitingStates: WAITING_STATES, runResults: RUN_RESULTS, runReasons: RUN_REASONS, stateSources: STATE_SOURCES,
-  idPattern: ID_PATTERN, rulesMax: RULES_MAX, runsMax: RUNS_MAX, waitingMax: WAITING_MAX, textMax: TEXT_MAX,
+  orderSources: ORDER_SOURCES, orderMoves: ORDER_MOVES,
+  idPattern: ID_PATTERN, rulesMax: RULES_MAX, runsMax: RUNS_MAX, waitingMax: WAITING_MAX, orderMax: ORDER_MAX, textMax: TEXT_MAX,
 });
 
 const $schema = 'https://json-schema.org/draft/2020-12/schema';
@@ -240,8 +255,11 @@ export function jsonSchemas() {
       reason: { type: 'string', minLength: 1, maxLength: TEXT_MAX, description: 'why it waits, in plain words' }, since: { type: 'string' },
     },
   };
+  const orderSchema = orderJsonSchema();
+  const order = { ...orderSchema, $schema: undefined, $id: undefined, description: `${orderSchema.description} Missing while the lander still runs the merge queue's own order.` };
   return {
     'gate-rule.schema.json': rule,
+    'land-order.schema.json': orderSchema,
     'gate-rule-set.schema.json': {
       $schema, $id: $id('gate-rule-set.schema.json'), title: `${SET_FRAME} (${SCHEMA})`, type: 'object', required: ['$axf', 'rev', 'at', 'rules'], additionalProperties: true,
       properties: {
@@ -256,7 +274,7 @@ export function jsonSchemas() {
         $axf: { const: STATE_FRAME }, at: dateTime, status: { enum: LANDER_STATUSES }, enabled: { type: 'boolean', description: 'the one On/Off the cron reads first' },
         paused: { type: 'boolean' }, pause: { type: ['object', 'null'], properties: { why: { type: 'string' }, by: { type: 'string' }, at: { type: 'string' } } },
         mode: { enum: LANDER_MODES }, source: { enum: STATE_SOURCES }, landing, lastRuns: { type: 'array', maxItems: RUNS_MAX, items: run },
-        waiting: { type: 'array', maxItems: WAITING_MAX, items: waiting }, landedRecently: { type: 'array', items: prNumber }, error: { type: 'string' },
+        waiting: { type: 'array', maxItems: WAITING_MAX, items: waiting }, landedRecently: { type: 'array', items: prNumber }, order, error: { type: 'string' },
       },
     },
   };

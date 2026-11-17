@@ -5,6 +5,7 @@
   "set": "gate-rule-set@1",
   "state": "lander-state@1",
   "run": "auto-lander-run@1",
+  "order": "land-order@1",
   "kinds": [
     "ci",
     "tests",
@@ -68,9 +69,21 @@
     "landing-line@1",
     "axf-molly"
   ],
+  "orderSources": [
+    "default",
+    "brett"
+  ],
+  "orderMoves": [
+    "top",
+    "up",
+    "down",
+    "bottom",
+    "index"
+  ],
   "idPattern": "^[a-z0-9][a-z0-9-]{0,40}$",
   "rulesMax": 60,
   "runsMax": 200,
   "waitingMax": 200,
+  "orderMax": 200,
   "textMax": 600
 }

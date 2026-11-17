@@ -275,6 +275,95 @@
         "minimum": 1
       }
     },
+    "order": {
+      "title": "land-order@1 (gate-rules@1)",
+      "description": "The order the auto-lander lands finished builds / PRs in. default = closest-to-main first; brett = a hand set it and it is kept as is. New PRs append at the bottom, merged / closed ones drop out. Missing while the lander still runs the merge queue's own order.",
+      "type": "object",
+      "required": [
+        "$axf",
+        "rev",
+        "source",
+        "updatedAt",
+        "items"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "$axf": {
+          "const": "land-order@1"
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "+1 on every change, by hand or by reconcile"
+        },
+        "source": {
+          "enum": [
+            "default",
+            "brett"
+          ],
+          "description": "default = the engine's sort (behind main ascending, then line position); brett = a hand set it"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "who last changed it: brett, a session name, or empty for the engine"
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 200,
+          "description": "top = lands first; ids unique",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "pr",
+              "build"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "maxLength": 100,
+                "description": "pr-<n> when the PR exists, else build-<id> (landing-line@1 entry id)"
+              },
+              "pr": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "the PR number, 0 while there is none yet"
+              },
+              "build": {
+                "type": "string",
+                "maxLength": 80
+              },
+              "behind": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "commits behind main when known: the default sort key"
+              }
+            }
+          }
+        },
+        "migratedFrom": {
+          "type": "object",
+          "properties": {
+            "frame": {
+              "enum": [
+                "merge-queue@1",
+                "landing-line@1"
+              ]
+            },
+            "at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "description": "set once when the order was first built from the merge queue or the landing line"
+        }
+      }
+    },
     "error": {
       "type": "string"
     }

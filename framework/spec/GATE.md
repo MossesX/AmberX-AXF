@@ -56,6 +56,65 @@ the UI alone.
 `auto-lander-controls-in-the-gate-plugin`) is off; `paused` is the gate plugin's softer hold that leaves the switch alone.
 Both are written to History.
 
+## Land order — land-order@1, the `order` block of lander-state@1
+
+Status: contract since Nov 17 2026 (build `auto-lander-drag-rows-to-set-merge-order`, Fable phase; Brett: "I want to
+reorder the order that they're gonna be merged in."). Reference engine: `framework/core/land-order.mjs` (pure: records,
+`reconcile`, `move`, `next`, `migrate`); JSON Schema `schemas/json/land-order.schema.json` (also embedded in
+`lander-state.schema.json` as `order`); fixture `framework/spec/fixtures/land-order.json` (`spec/check-landing-line.mjs`
+and `spec/check-gate-rules.mjs` replay it, `--write` regenerates). The lander lands one at a time; this record says **in
+which order**. Brett drags rows in the Auto-lander tab (several at once), the lander follows the list.
+
+### Record
+
+```
+order: { $axf: 'land-order@1', rev, source: default | brett, updatedAt, updatedBy, items: [{ id, pr, build, behind? }], migratedFrom?: { frame, at } }
+```
+
+| Field | Meaning |
+| --- | --- |
+| `items` | top lands first; ids unique, ≤ 200. `id` is the landing-line entry id (`pr-<n>`, or `build-<id>` while the PR is not open yet), `pr` the PR number (0 = none yet), `build` the build id ('' = a PR with no build), `behind` commits behind main when known |
+| `source` | `default` = the engine's sort; `brett` = a hand set it (any transport) and it is kept as it is until Reset |
+| `rev` | +1 on every change, by hand or by reconcile; `updatedAt` / `updatedBy` say when and who (`brett`, a session name, '' for the engine) |
+| `migratedFrom` | set once when the order was first built from `merge-queue@1` (the control document's `order` + the queue's items) or `landing-line@1` (the line's entries) |
+
+### Rules (the engine keeps them; every transport gets the same answer)
+
+- **Default order** = closest to main first: `behind` ascending; items with no `behind` go last; ties keep the line's
+  position. While `source` is `default`, every reconcile re-sorts.
+- **New PRs append at the bottom**, whatever the source: a hand order is never re-sorted under Brett's feet.
+- **Merged / closed PRs drop out**; the rest keep their relative order. A PR that comes back (reopened, re-added) appends.
+- **A hand move sets `source: brett`** and bumps `rev`; `move(order, ids, to)` takes one or several ids (multi-select) and
+  a place: `top`, `up`, `down`, `bottom`, or `{ index }` (0 = top). The selected rows move together, in their current
+  relative order; `up` / `down` move the block one place; nothing moves ahead of the entry in flight (landing now).
+- **Reset** puts the order back to `default` (one confirm; the next reconcile re-sorts).
+- **Next** = the first item in the order that is open, waiting and not blocked / held / paused / in flight. A blocked
+  row keeps its place; the lander passes over it and comes back when it is free.
+- **The waiting list follows the order**: `lander-state@1.waiting[].position` is the row's place in `order.items`
+  (1-based); `landing` and every waiting PR appear in `order.items`, and the order names no PR that is not one of them
+  (`landerStateErrors` checks both ways).
+
+### Migration
+
+The first state built after this contract lands carries `order` from what the lander had: the merge queue's manual
+order (`merge-queue-control@1.order`) first, then the queue's `items` and `waiting` in their order (that is also the
+landing line's order after `migrateMergeQueue`); `source: default` unless the control document had a manual order
+(then `brett`, `updatedBy: migration`). A lander on `landing-line@1` takes the line's entries in line order. Nothing is
+dropped: an item the order does not know is appended, one the line no longer has is dropped.
+
+### One surface, four transports
+
+| Transport | Where | Names |
+| --- | --- | --- |
+| Deep link | `view:gate`, `tab:gate.tabs=auto-lander`, `row:<pr>` (the row to drag), `setting:gate.lander.order` | `console_open tab:gate.tabs=auto-lander` |
+| REST | `/api/plugins/gate/lander/order` | `GET lander/order` (the block), `POST lander/order/move` `{ ids, to: top \| up \| down \| bottom \| index, index?, by, reason }`, `PUT lander/order` `{ ids, by, reason }` (the whole list), `POST lander/order/reset` (confirm) |
+| MCP | the console MCP server through `plugin-commands@1` (and axHub) | `lander_order`, `lander_order_move`, `lander_order_set`, `lander_order_reset` |
+| CLI | `axf gate lander order`, `axf gate lander move <pr…> --to top \| up \| down \| bottom \| <index>`, `axf gate lander order set <pr…>`, `axf gate lander order reset` | |
+| Voice (AmberX) | console actions `lander.order`, `lander.move`, `lander.order-reset` | "land 705 first", "move 705 and 706 to the top", "put 705 after 706", "back to the default order" |
+
+Every write carries `by` and `reason: { title, description }` and lands in History (`gate.history`, kind `lander`,
+action `order`). The transports are Phase 2 of the build; this phase ships the record, the engine and the fixture.
+
 ## One surface, four transports (all the same calls)
 
 | Transport | Where | Names |
