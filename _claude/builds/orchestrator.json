@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:52:42.446Z",
+ "updatedAt": "2026-11-17T04:52:58.199Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122614,6 +122614,10 @@
     {
      "text": "Headless run axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie: brief only · start 17.8K tokens ($0.12) · cost $25.31 · 285 turns · 6 tools, MCP none",
      "at": "2026-11-17T04:52:40.322Z"
+    },
+    {
+     "text": "Phase 2 done, PR #776. Fable follow-up: planDragMove answers no_change for a dock-pane side move that keeps the reading order (tree shape changes); engine + fixture change. Report _claude/builds/reports/drag-anything-by-api-and-voice-follow-up-to-full.md",
+     "at": "2026-11-17T04:52:23.980Z"
     }
    ],
    "approvals": [
