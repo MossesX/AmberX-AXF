@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7273,
- "updatedAt": "2026-11-17T03:40:28.785Z",
+ "rev": 7274,
+ "updatedAt": "2026-11-17T03:40:52.829Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -181828,7 +181828,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T03:32:57.432Z",
+   "updatedAt": "2026-11-17T03:38:56.546Z",
    "builtAt": "",
    "notes": [
     {
@@ -181864,7 +181864,16 @@
      "at": "2026-11-17T03:32:57.432Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:38:56.546Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I want to be able to drag anything on any page, anything that's draggable, I want to be able to drag it. The regular API build land first.",
@@ -181881,13 +181890,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T23:21:03.826Z",
     "queuedBy": "brett",
-    "account": "hulu0241",
-    "session": "axf-drag-anything-by-api-and-voice-follow-up-to-full--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-17T03:32:46.403Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -181900,7 +181909,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T03:32:46.403Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -181909,7 +181918,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T03:32:46.403Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -182036,12 +182045,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:38:56.546Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T11:17:21.962Z",
-     "updatedAt": "2026-11-13T11:17:21.962Z"
+     "updatedAt": "2026-11-17T03:38:57.195Z"
     },
     {
      "id": "s6",

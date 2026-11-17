@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T03:40:28.785Z",
+ "updatedAt": "2026-11-17T03:40:52.829Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122576,7 +122576,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T03:32:57.432Z",
+   "updatedAt": "2026-11-17T03:38:56.546Z",
    "builtAt": "",
    "notes": [
     {
@@ -122612,7 +122612,16 @@
      "at": "2026-11-17T03:32:57.432Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-17T03:38:56.546Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I want to be able to drag anything on any page, anything that's draggable, I want to be able to drag it. The regular API build land first.",
@@ -122734,8 +122743,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T03:38:56.546Z",
      "note": "",
      "uid": "st-mwevu27e0pae5n",
      "createdAt": "2026-11-13T11:17:21.962Z"
