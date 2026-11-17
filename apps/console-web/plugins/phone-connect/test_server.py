@@ -262,3 +262,15 @@ DEVH2 = {"authorization": f"Bearer {j2['token']}", "x-axpp": "axpp@1"}
 r = cl.post(f"{P}/device/voice-in", json={"text": "open the build manager"}, headers=DEVH2).json()
 ok("a phrase from the phone reaches the console as phone.voice", r["ok"] and ran and ran[-1]["path"] == "phone.voice" and ran[-1]["input"]["args"] == ["open the build manager"])
 check("the console token can't speak as the phone", cl.post(f"{P}/device/voice-in", json={"text": "x"}, headers={**SESSION, "x-axpp": "axpp@1"}).json()["error"]["code"], "denied")
+
+# ---- s23 axHub tool names answered by the phone
+cap2 = plugin_services.get("axf.phone@1")
+check("recorder_start never goes around the hub's approval", cap2.hub_tool("amberx.recorder_start", {"session": "x"}), None)
+cl.post(f"{P}/device/hello", json={}, headers=DEVH2)
+r = cap2.hub_tool("amberx.recorder_status", {}, wait_s=0)
+ok("amberx.recorder_status is answered by the paired phone", r is not None and r["ok"] and r["command"]["command"] == "recorder.status")
+r = cap2.hub_tool("amberx.open_url", {"url": "https://intent.example/"}, wait_s=0)
+ok("amberx.open_url keeps the phone's url policy", r is not None and not r["ok"] and r["error"]["code"] == "denied")
+for d in S.paired():
+    svc.revoke(d["deviceId"], {"kind": "person", "who": "brett"})
+check("no phone: the caller goes to axHub as before", cap2.hub_tool("amberx.open_url", {"url": "https://console.test/"}), None)

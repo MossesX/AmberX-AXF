@@ -477,6 +477,11 @@ def state(at: str = "") -> dict[str, Any]:
                       "actions": {"open": "phone.open", "device": "phone.device:<deviceId>", "tab": "phone.tab:<pair|phones|features|activity>"}}}
 
 
+def json_text(v: Any) -> str:
+    import json
+    return json.dumps(v, ensure_ascii=False)
+
+
 class PhoneCapability:
     """axf.phone@1: other plugins reach the phone without naming this one. Every method raises PhoneError on a wire error.
     Deciding an approval is not here and never will be (personOnly)."""
@@ -516,6 +521,42 @@ class PhoneCapability:
 
     def command(self, cid: str) -> dict[str, Any]:
         return command(cid)
+
+    # axHub tool names that the console answers from the paired phone first (callers keep their names). recorder_start
+    # is not here: its approval is the hub's (decision #108); the hub's adapter relays it with the approvalId.
+    HUB_TOOLS = {"amberx.open_url": "open_url", "phone.open_url": "open_url", "amberx.recorder_stop": "recorder.stop",
+                 "phone.recorder_stop": "recorder.stop", "amberx.recorder_status": "recorder.status", "phone.recorder_status": "recorder.status"}
+
+    def hub_tool(self, tool: str, arguments: dict | None = None, *, by: dict | None = None, wait_s: float = 12) -> dict[str, Any] | None:
+        """An axHub `amberx.*` / `phone.*` call answered by the paired phone: None when no phone is online (the caller
+        goes on to axHub as before), else {ok, output (text, like the hub's), command}. Never raises."""
+        cmd = self.HUB_TOOLS.get(tool)
+        if not cmd or not self.available():
+            return None
+        args = dict(arguments or {})
+        if cmd == "open_url":
+            args = {"url": str(args.get("url") or ""), "where": "browser" if args.get("browser") else "overlay"}
+        else:
+            args = {}
+        try:
+            r = send(cmd, args, by or {"kind": "service", "who": "hub-tool", "via": "hub"})
+        except PhoneError as e:
+            return {"ok": False, "output": e.err["message"], "error": e.err}
+        import time
+        end = time.time() + max(0.0, wait_s)
+        c = r["command"]
+        while time.time() < end and c["status"] not in ("done", "failed"):
+            time.sleep(0.5)
+            c = command(r["id"])["command"]
+        res = c.get("result") or {}
+        if c["status"] == "failed":
+            return {"ok": False, "output": (res.get("error") or {}).get("message", "the phone failed"), "command": c}
+        data = res.get("data") or {}
+        if cmd == "recorder.status":
+            data = data or (status().get("recorder") or {})
+        text = {"open_url": "Phone Connect opened it on the phone" if c["status"] == "done" else "Phone Connect sent it to the phone",
+                "recorder.stop": "Phone Connect stopped the recorder", "recorder.status": json_text(data)}[cmd]
+        return {"ok": True, "output": text, "command": c, "data": data}
 
     def push_alert(self, alert: dict[str, Any], notify_id: str = "", url: str = "") -> dict[str, Any]:
         """The alert hub's phone channel: one console alert (it already passed axf.notify@1) as a phone notification."""

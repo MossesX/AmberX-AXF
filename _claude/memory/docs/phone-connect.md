@@ -78,3 +78,9 @@ INTEROP.md's: `invalid` · `denied` · `not_found` · `unavailable` · `validati
 - data-store@1 namespace `phone` (plugin folder `phone-connect` is the namespace, like `ui-review`); `data-store-paths.json` maps `phone-connect/<kind>/<file>` → `phone/<kind>/<file>`, `log.jsonl` → `phone/log`. Nothing to migrate yet.
 - Fixture `framework/spec/fixtures/phone-connect.json` is generated (`node framework/spec/check-phone-connect.mjs --write`) from seeded inputs: validators, makeCommand, wire, dispatch order, personOnly, presence, urls, the pairing flow, the AmberX migration, frozen error codes. 295 checks in CI (android.yml sweep).
 - Kotlin twin and the companion app: deferred gap in `framework/spec/PORTING.md`. Next phase: the console plugin (`apps/console-web/plugins/phone-connect`, Python port reading the snapshot), the hub `phone` relay, then the app.
+
+## Phase 2 landed (Nov 17 2026, Opus)
+
+- Console plugin `apps/console-web/plugins/phone-connect`: Python engine port (fixture replay), pairing (personOnly claim through the wall), command queue + device link (`device_router`, long poll + websocket), capability `axf.phone@1`, approvals relay through the approvals banner's `approvals-relay@1`, alert hub → phone push, CLI `axf phone`, MCP `phone_connect_*`, console actions `phone.*`, Settings → Plugins → Phone Connect, `GET state`, systems-check item with auto-fix.
+- App `apps/phone-connect` (Kotlin/Compose): pairing, watch service, open_url, notifications, approval prompts (hub page), recorder, voice.
+- axHub switch: see PHONE-CONNECT.md → axHub switch. The console answers `amberx.open_url` / `recorder_stop` / `recorder_status` from a paired phone first; `recorder_start` stays with the hub's approval. The hub adapter relay is MossesX/axHub work.

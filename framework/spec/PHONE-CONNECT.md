@@ -214,6 +214,22 @@ The plugin phase exposes each feature four ways, the same command underneath: RE
 | the phone's hub session as its credential | a device token from pairing | a migrated device record is `paired` with no token; its next `hello` is answered `unpaired` with a reason `pair`, and the console shows a code |
 | console `output-recorder` plugin data | the companion's recorder, `phone` namespace | the plugin phase's migration script |
 
+## axHub switch (MossesX/axHub; build step s23, Nov 17 2026)
+
+Tool names stay, so no caller changes. What changed on the console side, and what the hub's `amberx` device service
+(axHub repo, `packages/connectors/…`, decision #108) does next:
+
+| Tool | Console today | Hub adapter (MossesX/axHub, to do there) |
+| --- | --- | --- |
+| `amberx.open_url` | the console's own callers (wake, overlay verbs, Vinny's `hub_call`) ask `axf.phone@1.hub_tool` first: a paired, online phone opens it (url policy applies); otherwise axHub → AmberX as before | relay to the console: `POST /api/plugins/phone-connect/open {url, where}` with the console token (`X-AXF-Via: hub`); keep AXPP to AmberX only while an AmberX device is still online |
+| `amberx.recorder_stop` · `amberx.recorder_status` | same: the paired phone first (`recorder.stop`, `recorder.status`) | relay to `POST recorder/stop` · `GET recorder/status?ask=1` |
+| `amberx.recorder_start` | **unchanged**: its approval is the hub's (a straight approval, never auto); the console never routes it around the hub | after the hub's approval, relay to `POST recorder/start {session, group, note, approvalId: <the hub approval id>}`; the phone then asks Android's capture consent (`consent_required` until Brett says yes) |
+| push (notify-control channel `amberx`) | the alert hub sends what may buzz the phone to the paired phone (`notify`); AmberX still reads its feed while it exists | nothing: push never went through a hub tool |
+| `phone.*` (new names) | `ALIASES` resolve them to the same commands | expose `phone.open_url`, `phone.notify`, `phone.recorder_*`, `phone.voice` as the relay names; answer `amberx.*` with `deprecated` for one release |
+
+Decisions are never relayed this way: an approval on the phone opens the hub's own page; a tap that does reach the
+console goes through approvals-relay@1 (the approvals banner) with the console's owner sign-in, never as a command.
+
 ## Deferred
 
 - Kotlin twin (`ai.amberx.axf.phoneconnect`, `PhoneConnectEngine.kt`) and the companion app: Android on hold (PORTING.md).
