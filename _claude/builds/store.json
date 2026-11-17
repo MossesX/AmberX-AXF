@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8127,
- "updatedAt": "2026-11-17T22:03:16.167Z",
+ "rev": 8128,
+ "updatedAt": "2026-11-17T22:03:25.170Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -265983,7 +265983,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T21:38:46.433Z",
+   "updatedAt": "2026-11-17T22:03:07.448Z",
    "builtAt": "",
    "notes": [
     {
@@ -266029,6 +266029,10 @@
     {
      "text": "Brief only: brief is 25839 characters (~6460 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T21:12:27.039Z"
+    },
+    {
+     "text": "s15: UI Review item r-20261117-ufl9j01 (three Hidden-list options) and 8 screenshots were saved in this worktree's local UI Review store, not the live console: this session has no AXF_TOKEN / AXF_CONSOLE_URL. The three option assets ship in the PR (apps/console-web/plugins/theme-manager/assets/dialog/hidden-list-three-ways-*), and the shots are in _claude/builds/reports/rebuild-fresh-main-hide-any-asset/. To put the item in Brett's queue: re-run review.mjs submit --console with the same choices from a session that has the token.",
+     "at": "2026-11-17T22:03:00.455Z"
     }
    ],
    "approvals": [
@@ -266480,12 +266484,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-17T22:03:07.448Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T14:51:42.630Z",
-     "updatedAt": "2026-11-17T14:51:42.630Z"
+     "updatedAt": "2026-11-17T22:03:07.892Z"
     },
     {
      "id": "s16",
@@ -266523,7 +266527,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
