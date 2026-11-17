@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T18:04:38.969Z",
+ "updatedAt": "2026-11-17T18:04:56.381Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -174382,9 +174382,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:04:26.928Z",
-   "updatedAt": "2026-11-17T18:04:28.662Z",
+   "updatedAt": "2026-11-17T18:04:54.371Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Brett (scope widened): full voice/API control of every grid, new and existing. Select/highlight rows by ANY column or condition, not just keyword: built on a date, commits/PRs behind main over N, status, model, etc. (select all that say X, highlight all that say Y). Edit the grid's colors/look (tokens) by voice too. Brett said: \"Highlight all rows built on this date... highlight this row based on how many PRs behind main and all that. All grids, new and existing, need to be able to be fully controlled... edit the colors for the table.\"",
+     "at": "2026-11-17T18:04:54.371Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
