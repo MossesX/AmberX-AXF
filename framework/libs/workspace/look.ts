@@ -4,7 +4,7 @@
  * defaults. `labels` on the toolbar definition is its default Buttons choice; every other field starts at the toolbar
  * asset type's default. No React here, so the specs can check it.
  */
-import { CHROME_INSTANCE_KEY, chromeInstanceData } from '../../core/engines/chrome-settings-rules.mjs';
+import { CHROME_INSTANCE_KEY, CHROME_KIND_DEFAULTS_KEY, chromeInstanceData } from '../../core/engines/chrome-settings-rules.mjs';
 import type { ToolbarDef } from './store';
 
 export interface WsToolbarLook { variant: 'icons' | 'icons-labels' | 'labels'; align: 'start' | 'center' | 'spread'; density: 'compact' | 'regular' | 'roomy'; surface: 'flat' | 'raised' | 'glass'; divider: boolean; showSearch: boolean; collapsible: boolean }
@@ -14,7 +14,7 @@ export const WS_TOOLBAR_FOLD_KEY = (toolbarId: string) => `axf.workspace.toolbar
 
 export function wsToolbarLook(get: (key: string) => unknown, tb: Pick<ToolbarDef, 'id' | 'labels'>): WsToolbarLook {
   const base: WsToolbarLook = { variant: tb.labels ? 'icons-labels' : 'icons', align: 'start', density: 'regular', surface: 'flat', divider: true, showSearch: false, collapsible: false };
-  return chromeInstanceData('toolbar', base, get(CHROME_INSTANCE_KEY('toolbar', tb.id)));
+  return chromeInstanceData('toolbar', base, get(CHROME_INSTANCE_KEY('toolbar', tb.id)), get(CHROME_KIND_DEFAULTS_KEY('toolbar'))); // skin-slots@1 kind defaults under the toolbar's own
 }
 
 /** The attributes a workspace toolbar carries for its look (workspace.css styles them). */

@@ -25,7 +25,7 @@
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md); fixture spec/fixtures/skin.json (`slots` block).
  */
-import { CHROME_FIELDS, CHROME_INSTANCE_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_TYPES } from './chrome-settings-rules.mjs';
+import { CHROME_FIELDS, CHROME_KIND_DEFAULTS_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_TYPES } from './chrome-settings-rules.mjs';
 
 export const SKIN_SLOTS_CONTRACT = 'skin-slots@1';
 /** The slots this file owns, in the order a table lists them. */
@@ -63,7 +63,12 @@ const EASE_KEYWORDS = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out'];
 export const motionSpeedVar = (speed) => `--fx-motion-${speed}`;
 export const motionEaseVar = (role) => `--fx-motion-ease-${role}`;
 export const motionKindVar = (kind, field) => `--fx-motion-${kind}-${field}`;
+/** The root attribute a kind's enter / exit lands on (axf.css selects on it: `[data-fx-motion-dialog-enter='rise']`). */
+export const motionKindAttr = (kind, field) => `data-fx-motion-${kind}-${field}`;
 export const MOTION_REDUCED_ATTR = 'data-fx-motion-reduced';
+
+/** The settings key the normalised motion slot rides on (the runtime compiles it; a scoped view reads its own). */
+export const MOTION_KEY = 'axf.motion';
 
 /** Is `v` an easing a skin may name: one of MOTION_EASING_NAMES, a CSS keyword, or a cubic-bezier(...)? */
 export const isEasing = (v) => typeof v === 'string' && (v in MOTION_EASING_NAMES || EASE_KEYWORDS.includes(v) || CUBIC.test(v));
@@ -144,15 +149,24 @@ export function skinMotionStyle(raw, prefersReduced = false) {
   const attrs = {};
   const reduced = m.reduced === 'always' || (m.reduced === 'system' && prefersReduced === true);
   for (const [s, ms] of Object.entries(m.speed ?? {})) vars[motionSpeedVar(s)] = reduced ? '0ms' : `${ms}ms`;
+  // the everyday speed is what the whole sheet reads as --fx-motion: a skin that sets it moves everything
+  if (m.speed?.normal !== undefined) vars['--fx-motion'] = reduced ? '0ms' : `${m.speed.normal}ms`;
   for (const [r, e] of Object.entries(m.easing ?? {})) vars[motionEaseVar(r)] = easingCss(e);
   for (const [kind, k] of Object.entries(m.chrome ?? {})) {
-    if (k.enter) vars[motionKindVar(kind, 'enter')] = reduced ? 'none' : k.enter;
-    if (k.exit) vars[motionKindVar(kind, 'exit')] = reduced ? 'none' : k.exit;
+    // enter / exit: a token for readers and a root attribute the stylesheet selects on (data-fx-motion-<kind>-enter)
+    if (k.enter) { vars[motionKindVar(kind, 'enter')] = reduced ? 'none' : k.enter; attrs[motionKindAttr(kind, 'enter')] = reduced ? 'none' : k.enter; }
+    if (k.exit) { vars[motionKindVar(kind, 'exit')] = reduced ? 'none' : k.exit; attrs[motionKindAttr(kind, 'exit')] = reduced ? 'none' : k.exit; }
     if (k.duration) vars[motionKindVar(kind, 'dur')] = reduced ? '0ms' : `var(${motionSpeedVar(k.duration)})`;
     if (k.stagger !== undefined) vars[motionKindVar(kind, 'stagger')] = reduced ? '0ms' : `${k.stagger}ms`;
   }
   if (m.reduced) attrs[MOTION_REDUCED_ATTR] = reduced ? '1' : '0';
   return { vars, attrs };
+}
+
+/** The setting a skin's motion puts in force: `axf.motion` = the normalised slot (compileStyles turns it into tokens). */
+export function skinMotionSettings(raw) {
+  const m = normalizeSkinMotion(raw);
+  return Object.keys(m).length ? { [MOTION_KEY]: m } : {};
 }
 
 /* ---------------------------------------------------------------- behaviour */
@@ -176,8 +190,9 @@ export const behaviorTapKindKey = (kind) => (kind === 'toolbar' ? 'axf.toolbars.
 /** Interaction overrides over the behaviour theme in force: `{ interaction: { hover, press, focusRing } }`. */
 export const BEHAVIOR_OVERRIDES_KEY = 'axf.behavior';
 /** Kind-wide chrome field defaults, read under every instance override (chrome-settings@1 `axf.chrome.<kind>.*`). */
-export const CHROME_KIND_DEFAULTS_KEY = (kind) => CHROME_INSTANCE_KEY(kind, '*');
-export const NAV_COLLAPSED_SETTING = 'axf.nav.collapsed';
+export { CHROME_KIND_DEFAULTS_KEY };
+/** The nav's collapsed default (a look setting); the user's own fold (`axf.nav.collapsed`, per device) wins when set. */
+export const NAV_COLLAPSED_SETTING = 'axf.nav.collapsedDefault';
 
 const fieldOptions = (kind, field) => CHROME_FIELDS[kind]?.find((f) => f.key === field)?.options ?? [];
 
@@ -512,7 +527,18 @@ export function skinSlotsErrors(raw) {
  */
 export function skinSlotSettings(raw, existingStyle) {
   const d = isObj(raw) ? raw : {};
-  return { ...skinBehaviorSettings(d.behavior), ...skinHookSettings(d.hooks), ...skinGridSettings(d.grid, existingStyle), ...skinDialogSettings(d.dialog), ...skinSettingsChrome(d.settings).settings };
+  return { ...skinMotionSettings(d.motion), ...skinBehaviorSettings(d.behavior), ...skinHookSettings(d.hooks), ...skinGridSettings(d.grid, existingStyle), ...skinDialogSettings(d.dialog), ...skinSettingsChrome(d.settings).settings };
+}
+
+/**
+ * The settings keys (by prefix) the five slots write. They count as appearance settings (engines/designpackage.ts
+ * `isAppearanceSetting`), so a look document carries them and the runtime applies them like every other look setting;
+ * `axf.chrome.` covers the skin's chrome block, the kind-wide defaults, the dialog chrome and the settings-interface picks.
+ */
+export const SKIN_SLOT_SETTING_PREFIXES = [MOTION_KEY, BEHAVIOR_OVERRIDES_KEY, BEHAVIOR_ARM_KEY, 'axf.toolbars.tapConfirm', 'axf.tapConfirm.', NAV_COLLAPSED_SETTING, 'axf.chrome.', 'axf.hooks.', GRID_KEY];
+/** The settings keys compileStyles reads for the slots (a render dependency: runtime.styleSettingsKey). */
+export function skinSlotStyleKeys() {
+  return [MOTION_KEY, BEHAVIOR_OVERRIDES_KEY, DIALOG_KEY, GRID_KEY, NAV_COLLAPSED_SETTING, ...CHROME_TYPES.map((t) => CHROME_KIND_DEFAULTS_KEY(t))];
 }
 
 /* ---------------------------------------------------------------- JSON Schema */

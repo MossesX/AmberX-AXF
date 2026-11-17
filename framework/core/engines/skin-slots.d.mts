@@ -20,6 +20,7 @@ export const MOTION_REDUCED_ATTR: 'data-fx-motion-reduced';
 export function motionSpeedVar(speed: string): string;
 export function motionEaseVar(role: string): string;
 export function motionKindVar(kind: string, field: 'enter' | 'exit' | 'dur' | 'stagger'): string;
+export function motionKindAttr(kind: string, field: 'enter' | 'exit'): string;
 export function isEasing(v: unknown): boolean;
 export function easingCss(v: string): string;
 export interface SkinMotionKind { enter?: MotionEnter; exit?: MotionEnter; duration?: MotionSpeed; stagger?: number }
@@ -32,6 +33,8 @@ export interface SkinMotion {
 export function normalizeSkinMotion(raw: unknown): SkinMotion;
 export function skinMotionErrors(raw: unknown): string[];
 export function skinMotionStyle(raw: unknown, prefersReduced?: boolean): { vars: Record<string, string>; attrs: Record<string, string> };
+export const MOTION_KEY: 'axf.motion';
+export function skinMotionSettings(raw: unknown): Record<string, unknown>;
 
 /* behaviour */
 export const BEHAVIOR_TAP_KINDS: readonly string[];
@@ -44,7 +47,7 @@ export const BEHAVIOR_ARM_KEY: 'axf.toolbars.armMs';
 export function behaviorTapKindKey(kind: string): string;
 export const BEHAVIOR_OVERRIDES_KEY: 'axf.behavior';
 export function CHROME_KIND_DEFAULTS_KEY(kind: string): string;
-export const NAV_COLLAPSED_SETTING: 'axf.nav.collapsed';
+export const NAV_COLLAPSED_SETTING: 'axf.nav.collapsedDefault';
 export interface SkinBehavior {
   tapConfirm?: { armMs?: number } & Record<string, 'on' | 'off' | number | undefined>;
   hover?: string;
@@ -114,4 +117,6 @@ export interface SkinSlots { motion?: SkinMotion; behavior?: SkinBehavior; hooks
 export function normalizeSkinSlots(raw: unknown): SkinSlots;
 export function skinSlotsErrors(raw: unknown): string[];
 export function skinSlotSettings(raw: unknown, existingStyle?: unknown): Record<string, unknown>;
+export const SKIN_SLOT_SETTING_PREFIXES: readonly string[];
+export function skinSlotStyleKeys(): string[];
 export function skinSlotsJsonSchemas(): Record<SkinSlotKey, Record<string, unknown>>;
