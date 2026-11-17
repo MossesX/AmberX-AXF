@@ -5,6 +5,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import * as c from '../plan/builds-store-core.mjs';
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -252,5 +254,17 @@ t('every write is versioned in the journal and can be restored', () => {
 io.withStore((s) => c.addDraftOp(s, 'all', { op: 'rename-build', id: 'shared', title: 'Draft name' }), { by: 'test', action: 'draft' });
 t('draft survives a reload, Apply writes it', () => { assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 1); io.applyDraftNow('all', 'test'); assert.equal(io.loadStore().builds.find((x) => x.id === 'shared').title, 'Draft name'); assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 0); });
 t('the store on disk leaves out an unchanged default breakdown', () => { const raw = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.ok(raw.builds.some((b) => !('defaultSteps' in b))); });
+
+// builds-journal@1: the real journal lives on the hub, so CI reads the fixture journal (framework/spec/fixtures-journal)
+// through AXF_BUILDS_JOURNAL in a child process (this one is pinned to a test store); no 70 MB part is needed
+t('history reads the journal home (fixture journal through AXF_BUILDS_JOURNAL)', () => {
+  const env = { ...process.env, AXF_BUILDS_JOURNAL: fileURLToPath(new URL('./fixtures-journal', import.meta.url)), AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0' };
+  delete env.AXF_BUILDS_STORE;
+  const code = `const io = await import(${JSON.stringify(new URL('../cli/builds-store.mjs', import.meta.url).href)}); console.log(JSON.stringify({ mode: io.journalMode(), dir: io.journalDir(), h: io.journalOf('journal-fixture').map((x) => x.rev) }));`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { env, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const o = JSON.parse(r.stdout.trim().split('\n').pop());
+  assert.equal(o.mode, 'explicit'); assert.ok(o.dir.endsWith('fixtures-journal')); assert.deepEqual(o.h, [1, 2]);
+});
 
 console.log(`builds-store: ${n} checks passed`);
