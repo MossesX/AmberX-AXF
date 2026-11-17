@@ -21,13 +21,6 @@
       "model": "fable"
     },
     {
-      "id": "ai.amberx.axf.console.hub-admin",
-      "name": "axHub admin",
-      "target": "axf-console",
-      "description": "Console tab that manages axHub (lib-hub-admin).",
-      "model": "opus"
-    },
-    {
       "id": "ai.amberx.axf.axhub-adapter",
       "name": "axHub adapter for AXF",
       "target": "axhub",

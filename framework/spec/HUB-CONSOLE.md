@@ -49,7 +49,7 @@ decides and never writes to the hub.** `console` channel actions touch only the 
 | Reach | Read | Row read | Action |
 | --- | --- | --- | --- |
 | deep link | `view:hub/tab:hub.tabs=s` | `…/grid:hub.s/row:r` | `…[/grid:hub.s/row:r]/button:a` |
-| REST | `GET /api/plugins/hub-admin/s` | `GET …/s/r` | `POST …/s[/r]/a` (`DELETE …/s/r` when the action carries `method: DELETE`: it removes the row itself) |
+| REST | `GET /api/plugins/hub-admin/s` | `GET …/s/r` | `POST …/s[/r]/a` (`DELETE …/s/r` when the action carries `method: DELETE`: it removes the row itself) | <!-- axf-plugin:hub-admin -->
 | MCP | `state.tool` | `rows.read.tool` | `action.tool` (fixed in the table or `hub_<s>_<a>`), none for `person` |
 | CLI | `axf hub s` | `axf hub s r` | `axf hub s a [r] [--confirm]`, none for `person` |
 | voice | `hub.s` | `hub.s` | `hub.s.<camelCase a>`, none for `person` |
@@ -179,7 +179,7 @@ One view group **Hub** on the console nav, one TabGroup row `hub.tabs`:
 | `view:hub/tab:hub.tabs=apps` | Apps (catalog downloads) | `#/apps` |
 | `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hub` | Hub settings (every former axHub web setting) | lib-settings in axHub web |
 
-Every screen gets the four reaches (REST `/api/plugins/hub-admin/<screen>`, MCP `hub_<screen>_*`, CLI `axf hub <screen>`,
+Every screen gets the four reaches (REST `/api/plugins/hub-admin/<screen>`, MCP `hub_<screen>_*`, CLI `axf hub <screen>`, <!-- axf-plugin:hub-admin -->
 voice `hub.<screen>`), listed per screen in the contract (step 2) and checked by the parity script (step 27).
 
 ## Deferred

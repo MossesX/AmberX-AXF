@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "hub-admin-help",
+  "name": "Hub help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Hub plugin: the view, each tab of the hub.tabs row and the settings sub-tab.",
+  "author": "Brett",
+  "tags": ["help", "hub"],
+  "data": {
+    "scope": "plugin:hub-admin",
+    "entries": [
+      { "target": "view:hub", "title": "Hub", "text": "Every axHub page in the console: approvals, the log, passes and veto, users, your account, connectors and services, handoff, auth admin and app downloads. Pick a tab; each screen is also a deep link, a REST read, an MCP tool, a CLI line and a voice action.", "kind": "screen" },
+      { "target": "tab:hub.tabs=overview", "title": "Hub", "text": "Whether this browser is signed in to axHub, how many calls wait, and one tap to sign in or out.", "kind": "screen" },
+      { "target": "tab:hub.tabs=approvals", "title": "Approvals", "text": "Every call axHub is holding or asking about, with its countdown. Approve, Deny and Shelve are your own tap; no session can press them.", "kind": "screen" },
+      { "target": "tab:hub.tabs=log", "title": "Approval log", "text": "Every request the hub asked about, how it was decided and what happened after, with filters for service, tool, who and outcome.", "kind": "screen" },
+      { "target": "tab:hub.tabs=passes", "title": "Passes and veto", "text": "Timed passes that let calls run without the veto wait, the go pass for sessions that cannot reach axHub, and the veto countdown. Granting is your own tap.", "kind": "screen" },
+      { "target": "tab:hub.tabs=users", "title": "Users", "text": "Who can sign in to the hub and what each account may open. Role changes, disabling and deleting ask you to confirm.", "kind": "screen" },
+      { "target": "tab:hub.tabs=account", "title": "Account", "text": "Your hub account: name and email, password, signed-in browsers, the linked phone and notification preferences.", "kind": "screen" },
+      { "target": "tab:hub.tabs=connectors", "title": "Apps and connectors", "text": "Every connected service with its status, its tools and their policies (allow, veto, confirm), and the health of its keys. Open a row for the service detail.", "kind": "screen" },
+      { "target": "tab:hub.tabs=handoff", "title": "Handoff", "text": "Claude account handoff kits the hub built: open one, send it to a session and mark it sent.", "kind": "screen" },
+      { "target": "tab:hub.tabs=auth", "title": "Auth admin", "text": "OAuth clients, API tokens and sign-in methods. A token is shown once when created and never stored in the console.", "kind": "screen" },
+      { "target": "tab:hub.tabs=apps", "title": "Apps", "text": "Every app the framework's CI built, with a download each.", "kind": "screen" },
+      { "target": "hub", "title": "Hub settings", "text": "Settings → Plugins → Hub: every setting the axHub web app used to keep, now in the console (how often the hub is read, grid columns, log filters, grant-pass defaults, the veto countdown). No wait stays in Claude settings and shows here read-only." }
+    ]
+  }
+}
