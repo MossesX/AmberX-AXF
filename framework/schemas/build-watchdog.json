@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/build-watchdog.json",
+  "title": "build-watchdog@1: stuck-build recovery (record watchdog-recovery@1)",
+  "description": "A build marked Building with no live session is reset, requeued and retried by the orchestrator; every fix is a recovery record on the build (builds@1 recoveries[], journal action watchdog-recover) and one phone FYI.",
+  "type": "object",
+  "$ref": "#/$defs/recovery",
+  "$defs": {
+    "recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "at",
+        "buildId",
+        "cause",
+        "action",
+        "attempt"
+      ],
+      "properties": {
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "buildId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "phase": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "step": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "cause": {
+          "enum": [
+            "usage-limit",
+            "auth-failed",
+            "exit-clean",
+            "exit-killed",
+            "exit-oom",
+            "exit-failed",
+            "tmux-missing",
+            "pid-gone",
+            "stale-heartbeat"
+          ]
+        },
+        "exit": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "action": {
+          "enum": [
+            "requeue",
+            "retry",
+            "retry-other-account",
+            "kill-retry",
+            "give-up"
+          ]
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "account": {
+          "type": "string",
+          "pattern": "^$|^[a-z0-9][a-z0-9-]{0,31}$"
+        },
+        "notified": {
+          "type": "string",
+          "description": "ISO date-time, or \"\" for none"
+        },
+        "session": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 400
+        }
+      }
+    },
+    "probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pid": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "tmux": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "lastSeenAt": {
+          "type": "string",
+          "description": "ISO date-time, or \"\" for none"
+        },
+        "exit": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "exitKind": {
+          "enum": [
+            "",
+            "phase-done",
+            "crash",
+            "stopped"
+          ]
+        },
+        "limit": {
+          "enum": [
+            "",
+            "usage",
+            "auth"
+          ]
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stuck",
+        "cause",
+        "action"
+      ],
+      "properties": {
+        "stuck": {
+          "type": "boolean"
+        },
+        "cause": {
+          "enum": [
+            "usage-limit",
+            "auth-failed",
+            "exit-clean",
+            "exit-killed",
+            "exit-oom",
+            "exit-failed",
+            "tmux-missing",
+            "pid-gone",
+            "stale-heartbeat",
+            "starting",
+            "live",
+            "unknown"
+          ]
+        },
+        "exit": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "action": {
+          "enum": [
+            "none",
+            "requeue",
+            "retry",
+            "retry-other-account",
+            "kill-retry",
+            "give-up"
+          ]
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "account": {
+          "type": "string",
+          "pattern": "^$|^[a-z0-9][a-z0-9-]{0,31}$"
+        },
+        "excludeAccounts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^$|^[a-z0-9][a-z0-9-]{0,31}$"
+          }
+        },
+        "resetStep": {
+          "type": "boolean"
+        },
+        "releaseSlot": {
+          "type": "boolean"
+        },
+        "requeue": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "",
+            "queued",
+            "pending"
+          ]
+        },
+        "step": {
+          "type": "string"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "banner": {
+          "type": "boolean"
+        },
+        "notify": {
+          "enum": [
+            "",
+            "watchdog.fix",
+            "watchdog.gave-up"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "staleMin": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 240,
+          "default": 20
+        },
+        "graceMin": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60,
+          "default": 3
+        },
+        "maxRetries": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "default": 3
+        }
+      }
+    }
+  }
+}

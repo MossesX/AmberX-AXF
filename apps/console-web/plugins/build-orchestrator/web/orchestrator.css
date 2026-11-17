@@ -65,6 +65,29 @@ button.oc-model { cursor: pointer }
 .og-dot.is-warning::before { background: var(--fx-warning) }
 .og-dot.is-danger::before { background: var(--fx-danger) }
 
+/* Build watchdog: settings rows (a number field with its Save) */
+.oc-wd-num { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.oc-wd-num > :first-child { flex: 1 }
+
+/* Build watchdog tab: one compact line per build / fix, chips for what the probe saw */
+.oc-wd-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.oc-wd-head { margin: 0; font-size: var(--fx-type-root-md); font-weight: 600 }
+.oc-wd-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.oc-wd-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-top: var(--fx-border-w) solid var(--fx-border) }
+.oc-wd-row:first-child { border-top: 0 }
+.oc-wd-row.is-focus { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.oc-wd-row__main { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); min-width: 0; overflow-wrap: anywhere }
+.oc-wd-row__side { flex: none; white-space: nowrap }
+.oc-wd-chips { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) }
+:where([data-fx-tiny], [data-fx-small]) .oc-wd-row { flex-direction: column }
+:where([data-fx-tiny], [data-fx-small]) .oc-wd-row__side { white-space: normal }
+
+/* Watchdog layouts (UI Review choice set build-watchdog-panel-lay-mwk6tob9): stacked is the base above */
+.oc-wd[data-layout='cards'] .oc-wd-running .oc-wd-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 18), 1fr)); gap: var(--fx-dens-gap-md); border: 0 }
+.oc-wd[data-layout='cards'] .oc-wd-running .oc-wd-row { flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.oc-wd[data-layout='split'] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: var(--fx-dens-gap-xl) }
+.oc-wd[data-layout='split'] > :not(.oc-wd-running):not(.oc-wd-fixes) { grid-column: 1 / -1 }
+:where([data-fx-tiny], [data-fx-small]) .oc-wd[data-layout='split'] { grid-template-columns: minmax(0, 1fr) }
 /* Stale-row watchdog card (WatchdogPanel.tsx): layout only, every control is a framework control */
 .axp-build-orchestrator__wd { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
 .axp-build-orchestrator__wd-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
