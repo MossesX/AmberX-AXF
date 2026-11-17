@@ -831,12 +831,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 21:30 UTC · `flagship-professional-skin-covering` added (0 steps) (all) · builds-live
-- 2026-11-17 21:30 UTC · `flagship-professional-skin-covering` added (0 steps) (all) · foreign-write
-- 2026-11-17 21:30 UTC · `console-app-part-2-native-floating` note (all) · watchdog
-- 2026-11-17 21:30 UTC · `flagship-professional-skin-covering-2` added (0 steps) (all) · console
-- 2026-11-17 21:30 UTC · `fix-banner-settings-interface-tab` s5 done (all) · orchestrator
-- 2026-11-17 21:31 UTC · `flagship-professional-skin-covering-2` note (all) · mcp
 - 2026-11-17 21:32 UTC · `flagship-professional-skin-covering` note (all) · orchestrator
 - 2026-11-17 21:32 UTC · `rebuild-fresh-main-hide-any-asset` s12 done (all) · orchestrator
 - 2026-11-17 21:32 UTC · `fix-banner-settings-interface-tab` s6 done (all) · orchestrator
@@ -1231,6 +1225,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · pipeline
+- 2026-11-17 22:31 UTC · `banner-widget-shapes-plus-change-icon` s13 done (all) · foreign-write
+- 2026-11-17 22:31 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-17 22:31 UTC · `move-everything-axhub-web-console` added (0 steps) (all) · foreign-write
+- 2026-11-17 22:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-17 22:31 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-17 22:32 UTC · `flagship-professional-skin-covering-2` s7 done (all) · foreign-write
 
 ## Token passes (log)
 
