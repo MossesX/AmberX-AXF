@@ -60,3 +60,7 @@ button.oc-model { cursor: pointer }
 .og-dot.is-success::before { background: var(--fx-success) }
 .og-dot.is-warning::before { background: var(--fx-warning) }
 .og-dot.is-danger::before { background: var(--fx-danger) }
+
+/* Build watchdog: settings rows (a number field with its Save) */
+.oc-wd-num { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.oc-wd-num > :first-child { flex: 1 }

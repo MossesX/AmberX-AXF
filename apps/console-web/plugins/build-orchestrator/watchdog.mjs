@@ -26,6 +26,7 @@
  *
  *   … status [--json]              on/off, cron installed, last pass and its age (stale after 3 min), the last scan the host
  *                                  saw, recent fixes, builds it gave up on
+ *   … settings [--json] · set key=value… [--by who] | set --json '{…}'   the Watchdog settings (keys: SETTING_KEYS)
  *   … requeue [<id>…]              Fix (requeue): builds it gave up on back to the Queue with a fresh retry count
  *   … cron                         what the axf-watchdog cron runs every minute: a pass when the watchdog is on and
  *                                  intervalMin has gone by since the last one, or when the console asked for one (request)
@@ -92,6 +93,19 @@ export function normSettings(raw = {}) {
   return { ...W.normSettings({ ...o, enabled: bool(o.enabled, true) }), intervalMin: num('intervalMin'), cooldownMin: num('cooldownMin'), retryOtherAccount: bool(o.retryOtherAccount, true), fyi: o.fyi === 'each' ? 'each' : 'batch' };
 }
 export const settingsFile = (env = process.env) => join(pipeDir(env), 'build-watchdog-settings.json');
+/** The keys Settings → Plugins → Build orchestrator → Watchdog edits (and `set`, PUT watchdog/settings, MCP, voice). */
+export const SETTING_KEYS = ['enabled', 'intervalMin', 'staleMin', 'graceMin', 'maxRetries', 'retryOtherAccount', 'fyi', 'cooldownMin'];
+/** Save a patch of SETTING_KEYS (unknown keys are refused), normalized; returns the saved settings. */
+export function saveSettings(patch = {}, { by = process.env.AXF_ACTOR || 'cli', env = process.env } = {}) {
+  const bad = Object.keys(patch).filter((k) => !SETTING_KEYS.includes(k));
+  if (bad.length) throw Object.assign(new Error(`unknown setting ${bad.join(', ')} (keys: ${SETTING_KEYS.join(', ')})`), { code: 2 });
+  const prev = readJson(settingsFile(env), {}) ?? {};
+  const next = normSettings({ ...prev, ...patch });
+  const f = settingsFile(env); mkdirSync(dirname(f), { recursive: true });
+  writeFileSync(`${f}.${process.pid}.tmp`, `${JSON.stringify({ $axf: 'build-watchdog-settings@1', ...next, setBy: str(by, 80), setAt: new Date().toISOString() }, null, 1)}\n`);
+  renameSync(`${f}.${process.pid}.tmp`, f);
+  return loadSettings(env);
+}
 /** The watchdog settings: defaults, then the saved settings, then AXF_WATCHDOG_SETTINGS (tests). */
 export function loadSettings(env = process.env) {
   let patch = {};
@@ -498,6 +512,12 @@ export async function main(argv = process.argv.slice(2)) {
       ...(r.lastScan ? [`last scan: ${r.lastScan.builds.length} running, ${r.lastScan.builds.filter((b) => b.stuck).length} stuck`] : []),
       ...r.gaveUp.map((g) => `  gave up: ${g.id} (${g.cause}, attempt ${g.attempt})`), ...r.recent.slice(0, 10).map((x) => `  ${x.at} ${x.buildId || 'slots'}: ${x.cause} → ${x.action}${x.attempt ? ` #${x.attempt}` : ''}${x.notified ? ' · told the phone' : ''}`)].join('\n'));
   }
+  if (cmd === 'settings') return out({ ok: true, settings: loadSettings(), keys: SETTING_KEYS, defaults: { ...W.DEFAULTS, ...EXTRA_DEFAULTS } }, JSON.stringify(loadSettings(), null, 1));
+  if (cmd === 'set') {
+    const patch = typeof f.json === 'string' ? JSON.parse(f.json) : Object.fromEntries(f._.map((kv) => { const i = kv.indexOf('='); if (i < 1) throw Object.assign(new Error(`set key=value (keys: ${SETTING_KEYS.join(', ')})`), { code: 2 }); return [kv.slice(0, i), kv.slice(i + 1)]; }));
+    const r = saveSettings(patch, { by: typeof f.by === 'string' ? f.by : undefined });
+    return out({ ok: true, settings: r }, `saved: ${Object.keys(patch).map((k) => `${k}=${r[k]}`).join(' · ')}`);
+  }
   if (cmd === 'requeue') { const r = requeueGaveUp(f._); if (r.failed.length) process.exitCode = 1; return out({ ok: !r.failed.length, ...r }, `requeued ${r.requeued.join(', ') || 'nothing'}${r.failed.length ? ` · failed ${r.failed.map((x) => `${x.id}: ${x.error}`).join('; ')}` : ''}`); }
   if (cmd === 'cron') {
     const r = cronPass();
@@ -507,7 +527,7 @@ export async function main(argv = process.argv.slice(2)) {
   if (cmd === 'request') { const r = requestRun({ by: typeof f.by === 'string' ? f.by : undefined, build: typeof f.build === 'string' ? f.build : '' }); return out({ ok: true, ...r }, `asked the host for a watchdog pass (${r.at}): the next cron minute runs it`); }
   if (cmd === 'install-cron') { const r = installCron({ dir: typeof f.dir === 'string' ? f.dir : undefined }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `cron not installed: ${r.skipped}` : `installed ${r.file}`) : `cron not installed: ${r.error}`); }
   if (cmd === 'remove-cron') { const r = removeCron(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.removed ? `removed ${r.file}` : `${r.file} was not there`) : `not removed: ${r.error}`); }
-  throw Object.assign(new Error(`unknown command ${cmd} (status, scan, run, requeue, cron, request, install-cron, remove-cron)`), { code: 2 });
+  throw Object.assign(new Error(`unknown command ${cmd} (status, scan, run, settings, set, requeue, cron, request, install-cron, remove-cron)`), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === SELF) {

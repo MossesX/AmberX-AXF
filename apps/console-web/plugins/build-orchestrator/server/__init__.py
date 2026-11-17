@@ -399,6 +399,30 @@ from . import watchdog as watchdog_mod  # noqa: E402
 watchdog_mod.ensure_health()
 
 
+def _watchdog(*args: str, who: str = "", timeout: int = 120) -> dict[str, Any]:
+    res = watchdog_mod.run_cli(*args, actor=who, timeout=timeout)
+    if res.get("ok") is False:
+        err = str(res.get("error") or "watchdog failed")
+        raise HTTPException(400 if "unknown setting" in err or "key=value" in err else 500, err[:400])
+    return res
+
+
+@router.get("/watchdog/settings")
+def watchdog_settings() -> dict[str, Any]:
+    """The Watchdog settings (Settings → Plugins → Build orchestrator → Watchdog): {settings, keys, defaults}."""
+    return _watchdog("settings")
+
+
+@router.put("/watchdog/settings")
+async def watchdog_settings_set(request: Request) -> dict[str, Any]:
+    """Save a patch of the Watchdog settings ({key: value}; unknown keys → 400). Hot: the next pass reads them."""
+    body = await _json_body(request)
+    if not body:
+        raise HTTPException(400, "send {key: value} (keys: enabled, intervalMin, staleMin, graceMin, maxRetries, retryOtherAccount, fyi, cooldownMin)")
+    who = brett_click(request) or "console"
+    return _watchdog("set", "--json", json.dumps(body), "--by", who, who=who)
+
+
 
 # ---- the build pipeline (Brett, Nov 8 2026): Pending → Queue → Building, run by pipeline.mjs on the VPS host
 
