@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:50:46.057Z",
+ "updatedAt": "2026-11-17T14:51:44.467Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171559,12 +171559,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T14:50:37.448Z",
+   "updatedAt": "2026-11-17T14:51:42.630Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T14:50:37.448Z"
+    },
+    {
+     "text": "Split by Claude into 16 steps (5 Fable).",
+     "at": "2026-11-17T14:51:42.630Z"
     }
    ],
    "approvals": [],
@@ -171581,7 +171585,374 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read the old attempts' reports in _claude/builds/reports/ (assets-menu-hide-any-asset*) and diff the two old branches against main (git log/diff only, no merge). Write the decisions and what to reuse into _claude/builds/reports/rebuild-fresh-main-hide-any-asset.md (draft section 'Prior attempts').",
+     "model": "Fable",
+     "why": "Sets the cross-app hide contract the rest of the build follows",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/",
+      "_claude/builds/reports/rebuild-fresh-main-hide-any-asset.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt948601b3h4",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s2",
+     "text": "Schema: add a per-app hidden-assets list to app-look@1 (entries { kind, id, assetRef?, hiddenAt, by }) in framework/schemas (asset-types.json / app-look schema) and regenerate JSON Schemas (axf.mjs schemas). Old documents with no list read as nothing hidden.",
+     "model": "Fable",
+     "why": "Schema + migration design for a shared look document",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/",
+      "framework/spec/APPEARANCE-SOURCE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt9486020kba",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s3",
+     "text": "Reference engine: framework/core/engines/hidden-assets.ts with pure functions hide(look, target), unhide(look, target), unhideAll(look), isHidden(look, target), listHidden(look); hideable kinds come from the chrome-settings kind list (tab-group, toolbar, banner, nav-menu, app-menu, widget), with no hardcoded app list.",
+     "model": "Fable",
+     "why": "Engine internals used by every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/hidden-assets.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt948603x2qa",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s4",
+     "text": "Fixture + check: framework/spec/fixtures/hidden-assets.json made with gen-fixtures.mts, plus framework/spec/check-hidden-assets.mts (hide, unhide, unhide all, unknown kind refused, old document migrates). Record the Kotlin twin as a deferred gap in framework/spec/PORTING.md.",
+     "model": "Fable",
+     "why": "Cross-port conformance contract",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/hidden-assets.json",
+      "framework/spec/check-hidden-assets.mts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt9486046sj8",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s5",
+     "text": "Runtime wiring: the runtime reads the hidden list from the app's look document (axHub look source), exposes rt.hidden / rt.hide / rt.unhide / rt.unhideAll, saves through the look writer so state survives reloads, and refreshes on focus (useEditorSync).",
+     "model": "Fable",
+     "why": "Changes how chrome renders in every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/runtime.ts",
+      "framework/core/appearance-source.ts",
+      "framework/react/editorSync.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt948605bvhg",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s6",
+     "text": "React: a useHidden(kind,id) hook and a <Hideable kind id> wrapper. TabGroup, toolbars (tapConfirm hosts), the banner frame, nav menus, the menu bar and widget hosts render nothing when hidden. Attached neighbours reflow with no overlap.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/hidden.tsx",
+      "framework/react/components/TabGroup.tsx",
+      "framework/react/components/Banner*.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt948606t1rz",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s7",
+     "text": "Right-click Hide: add a 'Hide <kind>' item to the shared chrome context block in ChromeContext.tsx (Settings… / Change… / Move / Hide), on every tab group, toolbar, banner, nav, menu bar and widget, with an undo toast.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/components/ChromeContext.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt948607le5m",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s8",
+     "text": "Hidden list UI: a HiddenAssetsPanel in framework/libs/settings (tokens and framework controls only): it groups items by kind, has Unhide per row and Unhide all with confirm, and shows an empty state. Mount it in Settings → Appearance and as a dialog asset 'axf.hidden-assets'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/libs/settings/HiddenAssetsPanel.tsx",
+      "framework/libs/settings/AppearancePanel.tsx",
+      "framework/assets/dialog/axf.hidden-assets.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt948608zxlg",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s9",
+     "text": "Assets menu: add an 'Assets' menu-bar entry (an app-menu asset contribution through rt.addContextItems / menu contributions) with Hidden items… (the count as a badge), Unhide all, and a submenu to hide any visible chrome by name. Register console-control targets (data-axf-target) for the panel, each row and both buttons.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/assets/app-menu/",
+      "framework/react/components/AssetsMenu.tsx",
+      "framework/spec/CONSOLE-CONTROL.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt948609ml1a",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s10",
+     "text": "Console REST: add GET /api/hidden-assets?app= (list) and POST hide / unhide / unhide-all routes in the console server, reading and writing the app-look document through data_store.py / the look writer. Add pytest coverage.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/",
+      "apps/console-web/server/tests/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt94860arknk",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s11",
+     "text": "MCP + console actions: add the tools hidden_assets_list, hidden_assets_hide, hidden_assets_unhide and hidden_assets_unhide_all, plus console actions chrome.hide / chrome.unhide / chrome.unhideAll / chrome.hidden. Deep links: console_show targets view:settings/tab:appearance#hidden and dialog:axf.hidden-assets. Update the console-tools pins.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py",
+      "apps/console-web/src/actions/",
+      "framework/core/control-registry"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt94860bhoc9",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s12",
+     "text": "CLI + voice: add `axf hidden list|hide <kind> <id>|unhide <kind> <id>|unhide-all [--app]` (framework/cli/hidden-assets.mjs, wired into axf.mjs), plus AmberX voice intents ('hide the toolbar', 'show what's hidden', 'unhide everything') that map to the same console actions.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/cli/hidden-assets.mjs",
+      "framework/cli/axf.mjs",
+      "apps/amberx-droid/web voice intents"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt94860cduo9",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s13",
+     "text": "Re-bake the framework into the console, axHub web and AmberX (shared-assets.mjs bake, rebake.mjs apply per app). Check that each app shows the Assets menu and the right-click Hide, and that typecheck passes in each.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/axhub-web/src/axf/",
+      "apps/amberx-droid/src/axf/",
+      "framework/schemas/shared-assets.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt94860dzofs",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s14",
+     "text": "Help + glossary: add a help entry for hiding assets and the Hidden list, descriptions on the new dialog, menu and CLI header, and a plugin/feature status row in framework/catalog/status.json. Run tracker.mjs and catalog.mjs --check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/src/help/",
+      "framework/catalog/status.json",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt94860ejwmq",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s15",
+     "text": "UI Review: take desktop + phone shots of the right-click Hide, the Assets menu and the Hidden list in the console. Submit at least 3 Hidden-list options as dialog assets through review.mjs submit --choices with the group named after the build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "framework/assets/dialog/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt94860fgyre",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    },
+    {
+     "id": "s16",
+     "text": "Tests and finish: run check-hidden-assets.mts, check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, the server tests and tracker --check. Finish _claude/builds/reports/rebuild-fresh-main-hide-any-asset.md (how each feature is reached: UI, REST, MCP, CLI, voice), add a THREADS.md row, open the PR, and mark the two old builds (claude/assets-menu-hide-any-asset-visible, -hidden-list) archived in the orchestrator.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/",
+      "_claude/builds/reports/rebuild-fresh-main-hide-any-asset.md",
+      "_claude/THREADS.md",
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkt94860g81z7",
+     "createdAt": "2026-11-17T14:51:42.630Z"
+    }
+   ]
   }
  ]
 }
