@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7816,
- "updatedAt": "2026-11-17T20:31:56.939Z",
+ "rev": 7817,
+ "updatedAt": "2026-11-17T20:32:08.677Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -277789,7 +277789,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -277797,7 +277797,7 @@
    "pr": "#816",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-17T20:29:55.168Z",
+   "updatedAt": "2026-11-17T20:32:05.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -277887,6 +277887,10 @@
     {
      "text": "Brett: TOO BIG. Re-split to the smallest version, Opus only, no Fable, at most 4 steps: a plain script (no AI) that runs one throwaway test build through the real pipeline (queue, launch, tick steps, deliberate crash, watchdog recovery, land) with ~30 s between stages, plus one button for it on a Maintenance > Test tab. No overlay, no API surface, no full suite, no errors view for now.",
      "at": "2026-11-17T20:29:55.168Z"
+    },
+    {
+     "text": "Watchdog fixed Guided live demo test: watch the orchestrator do everything in real time, with a (step s12): session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-17T20:32:05.715Z"
     }
    ],
    "approvals": [
@@ -277922,16 +277926,16 @@
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 0,
+    "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T20:16:06.064Z",
-     "exit": 0,
+     "at": "2026-11-17T20:32:04.340Z",
+     "exit": 143,
      "outcome": "requeued",
-     "reason": "phase-done",
-     "stepsLeft": 21,
+     "reason": "crash",
+     "stepsLeft": 13,
      "account": "",
      "session": "",
-     "phase": "Phase 1"
+     "phase": ""
     },
     "split": {
      "at": "2026-11-17T19:39:27.698Z",
@@ -277941,7 +277945,7 @@
      "note": "Split by Claude into 24 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 21 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -277981,6 +277985,20 @@
      "notified": "",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:32:04.340Z",
+     "buildId": "guided-live-demo-test-watch-orchestrator",
+     "phase": "",
+     "step": "s12",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session was killed (exit 143): step s12 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -278278,10 +278296,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-17T20:32:05.715Z",
+     "rev": 2,
      "createdAt": "2026-11-17T19:39:27.698Z",
-     "updatedAt": "2026-11-17T19:39:27.698Z"
+     "updatedAt": "2026-11-17T20:32:05.720Z"
     },
     {
      "id": "s13",
@@ -278587,7 +278605,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
