@@ -13,8 +13,10 @@
  *                 plugin.json says `settingsGear: false` with a `settingsGearReason`; a hand-made gear is any on-screen
  *                 Button / IconButton with icon "settings" that dispatches `settings.open:<its tab>`
  *
- * --report (or no host gear yet) prints the table and exits 0. Without --report a plugin with a view and no
- * settingsTab, or a view with no gear and no opt-out reason, fails with file:line.
+ * --report prints the table (and the problems as notes) and exits 0. Without it (CI: .github/workflows/android.yml) a
+ * plugin with a view and no settings sub-tab, a view with no gear (the host gear not mounted, no hand-made one), a
+ * hand-made gear next to the host's, or `settingsGear: false` without a reason fails with file:line.
+ * --root=<dir> checks another tree (the unit test's fixtures: framework/spec/check-plugin-settings.test.mjs).
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
@@ -150,7 +152,8 @@ if (isMain) {
     if (noGear.length) console.log(`  no gear (${noGear.length}): ${noGear.join(', ')}`);
     const viewless = a.rows.filter((r) => !r.hasView && r.settingsTab).map((r) => r.folder);
     if (viewless.length) console.log(`  settings only, no screen (${viewless.length}): ${viewless.join(', ')}`);
-    for (const p of reportOnly ? [] : a.problems) console.error(`✗ ${p}`);
+    for (const p of a.problems) (reportOnly ? console.log : console.error)(`${reportOnly ? '!' : '✗'} ${p}`);
+    if (!reportOnly) console.log(a.problems.length ? `✗ ${a.problems.length} problem(s)` : '✓ every plugin screen has a settings sub-tab and one settings gear');
   }
   process.exit(!reportOnly && a.problems.length ? 1 : 0);
 }
