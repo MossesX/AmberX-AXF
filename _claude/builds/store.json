@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7373,
- "updatedAt": "2026-11-17T04:37:55.318Z",
+ "rev": 7374,
+ "updatedAt": "2026-11-17T04:38:28.582Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -242801,8 +242801,8 @@
    "mergedAt": "2026-11-16T23:54:53Z",
    "priority": "P0",
    "createdAt": "2026-11-16T16:22:57.802Z",
-   "updatedAt": "2026-11-17T04:37:38.940Z",
-   "builtAt": "2026-11-17T04:37:38.940Z",
+   "updatedAt": "2026-11-17T04:37:58.933Z",
+   "builtAt": "2026-11-17T04:37:58.933Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -242891,6 +242891,10 @@
     {
      "text": "Absorbed into server-auto-lander-fixes-lands (Nov 17 2026): Brett's words are addenda there; open steps folded in as its s24/s25. Nothing left to build here.",
      "at": "2026-11-17T03:34:27.775Z"
+    },
+    {
+     "text": "Headless run axf-get-main-green-unblock-lander-land-axf--paulie: brief only · start 16.4K tokens ($0.05) · cost $56.35 · 770 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:37:58.933Z"
     }
    ],
    "approvals": [],
