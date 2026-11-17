@@ -88,6 +88,8 @@ function BackendPanel() {
   );
 }
 
+import { SETTINGS_GEAR_PLACEMENT_KEY } from './PluginSettingsGear';
+
 /** The console's contributions to the framework settings page. */
 export const consoleSettings: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.settings',
@@ -101,4 +103,12 @@ export const consoleSettings: AxfWebLibrary = {
     { id: 'console.backend', tab: 'connections', title: 'Console backend', icon: 'terminal', order: 10, render: () => <BackendPanel /> },
     { id: 'console.plugins', tab: 'plugins', title: 'Console plugins', icon: 'package', order: 10, render: () => <PluginsPanel /> },
   ],
+  // How the settings gear on every plugin screen is drawn (PluginSettingsGear.tsx; picked in UI Review, build
+  // every-plugin-screen-gets-a-settings-gear). Every option opens the same Settings → Plugins sub-tab.
+  settings: [{
+    id: 'console.plugin-gear', tab: 'plugins', label: 'Plugin screens', icon: 'settings', order: 12, description: 'The settings gear at the top of every plugin screen.',
+    settings: [{ key: SETTINGS_GEAR_PLACEMENT_KEY, label: 'Settings gear', kind: 'choice', default: 'icon', scope: 'app',
+      options: [{ value: 'icon', label: 'Gear icon at the right' }, { value: 'label', label: 'Gear with the word Settings' }, { value: 'menu', label: 'In a ⋯ menu' }],
+      description: 'Where each plugin screen puts the button that opens its settings.' }],
+  }],
 };
