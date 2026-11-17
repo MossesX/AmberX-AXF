@@ -32,6 +32,8 @@ const SYNCED = [/^_claude\//, /^changes\//, /^sessions\//, /^apps\/[^/]+\/_claud
 
 /** Builds files: merged per build and step, newer wins (builds-live.mjs merge driver). */
 const BUILDS = [/^_claude\/builds\/store\.json$/, /^_claude\/builds\/orchestrator\.json$/, /^_claude\/builds\/profiles\/[^/]+\/orchestrator\.json$/, /^_claude\/builds\/journal\/[^/]+\.jsonl$/];
+/** The builds store builds-live keeps on main (builds files + the origins index): not a build's work. */
+const LIVE_ON_MAIN = [...BUILDS, /^_claude\/builds\/origins\.json$/];
 /** Line files: both sides' lines kept (union). */
 const UNION = [/^_claude\/THREADS\.md$/, /^_claude\/memory\/STATUS\.md$/, /^_claude\/memory\/decisions\.md$/, /\.log$/, /\.jsonl$/];
 /**
@@ -160,6 +162,9 @@ export function strayPlan(porcelain, hubHas = () => false) {
     if (p.includes(' -> ')) p = p.split(' -> ').pop();
     p = p.replace(/^"|"$/g, '');
     if (any(SCRATCH, p)) { plan.skip.push(p); continue; }
+    // builds-live publishes the builds store to main itself; a branch copy only makes GitHub (no merge driver there)
+    // see a conflict with main, so the PR shows as conflicting and no CI runs. Never committed on a build's branch.
+    if (any(LIVE_ON_MAIN, p)) { plan.skip.push(p); continue; }
     const untracked = xy === '??'; const deleted = xy.includes('D');
     if (!deleted && hubHas(p)) { (untracked ? plan.archive : plan.restore).push(p); continue; }
     if (untracked) { (any(SYNCED, p) ? plan.commit : plan.keep).push(p); continue; }
