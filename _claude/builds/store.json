@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7633,
- "updatedAt": "2026-11-17T19:11:33.650Z",
+ "rev": 7634,
+ "updatedAt": "2026-11-17T19:11:52.743Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -117771,19 +117771,23 @@
    "title": "Plan Studio: Blueprints",
    "category": "Plan Studio",
    "detail": "Blueprints = named packages of plans (blueprint@1), one active at a time; Plan Studio shows the active one. Blueprints section (list/create/rename/duplicate/delete/move plans, bulk), context-menu Blueprints submenu + control@1 planner.blueprints + MCP/CLI/voice switch; migration of every current plan into \"Existing\"; UI from assets; tests; UI Review with 3 options. Supersedes plan-archive.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-07T13:44:07.743Z",
-   "builtAt": "2026-11-07T13:43:43.181Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Built on claude/plan-blueprints (committed, not pushed). UI Review r-20261107-9e6acb75 waits for Brett's pick (tab / rail / bar). Hub migrated: 58 plans in blueprint Existing, archived stamps from plan-archive removed. Report _claude/builds/reports/plan-blueprints.md",
      "at": "2026-11-07T13:43:45.767Z"
+    },
+    {
+     "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -117808,6 +117812,14 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "every step is done but no PR reached GitHub after 15 min",
+    "head": "",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -117973,7 +117985,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118841,19 +118853,23 @@
    "title": "Blueprints switch notes, tasks and to-dos too (+ permanent Global group)",
    "category": "Plan Studio",
    "detail": "Switching the active blueprint (blueprint@1, build plan-blueprints) also switches the notes-tasks plugin's notes, tasks, to-dos and lists (amberx.items, amberx.lists). Optional `blueprint` field on items/lists; existing ones go to the blueprint the plans went to. Permanent Global group in Plan Studio and the notes/tasks manager (can't be deleted or moved); any plan/note/task/to-do/list can be set Global; Quick notes lives in Global. Voice/control@1/MCP/CLI; active-blueprint chip in AmberX and the console; UI Review 3 options; tests; Shipped features. Based on claude/plan-blueprints.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/blueprint-notes-tasks",
    "pr": "",
    "createdAt": "2026-11-07T14:45:07.894Z",
-   "updatedAt": "2026-11-07T15:11:04.523Z",
-   "builtAt": "2026-11-07T15:11:01.804Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Built on claude/blueprint-notes-tasks (on top of claude/plan-blueprints, both local, not pushed). UI Review r-20261107-b05bba4e (3 options). Hub notes migrated with backup. Report _claude/builds/reports/blueprint-notes-tasks.md",
      "at": "2026-11-07T15:11:03.372Z"
+    },
+    {
+     "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -118869,6 +118885,14 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "every step is done but no PR reached GitHub after 15 min",
+    "head": "",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -119034,7 +119058,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140881,7 +140905,7 @@
    "title": "Skins as packages of slices: every section its own asset, pick sections on apply, mix creates a new skin via dialog, drag-and-drop Skin Builder",
    "category": "",
    "detail": "Upgrade the existing skins/appearance system and asset registry; don't build a parallel one. 1) DATA MODEL: a skin is only a package (manifest) referencing section assets. Every section (colours, layouts, design/visual styles, behaviour, and every other category a skin covers) is its own standalone asset with a name, preview, tags and source. Convert every existing skin into this form, with no monolithic skins left. 2) APPLY WITH PICKS: when you apply, enable or change a skin, a dialog lists its sections with checkboxes and previews. Choose which sections to take and which to leave out; left-out sections keep the current skin's. 3) MIX = NEW SKIN: if the result mixes sections from more than one skin, a dialog asks you to save it as a new skin (name, description, thumbnail auto-captured), with Save as new, Apply without saving, or Cancel. 4) SKIN BUILDER: a slice library (searchable, by category, live hover preview) and a pack template with one slot per category. Drag slices into slots, preview the whole console live, see which slots are empty, swap or clear slots, before/after toggle. Save, apply, export or import as a file, duplicate, edit later. 5) Professional polish: snap animations, slot highlights, desktop and phone layouts. 6) Full control via REST, MCP, CLI and voice (list sections, save section, apply with includes/excludes, build skin from sections, export). Screenshots go to UI Review grouped by screen.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -140890,8 +140914,8 @@
    "pr": "#446",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-12T18:40:40.962Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -140984,6 +141008,10 @@
     {
      "text": "Watchdog: UI Review item r-20261110-0be06b55 → Remove: Its PR was closed without a merge (PR #446 closed; build skins-as-packages-of-slices-every-section-its-ow: built; branch claude/skins-as-packages-of-slices-every-section-its-ow deleted)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/skins-as-packages-of-slices-every-section-its-ow is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -141032,6 +141060,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/skins-as-packages-of-slices-every-section-its-ow is not on GitHub and has no worktree here).",
+    "head": "origin/claude/skins-as-packages-of-slices-every-section-its-ow",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -141112,7 +141148,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -147321,7 +147357,7 @@
    "title": "Full API + CLI control of everything, plus an offline index/registry; AI only as fallback",
    "category": "",
    "detail": "1) Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -147330,8 +147366,8 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-15T00:42:40.584Z",
-   "builtAt": "2026-11-12T00:14:12.134Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -147388,6 +147424,10 @@
     {
      "text": "Session axf-full-api-cli-control-of-everything-plus-an-offli--joey on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-12T00:15:04.361Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/full-api-cli-control-of-everything-plus-an-offli is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -147445,6 +147485,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/full-api-cli-control-of-everything-plus-an-offli is not on GitHub and has no worktree here).",
+    "head": "origin/claude/full-api-cli-control-of-everything-plus-an-offli",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -147893,7 +147941,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 115,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151789,7 +151837,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "running",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151798,7 +151846,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T19:06:45.000Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -151888,6 +151936,10 @@
     {
      "text": "Claude account: hulu0241 (axf-pass-approval-hook-deep-link-amberx-notification--lenny, shared account login)",
      "at": "2026-11-17T19:06:45.000Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -151942,6 +151994,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "4b5465ae5fc029e2e144e6a1025ac4bab256c3d4",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -152225,7 +152285,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156615,7 +156675,7 @@
    "title": "Open any website by voice on the phone, optionally with the AmberX recorder running",
    "category": "",
    "detail": "Merges/supersedes amberx-open-any-url and amberx-open-any-url-apk. 1) Voice: 'go to <any website>' opens it on the phone in Chrome (any https host, not just amberxai.com; block non-http schemes), brought to the front. 2) Option to open it with AmberX's recorder running (screen/audio recorder plugin), recordings saved to axHub with the URL and time. 3) Also available as a browser plugin in the console/Molly (embedded browser pane). Audit-log every open. Full API control.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156624,8 +156684,8 @@
    "pr": "#500",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-15T00:38:55.429Z",
-   "builtAt": "2026-11-12T02:15:18.702Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -156686,6 +156746,10 @@
     {
      "text": "UI Review shots still needed: headless capture stops at 'Waiting for axHub' (sandbox can't reach the hub). Capture the console Web browser pane and AmberX Web page, phone + desktop, from a console that reaches axHub, then submit to UI Review for PR #500.",
      "at": "2026-11-12T02:17:12.383Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/open-any-website-by-voice-on-the-phone-optionall is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -156734,6 +156798,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/open-any-website-by-voice-on-the-phone-optionall is not on GitHub and has no worktree here).",
+    "head": "origin/claude/open-any-website-by-voice-on-the-phone-optionall",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -156814,7 +156886,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156844,7 +156916,7 @@
    "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
    "category": "",
    "detail": "Extends #436 (one AmberX build notification: start + finish). Add AmberX notifications for: ready to merge (PR open, CI green), merged/landed, and live (console redeployed with it). One notification per build that updates in place through the stages rather than spamming; per-stage on/off in notification settings.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156853,8 +156925,8 @@
    "pr": "#499",
    "priority": "P1",
    "createdAt": "2026-11-10T20:56:54.475Z",
-   "updatedAt": "2026-11-15T00:42:32.926Z",
-   "builtAt": "2026-11-12T02:09:35.392Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -156883,6 +156955,10 @@
     {
      "text": "Built, PR #499 (contains #436: land #436 first or close it for this). After the finish the one AmberX notification moves on to Ready to merge, Merged, Live; switches notifyReady/notifyMerged/notifyLive. UI Review shots not taken (no console to capture from in the headless session): capture Pipeline > Phone pop-ups, desktop and phone, and submit. Real phone test after deploy.",
      "at": "2026-11-12T02:09:15.611Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/amberx-build-notifications-for-every-stage-start is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -156922,6 +156998,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/amberx-build-notifications-for-every-stage-start is not on GitHub and has no worktree here).",
+    "head": "origin/claude/amberx-build-notifications-for-every-stage-start",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -157002,7 +157086,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157032,7 +157116,7 @@
    "title": "Build notifications: same notification per build, but it alerts (sound/vibrate) on every stage",
    "category": "",
    "detail": "Amends build-stage notifications: keep one notification per build that updates in place, but each stage change (started, complete, ready to merge, merged, live) re-alerts: sound/vibration and heads-up, not a silent update.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -157041,8 +157125,8 @@
    "pr": "#506",
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
-   "updatedAt": "2026-11-15T00:42:30.398Z",
-   "builtAt": "2026-11-12T02:30:53.669Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -157083,6 +157167,10 @@
     {
      "text": "Session hl-mwcx9z46-f6 on account-5 ended (exit 1); the build was already built.",
      "at": "2026-11-12T02:33:04.311Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/build-notifications-same-notification-per-build is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -157131,6 +157219,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/build-notifications-same-notification-per-build is not on GitHub and has no worktree here).",
+    "head": "origin/claude/build-notifications-same-notification-per-build",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -157211,7 +157307,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157241,7 +157337,7 @@
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
    "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -157250,8 +157346,8 @@
    "pr": "#498",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-15T00:38:56.986Z",
-   "builtAt": "2026-11-12T01:59:24.174Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -157296,6 +157392,10 @@
     {
      "text": "PR #498 (draft). Done: drag and drop, Move menu, saved order the dispatcher follows, REST/MCP/CLI. Left: Queue tab desktop + phone shots to UI Review, then mark ready.",
      "at": "2026-11-12T01:59:11.818Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/queue-drag-and-drop-reorder-dispatcher-follows-t is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -157344,6 +157444,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/queue-drag-and-drop-reorder-dispatcher-follows-t is not on GitHub and has no worktree here).",
+    "head": "origin/claude/queue-drag-and-drop-reorder-dispatcher-follows-t",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -157424,7 +157532,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158597,7 +158705,7 @@
    "title": "Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama",
    "category": "",
    "detail": "Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -158606,8 +158714,8 @@
    "pr": "#501",
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
-   "updatedAt": "2026-11-15T00:38:53.753Z",
-   "builtAt": "2026-11-12T02:19:38.931Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -158672,6 +158780,10 @@
     {
      "text": "Session axf-rebuild-gizmo-from-scratch-full-claude-style-cha--lenny on account-5 ended (exit 0); the build was already built.",
      "at": "2026-11-12T02:20:09.297Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/rebuild-gizmo-from-scratch-full-claude-style-cha is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -158720,6 +158832,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/rebuild-gizmo-from-scratch-full-claude-style-cha is not on GitHub and has no worktree here).",
+    "head": "origin/claude/rebuild-gizmo-from-scratch-full-claude-style-cha",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -158800,7 +158920,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158830,7 +158950,7 @@
    "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
    "category": "",
    "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -158839,8 +158959,8 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-12T02:49:21.476Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -158905,6 +159025,10 @@
     {
      "text": "Watchdog: UI Review item r-20261112-0bed137c → Remove: Its PR was closed without a merge (PR #503 closed; build bug-asset-settings-nav-menu-tab-bar-toolbar-chan: built; branch claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan deleted)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -158962,6 +159086,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan is not on GitHub and has no worktree here).",
+    "head": "origin/claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -159042,7 +159174,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161667,7 +161799,7 @@
    "title": "AI assistant in Molly + console drives by API (open screens, change settings) + hands-free voice setting",
    "category": "",
    "detail": "Amends the AI assistant build (#482). 1) AI assistant runs in Molly too (same plugin, Molly owns it, no double render). 2) Give it the full console control API as tools: open/jump to any screen, open dialogs, read and change any setting, run console commands, file/queue builds; uses control@1 + the registry. 3) Hands-free: a switch in AI assistant settings, 'Hands-free voice', easy to reach (top of settings plus a mic toggle in the chat header): always-listening wake/talk mode, replies spoken, works with the screen off on the phone. Notify on AmberX at each stage.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -161676,8 +161808,8 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-11T00:38:01.223Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -161770,6 +161902,10 @@
     {
      "text": "Watchdog: UI Review item r-20261111-v2asl01 → Remove: Its PR was closed without a merge (PR #488 closed; build ai-assistant-in-molly-console-drives-by-api-open: built; branch claude/ai-assistant-in-molly-console-drives-by-api-open deleted)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/ai-assistant-in-molly-console-drives-by-api-open is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -161833,6 +161969,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/ai-assistant-in-molly-console-drives-by-api-open is not on GitHub and has no worktree here).",
+    "head": "origin/claude/ai-assistant-in-molly-console-drives-by-api-open",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -161913,7 +162057,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -162137,7 +162281,7 @@
    "title": "Merge review, one by one: every built-but-unmerged build checked against current main, Brett decides merge or not",
    "category": "",
    "detail": "Supersedes land-all-97 auto landing. For each of the 118 built builds, oldest first: rebase a scratch copy on current main, report what it changes, which files/features it would overwrite or revert, conflicts, whether a newer build already covers it, and test result. Present one at a time to Brett (console card + AmberX notification) with Merge / Skip (archive) / Rebuild on current main. Never merge without his yes. Never overwrite or revert newer code; conflicts resolve toward current main. Pause land-all-97 and any auto-land until this review is done.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -162146,8 +162290,8 @@
    "pr": "#492",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-15T00:39:09.887Z",
-   "builtAt": "2026-11-11T00:23:18.379Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -162172,6 +162316,10 @@
     {
      "text": "Session axf-merge-review-one-by-one-every-built-but-unmerged--gina on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-11T00:24:04.044Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/merge-review-one-by-one-every-built-but-unmerged is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -162226,6 +162374,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/merge-review-one-by-one-every-built-but-unmerged is not on GitHub and has no worktree here).",
+    "head": "origin/claude/merge-review-one-by-one-every-built-but-unmerged",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -162306,7 +162462,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -162336,7 +162492,7 @@
    "title": "Skins in the asset store: skin browser + skin editor (browse, preview, apply, edit, duplicate, import/export)",
    "category": "",
    "detail": "Skins become a first-class category in the asset store. Skin browser: grid of every skin with live preview thumbnails, search/filter, apply to an app or everywhere, favourite, duplicate, delete, import/export. Skin editor: edit a skin's look, layout, behaviour, background asset and colour theme with a live preview; save as new or overwrite; ties into asset overrides (apply-skin override dialog). Open from Settings > Appearance, the banner Skins context menu and the asset store. Full API/MCP/CLI/voice parity. Safe merge: rebase on current main, never overwrite newer code.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -162345,8 +162501,8 @@
    "pr": "#493",
    "priority": "P0",
    "createdAt": "2026-11-11T01:11:27.164Z",
-   "updatedAt": "2026-11-15T00:38:58.860Z",
-   "builtAt": "2026-11-11T01:49:05.611Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -162367,6 +162523,10 @@
     {
      "text": "Headless run axf-skins-in-the-asset-store-skin-browser-skin-edito--paulie: brief only · start 11.1K tokens ($0.03) · cost $15.67 · 167 turns · 6 tools, MCP none",
      "at": "2026-11-11T01:49:23.538Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/skins-in-the-asset-store-skin-browser-skin-edito is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -162412,6 +162572,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/skins-in-the-asset-store-skin-browser-skin-edito is not on GitHub and has no worktree here).",
+    "head": "origin/claude/skins-in-the-asset-store-skin-browser-skin-edito",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -162492,7 +162660,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163543,7 +163711,7 @@
    "title": "VPS server gate: no build starts without an orchestrator-issued ID",
    "category": "orchestrator",
    "detail": "URGENT. Brett, Nov 12: Claude keeps starting builds straight on the VPS outside the orchestrator. Add a SERVER-SIDE gate on the VPS, enforced by the server itself: every path that starts a headless build (vps build_start, any claude -p launcher, tmux axf-* sessions, agent-slots) refuses to start unless the build has a valid orchestrator-issued ID (Postgres ID registry) AND is in Queued. No ID, unknown ID, or Pending = refused, logged, AmberX FYI to Brett. Pairs with vps-hard-slot-limit. Owner-only override, off by default.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -163551,8 +163719,8 @@
    "branch": "claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id",
    "pr": "#504",
    "createdAt": "2026-11-12T01:59:21.464Z",
-   "updatedAt": "2026-11-15T00:38:52.085Z",
-   "builtAt": "2026-11-12T02:23:04.953Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -163577,6 +163745,10 @@
     {
      "text": "PR #504 (draft): gate refuses no-ID, unknown-ID and non-Queued launches plus hand --inner re-entries; owner-only override builds.dispatchGateOverride (off). Draft only because desktop/phone UI Review shots of the gate chip were not taken headless. Also fixed: stale AXF_BUILD_ID + dispatch token in the VPS tmux global env leaked into every inner run.",
      "at": "2026-11-12T02:22:33.409Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -163625,6 +163797,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id is not on GitHub and has no worktree here).",
+    "head": "origin/claude/vps-server-gate-no-build-starts-without-an-orchest",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -163702,7 +163882,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163732,7 +163912,7 @@
    "title": "Main gate: nothing reaches main without passing",
    "category": "orchestrator",
    "detail": "URGENT. Brett, Nov 12, boss order: NOTHING gets pushed or merged to main unless it passes. Enforce at the server/repo level, not by Claude: 1) GitHub branch protection on main (AmberX-AXF, axHub): required CI checks, up to date with main, no force-push, no direct pushes, merge queue only. 2) VPS gate: build_land and every land/merge script runs full tests + theme/controls checks on the merged result and refuses to push to main unless they pass; failure leaves only the branch. 3) Log refusals, AmberX FYI. Owner-only override, off by default.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -163740,8 +163920,8 @@
    "branch": "claude/main-gate-nothing-reaches-main-without-passing",
    "pr": "#508",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-15T00:38:50.282Z",
-   "builtAt": "2026-11-12T02:36:08.572Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -163778,6 +163958,10 @@
     {
      "text": "GitHub rules on main need Brett: AmberX-AXF token needs Administration: Read and write, then Systems check > 'Main gate: GitHub rules' > Auto fix (ruleset ready). axHub is private on a free plan: rulesets need GitHub Pro or a public repo. GitHub's merge queue needs an org-owned repo, so the console merge queue stays the only lander. VPS gate (pre-push hook + merge queue + console Merge) is live and holds every VPS route meanwhile.",
      "at": "2026-11-12T02:42:08.689Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/main-gate-nothing-reaches-main-without-passing is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -163817,6 +164001,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/main-gate-nothing-reaches-main-without-passing is not on GitHub and has no worktree here).",
+    "head": "origin/claude/main-gate-nothing-reaches-main-without-passing",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -163894,7 +164086,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163924,7 +164116,7 @@
    "title": "Build Plan 1: skins, one-row build tables, backgrounds, asset overrides",
    "category": "skins",
    "detail": "URGENT. Build Plan 1 (Plan Studio build-plan-1-xuqq), sent to the orchestrator as a normal build so it splits it and assigns the ID. Each step came from a Pending build that was archived; check each against main first and skip anything done, unneeded or breaking. Rule: a skin controls everything (look, layout, behavior) and contains a colour theme; changing the colour theme never creates a new skin. Already done/in flight: skins-finish, PR #494 (colour themes), PR #409 (restyle), skins in asset store. Skip screenshots. Fable steps stay on Fable.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -163932,8 +164124,8 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-15T00:38:46.161Z",
-   "builtAt": "2026-11-12T02:50:48.540Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -163978,6 +164170,10 @@
     {
      "text": "Session axf-build-plan-1-skins-one-row-build-tables-backgrou--rhonda on mossesx-max- ended (exit 1); the build was already built.",
      "at": "2026-11-12T03:13:04.132Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -164035,6 +164231,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides is not on GitHub and has no worktree here).",
+    "head": "origin/claude/build-plan-1-skins-one-row-build-tables-background",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -164200,7 +164404,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -165193,15 +165397,15 @@
    "title": "All banners hide when empty",
    "category": "framework",
    "detail": "URGENT, Brett's rule, Nov 12: EVERY banner (console, Molly, AmberX, plugin banners, Auto-fixes, Server gate log, any future banner) only appears when it has something in it. Empty = fully hidden, takes no space; appears live when an entry arrives, hides again when it empties. Make it a framework rule in the banner base component, so new banners get it automatically. Audit all existing banners and fix any that show when empty. Add a check (CI) that fails if a banner renders with no entries.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/all-banners-hide-when-empty",
    "pr": "#509",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-15T00:38:44.818Z",
-   "builtAt": "2026-11-12T03:10:51.460Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -165226,6 +165430,10 @@
     {
      "text": "Session axf-all-banners-hide-when-empty--joey on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T10:39:07.159Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/all-banners-hide-when-empty is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -165274,6 +165482,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/all-banners-hide-when-empty is not on GitHub and has no worktree here).",
+    "head": "origin/claude/all-banners-hide-when-empty",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -165351,7 +165567,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182003,7 +182219,7 @@
    "title": "Drag anything by API and voice (follow-up to full API control, start only after PR #556 lands): every draggable thing (banner widgets, toolbar items, tabs, dock panes, grid columns/rows, list items, layout slots) gets a move command with drop zones, incl. add/remove/reorder banner widgets; REST, MCP",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -182012,8 +182228,8 @@
    "pr": "#776",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-17T15:09:08.572Z",
-   "builtAt": "2026-11-17T04:52:40.322Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 21 steps (4 Fable).",
@@ -182066,6 +182282,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:08.572Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (AmberX — web app in the Capacitor Android shell (APK + native unit tests), Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -182126,6 +182346,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (AmberX — web app in the Capacitor Android shell (APK + native unit tests), Build engine sweep (Node)). Needs a code fix.",
+    "head": "79a561dd0a8dd32f1316d73e07c40057172af34b",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -182666,7 +182894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -183132,7 +183360,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -183141,7 +183369,7 @@
    "pr": "#772",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-17T19:10:52.719Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -183191,6 +183419,10 @@
     {
      "text": "Watchdog: UI Review item r-20261117-049560ce → Complete: Its PR merged on main (PR #772 merged 2026-11-17T19:07:59Z (8f30a4cb2217); on main by squash 8f30a4cb2217; build server-watchdog-orchestrator-auto-recovers-stuck: running)",
      "at": "2026-11-17T19:10:52.719Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -183251,6 +183483,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Build engine sweep (Node)). Needs a code fix.",
+    "head": "e8e115303e3a8783e4f5d2039cbe269d9213e4ae",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -183832,7 +184072,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -183880,7 +184120,7 @@
    "title": "Auto-recover stuck builds",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -183888,8 +184128,8 @@
    "pr": "#574",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-17T19:10:52.719Z",
-   "builtAt": "2026-11-13T13:23:41.684Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -183946,6 +184186,10 @@
     {
      "text": "Watchdog: UI Review item r-20261113-7fa47dbf → Remove: Its PR was closed without a merge (PR #574 closed; build auto-recover-stuck-builds: built; branch claude/auto-recover-stuck-builds deleted)",
      "at": "2026-11-17T19:10:52.719Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/auto-recover-stuck-builds is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -184006,6 +184250,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/auto-recover-stuck-builds is not on GitHub and has no worktree here).",
+    "head": "origin/claude/auto-recover-stuck-builds",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -184397,7 +184649,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -185169,7 +185421,7 @@
    "title": "UI Review gate switch, default off",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -185177,8 +185429,8 @@
    "pr": "#575",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-15T00:38:24.148Z",
-   "builtAt": "2026-11-13T13:32:49.084Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -185203,6 +185455,10 @@
     {
      "text": "Session axf-ui-review-gate-switch-default-off--lenny on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T13:34:03.312Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/ui-review-gate-switch-default-off is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -185263,6 +185519,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/ui-review-gate-switch-default-off is not on GitHub and has no worktree here).",
+    "head": "origin/claude/ui-review-gate-switch-default-off",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -185630,7 +185894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -185671,7 +185935,7 @@
    "title": "Fix toolbar settings doing nothing",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -185679,8 +185943,8 @@
    "pr": "#572",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-15T00:38:29.893Z",
-   "builtAt": "2026-11-13T12:40:41.227Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -185729,6 +185993,10 @@
     {
      "text": "PR #572 open, CI runs check-toolbar-settings (146 checks). UI Review not sent: no console token in the headless session; 6 shots in _claude/builds/reports/fix-toolbar-settings-doing-nothing/, submit command in the report.",
      "at": "2026-11-13T12:40:42.998Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/fix-toolbar-settings-doing-nothing is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -185780,6 +186048,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/fix-toolbar-settings-doing-nothing is not on GitHub and has no worktree here).",
+    "head": "origin/claude/fix-toolbar-settings-doing-nothing",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -185926,7 +186202,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -187224,15 +187500,15 @@
    "title": "Merge all ready: buttons + server-side lander",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The merge banner shows PRs 'ready for merge' but there's no way to merge them. Add: a 'Merge all ready' button on the merge banner and merge queue page, plus a Merge button on each row. Every merge goes through the main gate (tests must pass, rebase if behind, no force-push); conflicts get auto-rebased, and anything that can't land is marked with why. Progress shows live in the banner (merging 3 of 12...). Also a server-side lander that works through the whole backlog (~168 PRs) by itself, oldest first, one at a time, through the gate. Each merge and failure logged in the Server gate log / Automatic fixes. Full API: REST/MCP/CLI and voice ('merge everything ready').",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-all-ready-buttons-server-side",
    "pr": "#580",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-15T00:38:41.518Z",
-   "builtAt": "2026-11-12T03:34:10.885Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -187265,6 +187541,10 @@
     {
      "text": "Renamed from merge-all-ready-buttons-server-side-lander (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:30:20.420Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/merge-all-ready-buttons-server-side is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -187313,6 +187593,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/merge-all-ready-buttons-server-side is not on GitHub and has no worktree here).",
+    "head": "origin/claude/merge-all-ready-buttons-server-side",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -187434,7 +187722,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -187466,15 +187754,15 @@
    "title": "Account order (Hulu -> Moses X -> API) + account shown on every build",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. (1) Account ORDER setting for the dispatcher, drag-and-drop in Claude accounts + REST/MCP/CLI/voice: new builds go to the first account in the order that has a free slot and isn't limited. Brett's order now: Hulu subscription (account-3) -> Moses X subscription (mossesx-max-) -> API keys (account-5 Hulu API, mossesx-api) last, under their caps. When one runs out, move to the next; move back when it resets. Today the dispatcher picks the least busy subscription and ignores order, and ai-keys/order does nothing for the dispatcher. (2) Show the account on every build row in Queue, Active and Pending: the planned account before it starts, the account it's running on, and the last run's account; filter by account. (3) Fix the Hulu login: Brett re-signed the Hulu subscription and it went to /root/.claude-add; move/link it to account-3's folder so account-3 uses the fresh token, and remove the stray 'add' folder.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/account-order-hulu-moses-x-api-account",
    "pr": "#581",
    "createdAt": "2026-11-12T02:59:45.402Z",
-   "updatedAt": "2026-11-15T00:38:42.595Z",
-   "builtAt": "2026-11-12T03:17:22.994Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -187499,6 +187787,10 @@
     {
      "text": "Renamed from account-order-hulu-moses-x-api-account-shown-on-every-build (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:30:57.626Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/account-order-hulu-moses-x-api-account is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -187538,6 +187830,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/account-order-hulu-moses-x-api-account is not on GitHub and has no worktree here).",
+    "head": "origin/claude/account-order-hulu-moses-x-api-account",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -187615,7 +187915,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -187645,7 +187945,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -187653,7 +187953,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-17T19:08:24.183Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -187815,6 +188115,10 @@
     {
      "text": "Claude account: hulu0241 (axf-always-fill-every-slot-when-slots-are--paulie, shared account login)",
      "at": "2026-11-17T19:08:24.183Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/always-fill-every-slot-when-slots-are has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -187884,6 +188188,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/always-fill-every-slot-when-slots-are has commits here and on GitHub that differ).",
+    "head": "5f377a05e1302d85575413929954677cc26d36c3",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -188587,7 +188899,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -188640,7 +188952,7 @@
    "title": "Assets menu: hide any asset, visible and hidden lists",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -188648,8 +188960,8 @@
    "pr": "#583",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-15T00:38:27.924Z",
-   "builtAt": "2026-11-13T12:59:49.949Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -188690,6 +189002,10 @@
     {
      "text": "Renamed from assets-menu-hide-any-asset-visible-and-hidden-li (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:31:26.271Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/assets-menu-hide-any-asset-visible is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -188741,6 +189057,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/assets-menu-hide-any-asset-visible is not on GitHub and has no worktree here).",
+    "head": "origin/claude/assets-menu-hide-any-asset-visible",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -188909,7 +189233,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -188943,15 +189267,15 @@
    "title": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX. Shape already exists in code (types.ts, Banner.tsx), it just isn't shown. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/badge-shape-picker-banners-screen-pill",
    "pr": "#584",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-15T00:43:40.705Z",
-   "builtAt": "2026-11-13T11:31:10.158Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -189000,6 +189324,10 @@
     {
      "text": "Renamed from badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:31:38.368Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/badge-shape-picker-banners-screen-pill is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -189051,6 +189379,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/badge-shape-picker-banners-screen-pill is not on GitHub and has no worktree here).",
+    "head": "origin/claude/badge-shape-picker-banners-screen-pill",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -189153,7 +189489,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -189184,7 +189520,7 @@
    "title": "Banners page: focus, scroll to and highlight any banner or badge",
    "category": "banner",
    "detail": "Brett said: \"Make it focus, bring it in focus... Highlight the VPS one.\" console_show/console_open with focus on the Banners screen answers \"it has no way to focus\". Every screen must support focus (standing rule).",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -189192,8 +189528,8 @@
    "pr": "#585",
    "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-15T00:38:38.929Z",
-   "builtAt": "2026-11-12T23:22:21.160Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -189218,6 +189554,10 @@
     {
      "text": "Renamed from banners-page-focus-scroll-to-and-highlight-any-banner-or-badge (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:31:51.582Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/banners-page-focus-scroll-to-highlight is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -189263,6 +189603,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/banners-page-focus-scroll-to-highlight is not on GitHub and has no worktree here).",
+    "head": "origin/claude/banners-page-focus-scroll-to-highlight",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -189318,7 +189666,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -189628,15 +189976,15 @@
    "title": "Claude badge = can Claude build: green when at least one build account in the orchestrator's account health sweep can sign in and has credits (the same check the dispatcher uses), red when none can. Stop using the VPS root `claude auth status` / .active login. Tap shows which accounts are ready. And",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-badge-can-claude-build-green-when",
    "pr": "#587",
    "createdAt": "2026-11-12T23:30:16.119Z",
-   "updatedAt": "2026-11-15T00:43:51.453Z",
-   "builtAt": "2026-11-13T01:26:44.505Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -189661,6 +190009,10 @@
     {
      "text": "Renamed from claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:32:32.778Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/claude-badge-can-claude-build-green-when is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -189712,6 +190064,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/claude-badge-can-claude-build-green-when is not on GitHub and has no worktree here).",
+    "head": "origin/claude/claude-badge-can-claude-build-green-when",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -189814,7 +190174,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -189845,7 +190205,7 @@
    "title": "Collapse and auto-collapse buttons on every tab group, toolbar, nav menu and app menu",
    "category": "",
    "detail": "Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -189853,8 +190213,8 @@
    "pr": "#588",
    "priority": "P1",
    "createdAt": "2026-11-12T18:40:03.355Z",
-   "updatedAt": "2026-11-15T00:42:21.183Z",
-   "builtAt": "2026-11-12T19:58:20.158Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -189883,6 +190243,10 @@
     {
      "text": "Renamed from collapse-and-auto-collapse-buttons-on-every-tab (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:32:45.035Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/collapse-auto-collapse-buttons-every-tab is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -189934,6 +190298,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/collapse-auto-collapse-buttons-every-tab is not on GitHub and has no worktree here).",
+    "head": "origin/claude/collapse-auto-collapse-buttons-every-tab",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -190014,7 +190386,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -191787,7 +192159,7 @@
    "title": "Fix merge conflicts on PR #557 (professional skins) with main, run the checks, push and land it; confirm the merge on GitHub",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -191795,8 +192167,8 @@
    "pr": "#591",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-15T00:38:32.445Z",
-   "builtAt": "2026-11-13T11:16:46.914Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -191829,6 +192201,10 @@
     {
      "text": "Renamed from fix-merge-conflicts-on-pr-557-professional-skins (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:33:32.250Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/fix-merge-conflicts-pr-557-professional is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -191890,6 +192266,14 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/fix-merge-conflicts-pr-557-professional is not on GitHub and has no worktree here).",
+    "head": "origin/claude/fix-merge-conflicts-pr-557-professional",
+    "step": "",
+    "exit": null
+   },
    "steps": [
     {
      "id": "s1",
@@ -191947,7 +192331,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -191976,7 +192360,7 @@
    "title": "Fix the step splitter: 'claude exit 1: Input must be provided'",
    "category": "",
    "detail": "When a build is added, the splitter runs claude -p without the prompt (stdin or argument missing), fails with 'Error: Input must be provided either through stdin or as a prompt argument when using --print', and falls back to one step per line, pasting Brett's raw words in as a step. Fix the invocation so the request is passed, split into real <=30 min steps, and re-split today's queued builds whose steps are the fallback. Test: adding a build yields proper steps, no fallback note.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "mcp",
    "pendingId": "fix-step-splitter-claude-exit-1-input",
@@ -191984,8 +192368,8 @@
    "pr": "#592",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-15T00:38:40.227Z",
-   "builtAt": "2026-11-12T21:00:18.244Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -192034,6 +192418,10 @@
     {
      "text": "Renamed from fix-the-step-splitter-claude-exit-1-input-must-b (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:33:46.314Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/fix-step-splitter-claude-exit-1-input is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -192094,6 +192482,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/fix-step-splitter-claude-exit-1-input is not on GitHub and has no worktree here).",
+    "head": "origin/claude/fix-step-splitter-claude-exit-1-input",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -192284,7 +192680,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192546,15 +192942,15 @@
    "title": "Focus on every screen: console_open/console_show can jump to any item (UI Review, Plan Studio, all screens)",
    "category": "",
    "detail": "PR #496 added <screen>.focus only for the Build orchestrator. Opening UI Review with focus r-20261112-4ec56890 answered: opened UI Review; it has no way to focus. Every screen (UI Review, Plan Studio, Pending, All builds, settings tabs, plugins' screens) must declare a <screen>.focus action that opens the right tab, scrolls the item/row/group into view, expands and highlights it. Add a check that fails if any screen with items lacks a focus action. Also: opening a screen should close a covering dialog (settings dialog was left on top).",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "mcp",
    "pendingId": "focus-every-screen-console-open-console",
    "branch": "claude/focus-every-screen-console-open-console",
    "pr": "#593",
    "createdAt": "2026-11-12T10:35:49.272Z",
-   "updatedAt": "2026-11-15T00:44:00.217Z",
-   "builtAt": "2026-11-12T11:10:43.772Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -192583,6 +192979,10 @@
     {
      "text": "Renamed from focus-on-every-screen-console-open-console-show- (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:33:59.509Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/focus-every-screen-console-open-console is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -192628,6 +193028,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/focus-every-screen-console-open-console is not on GitHub and has no worktree here).",
+    "head": "origin/claude/focus-every-screen-console-open-console",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -192708,7 +193116,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -192738,7 +193146,7 @@
    "title": "GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)",
    "category": "github",
    "detail": "Brett said: \"We need to build that GitHub plugin that shows all the PRs and everything, where you can completely control them, see their status, merge and pull them in, group them into one... You need a full, powerful GitHub plugin-based client.\" Console plugin, full API (REST, MCP, CLI, voice), works per project.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -192746,8 +193154,8 @@
    "pr": "#594",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-15T00:42:18.524Z",
-   "builtAt": "2026-11-12T23:08:14.129Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -192804,6 +193212,10 @@
     {
      "text": "Renamed from github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:34:16.679Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/github-client-plugin-see-control-every is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -192867,6 +193279,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/github-client-plugin-see-control-every is not on GitHub and has no worktree here).",
+    "head": "origin/claude/github-client-plugin-see-control-every",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -193076,7 +193496,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -193112,7 +193532,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -193120,8 +193540,8 @@
    "pr": "#595",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-15T00:38:31.207Z",
-   "builtAt": "2026-11-13T12:28:11.498Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -193214,6 +193634,10 @@
     {
      "text": "Renamed from merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:34:29.407Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/merges-are-only-merged-once-github is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -193274,6 +193698,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/merges-are-only-merged-once-github is not on GitHub and has no worktree here).",
+    "head": "origin/claude/merges-are-only-merged-once-github",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -193615,7 +194047,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194314,15 +194746,15 @@
    "title": "New project wizard: name, linked repo (required), starter code, skin, accounts, first plan",
    "category": "projects",
    "detail": "Step-by-step New project wizard (console, voice, API). Linking a repo is required (new GitHub repo, existing repo, or server folder). Builds on merged Projects (#523). Brett said: \"No, we definitely need to link a repo to it. There's no doubt about that.\"",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/new-project-wizard-name-linked-repo",
    "pr": "#597",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-15T00:43:53.393Z",
-   "builtAt": "2026-11-12T22:10:44.782Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -194347,6 +194779,10 @@
     {
      "text": "Renamed from new-project-wizard-name-linked-repo-required-starter-code-skin-accounts (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:34:55.834Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/new-project-wizard-name-linked-repo is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -194392,6 +194828,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/new-project-wizard-name-linked-repo is not on GitHub and has no worktree here).",
+    "head": "origin/claude/new-project-wizard-name-linked-repo",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -194623,7 +195067,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -194894,15 +195338,15 @@
    "title": "Orchestrator checks Shipped features before splitting any job",
    "category": "",
    "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features",
    "branch": "claude/orchestrator-checks-shipped-features",
    "pr": "#599",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-15T00:44:08.226Z",
-   "builtAt": "2026-11-12T03:37:07.380Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Conflict flow (Brett): a conflicting step is moved to a special Conflicts section and removed from the build; the other steps still build. Brett gets an AmberX notification-panel item that explains the conflict and offers suggested resolutions; he taps a suggestion or types a prompt, which goes to the orchestrator, and the orchestrator makes a new build from it. Then test it: Brett will send a 3-4 step build that deliberately overlaps existing shipped features to confirm the orchestrator catches it.",
@@ -194947,6 +195391,10 @@
     {
      "text": "Renamed from orchestrator-checks-shipped-features-before-spli (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:35:27.231Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/orchestrator-checks-shipped-features is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -194995,6 +195443,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/orchestrator-checks-shipped-features is not on GitHub and has no worktree here).",
+    "head": "origin/claude/orchestrator-checks-shipped-features",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -195075,7 +195531,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -195635,15 +196091,15 @@
    "title": "Pending tab: one collapsed row per build, tap to expand everything",
    "category": "",
    "detail": "Build orchestrator Pending tab (and every build table) shows each build as ONE compact row (title, model, steps done/total, behind-main, age). Tapping the row expands it to show everything: detail, steps, notes, branch/PR, origin said, commands. Never show steps or notes inline by default. Desktop and phone.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "mcp",
    "pendingId": "pending-tab-one-collapsed-row-per-build",
    "branch": "claude/pending-tab-one-collapsed-row-per-build",
    "pr": "#602",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-15T00:44:04.716Z",
-   "builtAt": "2026-11-12T11:06:49.143Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -195668,6 +196124,10 @@
     {
      "text": "Renamed from pending-tab-one-collapsed-row-per-build-tap-to-e (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:36:11.898Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/pending-tab-one-collapsed-row-per-build is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -195713,6 +196173,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/pending-tab-one-collapsed-row-per-build is not on GitHub and has no worktree here).",
+    "head": "origin/claude/pending-tab-one-collapsed-row-per-build",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -195793,7 +196261,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -195823,15 +196291,15 @@
    "title": "Plugin review: map what each plugin does, depends on, and breaks",
    "category": "report",
    "detail": "Brett said: \"For each plugin put a list for everything that it does, what will be broken, what it depends on, and what other plugins use it.\"\n\nREAD-ONLY analysis, change no code. For every folder in apps/console-web/plugins (68, skip _template): read plugin.json, README.md and web/ + server/ code. Find real dependencies from imports, requires, service contracts (service:xxx@1), API routes it calls (/api/plugins/<other>/...), events, settings keys and banner/slot ids it reads. Build the reverse map (used by). Then fill the existing Plan Studio plan 'Plugin review: what to disable' (planner.plans, via control_set) so each plugin's step holds four plain-English lists: What it does / What breaks if disabled (including other plugins, banners, voice commands, AmberX features) / Depends on / Used by. Mark core plugins that must never be disabled (e.g. plugin-manager, build-orchestrator, approvals-banner, hub-sync) with a warning. Also write _claude/builds/reports/plugin-review.md with the same table.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-review-map-what-each-plugin-does",
    "pr": "#603",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-15T00:43:55.379Z",
-   "builtAt": "2026-11-12T18:20:35.390Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -195896,6 +196364,10 @@
     {
      "text": "Renamed from plugin-review-map-what-each-plugin-does-depends-on-and-breaks (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:36:27.819Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/plugin-review-map-what-each-plugin-does is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -195944,6 +196416,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/plugin-review-map-what-each-plugin-does is not on GitHub and has no worktree here).",
+    "head": "origin/claude/plugin-review-map-what-each-plugin-does",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -196021,7 +196501,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196051,7 +196531,7 @@
    "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables,",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -196059,8 +196539,8 @@
    "pr": "#604",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-15T00:38:33.848Z",
-   "builtAt": "2026-11-13T08:42:58.405Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -196145,6 +196625,10 @@
     {
      "text": "Renamed from professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:36:43.520Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/professional-skins-rebuild-whole-app is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -196205,6 +196689,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/professional-skins-rebuild-whole-app is not on GitHub and has no worktree here).",
+    "head": "origin/claude/professional-skins-rebuild-whole-app",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -196660,7 +197152,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196998,15 +197490,15 @@
    "title": "Don't install the Notes plugin in the console (keep its code)",
    "category": "",
    "detail": "Do NOT remove or delete the console's Notes plugin code. Just don't install it in the console: take it off the console's installed/enabled plugin list so the Notes screen and nav entry are gone. Notes and to-dos live in AmberX's notes/to-do manager. Nothing else changes.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "mcp",
    "pendingId": "remove-console-s-own-notes-manager",
    "branch": "claude/remove-console-s-own-notes-manager",
    "pr": "#606",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-15T00:44:06.850Z",
-   "builtAt": "2026-11-12T11:03:13.773Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -197027,6 +197519,10 @@
     {
      "text": "Renamed from remove-the-console-s-own-notes-manager-console-u (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:37:09.269Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/remove-console-s-own-notes-manager is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -197072,6 +197568,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/remove-console-s-own-notes-manager is not on GitHub and has no worktree here).",
+    "head": "origin/claude/remove-console-s-own-notes-manager",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -197152,7 +197656,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -197182,7 +197686,7 @@
    "title": "Remove the 'no new Android or Kotlin work' rule; build Android twins in parallel",
    "category": "rules",
    "detail": "Brett said: \"just get rid of that rule, period. Get rid of it... right away. It's parallel.\" Remove the standing rule \"No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md\" from the rules brief and every rules file (CLAUDE.md, _claude/rules, shared rules, headless rules brief). Android/Kotlin twins are built in parallel with the web side from now on.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -197190,8 +197694,8 @@
    "pr": "#607",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-15T00:38:37.204Z",
-   "builtAt": "2026-11-13T02:03:04.281Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -197264,6 +197768,10 @@
     {
      "text": "Renamed from remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:37:21.526Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/remove-no-new-android-kotlin-work-rule is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -197319,6 +197827,14 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/remove-no-new-android-kotlin-work-rule is not on GitHub and has no worktree here).",
+    "head": "origin/claude/remove-no-new-android-kotlin-work-rule",
+    "step": "",
+    "exit": null
+   },
    "steps": [
     {
      "id": "s1",
@@ -197373,7 +197889,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -197402,7 +197918,7 @@
    "title": "Remove UI Review as a gate: no screenshots required, PRs never held as draft for UI Review, drop UI Review steps from builds",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -197410,8 +197926,8 @@
    "pr": "#608",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-15T00:38:35.689Z",
-   "builtAt": "2026-11-13T07:20:11.774Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -197464,6 +197980,10 @@
     {
      "text": "Renamed from remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:37:33.259Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/remove-ui-review-gate-no-screenshots is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -197524,6 +198044,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/remove-ui-review-gate-no-screenshots is not on GitHub and has no worktree here).",
+    "head": "origin/claude/remove-ui-review-gate-no-screenshots",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -197852,7 +198380,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -197891,15 +198419,15 @@
    "title": "Server: every failed merge alerts Brett immediately and retries by itself until merged",
    "category": "merge",
    "detail": "Brett said: \"anytime you try to merge something, this needs to go on the server. Anytime you try to merge something and it fails, I need to know right away because you need to try again.\" Server-side, not left to Claude. Builds on auto-rebuild-failed-merges-r6 if present.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-every-failed-merge-alerts-brett",
    "pr": "#609",
    "createdAt": "2026-11-12T21:53:13.014Z",
-   "updatedAt": "2026-11-15T00:43:49.848Z",
-   "builtAt": "2026-11-13T01:54:04.392Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -197948,6 +198476,10 @@
     {
      "text": "Renamed from server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:37:43.315Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/server-every-failed-merge-alerts-brett is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -198002,6 +198534,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/server-every-failed-merge-alerts-brett is not on GitHub and has no worktree here).",
+    "head": "origin/claude/server-every-failed-merge-alerts-brett",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -198079,7 +198619,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -198409,15 +198949,15 @@
    "title": "Show commits behind main on every build table and the orchestrator",
    "category": "",
    "detail": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "mcp",
    "pendingId": "show-commits-behind-main-every-build",
    "branch": "claude/show-commits-behind-main-every-build",
    "pr": "#611",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-15T00:43:42.693Z",
-   "builtAt": "2026-11-13T11:31:04.877Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -198486,6 +199026,10 @@
     {
      "text": "Renamed from show-commits-behind-main-on-every-build-table-an (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:38:02.873Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/show-commits-behind-main-every-build is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -198546,6 +199090,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/show-commits-behind-main-every-build is not on GitHub and has no worktree here).",
+    "head": "origin/claude/show-commits-behind-main-every-build",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -198626,7 +199178,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200412,15 +200964,15 @@
    "title": "Tap-to-confirm follows label visibility + quick-switches pane at top of every chrome settings",
    "category": "ui",
    "detail": "Follow-up to PR #524 (tap-to-confirm). Brett: \"By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on.\" and \"a collapsible pane at the top of the settings interface that has switches like override or double tap... at the top, easy to see.\"",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/tap-to-confirm-follows-label-visibility",
    "pr": "#614",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-15T00:43:44.605Z",
-   "builtAt": "2026-11-13T02:11:47.409Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -200505,6 +201057,10 @@
     {
      "text": "Renamed from tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:38:37.590Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/tap-to-confirm-follows-label-visibility is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -200552,6 +201108,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/tap-to-confirm-follows-label-visibility is not on GitHub and has no worktree here).",
+    "head": "origin/claude/tap-to-confirm-follows-label-visibility",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -200629,7 +201193,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200659,15 +201223,15 @@
    "title": "Unlink Plan Studio from builds; delete all Plan Studio plans",
    "category": "",
    "detail": "1) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "mcp",
    "pendingId": "unlink-plan-studio-builds-delete-all",
    "branch": "claude/unlink-plan-studio-builds-delete-all",
    "pr": "#615",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-15T00:43:38.678Z",
-   "builtAt": "2026-11-13T11:34:54.213Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -200716,6 +201280,10 @@
     {
      "text": "Renamed from unlink-plan-studio-from-builds-delete-all-plan-s (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:38:48.690Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/unlink-plan-studio-builds-delete-all is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -200776,6 +201344,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/unlink-plan-studio-builds-delete-all is not on GitHub and has no worktree here).",
+    "head": "origin/claude/unlink-plan-studio-builds-delete-all",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -200856,7 +201432,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -200886,15 +201462,15 @@
    "title": "VPS badge shows shell commands work; banner widgets for disk, CPU load and memory",
    "category": "banner",
    "detail": "Brett said: \"we need the VPS badge to show that we're able to run shell commands.\" axHub badge already covers the server being reachable (axHub runs on the VPS). Claude login status moves off the VPS badge (it lives with the Claude badge / accounts). Also add the resource widgets Brett asked about: disk, CPU load, memory.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/vps-badge-shows-shell-commands-work",
    "pr": "#616",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-15T00:43:46.783Z",
-   "builtAt": "2026-11-13T02:05:17.671Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -200927,6 +201503,10 @@
     {
      "text": "Renamed from vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:38:59.194Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/vps-badge-shows-shell-commands-work is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -200974,6 +201554,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/vps-badge-shows-shell-commands-work is not on GitHub and has no worktree here).",
+    "head": "origin/claude/vps-badge-shows-shell-commands-work",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -201051,7 +201639,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201081,7 +201669,7 @@
    "title": "Full voice and API control: type into fields, press buttons, approve hands-free",
    "category": "",
    "detail": "Goal: Brett controls absolutely everything in the console by voice/API (Claude via axHub MCP), never touching the phone.\n1. control@1 console.fields: list the fields of the open screen/dialog (id, label, type, value, required, options), set a field's value, and press any button/control by id or label (submit, Create, Save, Approve, tabs, toggles, menu items). Works on every screen, dialog and plugin, including the New Project wizard.\n2. Read back what is on screen (current screen, open dialog, visible fields and buttons) so the AI can narrate and verify.\n3. Approvals hands-free: veto countdowns and confirms can be approved by voice from Brett's own session (owner-recognized voice/claude.ai sign-in), no tap needed.\n4. Every action audited (by, reason).\n5. Expose on REST, MCP, CLI and voice. Tests (drive the New Project wizard end to end via API). Shipped features entry.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201089,8 +201677,8 @@
    "pr": "#627",
    "priority": "P0",
    "createdAt": "2026-11-13T17:39:25.266Z",
-   "updatedAt": "2026-11-15T00:38:21.755Z",
-   "builtAt": "2026-11-13T18:20:33.121Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -201111,6 +201699,10 @@
     {
      "text": "Headless run axf-full-voice-api-control-type-fields-press--joey: brief only · start 11.5K tokens ($0.03) · cost $7.18 · 125 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:20:33.121Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/full-voice-api-control-type-fields-press is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -201162,6 +201754,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/full-voice-api-control-type-fields-press is not on GitHub and has no worktree here).",
+    "head": "origin/claude/full-voice-api-control-type-fields-press",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -201352,7 +201952,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -201387,7 +201987,7 @@
    "title": "Chrome settings actually apply on toolbars, nav and menu bar (not just tab groups)",
    "category": "",
    "detail": "The framework chrome settings dialog (framework/react/components/ChromeContext.tsx, chrome-settings-rules.mjs, chrome.settings:<type>:<instance>) gives every tab group, toolbar, banner, nav and menu bar its own settings. Only tab groups apply the per-item settings (look, size, etc.); the main toolbar, nav and menu bar ignore most of them. Make every setting in the dialog take effect live on every chrome type and instance, persist per instance, and survive reload. Add a check that sets every value on every chrome type and verifies the render changes. Expose via REST/MCP/CLI/voice. Shipped features.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201395,8 +201995,8 @@
    "pr": "#625",
    "priority": "P1",
    "createdAt": "2026-11-13T17:44:36.515Z",
-   "updatedAt": "2026-11-15T00:42:16.025Z",
-   "builtAt": "2026-11-13T18:14:04.050Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -201421,6 +202021,10 @@
     {
      "text": "UI Review item r-20261113-se80s01 is local to the worktree only: the session had no AXF_CONSOLE_URL/AXF_TOKEN. Re-submit with --console (shots are in _claude/builds/reports/chrome-settings-actually-apply-toolbars/shots/).",
      "at": "2026-11-13T18:13:32.525Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/chrome-settings-actually-apply-toolbars is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -201472,6 +202076,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/chrome-settings-actually-apply-toolbars is not on GitHub and has no worktree here).",
+    "head": "origin/claude/chrome-settings-actually-apply-toolbars",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -201552,7 +202164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -203415,7 +204027,7 @@
    "title": "VPS builds get the console token so UI Review works, banner alert when it fails",
    "category": "",
    "detail": "Headless builds on the VPS have no AXF_TOKEN / AXF_CONSOLE_URL, so UI Review submits are refused and screenshots stay stuck in worktrees, silently.\n1. Launcher (claude-headless.sh / dispatcher / agent-slots) passes AXF_CONSOLE_URL and a scoped build console token (vault, never logged) into every build session.\n2. Headless screenshot tool authenticates to console/axHub (fix 'Waiting for axHub' and 401).\n3. Any failed UI Review submit, missing token, or stuck shots raises a banner alert immediately (errors banner).\n4. Re-submit stuck shots found in /root/axf-builds and /root/axf-review-shots.\n5. Remove the duplicate pending item builds-get-console-token-banner-alert (filed without an id).\n6. Tests, Shipped features.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203423,8 +204035,8 @@
    "pr": "#629",
    "priority": "P0",
    "createdAt": "2026-11-13T18:13:51.274Z",
-   "updatedAt": "2026-11-15T00:38:19.056Z",
-   "builtAt": "2026-11-13T18:37:34.546Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203449,6 +204061,10 @@
     {
      "text": "Headless run axf-vps-builds-get-console-token-ui-review--lenny: brief only · start 11.4K tokens ($0.03) · cost $4.48 · 114 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:37:34.546Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/vps-builds-get-console-token-ui-review is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -203494,6 +204110,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/vps-builds-get-console-token-ui-review is not on GitHub and has no worktree here).",
+    "head": "origin/claude/vps-builds-get-console-token-ui-review",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -203706,7 +204330,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -203742,7 +204366,7 @@
    "title": "Decision dialog: UI Review and other approvals pop up on any screen with approve/deny/pick",
    "category": "",
    "detail": "Generalise the approval popup into one 'decision dialog' type used for anything that needs Brett, starting with UI Review.\n- Whenever an item is submitted to UI Review, Brett gets a notification AND a dialog pops up on whatever console screen he is on (and on the phone overlay toolbar when built), without navigating away.\n- The dialog shows the item (title, build, screenshots/options side by side, desktop + phone), with buttons: pick option N / Approve, Reject, Request changes (with a note), Later, and 'Open in UI Review' (only navigates if tapped).\n- Same dialog type reused for other decisions: veto countdowns, confirms, model upgrade approvals, merge clashes, keys needed, passes. Each source registers its buttons; one queue so several waiting items stack with a counter.\n- Voice/MCP/API: list waiting decisions, answer one by id ('pick option 2', 'approve it').\n- Notification settings to choose which decision types pop up.\n- Tests, help entry, Shipped features.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203750,8 +204374,8 @@
    "pr": "#635",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-17T19:10:52.719Z",
-   "builtAt": "2026-11-13T19:09:27.501Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203808,6 +204432,10 @@
     {
      "text": "Watchdog: UI Review item r-20261113-89d7348e → Remove: Its PR was closed without a merge (PR #635 closed; build decision-dialog-ui-review-other: built; branch claude/decision-dialog-ui-review-other deleted)",
      "at": "2026-11-17T19:10:52.719Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/decision-dialog-ui-review-other is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -203868,6 +204496,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/decision-dialog-ui-review-other is not on GitHub and has no worktree here).",
+    "head": "origin/claude/decision-dialog-ui-review-other",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -204080,7 +204716,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -204116,7 +204752,7 @@
    "title": "Prompting engine: control panel to create events that pop decisions and run tools, macros or pipelines",
    "category": "",
    "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones (UI Review, veto, model upgrade).\n- Everything reachable by REST/MCP/CLI/voice/control@1 ('when a build fails, ask me to retry or archive').\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204124,8 +204760,8 @@
    "pr": "#770",
    "priority": "P1",
    "createdAt": "2026-11-13T18:15:41.449Z",
-   "updatedAt": "2026-11-17T15:09:12.492Z",
-   "builtAt": "2026-11-17T03:54:31.292Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"70ed6722-9617-4cb4-9adc-a07533d9b22d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
@@ -204182,6 +204818,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:12.492Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -204242,6 +204882,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.",
+    "head": "6ad2cfc6fbd5d267dd8224c41da43712b4d60137",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -204432,7 +205080,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206412,7 +207060,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206420,7 +207068,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T19:07:14.340Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -206502,6 +207150,10 @@
     {
      "text": "Claude account: hulu0241 (axf-orchestrator-settings-collapsible-split--joey, shared account login)",
      "at": "2026-11-17T19:07:14.340Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -206562,6 +207214,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "59fab543d47e6678db17e83d0daaf8a77e594a95",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -206796,7 +207456,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -209822,7 +210482,7 @@
    "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -209830,8 +210490,8 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-15T00:37:50.085Z",
-   "builtAt": "2026-11-14T23:21:03.162Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -209872,6 +210532,10 @@
     {
      "text": "Session axf-land-project-duplicate-boilerplate--rhonda on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-14T23:22:08.954Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -209941,6 +210605,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
+    "head": "b66db8a70c2c100af70575dea87786cde3641a34",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -210021,7 +210693,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210051,7 +210723,7 @@
    "title": "Land drive-live-console-first: resolve clash in console-commands engine",
    "category": "",
    "detail": "Branch claude/drive-live-console-first clashed with main in 7 files (console-commands plugin console.mjs and server/__init__.py, console-commands engine .mjs/.d.mts in framework/core/engines and apps/console-web/src/axf/core/engines, framework/catalog/status.json). Merge origin/main into the branch and keep main's newer console-commands behaviour (reconnect delivery, wake) plus this branch's 'drive the live console first' path. Regenerate the baked engine copies from framework, run the console-commands self-checks and tests, push, then land on main.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210059,8 +210731,8 @@
    "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-15T00:38:15.168Z",
-   "builtAt": "2026-11-13T19:53:16.613Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -210113,6 +210785,10 @@
     {
      "text": "Session axf-land-drive-live-console-first-resolve--paulie on mossesx-max- ended (exit 3); the build was already built.",
      "at": "2026-11-13T19:55:13.365Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/drive-live-console-first is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -210182,6 +210858,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/drive-live-console-first is not on GitHub and has no worktree here).",
+    "head": "origin/claude/drive-live-console-first",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -210262,7 +210946,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210292,7 +210976,7 @@
    "title": "Land rename-long-builds: resolve clash in orchestrator.mjs",
    "category": "",
    "detail": "Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210300,8 +210984,8 @@
    "pr": "#638",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-15T00:38:17.681Z",
-   "builtAt": "2026-11-13T19:40:19.880Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -210330,6 +211014,10 @@
     {
      "text": "Reconciler: PR #638",
      "at": "2026-11-13T19:41:04.838Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/land-rename-long-builds-resolve-clash is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -210390,6 +211078,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/land-rename-long-builds-resolve-clash is not on GitHub and has no worktree here).",
+    "head": "origin/claude/land-rename-long-builds-resolve-clash",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -210470,7 +211166,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210500,7 +211196,7 @@
    "title": "Land overlay-preview-ui-review: resolve clash in approvals-banner",
    "category": "",
    "detail": "Branch claude/overlay-preview-ui-review clashed with main in apps/console-web/plugins/approvals-banner/help.json and web/index.tsx (merge aborted, main untouched). Merge origin/main into the branch and keep both: main's approvals-banner changes plus this branch's UI Review choice-set assets for the overlay toolbar shape. Run tests, push, then land on main.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210508,8 +211204,8 @@
    "pr": "#653",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-15T00:38:12.362Z",
-   "builtAt": "2026-11-13T20:45:34.732Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -210530,6 +211226,10 @@
     {
      "text": "Headless run axf-land-overlay-preview-ui-review-resolve--rhonda: brief only · start 11.1K tokens ($0.03) · cost $5.56 · 105 turns · 6 tools, MCP none",
      "at": "2026-11-13T20:50:31.450Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/land-overlay-preview-ui-review-resolve is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -210581,6 +211281,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/land-overlay-preview-ui-review-resolve is not on GitHub and has no worktree here).",
+    "head": "origin/claude/land-overlay-preview-ui-review-resolve",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -210661,7 +211369,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212288,7 +212996,7 @@
    "title": "Full voice control: merge main and land",
    "category": "",
    "detail": "Branch claude/full-voice-api-control-type-fields-press clashed with main only in framework/catalog/status.json (merge aborted, main untouched). Merge origin/main and keep both sides' catalog entries (additive), run tests, push, then land on main.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -212296,8 +213004,8 @@
    "pr": "#645",
    "priority": "P0",
    "createdAt": "2026-11-13T19:53:48.014Z",
-   "updatedAt": "2026-11-15T00:38:13.706Z",
-   "builtAt": "2026-11-13T20:14:59.377Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -212322,6 +213030,10 @@
     {
      "text": "Session axf-full-voice-control-merge-main-and-land--lenny on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T20:16:07.597Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/full-voice-control-merge-main-and-land is not on GitHub and has no worktree here).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -212382,6 +213094,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/full-voice-control-merge-main-and-land is not on GitHub and has no worktree here).",
+    "head": "origin/claude/full-voice-control-merge-main-and-land",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -212462,7 +213182,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -214984,7 +215704,7 @@
    "title": "Context menus plugin: one true source on axHub, Claude-generated by skill level",
    "category": "",
    "detail": "Replaces the archived context-menu-plugin-ai-generated-slim.\n- New console plugin 'Context menus', integrated with the UI Manager (its menus show there per element/zone).\n- ONE TRUE SOURCE: every context menu definition is stored on axHub (not local), as context-menu@1 assets, readable and writable by every plugin and app through the hub API. Plugins register the actions/hooks they offer; menus reference them.\n- The plugin lists every context menu in the app (per zone/element/page, with its parent app, plugin or page), searchable, with preview, edit and Restore per row, snapshots and restore like skins.\n- AI generation (needs Claude; greyed out with a clear error when the Claude badge isn't green): generate the context menus for the whole app at a chosen level. BEGINNER: a few big, obvious actions. AMATEUR: common actions. PRO: full working set grouped. ADVANCED CODER: meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, run commands). Higher levels map the app more meticulously. Menus are slim by default (no wasted space, rarely used items folded away). The user picks the level, and it can differ per app/page.\n- Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.",
-   "status": "running",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -214992,7 +215712,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-17T19:08:35.175Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -215074,6 +215794,10 @@
     {
      "text": "Claude account: hulu0241 (axf-context-menus-plugin-one-true-source--sully, shared account login)",
      "at": "2026-11-17T19:08:35.175Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -215143,6 +215867,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "1d8cb9c41b7be7cbb5fdc42f87b294471f28fa5c",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -215377,7 +216109,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222606,14 +223338,14 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "running",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-17T19:09:36.798Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -222679,6 +223411,10 @@
     {
      "text": "Claude account: hulu0241 (axf-group-chat-audio-hear-agents-talk-while--rhonda, shared account login)",
      "at": "2026-11-17T19:09:36.798Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -222733,6 +223469,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/group-chat-audio-hear-agents-talk-while has commits here and on GitHub that differ).",
+    "head": "cdd9c788c14026ffce32b1e5780a11ca539e4a73",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -222854,7 +223598,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -224437,7 +225181,7 @@
    "title": "Picker dialog plugin replaces all dropdowns",
    "category": "",
    "detail": "New removable plugin: replaces EVERY dropdown/select in the console and framework (native <select>, custom dropdowns, comboboxes) with a tap-to-open picker dialog. The field shows the current value; tapping opens a themed dialog listing the options (search box when many, grouped sections, icons/descriptions if available, multi-select with checkboxes where the select is multiple, keyboard and screen-reader accessible). Fully token-driven: register its own token family (dialog surface, backdrop, option row, selected, hover, focus, search, header, every state, light and dark) in the token registry; no literal colours/sizes (CI gate); every skin can style it and the skin upgrader adds defaults matching today's look. One shared component used everywhere; plugin off = original dropdowns come back. Works on desktop and phone (bottom sheet style on phone). Full API and voice control (open picker, choose option by name). Tests desktop and phone, help entry, Shipped features.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -224445,8 +225189,8 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-17T15:12:05.959Z",
-   "builtAt": "2026-11-15T00:08:17.045Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -224495,6 +225239,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:12:05.959Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -224555,6 +225303,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.",
+    "head": "2495e7c351502f3b4c2f2e8b751cbdce8a41f69d",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -225127,7 +225883,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -228444,7 +229200,7 @@
    "title": "Console look becomes default axHub skin",
    "category": "",
    "detail": "Snapshot the live console's current look exactly as it is now (skin, colour theme light and dark, every token value including opacityGlass 0.7, typography, density, radius, behaviour/animation themes, toolbar/banner/nav chrome settings) into a new skin asset 'Console (default)' and publish it on axHub as THE default skin. Make every app (console, AmberX web, Android apps, any app built from the framework) inherit its skin from axHub's default right now: apps with no override pick it up immediately; apps with their own edits keep only their edited tokens (per the skin-axhub-override rules) and inherit the rest. Keep a backup of each app's previous skin so it can be restored in one tap. Run AFTER land-all-skin-builds finishes so it builds on the landed skins plugin/axHub-only/override code; if those aren't landed yet, wait for them. Verify with pixel-diff that the console looks identical before and after, and screenshot every app desktop and phone. Redeploy, then send Brett a phone notification. Full API and voice ('make this the default look'), tests, help, Shipped features.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -228452,8 +229208,8 @@
    "pr": "#717",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-17T15:11:21.496Z",
-   "builtAt": "2026-11-16T14:16:08.095Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -228578,6 +229334,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:21.496Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/console-look-becomes-default-axhub-skin has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -228657,6 +229417,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/console-look-becomes-default-axhub-skin has commits here and on GitHub that differ).",
+    "head": "0af018834ffb7ce83543f1a00acb55debf48cee7",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -229177,7 +229945,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -230836,7 +231604,7 @@
    "title": "Merge main and land server-gate-one-session-per-build-no",
    "category": "",
    "detail": "Auto-land could not land `server-gate-one-session-per-build-no` (server-gate-one-session-per-build-no): merging main into it clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/push-banner/land/merge-queue.mjs, deploy/claude-headless.sh, framework/plan/builds-merge-core.mjs.\n\nWork on its own branch `claude/server-gate-one-session-per-build-no` (PR #610); do not open a new PR.\n1. git fetch origin && git checkout claude/server-gate-one-session-per-build-no && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/server-gate-one-session-per-build-no. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -230844,8 +231612,8 @@
    "pr": "#610",
    "priority": "P0",
    "createdAt": "2026-11-14T23:18:06.781Z",
-   "updatedAt": "2026-11-15T00:18:46.326Z",
-   "builtAt": "2026-11-15T00:10:15.436Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -230866,6 +231634,10 @@
     {
      "text": "Headless run axf-merge-main-land-server-gate-one-session--gina: brief only · start 13.2K tokens ($0.04) · cost $1.22 · 47 turns · 6 tools, MCP none",
      "at": "2026-11-15T00:10:15.436Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -230917,6 +231689,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.",
+    "head": "a99bd3ea57afca11cd5960236fd775beeae5e667",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -231129,7 +231909,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -231145,7 +231925,7 @@
    "title": "Merge main and land console-app-part-2-native-floating-2",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-2-native-floating-2` (console-app-part-2-native-floating-2): its tests fail: Web Dev Console (React/TS) + Python API.\n\nWork on its own branch `claude/console-app-part-2-native-floating-2` (PR #639); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-2-native-floating-2 && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the failing checks pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-2-native-floating-2. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -231153,8 +231933,8 @@
    "pr": "#639",
    "priority": "P0",
    "createdAt": "2026-11-15T00:06:45.788Z",
-   "updatedAt": "2026-11-17T00:39:21.760Z",
-   "builtAt": "2026-11-15T00:42:34.863Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -231191,6 +231971,10 @@
     {
      "text": "Superseded: the -2 branch's commits and the failing type-check fix (wake-listener vs part 1 bridge) are on claude/console-app-part-2-native-floating (build console-app-part-2-native-floating). PR #750 is no longer needed once that lands.",
      "at": "2026-11-17T00:39:21.760Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue), Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -231251,6 +232035,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Light PR checks (full run happens once, in the merge queue), Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "7ce24a1f1eaadbf32438d294fdb5305dd241fee0",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -231485,7 +232277,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -234788,7 +235580,7 @@
    "title": "Pending tab: one collapsed row per build (rebuild)",
    "category": "",
    "detail": "Rebuild from current main (the old branch claude/pending-tab-one-collapsed-row-per-build is 3000+ commits behind and only has rename commits; ignore it). In the Build Orchestrator's Pending tab, every pending build is ONE collapsed row: title, status/why it's pending, priority, steps done/total, age. Tap the row to expand it and see steps, notes and actions (queue, edit, archive); tap again to collapse. Collapsed by default, remembers expanded rows per viewer. Same for desktop and phone. Uses asset tokens and framework controls; full API parity (deep link, expand/collapse and actions via REST/MCP/CLI/voice). Tests, help, Shipped features. Land when done.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -234796,8 +235588,8 @@
    "pr": "#706",
    "priority": "P1",
    "createdAt": "2026-11-15T11:52:18.052Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-15T12:21:00.568Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -234842,6 +235634,10 @@
     {
      "text": "Watchdog: UI Review item r-20261115-2464b94c → Remove: Its PR was closed without a merge (PR #706 closed; not on main; build pending-tab-one-collapsed-row-per-2: built)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -234902,6 +235698,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "28c28b664264db20a64b284fe3a7c220977d6480",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -235264,7 +236068,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -236763,7 +237567,7 @@
    "title": "Shipped features: organized, sortable table with more columns",
    "category": "",
    "detail": "Brett: the Shipped features table is a mess. Rebuild it properly on the shared framework grid (follows the skin's 1-or-2-row setting; default console skin = 2 rows, styled to look great in every skin, light/dark, desktop/phone). ORGANIZE: group by plugin/area with collapsible group headers and counts; option to group by date, build, PR or status instead; de-duplicate repeated rows. SORTABLE: tap any column header to sort asc/desc, multi-sort with shift/long-press, remembered per viewer. MORE COLUMNS (show/hide and reorder via a column picker, remembered): feature name, plugin/area, description, status (live, behind a switch, partial, removed), build id (link), PR # (link), commit, date+time shipped, landed on main (yes/no), deployed live (yes/no), how to reach it (deep link, REST, MCP, CLI, voice: icons for each), settings key, help link, version, who asked (Brett's words), tests (pass/count). Plus search box, filter chips (plugin, status, date range, has API, not deployed), row count, export CSV. Each row expands for full details; context menu per row and cell (open feature, open build, open PR, copy link, mark removed). Uses the shared status badges from the pending-tab build. Full API parity (list/sort/filter/columns via REST/MCP/CLI/voice). Tests, help. Land when done with the one-at-a-time lander.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -236771,8 +237575,8 @@
    "pr": "#708",
    "priority": "P1",
    "createdAt": "2026-11-15T12:09:29.937Z",
-   "updatedAt": "2026-11-17T15:11:36.266Z",
-   "builtAt": "2026-11-15T12:33:21.985Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -236809,6 +237613,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:36.266Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/shipped-features-organized-sortable has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -236860,6 +237668,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/shipped-features-organized-sortable has commits here and on GitHub that differ).",
+    "head": "d55f04db8c4678a3a25e0aa81e862faf6d98a818",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -236940,7 +237756,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -236956,7 +237772,7 @@
    "title": "VPS sends Shipped features on every merge to main (+ backfill)",
    "category": "",
    "detail": "Bug: Shipped features has nothing for 2 days, but main DID get many merges (Nov 14-15: PRs #687, #694, #691, #693, #696, #689, #702, #324, plus build_land of console-look-becomes-default-axhub-skin, and the hand-merged skin PRs #647 #648 #590 #618 #641 #652 #657 #654). The last shipped manifests in _claude/builds/shipped/ are from Nov 13. The orchestrator is supposed to send shipped-manifest@1 to Shipped features (commit 7a6668231) but stopped. RULE (Brett): the VPS controls the orchestrator, so the VPS sends the shipped manifest AS SOON AS any merge to main succeeds, whatever the path (merge queue, auto-lander, build_land, manual GitHub merge, push to main). Implement it server-side on the VPS: a watcher on origin/main (post-merge hook + a poll/webhook fallback) that, for each new merge commit, maps it to its build/PR, builds the shipped-manifest@1 (PR, commit, mergedAt, landedAt, files, areas, tests, report link, what Brett said) and sends it to Shipped features at once; idempotent (no duplicates); alerts Brett if a send fails, and retries. Find and fix why it stopped on Nov 13. BACKFILL every merge to main since Nov 13 that has no manifest. Design it so it moves into the axf-molly container with the orchestrator (coordinate with move-build-orchestrator-to-axhub); the data goes to axf-data once that exists. Tests, help. Land with the one-at-a-time lander.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -236964,8 +237780,8 @@
    "pr": "#709",
    "priority": "P0",
    "createdAt": "2026-11-15T12:14:27.131Z",
-   "updatedAt": "2026-11-17T15:11:32.865Z",
-   "builtAt": "2026-11-16T14:29:14.787Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -237042,6 +237858,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:32.865Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/vps-sends-shipped-features-every-merge has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -237111,6 +237931,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/vps-sends-shipped-features-every-merge has commits here and on GitHub that differ).",
+    "head": "856108dc189432f5867c7183b30fef11aabfa81a",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -237551,7 +238379,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -239089,7 +239917,7 @@
    "title": "Phone Connect: small Android companion + console plugin; retire AmberX",
    "category": "",
    "detail": "Replace the AmberX app with Phone Connect. Two parts: (A) a console plugin 'phone-connect' for screens, settings and pairing, with full API parity; (B) a SMALL native Android companion app, not the whole console, for phone-only work. KEEP and port from apps/amberx-droid: 1) the Approvals page with alerts, including the lock screen showing only 'Approval waiting'; 2) Monitor: background WatchService foreground service, approvals watch, alerts, auto-approval rules; 3) open a page on the phone (bring Chrome to the front; keep the amberx.open_url tool working in axHub, renamed phone.open_url with an alias); 4) phone notifications (FYI and fix updates, alerts); 5) the audio output recorder: move the WHOLE thing out of the console's output-recorder plugin into Phone Connect (recorder_start/stop/status tools move too, with aliases). DROP: voice commands, notes, dictation, web tabs, AI connection, the phone AI assistant and agent manager (everything merges into the console AI Assistant), the walkthrough video and recorder, and the wake word listener. Also REMOVE the console wake-listener plugin and the always-on wake mic, because it grabs Brett's mic. Keep the hub sign-in and session security rules. Before deleting anything, list every AmberX piece and console plugin being removed, then retire apps/amberx-droid, the amberx.amberxai.com deploy, and the axHub amberx device, once Phone Connect is installed and working. CI builds the APK. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -239097,8 +239925,8 @@
    "pr": "#712",
    "priority": "P1",
    "createdAt": "2026-11-15T13:36:18.858Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-16T17:08:51.405Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -239231,6 +240059,10 @@
     {
      "text": "Watchdog: UI Review item r-20261115-usst701 → Remove: Its PR was closed without a merge (PR #712 closed; not on main; build phone-connect-small-android-companion: built)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/phone-connect-small-android-companion has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -239300,6 +240132,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/phone-connect-small-android-companion has commits here and on GitHub that differ).",
+    "head": "8b807b50444619a62412894d0c55a28dfff6f572",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -240188,7 +241028,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -240204,7 +241044,7 @@
    "title": "Shipped features: Open button views each feature in the live app",
    "category": "",
    "detail": "Every feature row in Shipped features gets an 'Open' button (plus a row context-menu item) that opens that feature in the live console app at the exact screen, tab or setting, using its console_show deep link from the feature store record. Features with no screen show the button disabled with the reason. The same button appears in the Gate plugin's Pending features expanded rows once a build has landed. Full API parity (REST/MCP/CLI/voice: 'open feature X'). Tests, help. Land with the one-at-a-time lander.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -240212,8 +241052,8 @@
    "pr": "#714",
    "priority": "P1",
    "createdAt": "2026-11-15T14:55:29.131Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-15T16:15:56.589Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -240246,6 +241086,10 @@
     {
      "text": "Watchdog: UI Review item r-20261115-a909a832 → Remove: Its PR was closed without a merge (PR #714 closed; not on main; build shipped-features-open-button-views-each: built)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/shipped-features-open-button-views-each has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -240306,6 +241150,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/shipped-features-open-button-views-each has commits here and on GitHub that differ).",
+    "head": "f260176d2211f13249c30522bf633551c7879803",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -240694,7 +241546,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -245352,7 +246204,7 @@
    "title": "Fix console deep links so open-page lands on the right screen",
    "category": "",
    "detail": "Deep links are broken: opening https://console.amberxai.com/?axf-target=view:build-orchestrator (or view:gate, any view:/tab: address) loads the console's main screen instead of that screen. console_show via the API works, so the address is valid; the URL parameter isn't applied on load. Fix: on page load (and after sign-in redirect, which likely drops the query string), read ?axf-target= and focus that address once the views are registered, including tabs (e.g. view:gate/tab:gate.tabs=auto-lander). Keep the parameter through the hub sign-in redirect. Each open_url must open its own tab when asked. Tests: load with each view address and assert the focused screen. Land with the one-at-a-time lander.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -245360,8 +246212,8 @@
    "pr": "#721",
    "priority": "P0",
    "createdAt": "2026-11-16T16:31:15.510Z",
-   "updatedAt": "2026-11-17T15:09:02.348Z",
-   "builtAt": "2026-11-17T13:18:55.298Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -245422,6 +246274,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:02.348Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -245482,6 +246338,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "f592fcd7ff0c3ff255a4de3954f5608a1633c087",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -245606,7 +246470,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -245622,7 +246486,7 @@
    "title": "Orchestrator: On hold status and tab",
    "category": "",
    "detail": "Add a new build status 'held' (On hold) and a new On hold tab/grid in the Build Orchestrator. 1) Multi-select in EVERY orchestrator table (Pending, Queue, Active, Built, Complete, Errors, Archive): checkbox per row, select all, and a bulk action bar with 'Put on hold'. Also on each row's context menu. Putting a running build on hold stops its session cleanly first (branch and worktree kept). 2) On hold tab: grid of held builds (shared 2-row status row and badges, follows the skin's 1-or-2-row setting) showing when it was held, by whom and the build's previous status. Multi-select + bulk actions: Move to Pending, Move to Queue, Archive, Delete (Delete asks for confirm). 3) The dispatcher, reconciler and auto-lander never touch held builds (no launch, no requeue, no land). 4) Status 'held' added to the builds store schema and journal; the reconciler must not flip it. 5) Full API parity: deep link to the tab, REST, MCP (planner.builds action 'status' with 'held', plus bulk actions), CLI and voice. Tests, help, Shipped features. NOTE: an older build 'orchestrator-hold-status-archive-tab' (Nov 12) asked for something similar but never landed and was cleaned up today; check main first and reuse anything that exists rather than duplicate it.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -245630,8 +246494,8 @@
    "pr": "#722",
    "priority": "P1",
    "createdAt": "2026-11-16T16:53:45.431Z",
-   "updatedAt": "2026-11-17T15:11:16.616Z",
-   "builtAt": "2026-11-16T17:11:44.616Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -245664,6 +246528,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:16.616Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/orchestrator-on-hold-status-and-tab has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -245715,6 +246583,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/orchestrator-on-hold-status-and-tab has commits here and on GitHub that differ).",
+    "head": "48772f4f43dbba558b0043331880a0b54d31f7db",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -245795,7 +246671,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -245811,7 +246687,7 @@
    "title": "axHub: veto countdown setting, read-only calls skip it",
    "category": "",
    "detail": "In axHub (MossesX/axHub): 1) Add a setting for the veto countdown length (0 to 120 seconds), default 10 s per Brett; editable in the axHub approvals settings and through the API. 2) Read-only calls never get held: vps.run commands that only read (classify by a read-only allow list or an explicit readOnly flag on the call; inspect, logs, ps, git log/fetch, cat, grep, df, docker inspect) run at once. Anything that changes something keeps the countdown. Irreversible calls keep their approval. Tests, help, Shipped features.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -245819,8 +246695,8 @@
    "pr": "#764",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-17T15:09:28.357Z",
-   "builtAt": "2026-11-16T23:55:24.132Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -245889,6 +246765,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:28.357Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -245958,6 +246838,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.",
+    "head": "8207ff939e8592f87eafe1d01ebf804b9ab92798",
+    "step": "",
+    "exit": null
    },
    "shipped": {
     "id": "sm-axhub-veto-countdown-setting-read-only",
@@ -246277,7 +247165,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246293,7 +247181,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "running",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -246301,7 +247189,7 @@
    "pr": "#767",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T19:09:00.343Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -246359,6 +247247,10 @@
     {
      "text": "Brief only: brief is 29454 characters (~7364 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T19:09:00.343Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -246410,6 +247302,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
+    "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -246968,7 +247868,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -246984,7 +247884,7 @@
    "title": "Settings interface and gear for every plugin",
    "category": "",
    "detail": "Brett: every plugin needs a settings interface. Audit: 44 plugins with a screen; 10 have no settings tab (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review), and hub-sync's screen has no gear. Check plugins WITHOUT a screen too. Give EVERY plugin a Settings → Plugins sub-tab (at minimum enable/disable, info, logs, plus its real options), and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when any plugin lacks a settings tab, or a plugin screen lacks the gear. Full API parity.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -246992,8 +247892,8 @@
    "pr": "#725",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:38.814Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-16T20:49:51.102Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -247082,6 +247982,10 @@
     {
      "text": "Watchdog: UI Review item r-20261116-zyvou01 → Remove: Its PR was closed without a merge (PR #725 closed; not on main; build settings-interface-gear-every-plugin: built)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/settings-interface-gear-every-plugin has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -247161,6 +248065,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/settings-interface-gear-every-plugin has commits here and on GitHub that differ).",
+    "head": "2b3e0b15b9d114e997cb83375bb4591fac1601b2",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -247869,7 +248781,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -247885,7 +248797,7 @@
    "title": "Hotfix: orchestrator grid columns don't line up",
    "category": "",
    "detail": "Brett: in the Build Orchestrator, the Pending grid (and every other tab's grid) has columns that don't line up; it looks like trash. Likely caused by the new skin Brett built on Fable (console-look-becomes-default-axhub-skin / every-grid-1-2-rows-per-item-set-skin). Fix the grid so header and every row share the same column widths (CSS grid template or a shared column definition from the grid asset tokens), in 1-row and 2-row modes, under every skin. Check every orchestrator tab and the other grids in the console. Screenshot before and after (headless Chrome, signed in). Add a test that fails when header and row column edges differ. Land it, redeploy, and check by hand on the live console.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -247893,8 +248805,8 @@
    "pr": "#729",
    "priority": "P0",
    "createdAt": "2026-11-16T18:28:00.561Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-16T19:44:20.879Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -247931,6 +248843,10 @@
     {
      "text": "Watchdog: UI Review item r-20261116-k7rk501 → Remove: Its PR was closed without a merge (PR #729 closed; not on main; build hotfix-orchestrator-grid-columns-don-t: built)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/hotfix-orchestrator-grid-columns-don-t has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -247976,6 +248892,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/hotfix-orchestrator-grid-columns-don-t has commits here and on GitHub that differ).",
+    "head": "a45bec2073a27752cb905a7fc8db4f78dcd47d3b",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -248273,7 +249197,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -248853,7 +249777,7 @@
    "title": "Reset all button for every asset override in Appearance",
    "category": "",
    "detail": "Settings > Appearance, the 'N assets are controlled by their own settings' row (AssetsWithEdits in framework/react/components/ChromeContext.tsx) only has a Reset all per asset. Add one 'Reset all' button on the header row that clears every asset override at once (chrome.reset for each, one confirm, one undo), so every asset follows the skin again. Same action through REST, MCP, CLI and voice (chrome.reset-all). Tests, land.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -248861,8 +249785,8 @@
    "pr": "#730",
    "priority": "P1",
    "createdAt": "2026-11-16T19:03:55.794Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-16T19:52:10.001Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -248907,6 +249831,10 @@
     {
      "text": "Watchdog: UI Review item r-20261116-sjk8l01 → Remove: Its PR was closed without a merge (PR #730 closed; not on main; build reset-all-button-every-asset-override: built)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/reset-all-button-every-asset-override has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -248967,6 +249895,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/reset-all-button-every-asset-override has commits here and on GitHub that differ).",
+    "head": "0b2a27bef97b898ea40d2b7d5d4786f26e7ca955",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -249256,7 +250192,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -249272,7 +250208,7 @@
    "title": "Alert every time a build falls back to Pending",
    "category": "",
    "detail": "Whenever any build drops out of Queue/Running back to Pending (session stopped with steps left, reconciler pause, self-check release, CI or land failure, anything), raise a console banner item (systems check health@1) saying which build, why, steps left and since when, with buttons Requeue and Open, and push it once to the AmberX phone app. Clear it when the build is requeued, archived or held. Also fix the dispatcher alert link: ALERT_LINK is '#/build-orchestrator', must be 'view:build-orchestrator' so alerts open the right screen. Same via REST, MCP, CLI, voice. Tests, land through the orchestrator.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -249280,8 +250216,8 @@
    "pr": "#728",
    "priority": "P0",
    "createdAt": "2026-11-16T19:12:13.425Z",
-   "updatedAt": "2026-11-17T15:11:05.444Z",
-   "builtAt": "2026-11-16T19:30:30.748Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett Nov 16: also, ANY item that goes into ANY banner (systems check, approvals, push banner, every banner plugin, any app) sends a phone notification through AmberX, once per item, tapping it opens that item. Make it a framework rule: the banner registry pushes on add, with a CI check so no banner can skip it.",
@@ -249326,6 +250262,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:05.444Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/alert-every-time-build-falls-back-to has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -249386,6 +250326,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/alert-every-time-build-falls-back-to has commits here and on GitHub that differ).",
+    "head": "86ad4cd50e137604be4dca999e49f38ccf11d3a8",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -249466,7 +250414,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -249667,7 +250615,7 @@
    "title": "Auto-lander grid: one row per build, behind-main count, archive",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: make the grid ONE row per build (no multi-line rows). Columns: build, what it does (plain words), PR, status (ready/blocked), reason, commits behind main (sortable), last activity. Row actions: Open, Merge main + fix, Archive, Hold; multi-select bulk Archive. Filter e.g. 'behind > 500'. Stale records with no branch/PR are hidden or cleaned. Same data and actions on REST, MCP, CLI and voice. Tests, land through the orchestrator.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -249675,8 +250623,8 @@
    "pr": "#778",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-17T15:07:05.158Z",
-   "builtAt": "2026-11-17T12:35:01.131Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -249737,6 +250685,10 @@
     {
      "text": "Brett: land after orchestrator-stale-row-watchdog-vps",
      "at": "2026-11-17T15:07:05.158Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -249797,6 +250749,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "79efd48838b2502c51734b36dd701e47ac40ab44",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -249921,7 +250881,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -250138,7 +251098,7 @@
    "title": "Every settings interface gets collapsible sections",
    "category": "",
    "detail": "Every settings interface in every app (console Settings sections, plugin settings, chrome/asset settings for toolbars, tab groups, banners, nav, menus, and any future one) groups its fields into collapsible sections with a header and chevron, remembered open/closed state per user, Expand all / Collapse all, search opens the matching section. Make it the framework default in the settings asset/template so new interfaces get it automatically, plus a CI check that fails on a settings interface without sections. Builds on orchestrator-settings-collapsible-split (same pattern, don't duplicate). Tokens only; reachable on REST, MCP, CLI, voice. Land through the orchestrator.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -250146,8 +251106,8 @@
    "pr": "#732",
    "priority": "P1",
    "createdAt": "2026-11-16T19:23:12.681Z",
-   "updatedAt": "2026-11-17T15:10:51.825Z",
-   "builtAt": "2026-11-16T20:03:57.558Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -250180,6 +251140,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:51.825Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/every-settings-interface-gets has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -250240,6 +251204,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/every-settings-interface-gets has commits here and on GitHub that differ).",
+    "head": "5b0d144abcc82ccde36ac10c3e680c5ea5eed67a",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -250320,7 +251292,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -250706,7 +251678,7 @@
    "title": "To-do manager fully voice and MCP controlled",
    "category": "",
    "detail": "The To-do manager plugin (todo-manager) has REST routes (/api/plugins/todo-manager: lists, entries, types) but no MCP tools, console actions or voice phrases, so it can't be driven by voice. Expose every action: create/rename/reorder/delete lists, add/edit/move/complete/delete notes, to-dos and tasks, search, export, through plugin-commands MCP tools, console-control addresses, the CLI and AmberX voice ('make a list called X', 'add a note called Y to X'). Add a CI check that fails when any plugin has REST routes with no MCP/voice twin. Tests, land through the orchestrator.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -250714,8 +251686,8 @@
    "pr": "#733",
    "priority": "P0",
    "createdAt": "2026-11-16T20:22:23.083Z",
-   "updatedAt": "2026-11-17T15:10:48.784Z",
-   "builtAt": "2026-11-16T20:39:27.617Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -250756,6 +251728,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:10:48.784Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/to-do-manager-fully-voice-mcp-controlled has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -250816,6 +251792,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "pushing its branch failed (claude/to-do-manager-fully-voice-mcp-controlled has commits here and on GitHub that differ).",
+    "head": "8e196c09d13bd5cedcd3498aecf5efa3bd988cbe",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -250896,7 +251880,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -252642,7 +253626,7 @@
    "title": "Own look per grid and tab group",
    "category": "",
    "detail": "Fresh build on current main replacing the archived own-token-sets-for-grids-and-tab-groups (2,196 behind). Every grid and tab group can get its own look separate from the app's skin: row colour, text size, spacing, borders, radius, hover and selected colours. Set per instance from its right-click Settings, with Reset to skin. Old branch for intent only, don't merge it. Tokens through the asset engines, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -252650,8 +253634,8 @@
    "pr": "#752",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:23.121Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
-   "builtAt": "2026-11-17T00:32:45.876Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -252732,6 +253716,10 @@
     {
      "text": "Watchdog: UI Review item r-20261117-avs9i01 → Remove: Its PR was closed without a merge (PR #752 closed; not on main; build own-look-per-grid-and-tab-group: built)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [
@@ -252801,6 +253789,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.",
+    "head": "e456126068d61ed76208d036e743cc45b1cbb0cc",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -253221,7 +254217,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -263679,7 +264675,7 @@
    "title": "Maintenance plugin: Clear Docker cache button, restarts Docker if needed",
    "category": "",
    "detail": "Add a 'Clear Docker cache' action to the Maintenance plugin. It runs docker builder prune -af and shows space freed. If the cache is reported as in use (reclaimable 0 while cache size > 0), it offers/does a Docker restart (systemctl restart docker), waits for every container to come back on its restart policy, verifies them, then prunes again and reports before/after disk. Context: on Nov 17 the disk hit 100%; 87 GB of build cache showed as 'active' and prune freed nothing until Docker was restarted, which dropped disk from 96% to 78%. Confirm before restart (it drops all apps ~1-2 min). Reachable from UI, REST, MCP, CLI and voice; log to systems check. Also add to the disk systems-check item's Auto fix.",
-   "status": "built",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -263687,8 +264683,8 @@
    "pr": "#779",
    "priority": "P1",
    "createdAt": "2026-11-17T12:22:21.824Z",
-   "updatedAt": "2026-11-17T15:07:09.399Z",
-   "builtAt": "2026-11-17T12:41:36.636Z",
+   "updatedAt": "2026-11-17T19:11:35.654Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -263721,6 +264717,10 @@
     {
      "text": "Brett: land after auto-lander-grid-one-row-per-build",
      "at": "2026-11-17T15:07:09.399Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-17T19:11:35.654Z"
     }
    ],
    "approvals": [],
@@ -263761,6 +264761,14 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-17T19:11:35.654Z",
+    "why": "CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.",
+    "head": "bced2d524b876075c02000e69da8907ca1de66f1",
+    "step": "",
+    "exit": null
+   },
    "steps": [
     {
      "id": "s1",
@@ -263793,7 +264801,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
