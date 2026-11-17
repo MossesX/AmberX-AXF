@@ -1279,6 +1279,18 @@
    "from": "",
    "addenda": []
   },
+  "auto-lander-never-wait-missing-ui-review": {
+   "said": "If it recorded the test of the pipeline and didn't merge it on its own, then the test failed. It should have tested itself before it did the demo.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-lander-settings-log-placeholder": {
    "said": "I need a log for the auto-lander that I can view from its settings. We're gonna build a log plugin later, so just put a placeholder for it.",
    "at": "2026-11-17T19:37:43.130Z",

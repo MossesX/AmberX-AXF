@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8220,
- "updatedAt": "2026-11-17T22:35:13.514Z",
+ "rev": 8221,
+ "updatedAt": "2026-11-17T22:35:54.289Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262547,7 +262547,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:03:57.915Z",
-     "updatedAt": "2026-11-17T22:34:45.941Z"
+     "updatedAt": "2026-11-17T22:35:50.723Z"
     },
     {
      "id": "s16",
@@ -271385,7 +271385,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "landing",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -271393,7 +271393,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:35:08.383Z",
+   "updatedAt": "2026-11-17T22:35:39.849Z",
    "builtAt": "2026-11-17T22:35:08.383Z",
    "notes": [
     {
@@ -271739,6 +271739,10 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s15): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T22:31:25.486Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-phone-connect-small--rhonda: brief only · start 19.8K tokens ($0.07) · cost $0.28 · 9 turns · 6 tools, MCP none",
+     "at": "2026-11-17T22:35:39.849Z"
     }
    ],
    "approvals": [
@@ -272207,7 +272211,7 @@
      "note": "",
      "rev": 4,
      "createdAt": "2026-11-17T16:54:55.110Z",
-     "updatedAt": "2026-11-17T22:35:09.188Z"
+     "updatedAt": "2026-11-17T22:35:50.723Z"
     },
     {
      "id": "s16",
@@ -272521,12 +272525,12 @@
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-17T16:53:25.340Z",
-    "builtAt": "",
+    "builtAt": "2026-11-17T22:35:08.383Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwkxnkau01z2hn": "2026-11-17T16:54:55.110Z",
@@ -296382,6 +296386,65 @@
    },
    "queue": null,
    "defaultAt": "2026-11-17T22:33:29.474Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "auto-lander-never-wait-missing-ui-review",
+   "title": "Auto-lander: never wait on a missing UI Review, and test the real lander",
+   "category": "",
+   "detail": "Bug: PR #816 (guided-live-demo-test-watch-orchestrator) was finished, CI green, but never merged on its own: the auto-lander held it for a UI Review pick whose review item was never posted to the console, so it would wait forever. Brett had to land it by hand. Fix: 1) The lander never holds a PR for a UI Review item that doesn't exist in the console; a missing or unposted review never blocks landing (land when CI is green, flag the review separately). 2) Any held PR older than a set time shows in the systems check banner with the reason and a Land now button. 3) Builds that ship UI Review items must post them to the live console (fail the build step if they can't). 4) The orchestrator demo must run its landing act against the real lander path (self-test before demo), not only a dry run. Tests. Land when green.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "auto-lander-never-wait-missing-ui-review",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T22:35:36.950Z",
+   "updatedAt": "2026-11-17T22:35:36.950Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If it recorded the test of the pipeline and didn't merge it on its own, then the test failed. It should have tested itself before it did the demo.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 984
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-17T22:35:36.950Z",
+    "builtAt": "",
+    "prefixSteps": false,
+    "stepAt": {}
+   },
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
