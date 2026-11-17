@@ -26,3 +26,26 @@ plugin settings: 71 plugins, 44 with a screen, 44 of them with a settings sub-ta
   no gear; its sub-tab id matches what `provides` declares.
 
 So the answer to "every one has a gear, right?" was no: 40 of 44 plugin screens had none.
+
+## How plugin screens are hosted (s2)
+
+- **Mount.** `framework/react/AppShell.tsx` draws the page: `<main class="fx-main">` → `.fx-main__inner[data-axf-view]`
+  → `SkinScope` → `ControlScope address="view:<id>"` → `views[id].render()`. The shell has no page header of its
+  own; each plugin draws its own `<header className="fx-pagehead">` (eyebrow, h1, one-line description;
+  check-plugin-pages.mjs holds it to the design language).
+- **The one place every plugin view passes through in the console** is `countingUses()` in
+  `apps/console-web/src/pluginLoader.tsx`, called from `App.tsx` for every bundled plugin (eager and lazy, real and
+  stand-in) before `withPluginTheme`. It already wraps each `views[k].render()` in `<Used folder>`.
+- **How settings open.** Every existing gear and menu entry dispatches `settings.open:<tabId>`
+  (`framework/libs/settings` registers the `settings.open` action; with a sub-tab id it opens Settings → Plugins on
+  that sub-tab, since every plugin tab has `parent: 'plugins'`). The control address is
+  `view:settings/tab:settings.tabs=plugins` plus the sub-tab. The tab id is the plugin's first `settingsTabs[0].id`
+  (often the folder, sometimes not: `mcp` for mcp-client, `hubsync` for hub-sync, `alerts` for alerts-bell).
+- **Tap-to-confirm** needs no code: `framework/react/tapConfirm.ts` arms any button inside a `role="toolbar"`.
+
+**Chosen approach:** one shared gear, drawn by the console host, not 44 hand edits. `countingUses()` wraps every
+plugin view in a `PluginViewHost` that puts a slim `role="toolbar"` row (aria-label "<plugin> screen") above the
+screen with `PluginSettingsGear` at its right end. The row is its own flex line, so it never draws over the
+plugin's page head (attached things snap, never overlap). A plugin opts out only with plugin.json
+`"settingsGear": false` plus `"settingsGearReason"`. The four hand-made screen gears are removed (s5/s6) so each
+screen shows exactly one.
