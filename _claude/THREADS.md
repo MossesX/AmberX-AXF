@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 22:41 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
 - 2026-11-17 22:41 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
 - 2026-11-17 22:41 UTC · `auto-lander-never-wait-missing-ui-review` added (51 steps) (all) · foreign-write
 - 2026-11-17 22:41 UTC · `one-true-source-for-every-setting` added (0 steps) (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 23:01 UTC · `flagship-professional-skin-covering-2` s19 done, note (all) · foreign-write
 - 2026-11-17 23:02 UTC · `flagship-professional-skin-covering-2` s20 done (all) · orchestrator
 - 2026-11-17 23:02 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
+- 2026-11-17 23:03 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 
 ## Token passes (log)
 
