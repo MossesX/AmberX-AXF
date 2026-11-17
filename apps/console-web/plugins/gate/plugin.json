@@ -276,5 +276,6 @@
     "builtAt": "2026-11-15"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": "main",
+  "settingsTab": { "default": true }
 }
