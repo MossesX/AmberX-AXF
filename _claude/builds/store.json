@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7739,
- "updatedAt": "2026-11-17T20:04:13.913Z",
+ "rev": 7740,
+ "updatedAt": "2026-11-17T20:04:23.617Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275008,7 +275008,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:04:10.509Z",
+   "updatedAt": "2026-11-17T20:04:13.471Z",
    "builtAt": "",
    "notes": [
     {
@@ -275066,6 +275066,10 @@
     {
      "text": "Session stopped on its own with 12 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:04:10.509Z"
+    },
+    {
+     "text": "Watchdog fixed Separate settings per plugin + reset confirm dialog (step s7): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:04:13.471Z"
     }
    ],
    "approvals": [
@@ -275158,6 +275162,20 @@
      "attempt": 0,
      "account": "",
      "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-17T20:04:08.800Z",
+     "buildId": "separate-settings-per-plugin-reset",
+     "phase": "",
+     "step": "s7",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-17T20:04:15.837Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -275631,7 +275649,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
