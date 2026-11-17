@@ -85,3 +85,18 @@ for the instance it was opened for, when that component touches a settings-windo
 `chrome.interface:`), a raw `rt.settings.set/clear`, an action not addressed `${type}:${instance}`, or renders a
 piece that isn't instance-bound. Proved by mutation: putting `InterfacePicker` back makes it fail. CI also runs the
 DOM check `check-chrome-interface-tab.mts` (android.yml, next to the other jsdom checks).
+
+## s10 — API
+
+Each instance's Interface settings are console-control@1 targets, the same keys the tab writes:
+
+| Surface | How |
+|---|---|
+| REST | `POST /api/console-control/do {verb:"set", address:"setting:chrome.banner.app.surface", value:"accent"}`; `GET /state?address=setting:chrome.banner.app.surface`; `value:"reset"` drops a field; `….asset` picks the asset (tab groups: that row only) |
+| MCP | `console_control_do` / `console_control_state` with the same address; console actions `chrome.set:<type>:<id>:<field>:<value>`, `chrome.unset:…`, `chrome.reset:<type>:<id>`, `chrome.swap:<type>:<id>:<asset>` |
+| CLI | `axf console chrome get|set|reset|open <type> <id> [key] [value]` (e.g. `axf console chrome set banner app surface accent`) |
+| Voice | "set banner surface to accent" resolves through the console search (the targets are labelled "Banner · Surface") |
+| Deep link | `console_show function:chrome.settings` with value `banner:app:interface`, or `open` on any `setting:chrome.…` address → the instance's Settings → Interface tab (`chrome.settings` takes a 4th part, the tab) |
+
+Targets are derived (`addDerivedTargets` in controlTargets.ts): each kind's `app` instance, every instance with saved
+settings, the tab rows on screen, and any instance a command names (so a row not on screen is still reachable).

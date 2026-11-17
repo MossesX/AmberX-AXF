@@ -184,5 +184,57 @@ for (const c of CASES) {
   await act(async () => { reactRoot.unmount(); });
 }
 
+/*
+ * The API (Brett, Nov 8 2026: everything comes with an API): each instance's Interface settings are console-control@1
+ * targets `setting:chrome.<type>.<id>.<field>` (+ `.asset`) with the same keys the tab writes; REST, MCP, CLI and voice
+ * all run through this registry. `chrome.settings:<type>:<id>:interface` (the targets' open) is the deep link.
+ */
+{
+  const { controlRegistry } = await import('../react/controlTargets.ts');
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults, startView: 'home' } as never, assets, storageKey: 'test:interface-tab:api' });
+  installChrome(rt);
+  const reg = controlRegistry(rt);
+  const all = (await reg.run({ verb: 'list' })) as { ok: boolean; targets?: { address: string }[] };
+  const addrs = new Set((all.targets ?? []).map((t) => t.address));
+  for (const t of cs.CHROME_TYPES.filter((x) => !cs.CHROME_MANY[x])) for (const f of cs.CHROME_FIELDS[t]) check(addrs.has(`setting:chrome.${t}.app.${f.key}`), `api: setting:chrome.${t}.app.${f.key} is a target`);
+  check(addrs.has('setting:chrome.banner.app.asset'), 'api: the banner\'s asset is a target');
+  const set = await reg.run({ verb: 'set', address: 'setting:chrome.banner.app.surface', value: 'accent' }) as { ok: boolean; message?: string };
+  check(set.ok, `api: set setting:chrome.banner.app.surface accent (${set.message ?? ''})`);
+  check((rt.settings.get(cs.CHROME_INSTANCE_KEY('banner', 'app')) as Record<string, unknown>)?.surface === 'accent' && rt.banner({ all: true }).data?.surface === 'accent', 'api: it writes axf.chrome.banner.app (the key the Interface tab writes) and the banner renders it');
+  const st = await reg.run({ verb: 'state', address: 'setting:chrome.banner.app.surface' }) as { ok: boolean; state?: { value?: unknown; target?: { value?: unknown } } };
+  check(st.ok && (st.state?.target?.value ?? st.state?.value) === 'accent', `api: state reads it back (${JSON.stringify(st).slice(0, 300)})`);
+  const bad = await reg.run({ verb: 'set', address: 'setting:chrome.banner.app.surface', value: 'plaid' }) as { ok: boolean };
+  check(!bad.ok, 'api: a value the field does not take is refused');
+  const rs = await reg.run({ verb: 'set', address: 'setting:chrome.banner.app.surface', value: 'reset' }) as { ok: boolean; message?: string };
+  check(rs.ok, `api: reset runs (${rs.message ?? ''})`);
+  check(rt.settings.get(cs.CHROME_INSTANCE_KEY('banner', 'app')) == null, `api: reset drops the override (${JSON.stringify(rt.settings.get(cs.CHROME_INSTANCE_KEY('banner', 'app')))})`);
+  await reg.run({ verb: 'set', address: 'setting:chrome.toolbar.app.collapsible', value: true });
+  check((rt.settings.get(cs.CHROME_INSTANCE_KEY('toolbar', 'app')) as Record<string, unknown>)?.collapsible === true, 'api: a toggle takes true / on');
+  const before = rt.settings.savedValues();
+  await reg.run({ verb: 'set', address: 'setting:chrome.tab-group.demo.row.style', value: 'pills' });
+  check((rt.settings.get(cs.CHROME_INSTANCE_KEY('tab-group', 'demo.row')) as Record<string, unknown>)?.style === 'pills', 'api: a tab row with no settings yet is reachable by its id');
+  check(Object.keys(rt.settings.savedValues()).filter((k) => !(k in before)).every((k) => k.startsWith('axf.chrome.tab-group.demo.row')), 'api: and only its key is written');
+  let opened: unknown = null;
+  const openDialog = rt.openDialog.bind(rt);
+  (rt as unknown as { openDialog: (id: string, p?: unknown) => void }).openDialog = (id, p) => { opened = { id, p }; openDialog(id, p as never); };
+  await reg.run({ verb: 'open', address: 'setting:chrome.banner.app.height' });
+  check(JSON.stringify(opened) === JSON.stringify({ id: CHROME_SETTINGS_DIALOG, p: { type: 'banner', instance: 'app', tab: 'interface' } }), `api: open is the deep link to the banner's Settings → Interface (${JSON.stringify(opened)})`);
+}
+
+/* the CLI: `axf console chrome …` is the same REST command on the same address */
+{
+  // @ts-expect-error plain .mjs
+  const cli = await import('../cli/console-control.mjs');
+  const r = cli.toRequest(['chrome', 'set', 'banner', 'app', 'surface', 'accent']);
+  check(r.path === '/do' && r.body.verb === 'set' && r.body.address === 'setting:chrome.banner.app.surface' && r.body.value === 'accent', 'cli: chrome set → /do set setting:chrome.banner.app.surface');
+  check(cli.toRequest(['chrome', 'get', 'toolbar', 'app', 'density']).path === `/state?address=${encodeURIComponent('setting:chrome.toolbar.app.density')}`, 'cli: chrome get <key> → /state of the same address');
+  const o = cli.toRequest(['chrome', 'open', 'tab-group', 'ui-review.sections']);
+  check(o.body.verb === 'press' && o.body.address === 'function:chrome.settings' && o.body.value === 'tab-group:ui-review.sections:interface', 'cli: chrome open → its Settings → Interface');
+  const z = cli.toRequest(['chrome', 'reset', 'banner', 'app', '--confirm']);
+  check(z.body.address === 'function:chrome.reset' && z.body.value === 'banner:app' && z.body.confirm === true, 'cli: chrome reset → chrome.reset for that instance');
+  let threw = false; try { cli.toRequest(['chrome', 'set', 'window', 'app', 'x', 'y']); } catch { threw = true; }
+  check(threw, 'cli: an unknown chrome kind is a usage error');
+}
+
 console.log(`${fail ? '✗' : '✓'} chrome Interface tab: ${ok} passed, ${fail} failed (${CASES.map((c) => `${c.type}:${c.instance}`).join(', ')}, grid:demo.grid)`);
 process.exit(fail ? 1 : 0);
