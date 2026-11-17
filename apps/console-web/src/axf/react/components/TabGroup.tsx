@@ -21,7 +21,7 @@
  * `id` is the row's settings id: stable, unique in the app (`<plugin>.<row>`), and what check-chrome-assets.mjs asks for.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
-import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
+import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, chromeTransparencyVars, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
@@ -184,7 +184,9 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
 
   const vars = out.vars as Record<string, string>;
   // component-tokens@1: this one row's own token values (axf.tokens.instances → --fx-tab-* on the element) win over the skin's
-  const style = { ...Object.fromEntries(Object.entries(vars)), ...rowsOut.vars, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'tabs', id) } as CSSProperties;
+  const style = { ...Object.fromEntries(Object.entries(vars)), ...rowsOut.vars, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'tabs', id),
+    // chrome-settings@1 `transparency`: the dialog's Transparency choice for this one row (wins over its opacity token)
+    ...chromeTransparencyVars('tab-group', rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id))) } as CSSProperties;
   const attrs = { ...out.attrs, ...rowsOut.attrs };
   const cls = ['fx-tabs', 'fx-tabs--group', size === 'sm' ? 'fx-tabs--sm' : '', folded ? 'is-folded' : '', className ?? ''].filter(Boolean).join(' ');
   const vertical = data.position === 'left' || data.position === 'right';

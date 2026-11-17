@@ -86,3 +86,11 @@ export function chromeSettingsChoices(type: ChromeType | string, assets: AssetLi
 export function customCopy(defaultAsset: AssetLike, app: string | { id: string; name?: string }): { $axf: 'asset@1'; type: 'settings'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: Record<string, unknown> };
 export function chromeSettingsPlan(appId: string): ChromeSettingsPlanEntry[];
 export function chromeSettingsMissing(appId: string, ids: string[]): string[];
+
+/** Transparency of one chrome instance (an instance-only field in every kind's settings dialog). */
+export type ChromeTransparency = 'inherit' | '100' | '90' | '80' | '70' | '60' | '50' | '40' | '30' | '20' | '10' | '0';
+export const CHROME_TRANSPARENCY_FIELD: 'transparency';
+export const CHROME_TRANSPARENCY_OPTIONS: ChromeTransparency[];
+export const CHROME_TRANSPARENCY_VARS: Record<ChromeType, { opacity: string; backdrop: string | null }>;
+export function parseTransparency(v: unknown): ChromeTransparency | null;
+export function chromeTransparencyVars(type: ChromeType, override: unknown): Record<string, string>;
