@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7277,
- "updatedAt": "2026-11-17T03:42:24.100Z",
+ "rev": 7278,
+ "updatedAt": "2026-11-17T03:42:51.664Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183176,7 +183176,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T11:47:31.261Z",
-     "updatedAt": "2026-11-17T03:38:05.661Z"
+     "updatedAt": "2026-11-17T03:42:39.515Z"
     },
     {
      "id": "s7",
@@ -206362,7 +206362,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build. If the contract isn't there yet, define the overlay side against the names in the parent's detail and note them.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206370,7 +206370,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:19.067Z",
-   "updatedAt": "2026-11-17T03:37:49.586Z",
+   "updatedAt": "2026-11-17T03:42:08.979Z",
    "builtAt": "",
    "notes": [
     {
@@ -206400,6 +206400,10 @@
     {
      "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-17T03:37:49.586Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:42:08.979Z"
     }
    ],
    "approvals": [],
@@ -206417,8 +206421,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T23:20:51.280Z",
-    "queuedBy": "brett",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -206448,9 +206452,9 @@
     },
     "tried": [],
     "pickedAt": "",
-    "heldAt": "2026-11-17T03:37:49.586Z",
-    "heldBy": "cli",
-    "heldWhy": "Brett: finish the 8 live builds first"
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -206619,7 +206623,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208781,7 +208785,7 @@
    "title": "Land project-create-mcp: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-create-mcp clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolving by keeping both sides' entries (catalog/status and porting notes are additive), run tests, push, then land it on main. No feature changes.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208789,7 +208793,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-17T03:37:51.811Z",
+   "updatedAt": "2026-11-17T03:41:40.958Z",
    "builtAt": "",
    "notes": [
     {
@@ -208823,6 +208827,10 @@
     {
      "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-17T03:37:51.811Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:40.958Z"
     }
    ],
    "approvals": [],
@@ -208840,8 +208848,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T23:20:48.607Z",
-    "queuedBy": "brett",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -208871,9 +208879,9 @@
     },
     "tried": [],
     "pickedAt": "",
-    "heldAt": "2026-11-17T03:37:51.811Z",
-    "heldBy": "cli",
-    "heldWhy": "Brett: finish the 8 live builds first"
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -208954,7 +208962,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211104,7 +211112,7 @@
    "title": "Skin animations: animated colour swatches, skin-switch sweep, swatch picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -211112,7 +211120,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-17T03:37:54.442Z",
+   "updatedAt": "2026-11-17T03:41:58.620Z",
    "builtAt": "",
    "notes": [
     {
@@ -211146,6 +211154,10 @@
     {
      "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-17T03:37:54.442Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:58.620Z"
     }
    ],
    "approvals": [],
@@ -211163,8 +211175,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T23:20:37.554Z",
-    "queuedBy": "brett",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -211194,9 +211206,9 @@
     },
     "tried": [],
     "pickedAt": "",
-    "heldAt": "2026-11-17T03:37:54.442Z",
-    "heldBy": "cli",
-    "heldWhy": "Brett: finish the 8 live builds first"
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -211387,7 +211399,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -212720,7 +212732,7 @@
    "title": "Grid token set: colours, hover, selected, lines",
    "category": "",
    "detail": "Today grids/tables only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants) and borrow the general colour tokens, so hover/selected/striping can't be styled per grid. Add a dedicated grid token family in tokens.style, following skins and editable in Token Control, the UI Manager and per instance: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency per grid (default 100%). Wire every grid/table component to read them, and add a CI check against hard-coded grid colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -212728,7 +212740,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:29.839Z",
-   "updatedAt": "2026-11-17T03:38:00.231Z",
+   "updatedAt": "2026-11-17T03:41:54.122Z",
    "builtAt": "",
    "notes": [
     {
@@ -212758,6 +212770,10 @@
     {
      "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-17T03:38:00.231Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:54.122Z"
     }
    ],
    "approvals": [],
@@ -212775,8 +212791,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T23:20:30.880Z",
-    "queuedBy": "brett",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -212806,9 +212822,9 @@
     },
     "tried": [],
     "pickedAt": "",
-    "heldAt": "2026-11-17T03:38:00.231Z",
-    "heldBy": "cli",
-    "heldWhy": "Brett: finish the 8 live builds first"
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -212889,7 +212905,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222986,14 +223002,14 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
    "branch": "claude/orchestrator-stale-row-watchdog-vps",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-17T03:38:03.346Z",
+   "updatedAt": "2026-11-17T03:42:11.631Z",
    "builtAt": "",
    "notes": [
     {
@@ -223023,6 +223039,10 @@
     {
      "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-17T03:38:03.346Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:42:11.631Z"
     }
    ],
    "approvals": [],
@@ -223040,8 +223060,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T23:20:10.359Z",
-    "queuedBy": "brett",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -223071,9 +223091,9 @@
     },
     "tried": [],
     "pickedAt": "",
-    "heldAt": "2026-11-17T03:38:03.346Z",
-    "heldBy": "cli",
-    "heldWhy": "Brett: finish the 8 live builds first"
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -223657,7 +223677,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -256544,7 +256564,7 @@
    "title": "Icon packs with drag-drop pack designer",
    "category": "",
    "detail": "FABLE build, fresh on current main, replacing the stale icon-map-icon-packs-every-icon-badge-app (archived). Icon map of every icon spot in every app (icons, badges, app icons). Icon packs swap any or all of them per app or hub-wide, with reset. Very powerful, polished, easy drag-and-drop Icon Pack Designer with live preview. Randomly generated icons and whole packs. Import icons from many sources (open icon libraries, SVG/PNG upload, URLs, other packs). Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -256552,7 +256572,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-17T03:38:05.627Z",
+   "updatedAt": "2026-11-17T03:41:49.159Z",
    "builtAt": "",
    "notes": [
     {
@@ -256590,6 +256610,10 @@
     {
      "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-17T03:38:05.627Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:49.159Z"
     }
    ],
    "approvals": [],
@@ -256607,8 +256631,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-16T22:59:48.582Z",
-    "queuedBy": "console",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -256638,9 +256662,9 @@
     },
     "tried": [],
     "pickedAt": "",
-    "heldAt": "2026-11-17T03:38:05.627Z",
-    "heldBy": "cli",
-    "heldWhy": "Brett: finish the 8 live builds first"
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -257423,7 +257447,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -259066,7 +259090,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T23:28:18.115Z",
-     "updatedAt": "2026-11-17T03:39:37.708Z"
+     "updatedAt": "2026-11-17T03:42:39.515Z"
     },
     {
      "id": "s7",
@@ -260361,7 +260385,7 @@
    "title": "Gate auto-lander tab and controls",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (steps s15-s18), built in parallel. REST in the gate plugin: GET /api/plugins/gate/auto-lander (service up, current build, queue, per-build state, attempts), POST run/retry/pause/resume/settings; same on MCP, CLI 'axf gate auto-lander', AmberX voice, console-control. Gate > Auto-lander tab: service status, current build, grid of builds keeping ALL existing columns plus commits behind main, attempts, last result, Retry/Pause/Fix. Settings under Settings > Plugins > Gate. Use the auto-lander@1 contract from claude/server-auto-lander-fixes-lands when present. Land through the orchestrator.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -260369,7 +260393,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:05:48.290Z",
-   "updatedAt": "2026-11-17T03:38:08.016Z",
+   "updatedAt": "2026-11-17T03:41:43.539Z",
    "builtAt": "",
    "notes": [
     {
@@ -260395,6 +260419,10 @@
     {
      "text": "On hold (cli): Brett: finish the 8 live builds first. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-17T03:38:08.016Z"
+    },
+    {
+     "text": "Back to Pending (cli).",
+     "at": "2026-11-17T03:41:43.539Z"
     }
    ],
    "approvals": [],
@@ -260412,8 +260440,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-17T00:05:53.899Z",
-    "queuedBy": "console",
+    "queuedAt": "",
+    "queuedBy": "",
     "account": "",
     "session": "",
     "slot": "",
@@ -260443,9 +260471,9 @@
     },
     "tried": [],
     "pickedAt": "",
-    "heldAt": "2026-11-17T03:38:08.016Z",
-    "heldBy": "cli",
-    "heldWhy": "Brett: finish the 8 live builds first"
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -260904,7 +260932,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

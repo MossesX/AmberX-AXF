@@ -819,15 +819,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-16 23:21 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` → queued, note (all) · brett
-- 2026-11-16 23:21 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` → queued, note (all) · brett
-- 2026-11-16 23:21 UTC · `fable-rebuild-to-do-manager-unlimited` → archived, note (all) · cli
-- 2026-11-16 23:21 UTC · `assets-menu-hide-any-asset-hidden-list` → archived, note (all) · cli
-- 2026-11-16 23:21 UTC · `themed-native-controls-plugin` → archived, note (all) · cli
-- 2026-11-16 23:21 UTC · `inline-edit-plugin-install-in-console-molly-and` → archived, note (all) · cli
-- 2026-11-16 23:21 UTC · `axf-data-postgres-real-tables-own` → archived, note (all) · cli
-- 2026-11-16 23:21 UTC · `skin-config-panel-merge-main-and-land` → archived, note (all) · cli
-- 2026-11-16 23:21 UTC · `replace-merge-queue-one-time-landing` → archived, note (all) · cli
 - 2026-11-16 23:21 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → archived, note (all) · cli
 - 2026-11-16 23:21 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → archived, note (all) · cli
 - 2026-11-16 23:21 UTC · `icon-packs-with-drag-drop-pack-designer` s3 done (all) · orchestrator
@@ -1219,6 +1210,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 03:39 UTC · `orchestrator-runs-long-builds-across` s6 done (all) · orchestrator
 - 2026-11-17 03:38 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s6 done (all) · orchestrator
 - 2026-11-17 03:41 UTC · `builds-keep-their-slot-across-phases` note (all) · orchestrator
+- 2026-11-17 03:41 UTC · `land-project-create-mcp-resolve-clash` → pending, note (all) · cli
+- 2026-11-17 03:41 UTC · `gate-auto-lander-tab-and-controls` → pending, note (all) · cli
+- 2026-11-17 03:41 UTC · `icon-packs-with-drag-drop-pack-designer` → pending, note (all) · cli
+- 2026-11-17 03:41 UTC · `grid-token-set-colours-hover-selected` → pending, note (all) · cli
+- 2026-11-17 03:41 UTC · `skin-animations-animated-colour-swatches` → pending, note (all) · cli
+- 2026-11-17 03:42 UTC · `console-app-part-2-native-floating` → pending, note (all) · cli
+- 2026-11-17 03:42 UTC · `orchestrator-stale-row-watchdog-vps` → pending, note (all) · cli
+- 2026-11-17 03:42 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` s6 done (all) · foreign-write
+- 2026-11-17 03:42 UTC · `orchestrator-runs-long-builds-across` s6 done (all) · foreign-write
 
 ## Token passes (log)
 
