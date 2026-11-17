@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:05 UTC · `live-hot-refresh-every-grid-list-re` → queued, note (all) · console
 - 2026-11-17 15:06 UTC · `stop-auto-lander-committing-tracking` note (all) · orchestrator
 - 2026-11-17 15:06 UTC · `server-rule-done-means-merged-working` → running, note (all) · orchestrator
 - 2026-11-17 15:06 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → built, note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:25 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · watchdog
 - 2026-11-17 19:25 UTC · `server-auto-lander-fixes-lands` note (all) · watchdog
 - 2026-11-17 19:25 UTC · `orchestrator-settings-collapsible-split` s9 done, → landing (all) · orchestrator
+- 2026-11-17 19:26 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 
 ## Token passes (log)
 
