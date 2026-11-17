@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T20:12:08.634Z",
+ "updatedAt": "2026-11-17T20:12:18.965Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -182191,7 +182191,7 @@
    "pr": "#815",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T20:12:05.888Z",
+   "updatedAt": "2026-11-17T20:12:10.234Z",
    "builtAt": "",
    "notes": [
     {
@@ -182233,6 +182233,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 18 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-17T20:12:05.888Z"
+    },
+    {
+     "text": "Watchdog fixed Live build status: real-time grids, 15-second VPS liveness check, animated runni (step s5): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-17T20:12:10.234Z"
     }
    ],
    "approvals": [],
