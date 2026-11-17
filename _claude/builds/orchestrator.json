@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T14:59:06.155Z",
+ "updatedAt": "2026-11-17T14:59:46.533Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172473,6 +172473,37 @@
      "createdAt": "2026-11-17T14:54:09.749Z"
     }
    ]
+  },
+  {
+   "id": "auto-lander-drag-rows-to-set-merge-order",
+   "title": "Auto-lander: drag rows to set merge order, lander follows it",
+   "category": "",
+   "detail": "Gate & rules > Auto-lander tab: drag-and-drop rows (and Move to top / Move up / Move down / Move to bottom in each row's menu, multi-select) to set the order PRs get merged in. The order is stored server-side on the VPS and the lander (server-auto-lander) always lands strictly in that order, one at a time, merging main in before each. New PRs join at the bottom; default order is closest-to-main first until Brett reorders. Show a position number column. Same reorder via REST, MCP, CLI, voice ('land #774 next'). Coordinate with auto-lander-grid-one-row-per-build and server-auto-lander-fixes-lands.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T14:59:44.363Z",
+   "updatedAt": "2026-11-17T14:59:44.363Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to reorder the order that they're gonna be merged in.",
+    "at": "2026-11-17T14:59:44.363Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

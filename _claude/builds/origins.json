@@ -1255,6 +1255,18 @@
    "from": "",
    "addenda": []
   },
+  "auto-lander-drag-rows-to-set-merge-order": {
+   "said": "I want to reorder the order that they're gonna be merged in.",
+   "at": "2026-11-17T14:59:44.363Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-lander-grid-one-row-per-build": {
    "said": "You need to fix that grid, make it one row. I need to see everything waiting to be merged and how far behind main.",
    "at": "2026-11-16T19:19:11.374Z",
