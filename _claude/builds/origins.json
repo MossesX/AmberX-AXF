@@ -8202,6 +8202,18 @@
    "from": "",
    "addenda": []
   },
+  "right-click-running-build-pop-open": {
+   "said": "Every headless session already loads a terminal tab. So if I right click on the job, it will pop open the terminal with focus on that tab.",
+   "at": "2026-11-17T19:33:17.840Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "saved-claude-logins-never-end-up-on-a-spent-refr": {
    "said": "Why is it expiring when it gets a new refresh token every time? ... Okay, we need to do something about that so it doesn't happen.",
    "at": "2026-11-09T20:14:49.766Z",

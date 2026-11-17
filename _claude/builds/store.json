@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7667,
- "updatedAt": "2026-11-17T19:33:04.022Z",
+ "rev": 7668,
+ "updatedAt": "2026-11-17T19:33:22.572Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276547,8 +276547,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-17T19:32:52.965Z",
-   "updatedAt": "2026-11-17T19:32:52.965Z",
+   "updatedAt": "2026-11-17T19:33:07.917Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -276571,6 +276572,55 @@
    ],
    "order": {
     "all": 964
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "right-click-running-build-pop-open",
+   "title": "Right-click a running build: pop open the terminal focused on its headless session tab",
+   "category": "",
+   "detail": "Every headless session already has its own terminal tab in the console. Right-click a running/active build in any build grid → context menu item 'Open session' that pops open the console terminal with focus on that build's existing headless session tab (no new session). Disabled with the reason when the build has no live session. Same action through REST, MCP, CLI and voice ('show me the skins session'). Fits into the dynamic section of the rebuilt context menus (rebuild-every-context-menu-toolbar-nav).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T19:33:17.840Z",
+   "updatedAt": "2026-11-17T19:33:17.841Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Every headless session already loads a terminal tab. So if I right click on the job, it will pop open the terminal with focus on that tab.",
+    "at": "2026-11-17T19:33:17.840Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 965
    },
    "kind": "build",
    "planRef": "",
