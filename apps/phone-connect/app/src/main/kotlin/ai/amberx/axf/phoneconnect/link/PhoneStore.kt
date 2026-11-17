@@ -39,6 +39,11 @@ class PhoneStore(context: Context) {
         get() = prefs.getBoolean(K_WATCH, true)
         set(v) { prefs.edit().putBoolean(K_WATCH, v).apply() }
 
+    /** "Let the console listen once": Brett's opt-in for voice.listen; off by default, never set by a command. */
+    var listen: Boolean
+        get() = prefs.getBoolean(K_LISTEN, false)
+        set(v) { prefs.edit().putBoolean(K_LISTEN, v).apply() }
+
     val paired: Boolean get() = token != null
 
     fun unpair() { token = null }
@@ -50,6 +55,7 @@ class PhoneStore(context: Context) {
         private const val K_ORIGIN = "origin"
         private const val K_HUB = "hub"
         private const val K_WATCH = "watch"
+        private const val K_LISTEN = "listen"
 
         fun newDeviceId(): String {
             val b = ByteArray(8)

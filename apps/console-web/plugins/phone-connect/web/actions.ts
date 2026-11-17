@@ -3,6 +3,8 @@
  * phone_connect_* and `axf phone`. None of them decides an approval; revoking stays the owner's tap in the settings tab.
  */
 import type { AxfRuntime } from '@console/axf/core';
+import { consoleSearch } from '@console/control/search';
+import { executeControl } from '@console/control/executor';
 import { phone } from './client';
 import { showInPanel, TABS } from './settings';
 
@@ -55,6 +57,16 @@ export function registerActions(rt: AxfRuntime, open: () => void): void {
     const r = await phone<{ recorder?: { running?: boolean; session?: string } }>('recorder/status');
     say(r.error ? r.error.message : r.recorder?.running ? `Recording: ${r.recorder.session ?? ''}` : 'The recorder is stopped');
   }, { label: 'Phone recorder: status, stop, start (phone.recorder:<status|stop|start>)', params: true });
+  // phone.voice:<phrase> — a phrase spoken on the phone, run like Ctrl+K: the best match opens (screens, tabs, rows) or
+  // runs (console actions). Approve / deny are never console actions, so no phrase can decide.
+  rt.actions.register('phone.voice', async (args) => {
+    const q = args.join(':').trim();
+    const hit = q ? consoleSearch(rt, { q, limit: 1 })[0] : undefined;
+    if (!hit) { say(`Nothing matches "${q}"`, 'warning'); return; }
+    if (hit.kind === 'function') { rt.dispatch(hit.value ? `${hit.address.replace(/^function:/, '')}:${hit.value}` : hit.address.replace(/^function:/, '')); return; }
+    const r = await executeControl(rt, { verb: 'open', address: hit.address });
+    say(r.ok ? `Opened ${hit.label}` : `Couldn't open ${hit.label}`, r.ok ? 'success' : 'warning');
+  }, { label: 'Run a phrase spoken on the phone (phone.voice:<phrase>)', params: true, searchable: false });
   rt.actions.register('phone.say', async (args) => {
     const text = args.join(':').trim();
     if (!text) { say('phone.say:<text>', 'warning'); return; }

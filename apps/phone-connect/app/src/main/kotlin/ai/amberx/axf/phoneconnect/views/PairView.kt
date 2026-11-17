@@ -55,6 +55,7 @@ fun PairView() {
     var busy by remember { mutableStateOf(false) }
     var msg by remember { mutableStateOf("") }
     var watch by remember { mutableStateOf(store.watch) }
+    var listen by remember { mutableStateOf(store.listen) }
     // notifications (Android 13+) and RECORD_AUDIO (Android files playback capture under it): asked once paired
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
     val wanted = remember { listOfNotNull(Manifest.permission.RECORD_AUDIO, if (Build.VERSION.SDK_INT >= 33) Manifest.permission.POST_NOTIFICATIONS else null).toTypedArray() }
@@ -114,6 +115,8 @@ fun PairView() {
             AxfCard(title = "Link", icon = "activity") {
                 AxfSwitch(watch, { on -> watch = on; store.watch = on; if (on) WatchService.start(ctx) else WatchService.stop(ctx) },
                     label = "Watch", description = "Keep the link to the console open so pages, notifications and approvals arrive at once.")
+                AxfSwitch(listen, { on -> listen = on; store.listen = on },
+                    label = "Let the console listen once", description = "The console assistant may ask the phone to hear one phrase. Off: the mic is never opened for it.")
                 AxfButton("Unpair this phone", {
                     WatchService.stop(ctx); store.unpair(); paired = false; LinkState.set("Not paired")
                 }, icon = "x", tone = ButtonTone.DANGER)

@@ -33,6 +33,22 @@
                 <data android:scheme="axf" android:host="${axfAppId}" />
             </intent-filter>
         </activity>
+        <!-- Voice command intents → the console (phone.voice): shared text or the app's VOICE action with EXTRA_TEXT. -->
+        <activity
+            android:name=".VoiceIntentActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="ai.amberx.axf.phoneconnect.VOICE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <!-- The watch: keeps the link to the console open (phone-connect@1). -->
         <service
             android:name=".watch.WatchService"

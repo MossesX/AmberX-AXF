@@ -22,7 +22,8 @@
     "action:phone.recorder",
     "action:phone.say",
     "action:phone.tab",
-    "action:phone.device"
+    "action:phone.device",
+    "action:phone.voice"
   ],
   "scopes": [
     "ROUTES"
@@ -194,6 +195,10 @@
       },
       {
         "route": "POST /rotate",
+        "skip": "the phone's own link (device_router, /device/…): it carries the device token, never the console token"
+      },
+      {
+        "route": "POST /voice-in",
         "skip": "the phone's own link (device_router, /device/…): it carries the device token, never the console token"
       }
     ]

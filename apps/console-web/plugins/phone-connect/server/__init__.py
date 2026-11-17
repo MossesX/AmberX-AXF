@@ -23,6 +23,7 @@ Console routes (console token or the wall's signed-in admin; `person` = the wall
 Device routes (device_router, /api/plugins/phone-connect/device/…, no console token: `Authorization: Bearer tok_…` and
 `X-AXPP: axpp@1` on every call):
   POST hello {device}  ·  GET next?wait=25 (204 = nothing)  ·  POST ack {…}  ·  POST answer {…}  ·  POST rotate
+  POST voice-in {text}   a phrase spoken on the phone → the console runs it (console action phone.voice)
   WS   ws   the same loop over one socket: the server sends calls, the phone sends ack / result / error messages
 
 Capability axf.phone@1 (plugin_services): status(), available(), send(), open_url(), notify(), approval(), command().
@@ -285,6 +286,12 @@ async def device_ack(request: Request) -> Any:
 async def device_answer(request: Request) -> Any:
     b = await body(request)
     return answer(lambda: svc.take_reply(device_of(request), b))
+
+
+@device_router.post("/voice-in")
+async def device_voice_in(request: Request) -> Any:
+    b = await body(request)
+    return answer(lambda: svc.voice_in(device_of(request), b.get("text")))
 
 
 @device_router.post("/rotate")

@@ -430,6 +430,25 @@ def _resolve_offline(d: dict) -> None:
         pass
 
 
+def voice_in(d: dict, text: Any, at: str = "") -> dict[str, Any]:
+    """A phrase Brett spoke on the phone (an Android voice intent) → the open console runs it as phone.voice:<phrase>
+    (console-commands@1, owner audience). Never a decision: approve / deny are not console actions."""
+    at = at or now()
+    if not S.feature_on("voice"):
+        fail("denied", "Voice is switched off in Settings → Plugins → Phone Connect")
+    t = str(text or "").strip()[: E.LIMITS["text"]]
+    if not t:
+        fail("validation", "say something first")
+    import plugin_services
+    cc = plugin_services.get("console-commands@1")
+    if cc is None:
+        fail("unavailable", "The console commands plugin is off, so the phrase can't reach the console.")
+    who = (d.get("owner") or {}).get("who", "phone") if isinstance(d.get("owner"), dict) else "phone"
+    r = cc.run({"op": "act", "target": "console.actions", "path": "phone.voice", "action": "run", "input": {"args": [t]}, "by": f"phone:{who}"}, by=f"phone:{who}")
+    S.log({"at": at, "op": "voice-in", "deviceId": d["deviceId"], "ok": bool(r.get("ok", True))})
+    return {"ok": True, "sent": t, "console": {k: r.get(k) for k in ("ok", "status", "message") if k in r}}
+
+
 # ---- status (what every surface reads)
 
 def status(at: str = "") -> dict[str, Any]:

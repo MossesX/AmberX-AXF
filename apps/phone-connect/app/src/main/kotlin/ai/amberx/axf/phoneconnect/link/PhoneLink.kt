@@ -55,6 +55,7 @@ class PhoneLink(private val store: PhoneStore, private val http: OkHttpClient = 
     fun result(id: String, payload: JSONObject, state: JSONObject? = null, tap: String? = null): Reply = device("POST", "answer", JSONObject()
         .put("protocol", LinkRules.PROTOCOL).put("kind", "result").put("correlationId", id).put("payload", payload)
         .apply { if (state != null) put("state", state); if (tap != null) put("by", JSONObject().put("kind", "person").put("tap", tap)) })
+    fun voiceIn(text: String): Reply = device("POST", "voice-in", JSONObject().put("text", text))
     fun error(id: String, code: String, message: String): Reply = device("POST", "answer", JSONObject()
         .put("protocol", LinkRules.PROTOCOL).put("kind", "error").put("correlationId", id)
         .put("error", JSONObject().put("code", code).put("message", message)))

@@ -243,3 +243,22 @@ for d in S.paired():
 check("nothing paired → amber", svc.health_probe()["status"], "warn")
 r = svc.health_fix()
 ok("auto fix issues a pairing code and sends it", r["state"] == "done" and E.is_code(svc.current_pairing()["code"]) and raised[-1]["key"] == "phone-connect:pair:notice")
+
+# ---- s21 voice in
+ran: list = []
+
+
+class CC:
+    def run(self, command, grants=None, by="", audience="owner"):
+        ran.append(command)
+        return {"ok": True, "status": "delivered"}
+
+
+plugin_services.provide("console-commands@1", CC(), folder="console-commands")
+svc.pair_start({"kind": "person", "who": "brett"})
+p2 = S.pending_pairing()
+j2 = cl.post(f"{P}/pair/confirm", json={"code": p2["code"], "device": DEV}, headers=PERSON).json()
+DEVH2 = {"authorization": f"Bearer {j2['token']}", "x-axpp": "axpp@1"}
+r = cl.post(f"{P}/device/voice-in", json={"text": "open the build manager"}, headers=DEVH2).json()
+ok("a phrase from the phone reaches the console as phone.voice", r["ok"] and ran and ran[-1]["path"] == "phone.voice" and ran[-1]["input"]["args"] == ["open the build manager"])
+check("the console token can't speak as the phone", cl.post(f"{P}/device/voice-in", json={"text": "x"}, headers={**SESSION, "x-axpp": "axpp@1"}).json()["error"]["code"], "denied")
