@@ -83,7 +83,7 @@ VPS rules never reach the brief: that is the "not twice" guarantee.
 | before | the dispatcher, before `launch`: `check` of every enabled `vps` rule with `phase: before`; a failing one holds the build in the Queue with the rule named | `models-opus-fable-only`, `model-per-step`, `small-steps`, `build-origin-verbatim`, `hard-build-limit` |
 | dispatch | `briefBlocks` into the brief; launch context (no MCP, lean rules, agent, account, slot) | `rules-brief-only`, `headless-context`, `assigned-agent`, `agent-cap`; every `session` rule's text |
 | after | the dispatcher when the session ends or the PR opens: `check`, then `autofix` for `vps` rules; a fixer's result is a build note | `home-card` (fixer `home-card`), `ui-review-submit` (fixer `ui-review-submit`), `glossary-catalog`, `shipped-features`, `builds-live` |
-| gate | the gate plugin's rule set: `gate-rules@1` evaluates them per PR; a build rule with `phase: gate` names the gate rule or CI job in `check` | `ui-asset-tokens` → `ci:check-theme`, `toolbars` → `ci:check-toolbars`, `merge-queue-only`, `pr-only` |
+| gate | the gate plugin's rule set: `gate-rules@1` evaluates them per PR; a build rule with `phase: gate` names the gate rule or CI job in `check` | `ui-asset-tokens` → `ci:check-theme`, `toolbars` → `ci:check-toolbars`, `merge-queue-only`, `pr-only`, `parallel-groups` → `fixer:parallel-groups` (holds a split build's PR until every step group is merged, step-groups@1) |
 
 Rule #1 of the seed is `home-card`: *every plugin gets a home card, made by the VPS* (`doer: vps`, `phase: after`,
 `kind: mechanical`, `check: store:home-card`, `autofix: home-card`). It is not in any brief.

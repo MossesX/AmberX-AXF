@@ -119,6 +119,35 @@
     },
     {
       "$axf": "build-rule@1",
+      "id": "parallel-groups",
+      "title": "Long builds run as step groups that merge back before landing",
+      "text": "Builds estimated over the threshold (Settings → Plugins → Build orchestrator → Split builds over, 30 min) are split into step groups that run at once in separate slots (step-groups@1). The orchestrator merges the groups onto the build branch in merge order before the build lands as one PR; sessions never merge, rebase or open PRs for group branches themselves. The gate holds a PR whose build still has unmerged groups.",
+      "doer": "vps",
+      "kind": "mechanical",
+      "phase": "gate",
+      "enabled": true,
+      "check": "fixer:parallel-groups",
+      "autofix": "",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+        {
+          "source": "brett:2026-11-16T23:25:33Z",
+          "file": "",
+          "line": 0,
+          "text": "We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.",
+          "pass": 2
+        }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:30:00Z",
+      "updatedAt": "2026-11-15T14:30:00Z",
+      "updatedBy": "migration",
+      "note": "Brett, Nov 16 2026 (build orchestrator-runs-long-builds-across, step-groups@1)."
+    },
+    {
+      "$axf": "build-rule@1",
       "id": "claude-settings-first",
       "title": "Read Claude settings first and follow them",
       "text": "Claude settings (Brett, Nov 3 2026): at session start and before acting, read Claude settings (`claude_settings_get`, or `node apps/console-web/plugins/claude-settings/claude-settings.mjs get`) and follow them. Owner-only ones (No wait, Include irreversible, launch without asking, default model, UI Review gate, raising caps) change only with Brett's own click in the console.",
@@ -4111,6 +4140,6 @@
     "file": "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json",
     "at": "2026-11-15T14:30:00Z",
     "pass": 2,
-    "count": 118
+    "count": 119
   }
 }

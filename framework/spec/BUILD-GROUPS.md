@@ -80,3 +80,11 @@ headless launch per group (`--group`); group lifecycle and merge-back in order; 
 
 Pure engine in `framework/core`; the Android twin (Kotlin) is a deferred gap recorded in `framework/spec/PORTING.md`
 when the engine lands.
+
+## Landing and the gate (build rule `parallel-groups`)
+
+The build branch of a split build reaches GitHub once, after its last group is merged (`step-groups.mjs
+pushBuildBranch`); the build's `after` rules then open the one PR from it (`pr-open-link`), and the merge queue takes it
+as one entry. Sub-branches (`--g<n>`) never get a PR: the push banner's autoPr and Open PR skip them, and so does
+`pr-open-link`. Build rule `parallel-groups` (build-rules@1, doer `vps`, phase `gate`, check `fixer:parallel-groups`)
+holds a PR whose build still has a group that is not merged; sessions never merge groups themselves.

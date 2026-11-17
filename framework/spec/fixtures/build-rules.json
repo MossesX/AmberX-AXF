@@ -468,6 +468,35 @@
      },
      {
       "$axf": "build-rule@1",
+      "id": "parallel-groups",
+      "title": "Long builds run as step groups that merge back before landing",
+      "text": "Builds estimated over the threshold (Settings → Plugins → Build orchestrator → Split builds over, 30 min) are split into step groups that run at once in separate slots (step-groups@1). The orchestrator merges the groups onto the build branch in merge order before the build lands as one PR; sessions never merge, rebase or open PRs for group branches themselves. The gate holds a PR whose build still has unmerged groups.",
+      "doer": "vps",
+      "kind": "mechanical",
+      "phase": "gate",
+      "enabled": true,
+      "check": "fixer:parallel-groups",
+      "autofix": "",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+       {
+        "source": "brett:2026-11-16T23:25:33Z",
+        "file": "",
+        "line": 0,
+        "text": "We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.",
+        "pass": 2
+       }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:00:00Z",
+      "updatedAt": "2026-11-15T14:00:00Z",
+      "updatedBy": "migration",
+      "note": "Brett, Nov 16 2026 (build orchestrator-runs-long-builds-across, step-groups@1)."
+     },
+     {
+      "$axf": "build-rule@1",
       "id": "ui-asset-tokens",
       "title": "Every colour, size, spacing, font, radius and border comes from asset tokens",
       "text": "UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.",
@@ -720,7 +749,7 @@
      "file": "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json",
      "at": "2026-11-15T14:00:00Z",
      "pass": 2,
-     "count": 12
+     "count": 13
     }
    },
    "entry": {
@@ -729,9 +758,9 @@
     "by": "migration",
     "action": "migrate",
     "rev": 1,
-    "count": 12,
+    "count": 13,
     "reason": {
-     "title": "Migrated 12 build rules",
+     "title": "Migrated 13 build rules",
      "description": "from _claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json"
     }
    },
@@ -740,6 +769,7 @@
     "plugin-help-stub",
     "api-parity-scaffold",
     "ci-checks",
+    "parallel-groups",
     "ui-asset-tokens",
     "api-everything",
     "toolbars",
@@ -755,6 +785,7 @@
     "plugin-help-stub": "Every plugin ships help.json with its screen entry (view:<plugin>). The VPS writes a missing one from plugin.json's name and description after the build (fixer help-stub).",
     "api-parity-scaffold": "Every command a plugin declares has its REST handler, so MCP and the CLI reach it through plugin-commands, and a plugin with a page registers console actions for voice. The VPS checks it at the gate and scaffolds the missing parts (fixer api-parity).",
     "ci-checks": "Every enabled rule's check command (check-theme, check-controls, check-toolbars, …) runs on the VPS under the heavy lock before the PR lands (fixer run-ci-checks).",
+    "parallel-groups": "Builds estimated over the threshold (Settings → Plugins → Build orchestrator → Split builds over, 30 min) are split into step groups that run at once in separate slots (step-groups@1). The orchestrator merges the groups onto the build branch in merge order before the build lands as one PR; sessions never merge, rebase or open PRs for group branches themselves. The gate holds a PR whose build still has unmerged groups.",
     "ui-asset-tokens": "UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.",
     "api-everything": "Everything comes with an API (Brett, Nov 8 2026): a deep link, readable state, every action callable through REST, MCP, the CLI and voice.",
     "toolbars": "Every toolbar is a Toolbars plugin toolbar (Nov 3 2026, Brett): every toolbar carries `role=\"toolbar\"` and an `aria-label`.",
@@ -819,6 +850,10 @@
       "why": "the VPS does it"
      },
      {
+      "id": "parallel-groups",
+      "why": "the VPS does it"
+     },
+     {
       "id": "hard-build-limit",
       "why": "the VPS does it"
      },
@@ -878,6 +913,10 @@
      },
      {
       "id": "ci-checks",
+      "why": "the VPS does it"
+     },
+     {
+      "id": "parallel-groups",
       "why": "the VPS does it"
      },
      {
@@ -953,6 +992,10 @@
       "why": "the VPS does it"
      },
      {
+      "id": "parallel-groups",
+      "why": "the VPS does it"
+     },
+     {
       "id": "plugin-lifecycle",
       "why": "keywords: none of plugin, apps/console-web/plugins"
      },
@@ -1019,6 +1062,10 @@
     },
     {
      "id": "ci-checks",
+     "why": "the VPS does it"
+    },
+    {
+     "id": "parallel-groups",
      "why": "the VPS does it"
     },
     {
@@ -1194,6 +1241,35 @@
       "createdAt": "2026-11-15T14:00:00Z",
       "updatedAt": "2026-11-15T14:00:00Z",
       "updatedBy": "migration"
+     },
+     {
+      "$axf": "build-rule@1",
+      "id": "parallel-groups",
+      "title": "Long builds run as step groups that merge back before landing",
+      "text": "Builds estimated over the threshold (Settings → Plugins → Build orchestrator → Split builds over, 30 min) are split into step groups that run at once in separate slots (step-groups@1). The orchestrator merges the groups onto the build branch in merge order before the build lands as one PR; sessions never merge, rebase or open PRs for group branches themselves. The gate holds a PR whose build still has unmerged groups.",
+      "doer": "vps",
+      "kind": "mechanical",
+      "phase": "gate",
+      "enabled": true,
+      "check": "fixer:parallel-groups",
+      "autofix": "",
+      "briefBlock": "rules",
+      "applies": "builds",
+      "when": {},
+      "sources": [
+       {
+        "source": "brett:2026-11-16T23:25:33Z",
+        "file": "",
+        "line": 0,
+        "text": "We need to wire the orchestrator to be able to do that. Any build that's over 30 minutes, split the steps up for multiple slots.",
+        "pass": 2
+       }
+      ],
+      "rev": 1,
+      "createdAt": "2026-11-15T14:00:00Z",
+      "updatedAt": "2026-11-15T14:00:00Z",
+      "updatedBy": "migration",
+      "note": "Brett, Nov 16 2026 (build orchestrator-runs-long-builds-across, step-groups@1)."
      },
      {
       "$axf": "build-rule@1",
@@ -1471,7 +1547,7 @@
      "file": "_claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json",
      "at": "2026-11-15T14:00:00Z",
      "pass": 2,
-     "count": 12
+     "count": 13
     }
    },
    "history": [
@@ -1481,9 +1557,9 @@
      "by": "migration",
      "action": "migrate",
      "rev": 1,
-     "count": 12,
+     "count": 13,
      "reason": {
-      "title": "Migrated 12 build rules",
+      "title": "Migrated 13 build rules",
       "description": "from _claude/builds/reports/build-rules-tab-gate-rules-vps-owns/inventory.json"
      }
     },
@@ -1759,6 +1835,7 @@
    "plugin-help-stub": "the VPS does it",
    "api-parity-scaffold": "the VPS does it",
    "ci-checks": "the VPS does it",
+   "parallel-groups": "the VPS does it",
    "ui-asset-tokens": "",
    "api-everything": "",
    "toolbars": "UI only",
