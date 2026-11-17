@@ -66,7 +66,34 @@ export const groupAddress = (build: string, gid: string) => `row:${build}/group:
 /** Registered with the control registry once the address grammar has the `group` kind (build step s21); the DOM carries it already. */
 const GRAMMAR_HAS_GROUP = (CONSOLE_CONTROL_KINDS as readonly string[]).includes('group');
 
-export function GroupsPanel({ build, groups, actions }: { build: string; groups: GroupRow[]; actions?: (g: GroupRow) => ReactNode }) {
+/**
+ * The panel's three views, offered in UI Review as ui-choices@1 options (layout assets in assets/layout/): grid = every
+ * column; compact = group, state, steps, merge order and actions (phones); cards = one card per group in merge order.
+ * The pick is kept per browser until Brett chooses one for good.
+ */
+export const GROUP_VIEWS = ['grid', 'compact', 'cards'] as const;
+export type GroupView = typeof GROUP_VIEWS[number];
+const VIEW_KEY = 'axf.build-orchestrator.groupsView';
+export const groupView = (): GroupView => { try { const v = localStorage.getItem(VIEW_KEY) as GroupView | null; return v && GROUP_VIEWS.includes(v) ? v : 'grid'; } catch { return 'grid'; } };
+
+function GroupCard({ build, g, actions }: { build: string; g: GroupRow; actions?: (g: GroupRow) => ReactNode }) {
+  return (
+    <article className="pd-card sg-card" data-axf-target={groupAddress(build, g.id)} aria-label={`group ${g.id}`}>
+      <div className="pd-card__top">
+        <h3 className="pd-card__title">{g.id}<span className="fx-muted fx-small"> · merge #{g.mergeOrder + 1}</span></h3>
+        <Chip tone={TONE[g.shown]}>{g.label}</Chip>
+      </div>
+      <div className="pd-meta">
+        <span title={g.steps.ids.join(', ')}>{g.steps.done}/{g.steps.total} steps</span>
+        {g.account && <span>{g.slot || 'queued'} · {g.account}</span>}
+        {g.branch && <span className="fx-mono fx-muted">{g.branch}</span>}
+      </div>
+      {actions && <div className="fx-row fx-row--wrap">{actions(g)}</div>}
+    </article>
+  );
+}
+
+export function GroupsPanel({ build, groups, actions, view = groupView() }: { build: string; groups: GroupRow[]; actions?: (g: GroupRow) => ReactNode; view?: GroupView }) {
   const rt = useRuntime();
   useControlTargets(GRAMMAR_HAS_GROUP ? groups.map((g) => ({
     address: groupAddress(build, g.id), kind: 'row' as const, label: `${build} group ${g.id}`, detail: `Step group · ${g.label}`, keywords: [g.id, g.state, g.account, g.branch].filter(Boolean),
@@ -87,9 +114,11 @@ export function GroupsPanel({ build, groups, actions }: { build: string; groups:
   const notes = groups.filter((g) => g.note && (g.state === 'conflict' || g.state === 'failed'));
   return (
     <section className="fx-stack" aria-label={`${build} step groups`}>
-      <DataGrid<GroupRow> id={`build-orchestrator.groups.${build}`} label={`${build} step groups`}
-        groups={[{ id: `${build}-groups`, title: `${groups.length} step groups · ${merged} merged`, rows: groups, groups: [], fixed: true }]}
-        columns={cols} rowId={(g) => g.id} rowLabel={(g) => `group ${g.id}`} hidden={[]} />
+      {view === 'cards'
+        ? <><p className="fx-small fx-muted">{groups.length} step groups · {merged} merged</p><div className="fx-stack">{groups.map((g) => <GroupCard key={g.id} build={build} g={g} actions={actions} />)}</div></>
+        : <DataGrid<GroupRow> id={`build-orchestrator.groups.${build}`} label={`${build} step groups`}
+          groups={[{ id: `${build}-groups`, title: `${groups.length} step groups · ${merged} merged`, rows: groups, groups: [], fixed: true }]}
+          columns={cols} rowId={(g) => g.id} rowLabel={(g) => `group ${g.id}`} hidden={view === 'compact' ? ['run', 'branch', 'waits'] : []} />}
       {notes.map((g) => <Note key={g.id} tone="danger">{g.id}: {g.note}</Note>)}
     </section>
   );

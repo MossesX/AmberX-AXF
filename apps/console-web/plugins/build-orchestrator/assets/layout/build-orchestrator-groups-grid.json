@@ -1,0 +1,19 @@
+{
+ "$axf": "asset@1",
+ "type": "layout",
+ "id": "build-orchestrator-groups-grid",
+ "name": "build-orchestrator: Groups panel, Full grid",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Every column: group, state, steps, merge order, slot and account, branch, waiting on, actions. Best on desktop.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-orchestrator-groups",
+  "choice-option:grid"
+ ],
+ "data": {
+  "view": "grid",
+  "panel": "build-orchestrator.groups",
+  "hidden": []
+ }
+}

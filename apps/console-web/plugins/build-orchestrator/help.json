@@ -310,6 +310,72 @@
         "title": "Set for all",
         "text": "Gives every build of the group the priority picked next to it (Urgent, High, Normal, Low).",
         "kind": "button"
+      },
+      {
+        "target": "step-groups",
+        "title": "Step groups",
+        "text": "A build whose open steps add up to more than Split builds over (min) (30) runs as step groups: steps that share no files run at the same time in separate slots, each on its own branch <build branch>--g<n>, then merge back onto the build branch in merge order and land as one PR.",
+        "kind": "panel"
+      },
+      {
+        "target": "start-now",
+        "title": "Start now",
+        "text": "Starts this group's next session now instead of on the next tick (an account that runs its model, one agent slot). Not while it waits on another group's merge.",
+        "kind": "button"
+      },
+      {
+        "target": "re-run",
+        "title": "Re-run",
+        "text": "Puts a failed or stopped group back in the queue with its crash count cleared.",
+        "kind": "button"
+      },
+      {
+        "target": "merge-now",
+        "title": "Merge now",
+        "text": "Merges a group whose steps are all done onto the build branch now, out of its turn if need be. Asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "fix-with-claude-group",
+        "title": "Fix with Claude (merge conflict)",
+        "text": "A session on the group's branch merges the build branch in, resolves the conflict and stops; the next tick merges the group again.",
+        "kind": "button"
+      },
+      {
+        "target": "merge-order",
+        "title": "Up / Down (merge order)",
+        "text": "Moves a group earlier or later in the merge order. A group never moves before one it depends on, nor across a merged one.",
+        "kind": "button"
+      },
+      {
+        "target": "ungroup",
+        "title": "Ungroup (run sequential)",
+        "text": "Runs the build as one sequential session again; its step groups are removed. Only before any group has run or merged. Asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "plan-again",
+        "title": "Plan again",
+        "text": "Works the groups out again from the steps' files and dependsOn.",
+        "kind": "button"
+      },
+      {
+        "target": "setting:build-orchestrator.splitOverMin",
+        "title": "Split builds over (min)",
+        "text": "A build whose open steps add up to more than this many minutes is split into step groups. 0 = never. Default 30.",
+        "kind": "setting"
+      },
+      {
+        "target": "setting:build-orchestrator.maxParallelGroups",
+        "title": "Max parallel groups per build",
+        "text": "At most this many groups of one build run at once (each takes one agent slot, so the agent cap still holds). Default 3.",
+        "kind": "setting"
+      },
+      {
+        "target": "setting:build-orchestrator.parallelGroups",
+        "title": "Parallel groups",
+        "text": "Off: every build runs as one sequential session (a build already split runs one group at a time). Default on.",
+        "kind": "setting"
       }
     ],
     "intros": []

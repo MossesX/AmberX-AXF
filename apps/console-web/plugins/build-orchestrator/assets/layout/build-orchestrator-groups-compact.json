@@ -1,0 +1,23 @@
+{
+ "$axf": "asset@1",
+ "type": "layout",
+ "id": "build-orchestrator-groups-compact",
+ "name": "build-orchestrator: Groups panel, Compact grid",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Group, state, steps, merge order and actions only; slot, branch and waiting-on drop out. Fits a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-orchestrator-groups",
+  "choice-option:compact"
+ ],
+ "data": {
+  "view": "compact",
+  "panel": "build-orchestrator.groups",
+  "hidden": [
+   "run",
+   "branch",
+   "waits"
+  ]
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "$axf": "asset@1",
+ "type": "layout",
+ "id": "build-orchestrator-groups-cards",
+ "name": "build-orchestrator: Groups panel, Cards in merge order",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "One card per group in merge order: state chip, steps, run and branch, its buttons. Reads top to bottom on a phone.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-orchestrator-groups",
+  "choice-option:cards"
+ ],
+ "data": {
+  "view": "cards",
+  "panel": "build-orchestrator.groups",
+  "hidden": []
+ }
+}
