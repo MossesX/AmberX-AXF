@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7459,
- "updatedAt": "2026-11-17T14:54:20.439Z",
+ "rev": 7460,
+ "updatedAt": "2026-11-17T14:54:28.335Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -264574,7 +264574,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-17T14:54:18.822Z",
+   "updatedAt": "2026-11-17T14:54:26.455Z",
    "builtAt": "",
    "notes": [
     {
@@ -264644,28 +264644,6 @@
    },
    "steps": [
     {
-     "id": "s20",
-     "uid": "st-mwktcbt301il9l",
-     "title": "",
-     "text": "Edit UI gets its own settings interface (framework settings asset, sub-tab of Settings > Plugins, opens in the floating settings window): on/off, which key activates it (Ctrl default, Alt/Shift/long-press on phone), what's editable (text, data, assets, hide/unhide, each on/off), outline style from tokens, confirm-before-save on/off, undo history length, per-app scope. Reachable via REST, MCP, CLI, voice.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-17T14:54:12.174Z",
-     "updatedAt": "2026-11-17T14:54:12.423Z"
-    },
-    {
      "id": "s1",
      "uid": "st-mwktc9qt01tvb8",
      "title": "",
@@ -264713,6 +264691,28 @@
      "rev": 1,
      "createdAt": "2026-11-17T14:54:09.749Z",
      "updatedAt": "2026-11-17T14:54:09.749Z"
+    },
+    {
+     "id": "s20",
+     "uid": "st-mwktcbt301il9l",
+     "title": "",
+     "text": "Edit UI gets its own settings interface (framework settings asset, sub-tab of Settings > Plugins, opens in the floating settings window): on/off, which key activates it (Ctrl default, Alt/Shift/long-press on phone), what's editable (text, data, assets, hide/unhide, each on/off), outline style from tokens, confirm-before-save on/off, undo history length, per-app scope. Reachable via REST, MCP, CLI, voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T14:54:12.174Z",
+     "updatedAt": "2026-11-17T14:54:12.423Z"
     },
     {
      "id": "s3",
@@ -265151,7 +265151,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
