@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T04:17:05.725Z",
+ "updatedAt": "2026-11-17T04:17:35.997Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -169900,7 +169900,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T03:38:28.564Z",
-   "updatedAt": "2026-11-17T04:16:18.287Z",
+   "updatedAt": "2026-11-17T04:17:16.857Z",
    "builtAt": "",
    "notes": [
     {
@@ -169914,6 +169914,10 @@
     {
      "text": "Claude account: hulu0241 (axf-builds-keep-their-slot-across-phases--rhonda, shared account login)",
      "at": "2026-11-17T03:56:07.128Z"
+    },
+    {
+     "text": "Headless run axf-builds-keep-their-slot-across-phases--rhonda: brief only · start 14.6K tokens ($0.12) · cost $8.24 · 92 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:17:16.857Z"
     }
    ],
    "approvals": [],

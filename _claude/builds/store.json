@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7352,
- "updatedAt": "2026-11-17T04:17:05.725Z",
+ "rev": 7353,
+ "updatedAt": "2026-11-17T04:17:35.997Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -261992,7 +261992,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T03:38:28.564Z",
-   "updatedAt": "2026-11-17T04:16:18.287Z",
+   "updatedAt": "2026-11-17T04:17:16.857Z",
    "builtAt": "",
    "notes": [
     {
@@ -262006,6 +262006,10 @@
     {
      "text": "Claude account: hulu0241 (axf-builds-keep-their-slot-across-phases--rhonda, shared account login)",
      "at": "2026-11-17T03:56:07.128Z"
+    },
+    {
+     "text": "Headless run axf-builds-keep-their-slot-across-phases--rhonda: brief only · start 14.6K tokens ($0.12) · cost $8.24 · 92 turns · 6 tools, MCP none",
+     "at": "2026-11-17T04:17:16.857Z"
     }
    ],
    "approvals": [],
@@ -262440,7 +262444,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
