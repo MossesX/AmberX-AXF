@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:05 UTC · `orchestrator-settings-collapsible-split` → running (all) · auto-lander
 - 2026-11-17 19:05 UTC · `orchestrator-settings-collapsible-split` note (all) · auto-lander
 - 2026-11-17 19:05 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · auto-lander
 - 2026-11-17 19:06 UTC · `context-menus-plugin-one-true-source` → running (all) · auto-lander
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:10 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
 - 2026-11-17 20:12 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · pipeline
 - 2026-11-17 20:12 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
+- 2026-11-17 20:12 UTC · `guided-live-demo-test-watch-orchestrator` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
