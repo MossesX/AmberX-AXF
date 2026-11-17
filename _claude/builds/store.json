@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7502,
- "updatedAt": "2026-11-17T15:09:22.162Z",
+ "rev": 7503,
+ "updatedAt": "2026-11-17T15:09:31.509Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210278,7 +210278,7 @@
    "branch": "claude/land-per-instance-settings-picker",
    "pr": "#766",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-17T15:07:56.051Z",
+   "updatedAt": "2026-11-17T15:09:23.120Z",
    "builtAt": "2026-11-17T00:53:13.094Z",
    "notes": [
     {
@@ -210312,6 +210312,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:07:56.051Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:23.120Z"
     }
    ],
    "approvals": [],
@@ -210452,7 +210456,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -245160,7 +245164,7 @@
    "pr": "#764",
    "priority": "P0",
    "createdAt": "2026-11-16T18:24:30.100Z",
-   "updatedAt": "2026-11-17T15:08:03.528Z",
+   "updatedAt": "2026-11-17T15:09:28.357Z",
    "builtAt": "2026-11-16T23:55:24.132Z",
    "notes": [
     {
@@ -245226,6 +245230,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:08:03.528Z"
+    },
+    {
+     "text": "Brett: land after orchestrator-runs-long-builds-across",
+     "at": "2026-11-17T15:09:28.357Z"
     }
    ],
    "approvals": [
@@ -245614,7 +245622,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
