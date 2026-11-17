@@ -1,0 +1,40 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "maintenance-own-settings-simple",
+ "name": "maintenance-own-settings: Simple first, compact",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Opens at Simple with descriptions hidden: the fewest rows, for a phone. The level toolbar brings the rest back.",
+ "tags": [
+  "ui-choice",
+  "choice-set:maintenance-own-settings",
+  "choice-option:simple"
+ ],
+ "data": {
+  "scope": "plugin",
+  "owner": "ai.amberx.axf.console.maintenance",
+  "layout": "list",
+  "header": "compact",
+  "search": false,
+  "descriptions": false,
+  "tabs": [
+   {
+    "id": "maintenance"
+   }
+  ],
+  "hide": [],
+  "groups": [],
+  "levels": true,
+  "defaultLevel": "simple",
+  "levelOf": {
+   "maintenance": "basic",
+   "axf.maintenance.nightly": "basic",
+   "axf.maintenance.nightlyJobs": "basic",
+   "axf.maintenance.profileMode": "basic",
+   "axf.maintenance.profileSchedule": "basic",
+   "axf.maintenance.profileWeekday": "basic"
+  },
+  "visible": {}
+ }
+}

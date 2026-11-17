@@ -10,7 +10,7 @@
 import { useMemo } from 'react';
 import { DataGrid, type GridColumn } from '../datagrid';
 import { resetTableRows, type ResetTableRow } from '../../react/components/ResetConfirmDialog';
-import { changedAssets, type AppLookLike, type ResetState } from '../../core/engines/settings-reset';
+import { changedAssets, isLookKey, type AppLookLike, type ResetState } from '../../core/engines/settings-reset';
 import { ASSET_TYPES, type AssetType, type AxfRuntime } from '../../core';
 
 const COLUMNS: GridColumn<ResetTableRow>[] = [
@@ -43,9 +43,11 @@ export function resetStateOf(rt: AxfRuntime): ResetState {
     const d = slots[t]; if (typeof d === 'string') defaults[t] = d;
   }
   const look = rt.appLook() as unknown as AppLookLike | null;
+  const registered = new Set(groups.flatMap((g) => g.settings.filter((x) => x.kind !== 'action' && x.kind !== 'secret').map((x) => x.key)));
   return {
-    // the last reset's undo record is the reset's own bookkeeping, never a row
-    values: Object.fromEntries(Object.entries(rt.settings.savedValues()).filter(([k]) => k !== 'axf.settings.reset.undo')), tabs, groups, look, active, defaults,
+    // only what a person set: registered settings and look / asset keys. Unregistered keys are a module's own bookkeeping
+    // (migration markers, the last reset's undo record) and a reset never clears them.
+    values: Object.fromEntries(Object.entries(rt.settings.savedValues()).filter(([k]) => registered.has(k) || isLookKey(k))), tabs, groups, look, active, defaults,
     nameOf: (type, id) => rt.registry.list(type as AssetType).find((a) => a.id === id)?.name,
   };
 }

@@ -4,6 +4,7 @@
  */
 import type { AxfRuntime } from './axf/core';
 import { bundledPlugins, type BundledPlugin } from './plugins';
+import { loader } from './pluginLoader';
 
 /** A plugin by folder, manifest id, its last id segment or its name (case-insensitive), as voice and the CLI say it. */
 export function findPlugin(ref: string): BundledPlugin | undefined {
@@ -46,6 +47,8 @@ export function registerPluginSettingsActions(rt: AxfRuntime): () => void {
     if (!p) { rt.toast(`No plugin called “${ref}”.`, 'warning', 'Plugins'); return; }
     const want = tab || settingsTabOf(p);
     rt.dispatch(`settings.plugin:${p.manifest.id}${want ? `:${want}` : ''}`);
+    // a lazily loaded plugin registers its tabs when its chunk loads: load it now, the open window fills in
+    void loader.request(p.folder).catch(() => undefined);
   }, { label: 'Open a plugin’s own settings', params: true, effect: 'navigate' });
   return () => { offHere(); offOpen(); };
 }

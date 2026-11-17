@@ -1,0 +1,40 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "maintenance-own-settings-basic",
+ "name": "maintenance-own-settings: Basic first, descriptions on (the generated default)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Opens at Basic: the everyday settings with their descriptions; Developer and Administrator one pick away on the level toolbar.",
+ "tags": [
+  "ui-choice",
+  "choice-set:maintenance-own-settings",
+  "choice-option:basic"
+ ],
+ "data": {
+  "scope": "plugin",
+  "owner": "ai.amberx.axf.console.maintenance",
+  "layout": "list",
+  "header": "compact",
+  "search": false,
+  "descriptions": true,
+  "tabs": [
+   {
+    "id": "maintenance"
+   }
+  ],
+  "hide": [],
+  "groups": [],
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "maintenance": "basic",
+   "axf.maintenance.nightly": "basic",
+   "axf.maintenance.nightlyJobs": "basic",
+   "axf.maintenance.profileMode": "basic",
+   "axf.maintenance.profileSchedule": "basic",
+   "axf.maintenance.profileWeekday": "basic"
+  },
+  "visible": {}
+ }
+}

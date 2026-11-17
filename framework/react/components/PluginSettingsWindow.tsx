@@ -104,7 +104,7 @@ export function PluginSettingsWindow({ plugin, tab }: PluginSettingsWindowProps)
   const name = pluginName(rt, plugin);
   return (
     <SettingsUiProvider value={ui}>
-      <div className="fx-stack axf-settings axf-settings--dialog axf-settings--plugin" data-axf-target={pluginSettingsTarget(plugin)} data-axf-plugin-settings={plugin} data-axf-help-id="settings.plugin-window" data-axf-settings-source={resolved.source} data-axf-settings-interface={resolved.id}>
+      <div className={`fx-stack axf-settings axf-settings--dialog axf-settings--plugin ${ui.descriptions ? '' : 'axf-settings--nodesc'}`} data-axf-target={pluginSettingsTarget(plugin)} data-axf-plugin-settings={plugin} data-axf-help-id="settings.plugin-window" data-axf-settings-source={resolved.source} data-axf-settings-interface={resolved.id}>
         <div className="axf-settings__dialoghead">
           <p className="fx-eyebrow"><Icon name={current?.icon ?? 'settings'} /> {name}</p>
           {renderer?.reset?.(plugin)}
