@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7669,
- "updatedAt": "2026-11-17T19:33:33.843Z",
+ "rev": 7670,
+ "updatedAt": "2026-11-17T19:33:42.644Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276441,7 +276441,7 @@
    "title": "Live build status: real-time grids, 15-second VPS liveness check, animated running rows, red alert + dialog when a build breaks",
    "category": "",
    "detail": "1) Live updates: the console updates in real time whenever a build changes (push over the console's live channel, no refresh), on every grid and tab (Active, Queue, Pending, Incomplete, etc.). 2) The VPS checks every 15 seconds that each running job is really alive (session, pid, heartbeat) and pushes the result to the console. 3) Every running/building row in any grid shows an animated indicator: a spinning/animated icon next to it, and the row itself slowly flashes or pulses. Configurable in settings: animation type (flash, pulse, glow, other), colors, speed, as a hot-swappable asset with tokens only. 4) When a running job stops or breaks: the animation stops, the row turns red/pink, a pop-up alert says it broke, and a dialog shows what happened (cause, exit code, last step, what the watchdog is doing about it), with a link to the build. 5) Full API: deep link, state read, REST, MCP, CLI, voice for the settings and the alert. Coordinate with both watchdogs (#772 recovery, #780 stale-row) instead of duplicating their checks.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -276449,9 +276449,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T19:31:05.466Z",
+   "updatedAt": "2026-11-17T19:33:34.646Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-17T19:33:34.646Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -276466,6 +276471,30 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-17T19:33:33.597Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -276475,7 +276504,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

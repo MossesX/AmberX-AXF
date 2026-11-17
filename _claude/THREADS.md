@@ -826,7 +826,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 15:08 UTC · `amberx-open-url-must-open-page-even-when` → running, note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-17 15:08 UTC · `remove-old-molly-app-project-keep-axf` note (all) · orchestrator
@@ -1226,6 +1225,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 19:32 UTC · `right-click-running-build-open-headless` added (0 steps) (all) · console
 - 2026-11-17 19:33 UTC · `right-click-running-build-pop-open` added (0 steps) (all) · console
 - 2026-11-17 19:33 UTC · `rebuild-every-toolbar-page-specific` s1 done, → running (all) · orchestrator
+- 2026-11-17 19:33 UTC · `live-build-status-real-time-grids-15` → queued, note (all) · console
 
 ## Token passes (log)
 
